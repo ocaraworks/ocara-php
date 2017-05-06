@@ -1,0 +1,1 @@
+<div><a href="<?php echo ocUrl(array(OC_DEV_SIGN, 'home', 'adminControl'));?>">管理控制器</a></diV>

@@ -1,0 +1,1 @@
+<div class="content"><?php echo $msg;?></div>

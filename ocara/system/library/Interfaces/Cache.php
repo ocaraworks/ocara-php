@@ -1,0 +1,43 @@
+<?php
+/*************************************************************************************************
+ * -----------------------------------------------------------------------------------------------
+ * Ocara开源框架   缓存类接口Cache
+ * Copyright (c) http://www.ocara.cn All rights reserved.
+ * -----------------------------------------------------------------------------------------------
+ * @author Lin YiHu <linyhtianwa@163.com>
+ ************************************************************************************************/
+namespace Ocara\Interfaces;
+
+defined('OC_PATH') or exit('Forbidden!');
+
+interface Cache
+{
+	/**
+	 * 析构函数
+	 * @param array $config
+	 * @param bool $required
+	 */
+	public function __construct($config, $required = true);
+
+	/**
+	 * 设置KEY
+	 * @param string $name
+	 * @param boolean $value
+	 * @param integer $exireTime
+	 * @param mixed $args
+	 * @return bool
+	 */
+	public function setVar($name, $value, $exireTime = 0, $args = null);
+	
+	/**
+	 * 获取KEY
+	 * @param string $name
+	 */
+	public function getVar($name);
+
+	/**
+	 * 删除KEY
+	 * @param string $name
+	 */
+	public function deleteVar($name);
+}
