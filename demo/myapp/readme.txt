@@ -3,11 +3,11 @@ Hello Everyone,
 Thanks for your attention!
 If You want to use Ocara, you can visit onecore.cn to learn more.Because Ocara just join in github.com.
 I will rich it by docs as soon as possible.
-And, The "index.php" must be visit by browser, for example: http://localhost/index.php(If it's valid url for ocara project).
+And, The "index.php" must be visit by browser, for example: http://localhost/index.php(If it's a valid url for ocara project).
 
-¸÷Î»ºÃ£¬
+å„ä½å¥½ï¼Œ
 
-Ğ»Ğ»ÄúµÄ¹Ø×¢£¡
-Èç¹ûÄúÏëÊ¹ÓÃOcara£¬Äú¿ÉÒÔ·ÃÎÊonecore.cnÁË½â¸ü¶à¡£ÒòÎªOcara¸Õ¸Õ²Å¼ÓÈëgithub.com¡£
-ÎÒ»á¾¡¿ì·á¸»ÎÄµµ¡£
-Í¬Ê±£¬µ±Ç°µÄindex.php±ØĞëÔÚä¯ÀÀÆ÷ÖĞµÄ´ò¿ª£¬±ÈÈç£ºhttp://localhost/index.php£¨Èç¹ûÕâ¸öµØÖ·ÓĞĞ§µÄ»°£©¡£
+è°¢è°¢æ‚¨çš„å…³æ³¨ï¼
+å¦‚æœæ‚¨æƒ³ä½¿ç”¨Ocaraï¼Œæ‚¨å¯ä»¥è®¿é—®onecore.cnäº†è§£æ›´å¤šã€‚å› ä¸ºOcaraåˆšåˆšæ‰åŠ å…¥github.comã€‚
+æˆ‘ä¼šå°½å¿«ä¸°å¯Œæ–‡æ¡£ã€‚
+åŒæ—¶ï¼Œå½“å‰çš„index.phpå¿…é¡»åœ¨æµè§ˆå™¨ä¸­çš„æ‰“å¼€ï¼Œæ¯”å¦‚ï¼šhttp://localhost/index.phpï¼ˆå¦‚æœè¿™ä¸ªåœ°å€æœ‰æ•ˆçš„è¯ï¼‰ã€‚
