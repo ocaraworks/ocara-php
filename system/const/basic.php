@@ -57,8 +57,10 @@ define('OC_PHP53', PHP_VERSION >= 5.3);
 /*
  * 框架常量
  */
+define('OC_SYS', OC_PATH . '/system/');
+
 //框架扩展目录
-define('OC_EXT', OC_SYS . '../extension/');
+define('OC_EXT', OC_PATH . '/extension/');
 
 //框架系统处理类目录
 define('OC_LIB', OC_SYS . 'library/');

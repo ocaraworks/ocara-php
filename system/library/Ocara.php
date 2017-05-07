@@ -8,15 +8,12 @@
  ************************************************************************************************/
 namespace Ocara;
 
-defined('OC_PATH') or exit('Forbidden!');
-
-//框架系统目录
-defined('OC_SYS') or define('OC_SYS',
-	str_replace("\\", '/', realpath(OC_PATH) . '/system/')
+defined('OC_PATH') OR define('OC_PATH',
+	str_replace(DIRECTORY_SEPARATOR, '/', realpath(dirname(dirname(__DIR__)))) . '/'
 );
 
-require_once (OC_SYS . 'functions/utility.php');
-require_once (OC_SYS . 'const/basic.php');
+require_once (OC_PATH . 'system/functions/utility.php');
+require_once (OC_PATH . 'system/const/basic.php');
 require_once (OC_SYS . 'library/Base.php');
 require_once (OC_LIB . 'Config.php');
 require_once (OC_LIB . 'Container.php');
@@ -285,7 +282,7 @@ final class Ocara
 		if (is_string($route)) {
 			$routeData = explode(
 				OC_DIR_SEP,
-				trim(str_replace("\\", OC_DIR_SEP, $route), OC_DIR_SEP)
+				trim(str_replace(DIRECTORY_SEPARATOR, OC_DIR_SEP, $route), OC_DIR_SEP)
 			);
 		} elseif (is_array($route)) {
 			$routeData = array_values($route);

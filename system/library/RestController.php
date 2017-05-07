@@ -14,11 +14,7 @@ class RestController extends ControllerBase
 {
 	/**
 	 * @var $_message 返回消息
-	 * @var $_contentType 返回数据类型
 	 */
-	public $service;
-
-	protected $_contentType;
 	protected $_message;
 	protected $_hypermediaLink;
 
@@ -30,7 +26,7 @@ class RestController extends ControllerBase
 	{
 		Request::setAjax();
 		$this->setRoute($route);
-		Config::set('CALLBACK.ajax_return', array($this, 'formatResult'));
+		Config::set('CALLBACK.ajax_return', array($this, 'formatAjaxResult'));
 
 		$defaultContentType = ocConfig('CONTROLLERS.rest.content_type','json');
 		$featureClass = Ocara::getControllerFeatureClass($this);
@@ -56,16 +52,18 @@ class RestController extends ControllerBase
 	 */
 	public function doAction($actionMethod, $display = true)
 	{
+
 		if ($actionMethod == '_action') {
 			$result = $this->_action();
 		} else {
 			$result = $this->$actionMethod();
 		}
+
 		if (method_exists($this, '_after')) {
 			$this->_after();
 		}
 
-		$this->display($result, $this->_message, $this->_contentType);
+		$this->display($result, $this->_message, $this->_ajaxContentType);
 	}
 
 	/**
@@ -134,19 +132,18 @@ class RestController extends ControllerBase
 	 * 输出内容（回调函数）
 	 * @param $result
 	 */
-	public function formatResult($result)
+	public function formatAjaxResult($result)
 	{
-		$action = $this->getRoute('action');
-		$response = Base::$container->response;
-
 		if ($result['status'] == 'success') {
-			$successCode = strtr($action, ocConfig('CONTROLLERS.rest.success_code_map'));
-			$response->setStatusCode($successCode);
-			$response->sendHeaders();
+			$successCode = strtr(
+				$this->getRoute('action'),
+				ocConfig('CONTROLLERS.rest.success_code_map')
+			);
+			$this->response->setStatusCode($successCode);
 			return $result['body'];
 		} else {
-			if (!$response->get('statusCode')) {
-				$response->setStatusCode(Response::STATUS_SERVER_ERROR);
+			if (!$this->response->get('statusCode')) {
+				$this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
 			}
 			return $result;
 		}

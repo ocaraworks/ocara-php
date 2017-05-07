@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara;
 use Ocara\Service\Xml;
+use Ocara\Request;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -43,10 +44,15 @@ class Response extends Base
 			$data[] = $this->_getStatusCode();
 		}
 
-		if (isset($this->_headers['contentType'])) {
-			$data[] = $this->_getContentType();
+		if (empty($this->_headers['contentType'])) {
+			if (Request::isAjax()) {
+				$this->_headers['contentType'] = ocConfig('DEFAULT_AJAX_CONTENT_TYPE', 'json');
+			} else {
+				$this->_headers['contentType'] = ocConfig('DEFAULT_CONTENT_TYPE', 'html');
+			}
 		}
 
+		$data[] = $this->_getContentType();
 		if ($headers) {
 			$data = array_merge($data, (array)$headers);
 		}
@@ -114,13 +120,7 @@ class Response extends Base
 	 */
 	public function _getContentType()
 	{
-		if (isset($this->_headers['contentType'])) {
-			$contentType = $this->_headers['contentType'];
-		} else {
-			$contentType = ocConfig('DEFAULT_RESPONSE_TYPE', 'html');
-		}
-
-		$contentType = strtolower($contentType);
+		$contentType = strtolower($this->_headers['contentType']);
 		$mineTypes = ocConfig('MINE_TYPES');
 		if (array_key_exists($contentType, $mineTypes)) {
 			$contentType = $mineTypes[$contentType];
@@ -143,20 +143,19 @@ class Response extends Base
 	 */
 	public function output($content, $unEscaped = true)
 	{
+		$this->sendHeaders();
 		$contentType = $this->get('contentType');
+
 		switch ($contentType)
 		{
 			case 'json':
-				if ($unEscaped && defined('JSON_UNESCAPED_UNICODE')) {
-					$content = json_encode($content, JSON_UNESCAPED_UNICODE);
-				} else {
-					$content = json_encode($content);
-				}
+				$content = json_encode($content);
 				break;
 			case 'xml':
 				$content = self::getXmlResult($content);
 				break;
 		}
+
 		echo $content;
 	}
 

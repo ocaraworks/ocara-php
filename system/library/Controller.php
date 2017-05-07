@@ -31,6 +31,8 @@ class Controller extends ControllerBase implements ControllerInterface
 	public function initialize(array $route)
 	{
 		$this->setRoute($route);
+		Config::set('CALLBACK.ajax_return', array($this, 'formatAjaxResult'));
+
 		$featureClass = Ocara::getControllerFeatureClass($this);
 		$this->feature = new $featureClass();
 
@@ -39,7 +41,7 @@ class Controller extends ControllerBase implements ControllerInterface
 			 ->bindSingleton('formToken', array($this->feature, 'getFormToken'))
 			 ->bindSingleton('validator', array($this->feature, 'getValidator'))
 			 ->bindSingleton('db', Database::getInstance('default'))
-			 ->bindSingleton('pager', array($featureClass, 'getPager'));
+			 ->bindSingleton('pager', array($this->feature, 'getPager'));
 
 		$this->session->initialize();
 
@@ -145,9 +147,9 @@ class Controller extends ControllerBase implements ControllerInterface
 	 * Ajax返回数据
 	 * @param string $data
 	 * @param string $message
-	 * @param bool $type
+	 * @param bool $contentType
 	 */
-	public function ajaxReturn($data = '', $message = '', $type = false)
+	public function ajaxReturn($data = '', $message = '', $contentType = false)
 	{
 		if (is_array($message)) {
 			list($text, $params) = $message;
@@ -156,7 +158,13 @@ class Controller extends ControllerBase implements ControllerInterface
 			$message = Lang::get($message);
 		}
 
-		Ajax::show('success', $message, $data, $type);
+		$contentType = $this->_ajaxContentType;
+		if ($this->_ajaxContentType) {
+			$contentType = ocConfig('DEFAULT_AJAX_CONTENT_TYPE', 'json');
+		}
+
+		$this->response->setContentType($contentType);
+		Ajax::show('success', $message, $data);
 		method_exists($this, '_after') && $this->_after();
 		die();
 	}
@@ -168,7 +176,7 @@ class Controller extends ControllerBase implements ControllerInterface
 	 */
 	public function display($file = false, array $vars = array())
 	{
-		self::$container->response->setContentType('html');
+		self::$container->response->sendHeaders();
 		echo $this->render($file, $vars);
 		method_exists($this, '_after') && $this->_after();
 		die();
@@ -254,6 +262,23 @@ class Controller extends ControllerBase implements ControllerInterface
 			return $this->_checkForm;
 		}
 		$this->_checkForm = $check ? true : false;
+	}
+
+	/**
+	 * 设置AJAX返回格式（回调函数）
+	 * @param $result
+	 */
+	public function formatAjaxResult($result)
+	{
+		if ($result['status'] == 'success') {
+			$this->response->setStatusCode(Response::STATUS_OK);
+			return $result;
+		} else {
+			if (!$this->response->get('statusCode')) {
+				$this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
+			}
+			return $result;
+		}
 	}
 
 	/**

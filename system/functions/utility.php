@@ -480,6 +480,38 @@ function ocLf($str)
 }
 
 /**
+ * <br/>转nl
+ * @param $text
+ * @return mixed
+ */
+function ocBr2nl($str)
+{
+	return preg_replace('/<br\\s*?\/??>/i', '', $str);
+}
+
+/**
+ * JSON编码
+ * @param $content
+ * @return mixed|Services_JSON_Error|string
+ */
+function ocJsonEncode($content)
+{
+	if (defined('JSON_UNESCAPED_UNICODE')) {
+		return json_encode($content, JSON_UNESCAPED_UNICODE);
+	}
+
+	$content = preg_replace_callback(
+		"#\\\u([0-9a-f]{4})#i",
+		function($matchs)
+		{
+			return iconv('UCS-2BE', 'UTF-8', pack('H4', $matchs[1]));
+		},
+		json_encode($content)
+	);
+	return $content;
+}
+
+/**
  * 支持中文的basename
  * @param string $filePath
  */
@@ -559,6 +591,6 @@ function ocChmod($path, $perm)
  */
 function ocExecTime()
 {
-	$runtime = microtime(true) - OC_EXECUTE_STATR_TIME;
+	$runtime = microtime(true) - OC_EXECUTE_START_TIME;
 	return $runtime * 1000;
 }

@@ -116,7 +116,7 @@ final class Url extends Base
 	 */
 	public static function check($url, $urlType)
 	{
-		$url = str_replace('\\', OC_DIR_SEP, $url);
+		$url = str_replace(DIRECTORY_SEPARATOR, OC_DIR_SEP, $url);
 		$el  = '[^\/\&\?]';
 
 		if (self::isVirtualUrl($urlType)) {

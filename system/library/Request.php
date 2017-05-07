@@ -174,7 +174,9 @@ final class Request extends Base
 	public static function setAjax()
 	{
 		$_SERVER['HTTP_X_REQUESTED_WITH'] = 'xmlhttprequest';
-		$_GET['oc_ajax'] = true;
+		if (isset($_GET['oc_ajax'])) {
+			$_GET['oc_ajax'] = true;
+		}
 	}
 
 	/**

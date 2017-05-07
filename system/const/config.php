@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+use Ocara\Url;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -26,6 +27,6 @@ defined('OC_ROOT_URL') or define('OC_ROOT_URL',
 
 //URL路由类型
 define('OC_URL_ROUTE_TYPE',
-OC_PHP_SAPI == 'cli' ?  Url::DIR_TYPE : ocConfig('URL_ROUTE_TYPE')
+    OC_PHP_SAPI == 'cli' ?  Url::DIR_TYPE : ocConfig('URL_ROUTE_TYPE')
 );
 

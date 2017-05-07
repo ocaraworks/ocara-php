@@ -1,11 +1,16 @@
 <?php
-/*
-* 框架所在目录,需配置正确
+/**
+ * 程序执行开始时间
  */
-define('OC_PATH', __DIR__ . '/../../');
+define('OC_EXECUTE_START_TIME', microtime(true));
+
+/*
+ * 加载框架或自动加载
+ */
+require_once __DIR__ . '/../../vendor/autoload.php';
+//require(__DIR__ . '/../../ocara/ocara/system/library/Ocara.php');
 
 /*
  * 运行应用
  */
-require_once(OC_PATH . '/system/Ocara.php');
-Ocara::create();
+Ocara\Ocara::create();

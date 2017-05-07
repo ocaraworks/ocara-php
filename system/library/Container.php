@@ -58,13 +58,7 @@ class Container extends Base
      */
     public function bind($name, $source, $params = array())
     {
-        if (!empty($this->_singletons[$name])) {
-            Error::show('exists_singleton');
-        }
-        $matter[] = $source;
-        $matter[] = $params ? (array)$params : array();
-        $this->_registers[$name] = $matter;
-
+        $this->_registers[$name] = $this->_getMatter($name, $source, $params);
         return $this;
     }
 
@@ -78,14 +72,27 @@ class Container extends Base
      */
     public function bindSingleton($name, $source, $params = array())
     {
+        $this->_singletons[$name] = $this->_getMatter($name, $source, $params);
+        return $this;
+    }
+
+    /**
+     * 绑定实例
+     * @param $name
+     * @param $source
+     * @param $params
+     * @return $this
+     */
+    protected function _getMatter($name, $source, $params)
+    {
         if (!empty($this->_singletons[$name])) {
             Error::show('exists_singleton.');
         }
+
         $matter[] = $source;
         $matter[] = $params ? (array)$params : array();
-        $this->_singletons[$name] = $matter;
 
-        return $this;
+        return $matter;
     }
 
     /**
@@ -122,8 +129,20 @@ class Container extends Base
         }
 
         list($source, $params) = $matter;
+        if (is_array($source)) {
+            $source = array_values($source);
+            list($sourceClass, $sourceMethod) = $source;
+            if (is_string($sourceClass)) {
+                $methodReflection = new \ReflectionMethod($sourceClass, $sourceMethod);
+                if (!$methodReflection->isStatic()) {
+                    Error::show("invalid_class_static_method", $source);
+                }
+            }
+        }
+
         $params = (array)$params;
         array_unshift($params, $this);
+
         $instance = $this->run($source, $params);
 
         if ($isSingleton) {
