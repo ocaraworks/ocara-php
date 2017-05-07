@@ -1,10 +1,10 @@
 {
-    "name": "linyhtianwa/ocara",
+    "name": "linyihu/ocara",
     "description": "Ocara Framework",
     "license": "Apache2",
     "authors": [
         {
-            "name": "linyhtianwa",
+            "name": "linyihu",
             "email": "linyhtianwa@163.com"
         }
     ],
