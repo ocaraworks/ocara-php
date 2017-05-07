@@ -14,20 +14,20 @@
     },
     "autoload": {
         "psr-4": {
-			"Ocara\\":"src/system/library/",
-			"Ocara\\Cache\\":"src/system/library/Cache/",
-			"Ocara\\Database\\": "src/system/library/Database/",
-			"Ocara\\Interfaces\\":"src/system/library/Interfaces/",
-			"Ocara\\Feature\\":"src/system/library/Feature/",
-			"Ocara\\Functions\\":"src/system/Functions/",
-			"Ocara\\Develop\\":"src/system/modules/library/",
-			"Ocara\\Session\\":"src/system/library/Session/",
-			"Ocara\\Service\\":"src/system/service/library/",
-			"Ocara\\Service\\Interfaces\\":"src/system/service/library/Interfaces/",
-			"Ocara\\Service\\Functions\\":"src/system/service/functions/",
-			"Ocara\\Extension\\Service\\":"src/extension/service/library/",
-			"Ocara\\Extension\\Service\\Functions\\":"src/extension/service/functions/",
-			"Ocara\\Extension\\Service\\Interfaces\\":"src/extension/service/library/Interfaces/"
+			"Ocara\\":"system/library/",
+			"Ocara\\Cache\\":"system/library/Cache/",
+			"Ocara\\Database\\": "system/library/Database/",
+			"Ocara\\Interfaces\\":"system/library/Interfaces/",
+			"Ocara\\Feature\\":"system/library/Feature/",
+			"Ocara\\Functions\\":"system/Functions/",
+			"Ocara\\Develop\\":"system/modules/library/",
+			"Ocara\\Session\\":"system/library/Session/",
+			"Ocara\\Service\\":"system/service/library/",
+			"Ocara\\Service\\Interfaces\\":"system/service/library/Interfaces/",
+			"Ocara\\Service\\Functions\\":"system/service/functions/",
+			"Ocara\\Extension\\Service\\":"extension/service/library/",
+			"Ocara\\Extension\\Service\\Functions\\":"extension/service/functions/",
+			"Ocara\\Extension\\Service\\Interfaces\\":"extension/service/library/Interfaces/"
         }
     }
 }
