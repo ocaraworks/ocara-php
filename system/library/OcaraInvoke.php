@@ -15,28 +15,33 @@ final class OcaraInvoke
 	/**
 	 * 初始化
 	 * @param string $rootPath
+	 * @param string $fileSelf
 	 */
-	public static function init($rootPath)
+	public static function init($rootPath, $fileSelf)
 	{
-		self::$rootPath = $rootPath;
-		self::_defineConst();
-		require_once (OC_SYS . '/functions/utility.php');
-		define('OC_ROOT',
-			ocDir(rtrim(ocCommPath(realpath(self::$rootPath)), OC_DIR_SEP))
-		);
-
-		$cwdDir = self::_checkPath();
-		chdir(OC_ROOT);
+		define('OC_EXECUTE_START_TIME', microtime(true));
+		define('OC_ROOT', self::getCommPath(realpath($rootPath)) . '/');
+		define('OC_PATH', self::getCommPath(realpath(dirname(dirname(__DIR__)))) . '/');
 		define('OC_PHP_SAPI', 'cli');
-		require_once (OC_SYS . 'const/basic.php');
 
-		$dir = ocCommPath(dirname($_SERVER['SCRIPT_NAME']));
-		$dir = trim(str_ireplace($cwdDir, OC_EMPTY, $dir), OC_DIR_SEP);
-		define('OC_ROOT_URL',
-			php_sapi_name() == 'cli' ? OC_DIR_SEP : OC_PROTOCOL  . '://' . ocDir(OC_HOST, $dir)
+		define('OC_PHP_SELF',
+			ltrim(str_replace(OC_ROOT, '', self::getCommPath(realpath($fileSelf))), '/')
 		);
 
-		if (!is_file($path = OC_SYS . 'Ocara.php')) {
+//		require_once (OC_SYS . '/functions/utility.php');
+//
+//		$cwdDir = self::_checkPath();
+//		chdir(OC_ROOT);
+//
+//		require_once (OC_SYS . 'const/basic.php');
+//
+//		$dir = ocCommPath(dirname($_SERVER['SCRIPT_NAME']));
+//		$dir = trim(str_ireplace($cwdDir, '', $dir), '/');
+//		define('OC_ROOT_URL',
+//			php_sapi_name() == 'cli' ? '/' : OC_PROTOCOL  . '://' . ocDir(OC_HOST, $dir)
+//		);
+
+		if (!is_file($path = OC_PATH . '/system/library/Ocara.php')) {
 			die('Lost ocara file!');
 		}
 
@@ -65,17 +70,9 @@ final class OcaraInvoke
 		Ocara::boot();
 	}
 
-	/**
-	 * 定义常量
-	 */
-	private static function _defineConst()
+	private static function getCommPath($path)
 	{
-		define('OC_EXECUTE_STA_TIME', microtime(true));
-		define('OC_DIR_SEP', '/');
-		define('OC_PHP_SELF', 'pass/' . basename($_SERVER['PHP_SELF']));
-		define('OC_EMPTY', (string)false);
-		define('OC_PATH', str_replace(DIRECTORY_SEPARATOR, OC_DIR_SEP, realpath(dirname(__FILE__) . '/../')));
-		define('OC_SYS', str_replace(DIRECTORY_SEPARATOR, OC_DIR_SEP, realpath(OC_PATH) . '/system/'));
+		return str_replace(DIRECTORY_SEPARATOR, '/', $path);
 	}
 
 	/**
@@ -84,8 +81,8 @@ final class OcaraInvoke
 	private static function _checkPath()
 	{
 		$filename = ocCommPath(dirname(realpath($_SERVER['SCRIPT_FILENAME'])));
-		$cwdDir   = str_ireplace(OC_ROOT, OC_EMPTY, $filename);
-		$path     = explode(OC_DIR_SEP, trim($cwdDir, OC_DIR_SEP));
+		$cwdDir   = str_ireplace(OC_ROOT, '', $filename);
+		$path     = explode('/', trim($cwdDir, '/'));
 
 		if (in_array(reset($path), array('.', '..'))) {
 			array_shift($path);

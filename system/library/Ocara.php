@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara;
 
+defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(true));
 defined('OC_PATH') OR define('OC_PATH',
 	str_replace(DIRECTORY_SEPARATOR, '/', realpath(dirname(dirname(__DIR__)))) . '/'
 );
@@ -228,9 +229,6 @@ final class Ocara
 		date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
 		if (!@ini_get('short_open_tag')) {
 			Error::show('need_short_open_tag');
-		}
-		if (ocConfig('FORM.data_cahce', 1)) {
-			header('Cache-control: private, must-revalidate');
 		}
 	}
 

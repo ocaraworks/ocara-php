@@ -13,22 +13,22 @@ defined('OC_PATH') or exit('Forbidden!');
  * 基本常量
  */
 //空格
-defined('OC_SPACE') or define('OC_SPACE', chr(32));
+define('OC_SPACE', chr(32));
 
 //空字符串
-defined('OC_EMPTY') or define('OC_EMPTY', (string)false);
+define('OC_EMPTY', (string)false);
 
 //目录分隔符（反斜杠）
-defined('OC_DIR_SEP') or define('OC_DIR_SEP', '/');
+define('OC_DIR_SEP', '/');
 
 //命名空间分隔符（顺斜杠）
-defined('OC_NS_SEP') or define('OC_NS_SEP', "\\");
+define('OC_NS_SEP', "\\");
 
 //回车换行
-defined('OC_ENTER') or define('OC_ENTER', "\r\n");
+define('OC_ENTER', "\r\n");
 
 //英文单引号
-defined('OC_QUOTE') or define('OC_QUOTE', "'");
+define('OC_QUOTE', "'");
 
 /*
  * 服务器信息常量

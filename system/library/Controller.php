@@ -176,6 +176,9 @@ class Controller extends ControllerBase implements ControllerInterface
 	 */
 	public function display($file = false, array $vars = array())
 	{
+		if (ocConfig('FORM.data_cahce', 1)) {
+			header('Cache-control: private, must-revalidate');
+		}
 		self::$container->response->sendHeaders();
 		echo $this->render($file, $vars);
 		method_exists($this, '_after') && $this->_after();

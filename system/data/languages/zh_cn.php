@@ -118,6 +118,7 @@ return array(
 	'not_exists_form'				=> array(2419, '表单不存在或已过期。'),
 	'not_exists_http_content_type'	=> array(2420, 'HTTP返回类型不正确'),
 	'not_exists_http_status'		=> array(2421, 'HTTP状态码不正确。'),
+	'no_exists_const'				=> array(2422, '缺少常量'),
 
 	//没有
 	'no_config'						=> array(2501, '找不到该配置：%s。'),
