@@ -28,19 +28,6 @@ final class OcaraInvoke
 			ltrim(str_replace(OC_ROOT, '', self::getCommPath(realpath($fileSelf))), '/')
 		);
 
-//		require_once (OC_SYS . '/functions/utility.php');
-//
-//		$cwdDir = self::_checkPath();
-//		chdir(OC_ROOT);
-//
-//		require_once (OC_SYS . 'const/basic.php');
-//
-//		$dir = ocCommPath(dirname($_SERVER['SCRIPT_NAME']));
-//		$dir = trim(str_ireplace($cwdDir, '', $dir), '/');
-//		define('OC_ROOT_URL',
-//			php_sapi_name() == 'cli' ? '/' : OC_PROTOCOL  . '://' . ocDir(OC_HOST, $dir)
-//		);
-
 		if (!is_file($path = OC_PATH . '/system/library/Ocara.php')) {
 			die('Lost ocara file!');
 		}
@@ -70,6 +57,11 @@ final class OcaraInvoke
 		Ocara::boot();
 	}
 
+	/**
+	 * 目录分隔符替换
+	 * @param $path
+	 * @return mixed
+	 */
 	private static function getCommPath($path)
 	{
 		return str_replace(DIRECTORY_SEPARATOR, '/', $path);
