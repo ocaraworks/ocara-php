@@ -1,7 +1,7 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架    Redis客户端插件Cache_OCRedis
+ * Ocara开源框架    Redis客户端插件Redis
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
@@ -11,7 +11,7 @@ use Ocara\CacheBase;
 use Ocara\Error;
 use Ocara\Interfaces\Cache as CacheInterface;
 
-class OCRedis extends CacheBase implements CacheInterface
+class Redis extends CacheBase implements CacheInterface
 {
 	protected $_plugin = null;
 	private $_config = array();
