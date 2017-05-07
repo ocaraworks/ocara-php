@@ -9,8 +9,9 @@
 namespace Ocara;
 
 defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(true));
-defined('OC_PATH') OR define('OC_PATH',
-	str_replace(DIRECTORY_SEPARATOR, '/', realpath(dirname(dirname(__DIR__)))) . '/'
+
+defined('OC_PATH') OR define(
+	'OC_PATH', str_replace(DIRECTORY_SEPARATOR, '/', realpath(dirname(dirname(__DIR__)))) . '/'
 );
 
 require_once (OC_PATH . 'system/functions/utility.php');
