@@ -191,14 +191,14 @@ final class Ocara
 		foreach ($classes as $class => $namspace) {
 			$name = lcfirst($class);
 			self::$_container->bindSingleton($name, function() use($namspace) {
-				$file = strtr(ocCommPath($namspace), ocConfig('AUTOLOAD_MAP')) . '.php';
+				$file = strtr($namspace, ocConfig('AUTOLOAD_MAP')) . '.php';
 				ocImport($file);
 				if (method_exists($namspace, 'getInstance')) {
 					return $namspace::getInstance();
 				} else {
 					return new $namspace();
 				}
-			}, true);
+			});
 			self::$_container->get($name);
 		}
 	}
@@ -349,12 +349,12 @@ final class Ocara
 	public static function autoload($class)
 	{
 		$newClass = trim($class, OC_NS_SEP);
-		if (!strstr($newClass, OC_NS_SEP)) {
+		if (strstr($newClass, OC_NS_SEP)) {
 			$filePath = strtr($newClass, ocConfig('AUTOLOAD_MAP')) . '.php';
 		} else {
 			$filePath = OC_ROOT . 'service/library/' . $newClass . '.php';
 		}
-		
+
 		if (ocFileExists($filePath)) {
 			include_once($filePath);
 			if (class_exists($newClass, false)) {

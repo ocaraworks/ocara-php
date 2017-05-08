@@ -91,7 +91,6 @@ class Container extends Base
 
         $matter[] = $source;
         $matter[] = $params ? (array)$params : array();
-
         return $matter;
     }
 
