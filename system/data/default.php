@@ -140,30 +140,30 @@ $OC_CONF['APP_PATH_INFO'] = array(
  */
 $OC_CONF['AUTOLOAD_MAP'] = array(
 	/*应用程序*/
-	'Controller/' 					=> OC_ROOT . 'application/controller/',
-	'Model/' 						=> OC_ROOT . 'application/model/',
-	'View/' 						=> OC_ROOT . 'application/view/',
-	'View/Helper/' 					=> OC_ROOT . 'application/view/helper/',
+	'Controller\\' 					=> OC_ROOT . 'application/controller/',
+	'Model\\' 						=> OC_ROOT . 'application/model/',
+	'View\\' 						=> OC_ROOT . 'application/view/',
+	'View\Helper\\' 					=> OC_ROOT . 'application/view/helper/',
 
 	/*Ocara框架*/
-	'Ocara/' 						=> OC_SYS . 'library/',
-	'Ocara/Cache/' 					=> OC_LIB . 'Cache/',
-	'Ocara/Database/' 				=> OC_LIB . 'Database/',
-	'Ocara/Interfaces/' 			=> OC_LIB . 'Interfaces/',
-	'Ocara/Feature/' 				=> OC_LIB . 'Feature/',
-	'Ocara/Functions/'     			=> OC_SYS . 'Functions/',
-	'Ocara/Develop/' 				=> OC_SYS . 'modules/library/',
-	'Ocara/Session/' 				=> OC_LIB . 'Session/',
+	'Ocara\\' 						=> OC_SYS . 'library/',
+	'Ocara\Cache\\' 					=> OC_LIB . 'Cache/',
+	'Ocara\Database\\' 				=> OC_LIB . 'Database/',
+	'Ocara\Interfaces\\' 			=> OC_LIB . 'Interfaces/',
+	'Ocara\Feature\\' 				=> OC_LIB . 'Feature/',
+	'Ocara\Functions\\'     			=> OC_SYS . 'Functions/',
+	'Ocara\Develop\\' 				=> OC_SYS . 'modules/library/',
+	'Ocara\Session\\' 				=> OC_LIB . 'Session/',
 
 	/*Ocara框架插件*/
-	'Ocara/Service/' 				=> OC_SYS . 'service/library/',
-	'Ocara/Service/Interfaces/' 	=> OC_SYS . 'service/library/Interfaces/',
-	'Ocara/Service/Functions/'   	=> OC_SYS . 'service/functions/',
+	'Ocara\Service\\' 				=> OC_SYS . 'service/library/',
+	'Ocara\Service\Interfaces\\' 	=> OC_SYS . 'service/library/Interfaces/',
+	'Ocara\ervice\Functions\\'   	=> OC_SYS . 'service/functions/',
 
 	/*Ocara框架扩展插件*/
-	'Ocara/Extension/Service/'   			=> OC_EXT . 'service/library/',
-	'Ocara/Extension/Service/Functions/'   	=> OC_EXT . 'service/functions/',
-	'Ocara/Extension/Service/Interfaces/'   => OC_EXT . 'service/library/Interfaces/',
+	'Ocara\Extension\Service\\'   			=> OC_EXT . 'service/library/',
+	'Ocara\Extension\Service/Functions\\'   	=> OC_EXT . 'service/functions/',
+	'Ocara\Extension\Service/Interfaces\\'   => OC_EXT . 'service/library/Interfaces/',
 );
 
 /**

@@ -349,15 +349,12 @@ final class Ocara
 	public static function autoload($class)
 	{
 		$newClass = trim($class, OC_NS_SEP);
-		if (strstr($newClass, OC_NS_SEP)) {
-			if (self::$_container->exists($newClass)) {
-				return self::$_container->get($newClass);
-			}
+		if (!strstr($newClass, OC_NS_SEP)) {
+			$filePath = strtr($newClass, ocConfig('AUTOLOAD_MAP')) . '.php';
 		} else {
-			$newClass = OC_ROOT . 'service/library/' . $newClass;
+			$filePath = OC_ROOT . 'service/library/' . $newClass . '.php';
 		}
 		
-		$filePath = strtr(ocCommPath($newClass), ocConfig('AUTOLOAD_MAP')) . '.php';
 		if (ocFileExists($filePath)) {
 			include_once($filePath);
 			if (class_exists($newClass, false)) {
