@@ -44,7 +44,6 @@ final class Ocara
 	{
 		if (self::$_instance === null) {
 			self::$_instance = new self();
-			self::initialize();
 		}
 		return self::$_instance;
 	}
@@ -55,6 +54,7 @@ final class Ocara
 	public static function run()
 	{
 		self::getInstance();
+		self::initialize();
 
 		if (self::$_route['module'] == OC_DEV_SIGN) {
 			if (OC_SYS_MODEL == 'develop') {
@@ -230,6 +230,9 @@ final class Ocara
 		date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
 		if (!@ini_get('short_open_tag')) {
 			Error::show('need_short_open_tag');
+		}
+		if (empty($_SERVER['REQUEST_METHOD'])) {
+			$_SERVER['REQUEST_METHOD'] = 'GET';
 		}
 	}
 

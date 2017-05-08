@@ -91,7 +91,7 @@ final class Request extends Base
 	 */
 	public static function isGet()
 	{
-		return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET';
+		return self::getMethod() == 'GET';
 	}
 
 	/**
@@ -99,7 +99,7 @@ final class Request extends Base
 	 */
 	public static function isPost()
 	{
-		return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST';
+		return self::getMethod() == 'POST';
 	}
 
 	/**
@@ -107,7 +107,7 @@ final class Request extends Base
 	 */
 	public static function isPut()
 	{
-		return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'PUT';
+		return self::getMethod() == 'PUT';
 	}
 
 	/**
@@ -115,7 +115,7 @@ final class Request extends Base
 	 */
 	public static function isPatch()
 	{
-		return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'PATCH';
+		return self::getMethod() == 'PATCH';
 	}
 
 	/**
@@ -123,7 +123,7 @@ final class Request extends Base
 	 */
 	public static function isDelete()
 	{
-		return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'DELETE';
+		return self::getMethod() == 'DELETE';
 	}
 
 	/**
@@ -131,7 +131,7 @@ final class Request extends Base
 	 */
 	public static function isHead()
 	{
-		return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'HEAD';
+		return self::getMethod() == 'HEAD';
 	}
 
 	/**
@@ -139,7 +139,7 @@ final class Request extends Base
 	 */
 	public static function isOptions()
 	{
-		return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS';
+		return self::getMethod() == 'OPTIONS';
 	}
 
 	/**
@@ -147,7 +147,7 @@ final class Request extends Base
 	 */
 	public static function isTrace()
 	{
-		return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'TRACE';
+		return self::getMethod() == 'TRACE';
 	}
 
 	/**
@@ -155,7 +155,7 @@ final class Request extends Base
 	 */
 	public static function isConnect()
 	{
-		return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'CONNECT';
+		return self::getMethod() == 'CONNECT';
 	}
 
 	/**

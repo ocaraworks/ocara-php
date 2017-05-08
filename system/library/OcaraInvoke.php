@@ -23,7 +23,8 @@ final class OcaraInvoke
 		define('OC_ROOT', self::getCommPath(realpath($rootPath)) . '/');
 		define('OC_PATH', self::getCommPath(realpath(dirname(dirname(__DIR__)))) . '/');
 		define('OC_PHP_SAPI', 'cli');
-
+		define('OC_URL_ROUTE_TYPE', Url::DIR_TYPE);
+		define('OC_ROOT_URL', '/');
 		define('OC_PHP_SELF',
 			ltrim(str_replace(OC_ROOT, '', self::getCommPath(realpath($fileSelf))), '/')
 		);
@@ -36,8 +37,6 @@ final class OcaraInvoke
 		if (!class_exists('\Ocara\Ocara', false)) {
 			die('Lost Ocara class!');
 		}
-
-		Ocara::getInstance();
 	}
 
 	/**
@@ -47,13 +46,15 @@ final class OcaraInvoke
 	 */
 	public static function run($route, array $params = array())
 	{
-		$_GET = array_merge(array_values(Ocara::parseRoute($route)), $_GET);
+		Ocara::getInstance();
+		$url = ocUrl($route, $params);
+		$_SERVER['argv'][1] = $url;
 
 		if (!ocFileExists(OC_ROOT . '.htaccess')) {
 			Ocara::createHtaccess($moreContent = false);
 		}
-
-		$_GET = Ocara::formatGet(array_merge($_GET, $params));
+		
+		Ocara::initialize();
 		Ocara::boot();
 	}
 
