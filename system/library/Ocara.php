@@ -347,9 +347,9 @@ final class Ocara
 	{
 		$newClass = trim($class, OC_NS_SEP);
 		if (!strstr($newClass, OC_NS_SEP)) {
-			$filePath = OC_ROOT . 'service/library/' . $newClass . '.php';
+			$filePath = strtr($newClass, ocConfig('AUTOLOAD_MAP')) . '.php';
 		} else {
-			$filePath = strtr(ocCommPath($newClass), ocConfig('AUTOLOAD_MAP')) . '.php';
+			$filePath = OC_ROOT . 'service/library/' . $newClass . '.php';
 		}
 		
 		if (ocFileExists($filePath)) {
