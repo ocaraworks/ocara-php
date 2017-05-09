@@ -56,20 +56,6 @@ final class Ocara
 		self::getInstance();
 		self::initialize();
 		self::loadSingleClass();
-		self::getRouteInfo();
-		
-		if (self::$_route['module'] == OC_DEV_SIGN) {
-			if (OC_SYS_MODEL == 'develop') {
-				Develop::run();
-			} else {
-				Error::show('unallowed_develop');
-			}
-		}
-
-		if (!ocFileExists(OC_ROOT . '.htaccess')) {
-			self::createHtaccess();
-		}
-
 		self::boot();
 	}
 
@@ -90,6 +76,21 @@ final class Ocara
 	 */
 	public static function boot($route = false, $return = false, array $params = array())
 	{
+		//:TODO
+		self::getRouteInfo();
+		
+		if (self::$_route['module'] == OC_DEV_SIGN) {
+			if (OC_SYS_MODEL == 'develop') {
+				Develop::run();
+			} else {
+				Error::show('unallowed_develop');
+			}
+		}
+
+		if (!ocFileExists(OC_ROOT . '.htaccess')) {
+			self::createHtaccess();
+		}
+
 		if ($route) {
 			extract($route = self::parseRoute($route));
 		} else {
