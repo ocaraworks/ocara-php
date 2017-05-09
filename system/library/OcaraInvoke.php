@@ -50,11 +50,6 @@ final class OcaraInvoke
 	{
 		$url = ocUrl($route, $params);
 		$_SERVER['argv'][1] = $url;
-
-		if (!ocFileExists(OC_ROOT . '.htaccess')) {
-			Ocara::createHtaccess($moreContent = false);
-		}
-		
 		Ocara::boot();
 	}
 
