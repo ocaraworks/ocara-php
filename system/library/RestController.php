@@ -142,7 +142,7 @@ class RestController extends ControllerBase
 			$this->response->setStatusCode($successCode);
 			return $result['body'];
 		} else {
-			if (!$this->response->get('statusCode')) {
+			if (!$this->response->getHeader('statusCode')) {
 				$this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
 			}
 			return $result;

@@ -33,15 +33,14 @@ class Response extends Base
 
 	/**
 	 * 发送头部信息
-	 * @param string|array $headers
 	 */
-	public function sendHeaders($headers = null)
+	public function sendHeaders()
 	{
 		if (headers_sent()) return null;
 
-		$data = array();
+		$data = $this->_headers;
 		if (isset($this->_headers['statusCode'])) {
-			$data[] = $this->_getStatusCode();
+			$data['statusCode'] = $this->_getStatusCode();
 		}
 
 		if (empty($this->_headers['contentType'])) {
@@ -52,13 +51,17 @@ class Response extends Base
 			}
 		}
 
-		$data[] = $this->_getContentType();
-		if ($headers) {
-			$data = array_merge($data, (array)$headers);
-		}
-
-		foreach ($data as $header) {
-			header($header);
+		$data['contentType'] = $this->_getContentType();
+		foreach ($data as $key => $header) {
+			if (is_string($key)) {
+				$method = '_get' . ucfirst($key);
+				if (method_exists($this, $method)) {
+					$data[$key] = $this->$method();
+				} else {
+					$data[$key] = $key . ':' . $header;
+				}
+			}
+			header($data[$key]);
 		}
 	}
 
@@ -93,11 +96,26 @@ class Response extends Base
 	}
 
 	/**
+	 * 设置头部
+	 * @param $header
+	 */
+	public function setHeader($header)
+	{
+		$args = func_get_args();
+		if (count($args) == 2) {
+			list($key, $value) = $args;
+			$this->_headers[$key] = $value;
+		} else {
+			$this->_headers = array_merge($this->_headers, (array)$header);
+		}
+	}
+
+	/**
 	 * 获取头部设置
 	 * @param $name
 	 * @return mixed|null
 	 */
-	public function get($name)
+	public function getHeader($name)
 	{
 		if (isset($this->_headers[$name])) {
 			return $this->_headers[$name];
