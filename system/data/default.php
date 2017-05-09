@@ -31,6 +31,15 @@ $OC_CONF['DATE_FORMAT'] = array(
 	'time' 	  	=> 'H:i:s', //时间格式
 );
 
+/**
+ * HTTP请求方法
+ */
+$OC_CONF['ALLOWED_HTTP_METHODS'] = array(
+	'GET', 		'POST', 	'HEAD', 	'PUT',		'DELETE',
+	'PATCH', 	'TRACE', 	'CONNECT',	'OPTIONS',	'MOVE',
+	'COPY',		'LINK',		'UNLINK',	'UNLINK',
+);
+
 /*
  * session配置
  */
