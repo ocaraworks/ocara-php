@@ -83,7 +83,6 @@ final class Ocara
 			$route = self::$_route;
 		}
 		
-		extract($route);
 		if ($route['module'] == OC_DEV_SIGN) {
 			if (OC_SYS_MODEL == 'develop') {
 				Develop::run();
@@ -92,6 +91,7 @@ final class Ocara
 			}
 		}
 		
+		extract($route);
 		if (empty($controller) || empty($action)) {
 			Error::show("MVC Route Error!");
 		}
