@@ -37,6 +37,7 @@ final class OcaraInvoke
 		if (!class_exists('\Ocara\Ocara', false)) {
 			die('Lost Ocara class!');
 		}
+		
 		Ocara::getInstance();
 	}
 
