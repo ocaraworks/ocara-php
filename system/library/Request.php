@@ -185,11 +185,18 @@ final class Request extends Base
 	 */
 	public static function getMethod()
 	{
+		if (OC_PHP_SAPI == 'cli') {
+			$method = strtoupper(ocGet('argv.2', $_SERVER));
+			if (in_array($method, ocConfig('ALLOWED_HTTP_METHODS'))) {
+				return $method; 
+			}
+		}
+
 		if (isset($_SERVER['REQUEST_METHOD'])) {
 			return $_SERVER['REQUEST_METHOD'];
 		}
 
-		return null;
+		return 'GET';
 	}
 
 	/**

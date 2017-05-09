@@ -55,7 +55,6 @@ final class Ocara
 	public static function run()
 	{
 		self::getInstance();
-		self::loadSingleClass();
 		self::boot();
 	}
 
@@ -178,6 +177,8 @@ final class Ocara
 		if (!ocFileExists(OC_ROOT . '.htaccess')) {
 			self::createHtaccess();
 		}
+
+		self::loadSingleClass();
 	}
 
 	/**

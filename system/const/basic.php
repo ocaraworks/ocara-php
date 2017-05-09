@@ -51,9 +51,6 @@ define('OC_PROTOCOL', strtolower(ocGet('HTTPS', $_SERVER)) == 'on'? 'https' : 'h
 //当前URL
 defined('OC_REQ_URI') or define('OC_REQ_URI', ocCommPath(ocGet('REQUEST_URI', $_SERVER)));
 
-//PHP5.3以上版本
-define('OC_PHP53', PHP_VERSION >= 5.3);
-
 /*
  * 框架常量
  */
