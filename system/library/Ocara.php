@@ -83,7 +83,7 @@ final class Ocara
 			$route = self::$_route;
 		}
 		
-		extract($$route);
+		extract($route);
 		if ($route['module'] == OC_DEV_SIGN) {
 			if (OC_SYS_MODEL == 'develop') {
 				Develop::run();
