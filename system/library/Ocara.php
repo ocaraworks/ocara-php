@@ -76,17 +76,6 @@ final class Ocara
 	 */
 	public static function boot($route = false, $return = false, array $params = array())
 	{
-		//:TODO
-		self::getRouteInfo();
-		
-		if (self::$_route['module'] == OC_DEV_SIGN) {
-			if (OC_SYS_MODEL == 'develop') {
-				Develop::run();
-			} else {
-				Error::show('unallowed_develop');
-			}
-		}
-
 		if (!ocFileExists(OC_ROOT . '.htaccess')) {
 			self::createHtaccess();
 		}
@@ -94,9 +83,18 @@ final class Ocara
 		if ($route) {
 			extract($route = self::parseRoute($route));
 		} else {
+			self::getRouteInfo();
 			extract($route = self::$_route);
 		}
-
+		
+		if ($route['module'] == OC_DEV_SIGN) {
+			if (OC_SYS_MODEL == 'develop') {
+				Develop::run();
+			} else {
+				Error::show('unallowed_develop');
+			}
+		}
+		
 		if (empty($controller) || empty($action)) {
 			Error::show("MVC Route Error!");
 		}
