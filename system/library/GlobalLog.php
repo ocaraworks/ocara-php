@@ -62,7 +62,7 @@ final class GlobalLog extends Base
         }
 
         if (!ocScalar($content)) {
-            $content = $content . json_encode($content);
+            $content = $content . ocJsonEncode($content);
         }
 
         $content  = '['.$datetime.']['.$type.']' . $content;

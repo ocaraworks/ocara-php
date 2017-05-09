@@ -99,7 +99,8 @@ $CONF['VERIFYCODE_NAME'] = 'OCSESSCODE';
 /*
  * 默认文档类型
  */
-$CONF['DEFAULT_CONTENT_TYPE'] = 'html';
+$CONF['DEFAULT_CONTENT_TYPE'] = 'html'; //默认页面文档类型
+$CONF['DEFAULT_AJAX_CONTENT_TYPE'] = 'json'; //默认Ajax返回文档类型
 
 /*
  * 默认字体（用于图片处理等）

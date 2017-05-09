@@ -11,92 +11,55 @@ namespace Ocara;
 final class OcaraInvoke
 {
 	/**
-	 * pass目录中调用框架的控制器动作
-	 * @param string $rootPath
-	 * @param string $route
-	 * @param array $params
+	 * 目录分隔符替换
+	 * @param $path
+	 * @return mixed
 	 */
-	public static function run($rootPath, $route, array $params = array())
+	private static function getCommPath($path)
 	{
-		self::_defineConst();
-		require_once (OC_SYS . '/functions/utility.php');
-		define('OC_ROOT',
-			ocDir(rtrim(ocCommPath(realpath($rootPath)), OC_DIR_SEP))
-		);
-
-		$cwdDir = self::_checkPath();
-		chdir(OC_ROOT);
-		define('OC_PHP_SAPI', 'cli');
-        require_once (OC_SYS . 'const/basic.php');
-
-        $dir = ocCommPath(dirname($_SERVER['SCRIPT_NAME']));
-        $dir = trim(str_ireplace($cwdDir, OC_EMPTY, $dir), OC_DIR_SEP);
-        define('OC_ROOT_URL',
-			php_sapi_name() == 'cli' ? OC_DIR_SEP : OC_PROTOCOL  . '://' . ocDir(OC_HOST, $dir)
-        );
-
-		if (!is_file($path = OC_SYS . 'Ocara.php')) {
-			die('Lost ocara file!');
-		}
-
-		self::_runFramework($path, $route, $params);
-	}
-
-	/**
-	 * 定义常量
-	 */
-	private static function _defineConst()
-	{
-		define('OC_EXECUTE_STATR_TIME', microtime(true));
-		define('OC_DIR_SEP', '/');
-		define('OC_PHP_SELF', 'pass/' . basename($_SERVER['PHP_SELF']));
-		define('OC_EMPTY', (string)false);
-		define('OC_PATH', str_replace("\\", OC_DIR_SEP, realpath(dirname(__FILE__) . '/../')));
-		define('OC_SYS', str_replace("\\", '/', realpath(OC_PATH) . '/system/'));
-	}
-
-	/**
-	 * 获取目录信息
-	 */
-	private static function _checkPath()
-	{
-		$filename = ocCommPath(dirname(realpath($_SERVER['SCRIPT_FILENAME'])));
-		$cwdDir   = str_ireplace(OC_ROOT, OC_EMPTY, $filename);
-		$path     = explode(OC_DIR_SEP, trim($cwdDir, OC_DIR_SEP));
-
-		if (in_array(reset($path), array('.', '..'))) {
-			array_shift($path);
-		}
-
-		if (!($path && reset($path) == 'pass')) {
-			die('Access denied!');
-		}
-
-		return $cwdDir;
+		return str_replace(DIRECTORY_SEPARATOR, '/', $path);
 	}
 
 	/**
 	 * 运行框架
-	 * @param string $path
 	 * @param string $route
 	 * @param array $params
+	 * @param string $method
 	 */
-	private static function _runFramework($path, $route, $params)
+	public static function run($route, array $params = array(), $method = 'GET')
 	{
-		include_once($path);
+		$url = ocUrl($route, $params);
+		$_SERVER['argv'][1] = $url;
+		$_SERVER['argv'][2] = $method;
+		Ocara::boot();
+	}
 
-		if (!class_exists('Ocara', false)) {
+	/**
+	 * 初始化
+	 * @param string $rootPath
+	 * @param string $fileSelf
+	 */
+	public static function init($rootPath, $fileSelf)
+	{
+		define('OC_EXECUTE_START_TIME', microtime(true));
+		define('OC_ROOT', self::getCommPath(realpath($rootPath)) . '/');
+		define('OC_PATH', self::getCommPath(realpath(dirname(dirname(__DIR__)))) . '/');
+		define('OC_PHP_SAPI', 'cli');
+		define('OC_URL_ROUTE_TYPE', Url::DIR_TYPE);
+		define('OC_ROOT_URL', '/');
+		define('OC_PHP_SELF',
+			ltrim(str_replace(OC_ROOT, '', self::getCommPath(realpath($fileSelf))), '/')
+		);
+
+		if (!is_file($path = OC_PATH . '/system/library/Ocara.php')) {
+			die('Lost ocara file!');
+		}
+
+		include_once($path);
+		if (!class_exists('\Ocara\Ocara', false)) {
 			die('Lost Ocara class!');
 		}
-
-		$_GET = array_merge(array_values(Ocara::parseRoute($route)), $_GET);
+		
 		Ocara::getInstance();
-
-		if (!ocFileExists(OC_ROOT . '.htaccess')) {
-			Ocara::createHtaccess($moreContent = false);
-		}
-
-		$_GET = Ocara::formatGet(array_merge($_GET, $params));
-		Ocara::boot();
 	}
 }

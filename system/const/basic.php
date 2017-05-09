@@ -13,22 +13,22 @@ defined('OC_PATH') or exit('Forbidden!');
  * 基本常量
  */
 //空格
-defined('OC_SPACE') or define('OC_SPACE', chr(32));
+define('OC_SPACE', chr(32));
 
 //空字符串
-defined('OC_EMPTY') or define('OC_EMPTY', (string)false);
+define('OC_EMPTY', (string)false);
 
 //目录分隔符（反斜杠）
-defined('OC_DIR_SEP') or define('OC_DIR_SEP', '/');
+define('OC_DIR_SEP', '/');
 
 //命名空间分隔符（顺斜杠）
-defined('OC_NS_SEP') or define('OC_NS_SEP', "\\");
+define('OC_NS_SEP', "\\");
 
 //回车换行
-defined('OC_ENTER') or define('OC_ENTER', "\r\n");
+define('OC_ENTER', "\r\n");
 
 //英文单引号
-defined('OC_QUOTE') or define('OC_QUOTE', "'");
+define('OC_QUOTE', "'");
 
 /*
  * 服务器信息常量
@@ -51,14 +51,13 @@ define('OC_PROTOCOL', strtolower(ocGet('HTTPS', $_SERVER)) == 'on'? 'https' : 'h
 //当前URL
 defined('OC_REQ_URI') or define('OC_REQ_URI', ocCommPath(ocGet('REQUEST_URI', $_SERVER)));
 
-//PHP5.3以上版本
-define('OC_PHP53', PHP_VERSION >= 5.3);
-
 /*
  * 框架常量
  */
+define('OC_SYS', OC_PATH . 'system/');
+
 //框架扩展目录
-define('OC_EXT', OC_SYS . '../extension/');
+define('OC_EXT', OC_PATH . 'extension/');
 
 //框架系统处理类目录
 define('OC_LIB', OC_SYS . 'library/');

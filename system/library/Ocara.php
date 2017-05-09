@@ -8,15 +8,14 @@
  ************************************************************************************************/
 namespace Ocara;
 
-defined('OC_PATH') or exit('Forbidden!');
+defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(true));
 
-//框架系统目录
-defined('OC_SYS') or define('OC_SYS',
-	str_replace("\\", '/', realpath(OC_PATH) . '/system/')
+defined('OC_PATH') OR define(
+	'OC_PATH', str_replace(DIRECTORY_SEPARATOR, '/', realpath(dirname(dirname(__DIR__)))) . '/'
 );
 
-require_once (OC_SYS . 'functions/utility.php');
-require_once (OC_SYS . 'const/basic.php');
+require_once (OC_PATH . 'system/functions/utility.php');
+require_once (OC_PATH . 'system/const/basic.php');
 require_once (OC_SYS . 'library/Base.php');
 require_once (OC_LIB . 'Config.php');
 require_once (OC_LIB . 'Container.php');
@@ -56,19 +55,6 @@ final class Ocara
 	public static function run()
 	{
 		self::getInstance();
-
-		if (self::$_route['module'] == OC_DEV_SIGN) {
-			if (OC_SYS_MODEL == 'develop') {
-				Develop::run();
-			} else {
-				Error::show('unallowed_develop');
-			}
-		}
-
-		if (!ocFileExists(OC_ROOT . '.htaccess')) {
-			self::createHtaccess();
-		}
-
 		self::boot();
 	}
 
@@ -90,11 +76,21 @@ final class Ocara
 	public static function boot($route = false, $return = false, array $params = array())
 	{
 		if ($route) {
-			extract($route = self::parseRoute($route));
+			$route = self::parseRoute($route);
 		} else {
-			extract($route = self::$_route);
+			self::getRouteInfo();
+			$route = self::$_route;
 		}
-
+		
+		if ($route['module'] == OC_DEV_SIGN) {
+			if (OC_SYS_MODEL == 'develop') {
+				Develop::run();
+			} else {
+				Error::show('unallowed_develop');
+			}
+		}
+		
+		extract($route);
 		if (empty($controller) || empty($action)) {
 			Error::show("MVC Route Error!");
 		}
@@ -177,9 +173,12 @@ final class Ocara
 			OC_SYS . 'const/config.php',
 			OC_SYS . 'functions/common.php',
 		));
+		
+		if (!ocFileExists(OC_ROOT . '.htaccess')) {
+			self::createHtaccess();
+		}
 
 		self::loadSingleClass();
-		self::getRouteInfo();
 	}
 
 	/**
@@ -192,14 +191,14 @@ final class Ocara
 		foreach ($classes as $class => $namspace) {
 			$name = lcfirst($class);
 			self::$_container->bindSingleton($name, function() use($namspace) {
-				$file = strtr(ocCommPath($namspace), ocConfig('AUTOLOAD_MAP')) . '.php';
+				$file = strtr($namspace, ocConfig('AUTOLOAD_MAP')) . '.php';
 				ocImport($file);
 				if (method_exists($namspace, 'getInstance')) {
 					return $namspace::getInstance();
 				} else {
 					return new $namspace();
 				}
-			}, true);
+			});
 			self::$_container->get($name);
 		}
 	}
@@ -232,8 +231,8 @@ final class Ocara
 		if (!@ini_get('short_open_tag')) {
 			Error::show('need_short_open_tag');
 		}
-		if (ocConfig('FORM.data_cahce', 1)) {
-			header('Cache-control: private, must-revalidate');
+		if (empty($_SERVER['REQUEST_METHOD'])) {
+			$_SERVER['REQUEST_METHOD'] = 'GET';
 		}
 	}
 
@@ -285,7 +284,7 @@ final class Ocara
 		if (is_string($route)) {
 			$routeData = explode(
 				OC_DIR_SEP,
-				trim(str_replace("\\", OC_DIR_SEP, $route), OC_DIR_SEP)
+				trim(str_replace(DIRECTORY_SEPARATOR, OC_DIR_SEP, $route), OC_DIR_SEP)
 			);
 		} elseif (is_array($route)) {
 			$routeData = array_values($route);
@@ -351,14 +350,11 @@ final class Ocara
 	{
 		$newClass = trim($class, OC_NS_SEP);
 		if (strstr($newClass, OC_NS_SEP)) {
-			if (self::$_container->exists($newClass)) {
-				return self::$_container->get($newClass);
-			}
+			$filePath = strtr($newClass, ocConfig('AUTOLOAD_MAP')) . '.php';
 		} else {
-			$newClass = OC_ROOT . 'service/library/' . $newClass;
+			$filePath = OC_ROOT . 'service/library/' . $newClass . '.php';
 		}
-		
-		$filePath = strtr(ocCommPath($newClass), ocConfig('AUTOLOAD_MAP')) . '.php';
+
 		if (ocFileExists($filePath)) {
 			include_once($filePath);
 			if (class_exists($newClass, false)) {

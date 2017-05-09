@@ -49,6 +49,7 @@ return array(
 	'invalid_exception'				=> array(1903, '指定的Exception不存在或非法！'),
 	'invalid_field_name'			=> array(1904, '字段名必须是字符串。'),
 	'invalid_args_num'				=> array(1905, '函数或方法缺少参数'),
+	'invalid_class_static_method' 	=> array(1906, '%s缺少静态方法%s()！请使用类对象代替类名传递。'),
 
 	//必需
 	'need_condition' 				=> array(2100, '查询条件不存在或为空。'),
@@ -117,6 +118,7 @@ return array(
 	'not_exists_form'				=> array(2419, '表单不存在或已过期。'),
 	'not_exists_http_content_type'	=> array(2420, 'HTTP返回类型不正确'),
 	'not_exists_http_status'		=> array(2421, 'HTTP状态码不正确。'),
+	'no_exists_const'				=> array(2422, '缺少常量'),
 
 	//没有
 	'no_config'						=> array(2501, '找不到该配置：%s。'),

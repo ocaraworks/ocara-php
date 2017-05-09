@@ -14,5 +14,5 @@ defined('OC_PATH') or exit('Forbidden!');
  * 框架配置-请勿修改
  * --------------------------------------------------
  */
-$FRAMEWORK_INFO['version'] = '1.1';
+$FRAMEWORK_INFO['version'] = '2.0';
 $FRAMEWORK_INFO['last_update'] = '';

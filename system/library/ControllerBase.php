@@ -13,7 +13,15 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class ControllerBase extends Base implements ControllerInterface
 {
+	/**
+	 * @var $feature 控制特性类
+	 * @var $_contentType AJAX返回文档类型
+	 * @var $_models 模型类
+	 */
 	public $feature;
+
+	protected $_ajaxContentType;
+
 	private $_models = array();
 
 	/**

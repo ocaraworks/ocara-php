@@ -122,7 +122,6 @@ final class Error extends Base
 		}
 
 		if (Request::isAjax()) {
-			self::$container->response->sendHeaders();
 			self::_ajaxOutput($error);
 		}
 
@@ -149,15 +148,25 @@ final class Error extends Base
 		$error['file']  = trim(ocCommPath(self::_stripRootPath($error['file'])), OC_DIR_SEP);
 		$error['trace'] = nl2br(ocCommPath($error['trace']));
 
-		$filePath = OC_SYS . 'modules/exception/index.php';
-		self::$container->response->sendHeaders();
-		if (ocFileExists($filePath)) {
-			include_once($filePath);
+		if (OC_PHP_SAPI == 'cli') {
+			list ($trace, $traceInfo) = ocDel($error, 'trace', 'traceInfo');
+			$error = array_merge(array('time' => date('Y-m-d H:i:s')), $error);
+			$content = ocBr2nl(ocJsonEncode($error) . OC_ENTER . $trace);
 		} else {
-			$content = self::getSimpleTrace($error);
-			echo($content);
+			$content = OC_EMPTY;
+			$filePath = OC_SYS . 'modules/exception/index.php';
+			self::$container->response->sendHeaders();
+			if (ocFileExists($filePath)) {
+				ob_start();
+				include($filePath);
+				$content = ob_get_contents();
+				ob_end_clean();
+			} else {
+				$content = self::getSimpleTrace($error);
+			}
 		}
 
+		echo $content;
 		die();
 	}
 

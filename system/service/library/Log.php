@@ -76,7 +76,7 @@ class Log extends ServiceBase
 	public function write($logName, $content)
 	{
 		if(!ocScalar($content)){
-			$content = json_encode($content);
+			$content = ocJsonEncode($content);
 		}
 
 		if ($this->logType == 'sys') {
