@@ -38,7 +38,6 @@ final class OcaraInvoke
 			die('Lost Ocara class!');
 		}
 		Ocara::getInstance();
-		Ocara::initialize();
 	}
 
 	/**
