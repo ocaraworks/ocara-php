@@ -73,7 +73,7 @@ final class OcaraInvoke
 	 */
 	private static function _checkPath()
 	{
-		$filename = ocCommPath(dirname(realpath($_SERVER['SCRIPT_FILENAME'])));
+		$filename = self::getCommPath(dirname(realpath($_SERVER['SCRIPT_FILENAME'])));
 		$cwdDir   = str_ireplace(OC_ROOT, '', $filename);
 		$path     = explode('/', trim($cwdDir, '/'));
 
