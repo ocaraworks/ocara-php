@@ -44,6 +44,7 @@ final class Ocara
 	{
 		if (self::$_instance === null) {
 			self::$_instance = new self();
+			self::initialize();
 		}
 		return self::$_instance;
 	}
@@ -54,7 +55,6 @@ final class Ocara
 	public static function run()
 	{
 		self::getInstance();
-		self::initialize();
 		self::loadSingleClass();
 		self::boot();
 	}
