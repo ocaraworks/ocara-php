@@ -76,17 +76,14 @@ final class Ocara
 	 */
 	public static function boot($route = false, $return = false, array $params = array())
 	{
-		if (!ocFileExists(OC_ROOT . '.htaccess')) {
-			self::createHtaccess();
-		}
-
 		if ($route) {
-			extract($route = self::parseRoute($route));
+			$route = self::parseRoute($route);
 		} else {
 			self::getRouteInfo();
-			extract($route = self::$_route);
+			$route = self::$_route;
 		}
 		
+		extract($$route);
 		if ($route['module'] == OC_DEV_SIGN) {
 			if (OC_SYS_MODEL == 'develop') {
 				Develop::run();
@@ -177,6 +174,10 @@ final class Ocara
 			OC_SYS . 'const/config.php',
 			OC_SYS . 'functions/common.php',
 		));
+		
+		if (!ocFileExists(OC_ROOT . '.htaccess')) {
+			self::createHtaccess();
+		}
 	}
 
 	/**
