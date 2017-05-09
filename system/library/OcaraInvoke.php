@@ -37,6 +37,8 @@ final class OcaraInvoke
 		if (!class_exists('\Ocara\Ocara', false)) {
 			die('Lost Ocara class!');
 		}
+		Ocara::getInstance();
+		Ocara::initialize();
 	}
 
 	/**
@@ -46,7 +48,6 @@ final class OcaraInvoke
 	 */
 	public static function run($route, array $params = array())
 	{
-		Ocara::getInstance();
 		$url = ocUrl($route, $params);
 		$_SERVER['argv'][1] = $url;
 
@@ -54,7 +55,6 @@ final class OcaraInvoke
 			Ocara::createHtaccess($moreContent = false);
 		}
 		
-		Ocara::initialize();
 		Ocara::boot();
 	}
 
