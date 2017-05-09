@@ -188,7 +188,7 @@ final class Request extends Base
 		if (OC_PHP_SAPI == 'cli') {
 			$method = strtoupper(ocGet('argv.2', $_SERVER));
 			if (in_array($method, ocConfig('ALLOWED_HTTP_METHODS'))) {
-				return $method;
+				return $method; 
 			}
 		}
 
