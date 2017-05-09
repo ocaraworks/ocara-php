@@ -84,7 +84,9 @@ final class Session extends Base
 		}
 
 		if ($start && !isset($_SESSION)) {
-			session_start();
+			if (!headers_sent()) {
+				session_start();
+			}
 		}
 		
 		if ($saveTime) {

@@ -177,7 +177,7 @@ class Controller extends ControllerBase implements ControllerInterface
 	public function display($file = false, array $vars = array())
 	{
 		if (ocConfig('FORM.data_cahce', 1)) {
-			header('Cache-control: private, must-revalidate');
+			$this->response->setHeader('Cache-control', ' private, must-revalidate');
 		}
 		self::$container->response->sendHeaders();
 		echo $this->render($file, $vars);
@@ -277,7 +277,7 @@ class Controller extends ControllerBase implements ControllerInterface
 			$this->response->setStatusCode(Response::STATUS_OK);
 			return $result;
 		} else {
-			if (!$this->response->get('statusCode')) {
+			if (!$this->response->getHeader('statusCode')) {
 				$this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
 			}
 			return $result;

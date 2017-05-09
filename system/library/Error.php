@@ -117,7 +117,7 @@ final class Error extends Base
 	 */
     public static function output($error)
 	{
-		if (!self::$container->response->get('statusCode')) {
+		if (!self::$container->response->getHeader('statusCode')) {
 			self::$container->response->setStatusCode(Response::STATUS_SERVER_ERROR);
 		}
 
