@@ -45,11 +45,13 @@ final class OcaraInvoke
 	 * 运行框架
 	 * @param string $route
 	 * @param array $params
+	 * @param string $method
 	 */
-	public static function run($route, array $params = array())
+	public static function run($route, array $params = array(), $method = 'GET')
 	{
 		$url = ocUrl($route, $params);
 		$_SERVER['argv'][1] = $url;
+		$_SERVER['argv'][2] = $method;
 		Ocara::boot();
 	}
 
