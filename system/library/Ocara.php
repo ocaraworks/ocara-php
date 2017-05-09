@@ -55,7 +55,9 @@ final class Ocara
 	{
 		self::getInstance();
 		self::initialize();
-
+		self::loadSingleClass();
+		self::getRouteInfo();
+		
 		if (self::$_route['module'] == OC_DEV_SIGN) {
 			if (OC_SYS_MODEL == 'develop') {
 				Develop::run();
@@ -176,9 +178,6 @@ final class Ocara
 			OC_SYS . 'const/config.php',
 			OC_SYS . 'functions/common.php',
 		));
-
-		self::loadSingleClass();
-		self::getRouteInfo();
 	}
 
 	/**
