@@ -29,7 +29,8 @@ final class Cache extends Base
 			$server = 'default';
 		}
 
-		if ($object = self::_connect($server, $required)) {
+		$object = self::_connect($server, $required);
+		if (is_object($object) && $object instanceof CacheBase) {
 			return $object;
 		}
 
