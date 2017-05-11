@@ -7,8 +7,8 @@ define('OC_EXECUTE_START_TIME', microtime(true));
 /*
  * 加载框架或自动加载
  */
-require_once __DIR__ . '/../../vendor/autoload.php';
-//require(__DIR__ . '/../../ocara/ocara/system/library/Ocara.php');
+//require_once dirname(dirname(__DIR__)) . '/vendor/autoload.php';
+require_once dirname(dirname(__DIR__)) . '/system/library/Ocara.php';
 
 /*
  * 运行应用
