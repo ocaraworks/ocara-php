@@ -15,8 +15,6 @@ final class Cache extends Base
 	/**
 	 * 工厂模式
 	 */
-	private static $_instances = array();
-	
 	private function __clone(){}
 	private function __construct(){}
 
@@ -25,18 +23,14 @@ final class Cache extends Base
 	 * @param string $server
 	 * @param bool $required
 	 */
-	public static function getInstance($server = 'default', $required = true)
+	public static function factory($server = 'default', $required = true)
 	{
 		if (empty($server)) {
 			$server = 'default';
 		}
 
-		if (isset(self::$_instances[$server])) {
-			return self::$_instances[$server];
-		}
-
-		if ($obj = self::_connect($server, $required)) {
-			return self::$_instances[$server] = $obj;
+		if ($object = self::_connect($server, $required)) {
+			return $object;
 		}
 
 		return Error::check(
