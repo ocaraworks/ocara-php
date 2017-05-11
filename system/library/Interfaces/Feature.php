@@ -23,9 +23,9 @@ interface Feature
 
 	/**
 	 * 设置最终路由
-	 * @param $module
-	 * @param $controller
-	 * @param $action
+	 * @param string $module
+	 * @param string $controller
+	 * @param string $action
 	 */
 	public static function getDefaultRoute($module, $controller, $action);
 }

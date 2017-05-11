@@ -70,15 +70,15 @@ $OC_CONF['CONTROLLER_FEATURE_CLASS'] = array(
  * 系统服务类
  */
 $OC_CONF['SYSTEM_SERVICE_CLASS'] = array(
-	'Request' 	=> 'Ocara\Request',
-	'Response' 	=> 'Ocara\Response',
-	'Error' 	=> 'Ocara\Error',
-	'Filter' 	=> 'Ocara\Filter',
-	'Path' 		=> 'Ocara\Path',
-	'Url' 		=> 'Ocara\Url',
-	'Lang' 		=> 'Ocara\Lang',
-	'Cookie' 	=> 'Ocara\Cookie',
-	'Session' 	=> 'Ocara\Session',
+	'Request' 		=> 'Ocara\Request',
+	'Response' 		=> 'Ocara\Response',
+	'Error' 		=> 'Ocara\Error',
+	'Filter' 		=> 'Ocara\Filter',
+	'Path' 			=> 'Ocara\Path',
+	'Url' 			=> 'Ocara\Url',
+	'Lang' 			=> 'Ocara\Lang',
+	'Cookie' 		=> 'Ocara\Cookie',
+	'Session' 		=> 'Ocara\Session',
 );
 
 /**
@@ -91,14 +91,14 @@ $OC_CONF['CONTROLLERS']['rest'] = array(
 
 	//路由映射
 	'action_map' => array(
-		'GET' 		=> 'index',
-		'GET/id' 	=> 'view',
-		'POST' 		=> 'create',
-		'PUT/id' 	=> 'update',
-		'PATCH/id' 	=> 'update',
-		'HEAD' 		=> 'index',
-		'HEAD/id' 	=> 'view',
-		'DELETE/id' => 'delete',
+		'GET' 			=> 'index',
+		'GET/id' 		=> 'view',
+		'POST' 			=> 'create',
+		'PUT/id' 		=> 'update',
+		'PATCH/id' 		=> 'update',
+		'HEAD' 			=> 'index',
+		'HEAD/id' 		=> 'view',
+		'DELETE/id'		=> 'delete',
 	),
 	//请求成功返回状态码
 	'success_code_map' => array(

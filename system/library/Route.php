@@ -28,7 +28,8 @@ class Route extends Base
 
         if (isset($_GET[1])) {
             $controller = ($c = Request::getGet(1)) ? strtolower($c) : null;
-            $action = ($a = Request::getGet(2)) ? strtolower($a) : null;
+            $param2 = Request::getGet(2);
+            $action = $param2 && !is_array($param2) ? strtolower($param2) : null;
             $ucontroller = ucfirst($controller);
             if ($module && $module != OC_DEV_SIGN) {
                 $umodule = ucfirst($module);
@@ -73,10 +74,6 @@ class Route extends Base
             $action = call_user_func_array(
                 array($featureClass, 'getControllerAction'), array($action, $isModule, $isStandard)
             );
-        }
-
-        if (Url::isVirtualUrl(OC_URL_ROUTE_TYPE)) {
-            $_GET = self::formatGet($_GET);
         }
 
         $route = call_user_func_array(
@@ -124,16 +121,16 @@ class Route extends Base
         if (is_array(end($data))) {
             $last = array_pop($data);
         }
-
+        
         ksort($data);
         $data = array_chunk($data, 2);
+
         foreach($data as $row) {
             if ($row[0]) {
                 $get[$row[0]] = isset($row[1]) ? $row[1] : null;
             }
         }
-
-        return $last ? array_merge($get, $last) : $get;
+        return $last ? $get + $last : $get;
     }
 
     /**

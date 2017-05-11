@@ -162,7 +162,7 @@ class Response extends Base
 	public function output($content, $unEscaped = true)
 	{
 		$this->sendHeaders();
-		$contentType = $this->get('contentType');
+		$contentType = $this->getHeader('contentType');
 
 		switch ($contentType)
 		{
