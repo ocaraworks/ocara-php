@@ -94,6 +94,7 @@ return array(
 	'fault_pdo_param'				=> array(2313, 'PDO参数设置不正确。'),
 	'fault_primary_value_format'    => array(2314, '指定的主键数据格式错误。'),
 	'fault_route_path'				=> array(2315, 'MVC路径错误'),
+	'fault_session_table'			=> array(2316, 'Session表名配置有误'),
 
 	//不存在或找不到
 	'not_exists_part' 				=> array(2400, '指定的part文件不存在：{file}.php。'),

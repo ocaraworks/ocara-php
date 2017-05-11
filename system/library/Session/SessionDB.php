@@ -18,6 +18,7 @@ class SessionDB extends Base
 {
 	protected $_plugin = null;
 
+	protected $_database;
 	protected $_table;
 	protected $_fullname;
 	protected $_fields;
@@ -34,8 +35,20 @@ class SessionDB extends Base
 			Error::show('not_exists_database');
 		}
 
-		$this->_plugin 	 = $database[0];
-		$this->_table    = ocConfig('SESSION.location', 'ocsess');
+		$this->_plugin 	 = $database;
+		$table = explode('.', ocConfig('SESSION.location', 'ocsess'));
+		$count = count($table);
+
+		if ($count == 1) {
+			$this->_database = 'default';
+			$this->_table = reset($table);
+		} elseif ($count == 2) {
+			list($this->_database, $this->_table)  = $table;
+			$this->_plugin->selectDatabase($this->_database);
+		} else {
+			Error::show('fault_session_table');
+		}
+
 		$this->_fullname = $this->_plugin->getTableName($this->_table);
 		$this->_fields   = $this->_plugin->getFields($this->_table);
 

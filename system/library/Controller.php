@@ -144,32 +144,6 @@ class Controller extends ControllerBase implements ControllerInterface
 	}
 
 	/**
-	 * Ajax返回数据
-	 * @param string $data
-	 * @param string $message
-	 * @param bool $contentType
-	 */
-	public function ajaxReturn($data = '', $message = '', $contentType = false)
-	{
-		if (is_array($message)) {
-			list($text, $params) = $message;
-			$message = Lang::get($text, $params);
-		} else {
-			$message = Lang::get($message);
-		}
-
-		$contentType = $this->_ajaxContentType;
-		if ($this->_ajaxContentType) {
-			$contentType = ocConfig('DEFAULT_AJAX_CONTENT_TYPE', 'json');
-		}
-
-		$this->response->setContentType($contentType);
-		Ajax::show('success', $message, $data);
-		method_exists($this, '_after') && $this->_after();
-		die();
-	}
-
-	/**
 	 * 打印模板
 	 * @param string $file
 	 * @param array $vars
