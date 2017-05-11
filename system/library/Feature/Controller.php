@@ -12,6 +12,8 @@ use Ocara\Container;
 use Ocara\Request;
 use Ocara\FormToken;
 use Ocara\View;
+use Ocara\Route;
+use Ocara\Url;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -45,12 +47,16 @@ class Controller extends FeatureBase implements Feature
 
     /**
      * 设置最终路由
-     * @param $module
-     * @param $controller
-     * @param $action
+     * @param string $module
+     * @param string $controller
+     * @param string $action
      */
     public static function getDefaultRoute($module, $controller, $action)
     {
+        if (Url::isVirtualUrl(OC_URL_ROUTE_TYPE)) {
+            $_GET = Route::formatGet($_GET);
+        }
+
         if (empty($action)) {
             $action = ocConfig('DEFAULT_ACTION', 'index');
         }
