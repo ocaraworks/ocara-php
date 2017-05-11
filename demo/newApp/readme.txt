@@ -4,7 +4,7 @@ Thanks for your attention!
 If You want to use Ocara, you can visit onecore.cn to learn more.Because Ocara just join in github.com.
 I will rich it by docs as soon as possible.
 And, The "index.php" must be visit by browser, for example: http://localhost/index.php(If it's a valid url for ocara project).
-Once visit success, Then the framework will create all project dirs.
+Once visit success, Then the framework will create all project dirs in the dir.
 
 各位好，
 
