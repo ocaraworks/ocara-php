@@ -51,9 +51,8 @@ class ControllerBase extends Base implements ControllerInterface
 	 * Ajax返回数据
 	 * @param string $data
 	 * @param string $message
-	 * @param bool $type
 	 */
-	public function ajaxReturn($data = '', $message = '', $type = false)
+	public function ajaxReturn($data = '', $message = '')
 	{
 		if (is_array($message)) {
 			list($text, $params) = $message;
@@ -62,7 +61,13 @@ class ControllerBase extends Base implements ControllerInterface
 			$message = Lang::get($message);
 		}
 
-		Ajax::show('success', $message, $data, $type);
+		$contentType = $this->_ajaxContentType;
+		if ($this->_ajaxContentType) {
+			$contentType = ocConfig('DEFAULT_AJAX_CONTENT_TYPE', 'json');
+		}
+
+		$this->response->setContentType($contentType);
+		Ajax::show('success', $message, $data);
 		method_exists($this, '_after') && $this->_after();
 		die();
 	}

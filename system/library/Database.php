@@ -36,19 +36,11 @@ final class Database extends Base
 	 */
 	public static function getInstance($server = null, $master = true, $required = true)
 	{
-		$type = $master ? 'master' : 'slave';
-
 		if (empty($server)) {
 			$server = 'default';
 		}
 
-		if (isset(self::$_instances[$server][$type])) {
-			$database = self::$_instances[$server][$type];
-		} else {
-			$database = self::_getDatabase($server, $master);
-			self::$_instances[$server][$type] = $database;
-		}
-
+		$database = self::_getDatabase($server, $master);
 		if (is_object($database) && $database instanceof DatabaseBase) {
 			return $database;
 		}
