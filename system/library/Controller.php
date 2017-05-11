@@ -40,7 +40,7 @@ class Controller extends ControllerBase implements ControllerInterface
 			 ->bindSingleton('view', array($this->feature, 'getView'), array($this->getRoute()))
 			 ->bindSingleton('formToken', array($this->feature, 'getFormToken'))
 			 ->bindSingleton('validator', array($this->feature, 'getValidator'))
-			 ->bindSingleton('db', Database::getInstance('default'))
+			 ->bindSingleton('db', Database::factory('default'))
 			 ->bindSingleton('pager', array($this->feature, 'getPager'));
 
 		$this->session->initialize();

@@ -743,14 +743,14 @@ abstract class Model extends Base
 
 		if (!($master || ocGet('option.master', $this->_sql))) {
 			if (!is_object($this->_slave)) {
-				$this->_slave = Database::getInstance($this->_server, false, false);
+				$this->_slave = Database::factory($this->_server, false, false);
 			}
 			$this->_driver = $this->_slave;
 		}
 
 		if (!is_object($this->_driver)) {
 			if (!is_object($this->_master)) {
-				$this->_master = Database::getInstance($this->_server);
+				$this->_master = Database::factory($this->_server);
 			}
 			$this->_driver = $this->_master;
 		}

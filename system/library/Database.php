@@ -23,8 +23,6 @@ final class Database extends Base
 	/**
 	 * 工厂模式
 	 */
-	private static $_instances = array();
-
 	private function __clone(){}
 	private function __construct(){}
 
@@ -34,7 +32,7 @@ final class Database extends Base
 	 * @param bool $master
 	 * @param bool $required
 	 */
-	public static function getInstance($server = null, $master = true, $required = true)
+	public static function factory($server = null, $master = true, $required = true)
 	{
 		if (empty($server)) {
 			$server = 'default';

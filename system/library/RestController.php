@@ -35,7 +35,7 @@ class RestController extends ControllerBase
 		self::$container->response->setContentType($defaultContentType);
 		self::$container
 			 ->bindSingleton('validator', array($this->feature, 'getValidator'))
-			 ->bindSingleton('db', Database::getInstance('default'))
+			 ->bindSingleton('db', Database::factory('default'))
 			 ->bindSingleton('pager', array($this->feature, 'getPager'));
 
 		$this->session->initialize();

@@ -29,7 +29,7 @@ class SessionDB extends Base
 	public function __construct()
 	{
 		$server = ocConfig('SESSION.server', false);
-		$database = Database::getInstance($server);
+		$database = Database::factory($server);
 
 		if (empty($database[0])) {
 			Error::show('not_exists_database');
