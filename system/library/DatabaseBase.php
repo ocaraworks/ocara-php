@@ -137,7 +137,7 @@ class DatabaseBase extends Sql
 			}
 		}
 
-		Error::show('not_exists_database');
+		$this->showError('not_exists_database');
 	}
 
 	/**
@@ -378,7 +378,7 @@ class DatabaseBase extends Sql
 	public function insert($table, $data = null, $debug = false)
 	{
 		if (empty($data) || !is_array($data)) {
-			Error::show('fault_save_data');
+			$this->showError('fault_save_data');
 		}
 
 		$table = $this->getTableName($table);
@@ -401,7 +401,7 @@ class DatabaseBase extends Sql
 	public function update($table, $data = false, $condition = null, $debug = false)
 	{
 		if (empty($data)) {
-			Error::show('fault_save_data');
+			$this->showError('fault_save_data');
 		}
 
 		$table = $this->getTableName($table);
@@ -464,7 +464,7 @@ class DatabaseBase extends Sql
 		if ($result) {
 			$this->_config['name'] = $name;
 		} else {
-			Error::show('failed_select_database');
+			$this->showError('failed_select_database');
 		}
 
 		return $result;
@@ -527,6 +527,9 @@ class DatabaseBase extends Sql
 	public function showError()
 	{
 		if ($this->errorExists()) {
+			if ($this->isTrans()) {
+				$this->transRollback();
+			}
 			Error::show($this->getError());
 		}
 	}
@@ -583,7 +586,7 @@ class DatabaseBase extends Sql
 		}
 
 		if ($required && $errorExists) {
-			return Error::show($error);
+			return $this->showError($error);
 		}
 
 		return  $ret;
@@ -612,10 +615,10 @@ class DatabaseBase extends Sql
 						ocPrint($ret);
 					}
 				} else {
-					Error::show('invalid_debug');
+					$this->showError('invalid_debug');
 				}
 			} else {
-				Error::show('fault_debug_param');
+				$this->showError('fault_debug_param');
 			}
 		}
 		

@@ -113,20 +113,6 @@ final class Database extends Base
 	}
 
 	/**
-	 * 回滚所有的数据库连接的事务
-	 */
-	public static function rollback()
-	{
-		foreach (self::$_instances as $servers) {
-			foreach ($servers as $database) {
-				if ($database instanceof self && $database->isTrans()) {
-					$database->transRollback();
-				}
-			}
-		}
-	}
-
-	/**
 	 * 获取数据库对象
 	 * @param string $dir
 	 * @param string $class

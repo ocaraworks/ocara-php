@@ -65,8 +65,6 @@ final class Error extends Base
 	 */
 	public static function show($error, array $params = array())
 	{
-		Database::rollback();
-
 		if (!is_array($error)) {
 			$error = Lang::get($error, $params);
 		}
