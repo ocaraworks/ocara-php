@@ -125,7 +125,7 @@ $CONF['ERROR_HANDLER'] = array(
 	'exception_error' => '', //自定义异常错误处理方式
 
 	/*
-	 * 要显示的错误列表
+	 * 要取消显示的错误列表
 	 * 比如E_WARNING,E_USER_WARNING等
 	 */
 	'except_error_list' => array(),
