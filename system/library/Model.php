@@ -833,7 +833,7 @@ abstract class Model extends Base
 	 */
 	public function leftJoin($table, $alias, $on)
 	{
-		return $this->_join('leftJoin', $table, $alias, $on);
+		return $this->_join('left', $table, $alias, $on);
 	}
 
 	/**
@@ -844,7 +844,7 @@ abstract class Model extends Base
 	 */
 	public function rightJoin($table, $alias, $on)
 	{
-		return $this->_join('rightJoin', $table, $alias, $on);
+		return $this->_join('right', $table, $alias, $on);
 	}
 
 	/**
@@ -855,7 +855,7 @@ abstract class Model extends Base
 	 */
 	public function innerJoin($table, $alias, $on)
 	{
-		return $this->_join('innerJoin', $table, $alias, $on);
+		return $this->_join('inner', $table, $alias, $on);
 	}
 
 	/**
