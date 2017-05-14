@@ -67,7 +67,7 @@ final class Request extends Base
 	public static function stripOcaraTag($content)
 	{
 		if (is_numeric($content) || is_string($content)) {
-			$content = str_ireplace('{oc_sql}', OC_EMPTY, $content);
+			$content = str_ireplace(OC_SQL_TAG, OC_EMPTY, $content);
 		}
 		
 		return $content;

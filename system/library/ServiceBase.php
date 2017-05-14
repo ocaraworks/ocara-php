@@ -24,7 +24,7 @@ class ServiceBase extends Base
 	{
 		$filePath = '/languages/' . Ocara::language() . OC_DIR_SEP . $filePath;
 		$lang     = array();
-		
+
 		if (ocFileExists($path = OC_SYS . 'service' . $filePath)) {
 			$config = include($path);
 			if ($config && is_array($config)) {
@@ -91,7 +91,6 @@ class ServiceBase extends Base
 	public static function getMessage($key, array $params = array())
 	{
 		$language = self::getLanguage($key, $params);
-
 		return $language['message'];
 	}
 

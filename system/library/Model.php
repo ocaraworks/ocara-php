@@ -15,7 +15,7 @@ abstract class Model extends Base
 	
 	/**
 	 * @var @_primary 主键字段列表
-	 * @var $_primarys 主键字段数组
+	 * @var $_primaries 主键字段数组
 	 */
 	protected $_driver = null;
 
@@ -37,7 +37,7 @@ abstract class Model extends Base
 
 	private $_config   = array();
 	private $_sql      = array();
-	private $_primarys = array();
+	private $_primaries = array();
 
 	private static $_requirePrimary;
 
@@ -52,7 +52,7 @@ abstract class Model extends Base
 		}
 
 		if (self::$_requirePrimary && empty($this->_primary)) {
-			Error::show('no_primarys');
+			Error::show('no_primaries');
 		}
 
 		$this->initialize();
@@ -74,7 +74,7 @@ abstract class Model extends Base
 		$this->loadConfig();
 
 		if ($this->_primary) {
-			$this->_primarys = explode(',', $this->_primary);
+			$this->_primaries = explode(',', $this->_primary);
 		}
 
 		if (method_exists($this, '_model')) $this->_model();
@@ -100,6 +100,28 @@ abstract class Model extends Base
 			$this->_sharding($data);
 		}
 
+		return $this;
+	}
+
+	/**
+	 * 合并查询（去除重复值）
+	 * @param object $model
+	 * @return $this
+	 */
+	public function union(\Ocara\Model $model)
+	{
+		$this->connect()->union($model, false);
+		return $this;
+	}
+
+	/**
+	 * 合并查询
+	 * @param object $model
+	 * @return $this
+	 */
+	public function unionAll(\Ocara\Model $model)
+	{
+		$this->connect()->union($model, true);
 		return $this;
 	}
 
@@ -216,6 +238,7 @@ abstract class Model extends Base
 		if (is_object($this->$name)) {
 			return $this->$name;
 		}
+
 		Error::show('null_database');
 	}
 
@@ -392,7 +415,7 @@ abstract class Model extends Base
 	private function _save($data, $condition, $debug = false)
 	{
 		if ($condition) {
-			call_user_func_array('ocDel', array(&$data, $this->_primarys));
+			call_user_func_array('ocDel', array(&$data, $this->_primaries));
 			if (method_exists($this, '_beforeUpdate')) {
 				$this->_beforeUpdate();
 			}
@@ -408,7 +431,7 @@ abstract class Model extends Base
 		}
 
 		if ($condition) {
-			call_user_func_array('ocDel', array(&$data, $this->_primarys));
+			call_user_func_array('ocDel', array(&$data, $this->_primaries));
 			$ret = $this->_driver->update($this->_tableName, $data, $condition, $debug);
 			if (!$debug && method_exists($this, '_afterUpdate')) {
 				$this->_afterUpdate();
@@ -595,7 +618,7 @@ abstract class Model extends Base
 	 */
 	public function select($condition, $option = null, $debug = false)
 	{
-		if (empty($this->_primarys)) {
+		if (empty($this->_primaries)) {
 			Error::show('no_primary');
 		}
 
@@ -656,13 +679,11 @@ abstract class Model extends Base
 	 */
 	public function getTotal($debug = false)
 	{
-		$countSql = $this->connect(false)->getCountSql('1', 'total');
-
 		if (ocGet('option.group', $this->_sql)) {
-			$result = $this->_find(false, $countSql, $debug, false, true);
+			$result = $this->_find(false, false, $debug, false, true);
 			return $debug === Database::DEBUG_RETURN ? $result : count($result);
 		} else {
-			$result = $this->_find(false, $countSql, $debug, true, true);
+			$result = $this->_find(false, false, $debug, true, true);
 			if ($debug === Database::DEBUG_RETURN) return $result;
 			return $result ? $result['total'] : 0;
 		}
@@ -691,7 +712,7 @@ abstract class Model extends Base
 		}
 
 		$this->connect(false);
-		$fields = $count ? $option['fields'] : false;
+		$fields = $count ? $this->connect(false)->getCountSql('1', 'total') : false;
 		$sql    = $this->_genSql(true, $fields, $count);
 
 		$cacheInfo = null;
@@ -710,20 +731,17 @@ abstract class Model extends Base
 		}
 
 		if ($queryRow) {
-			$result = $this->_driver->queryRow($sql, $debug);
+			$result = $this->_driver->queryRow($sql, $debug, $count);
 		} else {
-			$result = $this->_driver->query($sql, $debug);
-		}
-
-		if (!$count && ocGet('option.page', $this->_sql)) {
-			if ($debug === Database::DEBUG_RETURN) {
-				return array( 'sql' => $result, 'count_sql' => $this->getTotal($debug));
-			}
-			$result = array('total' => $this->getTotal($debug), 'data'	=> $result);
+			$result = $this->_driver->query($sql, $debug, true, true, false, $count);
 		}
 
 		if ($debug === Database::DEBUG_RETURN) {
 			return $result;
+		}
+
+		if (!$count && ocGet('option.page', $this->_sql)) {
+			$result = array('total' => $this->getTotal($debug), 'data'	=> $result);
 		}
 
 		if ($ifCache && is_object($cacheObj)) {
@@ -813,9 +831,9 @@ abstract class Model extends Base
 	 * @param string $alias
 	 * @param string $on
 	 */
-	public function left($table, $alias, $on)
+	public function leftJoin($table, $alias, $on)
 	{
-		return $this->_join('left', $table, $alias, $on);
+		return $this->_join('leftJoin', $table, $alias, $on);
 	}
 
 	/**
@@ -824,9 +842,9 @@ abstract class Model extends Base
 	 * @param string $alias
 	 * @param string $on
 	 */
-	public function right($table, $alias, $on)
+	public function rightJoin($table, $alias, $on)
 	{
-		return $this->_join('right', $table, $alias, $on);
+		return $this->_join('rightJoin', $table, $alias, $on);
 	}
 
 	/**
@@ -835,9 +853,9 @@ abstract class Model extends Base
 	 * @param string $alias
 	 * @param string $on
 	 */
-	public function inner($table, $alias, $on)
+	public function innerJoin($table, $alias, $on)
 	{
-		return $this->_join('inner', $table, $alias, $on);
+		return $this->_join('innerJoin', $table, $alias, $on);
 	}
 
 	/**
@@ -963,7 +981,7 @@ abstract class Model extends Base
 	 * @param array $where
 	 * @param string $table
 	 */
-	public function cwhere($sign, $where, $table = false)
+	public function cWhere($sign, $where, $table = false)
 	{
 		if (is_string($where)) {
 			$where = array($where => $table);
@@ -1005,12 +1023,12 @@ abstract class Model extends Base
 
 	/**
 	 * 分组
-	 * @param string $group
+	 * @param string $groupBy
 	 */
-	public function group($group)
+	public function groupBy($groupBy)
 	{
-		if ($group) {
-			$this->_sql['option']['group'] = $group;
+		if ($groupBy) {
+			$this->_sql['option']['group'] = $groupBy;
 		}
 		return $this;
 	}
@@ -1031,12 +1049,12 @@ abstract class Model extends Base
 
 	/**
 	 * 附加排序
-	 * @param string $order
+	 * @param string $orderBy
 	 */
-	public function order($order)
+	public function orderBy($orderBy)
 	{
-		if ($order) {
-			$this->_sql['option']['order'] = $order;
+		if ($orderBy) {
+			$this->_sql['option']['order'] = $orderBy;
 		}
 		return $this;
 	}
@@ -1081,8 +1099,8 @@ abstract class Model extends Base
 			Error::show('fault_primary_value_format');
 		}
 
-		if (count($this->_primarys) == count($values)) {
-			$result = array_combine($this->_primarys, $values);
+		if (count($this->_primaries) == count($values)) {
+			$result = array_combine($this->_primaries, $values);
 			return $this->map($result);
 		} else {
 			Error::show('fault_primary_num');
@@ -1168,7 +1186,7 @@ abstract class Model extends Base
 			} elseif ($whereType == 'between') {
 				$where[] = call_user_func_array(array($this->_driver, 'getBetweenSql'), $whereData);
 			} else {
-				$where[] = $this->_getCwhere($whereData, $alias);
+				$where[] = $this->_getComplexWhere($whereData, $alias);
 			}
 		}
 
@@ -1242,7 +1260,7 @@ abstract class Model extends Base
 	 * @param array $where
 	 * @param string $alias
 	 */
-	private function _getCwhereDetail($where, $alias)
+	private function _getComplexWhereDetail($where, $alias)
 	{
 		$data = array_shift($where);
 		$cond = null;
@@ -1271,18 +1289,18 @@ abstract class Model extends Base
 	 * @param array $data
 	 * @param string $alias
 	 */
-	private function _getCwhere($data, $alias)
+	private function _getComplexWhere($data, $alias)
 	{
 		$cond = null;
 
 		if ($data[1]) {
 			if (ocAssoc($data[1])) {
 				array_unshift($data[1], $data[0]);
-				$cond = $this->_getCwhereDetail($data[1], $alias);
+				$cond = $this->_getComplexWhereDetail($data[1], $alias);
 			} else {
 				$cond = array();
 				foreach ($data[1] as $val) {
-					$cond[] = $this->_getCwhereDetail($val, $alias);
+					$cond[] = $this->_getComplexWhereDetail($val, $alias);
 				}
 				$cond = $this->_driver->linkWhere($cond, $data[0]);
 				$cond = $this->_driver->wrapWhere($cond);

@@ -595,7 +595,7 @@ class Image extends ServiceBase
 		header("Content-Type:{$contentType};charset=utf-8");
 		$path = ocDir(dirname($this->dstPath));
 
-		if (!is_writeable($path)) {
+		if (!is_writable($path)) {
 			if (!@chmod($path, 0777)) {
 				$this->showError('no_write_access');
 			}

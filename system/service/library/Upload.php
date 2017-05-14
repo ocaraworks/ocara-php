@@ -50,7 +50,7 @@ class Upload extends ServiceBase
 			$this->setError('failed_set_dir');
 			return false;
 		}
-		if (!is_writeable($savePath)) {
+		if (!is_writable($savePath)) {
 			$this->setError('no_dir_write_perm');
 			return false;
 		}
@@ -89,7 +89,7 @@ class Upload extends ServiceBase
 	 */
 	public function upload($required = false)
 	{
-		if (!is_writeable($this->savePath)) {
+		if (!is_writable($this->savePath)) {
 			return $this->setError('un_writable', array(false));
 		}
 		
