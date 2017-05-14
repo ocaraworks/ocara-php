@@ -453,31 +453,6 @@ class View extends Base
 		ob_end_clean();
 		return Filter::bom($content);
 	}
-
-	/**
-	 * 加载助手
-	 * @param string $path
-	 * @param array $params
-	 * @param string $template
-	 */
-	public function helper($path, array $params = array(), $template = false)
-	{
-		$template = $template ? $template : $this->_template;
-		$file 	  = ocPath('view', $template . '/helper/' . $path . '.php');
-		$helper	  = explode(OC_DIR_SEP, $path);
-		$helper   = array_pop($helper);
-		
-		if ($file && ocFileExists($file)) {
-			include_once($file);
-			if (class_exists($helper, false)) {
-				return ocClass($helper, $params);
-			} elseif (function_exists($helper)) {
-				return call_user_func_array('Ocara\View\Helper' . OC_NS_SEP . $helper, $params);
-			}
-		} 
-		
-		Error::show('not_exists_helper', array($helper));
-	}
 	
 	/**
 	 * 获取要注册的函数名称
@@ -488,7 +463,7 @@ class View extends Base
 			'ocGlobal', 	'ocPath', 	'ocFile', 		'ocRealUrl', 
 			'ocSimpleUrl', 	'ocUrl', 	'ocConfig',  	'ocGet', 
 			'ocSet', 		'ocDel',	'ocKeyExists',	'ocFileExists', 
-			'ocPrint', 	'ocDump',
+			'ocPrint', 		'ocDump',
 		);
 	}
 	

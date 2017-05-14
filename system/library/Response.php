@@ -157,9 +157,8 @@ class Response extends Base
 	/**
 	 * 输出内容
 	 * @param $content
-	 * @param bool $unEscaped
 	 */
-	public function output($content, $unEscaped = true)
+	public function output($content)
 	{
 		$this->sendHeaders();
 		$contentType = $this->getHeader('contentType');

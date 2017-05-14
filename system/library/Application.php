@@ -48,7 +48,7 @@ final class Application
 				if (ocCheckPath($path)) {
 					continue;
 				} else {
-					self::error($path, 'writeable');
+					self::error($path, 'writable');
 				}
 			}
 		}
@@ -123,7 +123,7 @@ final class Application
 	private static function write($filePath, $content)
 	{
 		if (!$fo = @fopen($filePath, 'wb')) {
-			if (!is_writeable($filePath)) {
+			if (!is_writable($filePath)) {
 				if (!@chmod($filePath, 0777)) self::error($filePath, 'writable');
 			}
 		}

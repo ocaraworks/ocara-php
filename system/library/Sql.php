@@ -60,7 +60,7 @@ class Sql extends Base
 	 */
 	public function filterValue($content, $addSlashes = true)
 	{
-		if ($mt = self::checkOcTag($content)) {
+		if ($mt = self::checkOcaraSqlTag($content)) {
 			return $mt[1];
 		} else {
 			if ($addSlashes) {
@@ -82,7 +82,7 @@ class Sql extends Base
 	public function parseValue($value, $paramType = 'where', $ifQuote = true)
 	{
 		if (ocScalar($value)) {
-			if ($mt = self::checkOcTag($value)) {
+			if ($mt = self::checkOcaraSqlTag($value)) {
 				return $mt[1];
 			} else {
 				if ($this->_prepared) {
@@ -109,7 +109,7 @@ class Sql extends Base
 			Error::show('invalid_field_name');
 		}
 
-		if ($mt = self::checkOcTag($field)) {
+		if ($mt = self::checkOcaraSqlTag($field)) {
 			return $mt[1];
 		}
 
@@ -135,9 +135,9 @@ class Sql extends Base
 	 * 检查Ocara代码标记
 	 * @param string $value
 	 */
-	public static function checkOcTag($value)
+	public static function checkOcaraSqlTag($value)
 	{
-		if (preg_match('/^{oc_sql}(.*)$/i', $value, $mt)) {
+		if (preg_match('/^' . OC_SQL_TAG . '(.*)$/i', $value, $mt)) {
 			return $mt;
 		}
 		return array();
@@ -396,6 +396,7 @@ class Sql extends Base
 
 		if (is_array($options) && array_key_exists($ltype, $options)) {
 			$content = $options[$ltype];
+
 			switch ($type) {
 				case 'WHERE':
 				case 'HAVING':
@@ -612,13 +613,13 @@ class Sql extends Base
 
 	/**
 	 * 获取表名
-	 * @param $dbName
+	 * @param $databaseName
 	 * @param $tableName
 	 * @return string
 	 */
-	public function getTableNameSql($dbName, $tableName)
+	public function getTableNameSql($databaseName, $tableName)
 	{
-		return $dbName ? "`{$dbName}`.`$tableName`" : "`$tableName`";
+		return $databaseName ? "`{$databaseName}`.`$tableName`" : "`$tableName`";
 	}
 
 	/**
@@ -683,6 +684,17 @@ class Sql extends Base
 		}
 
 		return implode(OC_SPACE, $where);
+	}
+
+	/**
+	 * 获取合并查询语句
+	 * @param string $sql
+	 * @param bool $unionAll
+	 * @return string
+	 */
+	public function getUnionSql($sql, $unionAll = false)
+	{
+		return ($unionAll ? ' UNION ALL ' : ' UNION ') . $sql;
 	}
 
 	/**

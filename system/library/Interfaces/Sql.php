@@ -239,6 +239,14 @@ interface Sql
 	public function getWhereSql($data);
 
 	/**
+	 * 获取合并查询语句
+	 * @param string $sql
+	 * @param bool $unionAll
+	 * @return string
+	 */
+	public function getUnionSql($sql, $unionAll = false);
+
+	/**
 	 * 将条件数组连接成条件字符串
 	 * @param array $data
 	 * @param string $link

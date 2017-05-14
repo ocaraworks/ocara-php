@@ -162,7 +162,7 @@ function ocSql($sql)
 {
 	if (is_string($sql) || is_numeric($sql)) {
 		$sql = Request::stripOcaraTag($sql);
-		return '{oc_sql}' . $sql;
+		return OC_SQL_TAG . $sql;
 	}
 	
 	return $sql;
@@ -258,7 +258,7 @@ function ocWrite($filePath, $content, $append = false, $perm = 0755)
 
 	if (ocCheckPath($dirPath, $perm)) {
 
-		if (!is_writeable($dirPath)) {
+		if (!is_writable($dirPath)) {
 			Error::show('no_dir_write_perm');
 		}
 

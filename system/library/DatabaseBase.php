@@ -25,7 +25,14 @@ class DatabaseBase extends Sql
 	protected $_dataType;
 	protected $_isTrans;
 
-	public $_params = array();
+	protected $_params = array();
+	protected $_unions = array();
+
+	protected static $paramOptions = array(
+		'set', 		'where', 	'groupBy',
+		'having', 	'limit', 	'orderBy',
+		'more',
+	);
 
 	/**
 	 * 初始化方法
@@ -78,6 +85,16 @@ class DatabaseBase extends Sql
 	public function clearParams()
 	{
 		$this->_params = array();
+	}
+
+	/**
+	 * 合并查询
+	 * @param array $data
+	 * @param bool $unionAll
+	 */
+	public function union($model, $unionAll = false)
+	{
+		$this->_unions[] = compact('model', 'unionAll');;
 	}
 
 	/**
@@ -171,6 +188,11 @@ class DatabaseBase extends Sql
 		$this->_dataType = $dataType == 'object' ? 'object' : 'array';
 	}
 
+	public function getUnions()
+	{
+		return $this->_unions;
+	}
+
 	/**
 	 * 执行SQL语句
 	 * @param string $sql
@@ -178,8 +200,9 @@ class DatabaseBase extends Sql
 	 * @param bool $query
 	 * @param bool $required
 	 * @param bool $queryRow
+	 * @param bool $count
 	 */
-	public function query($sql, $debug = false, $query = true, $required = true, $queryRow = false)
+	public function query($sql, $debug = false, $query = true, $required = true, $queryRow = false, $count = false)
 	{
 		$ret = $this->_checkDebug($debug, $sql);
 		if ($ret) return $ret;
@@ -190,16 +213,39 @@ class DatabaseBase extends Sql
 
 		$errorReporting = error_reporting();
 		error_reporting(0);
-		if ($this->_prepared && $this->_params) {
+
+		$params = $this->_params ? array($this->_params) : array();
+		if ($query) {
+			foreach ($this->_unions as $union) {
+				if ($count) {
+					$unionData = $union['model']->getTotal(1);
+				} else {
+					$unionData = $union['model']->find(false, false, 1);
+				}
+				$sql .= $this->getUnionSql($unionData['sql'], $union['unionAll']);
+				$params[] = $unionData['params'];
+			}
+		}
+
+		if ($this->_prepared && $params) {
 			$this->_plugin->prepare($sql);
-			$this->bindAllParams();
+			$this->_bindParams($params);
 			$result = $this->_plugin->execute();
 		} else {
 			$result = $this->_plugin->query($sql);
 		}
 
 		if ($query) {
-			$result = $this->_plugin->get_result($this->_dataType, $queryRow, 1);
+			if ($count) {
+				$result = $this->_plugin->get_result($this->_dataType);
+				$total = 0;
+				foreach ($result as $row) {
+					$total += reset($row);
+				}
+				$result = array(array('total' => $total));
+			} else {
+				$result = $this->_plugin->get_result($this->_dataType, $queryRow);
+			}
 		}
 
 		error_reporting($errorReporting);
@@ -211,11 +257,13 @@ class DatabaseBase extends Sql
 	 * 查询一条记录
 	 * @param string $sql
 	 * @param bool $debug
+	 * @param bool $count
 	 */
-	public function queryRow($sql, $debug = false)
+	public function queryRow($sql, $debug = false, $count = false)
 	{
-		$result = $this->query($sql, $debug, true, true, true);
-		if ($result && is_array($result) && count($result)) {
+		$result = $this->query($sql, $debug, true, true, true, $count);
+
+		if ($result && empty($debug)) {
 			$result = reset($result);
 		}
 
@@ -286,25 +334,23 @@ class DatabaseBase extends Sql
 
 	/**
 	 * 绑定参数
+	 * @param array $params
 	 */
-	private function bindAllParams()
+	private function _bindParams(array $params)
 	{
 		$types = false;
 		$data = array();
-		$params = array();
-		$options = array(
-			'set', 'where', 'group',
-			'having', 'limit', 'order',
-			'more',
-		);
+		$paramData = array();
 
-		foreach ($options as $option) {
-			if (!empty($this->_params[$option])) {
-				$params = array_merge($params, $this->_params[$option]);
+		foreach ($params as $row) {
+			foreach (self::$paramOptions as $option) {
+				if (!empty($row[$option])) {
+					$paramData = array_merge($paramData, $row[$option]);
+				}
 			}
 		}
 
-		foreach ($params as $key => &$value) {
+		foreach ($paramData as $key => &$value) {
 			$type = $this->parseParamType($value);
 			if ($this->_isPdo) {
 				$this->_plugin->bind_param($key + 1, $value, $type);
@@ -386,9 +432,9 @@ class DatabaseBase extends Sql
 
 		$ret = $this->_checkDebug($debug, $sql);
 		if ($ret) return $ret;
-		$inserResult = $data ? $this->query($sql, false, false) : false;
+		$insertResult = $data ? $this->query($sql, false, false) : false;
 
-		return $inserResult ? $this->getInsertId() : false;
+		return $insertResult ? $this->getInsertId() : false;
 	}
 
 	/**
@@ -436,21 +482,21 @@ class DatabaseBase extends Sql
 	 */
 	public function getTableName($table)
 	{
-		if (preg_match('/^{oc_sql}(.*)$/i', $table, $mt)) {
+		if (preg_match('/^' . OC_SQL_TAG . '(.*)$/i', $table, $mt)) {
 			return $mt[1];
 		}
 
 		if (preg_match('/(\w+)\.(\w+)/i', $table, $mt)) {
-			$dbName = $mt[1];
+			$databaseName = $mt[1];
 			$table = $mt[2];
 		} else {
-			$dbName = $this->_config['name'];
+			$databaseName = $this->_config['name'];
 			if ($this->_config['prefix']) {
 				$table = $this->_config['prefix'] . $table;
 			}
 		}
 
-		return $this->getTableNameSql($dbName, $table);
+		return $this->getTableNameSql($databaseName, $table);
 	}
 
 	/**

@@ -30,6 +30,9 @@ define('OC_ENTER', "\r\n");
 //英文单引号
 define('OC_QUOTE', "'");
 
+//Ocara SQL标记
+define('OC_SQL_TAG', '{oc_sql_tag}');
+
 /*
  * 服务器信息常量
  */

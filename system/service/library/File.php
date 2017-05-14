@@ -94,7 +94,7 @@ class File extends ServiceBase
 	public static function delFile($filePath)
 	{
 		if ($filePath = ocFileExists($filePath, true)) {
-			return is_writeable($filePath) ? @unlink($filePath) : false;
+			return is_writable($filePath) ? @unlink($filePath) : false;
 		}
 		
 		return true;
