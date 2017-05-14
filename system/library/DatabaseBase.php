@@ -218,9 +218,9 @@ class DatabaseBase extends Sql
 		if ($query) {
 			foreach ($this->_unions as $union) {
 				if ($count) {
-					$unionData = $union['model']->getTotal(1);
+					$unionData = $union['model']->getTotal(Database::DEBUG_RETURN);
 				} else {
-					$unionData = $union['model']->find(false, false, 1);
+					$unionData = $union['model']->find(false, false, Database::DEBUG_RETURN);
 				}
 				$sql .= $this->getUnionSql($unionData['sql'], $union['unionAll']);
 				$params[] = $unionData['params'];
