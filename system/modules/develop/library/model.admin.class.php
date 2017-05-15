@@ -37,7 +37,7 @@ class model_admin
 		}
 
 		if (empty($this->_model)) {
-			$this->_model = Develop::getStandardName($this->_table);
+			$this->_model = ocStandardName($this->_table);
 		}
 
 		$this->createModel();
@@ -119,7 +119,7 @@ class model_admin
 			if ($row['desc']) {
 				$desc = $row['desc'];
 			} else {
-				$name = Develop::getStandardName($row['name'], OC_SPACE);
+				$name = ocStandardName($row['name'], OC_SPACE);
 				$desc = $name;
 			}
 			$content .= "\t'{$row['name']}' => '{$desc}',\r\n";
@@ -137,16 +137,6 @@ class model_admin
 		File::writeFile($path, $content);
 
 		die("添加成功！");
-	}
-
-	/**
-	 * 获取驼峰式名称
-	 * @param $name
-	 * @return string
-	 */
-	public function getStandardName($name, $sep = '')
-	{
-		return implode($sep, array_map('ucfirst', explode('_', $name)));
 	}
 }
 
