@@ -260,7 +260,7 @@ abstract class Model extends Base
 		$this->_table = $name;
 		$this->_tableName = $name;
 
-		if (isset($primary)) {
+		if ($primary) {
 			$this->_primary = $primary;
 			if ($this->_primary) {
 				$this->_primaries = explode(',', $this->_primary);
