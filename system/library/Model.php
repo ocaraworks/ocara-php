@@ -255,10 +255,18 @@ abstract class Model extends Base
 	 * 切换数据表
 	 * @param $name
 	 */
-	public function selectTable($name)
+	public function selectTable($name, $primary = null)
 	{
 		$this->_table = $name;
 		$this->_tableName = $name;
+
+		if (isset($primary)) {
+			$this->_primary = $primary;
+			if ($this->_primary) {
+				$this->_primaries = explode(',', $this->_primary);
+			}
+		}
+
 		$this->_tableInit();
 	}
 
