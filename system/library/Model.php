@@ -253,12 +253,12 @@ abstract class Model extends Base
 
 	/**
 	 * 切换数据表
-	 * @param $table
+	 * @param $name
 	 */
-	public function selectTable($table)
+	public function selectTable($name)
 	{
-		$this->_table = $table;
-		$this->_tableName = $table;
+		$this->_table = $name;
+		$this->_tableName = $name;
 		$this->_tableInit();
 	}
 
@@ -1063,11 +1063,16 @@ abstract class Model extends Base
 	 * 附加Limit
 	 * @param string $limit
 	 */
-	public function limit($limit)
+	public function limit($limit, $offset = null)
 	{
+		if (func_num_args() == 2) {
+			$limit = $limit . ',' . $offset;
+		}
+
 		if ($limit) {
 			$this->_sql['option']['limit'] = $limit;
 		}
+
 		return $this;
 	}
 

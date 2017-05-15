@@ -555,6 +555,16 @@ function ocFileExists($filePath, $check = false)
 }
 
 /**
+ * 获取驼峰式名称
+ * @param $name
+ * @return string
+ */
+function ocStandardName($name, $sep = '')
+{
+	return implode($sep, array_map('ucfirst', explode('_', $name)));
+}
+
+/**
  * 检查文件路径
  * @param string $filePath
  */

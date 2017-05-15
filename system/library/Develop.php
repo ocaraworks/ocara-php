@@ -104,14 +104,4 @@ final class Develop extends Base
 	{
 		return !empty($_SESSION['OC_DEV_LOGIN']);
 	}
-
-	/**
-	 * 获取驼峰式名称
-	 * @param $name
-	 * @return string
-	 */
-	public static function getStandardName($name, $sep = '')
-	{
-		return implode($sep, array_map('ucfirst', explode('_', $name)));
-	}
 }
