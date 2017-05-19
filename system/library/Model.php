@@ -1121,6 +1121,27 @@ abstract class Model extends Base
 	}
 
 	/**
+	 * 设置字段别名转换映射
+	 * @param $tables
+	 */
+	private function _setTransformFields($tables)
+	{
+		$unJoined = count($tables) <= 1;
+
+		if ($unJoined) {
+			$transforms =  array($this->getConfig('MAP'));
+		} else {
+			$transforms = array();
+			foreach ($tables as $key => $row) {
+				$model = new $key();
+				$transforms[$row['alias']] = $model->getConfig('MAP');
+			}
+		}
+
+		$this->_driver->setTransformFields($transforms);
+	}
+
+	/**
 	 * 生成Sql
 	 * @param boolean $select
 	 * @param string $fields
@@ -1128,10 +1149,14 @@ abstract class Model extends Base
 	 */
 	private function _genSql($select, $fields = false, $count = false)
 	{
-		$this->_driver->clearParams();
 		$where  = array();
 		$option = ocGet('option', $this->_sql, array());
-		$from   = $this->_getFromSql($select);
+		$tables  = ocGet('tables', $this->_sql, array());
+
+		$this->_driver->clearParams();
+		$this->_setTransformFields($tables);
+
+		$from = $this->_getFromSql($select, $tables);
 
 		if (empty($fields)) {
 			if (isset($option['fields']) && $option['fields']) {
@@ -1233,7 +1258,7 @@ abstract class Model extends Base
 			if (is_array($fieldData)) {
 				$fields[] = $this->_driver->getFieldsSql($fieldData, $alias);
 			} else {
-				$fields[] = $fieldData;
+				$fields[] = $this->_driver->transformFields($fieldData);
 			}
 		}
 
@@ -1244,10 +1269,9 @@ abstract class Model extends Base
 	 * 生成数据表SQL
 	 * @param boolean $select
 	 */
-	private function _getFromSql($select)
+	private function _getFromSql($select, $tables)
 	{
-		$tables  = ocGet('tables', $this->_sql, array());
-		$noAlias = count($tables) <= 1;
+		$unJoined = count($tables) <= 1;
 		$from    = null;
 
 		foreach ($tables as $key => $param) {
@@ -1255,7 +1279,7 @@ abstract class Model extends Base
 			extract($param);
 
 			if (empty($fullname)) continue;
-			if ($noAlias) $alias = false;
+			if ($unJoined) $alias = false;
 
 			$on = $this->parseOn($alias, $on);
 			$fullname = $this->_driver->getTableName($fullname);

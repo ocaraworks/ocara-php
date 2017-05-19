@@ -188,6 +188,10 @@ class DatabaseBase extends Sql
 		$this->_dataType = $dataType == 'object' ? 'object' : 'array';
 	}
 
+	/**
+	 * 获取合并设置
+	 * @return array
+	 */
 	public function getUnions()
 	{
 		return $this->_unions;
@@ -249,8 +253,19 @@ class DatabaseBase extends Sql
 		}
 
 		error_reporting($errorReporting);
+		$this->_transformFields = array();
 		$ret = $this->checkError($result, $sql, $required);
+
 		return $ret;
+	}
+
+	/**
+	 * 设置字段别名映射
+	 * @param $transformFields
+	 */
+	public function setTransformFields($transformFields)
+	{
+		$this->_transformFields = $transformFields;
 	}
 
 	/**
