@@ -492,7 +492,7 @@ class Sql extends Base
 	{
 		if ($alias) {
 			$alias = $this->filterName($alias);
-			return $alias . '.';
+			return '`$alias`.';
 		}
 
 		return false;
@@ -551,14 +551,14 @@ class Sql extends Base
 	{
 		if ($addAlias) {
 			if (preg_match('/^([`\w]*)\.([`\s\w]+)$/', $field, $mt)) {
-				return $this->transformFields($field);
+				return $field;
 			}
 			if ($alias) {
-				return $this->transformFields("{$alias}.{$field}");
+				return "`{$alias}`.{$field}";
 			}
 		}
 
-		return $this->transformFields("`{$field}`");
+		return "`{$field}`";
 	}
 
 	/**
@@ -696,7 +696,7 @@ class Sql extends Base
 	public function getWhereSql($data)
 	{
 		if (empty($data)) return false;
-		if (!is_array($data)) return $this->transformFields($data);
+		if (!is_array($data)) return $data;
 
 		$where = array();
 		$length = count($data);

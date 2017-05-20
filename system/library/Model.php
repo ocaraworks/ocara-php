@@ -1149,14 +1149,10 @@ abstract class Model extends Base
 	 */
 	private function _genSql($select, $fields = false, $count = false)
 	{
+		$this->_driver->clearParams();
 		$where  = array();
 		$option = ocGet('option', $this->_sql, array());
-		$tables  = ocGet('tables', $this->_sql, array());
-
-		$this->_driver->clearParams();
-		$this->_setTransformFields($tables);
-
-		$from = $this->_getFromSql($select, $tables);
+		$from   = $this->_getFromSql($select);
 
 		if (empty($fields)) {
 			if (isset($option['fields']) && $option['fields']) {
@@ -1258,7 +1254,7 @@ abstract class Model extends Base
 			if (is_array($fieldData)) {
 				$fields[] = $this->_driver->getFieldsSql($fieldData, $alias);
 			} else {
-				$fields[] = $this->_driver->transformFields($fieldData);
+				$fields[] = $fieldData;
 			}
 		}
 
@@ -1271,9 +1267,10 @@ abstract class Model extends Base
 	 */
 	private function _getFromSql($select, $tables)
 	{
+		$tables  = ocGet('tables', $this->_sql, array());
 		$unJoined = count($tables) <= 1;
-		$from    = null;
-
+		$from = null;
+		
 		foreach ($tables as $key => $param) {
 			list($type, $fullname, $alias, $on) = array_fill(0, 4, null);
 			extract($param);
