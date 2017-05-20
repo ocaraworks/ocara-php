@@ -253,7 +253,6 @@ class DatabaseBase extends Sql
 		}
 
 		error_reporting($errorReporting);
-		$this->_transformFields = array();
 		$ret = $this->checkError($result, $sql, $required);
 
 		return $ret;
