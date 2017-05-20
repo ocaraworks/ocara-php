@@ -12,6 +12,8 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Sql extends Base
 {
+	protected $_transformFields = array();
+
 	/**
 	 * 给逗号分隔的列表加引号
 	 * @param string|array $list
@@ -129,6 +131,37 @@ class Sql extends Base
 	public function filterSql($content, $addSlashes = true, $equal = false)
 	{
 		return Filter::sql($content, $addSlashes, $this->_config['keywords'], $equal);
+	}
+
+	/**
+	 * 字段转换
+	 * @param $fields
+	 * @param bool $toAlias
+	 */
+	public function transformFields($sql, $alias2Field = false)
+	{
+		$fields = $this->_transformFields;
+		$signStr = '([^\w\.]+)';
+		$unJoined = count($fields) == 1;
+		$sql = chr(32) . $sql . chr(32);
+
+		foreach ($fields as $alias => $row) {
+			if ($alias2Field) {
+				$row = array_flip($row);
+			}
+			foreach ($row as $search => $replace) {
+				$alias = '(\w+\.)';
+				$search = '(' . $search . ')';
+				$exp = '/' . $signStr . $alias . $search . $signStr.'/i';
+				$sql = preg_replace($exp, '$1$2' . $replace . '$4', $sql);
+				if ($unJoined) {
+					$exp = '/' . $signStr . $search . $signStr.'/i';
+					$sql = preg_replace($exp, '$1' . $replace . '$3', $sql);
+				}
+			}
+		}
+
+		return trim($sql);
 	}
 
 	/**
@@ -459,7 +492,7 @@ class Sql extends Base
 	{
 		if ($alias) {
 			$alias = $this->filterName($alias);
-			return "`{$alias}`.";
+			return $alias . '.';
 		}
 
 		return false;
@@ -518,14 +551,14 @@ class Sql extends Base
 	{
 		if ($addAlias) {
 			if (preg_match('/^([`\w]*)\.([`\s\w]+)$/', $field, $mt)) {
-				return $field;
+				return $this->transformFields($field);
 			}
 			if ($alias) {
-				return "`{$alias}`.{$field}";
+				return $this->transformFields("{$alias}.{$field}");
 			}
 		}
 
-		return "`{$field}`";
+		return $this->transformFields("`{$field}`");
 	}
 
 	/**
@@ -663,7 +696,7 @@ class Sql extends Base
 	public function getWhereSql($data)
 	{
 		if (empty($data)) return false;
-		if (!is_array($data)) return $data;
+		if (!is_array($data)) return $this->transformFields($data);
 
 		$where = array();
 		$length = count($data);
