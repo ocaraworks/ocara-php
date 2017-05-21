@@ -13,14 +13,6 @@ defined('OC_PATH') or exit('Forbidden!');
 final class Database extends Base
 {
 	/**
-	 * 调试配置
-	 */
-	const DEBUG_NO = 0; //非调试
-	const DEBUG_RETURN = 1; //返回调试内容
-	const DEBUG_PRINT = 2; //用print_r()打印调试信息
-	const DEBUG_DUMP = 3; //用var_dump()打印调试信息
-
-	/**
 	 * 工厂模式
 	 */
 	private function __clone(){}

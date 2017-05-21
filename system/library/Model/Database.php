@@ -1,16 +1,24 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   应用模型类Model
+ * Ocara开源框架   数据库模型类Database
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara;
+namespace Ocara\Model;
+use Ocara\Request;
+use Ocara\Error;
+use Ocara\Call;
+use Ocara\Cache;
+use Ocara\FormToken;
+use Ocara\Database as DefaultDatabase;
+use Ocara\DatabaseBase;
+use Ocara\ModelBase;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-abstract class Model extends Base
+abstract class Database extends ModelBase
 {
 	
 	/**
@@ -220,7 +228,7 @@ abstract class Model extends Base
 	public function getConfigPath()
 	{
 		if ($this->_path) {
-			$filePath = lcfirst ($this->_path) . lcfirst($this->_name);
+			$filePath = lcfirst($this->_path) . lcfirst($this->_name);
 		} else {
 			$filePath = $this->_name;
 		}
@@ -452,7 +460,7 @@ abstract class Model extends Base
 			}
 		}
 
-		if ($debug === Database::DEBUG_RETURN) return $ret;
+		if ($debug === DatabaseBase::DEBUG_RETURN) return $ret;
 
 		$this->clearProperty();
 		return $ret;
@@ -593,7 +601,7 @@ abstract class Model extends Base
 			}
 		}
 
-		if ($debug === Database::DEBUG_RETURN) return $result;
+		if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
 
 		return $result;
 	}
@@ -633,7 +641,7 @@ abstract class Model extends Base
 		$this->where($this->_getPrimaryCondition($condition));
 		$data = $this->findRow(false, $option, $debug);
 
-		if ($debug === Database::DEBUG_RETURN) return $data;
+		if ($debug === DatabaseBase::DEBUG_RETURN) return $data;
 		if ($data) $this->data($data);
 
 		return $data;
@@ -671,7 +679,7 @@ abstract class Model extends Base
 	{
 		$row = $this->findRow($condition, $field, $debug);
 
-		if ($debug === Database::DEBUG_RETURN) return $row;
+		if ($debug === DatabaseBase::DEBUG_RETURN) return $row;
 
 		if (is_object($row)) {
 			return property_exists($row, $field) ? $row->$field : null;
@@ -689,10 +697,10 @@ abstract class Model extends Base
 	{
 		if (ocGet('option.group', $this->_sql)) {
 			$result = $this->_find(false, false, $debug, false, true);
-			return $debug === Database::DEBUG_RETURN ? $result : count($result);
+			return $debug === DatabaseBase::DEBUG_RETURN ? $result : count($result);
 		} else {
 			$result = $this->_find(false, false, $debug, true, true);
-			if ($debug === Database::DEBUG_RETURN) return $result;
+			if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
 			return $result ? $result['total'] : 0;
 		}
 	}
@@ -744,7 +752,7 @@ abstract class Model extends Base
 			$result = $this->_driver->query($sql, $debug, true, true, false, $count);
 		}
 
-		if ($debug === Database::DEBUG_RETURN) {
+		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
 		}
 
@@ -769,14 +777,14 @@ abstract class Model extends Base
 
 		if (!($master || ocGet('option.master', $this->_sql))) {
 			if (!is_object($this->_slave)) {
-				$this->_slave = Database::factory($this->_server, false, false);
+				$this->_slave = DefaultDatabase::factory($this->_server, false, false);
 			}
 			$this->_driver = $this->_slave;
 		}
 
 		if (!is_object($this->_driver)) {
 			if (!is_object($this->_master)) {
-				$this->_master = Database::factory($this->_server);
+				$this->_master = DefaultDatabase::factory($this->_server);
 			}
 			$this->_driver = $this->_master;
 		}

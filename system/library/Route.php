@@ -59,7 +59,7 @@ class Route extends Base
             }
         }
 
-        $featureClass = 'Ocara\Feature\Controller';
+        $featureClass = 'Ocara\Feature\CommonController';
         if ($module != OC_DEV_SIGN) {
             if (empty($controller)) {
                 $controller = ocConfig('DEFAULT_CONTROLLER', 'home');

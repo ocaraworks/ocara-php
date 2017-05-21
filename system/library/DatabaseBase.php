@@ -13,6 +13,14 @@ defined('OC_PATH') or exit('Forbidden!');
 class DatabaseBase extends Sql
 {
 	/**
+	 * 调试配置
+	 */
+	const DEBUG_NO = 0; //非调试
+	const DEBUG_RETURN = 1; //返回调试内容
+	const DEBUG_PRINT = 2; //用print_r()打印调试信息
+	const DEBUG_DUMP = 3; //用var_dump()打印调试信息
+
+	/**
 	 * 连接属性
 	 */
 	protected $_plugin = null;
@@ -222,9 +230,9 @@ class DatabaseBase extends Sql
 		if ($query) {
 			foreach ($this->_unions as $union) {
 				if ($count) {
-					$unionData = $union['model']->getTotal(Database::DEBUG_RETURN);
+					$unionData = $union['model']->getTotal(self::DEBUG_RETURN);
 				} else {
-					$unionData = $union['model']->find(false, false, Database::DEBUG_RETURN);
+					$unionData = $union['model']->find(false, false, self::DEBUG_RETURN);
 				}
 				$sql .= $this->getUnionSql($unionData['sql'], $union['unionAll']);
 				$params[] = $unionData['params'];
@@ -662,14 +670,14 @@ class DatabaseBase extends Sql
 		if ($debug) {
 			$ret = array('sql' => $sql, 'params' => $this->_params);
 			$this->_params = array();
-			if ($debug === Database::DEBUG_RETURN) {
+			if ($debug === self::DEBUG_RETURN) {
 				return $ret;
 			}
-			if ($debug === Database::DEBUG_PRINT
-				|| $debug === Database::DEBUG_DUMP
+			if ($debug === self::DEBUG_PRINT
+				|| $debug === self::DEBUG_DUMP
 			) {
 				if (OC_SYS_MODEL == 'develop') {
-					if ($debug === Database::DEBUG_DUMP) {
+					if ($debug === self::DEBUG_DUMP) {
 						ocDump($ret);
 					} else {
 						ocPrint($ret);

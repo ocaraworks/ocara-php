@@ -6,7 +6,15 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara;
+namespace Ocara\Controller;
+use Ocara\Ocara;
+use Ocara\Config;
+use Ocara\Request;
+use Ocara\Response;
+use Ocara\Error;
+use Ocara\Lang;
+use Ocara\Database;
+use Ocara\ControllerBase;
 
 defined('OC_PATH') or exit('Forbidden!');
 

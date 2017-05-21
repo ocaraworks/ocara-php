@@ -15,6 +15,8 @@
     "autoload": {
         "psr-4": {
 			"Ocara\\":"system/library/",
+            "Ocara\\Controller\\":"system/library/Controller/",
+            "Ocara\\Model\\":"system/library/Model/",
 			"Ocara\\Cache\\":"system/library/Cache/",
 			"Ocara\\Database\\": "system/library/Database/",
 			"Ocara\\Interfaces\\":"system/library/Interfaces/",

@@ -6,13 +6,23 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara;
-use Ocara\Service\Pager;
+namespace Ocara\Controller;
 use Ocara\Interfaces\Controller as ControllerInterface;
+use Ocara\Ocara;
+use Ocara\Config;
+use Ocara\Request;
+use Ocara\Response;
+use Ocara\Error;
+use Ocara\Form;
+use Ocara\Call;
+use Ocara\Lang;
+use Ocara\Database;
+use Ocara\ControllerBase;
+use Ocara\ModelBase;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class Controller extends ControllerBase implements ControllerInterface
+class Common extends ControllerBase implements ControllerInterface
 {
 	/**
 	 * @var $_isSubmit 是否POST提交
@@ -195,8 +205,8 @@ class Controller extends ControllerBase implements ControllerInterface
 	{
 		if (empty($name)) {
 			$name  = $this->getRoute('controller');
-			$model = self::model();
-			if (is_object($model) && $model instanceof Model) {
+			$model = $this->model();
+			if (is_object($model) && $model instanceof ModelBase) {
 				$table = $model->getTable();
 			} else {
 				$table = $name;

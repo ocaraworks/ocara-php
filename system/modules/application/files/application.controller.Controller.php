@@ -3,12 +3,12 @@
  * 基本控制器基类
  */
 namespace Controller;
-use Ocara\Controller as OCController;
+use Ocara\Controller\Common as CommonControllerBase;
 use Ocara\Request;
 use Ocara\Response;
 use Ocara\Error;
 
-class Controller extends OCController
+class Controller extends CommonControllerBase
 {
 	public function _start()
 	{

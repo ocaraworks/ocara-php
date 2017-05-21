@@ -63,7 +63,7 @@ $OC_CONF['STATIC'] = array(
  * 控制器类型
  */
 $OC_CONF['CONTROLLER_FEATURE_CLASS'] = array(
-	'Controller', 'RestController'
+	'Common', 'Rest'
 );
 
 /**
@@ -156,6 +156,8 @@ $OC_CONF['AUTOLOAD_MAP'] = array(
 
 	/*Ocara框架*/
 	'Ocara\\' 								=> OC_SYS . 'library/',
+	'Ocara\Controller\\' 					=> OC_LIB . 'Controller/',
+	'Ocara\Model\\' 						=> OC_LIB . 'Model/',
 	'Ocara\Cache\\' 						=> OC_LIB . 'Cache/',
 	'Ocara\Database\\' 						=> OC_LIB . 'Database/',
 	'Ocara\Interfaces\\' 					=> OC_LIB . 'Interfaces/',

@@ -17,7 +17,7 @@ use Ocara\Url;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class Controller extends FeatureBase implements Feature
+class Common extends FeatureBase implements Feature
 {
      /**
      * 获取路由

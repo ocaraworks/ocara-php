@@ -10,7 +10,7 @@ use Ocara\Url;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class RestController extends FeatureBase implements Feature
+final class Rest extends FeatureBase implements Feature
 {
     /**
      * 获取路由

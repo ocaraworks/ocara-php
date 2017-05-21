@@ -214,7 +214,7 @@ final class Ocara
 		$controllers = ocConfig('CONTROLLER_FEATURE_CLASS', array());
 
 		foreach ($controllers as $name) {
-			if ($controller->isSubclassOf('Ocara\\' . $name)) {
+			if ($controller->isSubclassOf('Ocara\\Controller\\' . $name)) {
 				return 'Ocara\Feature\\' . $name;
 			}
 		}
