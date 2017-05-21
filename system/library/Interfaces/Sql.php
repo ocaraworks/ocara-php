@@ -155,20 +155,43 @@ interface Sql
 	public function getAliasSql($alias);
 
 	/**
+	 * 获取字段列表SQL
+	 * @param array $fields
+	 * @param bool $alias
+	 * @return string
+	 */
+	public function getFieldsSql(array $fields, $alias = false);
+
+	/**
+	 * 字段组合
+	 * @param array $fields
+	 * @return bool|string
+	 */
+	public function getMultiFieldsSql(array $fields);
+
+	/**
+	 * 获取字段名称SQL
+	 * @param $field
+	 * @param bool $addAlias
+	 * @param bool $alias
+	 * @return string
+	 */
+	public function getFieldNameSql($field, $addAlias = true, $alias = false);
+
+	/**
+	 * 转换字段为别名
+	 * @param $fields
+	 * @param $aliasFields
+	 */
+	public function getAliasFieldsSql($fields, $aliasFields);
+
+	/**
 	 * [别名.]字段解析
 	 * @param string $field
 	 * @param bool $addAlias
 	 * @param string $alias
 	 */
 	public function parseField($field, $addAlias = true, $alias = false);
-
-	/**
-	 * 获取字段名称SQL
-	 * @param string $field
-	 * @param bool $addAlias
-	 * @param string $alias
-	 */
-	public function getFieldNameSql($field, $addAlias = true, $alias = false);
 
 	/**
 	 * 值格式解析

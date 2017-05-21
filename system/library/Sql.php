@@ -12,6 +12,8 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Sql extends Base
 {
+	protected $_defaultFields = '*';
+	
 	/**
 	 * 给逗号分隔的列表加引号
 	 * @param string|array $list
@@ -460,7 +462,7 @@ class Sql extends Base
 	 */
 	public function getDefaultFieldsSql()
 	{
-		return '*';
+		return $this->_defaultFields;
 	}
 
 	/**
@@ -572,7 +574,9 @@ class Sql extends Base
 
 		foreach ($fields as $key => $value) {
 			$value = trim($value);
-			if (!preg_match('/\sas\s/', $value, $mt)) {
+			if (!preg_match('/^(\w+\.)?[' . $this->_defaultFields . ']$/', $value)
+				&& !preg_match('/\sas\s/', $value, $mt)
+			) {
 				$alias = $this->transformFields($value, $aliasFields, true);
 				if ($alias) {
 					$value .= ' AS ' . $alias;

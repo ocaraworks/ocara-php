@@ -20,7 +20,16 @@ abstract class Base
 	private $_route;
 	private $_properties = array();
 	public static $container;
-	
+
+	/**
+	 * 实例化
+	 * @return static
+	 */
+	public static function build()
+	{
+		return new static();
+	}
+
 	/**
 	 * 获取自定义属性
 	 * @param string $name

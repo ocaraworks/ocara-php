@@ -19,6 +19,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	 */
 	protected $_pdoName = 'pdo_mysql';
 	protected $_defaultPort = '3306';
+	protected $_defaultFields = '*';
 
 	/**
 	 * SQL过滤关键字
