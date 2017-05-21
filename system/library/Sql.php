@@ -12,8 +12,6 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Sql extends Base
 {
-	protected $_transformFields = array();
-
 	/**
 	 * 给逗号分隔的列表加引号
 	 * @param string|array $list
@@ -138,30 +136,32 @@ class Sql extends Base
 	 * @param $fields
 	 * @param bool $toAlias
 	 */
-	public function transformFields($sql, $alias2Field = false)
+	public function transformFields($sql, $mapFields, $field2Alias = false)
 	{
-		$fields = $this->_transformFields;
 		$signStr = '([^\w\.]+)';
-		$unJoined = count($fields) == 1;
+		$unJoined = count($mapFields) == 1;
 		$sql = chr(32) . $sql . chr(32);
 
-		foreach ($fields as $alias => $row) {
-			if ($alias2Field) {
+		$result = OC_EMPTY;
+		foreach ($mapFields as $alias => $row) {
+			if ($field2Alias) {
 				$row = array_flip($row);
 			}
 			foreach ($row as $search => $replace) {
 				$alias = '(\w+\.)';
 				$search = '(' . $search . ')';
 				$exp = '/' . $signStr . $alias . $search . $signStr.'/i';
-				$sql = preg_replace($exp, '$1$2' . $replace . '$4', $sql);
+				$pre = $field2Alias ? '$1' : '$1';
+				$sql = preg_replace($exp, $pre . $replace . '$4', $sql);
 				if ($unJoined) {
 					$exp = '/' . $signStr . $search . $signStr.'/i';
 					$sql = preg_replace($exp, '$1' . $replace . '$3', $sql);
 				}
 			}
+			$result = trim($sql);
 		}
 
-		return trim($sql);
+		return $result;
 	}
 
 	/**
@@ -559,6 +559,29 @@ class Sql extends Base
 		}
 
 		return "`{$field}`";
+	}
+
+	/**
+	 * 转换字段为别名
+	 * @param $fields
+	 * @param $aliasFields
+	 */
+	public function getAliasFieldsSql($fields, $aliasFields)
+	{
+		$fields = explode(',', $fields);
+
+		foreach ($fields as $key => $value) {
+			$value = trim($value);
+			if (!preg_match('/\sas\s/', $value, $mt)) {
+				$alias = $this->transformFields($value, $aliasFields, true);
+				if ($alias) {
+					$value .= ' AS ' . $alias;
+				}
+			}
+			$fields[$key] = $value;
+		}
+
+		return implode(',', $fields);
 	}
 
 	/**
