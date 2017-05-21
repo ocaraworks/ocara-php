@@ -42,9 +42,9 @@ abstract class Model extends Base
 	private static $_requirePrimary;
 
 	/**
-	 * 析构函数
+	 * 初始化
 	 */
-	public function __construct()
+	public function initialize()
 	{
 		if (self::$_requirePrimary === null) {
 			$required = ocConfig('MODEL_REQUIRE_PRIMARY', true);
@@ -55,14 +55,6 @@ abstract class Model extends Base
 			Error::show('no_primaries');
 		}
 
-		$this->initialize();
-	}
-
-	/**
-	 * 初始化
-	 */
-	public function initialize()
-	{
 		$this->_path = ocDir($this->_server, $this->_database);
 		$this->_name = self::getClass();
 		$this->_tag = $this->_path . $this->_name;
@@ -1127,9 +1119,13 @@ abstract class Model extends Base
 	private function _getAliasFields($tables)
 	{
 		$unJoined = count($tables) <= 1;
-
+		$transforms = array();
+		
 		if ($unJoined) {
-			$transforms =  array($this->getConfig('MAP'));
+			$map = $this->getConfig('MAP');
+			if ($map) {
+				$transforms = array($map);
+			}
 		} else {
 			$transforms = array();
 			foreach ($tables as $key => $row) {
