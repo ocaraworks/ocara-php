@@ -42,6 +42,14 @@ abstract class Model extends Base
 	private static $_requirePrimary;
 
 	/**
+	 * Model constructor.
+	 */
+	public function __construct()
+	{
+		$this->initialize();
+	}
+
+	/**
 	 * 初始化
 	 */
 	public function initialize()
@@ -1120,7 +1128,7 @@ abstract class Model extends Base
 	{
 		$unJoined = count($tables) <= 1;
 		$transforms = array();
-		
+
 		if ($unJoined) {
 			$map = $this->getConfig('MAP');
 			if ($map) {
