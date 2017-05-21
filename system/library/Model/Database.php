@@ -75,7 +75,7 @@ abstract class Database extends ModelBase
 		$this->_name = self::getClass();
 		$this->_tag = $this->_path . $this->_name;
 		$this->_tableName = empty($this->_table) ? $this->_name : $this->_table;
-		$this->_oldTable  = $this->_tableName;
+		$this->_oldTable = $this->_tableName;
 
 		$this->_join(false, $this->_tableName, 'a');
 		$this->setDataType($this->_dataType);
