@@ -1023,7 +1023,7 @@ abstract class Database extends ModelBase
 		}
 
 		if (!ocEmpty($where)) {
-			$where = array($table, 'cwhere', array($sign, $where));
+			$where = array($table, 'cWhere', array($sign, $where));
 			$this->_sql['option']['where'][] = $where;
 		}
 

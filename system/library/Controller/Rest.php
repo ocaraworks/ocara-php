@@ -43,7 +43,6 @@ class Rest extends ControllerBase
 
 		self::$container->response->setContentType($defaultContentType);
 		self::$container
-			 ->bindSingleton('view', array($this->feature, 'getView'), array($this->getRoute()))
 			 ->bindSingleton('validator', array($this->feature, 'getValidator'))
 			 ->bindSingleton('db', function(){ Database::factory('default'); })
 			 ->bindSingleton('pager', array($this->feature, 'getPager'));
