@@ -6,7 +6,7 @@
 
 <div>
     <span class="left-span">控制器类型</span>
-    <input type="radio" value="Controller" name="controllerType" id="controllerType1" checked /> 普通控制器&nbsp;
+    <input type="radio" value="CommonController" name="controllerType" id="controllerType1" checked /> 普通控制器&nbsp;
     <input type="radio" value="RestController" name="controllerType" id="controllerType2" /> Restful控制器
 </div>
     
