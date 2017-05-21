@@ -284,7 +284,6 @@ abstract class Database extends ModelBase
 	 */
 	public function data(array $data = array())
 	{
-		$this->_isOrm = true;
 		$data = $this->_getPostData($data);
 
 		if ($data) {
@@ -292,6 +291,7 @@ abstract class Database extends ModelBase
 			$this->setProperty($data);
 		}
 
+		$this->_isOrm = true;
 		return $this;
 	}
 
@@ -638,7 +638,25 @@ abstract class Database extends ModelBase
 			Error::show('no_primary');
 		}
 
-		$this->where($this->_getPrimaryCondition($condition));
+		if (ocEmpty($condition)) {
+			Error::show('need_primary_value');
+		}
+
+		if (is_string($condition) || is_numeric($condition)) {
+			$values = explode(',', trim($condition));
+		} elseif (is_array($condition)) {
+			$values = $condition;
+		} else {
+			Error::show('fault_primary_value_format');
+		}
+
+		if (count($this->_primaries) == count($values)) {
+			$where = $this->map(array_combine($this->_primaries, $values));
+		} else {
+			Error::show('fault_primary_num');
+		}
+
+		$this->where($where);
 		$data = $this->findRow(false, $option, $debug);
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $data;
@@ -1100,32 +1118,6 @@ abstract class Database extends ModelBase
 	{
 		$this->_sql['option']['page'] = true;
 		return $this->limit($limitInfo);
-	}
-
-	/**
-	 * 主键条件
-	 * @param $value
-	 */
-	private function _getPrimaryCondition($value)
-	{
-		if (ocEmpty($value)) {
-			Error::show('need_primary_value');
-		}
-
-		if (is_string($value) || is_numeric($value)) {
-			$values = explode(',', trim($value));
-		} elseif (is_array($value)) {
-			$values = $value;
-		} else {
-			Error::show('fault_primary_value_format');
-		}
-
-		if (count($this->_primaries) == count($values)) {
-			$result = array_combine($this->_primaries, $values);
-			return $this->map($result);
-		} else {
-			Error::show('fault_primary_num');
-		}
 	}
 
 	/**

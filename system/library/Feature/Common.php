@@ -11,9 +11,9 @@ use Ocara\Interfaces\Feature;
 use Ocara\Container;
 use Ocara\Request;
 use Ocara\FormToken;
-use Ocara\View;
 use Ocara\Route;
 use Ocara\Url;
+use Ocara\View\Common as CommonView;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -75,12 +75,12 @@ class Common extends FeatureBase implements Feature
     }
 
     /**
-     * 获取View模板类
+     * 获取View视图类
      */
     public static function getView(Container $container, $route)
     {
-        ocImport(OC_LIB . 'View.php');
-        $view = new View();
+        ocImport(OC_LIB . '/View/Common.php');
+        $view = new CommonView();
         $view->setRoute($route);
         $view->initialize();
         return $view;

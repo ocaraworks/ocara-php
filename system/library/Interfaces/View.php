@@ -10,26 +10,11 @@ namespace Ocara\Interfaces;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-interface Controller
+interface View
 {
 
 	/**
 	 * 初始化设置
-	 * @param array $route
 	 */
-	public function initialize(array $route);
-
-	/**
-	 * 执行动作
-	 * @param string $actionMethod
-	 * @param bool $display
-	 */
-	public function doAction($actionMethod, $display = true);
-
-	/**
-	 * 执行动作（返回值）
-	 * @param string $method
-	 * @param array $params
-	 */
-	public function doReturnAction($method, array $params = array());
+	public function initialize();
 }

@@ -15,10 +15,11 @@ use Ocara\Error;
 use Ocara\Lang;
 use Ocara\Database;
 use Ocara\ControllerBase;
+use Ocara\Ajax;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class RestController extends ControllerBase
+class Rest extends ControllerBase
 {
 	/**
 	 * @var $_message 返回消息
@@ -42,6 +43,7 @@ class RestController extends ControllerBase
 
 		self::$container->response->setContentType($defaultContentType);
 		self::$container
+			 ->bindSingleton('view', array($this->feature, 'getView'), array($this->getRoute()))
 			 ->bindSingleton('validator', array($this->feature, 'getValidator'))
 			 ->bindSingleton('db', function(){ Database::factory('default'); })
 			 ->bindSingleton('pager', array($this->feature, 'getPager'));

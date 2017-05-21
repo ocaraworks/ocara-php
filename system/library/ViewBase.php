@@ -1,35 +1,15 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   控制器类接口Controller
+ * Ocara开源框架   视图基类View
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Interfaces;
+namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-interface Controller
+class ViewBase extends Base
 {
-
-	/**
-	 * 初始化设置
-	 * @param array $route
-	 */
-	public function initialize(array $route);
-
-	/**
-	 * 执行动作
-	 * @param string $actionMethod
-	 * @param bool $display
-	 */
-	public function doAction($actionMethod, $display = true);
-
-	/**
-	 * 执行动作（返回值）
-	 * @param string $method
-	 * @param array $params
-	 */
-	public function doReturnAction($method, array $params = array());
 }

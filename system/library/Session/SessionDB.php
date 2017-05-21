@@ -10,6 +10,7 @@ namespace Ocara\Session;
 use Ocara\Base;
 use Ocara\Error;
 use Ocara\Database;
+use Ocara\DatabaseBase;
 use \Exception;
 
 defined('OC_PATH') or exit('Forbidden!');

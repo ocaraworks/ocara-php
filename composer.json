@@ -17,6 +17,7 @@
 			"Ocara\\":"system/library/",
             "Ocara\\Controller\\":"system/library/Controller/",
             "Ocara\\Model\\":"system/library/Model/",
+            "Ocara\\View\\":"system/library/View/",
 			"Ocara\\Cache\\":"system/library/Cache/",
 			"Ocara\\Database\\": "system/library/Database/",
 			"Ocara\\Interfaces\\":"system/library/Interfaces/",

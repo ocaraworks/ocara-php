@@ -7,6 +7,7 @@ use Ocara\Request;
 use Ocara\Validator;
 use Ocara\Route;
 use Ocara\Url;
+use Ocara\View\Rest as RestView;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -63,5 +64,17 @@ final class Rest extends FeatureBase implements Feature
         }
 
         return array($module, $controller, $action);
+    }
+
+    /**
+     * 获取View视图类
+     */
+    public static function getView(Container $container, $route)
+    {
+        ocImport(OC_LIB . '/View/Rest.php');
+        $view = new RestView();
+        $view->setRoute($route);
+        $view->initialize();
+        return $view;
     }
 }

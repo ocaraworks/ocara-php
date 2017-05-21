@@ -86,7 +86,7 @@ class ControllerBase extends Base implements ControllerInterface
 		$class = '\Model\\' . ucfirst($class);
 		if (isset($this->_models[$class])) {
 			$model = $this->_models[$class];
-			if (is_object($model) && $model instanceof Model) {
+			if (is_object($model) && $model instanceof ModelBase) {
 				return $model;
 			}
 		}

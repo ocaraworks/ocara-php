@@ -1,17 +1,22 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   应用视图类View
+ * Ocara开源框架   普通视图类View
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara;
+namespace Ocara\View;
+
+use Ocara\Error;
+use Ocara\Filter;
+use Ocara\Html;
+use Ocara\Interfaces\View as ViewInterfaces;
 use Ocara\Service\Interfaces\Template as TemplateInterface;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class View extends Base
+class Common extends ViewBase implements ViewInterfaces
 {
 	/**
 	 * @var $_template 当前模板
@@ -28,9 +33,9 @@ class View extends Base
 
 	private $_useCache  = true;
 	private $_useLayout = true;
-	
+
 	/**
-	 * 析构函数
+	 * 初始化
 	 */
 	public function initialize()
 	{
@@ -64,7 +69,7 @@ class View extends Base
 	 */
 	public function engine()
 	{
-		if (is_object($this->_plugin) && $this->_plugin instanceof OCTemplateInterface) {
+		if (is_object($this->_plugin) && $this->_plugin instanceof TemplateInterface) {
 			return $this->_plugin;
 		}
 		return null;

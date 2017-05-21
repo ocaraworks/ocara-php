@@ -158,6 +158,7 @@ $OC_CONF['AUTOLOAD_MAP'] = array(
 	'Ocara\\' 								=> OC_SYS . 'library/',
 	'Ocara\Controller\\' 					=> OC_LIB . 'Controller/',
 	'Ocara\Model\\' 						=> OC_LIB . 'Model/',
+	'Ocara\View\\' 							=> OC_LIB . 'View/',
 	'Ocara\Cache\\' 						=> OC_LIB . 'Cache/',
 	'Ocara\Database\\' 						=> OC_LIB . 'Database/',
 	'Ocara\Interfaces\\' 					=> OC_LIB . 'Interfaces/',

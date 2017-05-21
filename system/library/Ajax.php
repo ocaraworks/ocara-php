@@ -50,6 +50,21 @@ final class Ajax extends Base
 			$result = Call::run($callback, array($result));
 		}
 
-		self::$container->response->output($result);
+		$response = self::$container->response;
+		$data = $response->prepareSendHeaders();
+		$contentType = $response->getHeader('contentType');
+		$response->sendHeaders($data);
+
+		switch ($contentType)
+		{
+			case 'json':
+				$content = json_encode($result);
+				break;
+			case 'xml':
+				$content = self::getXmlResult($result);
+				break;
+		}
+
+		echo($content);
 	}
 }

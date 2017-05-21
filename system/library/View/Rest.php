@@ -1,35 +1,25 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   控制器类接口Controller
+ * Ocara开源框架   Ajax视图类View
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Interfaces;
+namespace Ocara\View;
+
+use Ocara\Interfaces\View as ViewInterfaces;
+use Ocara\ViewBase;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-interface Controller
+class Rest extends ViewBase implements ViewInterfaces
 {
-
-	/**
-	 * 初始化设置
-	 * @param array $route
-	 */
-	public function initialize(array $route);
-
-	/**
-	 * 执行动作
-	 * @param string $actionMethod
-	 * @param bool $display
-	 */
-	public function doAction($actionMethod, $display = true);
-
-	/**
-	 * 执行动作（返回值）
-	 * @param string $method
-	 * @param array $params
-	 */
-	public function doReturnAction($method, array $params = array());
+    /**
+     * 初始化
+     */
+    public function initialize()
+    {
+        return $this;
+    }
 }

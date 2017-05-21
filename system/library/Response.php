@@ -34,7 +34,30 @@ class Response extends Base
 	/**
 	 * 发送头部信息
 	 */
-	public function sendHeaders()
+	public function sendHeaders($data = array())
+	{
+		if (empty($data)) {
+			$data = $this->prepareSendHeaders();
+		}
+
+		foreach ($data as $key => $header) {
+			if (is_string($key)) {
+				$method = '_get' . ucfirst($key);
+				if (method_exists($this, $method)) {
+					$data[$key] = $this->$method();
+				} else {
+					$data[$key] = $key . ':' . $header;
+				}
+			}
+			header($data[$key]);
+		}
+	}
+
+	/**
+	 * 获取要发送的头数据
+	 * @return null
+	 */
+	public function prepareSendHeaders()
 	{
 		if (headers_sent()) return null;
 
@@ -52,17 +75,8 @@ class Response extends Base
 		}
 
 		$data['contentType'] = $this->_getContentType();
-		foreach ($data as $key => $header) {
-			if (is_string($key)) {
-				$method = '_get' . ucfirst($key);
-				if (method_exists($this, $method)) {
-					$data[$key] = $this->$method();
-				} else {
-					$data[$key] = $key . ':' . $header;
-				}
-			}
-			header($data[$key]);
-		}
+
+		return $data;
 	}
 
 	/**
@@ -152,28 +166,6 @@ class Response extends Base
 
 		$result = "Content-Type:{$contentType}; charset={$charset}";
 		return $result;
-	}
-
-	/**
-	 * 输出内容
-	 * @param $content
-	 */
-	public function output($content)
-	{
-		$this->sendHeaders();
-		$contentType = $this->getHeader('contentType');
-
-		switch ($contentType)
-		{
-			case 'json':
-				$content = json_encode($content);
-				break;
-			case 'xml':
-				$content = self::getXmlResult($content);
-				break;
-		}
-
-		echo $content;
 	}
 
 	/**
