@@ -1124,7 +1124,7 @@ abstract class Model extends Base
 	 * 设置字段别名转换映射
 	 * @param $tables
 	 */
-	private function _setTransformFields($tables)
+	private function _getAliasFields($tables)
 	{
 		$unJoined = count($tables) <= 1;
 
@@ -1133,12 +1133,12 @@ abstract class Model extends Base
 		} else {
 			$transforms = array();
 			foreach ($tables as $key => $row) {
-				$model = new $key();
-				$transforms[$row['alias']] = $model->getConfig('MAP');
+//				$model = new $key();
+//				$transforms[$row['alias']] = $model->getConfig('MAP');
 			}
 		}
 
-		$this->_driver->setTransformFields($transforms);
+		return $transforms;
 	}
 
 	/**
@@ -1150,9 +1150,11 @@ abstract class Model extends Base
 	private function _genSql($select, $fields = false, $count = false)
 	{
 		$this->_driver->clearParams();
+
 		$where  = array();
 		$option = ocGet('option', $this->_sql, array());
-		$from   = $this->_getFromSql($select);
+		$tables = ocGet('tables', $this->_sql, array());
+		$from   = $this->_getFromSql($select, $tables);
 
 		if (empty($fields)) {
 			if (isset($option['fields']) && $option['fields']) {
@@ -1189,6 +1191,8 @@ abstract class Model extends Base
 		}
 
 		if ($select) {
+			$aliasFields = $this->_getAliasFields($tables);
+			$fields = $this->_driver->getAliasFieldsSql($fields, $aliasFields);
 			return $this->_driver->getSelectSql($fields, $from, $option);
 		} else {
 			return $option['where'];
@@ -1267,7 +1271,6 @@ abstract class Model extends Base
 	 */
 	private function _getFromSql($select, $tables)
 	{
-		$tables  = ocGet('tables', $this->_sql, array());
 		$unJoined = count($tables) <= 1;
 		$from = null;
 		
