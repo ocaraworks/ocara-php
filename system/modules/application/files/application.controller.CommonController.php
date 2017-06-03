@@ -8,7 +8,7 @@ use Ocara\Request;
 use Ocara\Response;
 use Ocara\Error;
 
-class Controller extends CommonControllerBase
+class CommonController extends CommonControllerBase
 {
 	public function _start()
 	{

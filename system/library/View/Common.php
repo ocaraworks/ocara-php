@@ -11,6 +11,7 @@ namespace Ocara\View;
 use Ocara\Error;
 use Ocara\Filter;
 use Ocara\Html;
+use Ocara\ViewBase;
 use Ocara\Interfaces\View as ViewInterfaces;
 use Ocara\Service\Interfaces\Template as TemplateInterface;
 

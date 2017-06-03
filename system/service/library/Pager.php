@@ -195,7 +195,7 @@ class Pager extends ServiceBase
 		$recordEnd   = $this->perPage * $this->page - 1;
 		$recordStart = $recordEnd - ($this->perPage - 1);
 		
-		return array($recordStart,$this->perPage);
+		return array($recordStart, $this->perPage);
 	}
 
 	/**

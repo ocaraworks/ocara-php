@@ -55,7 +55,7 @@ class model_admin
 		$content .= "namespace Model{$namespace};\r\n";
 		$content .= "use Ocara\Model\Database;\r\n";
 		$content .= "\r\n";
-		$content .= "class {$modelName} extends Model\r\n";
+		$content .= "class {$modelName} extends Database\r\n";
 		$content .= "{\r\n";
 
 		if ($this->_server) {
@@ -110,6 +110,7 @@ class model_admin
 
 		//新建语言文件
 		$modelClass = 'Model' . $namespace . OC_NS_SEP . $modelName;
+
 		$model = new $modelClass();
 		$fields = $model->getFields();
 
@@ -122,6 +123,7 @@ class model_admin
 				$name = ocStandardName($row['name'], OC_SPACE);
 				$desc = $name;
 			}
+			$desc = addslashes($desc);
 			$content .= "\t'{$row['name']}' => '{$desc}',\r\n";
 		}
 		$content .= ");";

@@ -15,6 +15,7 @@ use Ocara\FormToken;
 use Ocara\Database as DefaultDatabase;
 use Ocara\DatabaseBase;
 use Ocara\ModelBase;
+use Ocara\Iterator\Database\ObjectRecords;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -42,9 +43,11 @@ abstract class Database extends ModelBase
 	private $_tableName;
 	private $_oldTable;
 	private $_isOrm;
+	private $_selected;
 
-	private $_config   = array();
-	private $_sql      = array();
+	private $_relations = array();
+	private $_config    = array();
+	private $_sql       = array();
 	private $_primaries = array();
 
 	private static $_requirePrimary;
@@ -446,16 +449,22 @@ abstract class Database extends ModelBase
 			Error::show('fault_save_data');
 		}
 
+		if ($this->_relations) {
+			$this->_driver->transBegin();
+		}
+
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
 			$ret = $this->_driver->update($this->_tableName, $data, $condition, $debug);
 			if (!$debug && method_exists($this, '_afterUpdate')) {
+				$this->_relateSave();
 				$this->_afterUpdate();
 			}
 		} else {
 			$ret = $this->_driver->insert($this->_tableName, $data, $debug);
 			if (!$debug && method_exists($this, '_afterCreate')) {
 				$this->select($this->_driver->getInsertId());
+				$this->_relateSave();
 				$this->_afterCreate();
 			}
 		}
@@ -627,12 +636,85 @@ abstract class Database extends ModelBase
 	}
 
 	/**
+	 * 获取SQL
+	 * @return array
+	 */
+	public function getSql()
+	{
+		return $this->_sql;
+	}
+
+	/**
+	 * 设置SQL
+	 * @param $sql
+	 */
+	public function setSql($sql)
+	{
+		$this->_sql = $sql;
+	}
+
+	/**
 	 * 按主键选择一行记录，并保存为属性
 	 * @param string|numric|array $condition
 	 * @param string|array $option
 	 * @param bool $debug
 	 */
-	public function select($condition, $option = null, $debug = false)
+	public function selectOne($condition = false, $option = null, $debug = false)
+	{
+		$this->_selected = true;
+		$data = $this->findFirst($condition, $option, $debug);
+
+		if ($debug === DatabaseBase::DEBUG_RETURN) return $data;
+		if ($data) {
+			$this->data($data);
+			return $this;
+		}
+
+		return null;
+	}
+
+	/**
+	 * 按主键选择一行记录
+	 * @param string|numric|array $primaryValues
+	 * @param string|array $option
+	 * @param bool $debug
+	 */
+	public static function select($primaryValues, $option = null, $debug = false)
+	{
+		$model = new static();
+		$condition = $model->_getPrimaryCondition($primaryValues);
+		$model->selectOne($condition, $option, $debug);
+
+		return $model;
+	}
+
+	/**
+	 * 选择多条记录
+	 * @param $condition
+	 * @param null $options
+	 * @param bool $debug
+	 * @return array|ObjectRecords
+	 */
+	public static function selectAll($condition, $options = null, $debug = false)
+	{
+		$records = new ObjectRecords(get_called_class(), array($condition), $options, $debug);
+
+		$times = isset($options['times']) ? $options['times'] : 0;
+		$start = isset($options['start']) ? $options['start'] : 0;
+		$rows = isset($options['rows']) ? $options['rows'] : 1;
+
+		$records->setLimit($times, $start, $rows);
+
+		return $records;
+	}
+
+	/**
+	 * 获取主键条件
+	 * @param $condition
+	 * @return array
+	 * @throws \Ocara\Exception
+	 */
+	private function _getPrimaryCondition($condition)
 	{
 		if (empty($this->_primaries)) {
 			Error::show('no_primary');
@@ -656,17 +738,11 @@ abstract class Database extends ModelBase
 			Error::show('fault_primary_num');
 		}
 
-		$this->where($where);
-		$data = $this->findRow(false, $option, $debug);
-
-		if ($debug === DatabaseBase::DEBUG_RETURN) return $data;
-		if ($data) $this->data($data);
-
-		return $data;
+		return $where;
 	}
 
 	/**
-	 * 查询记录
+	 * 查询多条记录
 	 * @param string|array $condition
 	 * @param string|array $option
 	 * @param bool $debug
@@ -682,7 +758,7 @@ abstract class Database extends ModelBase
 	 * @param string|array $option
 	 * @param bool $debug
 	 */
-	public function findRow($condition = false, $option = false, $debug = false)
+	public function findFirst($condition = false, $option = false, $debug = false)
 	{
 		return $this->_find($condition, $option, $debug, true);
 	}
@@ -695,7 +771,7 @@ abstract class Database extends ModelBase
 	 */
 	public function findValue($field, $condition = false, $debug = false)
 	{
-		$row = $this->findRow($condition, $field, $debug);
+		$row = $this->findFirst($condition, $field, $debug);
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $row;
 
@@ -734,7 +810,13 @@ abstract class Database extends ModelBase
 	private function _find($condition, $option, $debug, $queryRow, $count = false)
 	{
 		if ($condition) $this->where($condition);
-		if ($queryRow) $this->limit(1);
+		if ($queryRow) {
+			if ($this->_sql['option']['limit']) {
+				$this->_sql['option']['limit'][1] = 1;
+			} else {
+				$this->limit(1);
+			}
+		}
 
 		if ($option) {
 			if (ocScalar($option)) {
@@ -747,7 +829,7 @@ abstract class Database extends ModelBase
 
 		$this->connect(false);
 		$fields = $count ? $this->connect(false)->getCountSql('1', 'total') : false;
-		$sql    = $this->_genSql(true, $fields, $count);
+		$sql = $this->_genSql(true, $fields, $count);
 
 		$cacheInfo = null;
 		if (isset($this->_sql['cache']) && is_array($this->_sql['cache'])) {
@@ -782,6 +864,7 @@ abstract class Database extends ModelBase
 			$this->_saveCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired, $result);
 		}
 
+		$this->_selected = false;
 		return $result;
 	}
 
@@ -1097,16 +1180,14 @@ abstract class Database extends ModelBase
 	 * 附加Limit
 	 * @param string $limit
 	 */
-	public function limit($limit, $offset = null)
+	public function limit($offset, $rows = 1)
 	{
-		if (func_num_args() == 2) {
-			$limit = $limit . ',' . $offset;
+		if (func_num_args() < 2) {
+			$rows = $offset;
+			$offset = 0;
 		}
 
-		if ($limit) {
-			$this->_sql['option']['limit'] = $limit;
-		}
-
+		$this->_sql['option']['limit'] = array($offset, $rows);
 		return $this;
 	}
 
@@ -1114,10 +1195,11 @@ abstract class Database extends ModelBase
 	 * 分页处理
 	 * @param array $limitInfo
 	 */
-	public function page($limitInfo = null)
+	public function page(array $limitInfo)
 	{
 		$this->_sql['option']['page'] = true;
-		return $this->limit($limitInfo);
+		list($offset, $rows) = $limitInfo;
+		return $this->limit($offset, $rows);
 	}
 
 	/**
@@ -1434,5 +1516,109 @@ abstract class Database extends ModelBase
 		}
 
 		return $this;
+	}
+
+	/**
+	 * 获取关联模型
+	 * @param string $key
+	 * @return mixed
+	 */
+	public function &__get($key)
+	{
+		if (isset($this->_config['JOIN'][$key])) {
+			if (!is_object($this->_relations[$key])) {
+				$this->_relations[$key] = $this->_relateFind($key);
+			}
+			return $this->_relations[$key];
+		}
+
+		return parent::__get($key);
+	}
+
+	/**
+	 * 关联模型查询
+	 * @param $alias
+	 * @return null
+	 */
+	private function _relateFind($alias)
+	{
+		$result = null;
+
+		if (!empty($this->_config['JOIN'][$alias])) {
+			$relate = $this->_config['JOIN'][$alias];
+			list($joinType, $primaryKey, $relation, $condition) = $relate;
+			if (is_array($relation)) {
+				list($model, $foreignKey) = $relation;
+			} else {
+				$model = $relation;
+				$foreignKey = $primaryKey;
+			}
+			$where = array($foreignKey => $this->$primaryKey);
+			$condition = array($where, $condition);
+			if (in_array($joinType, array('one','manyOne'))) {
+				$records = new ObjectRecords($model, $condition);
+				$records->setLimit(1, 0, 1);
+				return $records->current();
+			} else {
+				$records = new ObjectRecords($model, $condition);
+				$records->setLimit(0, 0, 1);
+				return $records;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * 关联模型保存数据
+	 */
+	private function _relateSave()
+	{
+		$relates = $this->_relates;
+		$result = true;
+
+		foreach ($relates as $key => $relate) {
+			if (isset($this->_config['JOIN'][$key], $this->_relations[$key])) {
+				try {
+					list($joinType, $primaryKey, $relation, $condition) = $relate;
+					if (is_array($relation)) {
+						list($model, $foreignKey) = $relation;
+					} else {
+						$model = $relation;
+						$foreignKey = $primaryKey;
+					}
+					$data = array();
+					if (in_array($joinType, array('one','manyOne'))
+						&& !is_array($this->_relations[$key])
+					) {
+						$data = array($this->_relations[$key]);
+					} elseif (is_array($this->_relations[$key])) {
+						$data = $this->_relations[$key];
+					}
+					if ($data) {
+						foreach ($this->_relations[$key] as $row) {
+							if ($row->getClass() == $model) {
+								$where = array(
+									$primaryKey => $this->$primaryKey
+								);
+								$row->$foreignKey = $this->$primaryKey;
+								$row->where($where)->where($condition)->save();
+							}
+						}
+					}
+				} catch (\Ocara\Exception $e) {
+					$result = false;
+				}
+			}
+		}
+
+		if ($result) {
+			if ($this->_driver->isTrans()) {
+				foreach ($relates as $relate) {
+					$relate->transCommit();
+				}
+			}
+			$this->transCommit();
+		}
 	}
 }
