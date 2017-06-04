@@ -46,6 +46,7 @@ abstract class Database extends ModelBase
 	private $_selected;
 
 	private $_relations = array();
+	private $_changes   = array();
 	private $_config    = array();
 	private $_sql       = array();
 	private $_primaries = array();
@@ -449,23 +450,27 @@ abstract class Database extends ModelBase
 			Error::show('fault_save_data');
 		}
 
-		if ($this->_relations) {
-			$this->_driver->transBegin();
+		if ($this->_changes) {
+			$this->db()->transBegin();
 		}
 
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
 			$ret = $this->_driver->update($this->_tableName, $data, $condition, $debug);
-			if (!$debug && method_exists($this, '_afterUpdate')) {
+			if (!$debug){
 				$this->_relateSave();
-				$this->_afterUpdate();
+				if(method_exists($this, '_afterUpdate')) {
+					$this->_afterUpdate();
+				}
 			}
 		} else {
 			$ret = $this->_driver->insert($this->_tableName, $data, $debug);
-			if (!$debug && method_exists($this, '_afterCreate')) {
+			if (!$debug) {
 				$this->select($this->_driver->getInsertId());
 				$this->_relateSave();
-				$this->_afterCreate();
+				if (method_exists($this, '_afterCreate')) {
+					$this->_afterCreate();
+				}
 			}
 		}
 
@@ -811,7 +816,7 @@ abstract class Database extends ModelBase
 	{
 		if ($condition) $this->where($condition);
 		if ($queryRow) {
-			if ($this->_sql['option']['limit']) {
+			if (!empty($this->_sql['option']['limit'])) {
 				$this->_sql['option']['limit'][1] = 1;
 			} else {
 				$this->limit(1);
@@ -1526,13 +1531,28 @@ abstract class Database extends ModelBase
 	public function &__get($key)
 	{
 		if (isset($this->_config['JOIN'][$key])) {
-			if (!is_object($this->_relations[$key])) {
+			if (!isset($this->_relations[$key])) {
 				$this->_relations[$key] = $this->_relateFind($key);
 			}
 			return $this->_relations[$key];
+		} else {
+			return parent::__get($key);
 		}
+	}
 
-		return parent::__get($key);
+	/**
+	 * 获取关联模型
+	 * @param string $key
+	 * @return mixed
+	 */
+	public function __set($key, $value)
+	{
+		if (isset($this->_config['JOIN'][$key])) {
+			$this->_relations[$key] = $value;
+			$this->_changes[$key] = &$this->_relations[$key];
+		} else {
+			return parent::__set($key, $value);
+		}
 	}
 
 	/**
@@ -1542,27 +1562,19 @@ abstract class Database extends ModelBase
 	 */
 	private function _relateFind($alias)
 	{
+		$config = $this->_getRelateConfig($alias);
 		$result = null;
 
-		if (!empty($this->_config['JOIN'][$alias])) {
-			$relate = $this->_config['JOIN'][$alias];
-			list($joinType, $primaryKey, $relation, $condition) = $relate;
-			if (is_array($relation)) {
-				list($model, $foreignKey) = $relation;
-			} else {
-				$model = $relation;
-				$foreignKey = $primaryKey;
-			}
-			$where = array($foreignKey => $this->$primaryKey);
-			$condition = array($where, $condition);
-			if (in_array($joinType, array('one','manyOne'))) {
-				$records = new ObjectRecords($model, $condition);
-				$records->setLimit(1, 0, 1);
-				return $records->current();
-			} else {
-				$records = new ObjectRecords($model, $condition);
-				$records->setLimit(0, 0, 1);
-				return $records;
+		if ($config) {
+			$where = array($config['foreignKey'] => $this->$config['primaryKey']);
+			if (in_array($config['joinType'], array('one','manyOne'))) {
+				$result = $config['class']::build()
+					->where($where)
+					->where($config['condition'])
+					->selectOne();
+			} elseif (in_array($config['joinType'], array('oneMany','many'))) {
+				$result = new ObjectRecords($config['class'], array($where, $config['condition']));
+				$result->setLimit(0, 0, 1);
 			}
 		}
 
@@ -1570,55 +1582,72 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 关联模型保存数据
+	 * 关联模型数据保存
 	 */
 	private function _relateSave()
 	{
-		$relates = $this->_relates;
-		$result = true;
+		$changes = array();
 
-		foreach ($relates as $key => $relate) {
-			if (isset($this->_config['JOIN'][$key], $this->_relations[$key])) {
-				try {
-					list($joinType, $primaryKey, $relation, $condition) = $relate;
-					if (is_array($relation)) {
-						list($model, $foreignKey) = $relation;
-					} else {
-						$model = $relation;
-						$foreignKey = $primaryKey;
+		foreach ($this->_changes as $key => $object) {
+			$config = $this->_getRelateConfig($key);
+			if ($config) {
+				$data = array();
+				if (in_array($config['joinType'], array('one','manyOne')) && is_object($object)) {
+					$data = array($object);
+				} elseif (in_array($config['joinType'], array('oneMany','many'))) {
+					if (is_object($object)) {
+						$data = array($object);
+					} elseif (is_array($object)) {
+						$data = $object;
 					}
-					$data = array();
-					if (in_array($joinType, array('one','manyOne'))
-						&& !is_array($this->_relations[$key])
-					) {
-						$data = array($this->_relations[$key]);
-					} elseif (is_array($this->_relations[$key])) {
-						$data = $this->_relations[$key];
+				}
+				foreach ($data as &$model) {
+					if (is_object($model) && $model instanceof \Ocara\ModelBase) {
+						$where = array($config['foreignKey'] => $this->$config['primaryKey']);
+						$model->$config['foreignKey'] = $this->$config['primaryKey'];
+						$model->where($where)->where($config['condition'])->save();
 					}
-					if ($data) {
-						foreach ($this->_relations[$key] as $row) {
-							if ($row->getClass() == $model) {
-								$where = array(
-									$primaryKey => $this->$primaryKey
-								);
-								$row->$foreignKey = $this->$primaryKey;
-								$row->where($where)->where($condition)->save();
-							}
-						}
-					}
-				} catch (\Ocara\Exception $e) {
-					$result = false;
+				}
+				$changes[$key] = $data;
+			}
+		}
+
+		foreach ($changes as $key => $value) {
+			foreach ($data as $model) {
+				if (is_object($model) && $model instanceof \Ocara\ModelBase) {
+					$model->db()->transCommit();
 				}
 			}
 		}
 
-		if ($result) {
-			if ($this->_driver->isTrans()) {
-				foreach ($relates as $relate) {
-					$relate->transCommit();
-				}
-			}
-			$this->transCommit();
+		$this->db()->transCommit();
+
+		return true;
+	}
+
+	/**
+	 * 获取关联配置
+	 * @param $key
+	 * @return mixed
+	 */
+	private function _getRelateConfig($key)
+	{
+		$config = $this->_config['JOIN'][$key];
+
+		if (count($config) < 3) {
+			OCError::show('fault_relate_config');
 		}
+
+		list($joinType, $primaryKey, $relation) = $config;
+		$condition = isset($config[4]) ? $config[4]: null;
+
+		if (is_array($relation)) {
+			list($class, $foreignKey) = $relation;
+		} else {
+			$class = $relation;
+			$foreignKey = $primaryKey;
+		}
+
+		return compact('joinType', 'primaryKey', 'relation', 'condition', 'class', 'foreignKey');
 	}
 }

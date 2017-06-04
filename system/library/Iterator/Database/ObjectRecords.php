@@ -21,7 +21,7 @@ class ObjectRecords implements \Iterator
     private $_options;
     private $_debug;
 
-    public function __construct($model, $condition, $options, $debug)
+    public function __construct($model, $condition, $options = null, $debug = false)
     {
         $this->_model = $model;
         $this->_condition = $condition;
