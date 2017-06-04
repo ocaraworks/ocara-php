@@ -500,7 +500,7 @@ abstract class Database extends ModelBase
 		}
 
 		$where = $this->_getPrimaryCondition($primaries);
-		$this->selectOne($where);
+		$this->selectFirst($where);
 	}
 
 	/**
@@ -687,7 +687,7 @@ abstract class Database extends ModelBase
 	 * @param string|array $option
 	 * @param bool $debug
 	 */
-	public function selectOne($condition = false, $option = null, $debug = false)
+	public function selectFirst($condition = false, $option = null, $debug = false)
 	{
 		$this->_selected = true;
 		$data = $this->findFirst($condition, $option, $debug);
@@ -711,7 +711,7 @@ abstract class Database extends ModelBase
 	{
 		$model = new static();
 		$condition = $model->_getPrimaryCondition($primaryValues);
-		$model->selectOne($condition, $option, $debug);
+		$model->selectFirst($condition, $option, $debug);
 
 		return $model;
 	}
@@ -1594,7 +1594,7 @@ abstract class Database extends ModelBase
 				$result = $config['class']::build()
 					->where($where)
 					->where($config['condition'])
-					->selectOne();
+					->selectFirst();
 			} elseif (in_array($config['joinType'], array('oneMany','many'))) {
 				$result = new ObjectRecords($config['class'], array($where, $config['condition']));
 				$result->setLimit(0, 0, 1);

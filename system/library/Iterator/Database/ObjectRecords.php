@@ -102,7 +102,7 @@ class ObjectRecords implements \Iterator
             $model->where($condition);
         }
 
-        $result = $model->selectOne(false, $this->_options);
+        $result = $model->selectFirst(false, $this->_options);
 
         return $result;
     }
