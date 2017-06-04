@@ -44,6 +44,7 @@ abstract class Database extends ModelBase
 	private $_oldTable;
 	private $_isOrm;
 	private $_selected;
+	private $_insertId;
 
 	private $_relations = array();
 	private $_changes   = array();
@@ -456,7 +457,7 @@ abstract class Database extends ModelBase
 
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
-			$ret = $this->_driver->update($this->_tableName, $data, $condition, $debug);
+			$result = $this->_driver->update($this->_tableName, $data, $condition, $debug);
 			if (!$debug){
 				$this->_relateSave();
 				if(method_exists($this, '_afterUpdate')) {
@@ -464,20 +465,42 @@ abstract class Database extends ModelBase
 				}
 			}
 		} else {
-			$ret = $this->_driver->insert($this->_tableName, $data, $debug);
+			$result = $this->_driver->insert($this->_tableName, $data, $debug);
 			if (!$debug) {
-				$this->select($this->_driver->getInsertId());
-				$this->_relateSave();
+				$this->_insertId = $this->_driver->getInsertId();
+				$this->_selectInsertRow($data);
+				$this->_relateSave(true);
 				if (method_exists($this, '_afterCreate')) {
 					$this->_afterCreate();
 				}
+				$result = $this->_insertId;
 			}
 		}
 
-		if ($debug === DatabaseBase::DEBUG_RETURN) return $ret;
+		if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
 
 		$this->clearProperty();
-		return $ret;
+		return $result;
+	}
+
+	/**
+	 * 选择当前插入成功的记录
+	 * @param $data
+	 */
+	public function _selectInsertRow($data)
+	{
+		$primaries = array();
+
+		foreach ($this->_primaries as $field) {
+			if (isset($data[$field])) {
+				$primaries[] = $data[$field];
+			} else {
+				$primaries[] = $this->_insertId;
+			}
+		}
+
+		$where = $this->_getPrimaryCondition($primaries);
+		$this->selectOne($where);
 	}
 
 	/**
@@ -486,7 +509,7 @@ abstract class Database extends ModelBase
 	 */
 	public function getInsertId()
 	{
-		return $this->_driver->getInsertId();
+		return $this->_insertId;
 	}
 
 	/**
@@ -659,7 +682,7 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 按主键选择一行记录，并保存为属性
+	 * 按条件选择首行
 	 * @param string|numric|array $condition
 	 * @param string|array $option
 	 * @param bool $debug
@@ -1584,13 +1607,13 @@ abstract class Database extends ModelBase
 	/**
 	 * 关联模型数据保存
 	 */
-	private function _relateSave()
+	private function _relateSave($isCreate = false)
 	{
 		$changes = array();
 
 		foreach ($this->_changes as $key => $object) {
 			$config = $this->_getRelateConfig($key);
-			if ($config) {
+			if ($config && $this->hasProperty($config['primaryKey'])) {
 				$data = array();
 				if (in_array($config['joinType'], array('one','manyOne')) && is_object($object)) {
 					$data = array($object);
@@ -1605,7 +1628,10 @@ abstract class Database extends ModelBase
 					if (is_object($model) && $model instanceof \Ocara\ModelBase) {
 						$where = array($config['foreignKey'] => $this->$config['primaryKey']);
 						$model->$config['foreignKey'] = $this->$config['primaryKey'];
-						$model->where($where)->where($config['condition'])->save();
+						if (!$isCreate) {
+							$model->where($where)->where($config['condition']);
+						}
+						$model->save();
 					}
 				}
 				$changes[$key] = $data;
@@ -1621,7 +1647,6 @@ abstract class Database extends ModelBase
 		}
 
 		$this->db()->transCommit();
-
 		return true;
 	}
 

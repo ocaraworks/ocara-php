@@ -192,12 +192,8 @@ class PdoDriver extends DriverBase implements DriverInterface
 		} else {
 			$errorCode = $this->_instance->errorCode();
 		}
-	
-		if (substr($errorCode, -3) == '000') {
-			return null;
-		}
-		
-		return $errorCode;
+
+		return (integer)$errorCode;
 	}
 
 	/**
@@ -210,7 +206,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 		} else {
 			$errorList = $this->_instance->errorInfo();
 		}
-		
+
 		return end($errorList);
 	}
 

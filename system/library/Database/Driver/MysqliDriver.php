@@ -241,9 +241,12 @@ class MysqliDriver extends DriverBase implements DriverInterface
 	public function error_no()
 	{
 		if ($this->_prepared) {
-			return $this->_stmt->errno;
+			$errorCode = $this->_stmt->errno;
+		} else {
+			$errorCode = $this->_connection->errno;
 		}
-		return $this->_connection->errno;
+
+		return (integer)$errorCode;
 	}
 
 	/**

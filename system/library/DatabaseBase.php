@@ -35,6 +35,7 @@ class DatabaseBase extends Sql
 
 	protected $_params = array();
 	protected $_unions = array();
+	private   $_error = array();
 
 	protected static $paramOptions = array(
 		'set', 		'where', 	'groupBy',
@@ -590,16 +591,25 @@ class DatabaseBase extends Sql
 	}
 
 	/**
-	 * 显示错误信息
+	 * 保存错误信息
 	 */
-	public function showError()
+	public function setError()
 	{
-		if ($this->errorExists()) {
-			if ($this->isTrans()) {
-				$this->transRollback();
-			}
-			Error::show($this->getError());
+		$this->_error = array();
+
+		if ($this->_plugin->error_no() > 0) {
+			$this->_error['errorCode'] = $this->_plugin->error_no();
+			$this->_error['errorMessage'] = $this->_plugin->error();
+			$this->_error['errorList'] = $this->_plugin->error_list();
 		}
+	}
+
+	/**
+	 * 获取错误代码
+	 */
+	public function getErrorCode()
+	{
+		return ocGet('errorCode', $this->_error);
 	}
 
 	/**
@@ -607,7 +617,7 @@ class DatabaseBase extends Sql
 	 */
 	public function getError()
 	{
-		return $this->_plugin->error() . ' Error no ：' . $this->_plugin->error_no();
+		return ocGet('errorMessage', $this->_error);
 	}
 
 	/**
@@ -615,23 +625,33 @@ class DatabaseBase extends Sql
 	 */
 	public function getErrorList()
 	{
-		return $this->_plugin->error_list();
+		return ocGet('errorList', $this->_error);
 	}
-	
+
 	/**
-	 * 获取错误代码
-	 */
-	public function getErrorCode()
-	{
-		return $this->_plugin->error_no();
-	}
-	
-	/**
-	 * 错误是否存在
+	 * 检测是否出错
 	 */
 	public function errorExists()
 	{
-		return (boolean)$this->_plugin->error_no();
+		return (boolean)$this->_error;
+	}
+
+	/**
+	 * 显示错误信息
+	 */
+	public function showError()
+	{
+		if ($this->errorExists()) {
+			$error = $this->_error;
+			if ($this->isTrans()) {
+				$this->transRollback();
+				if ($this->errorExists()) {
+					return Error::show($this->getError());
+				}
+			}
+			$this->_error = $error;
+			Error::show($this->getError());
+		}
 	}
 
 	/**
@@ -642,6 +662,7 @@ class DatabaseBase extends Sql
 	 */
 	public function checkError($ret, $sql, $required = true)
 	{
+		$this->setError();
 		$errorExists = $this->errorExists();
 		$error = $errorExists ? $this->getError() : null;
 
