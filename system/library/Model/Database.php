@@ -31,12 +31,10 @@ abstract class Database extends ModelBase
 	protected $_primary;
 	protected $_table;
 	protected $_server;
-	protected $_name;
-	protected $_tag;
 	protected $_dataType;
 	protected $_fields;
 
-	private $_path;
+	private $_tag;
 	private $_master;
 	private $_slave;
 	private $_database;
@@ -48,10 +46,11 @@ abstract class Database extends ModelBase
 
 	private $_relations = array();
 	private $_changes   = array();
-	private $_config    = array();
 	private $_sql       = array();
 	private $_primaries = array();
+	private $_joins 	= array();
 
+	private static $_config = array();
 	private static $_requirePrimary;
 
 	/**
@@ -76,15 +75,13 @@ abstract class Database extends ModelBase
 			Error::show('no_primaries');
 		}
 
-		$this->_path = ocDir($this->_server, $this->_database);
-		$this->_name = self::getClass();
-		$this->_tag = $this->_path . $this->_name;
-		$this->_tableName = empty($this->_table) ? $this->_name : $this->_table;
+		$this->_tag = get_called_class();
+		$this->_tableName = empty($this->_table) ? ucfirst($this->getClass()) : $this->_table;
 		$this->_oldTable = $this->_tableName;
 
-		$this->_join(false, $this->_tableName, 'a');
+		$this->_join(false, $this->_tag, 'this');
 		$this->setDataType($this->_dataType);
-		$this->loadConfig();
+		self::loadConfig($this->_tag);
 
 		if ($this->_primary) {
 			$this->_primaries = explode(',', $this->_primary);
@@ -101,6 +98,24 @@ abstract class Database extends ModelBase
 	public function getTag()
 	{
 		return $this->_tag;
+	}
+
+	/**
+	 * 获取表名
+	 * @return mixed
+	 */
+	public function getTableName()
+	{
+		return $this->_tableName;
+	}
+
+	/**
+	 * 获取表的全名（包括前缀）
+	 * @return mixed
+	 */
+	public function getTableFullname()
+	{
+		return $this->connect()->getTableFullname($this->_tableName);
 	}
 
 	/**
@@ -121,7 +136,7 @@ abstract class Database extends ModelBase
 	 * @param object $model
 	 * @return $this
 	 */
-	public function union(\Ocara\Model $model)
+	public function union(\Ocara\ModelBase $model)
 	{
 		$this->connect()->union($model, false);
 		return $this;
@@ -132,7 +147,7 @@ abstract class Database extends ModelBase
 	 * @param object $model
 	 * @return $this
 	 */
-	public function unionAll(\Ocara\Model $model)
+	public function unionAll(\Ocara\ModelBase $model)
 	{
 		$this->connect()->union($model, true);
 		return $this;
@@ -146,7 +161,7 @@ abstract class Database extends ModelBase
 		$tables   = $this->_sql['tables'];
 		$oldTable = ocDel($tables, $this->_oldTable);
 		$this->_sql['tables'] = array();
-		$this->_join(false, $this->_tableName, 'a');
+		$this->_join(false, $this->_tag, 'this');
 
 		$newTables = $this->_sql['tables'];
 		$newTables[$this->_tableName] = array_merge(
@@ -165,27 +180,32 @@ abstract class Database extends ModelBase
 	/**
 	 * 加载配置文件
 	 */
-	public function loadConfig()
+	public static function loadConfig($class)
 	{
-		$this->_config['JOIN'] = array();
-		$this->_config['MAP']  = array();
-		$this->_config['VALIDATE']  = array();
-		$this->_config['LANG']  = array();
+		if (!empty(self::$_config[$class])) {
+			return true;
+		}
 
-		$filePath = $this->getConfigPath();
+		$modelConfig['JOIN'] = array();
+		$modelConfig['MAP']  = array();
+		$modelConfig['VALIDATE']  = array();
+		$modelConfig['LANG']  = array();
+
+		$filePath = self::getConfigPath($class);
 		$path = ocPath('conf', "model/{$filePath}");
 
 		if (ocFileExists($path)) {
 			include ($path);
 			if (isset($CONF) && is_array($CONF)) {
-				$this->_config = array_merge(
-					array_diff_key($this->_config, $CONF),
-					array_intersect_key($CONF, $this->_config)
+				$modelConfig = array_merge(
+					array_diff_key($modelConfig, $CONF),
+					array_intersect_key($CONF, $modelConfig)
 				);
 			}
 		}
 
-		ksort($this->_config);
+		ksort($modelConfig);
+		self::$_config[$class] = $modelConfig;
 	}
 
 	/**
@@ -194,24 +214,26 @@ abstract class Database extends ModelBase
 	 * @param string $key
 	 * @param string $field
 	 */
-	public function getConfig($key = null, $field = null)
+	public static function getConfig($key = null, $field = null, $class = null)
 	{
+		$class = $class ? $class : get_called_class();
+
 		if ($num = func_num_args()) {
-			if ($key == 'LANG' && empty($this->_config['LANG'])) {
-				$filePath = $this->getConfigPath();
+			if ($key == 'LANG' && empty(self::$_config[$class]['LANG'])) {
+				$filePath = self::getConfigPath($class);
 				$path = ocPath('lang', 'model' . OC_DIR_SEP . $filePath);
 				if (ocFileExists($path)) {
 					include ($path);
 					if (isset($LANG) && is_array($LANG)) {
-						$this->_config['LANG'] = $LANG;
+						self::$_config[$class]['LANG'] = $LANG;
 					}
 				}
 			}
-			$config = ocGet($key, $this->_config);
+			$config = ocGet($key, self::$_config[$class]);
 			return isset($config[$field]) ? $config[$field] : $config;
 		}
 
-		return $this->_config;
+		return self::$_config[$class];
 	}
 
 	/**
@@ -220,23 +242,22 @@ abstract class Database extends ModelBase
 	 * @param $field
 	 * @param $value
 	 */
-	public function setConfig($key, $field, $value)
+	public static function setConfig($key, $field, $value, $class = null)
 	{
-		$config = $this->getConfig($key);
+		$class = $class ? $class : get_called_class();
+		$config = self::getConfig($key);
 		$config[$key][$field] = $value;
-		$this->_config[$key] = $config;
+
+		self::$_config[$class][$key] = $config;
 	}
 
 	/**
 	 * 获取配置文件路径
 	 */
-	public function getConfigPath()
+	public static function getConfigPath($class)
 	{
-		if ($this->_path) {
-			$filePath = lcfirst($this->_path) . lcfirst($this->_name);
-		} else {
-			$filePath = $this->_name;
-		}
+		$path = trim(str_ireplace('Model' . OC_NS_SEP, OC_EMPTY, $class), OC_NS_SEP);
+		$filePath = implode(OC_DIR_SEP, array_map('lcfirst', explode(OC_NS_SEP, $path)));
 
 		return $filePath . '.php';
 	}
@@ -301,7 +322,7 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 加载数据表的字段以便过滤
+	 * 从数据库获取数据表的字段
 	 */
 	public function loadFields()
 	{
@@ -338,7 +359,7 @@ abstract class Database extends ModelBase
 		$result = array();
 
 		foreach ($data as $key => $value) {
-			$key = strtr($key, $this->_config['MAP']);
+			$key = strtr($key, self::$_config[$this->_tag]['MAP']);
 			if ($this->_fields && !isset($this->_fields[$key])
 				|| $key == FormToken::getTokenTag()
 			) {
@@ -972,35 +993,35 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 左联接
-	 * @param string $table
+	 * @param string $class
 	 * @param string $alias
 	 * @param string $on
 	 */
-	public function leftJoin($table, $alias, $on)
+	public function leftJoin($class, $alias = null, $on = null)
 	{
-		return $this->_join('left', $table, $alias, $on);
+		return $this->_join('left', $class, $alias, $on);
 	}
 
 	/**
 	 * 右联接
-	 * @param string $table
+	 * @param string $class
 	 * @param string $alias
 	 * @param string $on
 	 */
-	public function rightJoin($table, $alias, $on)
+	public function rightJoin($class, $alias = null, $on = null)
 	{
-		return $this->_join('right', $table, $alias, $on);
+		return $this->_join('right', $class, $alias, $on);
 	}
 
 	/**
 	 * 全联接
-	 * @param string $table
+	 * @param string $class
 	 * @param string $alias
 	 * @param string $on
 	 */
-	public function innerJoin($table, $alias, $on)
+	public function innerJoin($class, $alias = null, $on = null)
 	{
-		return $this->_join('inner', $table, $alias, $on);
+		return $this->_join('inner', $class, $alias, $on);
 	}
 
 	/**
@@ -1010,11 +1031,7 @@ abstract class Database extends ModelBase
 	 */
 	public function parseOn($alias, $on)
 	{
-		$a = $this->_sql['tables'][$this->_tableName]['alias'];
-
-		if (is_string($on)) {
-			$on = str_replace('@.', $alias . '.', str_replace('#.', $a . '.', $on));
-		} elseif (is_array($on)) {
+		if (is_array($on)) {
 			$on = $this->_driver->parseCondition($on, 'AND', '=', $alias);
 		}
 
@@ -1033,34 +1050,10 @@ abstract class Database extends ModelBase
 		foreach ($_field as $key => $value) {
 			$value = explode('.', ltrim($value));
 			$field = trim($value[count($value) - 1]);
-			$_field[$key] = $this->_driver->getFieldNameSql($field, true, $alias);
+			$_field[$key] = $this->_driver->getFieldNameSql($field, $alias);
 		}
 
 		return implode(',', $_field);
-	}
-
-	/**
-	 * 附加当前表别名
-	 * @param string $alias
-	 */
-	public function alias($alias)
-	{
-		$this->_addAlias($alias, $this->_tableName);
-		return $this;
-	}
-
-	/**
-	 * 附加别名
-	 * @param string $alias
-	 * @param string $table
-	 */
-	private function _addAlias($alias, $table)
-	{
-		if ($alias) {
-			$this->_sql['tables'][$this->_getTable($table)]['alias'] = $alias;
-		}
-
-		return $this;
 	}
 
 	/**
@@ -1084,9 +1077,9 @@ abstract class Database extends ModelBase
 	 * @param string $on
 	 * @param string $table
 	 */
-	private function _addOn($on, $table = false)
+	private function _addOn($on, $alias = false)
 	{
-		$this->_sql['tables'][$this->_getTable($table)]['on'] = $on;
+		$this->_sql['tables'][$alias]['on'] = $on;
 		return $this;
 	}
 
@@ -1110,10 +1103,10 @@ abstract class Database extends ModelBase
 	 * @param string|array $where
 	 * @param string $table
 	 */
-	public function where($where, $table = false)
+	public function where($where, $alias = false)
 	{
 		if (!ocEmpty($where)) {
-			$where = array($table, 'where', $where);
+			$where = array($alias, 'where', $where);
 			$this->_sql['option']['where'][] = $where;
 		}
 
@@ -1124,17 +1117,18 @@ abstract class Database extends ModelBase
 	 * 生成复杂条件
 	 * @param string $sign
 	 * @param array $where
-	 * @param string $table
+	 * @param string $alias
 	 */
-	public function cWhere($sign, $where, $table = false)
+	public function cWhere($sign, $where, $alias = false)
 	{
 		if (is_string($where)) {
-			$where = array($where => $table);
-			$table = ($last = func_get_arg(3)) ? $last : false;
+			//$link = $where [AND|OR] , $where = $alias [field=>value]
+			$where = array($where => $alias);
+			$alias = ($last = func_get_arg(3)) ? $last : false;
 		}
 
 		if (!ocEmpty($where)) {
-			$where = array($table, 'cWhere', array($sign, $where));
+			$where = array($alias, 'cWhere', array($sign, $where));
 			$this->_sql['option']['where'][] = $where;
 		}
 
@@ -1146,10 +1140,10 @@ abstract class Database extends ModelBase
 	 * @param string $where
 	 * @param string $link
 	 */
-	public function whereMore($where, $link = false)
+	public function mWhere($where, $link = false)
 	{
 		$link = $link ? $link : 'AND';
-		$this->_sql['option']['whereMore'][] = compact('where', 'link');
+		$this->_sql['option']['mWhere'][] = compact('where', 'link');
 		return $this;
 	}
 
@@ -1240,15 +1234,23 @@ abstract class Database extends ModelBase
 		$transforms = array();
 
 		if ($unJoined) {
-			$map = $this->getConfig('MAP');
+			$map = self::getConfig('MAP');
 			if ($map) {
-				$transforms = array($map);
+				$transforms['this'] = $map;
 			}
 		} else {
 			$transforms = array();
-			foreach ($tables as $key => $row) {
-//				$model = new $key();
-//				$transforms[$row['alias']] = $model->getConfig('MAP');
+			foreach ($tables as $alias => $row) {
+				if ($alias == 'this') {
+					if ($map = self::getConfig('MAP')) {
+						$transforms['this'] = $map;
+					}
+				} elseif (isset($this->_joins[$alias])) {
+					$config = $this->_getRelateConfig($alias);
+					if ($map = self::getConfig('MAP', null, $config['class'])) {
+						$transforms[$alias] = $map;
+					}
+				}
 			}
 		}
 
@@ -1283,15 +1285,14 @@ abstract class Database extends ModelBase
 			$where[] = array('where' => $option['where'], 'link' => 'AND');
 		}
 
-		if (isset($option['whereMore']) && $option['whereMore']) {
-			foreach ($option['whereMore'] as $row) {
+		if (isset($option['mWhere']) && $option['mWhere']) {
+			foreach ($option['mWhere'] as $row) {
 				$row['where'] = $this->_driver->parseCondition($row['where']);
 				$where[] = $row;
 			}
 		}
 
 		$option['where'] = $this->_driver->getWhereSql($where);
-
 		if (isset($option['limit'])) {
 			if ($count) {
 				ocDel($option, 'limit');
@@ -1323,11 +1324,7 @@ abstract class Database extends ModelBase
 		$where = array();
 
 		foreach ($data as $key => $value) {
-			list($table, $whereType, $whereData) = $value;
-			$alias = false;
-			if ($table) {
-				$alias = ocGet(array('tables', $table, 'alias'), $this->_sql);
-			}
+			list($alias, $whereType, $whereData) = $value;
 			if ($whereType == 'where') {
 				if (is_array($whereData)) {
 					$whereData = $this->map($whereData);
@@ -1388,15 +1385,15 @@ abstract class Database extends ModelBase
 		$unJoined = count($tables) <= 1;
 		$from = null;
 		
-		foreach ($tables as $key => $param) {
-			list($type, $fullname, $alias, $on) = array_fill(0, 4, null);
+		foreach ($tables as $alias => $param) {
+			list($type, $fullname, $on) = array_fill(0, 3, null);
 			extract($param);
 
 			if (empty($fullname)) continue;
 			if ($unJoined) $alias = false;
 
 			$on = $this->parseOn($alias, $on);
-			$fullname = $this->_driver->getTableName($fullname);
+			$fullname = $this->_driver->getTableFullname($fullname);
 
 			if ($select) {
 				$from = $from . $this->_driver->getJoinSql($type, $fullname, $alias, $on);
@@ -1481,66 +1478,85 @@ abstract class Database extends ModelBase
 	
 	/**
 	 * 配置联接
-	 * @param string $key
-	 * @param string $table
 	 * @param string $alias
+	 * @param string $class
 	 */
-	private function _configJoin($key, $table, $alias)
+	private function _configJoin($alias, $class)
 	{
-		$on = $fields = false;
-		if (!empty($this->_config['JOIN'][$table])) {
-			$config = $this->_config['JOIN'][$table];
-			if (!empty($config['on'])) $on = $config['on'];
-			if (!empty($config['fields'])) $fields = $config['fields'];
+		$on = false;
+
+		if (!empty(self::$_config[$this->_tag]['JOIN'][$class])) {
+			$config = $this->_getRelateConfig($class);
+			$foreignField = $this->_driver->getFieldNameSql($config['foreignKey'], $class);
+			$primaryField = $this->_driver->getFieldNameSql($config['primaryKey'], 'this');
+			$where = array($foreignField => $primaryField);
+			$condition[] = $this->_driver->parseCondition($where, 'AND', null, $alias, false);
+			if (is_array($config['condition'])) {
+				foreach ($config['condition'] as $key => $value) {
+					if (is_array($value)) {
+						list($sign, $value) = $value;
+						$key = $this->_driver->getFieldNameSql($key, $class);
+						$value = array($key => $value);
+						$condition[] = $this->_driver->parseCondition(
+							$value, 'AND', $sign, $alias
+						);
+					}
+				}
+			}
+			$on = $this->_driver->linkWhere($condition, 'AND');;
 		}
-		
-		$alias = is_string($alias) && $alias ? $alias : $key;
-		
-		$this->_addAlias($alias, $key)
-			 ->_addOn($on, $key)
-			 ->fields($fields, $key);
+
+		$this->_addOn($on, $alias);
 	}
 	
 	/**
 	 * 参数联接
-	 * @param string $table
 	 * @param string $alias
 	 * @param string $on
 	 */
-	private function _sqlJoin($table, $alias, $on)
+	private function _sqlJoin($alias, $on)
 	{
-		$alias = isset($alias) && is_string($alias) ? $alias : $table;
-		$this->_addAlias($alias, $table);
-
-		if ($on) $this->_addOn($on, $table);
+		if ($on) $this->_addOn($on, $alias);
 	}
 	
 	/**
 	 * 联接查询
 	 * @param string $type
-	 * @param string $table
+	 * @param string $model
 	 * @param string $alias
 	 * @param string $on
 	 */
-	private function _join($type, $table, $alias, $on = false)
+	private function _join($type, $class, $alias, $on = false)
 	{
-		$key = $table;
+		$isConfig = false;
+		$this->connect();
 
-		if (!is_string($table)) {
-			Error::show('need_string_table_name');
-		}
-
-		if (ocKeyExists('tables.' . $table, $this->_sql)) {
-			$key = trim($table) . '_' . $alias;
-		}
-
-		$this->_sql['tables'][$key]['type'] = strtoupper($type ? $type . ' JOIN ' : false);
-		$this->_sql['tables'][$key]['fullname'] = $table;
-
-		if (empty($on)) {
-			$this->_configJoin($key, $table, $alias);
+		if ($type == false) {
+			$alias = 'this';
+			$fullname = $this->getTableName();
 		} else {
-			$this->_sqlJoin($key, $alias, $on);
+			$config = $this->_getRelateConfig($class);
+			if (!empty(self::$_config[$this->_tag]['JOIN'][$class])) {
+				$model = $config['class']::build();
+				$alias = $class;
+				$isConfig = true;
+			} else {
+				$class = ltrim($class, OC_NS_SEP);
+				$model = $class::build();
+			}
+			$table = $model->getTableName();
+			$alias = $alias ? $alias : $table;
+			$this->_joins[$alias] = $model;
+			$fullname = $model->getTableName();
+		}
+
+		$this->_sql['tables'][$alias]['type'] = $type;
+		$this->_sql['tables'][$alias]['fullname'] = $fullname;
+
+		if ($isConfig) {
+			$this->_configJoin($alias, $class);
+		} else {
+			$this->_sqlJoin($alias, $on);
 		}
 
 		return $this;
@@ -1549,11 +1565,10 @@ abstract class Database extends ModelBase
 	/**
 	 * 获取关联模型
 	 * @param string $key
-	 * @return mixed
 	 */
 	public function &__get($key)
 	{
-		if (isset($this->_config['JOIN'][$key])) {
+		if (isset(self::$_config[$this->_tag]['JOIN'][$key])) {
 			if (!isset($this->_relations[$key])) {
 				$this->_relations[$key] = $this->_relateFind($key);
 			}
@@ -1566,11 +1581,10 @@ abstract class Database extends ModelBase
 	/**
 	 * 获取关联模型
 	 * @param string $key
-	 * @return mixed
 	 */
 	public function __set($key, $value)
 	{
-		if (isset($this->_config['JOIN'][$key])) {
+		if (isset(self::$_config[$this->_tag]['JOIN'][$key])) {
 			$this->_relations[$key] = $value;
 			$this->_changes[$key] = &$this->_relations[$key];
 		} else {
@@ -1580,8 +1594,7 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 关联模型查询
-	 * @param $alias
-	 * @return null
+	 * @param string $alias
 	 */
 	private function _relateFind($alias)
 	{
@@ -1606,6 +1619,7 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 关联模型数据保存
+	 * @param bool $isCreate
 	 */
 	private function _relateSave($isCreate = false)
 	{
@@ -1652,19 +1666,18 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 获取关联配置
-	 * @param $key
-	 * @return mixed
+	 * @param string $key
 	 */
 	private function _getRelateConfig($key)
 	{
-		$config = $this->_config['JOIN'][$key];
+		$config = self::$_config[$this->_tag]['JOIN'][$key];
 
 		if (count($config) < 3) {
-			OCError::show('fault_relate_config');
+			Error::show('fault_relate_config');
 		}
 
 		list($joinType, $primaryKey, $relation) = $config;
-		$condition = isset($config[4]) ? $config[4]: null;
+		$condition = isset($config[3]) ? $config[3]: null;
 
 		if (is_array($relation)) {
 			list($class, $foreignKey) = $relation;
@@ -1673,6 +1686,12 @@ abstract class Database extends ModelBase
 			$foreignKey = $primaryKey;
 		}
 
-		return compact('joinType', 'primaryKey', 'relation', 'condition', 'class', 'foreignKey');
+		$class = ltrim($class, OC_NS_SEP);
+		$config = compact(
+			'joinType', 'primaryKey', 'condition',
+			'class', 'foreignKey'
+		);
+
+		return $config;
 	}
 }

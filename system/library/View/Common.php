@@ -364,7 +364,7 @@ class Common extends ViewBase implements ViewInterfaces
 		}
 
 		if ($this->engine()) {
-			$func = $this->_getRequiredFunctions();
+			$func = ocConfig('VIEW_ENGINE_FUNCTIONS');
 			foreach ($func as $name) {
 				$this->_plugin->registerPlugin(array('function', $name, $name));
 			}
@@ -459,20 +459,7 @@ class Common extends ViewBase implements ViewInterfaces
 		ob_end_clean();
 		return Filter::bom($content);
 	}
-	
-	/**
-	 * 获取要注册的函数名称
-	 */
-	private function _getRequiredFunctions()
-	{
-		return array(
-			'ocGlobal', 	'ocPath', 	'ocFile', 		'ocRealUrl', 
-			'ocSimpleUrl', 	'ocUrl', 	'ocConfig',  	'ocGet', 
-			'ocSet', 		'ocDel',	'ocKeyExists',	'ocFileExists', 
-			'ocPrint', 		'ocDump',
-		);
-	}
-	
+
 	/**
 	 * 包装为HTML内容
 	 * @param string $type

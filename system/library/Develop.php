@@ -7,6 +7,7 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara;
+use Ocara\Html;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -75,7 +76,11 @@ final class Develop extends Base
 	 */
 	public static function back($msg)
 	{
-		$back = '<a href="javascript:;" onclick="setTimeout(function(){history.back();},0)">返回</a>';
+		$back = Html::createElement('a', array(
+			'href' => 'javascript:;',
+			'onclick' => 'setTimeout(function(){history.back();},0)',
+		), '返回');
+
 		return  $msg . $back;
 	}
 	

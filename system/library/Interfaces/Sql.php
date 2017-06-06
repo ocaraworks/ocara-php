@@ -172,11 +172,10 @@ interface Sql
 	/**
 	 * 获取字段名称SQL
 	 * @param $field
-	 * @param bool $addAlias
 	 * @param bool $alias
 	 * @return string
 	 */
-	public function getFieldNameSql($field, $addAlias = true, $alias = false);
+	public function getFieldNameSql($field, $alias = false);
 
 	/**
 	 * 转换字段为别名
@@ -188,10 +187,9 @@ interface Sql
 	/**
 	 * [别名.]字段解析
 	 * @param string $field
-	 * @param bool $addAlias
 	 * @param string $alias
 	 */
-	public function parseField($field, $addAlias = true, $alias = false);
+	public function parseField($field, $alias = false);
 
 	/**
 	 * 值格式解析

@@ -215,7 +215,13 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function error_list()
 	{
-		return $this->_stmt->errorInfo();
+		if (is_object($this->_stmt)) {
+			$errorList = $this->_stmt->errorInfo();
+		} else {
+			$errorList = $this->_instance->errorInfo();
+		}
+
+		return $errorList;
 	}
 
 	/**

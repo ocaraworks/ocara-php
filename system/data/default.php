@@ -179,6 +179,16 @@ $OC_CONF['AUTOLOAD_MAP'] = array(
 );
 
 /**
+ * 要向模板引擎注册的函数
+ */
+$OC_CONF['VIEW_ENGINE_FUNCTIONS'] = array(
+	'ocGlobal', 	'ocPath', 	'ocFile', 		'ocRealUrl',
+	'ocSimpleUrl', 	'ocUrl', 	'ocConfig',  	'ocGet',
+	'ocSet', 		'ocDel',	'ocKeyExists',	'ocFileExists',
+	'ocPrint', 		'ocDump',
+);
+
+/**
  * MIME类型配置
  */
 $OC_CONF['MINE_TYPES'] = array(

@@ -50,7 +50,7 @@ class SessionDB extends Base
 			Error::show('fault_session_table');
 		}
 
-		$this->_fullname = $this->_plugin->getTableName($this->_table);
+		$this->_fullname = $this->_plugin->getTableFullname($this->_table);
 		$this->_fields   = $this->_plugin->getFields($this->_table);
 
 		if (!(is_object($this->_plugin) && $this->_plugin instanceof DatabaseBase)) {

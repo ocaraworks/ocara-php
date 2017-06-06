@@ -427,7 +427,7 @@ class DatabaseBase extends Sql
 	 */
 	public function tableExists($table, $required = false)
 	{
-		$table = $this->getTableName($table);
+		$table = $this->getTableFullname($table);
 		$sql = $this->getSelectSql(1, $table, array('limit' => 1));
 		$ret = $this->query($sql, false, false, false);
 
@@ -450,7 +450,7 @@ class DatabaseBase extends Sql
 			$this->showError('fault_save_data');
 		}
 
-		$table = $this->getTableName($table);
+		$table = $this->getTableFullname($table);
 		$sql = $this->getInsertSql($table, $data);
 
 		$ret = $this->_checkDebug($debug, $sql);
@@ -473,7 +473,7 @@ class DatabaseBase extends Sql
 			$this->showError('fault_save_data');
 		}
 
-		$table = $this->getTableName($table);
+		$table = $this->getTableFullname($table);
 		$condition = $this->parseCondition($condition);
 		$sql = $this->getUpdateSql($table, $data, $condition);
 
@@ -492,7 +492,7 @@ class DatabaseBase extends Sql
 	 */
 	public function delete($table, $condition, $debug = false)
 	{
-		$table = $this->getTableName($table);
+		$table = $this->getTableFullname($table);
 		$condition = $this->parseCondition($condition);
 		$sql = $this->getDeleteSql($table, $condition);
 
@@ -503,7 +503,7 @@ class DatabaseBase extends Sql
 	 * 获取表全名
 	 * @param string $table
 	 */
-	public function getTableName($table)
+	public function getTableFullname($table)
 	{
 		if (preg_match('/^' . OC_SQL_TAG . '(.*)$/i', $table, $mt)) {
 			return $mt[1];

@@ -80,14 +80,15 @@ class Sql extends Base
 	 * @param $value
 	 * @param string $paramType
 	 * @param bool $ifQuote
+	 * @param bool $bind
 	 */
-	public function parseValue($value, $paramType = 'where', $ifQuote = true)
+	public function parseValue($value, $paramType = 'where', $ifQuote = true, $bind = true)
 	{
 		if (ocScalar($value)) {
 			if ($mt = self::checkOcaraSqlTag($value)) {
 				return $mt[1];
 			} else {
-				if ($this->_prepared) {
+				if ($this->_prepared && $bind) {
 					$value = $this->filterSql($value, false);
 					$this->_params[$paramType][] = $value;
 					return '?';
@@ -102,10 +103,9 @@ class Sql extends Base
 	/**
 	 * [别名.]字段解析
 	 * @param string $field
-	 * @param bool $addAlias
 	 * @param bool $alias
 	 */
-	public function parseField($field, $addAlias = true, $alias = false)
+	public function parseField($field, $alias = false)
 	{
 		if (!is_string($field)) {
 			Error::show('invalid_field_name');
@@ -119,7 +119,7 @@ class Sql extends Base
 
 		if (empty($field)) return false;
 
-		return $this->getFieldNameSql($field, $addAlias, $alias);
+		return $this->getFieldNameSql($field, $alias);
 	}
 
 	/**
@@ -232,7 +232,7 @@ class Sql extends Base
 		$fields = $values = array();
 
 		foreach ($data as $key => $value) {
-			$fields[] = $this->parseField($key, false);
+			$fields[] = $this->parseField($key);
 			$values[] = $this->parseValue($value, 'set');
 		}
 
@@ -318,6 +318,7 @@ class Sql extends Base
 	 */
 	public function getJoinSql($type, $table, $alias, $on)
 	{
+		$type  = strtoupper($type ? $type . ' JOIN ' : false);
 		$alias = $this->filterName($alias);
 		$on    = $this->parseCondition($on);
 		$data  = $this->wrapSign(array($type, $alias, $on));
@@ -378,7 +379,7 @@ class Sql extends Base
 			$list = $this->quoteList($list);
 		}
 
-		$field = $this->parseField($field, true, $alias);
+		$field = $this->parseField($field, $alias);
 		if (ocScalar($list) && $field) {
 			return " {$field} {$sign} ($list)";
 		}
@@ -471,14 +472,15 @@ class Sql extends Base
 	 * @param string $link
 	 * @param string $sign
 	 * @param bool $alias
+	 * @param bool $bind
 	 * @return bool|string
 	 */
-	public function parseCondition($condition, $link = 'AND', $sign = '=', $alias = false)
+	public function parseCondition($condition, $link = 'AND', $sign = '=', $alias = false, $bind = true)
 	{
 		if (ocEmpty($condition)) return false;
 
 		if (is_array($condition) && $condition) {
-			return $this->getFieldCondition($condition, $link, $sign, $alias);
+			return $this->getFieldCondition($condition, $link, $sign, $alias, $bind);
 		}
 
 		$alias = $this->getAliasSql($alias);
@@ -519,7 +521,7 @@ class Sql extends Base
 	public function getFieldsSql(array $fields, $alias = false)
 	{
 		foreach ($fields as $key => $value) {
-			$fields[$key] = $this->getFieldNameSql($value, true, $alias);
+			$fields[$key] = $this->getFieldNameSql($value,  $alias);
 		}
 		return implode(',', $fields);
 	}
@@ -549,15 +551,14 @@ class Sql extends Base
 	 * @param bool $alias
 	 * @return string
 	 */
-	public function getFieldNameSql($field, $addAlias = true, $alias = false)
+	public function getFieldNameSql($field, $alias = false)
 	{
-		if ($addAlias) {
-			if (preg_match('/^([`\w]*)\.([`\s\w]+)$/', $field, $mt)) {
-				return $field;
-			}
-			if ($alias) {
-				return "`{$alias}`.{$field}";
-			}
+		if (preg_match('/^([`\w]*)\.([`\s\w]+)$/', $field, $mt)) {
+			return $field;
+		}
+
+		if ($alias) {
+			return "`{$alias}`.{$field}";
 		}
 
 		return "`{$field}`";
@@ -688,9 +689,10 @@ class Sql extends Base
 	 * @param string $link
 	 * @param string $sign
 	 * @param bool $alias
+	 * @param bool $bind
 	 * @return string
 	 */
-	public function getFieldCondition($data, $link = ',', $sign = '=', $alias = false)
+	public function getFieldCondition($data, $link = ',', $sign = '=', $alias = false, $bind = true)
 	{
 		if (!is_array($data) || empty($data)) {
 			return $data;
@@ -706,8 +708,8 @@ class Sql extends Base
 			}
 		} else {
 			foreach ($data as $key => $value) {
-				$field = $this->parseField($key, true, $alias);
-				$value = $this->parseValue($value, 'where');
+				$field = $this->parseField($key, $alias);
+				$value = $this->parseValue($value, 'where', true, $bind);
 				$result[] = "({$field} {$sign} {$value})";
 			}
 		}

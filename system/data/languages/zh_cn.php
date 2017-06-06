@@ -111,7 +111,7 @@ return array(
 	'not_exists_template_file'		=> array(2409, '指定的模板文件不存在：%s。'),
 	'not_exists_template_var'		=> array(2410, '指定的模板变量不存在:%s。'),
 	'not_exists_form'				=> array(2411, '指定的表单不存在:%s。'),
-	'not_writable_htaccess'		=> array(2412, '.htaccess无法写入，请检查目录权限是否可写。'),
+	'not_writable_htaccess'			=> array(2412, '.htaccess无法写入，请检查目录权限是否可写。'),
 	'not_exists_database' 			=> array(2413, '数据库不存在或连接失败。'),
 	'not_exists_cache'				=> array(2414, '缓存不存在。'),
 	'not_exists_font'				=> array(2415, '字体不存在'),

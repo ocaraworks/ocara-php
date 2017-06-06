@@ -67,7 +67,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	 */
 	public function getFields($table)
 	{
-		$table  = $this->getTableName($table);
+		$table  = $this->getTableFullname($table);
 		$sql    = $this->getShowFieldsSql($table);
 		$data   = $this->query($sql);
 		$fields = array();
