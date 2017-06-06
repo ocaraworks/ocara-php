@@ -709,7 +709,7 @@ class Sql extends Base
 		} else {
 			foreach ($data as $key => $value) {
 				$field = $this->parseField($key, $alias);
-				$value = $this->parseValue($value, 'where', true);
+				$value = $this->parseValue($value, 'where');
 				$result[] = "({$field} {$sign} {$value})";
 			}
 		}

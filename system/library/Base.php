@@ -96,10 +96,18 @@ abstract class Base
 	/**
 	 * 返回当前类名（去除命名空间）
 	 */
-	public static function getClass()
+	public static function getClassName()
 	{
 		$class = get_called_class();
 		return substr($class, strrpos($class, OC_NS_SEP) + 1);
+	}
+
+	/**
+	 * 返回当前类名（含命名空间）
+	 */
+	public static function getClass()
+	{
+		return OC_NS_SEP . get_called_class();
 	}
 
 	/**

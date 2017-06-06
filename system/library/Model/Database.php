@@ -75,8 +75,8 @@ abstract class Database extends ModelBase
 			Error::show('no_primaries');
 		}
 
-		$this->_tag = get_called_class();
-		$this->_tableName = empty($this->_table) ? ucfirst($this->getClass()) : $this->_table;
+		$this->_tag = self::getClass();
+		$this->_tableName = empty($this->_table) ? ucfirst($this->getClassName()) : $this->_table;
 		$this->_oldTable = $this->_tableName;
 
 		$this->_join(false, $this->_tag, 'this');
@@ -216,7 +216,7 @@ abstract class Database extends ModelBase
 	 */
 	public static function getConfig($key = null, $field = null, $class = null)
 	{
-		$class = $class ? $class : get_called_class();
+		$class = $class ? $class : self::getClass();
 
 		if ($num = func_num_args()) {
 			if ($key == 'LANG' && empty(self::$_config[$class]['LANG'])) {
@@ -244,7 +244,7 @@ abstract class Database extends ModelBase
 	 */
 	public static function setConfig($key, $field, $value, $class = null)
 	{
-		$class = $class ? $class : get_called_class();
+		$class = $class ? $class : self::getClass();
 		$config = self::getConfig($key);
 		$config[$key][$field] = $value;
 
@@ -746,7 +746,7 @@ abstract class Database extends ModelBase
 	 */
 	public static function selectAll($condition, $options = null, $debug = false)
 	{
-		$records = new ObjectRecords(get_called_class(), array($condition), $options, $debug);
+		$records = new ObjectRecords(self::getClass(), array($condition), $options, $debug);
 
 		$times = isset($options['times']) ? $options['times'] : 0;
 		$start = isset($options['start']) ? $options['start'] : 0;
@@ -1246,8 +1246,7 @@ abstract class Database extends ModelBase
 						$transforms['this'] = $map;
 					}
 				} elseif (isset($this->_joins[$alias])) {
-					$config = $this->_getRelateConfig($alias);
-					if ($map = self::getConfig('MAP', null, $config['class'])) {
+					if ($map = self::getConfig('MAP', null, $row['class'])) {
 						$transforms[$alias] = $map;
 					}
 				}
@@ -1384,13 +1383,17 @@ abstract class Database extends ModelBase
 	{
 		$unJoined = count($tables) <= 1;
 		$from = null;
-		
+
 		foreach ($tables as $alias => $param) {
-			list($type, $fullname, $on) = array_fill(0, 3, null);
+			list($type, $fullname, $on, $class, $isConfig) = array_fill(0, 5, null);
 			extract($param);
 
 			if (empty($fullname)) continue;
 			if ($unJoined) $alias = false;
+
+			if ($isConfig) {
+				$on = $this->getOn($alias, $class);
+			}
 
 			$on = $this->parseOn($alias, $on);
 			$fullname = $this->_driver->getTableFullname($fullname);
@@ -1401,6 +1404,38 @@ abstract class Database extends ModelBase
 		}
 
 		return $from;
+	}
+
+	/**
+	 * 获取关联链接条件
+	 * @param $alias
+	 * @param $class
+	 */
+	public function getOn($alias, $class)
+	{
+		$on = false;
+		$config = $this->_getRelateConfig($alias);
+
+		if ($config) {
+			$foreignField = $this->_driver->getFieldNameSql($config['foreignKey'], $alias);
+			$primaryField = $this->_driver->getFieldNameSql($config['primaryKey'], 'this');
+			$where = array($foreignField => ocSql($primaryField));
+			$condition[] = $this->_driver->parseCondition($where, 'AND', null, $alias);
+			if (is_array($config['condition'])) {
+				foreach ($config['condition'] as $key => $value) {
+					$sign = null;
+					if (is_array($value)) {
+						list($sign, $value) = $value;
+					}
+					$key = $this->_driver->getFieldNameSql($key, $alias);
+					$where = array($key => $value);
+					$condition[] = $this->_driver->parseCondition($where, 'AND', $sign, $alias);
+				}
+			}
+			$on = $this->_driver->linkWhere($condition, 'AND');;
+		}
+
+		return $on;
 	}
 
 	/**
@@ -1484,28 +1519,6 @@ abstract class Database extends ModelBase
 	private function _configJoin($alias, $class)
 	{
 		$on = false;
-
-		if (!empty(self::$_config[$this->_tag]['JOIN'][$class])) {
-			$config = $this->_getRelateConfig($class);
-			$foreignField = $this->_driver->getFieldNameSql($config['foreignKey'], $class);
-			$primaryField = $this->_driver->getFieldNameSql($config['primaryKey'], 'this');
-			$where = array($foreignField => ocSql($primaryField));
-			$condition[] = $this->_driver->parseCondition($where, 'AND', null, $alias);
-			if (is_array($config['condition'])) {
-				foreach ($config['condition'] as $key => $value) {
-					if (is_array($value)) {
-						list($sign, $value) = $value;
-						$key = $this->_driver->getFieldNameSql($key, $class);
-						$value = array($key => $value);
-						$condition[] = $this->_driver->parseCondition(
-							$value, 'AND', $sign, $alias
-						);
-					}
-				}
-			}
-			$on = $this->_driver->linkWhere($condition, 'AND');;
-		}
-
 		$this->_addOn($on, $alias);
 	}
 	
@@ -1534,24 +1547,26 @@ abstract class Database extends ModelBase
 		if ($type == false) {
 			$alias = 'this';
 			$fullname = $this->getTableName();
+			$class = $this->_tag;
 		} else {
 			$config = $this->_getRelateConfig($class);
-			if (!empty(self::$_config[$this->_tag]['JOIN'][$class])) {
-				$model = $config['class']::build();
+			if ($config) {
 				$alias = $class;
+				$class = $config['class'];
+				$model = $class::build();
 				$isConfig = true;
 			} else {
-				$class = ltrim($class, OC_NS_SEP);
 				$model = $class::build();
 			}
-			$table = $model->getTableName();
-			$alias = $alias ? $alias : $table;
-			$this->_joins[$alias] = $model;
 			$fullname = $model->getTableName();
+			$alias = $alias ? $alias : $fullname;
+			$this->_joins[$alias] = $model;
 		}
 
 		$this->_sql['tables'][$alias]['type'] = $type;
 		$this->_sql['tables'][$alias]['fullname'] = $fullname;
+		$this->_sql['tables'][$alias]['class'] = $class;
+		$this->_sql['tables'][$alias]['isConfig'] = $isConfig;
 
 		if ($isConfig) {
 			$this->_configJoin($alias, $class);
@@ -1670,6 +1685,10 @@ abstract class Database extends ModelBase
 	 */
 	private function _getRelateConfig($key)
 	{
+		if (!isset(self::$_config[$this->_tag]['JOIN'][$key])) {
+			return array();
+		}
+
 		$config = self::$_config[$this->_tag]['JOIN'][$key];
 
 		if (count($config) < 3) {
@@ -1686,7 +1705,6 @@ abstract class Database extends ModelBase
 			$foreignKey = $primaryKey;
 		}
 
-		$class = ltrim($class, OC_NS_SEP);
 		$config = compact(
 			'joinType', 'primaryKey', 'condition',
 			'class', 'foreignKey'
