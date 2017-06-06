@@ -76,7 +76,7 @@ abstract class Database extends ModelBase
 		}
 
 		$this->_tag = self::getClass();
-		$this->_tableName = empty($this->_table) ? ucfirst($this->getClassName()) : $this->_table;
+		$this->_tableName = empty($this->_table) ? ucfirst(self::getClassName()) : $this->_table;
 		$this->_oldTable = $this->_tableName;
 
 		$this->_join(false, $this->_tag, 'this');
