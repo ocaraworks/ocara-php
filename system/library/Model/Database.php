@@ -1489,8 +1489,8 @@ abstract class Database extends ModelBase
 			$config = $this->_getRelateConfig($class);
 			$foreignField = $this->_driver->getFieldNameSql($config['foreignKey'], $class);
 			$primaryField = $this->_driver->getFieldNameSql($config['primaryKey'], 'this');
-			$where = array($foreignField => $primaryField);
-			$condition[] = $this->_driver->parseCondition($where, 'AND', null, $alias, false);
+			$where = array($foreignField => ocSql($primaryField));
+			$condition[] = $this->_driver->parseCondition($where, 'AND', null, $alias);
 			if (is_array($config['condition'])) {
 				foreach ($config['condition'] as $key => $value) {
 					if (is_array($value)) {

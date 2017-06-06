@@ -82,13 +82,13 @@ class Sql extends Base
 	 * @param bool $ifQuote
 	 * @param bool $bind
 	 */
-	public function parseValue($value, $paramType = 'where', $ifQuote = true, $bind = true)
+	public function parseValue($value, $paramType = 'where', $ifQuote = true)
 	{
 		if (ocScalar($value)) {
 			if ($mt = self::checkOcaraSqlTag($value)) {
 				return $mt[1];
 			} else {
-				if ($this->_prepared && $bind) {
+				if ($this->_prepared) {
 					$value = $this->filterSql($value, false);
 					$this->_params[$paramType][] = $value;
 					return '?';
@@ -475,12 +475,12 @@ class Sql extends Base
 	 * @param bool $bind
 	 * @return bool|string
 	 */
-	public function parseCondition($condition, $link = 'AND', $sign = '=', $alias = false, $bind = true)
+	public function parseCondition($condition, $link = 'AND', $sign = '=', $alias = false)
 	{
 		if (ocEmpty($condition)) return false;
 
 		if (is_array($condition) && $condition) {
-			return $this->getFieldCondition($condition, $link, $sign, $alias, $bind);
+			return $this->getFieldCondition($condition, $link, $sign, $alias);
 		}
 
 		$alias = $this->getAliasSql($alias);
@@ -692,7 +692,7 @@ class Sql extends Base
 	 * @param bool $bind
 	 * @return string
 	 */
-	public function getFieldCondition($data, $link = ',', $sign = '=', $alias = false, $bind = true)
+	public function getFieldCondition($data, $link = ',', $sign = '=', $alias = false)
 	{
 		if (!is_array($data) || empty($data)) {
 			return $data;
@@ -709,7 +709,7 @@ class Sql extends Base
 		} else {
 			foreach ($data as $key => $value) {
 				$field = $this->parseField($key, $alias);
-				$value = $this->parseValue($value, 'where', true, $bind);
+				$value = $this->parseValue($value, 'where', true);
 				$result[] = "({$field} {$sign} {$value})";
 			}
 		}
