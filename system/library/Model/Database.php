@@ -33,6 +33,7 @@ abstract class Database extends ModelBase
 	protected $_server;
 	protected $_dataType;
 	protected $_fields;
+	protected $_alias;
 
 	private $_tag;
 	private $_master;
@@ -76,10 +77,11 @@ abstract class Database extends ModelBase
 		}
 
 		$this->_tag = self::getClass();
+		$this->_alias = $this->_alias ? $this->_alias : 'a';
 		$this->_tableName = empty($this->_table) ? ucfirst(self::getClassName()) : $this->_table;
 		$this->_oldTable = $this->_tableName;
 
-		$this->_join(false, $this->_tag, 'this');
+		$this->_join(false, $this->_tag, $this->_alias);
 		$this->setDataType($this->_dataType);
 		self::loadConfig($this->_tag);
 
@@ -161,7 +163,7 @@ abstract class Database extends ModelBase
 		$tables   = $this->_sql['tables'];
 		$oldTable = ocDel($tables, $this->_oldTable);
 		$this->_sql['tables'] = array();
-		$this->_join(false, $this->_tag, 'this');
+		$this->_join(false, $this->_tag, $this->_alias);
 
 		$newTables = $this->_sql['tables'];
 		$newTables[$this->_tableName] = array_merge(
@@ -394,7 +396,7 @@ abstract class Database extends ModelBase
 	public function clearSql()
 	{
 		$this->_sql = array();
-		$this->_join(false, $this->_tableName, 'a');
+		$this->_join(false, $this->_tableName, $this->_alias);
 		$this->_driver = $this->_master;
 		return $this;
 	}
@@ -500,7 +502,6 @@ abstract class Database extends ModelBase
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
 
-		$this->clearProperty();
 		return $result;
 	}
 
@@ -1029,7 +1030,7 @@ abstract class Database extends ModelBase
 	 * @param string $alias
 	 * @param string $on
 	 */
-	public function parseOn($alias, $on)
+	public function parseJoinOnSql($alias, $on)
 	{
 		if (is_array($on)) {
 			$on = $this->_driver->parseCondition($on, 'AND', '=', $alias);
@@ -1059,13 +1060,12 @@ abstract class Database extends ModelBase
 	/**
 	 * 附加字段
 	 * @param string|array $fields
-	 * @param string $table
+	 * @param string $alias
 	 */
-	public function fields($fields, $table = false)
+	public function fields($fields, $alias = false)
 	{
 		if ($fields) {
-			if ($table) $table = $this->_getTable($table);
-			$fields = array($table, $fields);
+			$fields = array($alias, $fields);
 			$this->_sql['option']['fields'][] = $fields;
 		}
 
@@ -1236,14 +1236,14 @@ abstract class Database extends ModelBase
 		if ($unJoined) {
 			$map = self::getConfig('MAP');
 			if ($map) {
-				$transforms['this'] = $map;
+				$transforms[$this->_alias] = $map;
 			}
 		} else {
 			$transforms = array();
 			foreach ($tables as $alias => $row) {
-				if ($alias == 'this') {
+				if ($alias == $this->_alias) {
 					if ($map = self::getConfig('MAP')) {
-						$transforms['this'] = $map;
+						$transforms[$this->_alias] = $map;
 					}
 				} elseif (isset($this->_joins[$alias])) {
 					if ($map = self::getConfig('MAP', null, $row['class'])) {
@@ -1347,9 +1347,8 @@ abstract class Database extends ModelBase
 	/**
 	 * 获取字段列表
 	 * @param array $fields
-	 * @param string $alias
 	 */
-	private function _getFieldsSql($data, $alias = false)
+	private function _getFieldsSql($data)
 	{
 		if (is_string($data)) {
 			return $data;
@@ -1357,10 +1356,8 @@ abstract class Database extends ModelBase
 
 		$fields = array();
 		foreach ($data as $key => $value) {
-			list($table, $fieldData) = $value;
-			$alias = false;
-			if ($table) {
-				$alias = ocGet(array('tables', $table, 'alias'), $this->_sql);
+			list($alias, $fieldData) = $value;
+			if ($alias) {
 				if (is_string($fieldData)) {
 					$fieldData = array_map('trim', (explode(',', $fieldData)));
 				}
@@ -1385,17 +1382,16 @@ abstract class Database extends ModelBase
 		$from = null;
 
 		foreach ($tables as $alias => $param) {
-			list($type, $fullname, $on, $class, $isConfig) = array_fill(0, 5, null);
+			list($type, $fullname, $on, $class, $config) = array_fill(0, 5, null);
 			extract($param);
 
 			if (empty($fullname)) continue;
 			if ($unJoined) $alias = false;
-
-			if ($isConfig) {
-				$on = $this->getOn($alias, $class);
+			if ($config) {
+				$on = $this->getJoinOnSql($alias, $config);
 			}
 
-			$on = $this->parseOn($alias, $on);
+			$on = $this->parseJoinOnSql($alias, $on);
 			$fullname = $this->_driver->getTableFullname($fullname);
 
 			if ($select) {
@@ -1409,16 +1405,14 @@ abstract class Database extends ModelBase
 	/**
 	 * 获取关联链接条件
 	 * @param $alias
-	 * @param $class
 	 */
-	public function getOn($alias, $class)
+	public function getJoinOnSql($alias, $config)
 	{
-		$on = false;
-		$config = $this->_getRelateConfig($alias);
+		$joinOn = false;
 
 		if ($config) {
 			$foreignField = $this->_driver->getFieldNameSql($config['foreignKey'], $alias);
-			$primaryField = $this->_driver->getFieldNameSql($config['primaryKey'], 'this');
+			$primaryField = $this->_driver->getFieldNameSql($config['primaryKey'], $this->_alias);
 			$where = array($foreignField => ocSql($primaryField));
 			$condition[] = $this->_driver->parseCondition($where, 'AND', null, $alias);
 			if (is_array($config['condition'])) {
@@ -1432,10 +1426,10 @@ abstract class Database extends ModelBase
 					$condition[] = $this->_driver->parseCondition($where, 'AND', $sign, $alias);
 				}
 			}
-			$on = $this->_driver->linkWhere($condition, 'AND');;
+			$joinOn = $this->_driver->linkWhere($condition, 'AND');;
 		}
 
-		return $on;
+		return $joinOn;
 	}
 
 	/**
@@ -1512,27 +1506,6 @@ abstract class Database extends ModelBase
 	}
 	
 	/**
-	 * 配置联接
-	 * @param string $alias
-	 * @param string $class
-	 */
-	private function _configJoin($alias, $class)
-	{
-		$on = false;
-		$this->_addOn($on, $alias);
-	}
-	
-	/**
-	 * 参数联接
-	 * @param string $alias
-	 * @param string $on
-	 */
-	private function _sqlJoin($alias, $on)
-	{
-		if ($on) $this->_addOn($on, $alias);
-	}
-	
-	/**
 	 * 联接查询
 	 * @param string $type
 	 * @param string $model
@@ -1541,20 +1514,19 @@ abstract class Database extends ModelBase
 	 */
 	private function _join($type, $class, $alias, $on = false)
 	{
-		$isConfig = false;
+		$config = array();
 		$this->connect();
 
 		if ($type == false) {
-			$alias = 'this';
+			$alias = $this->_alias;
 			$fullname = $this->getTableName();
 			$class = $this->_tag;
 		} else {
 			$config = $this->_getRelateConfig($class);
 			if ($config) {
-				$alias = $class;
+				$alias = $alias ? $alias : $class;
 				$class = $config['class'];
 				$model = $class::build();
-				$isConfig = true;
 			} else {
 				$model = $class::build();
 			}
@@ -1566,12 +1538,13 @@ abstract class Database extends ModelBase
 		$this->_sql['tables'][$alias]['type'] = $type;
 		$this->_sql['tables'][$alias]['fullname'] = $fullname;
 		$this->_sql['tables'][$alias]['class'] = $class;
-		$this->_sql['tables'][$alias]['isConfig'] = $isConfig;
+		$this->_sql['tables'][$alias]['config'] = $config;
 
-		if ($isConfig) {
-			$this->_configJoin($alias, $class);
-		} else {
-			$this->_sqlJoin($alias, $on);
+		if ($config) {
+			$on = false;
+			$this->_addOn($on, $alias);
+		} elseif ($on) {
+			$this->_addOn($on, $alias);
 		}
 
 		return $this;
@@ -1695,19 +1668,18 @@ abstract class Database extends ModelBase
 			Error::show('fault_relate_config');
 		}
 
-		list($joinType, $primaryKey, $relation) = $config;
+		list($joinType, $class, $joinOn) = $config;
 		$condition = isset($config[3]) ? $config[3]: null;
+		$joinOn = array_map('trim', explode(',', $joinOn));
 
-		if (is_array($relation)) {
-			list($class, $foreignKey) = $relation;
+		if (isset($joinOn[1])) {
+			list($primaryKey, $foreignKey) = $joinOn;
 		} else {
-			$class = $relation;
-			$foreignKey = $primaryKey;
+			$primaryKey = $foreignKey = reset($joinOn);
 		}
 
 		$config = compact(
-			'joinType', 'primaryKey', 'condition',
-			'class', 'foreignKey'
+			'joinType', 'class', 'primaryKey', 'foreignKey', 'condition'
 		);
 
 		return $config;
