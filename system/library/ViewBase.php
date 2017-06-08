@@ -12,5 +12,4 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class ViewBase extends Base
 {
-    
 }

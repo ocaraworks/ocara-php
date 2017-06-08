@@ -17,4 +17,10 @@ interface View
 	 * 初始化设置
 	 */
 	public function initialize();
+
+	/**
+	 * 输出内容
+	 * @param array $data
+	 */
+	public function output($data);
 }

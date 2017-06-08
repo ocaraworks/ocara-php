@@ -62,7 +62,6 @@ class Rest extends ControllerBase
 	 */
 	public function doAction($actionMethod, $display = true)
 	{
-
 		if ($actionMethod == '_action') {
 			$result = $this->_action();
 		} else {
