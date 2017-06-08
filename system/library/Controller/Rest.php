@@ -43,6 +43,7 @@ class Rest extends ControllerBase
 
 		self::$container->response->setContentType($defaultContentType);
 		self::$container
+			 ->bindSingleton('view', array($this->feature, 'getView'), array($this->getRoute()))
 			 ->bindSingleton('validator', array($this->feature, 'getValidator'))
 			 ->bindSingleton('db', function(){ Database::factory('default'); })
 			 ->bindSingleton('pager', array($this->feature, 'getPager'));
@@ -122,8 +123,7 @@ class Rest extends ControllerBase
 			$message = Lang::get($message);
 		}
 
-		self::$container->response->setContentType($contentType);
-		Ajax::show('success', $message, $data);
+		$this->view->output(compact('contentType', 'message', 'data'));
 		method_exists($this, '_after') && $this->_after();
 		die();
 	}

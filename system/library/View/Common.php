@@ -382,6 +382,22 @@ class Common extends ViewBase implements ViewInterfaces
 	}
 
 	/**
+	 * 输出内容
+	 * @param string $data
+	 */
+	public function output($data)
+	{
+		if (ocConfig('FORM.data_cahce', 1)) {
+			self::$container->response->setHeader(
+				'Cache-control',
+				'private, must-revalidate'
+			);
+		}
+		self::$container->response->sendHeaders();
+		echo $data['content'];
+	}
+
+	/**
 	 * 渲染Layout
 	 * @param $layout
 	 * @throws Exception

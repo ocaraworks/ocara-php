@@ -1444,14 +1444,14 @@ abstract class Database extends ModelBase
 
 		if (is_string($data) && $where) {
 			$data = array_map('trim', explode(OC_DIR_SEP, $data));
-			$count = count($data);
-			if ($count == 0) {
+			if (!$data) {
 				Error::show('fault_cond_sign');
-			} elseif ($count == 1) {
+			}
+			if (isset($data[1])) {
+				list($link, $sign) = $data;
+			} else {
 				$sign = $data[0];
 				$link = 'AND';
-			} else {
-				list($link, $sign) = $data;
 			}
 
 			$cond = is_array($where) ? $this->map($where) : $where;

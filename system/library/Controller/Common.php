@@ -160,11 +160,8 @@ class Common extends ControllerBase implements ControllerInterface
 	 */
 	public function display($file = false, array $vars = array())
 	{
-		if (ocConfig('FORM.data_cahce', 1)) {
-			$this->response->setHeader('Cache-control', ' private, must-revalidate');
-		}
-		self::$container->response->sendHeaders();
-		echo $this->render($file, $vars);
+		$content = $this->render($file, $vars);
+		$this->view->output(array('content' => $content));
 		method_exists($this, '_after') && $this->_after();
 		die();
 	}
