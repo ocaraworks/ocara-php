@@ -26,7 +26,7 @@ abstract class Database extends ModelBase
 	 * @var @_primary 主键字段列表
 	 * @var $_primaries 主键字段数组
 	 */
-	protected $_driver = null;
+	protected $_plugin = null;
 
 	protected $_primary;
 	protected $_table;
@@ -410,10 +410,10 @@ abstract class Database extends ModelBase
 		}
 
 		if ($this->_fields) {
-			if (!is_object($this->_driver)) {
-				$this->_driver = $this->connect();
+			if (!is_object($this->_plugin)) {
+				$this->_plugin = $this->connect();
 			}
-			$result = $this->_driver->formatFieldValues($this->_fields, $result);
+			$result = $this->_plugin->formatFieldValues($this->_fields, $result);
 		}
 
 		return $result;
@@ -437,7 +437,7 @@ abstract class Database extends ModelBase
 		$this->_selected = false;
 		$this->_sql = array();
 		$this->_join(false, $this->_tableName, $this->_alias);
-		$this->_driver = $this->_master;
+		$this->_plugin = $this->_master;
 		return $this;
 	}
 
@@ -520,7 +520,7 @@ abstract class Database extends ModelBase
 
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
-			$result = $this->_driver->update($this->_tableName, $data, $condition, $debug);
+			$result = $this->_plugin->update($this->_tableName, $data, $condition, $debug);
 			if (!$debug){
 				$this->_relateSave();
 				if($this->_selected && method_exists($this, '_afterUpdate')) {
@@ -528,9 +528,9 @@ abstract class Database extends ModelBase
 				}
 			}
 		} else {
-			$result = $this->_driver->insert($this->_tableName, $data, $debug);
+			$result = $this->_plugin->insert($this->_tableName, $data, $debug);
 			if (!$debug) {
-				$this->_insertId = $this->_driver->getInsertId();
+				$this->_insertId = $this->_plugin->getInsertId();
 				$this->_selectInsertRow($data);
 				$this->_relateSave(true);
 				if (method_exists($this, '_afterCreate')) {
@@ -580,7 +580,7 @@ abstract class Database extends ModelBase
 	 */
 	public function prepare($prepare = true)
 	{
-		$this->_driver->is_prepare($prepare);
+		$this->_plugin->is_prepare($prepare);
 	}
 
 	/**
@@ -590,7 +590,7 @@ abstract class Database extends ModelBase
 	 */
 	public function bind($type, &$args)
 	{
-		call_user_func_array(array($this->_driver, 'bind'), func_get_args());
+		call_user_func_array(array($this->_plugin, 'bind'), func_get_args());
 	}
 
 	/**
@@ -694,9 +694,9 @@ abstract class Database extends ModelBase
 			if (!$debug && $this->_selected && method_exists($this, '_beforeDelete')) {
 				$this->_beforeDelete();
 			}
-			$result = $this->_driver->delete($this->_tableName, $condition, $debug);
+			$result = $this->_plugin->delete($this->_tableName, $condition, $debug);
 			if (!$debug
-				&& !$this->_driver->errorExists()
+				&& !$this->_plugin->errorExists()
 				&& $this->_selected
 				&& method_exists($this, '_afterDelete')
 			) {
@@ -941,9 +941,9 @@ abstract class Database extends ModelBase
 		}
 
 		if ($queryRow) {
-			$result = $this->_driver->queryRow($sql, $debug, $count);
+			$result = $this->_plugin->queryRow($sql, $debug, $count);
 		} else {
-			$result = $this->_driver->query($sql, $debug, true, true, false, $count);
+			$result = $this->_plugin->query($sql, $debug, true, true, false, $count);
 		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
@@ -967,29 +967,29 @@ abstract class Database extends ModelBase
 	 */
 	public function connect($master = true)
 	{
-		$this->_driver = null;
+		$this->_plugin = null;
 
 		if (!($master || ocGet('option.master', $this->_sql))) {
 			if (!is_object($this->_slave)) {
 				$this->_slave = DefaultDatabase::factory($this->_server, false, false);
 			}
-			$this->_driver = $this->_slave;
+			$this->_plugin = $this->_slave;
 		}
 
-		if (!is_object($this->_driver)) {
+		if (!is_object($this->_plugin)) {
 			if (!is_object($this->_master)) {
 				$this->_master = DefaultDatabase::factory($this->_server);
 			}
-			$this->_driver = $this->_master;
+			$this->_plugin = $this->_master;
 		}
 
 		if ($this->_database) {
-			$this->_driver->selectDatabase($this->_database);
+			$this->_plugin->selectDatabase($this->_database);
 		}
 
-		$this->_driver->setDataType($this->_dataType);
+		$this->_plugin->setDataType($this->_dataType);
 
-		return $this->_driver;
+		return $this->_plugin;
 	}
 
 	/**
@@ -1076,7 +1076,7 @@ abstract class Database extends ModelBase
 	public function parseJoinOnSql($alias, $on)
 	{
 		if (is_array($on)) {
-			$on = $this->_driver->parseCondition($on, 'AND', '=', $alias);
+			$on = $this->_plugin->parseCondition($on, 'AND', '=', $alias);
 		}
 
 		return $on;
@@ -1094,7 +1094,7 @@ abstract class Database extends ModelBase
 		foreach ($_field as $key => $value) {
 			$value = explode('.', ltrim($value));
 			$field = trim($value[count($value) - 1]);
-			$_field[$key] = $this->_driver->getFieldNameSql($field, $alias);
+			$_field[$key] = $this->_plugin->getFieldNameSql($field, $alias);
 		}
 
 		return implode(',', $_field);
@@ -1307,7 +1307,7 @@ abstract class Database extends ModelBase
 	 */
 	private function _genSql($select, $fields = false, $count = false)
 	{
-		$this->_driver->clearParams();
+		$this->_plugin->clearParams();
 
 		$where  = array();
 		$option = ocGet('option', $this->_sql, array());
@@ -1318,7 +1318,7 @@ abstract class Database extends ModelBase
 			if (isset($option['fields']) && $option['fields']) {
 				$fields = $this->_getFieldsSql($option['fields']);
 			} else {
-				$fields = $this->_driver->getDefaultFieldsSql();
+				$fields = $this->_plugin->getDefaultFieldsSql();
 			}
 		}
 
@@ -1329,17 +1329,17 @@ abstract class Database extends ModelBase
 
 		if (isset($option['mWhere']) && $option['mWhere']) {
 			foreach ($option['mWhere'] as $row) {
-				$row['where'] = $this->_driver->parseCondition($row['where']);
+				$row['where'] = $this->_plugin->parseCondition($row['where']);
 				$where[] = $row;
 			}
 		}
 
-		$option['where'] = $this->_driver->getWhereSql($where);
+		$option['where'] = $this->_plugin->getWhereSql($where);
 		if (isset($option['limit'])) {
 			if ($count) {
 				ocDel($option, 'limit');
 			} else {
-				$option['limit'] = $this->_driver->getLimitSql($option['limit']);
+				$option['limit'] = $this->_plugin->getLimitSql($option['limit']);
 			}
 		}
 
@@ -1349,8 +1349,8 @@ abstract class Database extends ModelBase
 
 		if ($select) {
 			$aliasFields = $this->_getAliasFields($tables);
-			$fields = $this->_driver->getAliasFieldsSql($fields, $aliasFields);
-			return $this->_driver->getSelectSql($fields, $from, $option);
+			$fields = $this->_plugin->getAliasFieldsSql($fields, $aliasFields);
+			return $this->_plugin->getSelectSql($fields, $from, $option);
 		} else {
 			return $option['where'];
 		}
@@ -1371,18 +1371,18 @@ abstract class Database extends ModelBase
 				if (is_array($whereData)) {
 					$whereData = $this->map($whereData);
 				}
-				$where[] = $this->_driver->parseCondition(
+				$where[] = $this->_plugin->parseCondition(
 					$whereData,  'AND', '=', $alias
 				);
 			} elseif ($whereType == 'between') {
-				$where[] = call_user_func_array(array($this->_driver, 'getBetweenSql'), $whereData);
+				$where[] = call_user_func_array(array($this->_plugin, 'getBetweenSql'), $whereData);
 			} else {
 				$where[] = $this->_getComplexWhere($whereData, $alias);
 			}
 		}
 
-		$where = $this->_driver->linkWhere($where);
-		$where = $this->_driver->wrapWhere($where);
+		$where = $this->_plugin->linkWhere($where);
+		$where = $this->_plugin->wrapWhere($where);
 
 		return $where;
 	}
@@ -1406,13 +1406,13 @@ abstract class Database extends ModelBase
 				}
 			}
 			if (is_array($fieldData)) {
-				$fields[] = $this->_driver->getFieldsSql($fieldData, $alias);
+				$fields[] = $this->_plugin->getFieldsSql($fieldData, $alias);
 			} else {
 				$fields[] = $fieldData;
 			}
 		}
 
-		return $this->_driver->getMultiFieldsSql($fields);
+		return $this->_plugin->getMultiFieldsSql($fields);
 	}
 
 	/**
@@ -1435,10 +1435,10 @@ abstract class Database extends ModelBase
 			}
 
 			$on = $this->parseJoinOnSql($alias, $on);
-			$fullname = $this->_driver->getTableFullname($fullname);
+			$fullname = $this->_plugin->getTableFullname($fullname);
 
 			if ($select) {
-				$from = $from . $this->_driver->getJoinSql($type, $fullname, $alias, $on);
+				$from = $from . $this->_plugin->getJoinSql($type, $fullname, $alias, $on);
 			}
 		}
 
@@ -1454,22 +1454,22 @@ abstract class Database extends ModelBase
 		$joinOn = false;
 
 		if ($config) {
-			$foreignField = $this->_driver->getFieldNameSql($config['foreignKey'], $alias);
-			$primaryField = $this->_driver->getFieldNameSql($config['primaryKey'], $this->_alias);
+			$foreignField = $this->_plugin->getFieldNameSql($config['foreignKey'], $alias);
+			$primaryField = $this->_plugin->getFieldNameSql($config['primaryKey'], $this->_alias);
 			$where = array($foreignField => ocSql($primaryField));
-			$condition[] = $this->_driver->parseCondition($where, 'AND', null, $alias);
+			$condition[] = $this->_plugin->parseCondition($where, 'AND', null, $alias);
 			if (is_array($config['condition'])) {
 				foreach ($config['condition'] as $key => $value) {
 					$sign = null;
 					if (is_array($value)) {
 						list($sign, $value) = $value;
 					}
-					$key = $this->_driver->getFieldNameSql($key, $alias);
+					$key = $this->_plugin->getFieldNameSql($key, $alias);
 					$where = array($key => $value);
-					$condition[] = $this->_driver->parseCondition($where, 'AND', $sign, $alias);
+					$condition[] = $this->_plugin->parseCondition($where, 'AND', $sign, $alias);
 				}
 			}
-			$joinOn = $this->_driver->linkWhere($condition, 'AND');;
+			$joinOn = $this->_plugin->linkWhere($condition, 'AND');;
 		}
 
 		return $joinOn;
@@ -1498,10 +1498,10 @@ abstract class Database extends ModelBase
 			}
 
 			$cond = is_array($where) ? $this->map($where) : $where;
-			$cond = $this->_driver->parseCondition($cond, $link, $sign, $alias);
+			$cond = $this->_plugin->parseCondition($cond, $link, $sign, $alias);
 		}
 
-		return $this->_driver->wrapWhere($cond);
+		return $this->_plugin->wrapWhere($cond);
 	}
 	
 	/**
@@ -1522,8 +1522,8 @@ abstract class Database extends ModelBase
 				foreach ($data[1] as $val) {
 					$cond[] = $this->_getComplexWhereDetail($val, $alias);
 				}
-				$cond = $this->_driver->linkWhere($cond, $data[0]);
-				$cond = $this->_driver->wrapWhere($cond);
+				$cond = $this->_plugin->linkWhere($cond, $data[0]);
+				$cond = $this->_plugin->wrapWhere($cond);
 			}
 		}
 
