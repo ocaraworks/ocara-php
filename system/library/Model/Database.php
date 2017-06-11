@@ -1658,7 +1658,7 @@ abstract class Database extends ModelBase
 
 		foreach ($this->_relations as $key => $object) {
 			$config = $this->_getRelateConfig($key);
-			if ($object->isChanged() && $config && $this->hasProperty($config['primaryKey'])) {
+			if ($config && $this->hasProperty($config['primaryKey'])) {
 				$data = array();
 				if (in_array($config['joinType'], array('one','manyOne')) && is_object($object)) {
 					$data = array($object);
@@ -1670,16 +1670,16 @@ abstract class Database extends ModelBase
 					}
 				}
 				foreach ($data as &$model) {
-					if (is_object($model) && $model instanceof \Ocara\ModelBase) {
+					if ($object->isChanged() && is_object($model) && $model instanceof \Ocara\ModelBase) {
 						$where = array($config['foreignKey'] => $this->$config['primaryKey']);
 						$model->$config['foreignKey'] = $this->$config['primaryKey'];
 						if (!$isCreate) {
 							$model->where($where)->where($config['condition']);
 						}
 						$model->save();
+						$changes[$key] = $data;
 					}
 				}
-				$changes[$key] = $data;
 			}
 		}
 

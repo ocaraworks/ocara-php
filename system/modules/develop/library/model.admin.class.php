@@ -104,7 +104,7 @@ class model_admin
 		$fileCache->format();
 		$fileCache->save($path, true);
 
-		$fileCache->setData(array(), "CONF['JOIN']", '表关系');
+		$fileCache->setData(array(), "CONF['JOIN']", '表关联');
 		$fileCache->format();
 		$fileCache->save($path, true);
 
