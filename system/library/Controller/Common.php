@@ -266,6 +266,19 @@ class Common extends ControllerBase implements ControllerInterface
 	}
 
 	/**
+	 * 数据模型字段验证
+	 * @param $data
+	 * @param $class
+	 * @param Validator|null $validator
+	 * @return mixed
+	 */
+	public function validate($data, $class, Validator &$validator = null)
+	{
+		$validator = $validator ? $validator : $this->validator;
+		return $validator->validate($data, $class);
+	}
+
+	/**
 	 * 表单检测
 	 */
 	protected function _checkForm()

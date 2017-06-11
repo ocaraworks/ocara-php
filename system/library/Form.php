@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Model\Database as DatabaseModel;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 final class Form extends Base
@@ -133,15 +135,8 @@ final class Form extends Base
 	public function loadModel()
 	{
 		foreach ($this->_modelInfo as $key => $class) {
-			if (is_object($class)) {
-				$model = $class;
-			} else {
-				$model = new $class();
-			}
-			$tag = $model->getTag();
-			$this->_lang = array_merge($this->_lang, $model->getConfig('LANG'));
-			$this->_map = array_merge($this->_map, $model->getConfig('MAP'));
-			$this->_models[$tag] = $model;
+			$this->_lang = array_merge($this->_lang, DatabaseModel::getConfig('LANG', null, $class));
+			$this->_map =array_merge($this->_map, DatabaseModel::getConfig('MAP', null, $class));
 		}
 
 		return $this;
@@ -152,7 +147,7 @@ final class Form extends Base
 	 */
 	public function end()
 	{
-		return $this->end = '</form>' . OC_ENTER;
+		return $this->end = $this->_plugin->createEndHtmlTag('form') . OC_ENTER;
 	}
 
 	/**
@@ -161,48 +156,63 @@ final class Form extends Base
 	 * @param string $server
 	 * @param bool $required
 	 */
-	public function model($class)
+	public function model($class, $alias = null)
 	{
-		$this->_modelInfo[] = $class;
+		$alias = $alias ? $alias : $class;
+		$this->_modelInfo[$alias] = $class;
 		return $this;
 	}
 
 	/**
-	 * 获取Model对象
-	 * @param $name
-	 * @param null $server
-	 * @return string
-	 */
-	public function getModel($name, $server = null)
-	{
-		$tag = $server ? $server . '.' . $name : $name;
-		return empty($this->_models[$tag]) ? null : $this->_models[$tag];
-	}
-
-	/**
-	 * 修改字段语言
+	 * 获取或修改字段语言
 	 * @param string $field
 	 * @param string $value
 	 */
 	public function lang($field, $value = null)
 	{
-		if (func_num_args() >=2) {
-			return $this->_lang[$field] = $value;
-		}
-		return ocGet($field, $this->_lang, $field);
+		return $this->_fieldConfig('lang', $field, $value);
 	}
 
 	/**
-	 * 修改字段映射
+	 * 获取或修改字段映射
 	 * @param string $field
 	 * @param string $value
 	 */
 	public function map($field, $value = null)
 	{
-		if (func_num_args() >=2) {
-			return $this->map[$field] = $value;
+		return $this->_fieldConfig('map', $field, $value);
+	}
+
+	/**
+	 * 获取或修改设置
+	 * @param $type
+	 * @param $field
+	 * @param null $value
+	 * @return array|null
+	 */
+	protected function _fieldConfig($type, $field, $value = null)
+	{
+		$property = '_' . $type;
+		$config = $this->$property;
+
+		if (isset($value)) {
+			return $config[$field] = $value;
 		}
-		return ocGet($field, $this->map);
+
+		$fields = explode('.', $field);
+		if (!isset($fields[1])) {
+			return ocGet($field[0], $config);
+		}
+
+		$field = $fields[1];
+		if (isset($this->_modelInfo[$fields[0]])) {
+			$class = $this->_modelInfo[$fields[0]];
+		} else {
+			$class = $fields[0];
+		}
+
+		$result = DatabaseModel::getConfig(strtoupper($type), $field, $class);
+		return $result;
 	}
 
 	/**
@@ -226,8 +236,8 @@ final class Form extends Base
 	public function validate(Validator &$validator, array $data)
 	{
 		$this->loadModel();
-		foreach ($this->_models as $model) {
-			if (!$validator->validate($data, $model)) {
+		foreach ($this->_modelInfo as $alias => $class) {
+			if (!$validator->validate($data, $class)) {
 				return false;
 			}
 		}

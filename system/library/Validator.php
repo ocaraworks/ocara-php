@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Model\Database as DatabaseModel;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 final class Validator extends Base
@@ -28,22 +30,17 @@ final class Validator extends Base
 
 	/**
 	 * 表单验证
-	 * @param object $model
 	 * @param array $data
+	 * @param string $class
 	 */
-	public function validate(array $data, Model &$model = null)
+	public function validate(array $data, $class)
 	{
-		$validate = array();
-		$lang = array();
-
-		if (is_object($model)) {
-			$data	  = $model->map($data);
-			$validate = array_merge($model->getConfig('VALIDATE'), $validate);
-			$lang 	  = array_merge($model->getConfig('LANG'), $lang);
-		}
-
+		$data = DatabaseModel::mapFields($data, $class);
+		$validate = DatabaseModel::getConfig('VALIDATE');
+		$lang = DatabaseModel::getConfig('LANG');
 		$result = true;
-		if ($validate) foreach ($validate as $field => $rule) {
+
+		if (!$validate) foreach ($validate as $field => $rule) {
 			if (empty($rule)) continue;
 			if(is_string($rule)) $rule = array('common' => $rule);
 			$value = ocGet($field, $data);
@@ -57,10 +54,11 @@ final class Validator extends Base
 			} elseif (isset($rule['callback']) && $rule['callback'] && is_string($rule['callback'])) {
 				$result = $this->callback($field, $value, $rule['callback']);
 			}
-		}
 
-		if (!$result) {
-			$this->setError($lang);
+			if (!$result) {
+				$this->setError($lang);
+				break;
+			}
 		}
 
 		return $result;

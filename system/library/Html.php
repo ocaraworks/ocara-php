@@ -349,7 +349,17 @@ class Html extends Base
 	{
 		return self::_createHtmlTag($type, false, $attributes, $content);
 	}
-	
+
+	/**
+	 * 新增结束HTML标记
+	 * @param $name
+	 * @return string
+	 */
+	public static function createEndHtmlTag($name)
+	{
+		return '</' . $name . '>';
+	}
+
 	/**
 	 * 属性连接串
 	 * @param array $attributes

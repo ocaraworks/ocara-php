@@ -220,19 +220,15 @@ abstract class Database extends ModelBase
 	{
 		$class = $class ? $class : self::getClass();
 
-		if ($num = func_num_args()) {
-			if ($key == 'LANG' && empty(self::$_config[$class]['LANG'])) {
-				$filePath = self::getConfigPath($class);
-				$path = ocPath('lang', 'model' . OC_DIR_SEP . $filePath);
-				if (ocFileExists($path)) {
-					include ($path);
-					if (isset($LANG) && is_array($LANG)) {
-						self::$_config[$class]['LANG'] = $LANG;
-					}
-				}
+		if (!isset(self::$_config[$class])) {
+			self::loadConfig($class);
+		}
+
+		if (isset($key)) {
+			if ($field) {
+				return ocGet(array($key, $field), self::$_config[$class]);
 			}
-			$config = ocGet($key, self::$_config[$class]);
-			return isset($config[$field]) ? $config[$field] : $config;
+			return ocGet($key, self::$_config[$class]);
 		}
 
 		return self::$_config[$class];
@@ -262,6 +258,31 @@ abstract class Database extends ModelBase
 		$filePath = implode(OC_DIR_SEP, array_map('lcfirst', explode(OC_NS_SEP, $path)));
 
 		return $filePath . '.php';
+	}
+
+	/**
+	 * 字段映射
+	 * @param array $fields
+	 * @param array $class
+	 */
+	public static function mapFields(array $fields, array $class)
+	{
+		$config = self::getConfig(null, null, $class);
+
+		if (!$config) {
+			return $fields;
+		}
+
+		$data = array();
+		foreach ($fields as $key => $value) {
+			if (isset($config[$key])) {
+				$data[$config[$key]] = $value;
+			} else {
+				$data[$key] = $value;
+			}
+		}
+
+		return $data;
 	}
 
 	/**
