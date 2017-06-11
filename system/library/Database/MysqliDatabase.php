@@ -76,8 +76,15 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 			$fieldRow = array();
 			$fieldRow['name'] = $row['Field'];
 			$fieldRow['desc'] = $row['Comment'];
-			$pos = strpos($row['Type'], '(', 0);
-			$fieldRow['type'] = strtolower(substr($row['Type'], 0, $pos));
+			if (strstr($row['Type'], '(')) {
+				$pos = strpos($row['Type'], '(', 0);
+				$endPos = strpos($row['Type'], ')', 0);
+				$fieldRow['type'] = strtolower(substr($row['Type'], 0, $pos));
+				$fieldRow['length'] = (integer)substr($row['Type'], $pos + 1, $endPos - $pos - 1);
+			} else {
+				$fieldRow['type'] = $row['Type'];
+				$fieldRow['length'] = 0;
+			}
 			$fields[$row['Field']] = $fieldRow;
 		}
 

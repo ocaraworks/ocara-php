@@ -349,7 +349,17 @@ abstract class Database extends ModelBase
 	 */
 	public function loadFields()
 	{
-		$this->_fields = $this->connect()->getFields($this->_tableName);
+		$filePath = self::getConfigPath($this->_tag);
+		$path = ocPath('conf', "fields/{$filePath}");
+
+		if (ocFileExists($path)) {
+			$this->_fields = @include($path);
+		}
+
+		if (!$this->_fields) {
+			$this->_fields = $this->connect()->getFields($this->_tableName);
+		}
+
 		return $this;
 	}
 

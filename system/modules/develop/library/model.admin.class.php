@@ -138,6 +138,17 @@ class model_admin
 		File::createFile($path, 'wb');
 		File::writeFile($path, $content);
 
+		//新建字段信息配置
+		$path = OC_ROOT . 'resource/conf/fields/'
+			. $serverPath
+			. $dbPath
+			. $modelFile
+			. '.php';
+
+		FileCache::build();
+		$fileCache->setData($fields, null, $modelClass . ' Fields');
+		$fileCache->save($path);
+
 		die("添加成功！");
 	}
 }
