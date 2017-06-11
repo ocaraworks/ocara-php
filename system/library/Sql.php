@@ -529,14 +529,18 @@ class Sql extends Base
 	/**
 	 * 字段组合
 	 * @param array $fields
+	 * @param array $aliasFields
 	 * @return bool|string
 	 */
-	public function getMultiFieldsSql(array $fields)
+	public function getMultiFieldsSql(array $fields, array $aliasFields = array())
 	{
 		foreach ($fields as $key => $value) {
 			if (preg_match('/^\{(.*)\}$/', $value, $mt)) {
 				$fields[$key] = $mt[1];
 			} else {
+				if ($aliasFields) {
+					$value = $this->_plugin->getAliasFieldsSql($value, $aliasFields);
+				}
 				$fields[$key] = $value . ',';
 			}
 		}

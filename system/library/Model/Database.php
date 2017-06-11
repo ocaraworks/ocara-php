@@ -1315,8 +1315,9 @@ abstract class Database extends ModelBase
 		$from   = $this->_getFromSql($select, $tables);
 
 		if (empty($fields)) {
+			$aliasFields = $this->_getAliasFields($tables);
 			if (isset($option['fields']) && $option['fields']) {
-				$fields = $this->_getFieldsSql($option['fields']);
+				$fields = $this->_getFieldsSql($option['fields'], $aliasFields);
 			} else {
 				$fields = $this->_plugin->getDefaultFieldsSql();
 			}
@@ -1348,8 +1349,6 @@ abstract class Database extends ModelBase
 		}
 
 		if ($select) {
-			$aliasFields = $this->_getAliasFields($tables);
-			$fields = $this->_plugin->getAliasFieldsSql($fields, $aliasFields);
 			return $this->_plugin->getSelectSql($fields, $from, $option);
 		} else {
 			return $option['where'];
@@ -1390,8 +1389,9 @@ abstract class Database extends ModelBase
 	/**
 	 * 获取字段列表
 	 * @param array $fields
+	 * @param array $aliasFields
 	 */
-	private function _getFieldsSql($data)
+	private function _getFieldsSql($data, $aliasFields)
 	{
 		if (is_string($data)) {
 			return $data;
@@ -1412,7 +1412,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		return $this->_plugin->getMultiFieldsSql($fields);
+		return $this->_plugin->getMultiFieldsSql($fields, $aliasFields);
 	}
 
 	/**
