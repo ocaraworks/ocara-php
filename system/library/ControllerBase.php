@@ -83,7 +83,6 @@ class ControllerBase extends Base implements ControllerInterface
 			$class = $this->getRoute('controller');
 		}
 
-		$class = '\Model\\' . ucfirst($class);
 		if (isset($this->_models[$class])) {
 			$model = $this->_models[$class];
 			if (is_object($model) && $model instanceof ModelBase) {

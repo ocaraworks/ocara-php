@@ -44,9 +44,9 @@ abstract class Database extends ModelBase
 	private $_isOrm;
 	private $_selected;
 	private $_insertId;
+	private $_changed;
 
 	private $_relations = array();
-	private $_changes   = array();
 	private $_sql       = array();
 	private $_primaries = array();
 	private $_joins 	= array();
@@ -118,6 +118,14 @@ abstract class Database extends ModelBase
 	public function getTableFullname()
 	{
 		return $this->connect()->getTableFullname($this->_tableName);
+	}
+
+	/**
+	 * 是否有更改数据
+	 */
+	public function isChanged()
+	{
+		return $this->_changed;
 	}
 
 	/**
@@ -505,7 +513,7 @@ abstract class Database extends ModelBase
 			Error::show('fault_save_data');
 		}
 
-		if ($this->_changes) {
+		if (!$debug && $this->_relations) {
 			$this->db()->transBegin();
 		}
 
@@ -1605,9 +1613,9 @@ abstract class Database extends ModelBase
 	{
 		if (isset(self::$_config[$this->_tag]['JOIN'][$key])) {
 			$this->_relations[$key] = $value;
-			$this->_changes[$key] = &$this->_relations[$key];
 		} else {
-			return parent::__set($key, $value);
+			parent::__set($key, $value);
+			$this->_changed = true;
 		}
 	}
 
@@ -1644,9 +1652,9 @@ abstract class Database extends ModelBase
 	{
 		$changes = array();
 
-		foreach ($this->_changes as $key => $object) {
+		foreach ($this->_relations as $key => $object) {
 			$config = $this->_getRelateConfig($key);
-			if ($config && $this->hasProperty($config['primaryKey'])) {
+			if ($object->isChanged() && $config && $this->hasProperty($config['primaryKey'])) {
 				$data = array();
 				if (in_array($config['joinType'], array('one','manyOne')) && is_object($object)) {
 					$data = array($object);
