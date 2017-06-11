@@ -434,6 +434,7 @@ abstract class Database extends ModelBase
 	 */
 	public function clearSql()
 	{
+		$this->_selected = false;
 		$this->_sql = array();
 		$this->_join(false, $this->_tableName, $this->_alias);
 		$this->_driver = $this->_master;
@@ -499,7 +500,7 @@ abstract class Database extends ModelBase
 	{
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
-			if (method_exists($this, '_beforeUpdate')) {
+			if ($this->_selected && method_exists($this, '_beforeUpdate')) {
 				$this->_beforeUpdate();
 			}
 		} else {
@@ -522,7 +523,7 @@ abstract class Database extends ModelBase
 			$result = $this->_driver->update($this->_tableName, $data, $condition, $debug);
 			if (!$debug){
 				$this->_relateSave();
-				if(method_exists($this, '_afterUpdate')) {
+				if($this->_selected && method_exists($this, '_afterUpdate')) {
 					$this->_afterUpdate();
 				}
 			}
@@ -690,11 +691,15 @@ abstract class Database extends ModelBase
 		if ($type == 'update') {
 			$result = $this->_save($data, $condition, $debug);
 		} else {
-			if (!$debug && method_exists($this, '_beforeDelete')) {
+			if (!$debug && $this->_selected && method_exists($this, '_beforeDelete')) {
 				$this->_beforeDelete();
 			}
 			$result = $this->_driver->delete($this->_tableName, $condition, $debug);
-			if (!$debug && !$this->_driver->errorExists() && method_exists($this, '_afterDelete')) {
+			if (!$debug
+				&& !$this->_driver->errorExists()
+				&& $this->_selected
+				&& method_exists($this, '_afterDelete')
+			) {
 				$this->_afterDelete();
 			}
 		}
@@ -953,7 +958,6 @@ abstract class Database extends ModelBase
 			$this->_saveCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired, $result);
 		}
 
-		$this->_selected = false;
 		return $result;
 	}
 
