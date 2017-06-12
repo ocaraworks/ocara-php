@@ -67,4 +67,16 @@ final class Ajax extends Base
 
 		echo($content);
 	}
+
+	/**
+	 * 获取XML结果
+	 */
+	private static function getXmlResult($result)
+	{
+		$xmlObj = new Xml();
+		$xmlObj->setData('array', array('root', $result));
+		$xml = $xmlObj->getContent();
+
+		return $xml;
+	}
 }

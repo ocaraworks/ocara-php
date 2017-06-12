@@ -204,16 +204,4 @@ class Response extends Base
 			Error::show('not_null', array('url'));
 		}
 	}
-
-	/**
-	 * 获取XML结果
-	 */
-	private static function getXmlResult($result)
-	{
-		$xmlObj = new Xml();
-		$xmlObj->setData('array', array('root', $result));
-		$xml = $xmlObj->getContent();
-
-		return $xml;
-	}
 }
