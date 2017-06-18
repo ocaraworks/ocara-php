@@ -106,7 +106,8 @@ class ControllerBase extends Base implements ControllerInterface
 		}
 		if (self::$container->isBound($key)) {
 			$instance = self::$container->get($key);
-			return $this->setProperty($key, $instance);
+			$this->setProperty($key, $instance);
+			return $instance;
 		}
 		Error::show('no_property', array($key));
 	}

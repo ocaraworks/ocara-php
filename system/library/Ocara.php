@@ -199,7 +199,6 @@ final class Ocara
 					return new $namspace();
 				}
 			});
-			self::$_container->get($name);
 		}
 	}
 

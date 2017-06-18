@@ -299,7 +299,7 @@ abstract class Database extends ModelBase
 	 */
 	public function db($slave = false)
 	{
-		$name = $slave ? '_slave' : '_driver';
+		$name = $slave ? '_slave' : '_plugin';
 		if (is_object($this->$name)) {
 			return $this->$name;
 		}
@@ -1503,7 +1503,7 @@ abstract class Database extends ModelBase
 
 		return $this->_plugin->wrapWhere($cond);
 	}
-	
+
 	/**
 	 * 复杂条件
 	 * @param array $data

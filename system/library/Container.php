@@ -39,7 +39,7 @@ class Container extends Base
     public function &__get($key)
     {
         $instance = $this->get($key);
-       return $instance;
+        return $instance;
     }
 
     /**
@@ -52,7 +52,7 @@ class Container extends Base
         if (!empty($this->_instances[$name])) {
             $instance = $this->_instances[$name];
         } else {
-            $this->_instances[$name] = $this->create($name);
+            $instance = $this->_instances[$name] = $this->create($name);
         }
         return $instance;
     }
