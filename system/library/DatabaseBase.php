@@ -325,7 +325,7 @@ class DatabaseBase extends Sql
 	 * @param array $option
 	 * @param scalar $params
 	 */
-	public function bind($type, $option, &$params)
+	public function bind($option, $type, &$params)
 	{
 		if (is_string($type)) {
 			$type = explode(OC_EMPTY, strtolower($type));

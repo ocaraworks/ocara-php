@@ -27,8 +27,7 @@ final class Form extends Base
 	private $_token;
 	private $_tokenTag;
 	private $_validateForm = true;
-
-	private $_models = array();
+	
 	private $_modelInfo = array();
 	private $_lang = array();
 	private $_map = array();

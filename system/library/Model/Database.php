@@ -585,16 +585,6 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 绑定参数
-	 * @param string $type
-	 * @param mixed $args
-	 */
-	public function bind($type, &$args)
-	{
-		call_user_func_array(array($this->_plugin, 'bind'), func_get_args());
-	}
-
-	/**
 	 * 保存数据（ORM模型）
 	 * @param $debug
 	 * @return mixed
