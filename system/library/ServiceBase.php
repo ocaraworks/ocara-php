@@ -20,19 +20,22 @@ class ServiceBase extends Base
 	 * @param string $filePath
 	 * @param string $className
 	 */
-	public static function loadLanguage($filePath, $className)
+	public static function loadLanguage($filePath)
 	{
-		$filePath = '/languages/' . Ocara::language() . OC_DIR_SEP . $filePath;
-		$lang     = array();
+		$lang = array();
+		$shortPath = '/languages/'
+			. Ocara::language()
+			. OC_DIR_SEP
+			. str_replace(OC_SYS . 'service/library/', '', ocCommPath($filePath));
 
-		if (ocFileExists($path = OC_SYS . 'service' . $filePath)) {
+		if (ocFileExists($path = OC_SYS . 'service' . $shortPath)) {
 			$config = include($path);
 			if ($config && is_array($config)) {
 				$lang = $config;
 			}
 		}
 		
-		if (ocFileExists($path = OC_EXT . 'service' . $filePath)) {
+		if (ocFileExists($path = OC_EXT . 'service' . $shortPath)) {
 			$config = include($path);
 			if ($config && is_array($config)) {
 				$lang = array_merge($lang, $config);
@@ -40,7 +43,7 @@ class ServiceBase extends Base
 		}
 		
 		if ($lang) {
-			self::$_lang[$className] = $lang;
+			self::$_lang[self::getClass()] = $lang;
 		}
 	}
 	
@@ -51,14 +54,14 @@ class ServiceBase extends Base
 	 */
 	public static function getLanguage($key, array $params = array())
 	{				
-		$class = get_called_class();
+		$class = self::getClass();
 
 		if ($class && array_key_exists($class, self::$_lang)) {
 			$languages = self::$_lang[$class];
 		} else {
 			$languages = array();
 		}
-		
+
 		return ocGetLanguage($languages, $key, $params);
 	}
 

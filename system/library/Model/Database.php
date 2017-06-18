@@ -273,7 +273,7 @@ abstract class Database extends ModelBase
 	 * @param array $fields
 	 * @param array $class
 	 */
-	public static function mapFields(array $fields, array $class)
+	public static function mapFields(array $fields, $class)
 	{
 		$config = self::getConfig(null, null, $class);
 
@@ -403,6 +403,7 @@ abstract class Database extends ModelBase
 			$key = strtr($key, self::$_config[$this->_tag]['MAP']);
 			if ($this->_fields && !isset($this->_fields[$key])
 				|| $key == FormToken::getTokenTag()
+				|| is_object($value)
 			) {
 				continue;
 			}

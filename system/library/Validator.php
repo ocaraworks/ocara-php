@@ -35,12 +35,12 @@ final class Validator extends Base
 	 */
 	public function validate(array $data, $class)
 	{
-		$data = DatabaseModel::mapFields($data, $class);
-		$validate = DatabaseModel::getConfig('VALIDATE');
-		$lang = DatabaseModel::getConfig('LANG');
+		$data = $class::mapFields($data, $class);
+		$validate = $class::getConfig('VALIDATE');
+		$lang = $class::getConfig('LANG');
 		$result = true;
 
-		if (!$validate) foreach ($validate as $field => $rule) {
+		if ($validate) foreach ($validate as $field => $rule) {
 			if (empty($rule)) continue;
 			if(is_string($rule)) $rule = array('common' => $rule);
 			$value = ocGet($field, $data);

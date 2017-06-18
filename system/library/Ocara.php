@@ -358,7 +358,7 @@ final class Ocara
 			include_once($filePath);
 			if (class_exists($newClass, false)) {
 				if (method_exists($newClass, 'loadLanguage')) {
-					ServiceBase::loadLanguage($filePath, $newClass);
+					$newClass::loadLanguage($filePath);
 				}
 				return true;
 			}
