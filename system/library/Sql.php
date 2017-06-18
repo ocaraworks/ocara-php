@@ -539,7 +539,7 @@ class Sql extends Base
 				$fields[$key] = $mt[1];
 			} else {
 				if ($aliasFields) {
-					$value = $this->_plugin->getAliasFieldsSql($value, $aliasFields);
+					$value = $this->getAliasFieldsSql($value, $aliasFields);
 				}
 				$fields[$key] = $value . ',';
 			}
