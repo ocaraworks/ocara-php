@@ -34,9 +34,8 @@ class ControllerBase extends Base implements ControllerInterface
 	/**
 	 * 执行动作
 	 * @param string $actionMethod
-	 * @param bool $display
 	 */
-	public function doAction($actionMethod, $display = true)
+	public function doAction($actionMethod)
 	{}
 
 	/**
@@ -105,9 +104,9 @@ class ControllerBase extends Base implements ControllerInterface
 			$value = $this->getProperty($key);
 			return $value;
 		}
-		if (self::$container->exists($key)) {
+		if (self::$container->isBound($key)) {
 			$instance = self::$container->get($key);
-			return $instance;
+			return $this->setProperty($key, $instance);
 		}
 		Error::show('no_property', array($key));
 	}

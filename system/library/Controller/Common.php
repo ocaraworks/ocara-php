@@ -65,10 +65,10 @@ class Common extends ControllerBase implements ControllerInterface
 	 * @param string $actionMethod
 	 * @param bool $display
 	 */
-	public function doAction($actionMethod, $display = true)
+	public function doAction($actionMethod)
 	{
 		if ($actionMethod == '_action') {
-			$this->doClassAction($display);
+			$this->doClassAction();
 		} else {
 			$this->$actionMethod();
 		}
@@ -79,7 +79,7 @@ class Common extends ControllerBase implements ControllerInterface
 	 * 执行动作（类方法）
 	 * @param $display
 	 */
-	public function doClassAction($display)
+	public function doClassAction()
 	{
 		method_exists($this, '_action') && $this->_action();
 		method_exists($this, '_form') && $this->_form();
@@ -92,7 +92,7 @@ class Common extends ControllerBase implements ControllerInterface
 			$this->formToken->clear();
 		} else{
 			method_exists($this, '_display') && $this->_display();
-			$display && $this->display();
+			$this->display();
 		}
 	}
 

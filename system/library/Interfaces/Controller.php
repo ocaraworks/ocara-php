@@ -22,9 +22,8 @@ interface Controller
 	/**
 	 * 执行动作
 	 * @param string $actionMethod
-	 * @param bool $display
 	 */
-	public function doAction($actionMethod, $display = true);
+	public function doAction($actionMethod);
 
 	/**
 	 * 执行动作（返回值）

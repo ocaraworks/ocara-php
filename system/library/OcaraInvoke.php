@@ -21,7 +21,7 @@ final class OcaraInvoke
 	}
 
 	/**
-	 * 运行框架
+	 * 运行框架的路由
 	 * @param string $route
 	 * @param array $params
 	 * @param string $method

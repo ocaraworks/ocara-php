@@ -34,7 +34,7 @@ class Response extends Base
 	/**
 	 * 发送头部信息
 	 */
-	public function sendHeaders($data = array())
+	public function sendHeaders(array $data = array())
 	{
 		if (empty($data)) {
 			$data = $this->prepareSendHeaders();
@@ -59,7 +59,7 @@ class Response extends Base
 	 */
 	public function prepareSendHeaders()
 	{
-		if (headers_sent()) return null;
+		if (headers_sent()) return array();
 
 		$data = $this->_headers;
 		if (isset($this->_headers['statusCode'])) {
@@ -112,13 +112,12 @@ class Response extends Base
 	/**
 	 * 设置头部
 	 * @param $header
+	 * @param $value
 	 */
-	public function setHeader($header)
+	public function setHeader($header, $value = null)
 	{
-		$args = func_get_args();
-		if (count($args) == 2) {
-			list($key, $value) = $args;
-			$this->_headers[$key] = $value;
+		if (isset($value)) {
+			$this->_headers[$header] = $value;
 		} else {
 			$this->_headers = array_merge($this->_headers, (array)$header);
 		}

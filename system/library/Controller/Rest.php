@@ -58,9 +58,8 @@ class Rest extends ControllerBase
 	/**
 	 * 执行动作
 	 * @param string $actionMethod
-	 * @param bool $display
 	 */
-	public function doAction($actionMethod, $display = true)
+	public function doAction($actionMethod)
 	{
 		if ($actionMethod == '_action') {
 			$result = $this->_action();

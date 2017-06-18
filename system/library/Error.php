@@ -151,7 +151,6 @@ final class Error extends Base
 			$error = array_merge(array('time' => date('Y-m-d H:i:s')), $error);
 			$content = ocBr2nl(ocJsonEncode($error) . OC_ENTER . $trace);
 		} else {
-			$content = OC_EMPTY;
 			$filePath = OC_SYS . 'modules/exception/index.php';
 			self::$container->response->sendHeaders();
 			if (ocFileExists($filePath)) {

@@ -35,14 +35,14 @@ final class Call extends Base
 	 * @param array $params
 	 * @param boolean $required
 	 */
-	public static function run($route, array $params = array(), $required = false)
+	public static function run($route, array $params = array(), $return = true,$required = false)
 	{
 		if (empty($route)) return true;
 
 		if (is_string($route)) {
-			return self::_runByString($route, $params);
+			return self::_runByString($route, $params, $return);
 		} elseif (is_array($route)) {
-			return self::_runByArray($route, $params);
+			return self::_runByArray($route, $params, $return);
 		}
 
 		if ($required) {
@@ -56,11 +56,12 @@ final class Call extends Base
 	 * 字符串调用
 	 * @param string $route
 	 * @param array $params
+	 * @param bool $return
 	 */
-	private static function _runByString($route, array $params = array())
+	private static function _runByString($route, array $params = array(), $return = true)
 	{
 		if (preg_match('/^\/?\w+(\/\w+)+$/', $route, $mt)) {
-			return Ocara::boot($route, true, $params);
+			return Ocara::boot($route, $return, $params);
 		}
 
 		return call_user_func_array($route, $params);

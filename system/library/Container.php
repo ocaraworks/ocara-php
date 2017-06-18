@@ -12,9 +12,16 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Container extends Base
 {
-    private $_registers = array();
+    /**
+     * @var array $_binds 动态绑定类
+     * @var array $_singletons 单例绑定类
+     * @var array $_instances 已实例化实例
+     * @var array $_replaces 要替换的依赖类
+     */
+    private $_binds = array();
     private $_singletons = array();
     private $_instances = array();
+    private $_replaces = array();
 
     /**
      * @param string $key
@@ -37,35 +44,35 @@ class Container extends Base
 
     /**
      * 获取实例
-     * @param $key
+     * @param $name
      * @return mixed
      */
-    public function get($key)
+    public function get($name)
     {
-        if (!empty($this->_instances[$key])) {
-            $instance = $this->_instances[$key];
+        if (!empty($this->_instances[$name])) {
+            $instance = $this->_instances[$name];
         } else {
-            $instance = $this->make($key);
+            $this->_instances[$name] = $this->create($name);
         }
         return $instance;
     }
 
     /**
      * 绑定实例
-     * @param $name
-     * @param $object
+     * @param string $name
+     * @param mixed $source
      * @param array $params
      */
     public function bind($name, $source, $params = array())
     {
-        $this->_registers[$name] = $this->_getMatter($name, $source, $params);
+        $this->_binds[$name] = $this->_getMatter($name, $source, $params);
         return $this;
     }
 
     /**
      * 单例模式绑定实例
-     * @param $name
-     * @param $source
+     * @param string $name
+     * @param mixed $source
      * @param array $params
      * @return $this
      * @throws Exception
@@ -77,7 +84,18 @@ class Container extends Base
     }
 
     /**
-     * 绑定实例
+     * 替换依赖类
+     * @param $target
+     * @param $replace
+     */
+    public function replace($target, $replace)
+    {
+        $this->_replaces[$target] = $replace;
+        return $this;
+    }
+
+    /**
+     * 获取绑定信息
      * @param $name
      * @param $source
      * @param $params
@@ -95,32 +113,55 @@ class Container extends Base
     }
 
     /**
-     * 是否存在实例
-     * @param $name
+     * 是否绑定过
+     * @param string $name
      * @return bool
      */
-    public function exists($name)
+    public function isBound($name)
     {
-        return array_key_exists($name, $this->_registers)
-                OR array_key_exists($name, $this->_singletons);
+        return array_key_exists($name, $this->_binds)
+            OR array_key_exists($name, $this->_singletons);
     }
 
     /**
-     * 生产实例
+     * 是否替换类
+     * @param string $class
+     * @return bool
+     */
+    public function isReplace($class)
+    {
+        return array_key_exists($class, $this->_replaces);
+    }
+
+    /**
+     * 是否存在实例
+     * @param string $name
+     * @return bool
+     */
+    public function isInstance($name)
+    {
+        return array_key_exists($name, $this->_instances);
+    }
+
+    /**
+     * 新建实例
      * @param $name
      * @return mixed
      * @throws Exception
      */
-    public function make($name)
+    public function create($name)
     {
         $matter = array();
         $isSingleton = false;
-  
+
         if (!empty($this->_singletons[$name])) {
             $matter = (array)$this->_singletons[$name];
+            if (!empty($this->_instances[$name])) {
+                return $this->_instances[$name];
+            }
             $isSingleton = true;
-        } elseif (!empty($this->_registers[$name])) {
-            $matter = (array)$this->_registers[$name];
+        } elseif (!empty($this->_binds[$name])) {
+            $matter = (array)$this->_binds[$name];
         }
 
         if (empty($matter)) {
@@ -141,23 +182,23 @@ class Container extends Base
 
         $params = (array)$params;
         array_unshift($params, $this);
-
-        $instance = $this->run($source, $params);
+        $instance = $this->make($source, $params);
 
         if ($isSingleton) {
-            return $this->_instances[$name] = $instance;
+            $this->_instances[$name] = $instance;
         }
-        return $instance;
+
+       return $instance;
     }
 
     /**
-     * 执行实例
+     * 生产实例
      * @param $object
      * @param $params
      * @return mixed
      * @throws Exception
      */
-    public function run($source, $params)
+    public function make($source, $params)
     {
         $type = gettype($source);
         if ($type == 'object' && $source instanceof \Closure
@@ -196,18 +237,23 @@ class Container extends Base
     public function getDependencies($params)
     {
         $dependencies = array();
+
         foreach ($params as $object) {
             $dependency = $object->getClass();
             if ($dependency === null) {
                 if ($object->isDefaultValueAvailable()) {
-                    $param = $object->getDefaultValue();
+                    $class = $object->getDefaultValue();
                 }
                 Error::show('Invalid_param');
             } else {
-                $param = $this->make($dependency->name);
+                $class = $this->create($dependency->name);
             }
-            $dependencies[] = $param;
+            if ($this->isReplace($class)) {
+                $class = $this->_replaces[$class];
+            }
+            $dependencies[] = $class;
         }
+
         return $dependencies;
     }
 }
