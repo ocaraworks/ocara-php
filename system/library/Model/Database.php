@@ -1569,10 +1569,7 @@ abstract class Database extends ModelBase
 			$this->_joins[$alias] = $model;
 		}
 
-		$this->_sql['tables'][$alias]['type'] = $type;
-		$this->_sql['tables'][$alias]['fullname'] = $fullname;
-		$this->_sql['tables'][$alias]['class'] = $class;
-		$this->_sql['tables'][$alias]['config'] = $config;
+		$this->_sql['tables'][$alias] = compact('type', 'fullname', 'class', 'config');
 
 		if ($config) {
 			$on = false;
@@ -1712,9 +1709,7 @@ abstract class Database extends ModelBase
 			$primaryKey = $foreignKey = reset($joinOn);
 		}
 
-		$config = compact(
-			'joinType', 'class', 'primaryKey', 'foreignKey', 'condition'
-		);
+		$config = compact('joinType', 'class', 'primaryKey', 'foreignKey', 'condition');
 
 		return $config;
 	}

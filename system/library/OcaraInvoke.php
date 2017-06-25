@@ -21,25 +21,11 @@ final class OcaraInvoke
 	}
 
 	/**
-	 * 运行框架的路由
-	 * @param string $route
-	 * @param array $params
-	 * @param string $method
-	 */
-	public static function run($route, array $params = array(), $method = 'GET')
-	{
-		$url = ocUrl($route, $params);
-		$_SERVER['argv'][1] = $url;
-		$_SERVER['argv'][2] = $method;
-		Ocara::boot();
-	}
-
-	/**
 	 * 初始化
 	 * @param string $rootPath
 	 * @param string $fileSelf
 	 */
-	public static function init($rootPath, $fileSelf)
+	public static function init($rootPath, $fileSelf, $bootstrap = null)
 	{
 		define('OC_EXECUTE_START_TIME', microtime(true));
 
@@ -64,5 +50,9 @@ final class OcaraInvoke
 		}
 		
 		Ocara::getInstance();
+
+		$bootstrap = $bootstrap ? $bootstrap : '\Ocara\Bootstrap';
+		$bootstrap = new $bootstrap();
+		$bootstrap->initialize();
 	}
 }

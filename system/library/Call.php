@@ -61,6 +61,7 @@ final class Call extends Base
 	private static function _runByString($route, array $params = array(), $return = true)
 	{
 		if (preg_match('/^\/?\w+(\/\w+)+$/', $route, $mt)) {
+			$route = Ocara::parseRoute($route);
 			return Ocara::boot($route, $return, $params);
 		}
 

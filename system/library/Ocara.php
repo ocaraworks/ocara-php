@@ -52,10 +52,18 @@ final class Ocara
 	/**
 	 * 运行框架
 	 */
-	public static function run()
+	public static function run($bootstrap = null)
 	{
 		self::getInstance();
-		self::boot();
+
+		$bootstrap = $bootstrap ? $bootstrap : '\Ocara\Bootstrap';
+		$bootstrap = new $bootstrap();
+		$bootstrap->initialize();
+
+		self::$_route = $bootstrap->getRouteInfo();
+		define('OC_MODULE_URL', OC_ROOT_URL . ocDir(self::$_route['module']));
+
+		$bootstrap->run(self::$_route);
 	}
 
 	/**
@@ -73,24 +81,10 @@ final class Ocara
 	 * @param bool $return
 	 * @param array $params
 	 */
-	public static function boot($route = false, $return = false, array $params = array())
+	public static function boot($route, $return = false, array $params = array())
 	{
-		if ($route) {
-			$route = self::parseRoute($route);
-		} else {
-			self::getRouteInfo();
-			$route = self::$_route;
-		}
-		
-		if ($route['module'] == OC_DEV_SIGN) {
-			if (OC_SYS_MODEL == 'develop') {
-				Develop::run();
-			} else {
-				Error::show('unallowed_develop');
-			}
-		}
-		
 		extract($route);
+
 		if (empty($controller) || empty($action)) {
 			Error::show("MVC Route Error!");
 		}
@@ -102,10 +96,10 @@ final class Ocara
 		$moduleNamespace = ocNamespace(array('Controller', $umodule));
 
 		if ($umodule && !class_exists($moduleNamespace . $umodule . 'Module', false)) {
-			Route::loadRoute($modulePath, $umodule, $moduleNamespace, 'Module');
+			self::$_container->route->loadRoute($modulePath, $umodule, $moduleNamespace, 'Module');
 		}
 
-		Route::loadRoute($controllerPath, $ucontroller, $controllerNamespace, 'Controller');
+		self::$_container->route->loadRoute($controllerPath, $ucontroller, $controllerNamespace, 'Controller');
 		$controlClass = $controllerNamespace . $ucontroller . 'Controller';
 		$method = $action . 'Action';
 
@@ -120,7 +114,6 @@ final class Ocara
 			}
 		}
 
-		self::checkRouteAccess();
 		$Control = new $controlClass();
 		if ($method != '_action' && !method_exists($Control, $method)) {
 			Error::show('no_special_class', array('Action', $uaction));
@@ -138,12 +131,12 @@ final class Ocara
 	/**
 	 * 当前权限检测
 	 */
-	public static function checkRouteAccess()
+	public static function checkRouteAccess($route)
 	{
-		$params   = array_values(self::$_route);
+		$route = array_values($route);
 		$callback = ocConfig('CALLBACK.auth.check_error', false);
 		if ($callback) {
-			self::accessResult(Call::run($callback, $params));
+			self::accessResult(Call::run($callback, $route));
 		}
 	}
 
@@ -164,7 +157,6 @@ final class Ocara
 			ocConfig('ERROR_HANDLER.exception_error', 'ocExceptionHandler', true)
 		);
 
-		self::_checkEnvironment();
 		self::container();
 		spl_autoload_register(array(__CLASS__, 'autoload'));
 		Base::$container = self::$_container;
@@ -173,33 +165,6 @@ final class Ocara
 			OC_SYS . 'const/config.php',
 			OC_SYS . 'functions/common.php',
 		));
-		
-		if (!ocFileExists(OC_ROOT . '.htaccess')) {
-			self::createHtaccess();
-		}
-
-		self::loadSingleClass();
-	}
-
-	/**
-	 * 加载单例模式类
-	 */
-	private static function loadSingleClass()
-	{
-		$classes = ocConfig('SYSTEM_SERVICE_CLASS');
-
-		foreach ($classes as $class => $namspace) {
-			$name = lcfirst($class);
-			self::$_container->bindSingleton($name, function() use($namspace) {
-				$file = strtr($namspace, ocConfig('AUTOLOAD_MAP')) . '.php';
-				ocImport($file);
-				if (method_exists($namspace, 'getInstance')) {
-					return $namspace::getInstance();
-				} else {
-					return new $namspace();
-				}
-			});
-		}
 	}
 
 	/**
@@ -222,20 +187,6 @@ final class Ocara
 	}
 
 	/**
-	 * 环境检测
-	 */
-	private static function _checkEnvironment()
-	{
-		date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
-		if (!@ini_get('short_open_tag')) {
-			Error::show('need_short_open_tag');
-		}
-		if (empty($_SERVER['REQUEST_METHOD'])) {
-			$_SERVER['REQUEST_METHOD'] = 'GET';
-		}
-	}
-
-	/**
 	 * 规定在哪个错误报告级别会显示用户定义的错误
 	 * @param integer $error
 	 */
@@ -247,19 +198,6 @@ final class Ocara
 			$error
 		);
 		return $error;
-	}
-
-	/**
-	 * 获取路由信息
-	 */
-	private static function getRouteInfo()
-	{
-		$_GET = Url::parseGet();
-		list($module, $controller, $action) = Route::parseRouteInfo();
-
-		define('OC_MODULE_URL', OC_ROOT_URL . ocDir($module));
-		self::$_route = compact('module', 'controller', 'action');
-		Config::loadApplicationConfig('conf', 'control');
 	}
 
 	/**
@@ -379,27 +317,6 @@ final class Ocara
 		}
 
 		Error::show('not_exists_class', array($class));
-	}
-
-	/**
-	 * 生成伪静态文件
-	 * @param string $moreContent
-	 */
-	public static function createHtaccess($moreContent = false)
-	{
-		$htaccessFile = OC_ROOT . '.htaccess';
-		$htaccess = ocImport(OC_SYS . 'data/rewrite/apache.php');
-
-		if (empty($htaccess)) {
-			Error::show('no_rewrite_default_file');
-		}
-
-		if (is_writeable(OC_ROOT)) {
-			$htaccess = sprintf($htaccess, $moreContent);
-			ocWrite($htaccessFile, $htaccess);
-		} else {
-			Error::show('not_writeable_htaccess');
-		}
 	}
 
 	/**
