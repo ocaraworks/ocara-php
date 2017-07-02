@@ -148,7 +148,15 @@ final class Session extends Base
 	{
 		session_unset();
 	}
-	
+
+	/**
+	 * > PHP7 回收session
+	 */
+	public static function gc()
+	{
+		session_gc();
+	}
+
 	/**
 	 * 检测session是否设置
 	 * @param string|array $key

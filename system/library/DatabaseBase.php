@@ -91,9 +91,18 @@ class DatabaseBase extends Sql
 	/**
 	 * 清理绑定参数
 	 */
-	public function clearParams()
+	public function clearBindParams()
 	{
 		$this->_params = array();
+	}
+
+	/**
+	 * 获取绑定参数
+	 * @return array
+	 */
+	public function getBindParams()
+	{
+		return $this->_params;
 	}
 
 	/**
@@ -115,15 +124,11 @@ class DatabaseBase extends Sql
 		$config['password'] = ocGet('password', $config);
 		$this->_plugin = $this->getDriver($config);
 
-		$errorReporting = error_reporting();
-		error_reporting(0);
-
 		$this->isPconnect($config['pconnect']);
 		$this->_plugin->connect();
+
 		$this->isPrepare($config['prepare']);
 		$this->setCharset($config['charset']);
-
-		error_reporting($errorReporting);
 	}
 
 	/**
@@ -224,44 +229,44 @@ class DatabaseBase extends Sql
 			Call::run($callback, array($sql, date(ocConfig('DATE_FORMAT.datetime'))));
 		}
 
-		$errorReporting = error_reporting();
-		error_reporting(0);
-
-		$params = $this->_params ? array($this->_params) : array();
-		if ($query) {
-			foreach ($this->_unions as $union) {
-				if ($count) {
-					$unionData = $union['model']->getTotal(self::DEBUG_RETURN);
-				} else {
-					$unionData = $union['model']->find(false, false, self::DEBUG_RETURN);
+		try {
+			$params = $this->_params ? array($this->_params) : array();
+			if ($query) {
+				foreach ($this->_unions as $union) {
+					if ($count) {
+						$unionData = $union['model']->getTotal(self::DEBUG_RETURN);
+					} else {
+						$unionData = $union['model']->find(false, false, self::DEBUG_RETURN);
+					}
+					$sql .= $this->getUnionSql($unionData['sql'], $union['unionAll']);
+					$params[] = $unionData['params'];
 				}
-				$sql .= $this->getUnionSql($unionData['sql'], $union['unionAll']);
-				$params[] = $unionData['params'];
 			}
-		}
 
-		if ($this->_prepared && $params) {
-			$this->_plugin->prepare($sql);
-			$this->_bindParams($params);
-			$result = $this->_plugin->execute();
-		} else {
-			$result = $this->_plugin->query($sql);
-		}
-
-		if ($query) {
-			if ($count) {
-				$result = $this->_plugin->get_result($this->_dataType);
-				$total = 0;
-				foreach ($result as $row) {
-					$total += reset($row);
-				}
-				$result = array(array('total' => $total));
+			if ($this->_prepared && $params) {
+				$this->_plugin->prepare($sql);
+				$this->_bindParams($params);
+				$result = $this->_plugin->execute();
 			} else {
-				$result = $this->_plugin->get_result($this->_dataType, $queryRow);
+				$result = $this->_plugin->query($sql);
 			}
+
+			if ($query) {
+				if ($count) {
+					$result = $this->_plugin->get_result($this->_dataType);
+					$total = 0;
+					foreach ($result as $row) {
+						$total += reset($row);
+					}
+					$result = array(array('total' => $total));
+				} else {
+					$result = $this->_plugin->get_result($this->_dataType, $queryRow);
+				}
+			}
+		} catch (\Exception $exception) {
+			Error::show($exception->getMessage());
 		}
 
-		error_reporting($errorReporting);
 		$ret = $this->checkError($result, $sql, $required);
 
 		return $ret;

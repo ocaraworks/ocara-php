@@ -288,22 +288,22 @@ function ocGetExceptionData($exception)
  */
 function ocErrorHandler($level, $message, $file, $line, $context = '')
 {
-	$callback = ocConfig('CALLBACK.error.write_log', null);
-	if ($callback) {
-		try {
-			throw new ErrorException($message, $level, $level, $file, $line);
-		} catch (ErrorException $exception) {
+	try {
+		throw new ErrorException($message, $level, $level, $file, $line);
+	} catch (ErrorException $exception) {
+		$callback = ocConfig('CALLBACK.error.write_log', null);
+		if ($callback) {
 			try {
 				$params = ocGetExceptionData($exception);
 				Call::run($callback, array($params));
-			} catch (\Exception $e){}
+			} catch (\Exception $e){
+				ocExceptionHandler($e);
+			}
 		}
-	}
-
-	$exceptErrors = ocForceArray(ocConfig('ERROR_HANDLER.except_error_list', array()));
-	if (!in_array($level, $exceptErrors)) {
-		Ocara::container()->response->setStatusCode(Response::STATUS_SERVER_ERROR);
-		throw new ErrorException($message, $level, $level, $file, $line);
+		$exceptErrors = ocForceArray(ocConfig('ERROR_HANDLER.except_error_list', array()));
+		if (!in_array($level, $exceptErrors)) {
+			ocExceptionHandler($exception);
+		}
 	}
 
 	return false;

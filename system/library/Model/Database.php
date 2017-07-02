@@ -459,6 +459,8 @@ abstract class Database extends ModelBase
 	{
 		$this->clearSql();
 		$this->clearData();
+		$this->_plugin->clearBindParams();
+
 		return $this;
 	}
 
@@ -543,6 +545,7 @@ abstract class Database extends ModelBase
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
 
+		$this->_plugin->clearBindParams();
 		return $result;
 	}
 
@@ -647,7 +650,6 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 删除记录
-	 * @param string|array $condition
 	 * @param bool $debug
 	 */
 	public function delete($debug = false)
@@ -949,6 +951,8 @@ abstract class Database extends ModelBase
 			$this->_saveCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired, $result);
 		}
 
+		$this->clear();
+
 		return $result;
 	}
 
@@ -1153,12 +1157,14 @@ abstract class Database extends ModelBase
 	 * @param array $where
 	 * @param string $alias
 	 */
-	public function cWhere($sign, $where, $alias = false)
+	public function cWhere($sign, $where, $alias = null)
 	{
 		if (is_string($where)) {
-			//$link = $where [AND|OR] , $where = $alias [field=>value]
+			/*
+			 * 注：$link = $where [AND|OR] , $where = $alias [field=>value]
+			 */
 			$where = array($where => $alias);
-			$alias = ($last = func_get_arg(3)) ? $last : false;
+			$alias = !empty($alias) ? $alias : false;
 		}
 
 		if (!ocEmpty($where)) {
@@ -1298,7 +1304,7 @@ abstract class Database extends ModelBase
 	 */
 	private function _genSql($select, $fields = false, $count = false)
 	{
-		$this->_plugin->clearParams();
+		$this->_plugin->clearBindParams();
 
 		$where  = array();
 		$option = ocGet('option', $this->_sql, array());
