@@ -12,8 +12,6 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Sql extends Base
 {
-	protected $_defaultFields = '*';
-	
 	/**
 	 * 给逗号分隔的列表加引号
 	 * @param string|array $list
@@ -140,8 +138,7 @@ class Sql extends Base
 	 */
 	public function transformFields($sql, $mapFields, $field2Alias = false)
 	{
-		$signStr = '([^\w\.]+)';
-		$unJoined = count($mapFields) == 1;
+		$exp = '/([^\w\.]+)*(\w+\.)?(%s)([^\w\.]+)*/i';
 		$sql = chr(32) . $sql . chr(32);
 
 		$result = OC_EMPTY;
@@ -150,14 +147,8 @@ class Sql extends Base
 				$row = array_flip($row);
 			}
 			foreach ($row as $search => $replace) {
-				$alias = '(\w+\.)';
-				$search = '(' . $search . ')';
-				$exp = '/' . $signStr . $alias . $search . $signStr.'/i';
-				$pre = $field2Alias ? '$1' : '$1';
-				$sql = preg_replace($exp, $pre . $replace . '$4', $sql);
-				if ($unJoined) {
-					$exp = '/' . $signStr . $search . $signStr.'/i';
-					$sql = preg_replace($exp, '$1' . $replace . '$3', $sql);
+				if (preg_match(sprintf($exp, $search), $sql)) {
+					$sql .= 'AS ' . $replace;
 				}
 			}
 			$result = trim($sql);
@@ -458,15 +449,6 @@ class Sql extends Base
 	}
 
 	/**
-	 * 获取全部字段
-	 * @return string
-	 */
-	public function getDefaultFieldsSql()
-	{
-		return $this->_defaultFields;
-	}
-
-	/**
 	 * 解析查询条件
 	 * @param $condition
 	 * @param string $link
@@ -562,7 +544,7 @@ class Sql extends Base
 		}
 
 		if ($alias) {
-			return "`{$alias}`.{$field}";
+			return "{$alias}.{$field}";
 		}
 
 		return "`{$field}`";
@@ -579,13 +561,8 @@ class Sql extends Base
 
 		foreach ($fields as $key => $value) {
 			$value = trim($value);
-			if (!preg_match('/^(\w+\.)?[' . $this->_defaultFields . ']$/', $value)
-				&& !preg_match('/\sas\s/', $value, $mt)
-			) {
-				$alias = $this->transformFields($value, $aliasFields, true);
-				if ($alias) {
-					$value .= ' AS ' . $alias;
-				}
+			if (!preg_match('/\sas\s/', $value, $mt)) {
+				$value = $this->transformFields($value, $aliasFields, true);
 			}
 			$fields[$key] = $value;
 		}
@@ -618,25 +595,6 @@ class Sql extends Base
 
 		$val = $ifQuote ? OC_QUOTE . $val . OC_QUOTE : $val;
 		return $val;
-	}
-
-	/**
-	 * 新建session表
-	 * @param $table
-	 * @return string
-	 */
-	public function getCreateSessionTableSql($table)
-	{
-		return "CREATE TABLE IF NOT EXISTS `{$this->_config['prefix']}{$table}` (
-			`id` bigint(22) unsigned not null auto_increment,
-			`ocsess_id` char(100) not null,
-			`ocsess_name` char(30) not null,
-			`ocsess_path` varchar(200) not null,
-			`ocsess_domain` varchar(200) not null,
-			`ocsess_expires` datetime not null,
-			`ocsess_data` longtext,
-			PRIMARY KEY  (`id`)
-		) ENGINE=MyISAM DEFAULT CHARSET={$this->_config['charset']}";
 	}
 
 	/**

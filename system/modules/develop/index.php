@@ -33,6 +33,7 @@ use Ocara\Develop;
 	<li><a href="<?php echo ocUrl(array(OC_DEV_SIGN,'home','adminAction'));?>" target="iframe-main">动作(Action)</a></li>
 	<li><a href="<?php echo ocUrl(array(OC_DEV_SIGN,'home','adminControl'));?>" target="iframe-main">控制器(Controller)</a></li>
 	<li><a href="<?php echo ocUrl(array(OC_DEV_SIGN,'home','adminModule'));?>" target="iframe-main">模块(Module)</a></li>
+	<li><a href="<?php echo ocUrl(array(OC_DEV_SIGN,'home','adminFields'));?>" target="iframe-main">字段更新</a></li>
 	<?php if(Develop::checkLogin() && $_SESSION['OC_DEV_USERNAME'] == 'root') {?>
 	<li><a href="<?php echo ocUrl(array(OC_DEV_SIGN,'home','adminUsers'));?>" target="iframe-main">用户管理</a></li>
 	<?php } ?>

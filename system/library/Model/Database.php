@@ -121,6 +121,24 @@ abstract class Database extends ModelBase
 	}
 
 	/**
+	 * 获取当前服务器
+	 * @return mixed
+	 */
+	public function getServer()
+	{
+		return $this->_server;
+	}
+
+	/**
+	 * 获取当前数据库
+	 * @return mixed
+	 */
+	public function getDatabase()
+	{
+		return $this->_database;
+	}
+
+	/**
 	 * 是否有更改数据
 	 */
 	public function isChanged()
@@ -354,14 +372,18 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 从数据库获取数据表的字段
+	 * @param bool $cache
+	 * @return $this
 	 */
-	public function loadFields()
+	public function loadFields($cache = true)
 	{
-		$filePath = self::getConfigPath($this->_tag);
-		$path = ocPath('conf', "fields/{$filePath}");
+		if ($cache) {
+			$filePath = self::getConfigPath($this->_tag);
+			$path = ocPath('conf', "fields/{$filePath}");
 
-		if (ocFileExists($path)) {
-			$this->_fields = @include($path);
+			if (ocFileExists($path)) {
+				$this->_fields = @include($path);
+			}
 		}
 
 		if (!$this->_fields) {
@@ -384,11 +406,20 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 获取ORM数据
+	 * 获取ORM数据数组
 	 */
-	public function getData()
+	public function toArray()
 	{
 		return $this->getProperty();
+	}
+
+	/**
+	 * 获取ORM数据对象
+	 */
+	public function toObject()
+	{
+		$properties = $this->getProperty();
+		return (object)$properties;
 	}
 
 	/**
@@ -1309,15 +1340,19 @@ abstract class Database extends ModelBase
 		$where  = array();
 		$option = ocGet('option', $this->_sql, array());
 		$tables = ocGet('tables', $this->_sql, array());
-		$from   = $this->_getFromSql($select, $tables);
+
+		$unJoined = count($tables) <= 1;
+		$from = $this->_getFromSql($select, $tables, $unJoined);
 
 		if (empty($fields)) {
 			$aliasFields = $this->_getAliasFields($tables);
-			if (isset($option['fields']) && $option['fields']) {
-				$fields = $this->_getFieldsSql($option['fields'], $aliasFields);
-			} else {
-				$fields = $this->_plugin->getDefaultFieldsSql();
+			if (empty($option['fields'])) {
+				$option['fields'][] = array(
+					$this->_alias,
+					array_keys($this->getFields())
+				);
 			}
+			$fields = $this->_getFieldsSql($option['fields'], $aliasFields, $unJoined);
 		}
 
 		if (isset($option['where']) && $option['where']) {
@@ -1387,8 +1422,9 @@ abstract class Database extends ModelBase
 	 * 获取字段列表
 	 * @param array $fields
 	 * @param array $aliasFields
+	 * @param bool $unJoined
 	 */
-	private function _getFieldsSql($data, $aliasFields)
+	private function _getFieldsSql($data, $aliasFields, $unJoined)
 	{
 		if (is_string($data)) {
 			return $data;
@@ -1403,6 +1439,7 @@ abstract class Database extends ModelBase
 				}
 			}
 			if (is_array($fieldData)) {
+				$alias = $unJoined ? false : $alias;
 				$fields[] = $this->_plugin->getFieldsSql($fieldData, $alias);
 			} else {
 				$fields[] = $fieldData;
@@ -1416,9 +1453,8 @@ abstract class Database extends ModelBase
 	 * 生成数据表SQL
 	 * @param boolean $select
 	 */
-	private function _getFromSql($select, $tables)
+	private function _getFromSql($select, $tables, $unJoined)
 	{
-		$unJoined = count($tables) <= 1;
 		$from = null;
 
 		foreach ($tables as $alias => $param) {

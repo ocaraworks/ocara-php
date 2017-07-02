@@ -135,11 +135,6 @@ interface Sql
 	public function checkStringCondition($condition);
 
 	/**
-	 * 获取全部字段
-	 */
-	public function getDefaultFieldsSql();
-
-	/**
 	 * 解析查询条件
 	 * @param string|array $condition
 	 * @param string $link
@@ -205,12 +200,6 @@ interface Sql
 	 * @param bool $ifQuote
 	 */
 	public function getValueSql($val, $ifQuote = true);
-	
-	/**
-	 * 新建session表
-	 * @param string $table
-	 */
-	public function getCreateSessionTableSql($table);
 
 	/**
 	 * 给符号加空格

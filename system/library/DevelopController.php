@@ -87,6 +87,14 @@ class DevelopController extends Base
     }
 
     /**
+     * 字段更新
+     */
+    public function adminFieldsAction()
+    {
+        $this->runAction('fields');
+    }
+
+    /**
      * 模块管理
      */
     public function adminModuleAction()

@@ -11,7 +11,7 @@ use Ocara\ServiceBase;
 
 class FileCache extends ServiceBase
 {
-	private $_format;
+	private $_format = true;
 	private $_content;
 	private $_data;
 	
@@ -36,9 +36,13 @@ class FileCache extends ServiceBase
 		$this->_data = $data;
 	}
 
-	public function format()
+	/**
+	 * 是否格式化数组
+	 * @param bool $format
+	 */
+	public function format($format = true)
 	{
-		$this->_format = true;
+		$this->_format = $format ? true : false;
 	}
 	
 	/**
