@@ -114,6 +114,8 @@ final class Ocara
 			}
 		}
 
+		Config::loadApplicationConfig('conf', 'control');
+
 		$Control = new $controlClass();
 		if ($method != '_action' && !method_exists($Control, $method)) {
 			Error::show('no_special_class', array('Action', $uaction));
@@ -130,13 +132,14 @@ final class Ocara
 
 	/**
 	 * 当前权限检测
+	 * @param array $route
 	 */
-	public static function checkRouteAccess($route)
+	public static function checkRouteAccess(array $route)
 	{
 		$route = array_values($route);
-		$callback = ocConfig('CALLBACK.auth.check_error', false);
+		$callback = ocConfig('CALLBACK.auth.check', false);
 		if ($callback) {
-			self::accessResult(Call::run($callback, $route));
+			self::accessResult(Call::run($callback, $route), $route);
 		}
 	}
 
@@ -270,12 +273,18 @@ final class Ocara
 	/**
 	 * 权限访问检测结果
 	 * @param bool $result
+	 * @param array $route
 	 */
-	public static function accessResult($result)
+	public static function accessResult($result, array $route)
 	{
 		$result = $result === true;
 		if (!$result) {
-			Error::show('no_access');
+			$callback = ocConfig('CALLBACK.auth.check', false);
+			if ($callback) {
+				Call::run($callback, $route);
+			} else {
+				Error::show('no_access');
+			}
 		}
 	}
 

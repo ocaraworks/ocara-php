@@ -628,13 +628,14 @@ class Sql extends Base
 	public function getCreateSessionTableSql($table)
 	{
 		return "CREATE TABLE IF NOT EXISTS `{$this->_config['prefix']}{$table}` (
-			`id` bigint(22)  unsigned auto_increment NOT NULL,
-			`ocsess_id` char(100) default NULL,
-			`ocsess_name` char(30) default NULL,
-			`ocsess_path` varchar(200) default NULL,
-			`ocsess_domain` varchar(200) default NULL,
-			`ocsess_expires` datetime default NULL,
-			`ocsess_data` longtext,PRIMARY KEY  (`id`)
+			`id` bigint(22) unsigned not null auto_increment,
+			`ocsess_id` char(100) not null,
+			`ocsess_name` char(30) not null,
+			`ocsess_path` varchar(200) not null,
+			`ocsess_domain` varchar(200) not null,
+			`ocsess_expires` datetime not null,
+			`ocsess_data` longtext,
+			PRIMARY KEY  (`id`)
 		) ENGINE=MyISAM DEFAULT CHARSET={$this->_config['charset']}";
 	}
 

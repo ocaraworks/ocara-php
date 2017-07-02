@@ -65,7 +65,11 @@ class Container extends Base
      */
     public function bind($name, $source, $params = array())
     {
-        $this->_binds[$name] = $this->_getMatter($name, $source, $params);
+        if (strstr($name, OC_NS_SEP)) {
+            $this->_replaces[$name] = $source;
+        } else {
+            $this->_binds[$name] = $this->_getMatter($name, $source, $params);
+        }
         return $this;
     }
 
@@ -80,17 +84,6 @@ class Container extends Base
     public function bindSingleton($name, $source, $params = array())
     {
         $this->_singletons[$name] = $this->_getMatter($name, $source, $params);
-        return $this;
-    }
-
-    /**
-     * 替换依赖类
-     * @param $target
-     * @param $replace
-     */
-    public function replace($target, $replace)
-    {
-        $this->_replaces[$target] = $replace;
         return $this;
     }
 
@@ -119,18 +112,12 @@ class Container extends Base
      */
     public function isBound($name)
     {
+        if (strstr($name, OC_NS_SEP)) {
+            return array_key_exists($name, $this->_replaces);
+        }
+
         return array_key_exists($name, $this->_binds)
             OR array_key_exists($name, $this->_singletons);
-    }
-
-    /**
-     * 是否替换类
-     * @param string $class
-     * @return bool
-     */
-    public function isReplace($class)
-    {
-        return array_key_exists($class, $this->_replaces);
     }
 
     /**

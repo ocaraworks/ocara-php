@@ -12,5 +12,4 @@ defined('OC_PATH') or exit('Forbidden!');
 
 abstract class ModelBase extends Base
 {
-
 }

@@ -45,7 +45,7 @@ final class Rest extends FeatureBase implements Feature
             if ($count == 1 && !is_array($end) || $count == 2 && is_array($end)) {
                 $id = array_shift($_GET);
             }
-            $_GET = self::$_container->route->formatGet($_GET);
+            $_GET = self::$container->route->formatGet($_GET);
         } else {
             if (array_key_exists($idParam, $_GET)) {
                 $id = Request::getGet($idParam);

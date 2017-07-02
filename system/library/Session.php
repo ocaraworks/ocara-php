@@ -26,10 +26,9 @@ final class Session extends Base
 
 	/**
 	 * 获取类对象
-	 * @param bool $start
 	 * @return Session
 	 */
-	public static function getInstance($start = true)
+	public static function getInstance()
 	{
 		if (self::$_instance === null) {
 			self::$_instance = new self();

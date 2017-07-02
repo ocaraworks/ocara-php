@@ -32,11 +32,11 @@ class SessionDB extends Base
 		$server = ocConfig('SESSION.server', false);
 		$database = Database::factory($server);
 
-		if (empty($database[0])) {
+		if (empty($database)) {
 			Error::show('not_exists_database');
 		}
 
-		$this->_plugin 	 = $database;
+		$this->_plugin = $database;
 		$table = explode('.', ocConfig('SESSION.location', 'ocsess'));
 		$count = count($table);
 
@@ -50,17 +50,17 @@ class SessionDB extends Base
 			Error::show('fault_session_table');
 		}
 
+		if (!$this->_plugin->tableExists($this->_table, false)) {
+			$sql = $this->_plugin->getCreateSessionTableSql($this->_table);
+			$ret = $this->_plugin->query($sql, false, false);
+			$this->_plugin->checkError($ret, $sql);
+		}
+
 		$this->_fullname = $this->_plugin->getTableFullname($this->_table);
 		$this->_fields   = $this->_plugin->getFields($this->_table);
 
 		if (!(is_object($this->_plugin) && $this->_plugin instanceof DatabaseBase)) {
 			Error::show('failed_db_connect');
-		}
-
-		if (!$this->_plugin->tableExists($this->_table, false)) {
-			$sql = $this->_plugin->getCreateSessionTableSql($this->_table);
-			$ret = $this->_plugin->query($sql, false, false);
-			$this->_plugin->checkError($ret);
 		}
 	}
 
@@ -107,6 +107,7 @@ class SessionDB extends Base
 	 */
 	public function write($id, $data)
 	{
+
 		$where = array('ocsess_id' => $id);
 		$sql   = $this->_plugin->getSelectSql(
 			'ocsess_data', $this->_fullname, $this->_plugin->parseCondition($where)
@@ -114,9 +115,9 @@ class SessionDB extends Base
 
 		$datetimeFormat = ocConfig('DATE_FORMAT.datetime');
 		$maxLifeTime = @ini_get('session.gc_maxlifetime');
-		$curTime     = date($datetimeFormat);
-		$expires     = date($datetimeFormat, strtotime("{$curTime}+{$maxLifeTime} second"));
-		$result 	 = $this->_plugin->queryRow($sql);
+		$curTime = date($datetimeFormat);
+		$expires = date($datetimeFormat, strtotime("{$curTime}+{$maxLifeTime} second"));
+		$result = $this->_plugin->queryRow($sql);
 
 		if ($result) {
 			$dbData  = array(

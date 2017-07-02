@@ -17,8 +17,8 @@ $CONF['CALLBACK']['error'] = array(
  * 权限检测回调
  */
 $CONF['CALLBACK']['auth'] = array(
-	'check_error'   => '', //权限控制检测错误回调
-	'invalid_error' => '', //无权限错误回调
+	'check' => '', //权限检测回调
+	'check_error' => '', //无权限错误回调
 );
 
 /*

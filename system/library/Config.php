@@ -96,15 +96,19 @@ final class Config extends Base
 	 */
 	public static function loadActionConfig($path)
 	{
+		$path = OC_ROOT . 'resource/' . rtrim($path, OC_DIR_SEP);
 		$paths = array();
 		extract(Ocara::getRoute());
 
-		if (isset($module) && $module && is_dir($path = $path . OC_DIR_SEP . $module)) {
-			if ($controller && is_dir($path = $path . OC_DIR_SEP . $controller)) {
+		if (isset($module) && $module && is_dir($path . OC_DIR_SEP . $module)) {
+			$path = $path . OC_DIR_SEP . $module;
+			$paths[] = $path;
+		}
+
+		if ($controller && is_dir($path = $path . OC_DIR_SEP . $controller)) {
+			$paths[] = $path;
+			if ($action && is_dir($path = $path . OC_DIR_SEP . $action)) {
 				$paths[] = $path;
-				if ($action && is_dir($path = $path . OC_DIR_SEP . $action)) {
-					$paths[] = $path;
-				}
 			}
 		}
 

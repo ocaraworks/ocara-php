@@ -54,7 +54,7 @@ class Common extends FeatureBase implements Feature
     public static function getDefaultRoute($module, $controller, $action)
     {
         if (Url::isVirtualUrl(OC_URL_ROUTE_TYPE)) {
-            $_GET = self::$_container->route->formatGet($_GET);
+            $_GET = self::$container->route->formatGet($_GET);
         }
 
         if (empty($action)) {

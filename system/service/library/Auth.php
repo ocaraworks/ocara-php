@@ -32,8 +32,17 @@ final class Auth extends ServiceBase
 	}
 
 	/**
-	 * 删除角色
+	 * 获取角色信息
 	 * @param string $roleList
+	 */
+	public function getRole($roleList)
+	{
+		return ocGet($roleList, $this->_data);
+	}
+
+	/**
+	 * 删除角色
+	 * @param string|array $roleList
 	 */
 	public function delRole($roleList)
 	{
@@ -41,70 +50,87 @@ final class Auth extends ServiceBase
 			$roleList = ocParseKey($roleList);
 		} 
 		
-		ocDel($this->_data, ocParseKey($roleList));
+		ocDel($this->_data, $roleList);
 	}
 
 	/**
 	 * 添加权限
-	 * @param string $roleList
-	 * @param string $authList
+	 * @param string|array $roleList
+	 * @param string|array $routeList
+	 * @param integer $allowed
 	 */
-	public function setAuth($roleList, $authList)
+	public function setAuth($roleList, $routeList, $allowed = true)
 	{
 		if (!is_array($roleList)) {
 			$roleList = ocParseKey($roleList);
 		} 
 		
-		if (!is_array($authList)) {
-			$authList = ocParseKey($authList);
-		} 
-		
-		ocSet($this->_data, array_merge($roleList, $authList), null);
+		if (!is_array($routeList)) {
+			$routeList = ocParseKey($routeList);
+		}
+
+		$allowed = $allowed === true ? 1 : 0;
+		ocSet($this->_data, array_merge($roleList, $routeList), $allowed);
 	}
 
 	/**
 	 * 删除权限
-	 * @param string $roleList
-	 * @param string $authList
+	 * @param string|array $roleList
+	 * @param string|array $routeList
 	 */
-	public function delAuth($roleList, $authList)
+	public function delAuth($roleList, $routeList)
 	{
 		if (!is_array($roleList)) {
 			$roleList = ocParseKey($roleList);
-		} 
-		
-		if (!is_array($authList)) {
-			$authList = ocParseKey($authList);
-		} 
-		
-		ocDel($this->_data, array_merge($roleList, $authList));
+		}
+
+		if (!is_array($routeList)) {
+			$routeList = ocParseKey($routeList);
+		}
+
+		ocDel($this->_data, array_merge($roleList, $routeList));
 	}
 
 	/**
 	 * 获取权限
-	 * @param string $roleList
+	 * @param string|array $roleList
+	 * @param string|array $routeList
 	 */
-	public function getAuth($roleList = null)
+	public function getAuth($roleList = null, $routeList = null)
 	{
-		return func_num_args() ? ocGet($roleList, $this->_data) : $this->_data;
+		if (!func_num_args()) {
+			return $this->_data;
+		}
+
+		if (!is_array($roleList)) {
+			$roleList = ocParseKey($roleList);
+		}
+
+		if ($routeList && !is_array($routeList)) {
+			$roleList = ocParseKey($routeList);
+		}
+
+		$key = $routeList ? array_merge($roleList, $routeList) : $roleList;
+
+		return ocGet($key, $this->_data);
 	}
 
 	/**
 	 * 检测权限
 	 * @param string $roleList
-	 * @param string $authList
+	 * @param string $routeList
 	 */
-	public function check($roleList, $authList)
+	public function check($roleList, $routeList)
 	{
 		if (!is_array($roleList)) {
 			$roleList = ocParseKey($roleList);
 		} 
 		
-		if (!is_array($authList)) {
-			$authList = ocParseKey($authList);
+		if (!is_array($routeList)) {
+			$routeList = ocParseKey($routeList);
 		} 
 
-		$result = ocKeyExists(array_merge($roleList, $authList), $this->_data);
-		return $result;
+		$result = ocGet(array_merge($roleList, $routeList), $this->_data);
+		return $result == 1 ? true : false;
 	}
 }
