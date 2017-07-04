@@ -21,7 +21,7 @@ defined('OC_PATH') or exit('Forbidden!');
 
 abstract class Database extends ModelBase
 {
-	
+
 	/**
 	 * @var @_primary 主键字段列表
 	 * @var $_primaries 主键字段数组
@@ -44,12 +44,12 @@ abstract class Database extends ModelBase
 	private $_isOrm;
 	private $_selected;
 	private $_insertId;
-	private $_changed;
 
 	private $_relations = array();
-	private $_sql       = array();
+	private $_sql = array();
 	private $_primaries = array();
-	private $_joins 	= array();
+	private $_joins = array();
+	private $_changes = array();
 
 	private static $_config = array();
 	private static $_requirePrimary;
@@ -143,7 +143,7 @@ abstract class Database extends ModelBase
 	 */
 	public function isChanged()
 	{
-		return $this->_changed;
+		return !empty($this->_changes);
 	}
 
 	/**
@@ -186,7 +186,7 @@ abstract class Database extends ModelBase
 	 */
 	private function _tableInit()
 	{
-		$tables   = $this->_sql['tables'];
+		$tables = $this->_sql['tables'];
 		$oldTable = ocDel($tables, $this->_oldTable);
 		$this->_sql['tables'] = array();
 		$this->_join(false, $this->_tag, $this->_alias);
@@ -215,15 +215,15 @@ abstract class Database extends ModelBase
 		}
 
 		$modelConfig['JOIN'] = array();
-		$modelConfig['MAP']  = array();
-		$modelConfig['VALIDATE']  = array();
-		$modelConfig['LANG']  = array();
+		$modelConfig['MAP'] = array();
+		$modelConfig['VALIDATE'] = array();
+		$modelConfig['LANG'] = array();
 
 		$filePath = self::getConfigPath($class);
 		$path = ocPath('conf', "model/{$filePath}");
 
 		if (ocFileExists($path)) {
-			include ($path);
+			include($path);
 			if (isset($CONF) && is_array($CONF)) {
 				$modelConfig = array_merge(
 					array_diff_key($modelConfig, $CONF),
@@ -262,9 +262,10 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 修改字段配置
-	 * @param $key
-	 * @param $field
-	 * @param $value
+	 * @param string $key
+	 * @param string $field
+	 * @param mixed $value
+	 * @param string $class
 	 */
 	public static function setConfig($key, $field, $value, $class = null)
 	{
@@ -490,7 +491,6 @@ abstract class Database extends ModelBase
 	{
 		$this->clearSql();
 		$this->clearData();
-		$this->_plugin->clearBindParams();
 
 		return $this;
 	}
@@ -525,6 +525,24 @@ abstract class Database extends ModelBase
 	}
 
 	/**
+	 * 获取已修改字段数据
+	 */
+	public function getChanges()
+	{
+		return array_intersect_key($this->getProperty(), $this->_changes);
+	}
+
+	/**
+	 * 是否有改变某个字段
+	 * @param $key
+	 * @return bool
+	 */
+	public function hasChange($key)
+	{
+		return isset($this->_changes[$key]);
+	}
+
+	/**
 	 * 保存记录
 	 * @param array $data
 	 * @param string|array $condition
@@ -543,7 +561,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		$data = $this->map(array_merge($data, $this->getProperty()));
+		$data = $this->map(array_merge($data, $this->getChanges()));
 		if (empty($data)) {
 			Error::show('fault_save_data');
 		}
@@ -574,9 +592,9 @@ abstract class Database extends ModelBase
 			}
 		}
 
+		$this->clearBindParams();
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
 
-		$this->_plugin->clearBindParams();
 		return $result;
 	}
 
@@ -706,7 +724,9 @@ abstract class Database extends ModelBase
 	 * 获取数据更新或删除的条件
 	 * @param string $type
 	 * @param bool $debug
+	 * @param string|array $condition
 	 * @param array $data
+	 * @return mixed
 	 */
 	private function _update($type, $debug, $condition, array $data = array())
 	{
@@ -726,6 +746,7 @@ abstract class Database extends ModelBase
 			) {
 				$this->_afterDelete();
 			}
+			$this->clearBindParams();
 		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
@@ -982,7 +1003,7 @@ abstract class Database extends ModelBase
 			$this->_saveCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired, $result);
 		}
 
-		$this->clear();
+		$this->clearBindParams();
 
 		return $result;
 	}
@@ -1335,8 +1356,6 @@ abstract class Database extends ModelBase
 	 */
 	private function _genSql($select, $fields = false, $count = false)
 	{
-		$this->_plugin->clearBindParams();
-
 		$where  = array();
 		$option = ocGet('option', $this->_sql, array());
 		$tables = ocGet('tables', $this->_sql, array());
@@ -1649,7 +1668,7 @@ abstract class Database extends ModelBase
 			$this->_relations[$key] = $value;
 		} else {
 			parent::__set($key, $value);
-			$this->_changed = true;
+			$this->_changes[$key] = true;
 		}
 	}
 

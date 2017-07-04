@@ -19,6 +19,7 @@ abstract class Base
 	 */
 	private $_route;
 	private $_properties = array();
+
 	public static $container;
 
 	/**

@@ -683,7 +683,7 @@ class DatabaseBase extends Sql
 			return $this->showError($error);
 		}
 
-		return  $ret;
+		return $ret;
 	}
 
 	/**
