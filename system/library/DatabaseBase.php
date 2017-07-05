@@ -462,6 +462,7 @@ class DatabaseBase extends Sql
 		if ($ret) return $ret;
 		$insertResult = $data ? $this->query($sql, false, false) : false;
 
+		$this->clearBindParams();
 		return $insertResult ? $this->getInsertId() : false;
 	}
 
@@ -486,6 +487,7 @@ class DatabaseBase extends Sql
 		if ($ret) return $ret;
 		$ret = $data ? $this->query($sql, $debug, false) : false;
 
+		$this->clearBindParams();
 		return $ret;
 	}
 
@@ -501,7 +503,9 @@ class DatabaseBase extends Sql
 		$condition = $this->parseCondition($condition);
 		$sql = $this->getDeleteSql($table, $condition);
 
-		return $this->query($sql, $debug, false);
+		$ret = $this->query($sql, $debug, false);
+		$this->clearBindParams();
+		return $ret;
 	}
 
 	/**

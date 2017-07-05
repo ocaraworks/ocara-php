@@ -139,14 +139,6 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 是否有更改数据
-	 */
-	public function isChanged()
-	{
-		return !empty($this->_changes);
-	}
-
-	/**
 	 * 执行分库分表
 	 * @param array $data
 	 */
@@ -529,17 +521,21 @@ abstract class Database extends ModelBase
 	 */
 	public function getChanges()
 	{
-		return array_intersect_key($this->getProperty(), $this->_changes);
+		$changes = array_fill_keys($this->_changes, null);
+		return array_intersect_key($this->getProperty(), $changes);
 	}
 
 	/**
 	 * 是否有改变某个字段
-	 * @param $key
+	 * @param string $key
 	 * @return bool
 	 */
-	public function hasChange($key)
+	public function hasChanged($key = null)
 	{
-		return isset($this->_changes[$key]);
+		if (func_get_args()) {
+			return isset($this->_changes[$key]);
+		}
+		return !empty($this->_changes);
 	}
 
 	/**
@@ -584,7 +580,7 @@ abstract class Database extends ModelBase
 			if (!$debug) {
 				$this->_insertId = $this->_plugin->getInsertId();
 				$this->_selectInsertRow($data);
-				$this->_relateSave(true);
+				$this->_relateSave();
 				if (method_exists($this, '_afterCreate')) {
 					$this->_afterCreate();
 				}
@@ -592,7 +588,6 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		$this->clearBindParams();
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
 
 		return $result;
@@ -746,7 +741,6 @@ abstract class Database extends ModelBase
 			) {
 				$this->_afterDelete();
 			}
-			$this->clearBindParams();
 		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
@@ -991,6 +985,8 @@ abstract class Database extends ModelBase
 			$result = $this->_plugin->query($sql, $debug, true, true, false, $count);
 		}
 
+		$this->_plugin->clearBindParams();
+
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
 		}
@@ -1002,8 +998,6 @@ abstract class Database extends ModelBase
 		if ($ifCache && is_object($cacheObj)) {
 			$this->_saveCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired, $result);
 		}
-
-		$this->clearBindParams();
 
 		return $result;
 	}
@@ -1668,7 +1662,7 @@ abstract class Database extends ModelBase
 			$this->_relations[$key] = $value;
 		} else {
 			parent::__set($key, $value);
-			$this->_changes[$key] = true;
+			$this->_changes[] = $key;
 		}
 	}
 
@@ -1701,7 +1695,7 @@ abstract class Database extends ModelBase
 	 * 关联模型数据保存
 	 * @param bool $isCreate
 	 */
-	private function _relateSave($isCreate = false)
+	private function _relateSave()
 	{
 		$changes = array();
 
@@ -1719,11 +1713,17 @@ abstract class Database extends ModelBase
 					}
 				}
 				foreach ($data as &$model) {
-					if ($object->isChanged() && is_object($model) && $model instanceof \Ocara\ModelBase) {
+					if ($model->hasChanged() && is_object($model) && $model instanceof \Ocara\ModelBase) {
 						$where = array($config['foreignKey'] => $this->$config['primaryKey']);
 						$model->$config['foreignKey'] = $this->$config['primaryKey'];
-						if (!$isCreate) {
-							$model->where($where)->where($config['condition']);
+						$class = $model->getClass();
+						$exists = $class::build()
+							->where($where)
+							->where($config['condition'])
+							->findFirst();
+						if ($exists) {
+							$model->where($where)
+								  ->where($config['condition']);
 						}
 						$model->save();
 						$changes[$key] = $data;
@@ -1733,7 +1733,7 @@ abstract class Database extends ModelBase
 		}
 
 		foreach ($changes as $key => $value) {
-			foreach ($data as $model) {
+			foreach ($value as $model) {
 				if (is_object($model) && $model instanceof \Ocara\ModelBase) {
 					$model->db()->transCommit();
 				}
@@ -1747,6 +1747,8 @@ abstract class Database extends ModelBase
 	/**
 	 * 获取关联配置
 	 * @param string $key
+	 * @return array
+	 * @throws \Ocara\Exception
 	 */
 	private function _getRelateConfig($key)
 	{
