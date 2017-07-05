@@ -44,6 +44,7 @@ abstract class Database extends ModelBase
 	private $_isOrm;
 	private $_selected;
 	private $_insertId;
+	private $_commitAfter;
 
 	private $_relations = array();
 	private $_sql = array();
@@ -570,19 +571,28 @@ abstract class Database extends ModelBase
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
 			$result = $this->_plugin->update($this->_tableName, $data, $condition, $debug);
 			if (!$debug){
-				$this->_relateSave();
+				if ($this->_relations) $this->_relateSave();
 				if($this->_selected && method_exists($this, '_afterUpdate')) {
-					$this->_afterUpdate();
+					if ($this->_plugin->isTrans()) {
+						$this->_commitAfter = '_afterUpdate';
+					} else {
+						$this->_afterUpdate();
+					}
 				}
 			}
 		} else {
 			$result = $this->_plugin->insert($this->_tableName, $data, $debug);
+
 			if (!$debug) {
 				$this->_insertId = $this->_plugin->getInsertId();
 				$this->_selectInsertRow($data);
-				$this->_relateSave();
+				if ($this->_relations) $this->_relateSave();
 				if (method_exists($this, '_afterCreate')) {
-					$this->_afterCreate();
+					if ($this->_plugin->isTrans()) {
+						$this->_commitAfter = '_afterCreate';
+					} else {
+						$this->_afterCreate();
+					}
 				}
 				$result = $this->_insertId;
 			}
@@ -716,6 +726,17 @@ abstract class Database extends ModelBase
 	}
 
 	/**
+	 * 事务提交
+	 */
+	public function transCommit()
+	{
+		$this->_plugin->transCommit();
+		if ($this->_commitAfter && method_exists($this, $this->_commitAfter)) {
+			call_user_func_array(array($this, $this->_commitAfter), array());
+		}
+	}
+
+	/**
 	 * 获取数据更新或删除的条件
 	 * @param string $type
 	 * @param bool $debug
@@ -739,7 +760,11 @@ abstract class Database extends ModelBase
 				&& $this->_selected
 				&& method_exists($this, '_afterDelete')
 			) {
-				$this->_afterDelete();
+				if ($this->_plugin->isTrans()) {
+					$this->_commitAfter = '_afterDelete';
+				} else {
+					$this->_afterDelete();
+				}
 			}
 		}
 
@@ -1735,12 +1760,13 @@ abstract class Database extends ModelBase
 		foreach ($changes as $key => $value) {
 			foreach ($value as $model) {
 				if (is_object($model) && $model instanceof \Ocara\ModelBase) {
-					$model->db()->transCommit();
+					$model->transCommit();
 				}
 			}
 		}
 
-		$this->db()->transCommit();
+		$this->transCommit();
+
 		return true;
 	}
 

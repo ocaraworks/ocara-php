@@ -18,6 +18,8 @@ final class Database extends Base
 	private function __clone(){}
 	private function __construct(){}
 
+	protected static $_databases = array();
+
 	/**
 	 * 获取数据库实例
 	 * @param string $server
@@ -53,6 +55,11 @@ final class Database extends Base
 		$config = self::getConfig($server);
 		$index  = $master ? 0 : 1;
 		$hosts   = ocForceArray(ocDel($config, 'host'));
+		$name = $server.$index;
+
+		if (isset(self::$_databases[$name])) {
+			return self::$_databases[$name];
+		}
 
 		if (isset($hosts[$index]) && $hosts[$index]) {
 			$address = array_map('trim', explode(':', $hosts[$index]));
@@ -63,7 +70,7 @@ final class Database extends Base
 			$object = self::_createDatabase('Database', $config['class'], $config);
 		}
 
-		return $object;
+		return self::$_databases[$name] = $object;
 	}
 
 	/**
