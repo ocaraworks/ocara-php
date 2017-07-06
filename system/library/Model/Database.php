@@ -44,7 +44,7 @@ abstract class Database extends ModelBase
 	private $_isOrm;
 	private $_selected;
 	private $_insertId;
-	private $_commitAfter;
+	private $_afterCommit;
 
 	private $_relations = array();
 	private $_sql = array();
@@ -574,7 +574,7 @@ abstract class Database extends ModelBase
 				if ($this->_relations) $this->_relateSave();
 				if($this->_selected && method_exists($this, '_afterUpdate')) {
 					if ($this->_plugin->isTrans()) {
-						$this->_commitAfter = '_afterUpdate';
+						$this->_afterCommit = '_afterUpdate';
 					} else {
 						$this->_afterUpdate();
 					}
@@ -589,7 +589,7 @@ abstract class Database extends ModelBase
 				if ($this->_relations) $this->_relateSave();
 				if (method_exists($this, '_afterCreate')) {
 					if ($this->_plugin->isTrans()) {
-						$this->_commitAfter = '_afterCreate';
+						$this->_afterCommit = '_afterCreate';
 					} else {
 						$this->_afterCreate();
 					}
@@ -731,8 +731,8 @@ abstract class Database extends ModelBase
 	public function transCommit()
 	{
 		$this->_plugin->transCommit();
-		if ($this->_commitAfter && method_exists($this, $this->_commitAfter)) {
-			call_user_func_array(array($this, $this->_commitAfter), array());
+		if ($this->_afterCommit && method_exists($this, $this->_afterCommit)) {
+			call_user_func_array(array($this, $this->_afterCommit), array());
 		}
 	}
 
@@ -761,7 +761,7 @@ abstract class Database extends ModelBase
 				&& method_exists($this, '_afterDelete')
 			) {
 				if ($this->_plugin->isTrans()) {
-					$this->_commitAfter = '_afterDelete';
+					$this->_afterCommit = '_afterDelete';
 				} else {
 					$this->_afterDelete();
 				}
