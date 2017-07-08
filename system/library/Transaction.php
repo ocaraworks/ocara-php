@@ -37,9 +37,9 @@ final class Transaction extends Base
 	 */
 	public static function push($database)
 	{
-		$database->transBegin();
 		$key = $database->getConnectName();
 		if (!isset(self::$_list[$key])) {
+			$database->beginTransaction();
 			self::$_list[$key] = $database;
 		}
 	}

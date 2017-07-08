@@ -129,9 +129,9 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	 * @param string $param
 	 * @param boolean $debug
 	 */
-	public function trans($type, $value = null, $debug = false)
+	public function execTransaction($type, $value = null, $debug = false)
 	{
-		$sql = $this->getTransSql($type, $value);
+		$sql = $this->getTransactionSql($type, $value);
 		$result = $sql ? $this->query($sql, $debug) : false;
 		return $result;
 	}

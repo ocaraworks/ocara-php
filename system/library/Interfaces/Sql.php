@@ -226,7 +226,7 @@ interface Sql
 	 * @param string $type
 	 * @param string $value
 	 */
-	public function getTransSql($type, $value);
+	public function getTransactionSql($type, $value);
 	
 	/**
 	 * 给逗号分隔的列表加引号

@@ -624,7 +624,7 @@ class Sql extends Base
 	 * @param $value
 	 * @return string
 	 */
-	public function getTransSql($type, $value)
+	public function getTransactionSql($type, $value)
 	{
 		$type = strtoupper($type);
 
