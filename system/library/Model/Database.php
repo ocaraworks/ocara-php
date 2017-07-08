@@ -16,6 +16,7 @@ use Ocara\Database as DefaultDatabase;
 use Ocara\DatabaseBase;
 use Ocara\ModelBase;
 use Ocara\Iterator\Database\ObjectRecords;
+use Ocara\Transaction;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -44,7 +45,6 @@ abstract class Database extends ModelBase
 	private $_isOrm;
 	private $_selected;
 	private $_insertId;
-	private $_afterCommit;
 
 	private $_relations = array();
 	private $_sql = array();
@@ -564,20 +564,16 @@ abstract class Database extends ModelBase
 		}
 
 		if (!$debug && $this->_relations) {
-			$this->db()->transBegin();
+			Transaction::begin();
 		}
 
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
 			$result = $this->_plugin->update($this->_tableName, $data, $condition, $debug);
 			if (!$debug){
-				if ($this->_relations) $this->_relateSave();
+				$this->_relateSave();
 				if($this->_selected && method_exists($this, '_afterUpdate')) {
-					if ($this->_plugin->isTrans()) {
-						$this->_afterCommit = '_afterUpdate';
-					} else {
-						$this->_afterUpdate();
-					}
+					$this->_afterUpdate();
 				}
 			}
 		} else {
@@ -586,13 +582,9 @@ abstract class Database extends ModelBase
 			if (!$debug) {
 				$this->_insertId = $this->_plugin->getInsertId();
 				$this->_selectInsertRow($data);
-				if ($this->_relations) $this->_relateSave();
+				$this->_relateSave();
 				if (method_exists($this, '_afterCreate')) {
-					if ($this->_plugin->isTrans()) {
-						$this->_afterCommit = '_afterCreate';
-					} else {
-						$this->_afterCreate();
-					}
+					$this->_afterCreate();
 				}
 				$result = $this->_insertId;
 			}
@@ -726,17 +718,6 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 事务提交
-	 */
-	public function transCommit()
-	{
-		$this->_plugin->transCommit();
-		if ($this->_afterCommit && method_exists($this, $this->_afterCommit)) {
-			call_user_func_array(array($this, $this->_afterCommit), array());
-		}
-	}
-
-	/**
 	 * 获取数据更新或删除的条件
 	 * @param string $type
 	 * @param bool $debug
@@ -760,11 +741,7 @@ abstract class Database extends ModelBase
 				&& $this->_selected
 				&& method_exists($this, '_afterDelete')
 			) {
-				if ($this->_plugin->isTrans()) {
-					$this->_afterCommit = '_afterDelete';
-				} else {
-					$this->_afterDelete();
-				}
+				$this->_afterDelete();
 			}
 		}
 
@@ -1722,6 +1699,10 @@ abstract class Database extends ModelBase
 	 */
 	private function _relateSave()
 	{
+		if (!$this->_relations) {
+			return true;
+		}
+
 		$changes = array();
 
 		foreach ($this->_relations as $key => $object) {
@@ -1757,15 +1738,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		foreach ($changes as $key => $value) {
-			foreach ($value as $model) {
-				if (is_object($model) && $model instanceof \Ocara\ModelBase) {
-					$model->transCommit();
-				}
-			}
-		}
-
-		$this->transCommit();
+		Transaction::commit();
 
 		return true;
 	}

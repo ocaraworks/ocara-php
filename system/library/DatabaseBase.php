@@ -27,15 +27,16 @@ class DatabaseBase extends Sql
 	protected $_isPdo = false;
 
 	protected $_config;
-	protected $_options;
 	protected $_pdoName;
 	protected $_prepared;
 	protected $_dataType;
-	protected $_isTrans;
+	protected $_connectName;
 
 	protected $_params = array();
 	protected $_unions = array();
-	private   $_error = array();
+
+	private $_error = array();
+	private static $_connects = array();
 
 	protected static $paramOptions = array(
 		'set', 		'where', 	'groupBy',
@@ -89,6 +90,24 @@ class DatabaseBase extends Sql
 	}
 
 	/**
+	 * 设置连接名称
+	 * @param $connectName
+	 */
+	public function setConnectName($connectName)
+	{
+		$this->_connectName = $connectName;
+	}
+
+	/**
+	 * 获取连接名称
+	 * @return mixed
+	 */
+	public function getConnectName()
+	{
+		return $this->_connectName;
+	}
+
+	/**
 	 * 清理绑定参数
 	 */
 	public function clearBindParams()
@@ -107,7 +126,7 @@ class DatabaseBase extends Sql
 
 	/**
 	 * 合并查询
-	 * @param array $data
+	 * @param $model
 	 * @param bool $unionAll
 	 */
 	public function union($model, $unionAll = false)
@@ -122,7 +141,17 @@ class DatabaseBase extends Sql
 	public function initialize(array $config)
 	{
 		$config['password'] = ocGet('password', $config);
-		$this->_plugin = $this->getDriver($config);
+		$connectName = $config['connect_name'];
+
+		if (isset(self::$_connects[$connectName])
+			&& self::$_connects[$connectName] instanceof DriverBase
+		) {
+			$this->_plugin = self::$connects[$connectName];
+		} else {
+			$this->_plugin = $this->getDriver($config);
+			$this->setConnectName($connectName);
+			self::$_connects[$connectName] = $this->_plugin;
+		}
 
 		$this->isPconnect($config['pconnect']);
 		$this->_plugin->connect();
@@ -174,6 +203,7 @@ class DatabaseBase extends Sql
 	/**
 	 * 获取配置选项
 	 * @param null $name
+	 * @return array|bool|mixed|null
 	 */
 	public function getConfig($name = null)
 	{
@@ -444,7 +474,7 @@ class DatabaseBase extends Sql
 	}
 
 	/**
-	 * 插入
+	 * 插入记录
 	 * @param string $table
 	 * @param array $data
 	 * @param bool $debug
@@ -460,6 +490,8 @@ class DatabaseBase extends Sql
 
 		$ret = $this->_checkDebug($debug, $sql);
 		if ($ret) return $ret;
+
+		Transaction::push($this);
 		$insertResult = $data ? $this->query($sql, false, false) : false;
 
 		$this->clearBindParams();
@@ -467,7 +499,7 @@ class DatabaseBase extends Sql
 	}
 
 	/**
-	 * 更新
+	 * 更新记录
 	 * @param string $table
 	 * @param string|array $data
 	 * @param string|array $condition
@@ -485,6 +517,8 @@ class DatabaseBase extends Sql
 
 		$ret = $this->_checkDebug($debug, $sql);
 		if ($ret) return $ret;
+
+		Transaction::push($this);
 		$ret = $data ? $this->query($sql, $debug, false) : false;
 
 		$this->clearBindParams();
@@ -503,8 +537,10 @@ class DatabaseBase extends Sql
 		$condition = $this->parseCondition($condition);
 		$sql = $this->getDeleteSql($table, $condition);
 
+		Transaction::push($this);
 		$ret = $this->query($sql, $debug, false);
 		$this->clearBindParams();
+
 		return $ret;
 	}
 
@@ -557,46 +593,35 @@ class DatabaseBase extends Sql
 	}
 
 	/**
-	 * 是否正在事务过程中
-	 * @param boolean $isTrans
-	 * @return mixed
+	 * 事务开始
 	 */
-	public function isTrans()
+	public function beginTransaction()
 	{
-		return $this->_isTrans;
+		$this->execTransaction('begin');
 	}
 
 	/**
-	 * 事务开始
+	 * ::TODO 事务隔离级别设置
 	 */
-	public function transBegin()
+	public function setTransactionLevel()
 	{
-		if (!$this->_isTrans) {
-			$this->trans('begin');
-			$this->_isTrans = true;
-		}
+		return true;
 	}
 
 	/**
 	 * 事务提交
 	 */
-	public function transCommit()
+	public function commit()
 	{
-		if ($this->_isTrans) {
-			$this->trans('commit');
-			$this->_isTrans = false;
-		}
+		$this->execTransaction('commit');
 	}
 
 	/**
 	 * 事务回滚
 	 */
-	public function transRollback()
+	public function rollback()
 	{
-		if ($this->_isTrans) {
-			$this->trans('rollback');
-			$this->_isTrans = false;
-		}
+		$this->execTransaction('rollback');
 	}
 
 	/**
@@ -652,12 +677,6 @@ class DatabaseBase extends Sql
 	{
 		if ($this->errorExists()) {
 			$error = $this->_error;
-			if ($this->isTrans()) {
-				$this->transRollback();
-				if ($this->errorExists()) {
-					return Error::show($this->getError());
-				}
-			}
 			$this->_error = $error;
 			Error::show($this->getError());
 		}

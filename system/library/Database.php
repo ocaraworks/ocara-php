@@ -18,8 +18,6 @@ final class Database extends Base
 	private function __clone(){}
 	private function __construct(){}
 
-	protected static $_databases = array();
-
 	/**
 	 * 获取数据库实例
 	 * @param string $server
@@ -53,13 +51,9 @@ final class Database extends Base
 	{
 		$object = null;
 		$config = self::getConfig($server);
-		$index  = $master ? 0 : 1;
-		$hosts   = ocForceArray(ocDel($config, 'host'));
-		$name = $server.$index;
-
-		if (isset(self::$_databases[$name])) {
-			return self::$_databases[$name];
-		}
+		$index = $master ? 0 : 1;
+		$hosts = ocForceArray(ocDel($config, 'host'));
+		$connectName = $server . '_' . $index;
 
 		if (isset($hosts[$index]) && $hosts[$index]) {
 			$address = array_map('trim', explode(':', $hosts[$index]));
@@ -67,10 +61,11 @@ final class Database extends Base
 			$config['port']  = isset($address[1]) ? $address[1] : null;
 			$config['type']  = self::getDatabaseType($config);
 			$config['class'] = $config['type'];
-			$object = self::_createDatabase('Database', $config['class'], $config);
+			$config['connect_name'] = $connectName;
+			$object = self::_createDatabase('Database', $config);
 		}
 
-		return self::$_databases[$name] = $object;
+		return $object;
 	}
 
 	/**
@@ -114,12 +109,11 @@ final class Database extends Base
 	/**
 	 * 获取数据库对象
 	 * @param string $dir
-	 * @param string $class
 	 * @param array $config
 	 */
-	private static function _createDatabase($dir, $class, $config)
+	private static function _createDatabase($dir, $config)
 	{
-		$class = $class . 'Database';
+		$class = $config['class'] . 'Database';
 		$classFile = $dir . OC_DIR_SEP . $class . '.php';
 		$classInfo = ServiceBase::classFileExists($classFile);
 
