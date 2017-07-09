@@ -419,7 +419,6 @@ class Sql extends Base
 
 		if (is_array($options) && array_key_exists($ltype, $options)) {
 			$content = $options[$ltype];
-
 			switch ($type) {
 				case 'WHERE':
 				case 'HAVING':
@@ -461,6 +460,7 @@ class Sql extends Base
 			return $this->getFieldCondition($condition, $link, $sign, $alias);
 		}
 
+		$condition = $this->filterValue($condition);
 		$alias = $this->getAliasSql($alias);
 		return $this->wrapWhere($alias . (string)$condition);
 	}
@@ -474,7 +474,7 @@ class Sql extends Base
 	{
 		if ($alias) {
 			$alias = $this->filterName($alias);
-			return '`$alias`.';
+			return "`{$alias}`";
 		}
 
 		return false;

@@ -327,6 +327,16 @@ class PdoDriver extends DriverBase implements DriverInterface
 	}
 
 	/**
+	 * 绑定参数
+	 * @param string $parameter
+	 * @param scalar $variable
+	 */
+	public function bind_value($parameter, $variable)
+	{
+		return call_user_func_array(array($this->_stmt, 'bindValue'), func_get_args());
+	}
+
+	/**
 	 * 返回绑定参数信息
 	 */
 	public function debugDumpParams()
@@ -344,7 +354,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 * @param string $dataType
 	 * @param bool $queryRow
 	 */
-	public function get_result($dataType, $queryRow = false)
+	public function get_result($dataType = 'array', $queryRow = false)
 	{
 		$isObject = $dataType == 'object';
 		$result = $isObject ? null : array();
