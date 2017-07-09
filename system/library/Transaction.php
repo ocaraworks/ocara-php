@@ -83,6 +83,7 @@ final class Transaction extends Base
 		if (self::$_count == 1) {
 			self::_commitAll();
 			self::$_count = 0;
+			self::$_list = array();
 		} elseif (self::$_count > 1) {
 			self::$_count --;
 		}
@@ -96,6 +97,7 @@ final class Transaction extends Base
 		if (self::$_count > 0) {
 			self::$_count = 0;
 			self::_rollbackAll();
+			self::$_list = array();
 		}
 	}
 

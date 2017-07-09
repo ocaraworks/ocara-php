@@ -68,6 +68,8 @@ abstract class Database extends ModelBase
 	 */
 	public function initialize()
 	{
+
+
 		if (self::$_requirePrimary === null) {
 			$required = ocConfig('MODEL_REQUIRE_PRIMARY', true);
 			self::$_requirePrimary = $required ? true : false;
@@ -567,6 +569,8 @@ abstract class Database extends ModelBase
 			Transaction::begin();
 		}
 
+		Transaction::push($this->_plugin);
+
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
 			$result = $this->_plugin->update($this->_tableName, $data, $condition, $debug);
@@ -578,7 +582,6 @@ abstract class Database extends ModelBase
 			}
 		} else {
 			$result = $this->_plugin->insert($this->_tableName, $data, $debug);
-
 			if (!$debug) {
 				$this->_insertId = $this->_plugin->getInsertId();
 				$this->_selectInsertRow($data);
@@ -640,7 +643,6 @@ abstract class Database extends ModelBase
 	 */
 	public function save($debug = false)
 	{
-		Transaction::push($this->_plugin);
 		$condition = $this->_getCondition();
 		$data = array();
 
@@ -663,7 +665,6 @@ abstract class Database extends ModelBase
 		$this->connect();
 		$data = $this->map($this->_getPostData($data));
 
-		Transaction::push($this->_plugin);
 		$result = $this->_save($data, false, $debug);
 		return $result;
 	}
@@ -692,7 +693,6 @@ abstract class Database extends ModelBase
 	 */
 	public function update(array $data, $debug = false)
 	{
-		Transaction::push($this->_plugin);
 		$condition = $this->_getCondition();
 		$result = $this->_update('update', $debug, $condition, $data);
 		return $result;
@@ -704,7 +704,6 @@ abstract class Database extends ModelBase
 	 */
 	public function delete($debug = false)
 	{
-		Transaction::push($this->_plugin);
 		$condition = $this->_getCondition();
 		$result = $this->_update('delete', $debug, $condition);
 		return $result;
@@ -733,6 +732,8 @@ abstract class Database extends ModelBase
 	private function _update($type, $debug, $condition, array $data = array())
 	{
 		if (empty($condition)) Error::show('need_condition');
+
+		Transaction::push($this->_plugin);
 
 		if ($type == 'update') {
 			$result = $this->_save($data, $condition, $debug);
@@ -1662,6 +1663,7 @@ abstract class Database extends ModelBase
 	/**
 	 * 获取关联模型
 	 * @param string $key
+	 * @param mixed $value
 	 */
 	public function __set($key, $value)
 	{

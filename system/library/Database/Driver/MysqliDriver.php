@@ -156,6 +156,43 @@ class MysqliDriver extends DriverBase implements DriverInterface
 		$this->_connection->close();
 	}
 
+
+	/**
+	 * 开始一个事务
+	 * @return mixed
+	 */
+	public function begin_transaction()
+	{
+		return $this->_connection->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+	}
+
+	/**
+	 * 提交事务
+	 * @return mixed
+	 */
+	public function commit()
+	{
+		return $this->_connection->commit();
+	}
+
+	/**
+	 * 回退事务
+	 * @return mixed
+	 */
+	public function rollBack()
+	{
+		return $this->_connection->rollBack();
+	}
+
+	/**
+	 * 设置是否自动提交事务
+	 * @param bool $autocommit
+	 */
+	public function autocommit($autocommit = true)
+	{
+		return $this->_connection->setAttribute(\PDO::ATTR_AUTOCOMMIT, $autocommit);
+	}
+
 	/**
 	 * @return array
 	 */

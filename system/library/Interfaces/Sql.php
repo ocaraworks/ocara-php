@@ -220,14 +220,7 @@ interface Sql
 	 * @param bool $addSlashes
 	 */
 	public function filterValue($content, $addSlashes = true);
-	 
-	/**
-	 * 获取事务处理SQL
-	 * @param string $type
-	 * @param string $value
-	 */
-	public function getTransactionSql($type, $value);
-	
+
 	/**
 	 * 给逗号分隔的列表加引号
 	 * @param string $string

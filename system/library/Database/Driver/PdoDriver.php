@@ -123,6 +123,71 @@ class PdoDriver extends DriverBase implements DriverInterface
 	{}
 
 	/**
+	 * 开始一个事务
+	 * @return mixed
+	 */
+	public function begin_transaction()
+	{
+		return $this->_instance->beginTransaction();
+	}
+
+	/**
+	 * 检查驱动内的一个事务当前是否处于激活
+	 */
+	public function in_transaction()
+	{
+		return $this->_instance->inTransaction();
+	}
+
+	/**
+	 * 提交事务
+	 * @return mixed
+	 */
+	public function commit()
+	{
+		return $this->_instance->commit();
+	}
+
+	/**
+	 * 回退事务
+	 * @return mixed
+	 */
+	public function rollBack()
+	{
+		return $this->_instance->rollBack();
+	}
+
+	/**
+	 * 设置是否自动提交事务
+	 * @param bool $autocommit
+	 */
+	public function autocommit($autocommit = true)
+	{
+		$autocommit = $autocommit ? 1 : 0;
+		return $this->_instance->setAttribute(\PDO::ATTR_AUTOCOMMIT, $autocommit);
+	}
+
+	/**
+	 * 获取参数
+	 * @param mixed $name
+	 * @return mixed
+	 */
+	public function get_attribute($name)
+	{
+		return $this->_instance->getAttribute($name);
+	}
+
+	/**
+	 * 设置参数
+	 * @param mixed name
+	 * @return mixed
+	 */
+	public function set_attribute($name)
+	{
+		return $this->_instance->getAttribute($name);
+	}
+
+	/**
 	 * @return array
 	 */
 	public function fetch_array()

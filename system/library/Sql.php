@@ -619,23 +619,6 @@ class Sql extends Base
 	}
 
 	/**
-	 * 获取事务处理SQL
-	 * @param $type
-	 * @param $value
-	 * @return string
-	 */
-	public function getTransactionSql($type, $value)
-	{
-		$type = strtoupper($type);
-
-		if ($type == 'AUTOCOMMIT') {
-			return 'SET AUTOCOMMIT = ' . ($value ? 1 : 0);
-		}
-
-		return $type;
-	}
-
-	/**
 	 * 获取表名
 	 * @param $databaseName
 	 * @param $tableName

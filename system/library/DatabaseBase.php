@@ -144,22 +144,25 @@ class DatabaseBase extends Sql
 		$connectName = $config['connect_name'];
 		$this->setConnectName($connectName);
 
-		if (isset(self::$_connects[$connectName]) && self::$_connects[$connectName] instanceof DriverBase) {
+		$exists = isset(self::$_connects[$connectName]) && self::$_connects[$connectName] instanceof DriverBase;
+
+		if ($exists) {
 			$this->_plugin = self::$_connects[$connectName];
 		} else {
 			$this->_plugin = $this->getDriver($config);
 			self::$_connects[$connectName] = $this->_plugin;
+			$this->isPconnect($config['pconnect']);
+			$this->_plugin->connect();
+			$this->isPrepare($config['prepare']);
 		}
 
 		if ($this->_plugin instanceof \Ocara\Database\Driver\PdoDriver) {
 			$this->_isPdo = true;
 		}
 
-		$this->isPconnect($config['pconnect']);
-		$this->_plugin->connect();
-
-		$this->isPrepare($config['prepare']);
-		$this->setCharset($config['charset']);
+		if (!$exists) {
+			$this->setCharset($config['charset']);
+		}
 	}
 
 	/**
@@ -596,7 +599,9 @@ class DatabaseBase extends Sql
 	 */
 	public function beginTransaction()
 	{
-		$this->execTransaction('begin');
+		$this->autocommit(false);
+		$result = $this->_plugin->begin_transaction();
+		return $result;
 	}
 
 	/**
@@ -608,11 +613,24 @@ class DatabaseBase extends Sql
 	}
 
 	/**
+	 * 是否自动提交事务
+	 * @param bool $autocommit
+	 * @return mixed
+	 */
+	public function autocommit($autocommit = true)
+	{
+		$result = $this->_plugin->autocommit($autocommit);
+		return $result;
+	}
+
+	/**
 	 * 事务提交
 	 */
 	public function commit()
 	{
-		$this->execTransaction('commit');
+		$result = $this->_plugin->commit();
+		$this->autocommit(true);
+		return $result;
 	}
 
 	/**
@@ -620,7 +638,9 @@ class DatabaseBase extends Sql
 	 */
 	public function rollback()
 	{
-		$this->execTransaction('rollback');
+		$result = $this->_plugin->rollback();
+		$this->autocommit(true);
+		return $result;
 	}
 
 	/**
