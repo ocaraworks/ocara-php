@@ -260,7 +260,20 @@ class PdoDriver extends DriverBase implements DriverInterface
 	{
 		return call_user_func_array(array($this->_stmt, 'bindParam'), func_get_args());
 	}
-	
+
+	/**
+	 * 返回绑定参数信息
+	 */
+	public function debugDumpParams()
+	{
+		ob_start();
+		$this->_stmt->debugDumpParams();
+		$result = ob_get_contents();
+		ob_end_clean();
+
+		return $result;
+	}
+
 	/**
 	 * 获取结果集数据
 	 * @param string $dataType

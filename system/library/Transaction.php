@@ -37,10 +37,12 @@ final class Transaction extends Base
 	 */
 	public static function push($database)
 	{
-		$key = $database->getConnectName();
-		if (!isset(self::$_list[$key])) {
-			$database->beginTransaction();
-			self::$_list[$key] = $database;
+		if (self::hasBegan()) {
+			$key = $database->getConnectName();
+			if (!isset(self::$_list[$key])) {
+				$database->beginTransaction();
+				self::$_list[$key] = $database;
+			}
 		}
 	}
 
@@ -54,6 +56,15 @@ final class Transaction extends Base
 		if (isset(self::$_list[$key])) {
 			ocDel(self::$_list, $key);
 		}
+	}
+
+	/**
+	 * 是否已开始事务
+	 * @return bool
+	 */
+	public static function hasBegan()
+	{
+		return self::$_count > 0;
 	}
 
 	/**
@@ -94,7 +105,7 @@ final class Transaction extends Base
 	protected static function _commitAll()
 	{
 		foreach (self::$_list as $database) {
-			$database->commmit();
+			$database->commit();
 		}
 	}
 

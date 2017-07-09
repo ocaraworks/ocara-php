@@ -142,15 +142,17 @@ class DatabaseBase extends Sql
 	{
 		$config['password'] = ocGet('password', $config);
 		$connectName = $config['connect_name'];
+		$this->setConnectName($connectName);
 
-		if (isset(self::$_connects[$connectName])
-			&& self::$_connects[$connectName] instanceof DriverBase
-		) {
-			$this->_plugin = self::$connects[$connectName];
+		if (isset(self::$_connects[$connectName]) && self::$_connects[$connectName] instanceof DriverBase) {
+			$this->_plugin = self::$_connects[$connectName];
 		} else {
 			$this->_plugin = $this->getDriver($config);
-			$this->setConnectName($connectName);
 			self::$_connects[$connectName] = $this->_plugin;
+		}
+
+		if ($this->_plugin instanceof \Ocara\Database\Driver\PdoDriver) {
+			$this->_isPdo = true;
 		}
 
 		$this->isPconnect($config['pconnect']);
@@ -167,7 +169,6 @@ class DatabaseBase extends Sql
 	public function getDriver(array $data)
 	{
 		if (ocCheckExtension($this->_pdoName, false)) {
-			$this->_isPdo = true;
 			$object = $this->loadDatabase('Pdo');
 			$object->initialize($this->getPdoParams($data));
 		} else {
@@ -255,6 +256,7 @@ class DatabaseBase extends Sql
 		$ret = $this->_checkDebug($debug, $sql);
 		if ($ret) return $ret;
 
+		$sql = trim($sql);
 		if ($callback = ocConfig('CALLBACK.database.execute_sql.before', null)) {
 			Call::run($callback, array($sql, date(ocConfig('DATE_FORMAT.datetime'))));
 		}
@@ -491,7 +493,6 @@ class DatabaseBase extends Sql
 		$ret = $this->_checkDebug($debug, $sql);
 		if ($ret) return $ret;
 
-		Transaction::push($this);
 		$insertResult = $data ? $this->query($sql, false, false) : false;
 
 		$this->clearBindParams();
@@ -518,7 +519,6 @@ class DatabaseBase extends Sql
 		$ret = $this->_checkDebug($debug, $sql);
 		if ($ret) return $ret;
 
-		Transaction::push($this);
 		$ret = $data ? $this->query($sql, $debug, false) : false;
 
 		$this->clearBindParams();
@@ -537,7 +537,6 @@ class DatabaseBase extends Sql
 		$condition = $this->parseCondition($condition);
 		$sql = $this->getDeleteSql($table, $condition);
 
-		Transaction::push($this);
 		$ret = $this->query($sql, $debug, false);
 		$this->clearBindParams();
 

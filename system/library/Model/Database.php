@@ -640,6 +640,7 @@ abstract class Database extends ModelBase
 	 */
 	public function save($debug = false)
 	{
+		Transaction::push($this->_plugin);
 		$condition = $this->_getCondition();
 		$data = array();
 
@@ -661,6 +662,8 @@ abstract class Database extends ModelBase
 	{
 		$this->connect();
 		$data = $this->map($this->_getPostData($data));
+
+		Transaction::push($this->_plugin);
 		$result = $this->_save($data, false, $debug);
 		return $result;
 	}
@@ -689,6 +692,7 @@ abstract class Database extends ModelBase
 	 */
 	public function update(array $data, $debug = false)
 	{
+		Transaction::push($this->_plugin);
 		$condition = $this->_getCondition();
 		$result = $this->_update('update', $debug, $condition, $data);
 		return $result;
@@ -700,6 +704,7 @@ abstract class Database extends ModelBase
 	 */
 	public function delete($debug = false)
 	{
+		Transaction::push($this->_plugin);
 		$condition = $this->_getCondition();
 		$result = $this->_update('delete', $debug, $condition);
 		return $result;
