@@ -1488,6 +1488,7 @@ abstract class Database extends ModelBase
 					$whereData, 'AND', '=', $alias
 				);
 			} elseif ($whereType == 'between') {
+				$whereData[] = $alias;
 				$where[] = call_user_func_array(array($this->_plugin, 'getBetweenSql'), $whereData);
 			} else {
 				$where[] = $this->_getComplexWhere($whereData, $alias);

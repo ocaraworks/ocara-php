@@ -376,17 +376,18 @@ class Sql extends Base
 
 	/**
 	 * 获取Between语句
-	 * @param $field
-	 * @param $value1
-	 * @param $value2
+	 * @param string $field
+	 * @param string $value1
+	 * @param mixed $value2
+	 * @param string $alias
 	 * @return string
 	 */
-	public function getBetweenSql($field, $value1, $value2)
+	public function getBetweenSql($field, $value1, $value2, $alias = false)
 	{
 		$value1 = $this->parseValue($value1, 'where');
 		$value2 = $this->parseValue($value2, 'where');
 
-		return $this->parseField($field) . " BETWEEN {$value1} AND {$value2}";
+		return $this->parseField($field, $alias) . " BETWEEN {$value1} AND {$value2}";
 	}
 
 	/**

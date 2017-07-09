@@ -412,7 +412,9 @@ class DatabaseBase extends Sql
 		foreach ($params as $row) {
 			foreach (self::$paramOptions as $option) {
 				if ($option == 'bind') {
-					$bindValues = $row[$option];
+					if (isset($row[$option])) {
+						$bindValues = $row[$option];
+					}
 				} elseif (!empty($row[$option])) {
 					$paramData = array_merge($paramData, $row[$option]);
 				}
