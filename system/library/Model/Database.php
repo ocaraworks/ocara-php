@@ -1490,6 +1490,7 @@ abstract class Database extends ModelBase
 			} elseif ($whereType == 'between') {
 				$map = $this->map(array($whereData[0] => null));
 				if($map) {
+					$whereData[0] = key($map);
 					$whereData[] = $alias;
 					$where[] = call_user_func_array(array($this->_plugin, 'getBetweenSql'), $whereData);
 				}
