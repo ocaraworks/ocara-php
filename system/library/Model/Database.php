@@ -1352,6 +1352,17 @@ abstract class Database extends ModelBase
 	}
 
 	/**
+	 * 绑定占位符参数
+	 * @param $name
+	 * @param $value
+	 */
+	public function bind($name, $value)
+	{
+		$this->_plugin->bind($name, $value);
+		return $this;
+	}
+
+	/**
 	 * 设置字段别名转换映射
 	 * @param $tables
 	 */

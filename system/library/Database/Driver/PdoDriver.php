@@ -328,12 +328,14 @@ class PdoDriver extends DriverBase implements DriverInterface
 
 	/**
 	 * 绑定参数
-	 * @param string $parameter
-	 * @param scalar $variable
+	 * @param string $name
+	 * @param mixed $value
+	 * @param int $type
+	 * @return mixed
 	 */
-	public function bind_value($parameter, $variable)
+	public function bind_value($name, $value, $type = PDO::PARAM_STR)
 	{
-		return call_user_func_array(array($this->_stmt, 'bindValue'), func_get_args());
+		return $this->_stmt->bindValue($name, $value, $type);
 	}
 
 	/**

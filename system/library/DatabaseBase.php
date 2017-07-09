@@ -41,7 +41,7 @@ class DatabaseBase extends Sql
 	protected static $paramOptions = array(
 		'set', 		'where', 	'groupBy',
 		'having', 	'limit', 	'orderBy',
-		'more',
+		'more',     'bind'
 	);
 
 	/**
@@ -122,6 +122,18 @@ class DatabaseBase extends Sql
 	public function getBindParams()
 	{
 		return $this->_params;
+	}
+
+	/**
+	 * 绑定占位符参数
+	 * @param $name
+	 * @param $value
+	 */
+	public function bind($name, $value)
+	{
+		if (preg_match('/^:\w+$/', $name)) {
+			$this->_params['bind'][$name] = $value;
+		}
 	}
 
 	/**
@@ -356,7 +368,7 @@ class DatabaseBase extends Sql
 	 * @param array $option
 	 * @param scalar $params
 	 */
-	public function bind($option, $type, &$params)
+	public function bindParam($option, $type, &$params)
 	{
 		if (is_string($type)) {
 			$type = explode(OC_EMPTY, strtolower($type));
@@ -395,10 +407,13 @@ class DatabaseBase extends Sql
 		$types = false;
 		$data = array();
 		$paramData = array();
+		$bindValues = array();
 
 		foreach ($params as $row) {
 			foreach (self::$paramOptions as $option) {
-				if (!empty($row[$option])) {
+				if ($option == 'bind') {
+					$bindValues = $row[$option];
+				} elseif (!empty($row[$option])) {
 					$paramData = array_merge($paramData, $row[$option]);
 				}
 			}
@@ -417,6 +432,12 @@ class DatabaseBase extends Sql
 		if (!$this->_isPdo) {
 			array_unshift($data, $types);
 			call_user_func_array(array($this->_plugin, 'bind_param'), $data);
+		}
+
+		if ($bindValues && method_exists($this->_plugin, 'bind_value')) {
+			foreach ($bindValues as $name => $value) {
+				$this->_plugin->bind_value($name, $value);
+			}
 		}
 	}
 
