@@ -1447,7 +1447,7 @@ abstract class Database extends ModelBase
 
 		if (empty($fields)) {
 			$aliasFields = $this->_getAliasFields($tables);
-			if ($this->_isDefaultFields($option['fields'])) {
+			if (!isset($option['fields']) OR $this->_isDefaultFields($option['fields'])) {
 				$option['fields'][] = array($this->_alias, array_keys($this->getFields()));
 			}
 			$fields = $this->_getFieldsSql($option['fields'], $aliasFields, $unJoined);
