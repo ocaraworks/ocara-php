@@ -418,7 +418,7 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 字段别名映射
+	 * 别名字段数据映射
 	 * @param array $data
 	 */
 	public function map(array $data)
@@ -441,6 +441,22 @@ abstract class Database extends ModelBase
 		}
 
 		return $result;
+	}
+
+	/**
+	 * 字段别名映射
+	 * @param $field
+	 * @return string
+	 */
+	public function mapField($field)
+	{
+		$key = strtr($field, self::$_config[$this->_tag]['MAP']);
+
+		if (isset($this->_fields[$key])) {
+			return $key;
+		}
+
+		return $field;
 	}
 
 	/**
@@ -1488,9 +1504,9 @@ abstract class Database extends ModelBase
 					$whereData, 'AND', '=', $alias
 				);
 			} elseif ($whereType == 'between') {
-				$map = $this->map(array($whereData[0] => null));
-				if($map) {
-					$whereData[0] = key($map);
+				$field = $this->mapField($whereData[0]);
+				if($field) {
+					$whereData[0] = $field;
 					$whereData[] = $alias;
 					$where[] = call_user_func_array(array($this->_plugin, 'getBetweenSql'), $whereData);
 				}
