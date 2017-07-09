@@ -10,7 +10,7 @@ namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Path extends Base
+class Path extends Base
 {
 	/**
 	 * 单例模式

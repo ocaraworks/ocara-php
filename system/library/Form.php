@@ -12,7 +12,7 @@ use Ocara\Model\Database as DatabaseModel;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Form extends Base
+class Form extends Base
 {
 	/**
 	 * @var $_id  表单标识

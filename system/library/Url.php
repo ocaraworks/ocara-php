@@ -11,7 +11,7 @@ use Ocara\Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Url extends Base
+class Url extends Base
 {
 	const DEFAULT_TYPE 	= 1; //默认类型
 	const DIR_TYPE 		= 2; //伪目录类型

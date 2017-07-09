@@ -10,7 +10,7 @@ namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Lang extends Base
+class Lang extends Base
 {
 	private static $_data = null;
 	private static $_ocData = null;

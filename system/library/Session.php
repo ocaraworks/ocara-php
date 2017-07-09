@@ -10,7 +10,7 @@ namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Session extends Base
+class Session extends Base
 {
 	const SAVE_TYPE_FILE     = 1;
 	const SAVE_TYPE_DATABASE = 2;

@@ -10,7 +10,7 @@ namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Cookie extends Base
+class Cookie extends Base
 {
 	/**
 	 * 单例模式

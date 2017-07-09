@@ -10,7 +10,7 @@ namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Error extends Base
+class Error extends Base
 {
 
 	/**
@@ -65,7 +65,7 @@ final class Error extends Base
 	 */
 	public static function show($error, array $params = array())
 	{
-		Transaction::rollback();
+		self::$container->transaction->rollback();
 
 		if (!is_array($error)) {
 			$error = Lang::get($error, $params);

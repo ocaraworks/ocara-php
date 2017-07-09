@@ -12,7 +12,7 @@ use Ocara\Model\Database as DatabaseModel;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Validator extends Base
+class Validator extends Base
 {
 	private $_errorExists;
 	private $_errorSource;

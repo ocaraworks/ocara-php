@@ -10,7 +10,7 @@ namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Ajax extends Base
+class Ajax extends Base
 {
 	/**
 	 * 单例模式

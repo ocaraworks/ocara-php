@@ -80,6 +80,7 @@ $OC_CONF['SYSTEM_SERVICE_CLASS'] = array(
 	'Cookie' 		=> 'Ocara\Cookie',
 	'Session' 		=> 'Ocara\Session',
 	'Route'			=> 'Ocara\Route',
+	'Transaction'	=> 'Ocara\Transaction',
 );
 
 /**

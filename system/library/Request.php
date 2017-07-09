@@ -10,7 +10,7 @@ namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Request extends Base
+class Request extends Base
 {
 
 	/**

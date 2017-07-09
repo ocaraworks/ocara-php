@@ -11,7 +11,7 @@ use Ocara\Service\Code;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class FormToken extends Base
+class FormToken extends Base
 {
 	/**
 	 * @var $_tokenName 表单令牌键名名称

@@ -10,15 +10,14 @@ namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Transaction extends Base
+class Transaction extends Base
 {
-
 	/**
 	 * 单例模式
 	 */
 	private static $_instance = null;
-	private static $_count = 0;
-	private static $_list = array();
+	private $_count = 0;
+	private $_list = array();
 
 	private function __clone(){}
 	private function __construct(){}
@@ -26,7 +25,7 @@ final class Transaction extends Base
 	public static function getInstance()
 	{
 		if (self::$_instance === null) {
-			self::$_instance = new self();
+			self::$_instance = new static();
 		}
 		return self::$_instance;
 	}
@@ -35,13 +34,13 @@ final class Transaction extends Base
 	 * 推入数据库
 	 * @param ModelBase $database
 	 */
-	public static function push($database)
+	public function push($database)
 	{
 		if (self::hasBegan()) {
 			$key = $database->getConnectName();
-			if (!isset(self::$_list[$key])) {
+			if (!isset($this->_list[$key])) {
 				$database->beginTransaction();
-				self::$_list[$key] = $database;
+				$this->_list[$key] = $database;
 			}
 		}
 	}
@@ -50,11 +49,11 @@ final class Transaction extends Base
 	 * 取消事务
 	 * @param ModelBase $database
 	 */
-	public static function cancel($database)
+	public function cancel($database)
 	{
 		$key = $database->getConnectName();
-		if (isset(self::$_list[$key])) {
-			ocDel(self::$_list, $key);
+		if (isset($this->_list[$key])) {
+			ocDel($this->_list, $key);
 		}
 	}
 
@@ -62,51 +61,51 @@ final class Transaction extends Base
 	 * 是否已开始事务
 	 * @return bool
 	 */
-	public static function hasBegan()
+	public function hasBegan()
 	{
-		return self::$_count > 0;
+		return $this->_count > 0;
 	}
 
 	/**
 	 * 事务开始
 	 */
-	public static function begin()
+	public function begin()
 	{
-		self::$_count ++;
+		$this->_count ++;
 	}
 
 	/**
 	 * 事务提交
 	 */
-	public static function commit()
+	public function commit()
 	{
-		if (self::$_count == 1) {
+		if ($this->_count == 1) {
 			self::_commitAll();
-			self::$_count = 0;
-			self::$_list = array();
-		} elseif (self::$_count > 1) {
-			self::$_count --;
+			$this->_count = 0;
+			$this->_list = array();
+		} elseif ($this->_count > 1) {
+			$this->_count --;
 		}
 	}
 
 	/**
 	 * 事务回滚
 	 */
-	public static function rollback()
+	public function rollback()
 	{
-		if (self::$_count > 0) {
-			self::$_count = 0;
+		if ($this->_count > 0) {
+			$this->_count = 0;
 			self::_rollbackAll();
-			self::$_list = array();
+			$this->_list = array();
 		}
 	}
 
 	/**
 	 * 提交所有事务
 	 */
-	protected static function _commitAll()
+	protected function _commitAll()
 	{
-		foreach (self::$_list as $database) {
+		foreach ($this->_list as $database) {
 			$database->commit();
 		}
 	}
@@ -114,9 +113,9 @@ final class Transaction extends Base
 	/**
 	 * 回滚所有事务
 	 */
-	protected static function _rollbackAll()
+	protected function _rollbackAll()
 	{
-		foreach (self::$_list as $database) {
+		foreach ($this->_list as $database) {
 			$database->rollback();
 		}
 	}

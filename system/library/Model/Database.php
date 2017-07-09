@@ -16,7 +16,6 @@ use Ocara\Database as DefaultDatabase;
 use Ocara\DatabaseBase;
 use Ocara\ModelBase;
 use Ocara\Iterator\Database\ObjectRecords;
-use Ocara\Transaction;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -566,10 +565,10 @@ abstract class Database extends ModelBase
 		}
 
 		if (!$debug && $this->_relations) {
-			Transaction::begin();
+			self::$container->transaction->begin();
 		}
 
-		Transaction::push($this->_plugin);
+		self::$container->transaction->push($this->_plugin);
 
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
@@ -589,12 +588,12 @@ abstract class Database extends ModelBase
 				if (method_exists($this, '_afterCreate')) {
 					$this->_afterCreate();
 				}
-				$result = $this->_insertId;
 			}
 		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
 
+		$result = $this->_plugin->errorExists() ? false : true;
 		return $result;
 	}
 
@@ -733,7 +732,7 @@ abstract class Database extends ModelBase
 	{
 		if (empty($condition)) Error::show('need_condition');
 
-		Transaction::push($this->_plugin);
+		self::$container->transaction->push($this->_plugin);
 
 		if ($type == 'update') {
 			$result = $this->_save($data, $condition, $debug);
@@ -752,6 +751,7 @@ abstract class Database extends ModelBase
 		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
+		$result = $this->_plugin->errorExists() ? false : true;
 
 		return $result;
 	}
@@ -1745,7 +1745,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		Transaction::commit();
+		self::$container->transaction->commit();
 
 		return true;
 	}

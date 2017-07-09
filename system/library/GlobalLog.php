@@ -11,7 +11,7 @@ use Ocara\Service\Log;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class GlobalLog extends Base
+class GlobalLog extends Base
 {
     protected static $_logRoot;
     protected static $_log;

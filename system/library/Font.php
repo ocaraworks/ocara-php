@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara;
 
-final class Font extends Base
+class Font extends Base
 {
     /**
      * 获取字体路径
