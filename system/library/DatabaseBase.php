@@ -308,15 +308,6 @@ class DatabaseBase extends Sql
 	}
 
 	/**
-	 * 设置字段别名映射
-	 * @param $transformFields
-	 */
-	public function setTransformFields($transformFields)
-	{
-		$this->_transformFields = $transformFields;
-	}
-
-	/**
 	 * 查询一条记录
 	 * @param string $sql
 	 * @param bool $debug
