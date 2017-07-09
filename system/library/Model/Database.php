@@ -1384,6 +1384,26 @@ abstract class Database extends ModelBase
 	}
 
 	/**
+	 * 是否默认字段
+	 * @param $fields
+	 * @return bool
+	 */
+	private function _isDefaultFields($fields)
+	{
+		$isDefault = false;
+		if (empty($fields)) {
+			$isDefault = true;
+		} else {
+			$fields = reset($fields);
+			if (isset($fields[1]) && preg_match('/^\{\w+\}$/', $fields[1])) {
+				$isDefault = true;
+			}
+		}
+
+		return $isDefault;
+	}
+
+	/**
 	 * 生成Sql
 	 * @param boolean $select
 	 * @param string $fields
@@ -1400,11 +1420,8 @@ abstract class Database extends ModelBase
 
 		if (empty($fields)) {
 			$aliasFields = $this->_getAliasFields($tables);
-			if (empty($option['fields'])) {
-				$option['fields'][] = array(
-					$this->_alias,
-					array_keys($this->getFields())
-				);
+			if ($this->_isDefaultFields($option['fields'])) {
+				$option['fields'][] = array($this->_alias, array_keys($this->getFields()));
 			}
 			$fields = $this->_getFieldsSql($option['fields'], $aliasFields, $unJoined);
 		}
