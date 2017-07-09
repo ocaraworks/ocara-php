@@ -427,10 +427,7 @@ abstract class Database extends ModelBase
 
 		foreach ($data as $key => $value) {
 			$key = strtr($key, self::$_config[$this->_tag]['MAP']);
-			if ($this->_fields && !isset($this->_fields[$key])
-				|| $key == FormToken::getTokenTag()
-				|| is_object($value)
-			) {
+			if (!isset($this->_fields[$key]) OR $key == FormToken::getTokenTag() OR is_object($value)) {
 				continue;
 			}
 			$result[$key] = $value;
@@ -1176,15 +1173,32 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 生成Between条件
+	 * 生成AND Between条件
 	 * @param string $field
-	 * @param string|integer $value1
-	 * @param string|integer $value2
-	 * @param string $table
+	 * @param string $value1
+	 * @param string $value2
+	 * @param bool $table
+	 * @return $this
 	 */
 	public function between($field, $value1, $value2, $table = false)
 	{
-		$where = array($table, 'between', array($field, $value1, $value2));
+		$where = array($table, 'between', array($field, $value1, $value2), 'AND');
+		$this->_sql['option']['where'][] = $where;
+
+		return $this;
+	}
+
+	/**
+	 * 生成OR Between条件
+	 * @param string $field
+	 * @param string $value1
+	 * @param string $value2
+	 * @param bool $table
+	 * @return $this
+	 */
+	public function orBetween($field, $value1, $value2, $table = false)
+	{
+		$where = array($table, 'between', array($field, $value1, $value2), 'OR');
 		$this->_sql['option']['where'][] = $where;
 
 		return $this;
@@ -1198,7 +1212,23 @@ abstract class Database extends ModelBase
 	public function where($where, $alias = false)
 	{
 		if (!ocEmpty($where)) {
-			$where = array($alias, 'where', $where);
+			$where = array($alias, 'where', $where, 'AND');
+			$this->_sql['option']['where'][] = $where;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * 添加OR条件
+	 * @param array|string|number $where
+	 * @param bool $alias
+	 * @return $this
+	 */
+	public function orWhere($where, $alias = false)
+	{
+		if (!ocEmpty($where)) {
+			$where = array($alias, 'where', $where, 'OR');
 			$this->_sql['option']['where'][] = $where;
 		}
 
@@ -1208,23 +1238,25 @@ abstract class Database extends ModelBase
 	/**
 	 * 生成复杂条件
 	 * @param string $sign
-	 * @param array $where
-	 * @param string $alias
+	 * @param string $field
+	 * @param mixed $value
+	 * @param null $alias
+	 * @return $this
 	 */
-	public function cWhere($sign, $where, $alias = null)
+	public function cWhere($sign, $field, $value, $alias = null)
 	{
-		if (is_string($where)) {
-			/*
-			 * 注：$link = $where [AND|OR] , $where = $alias [field=>value]
-			 */
-			$where = array($where => $alias);
-			$alias = !empty($alias) ? $alias : false;
+		$where = array($field => $value);
+		$signInfo = explode('/', $sign);
+
+		if (isset($signInfo[1])) {
+			list($linkSign, $sign) = $signInfo;
+		} else {
+			$linkSign = 'AND';
+			$sign = $signInfo[0];
 		}
 
-		if (!ocEmpty($where)) {
-			$where = array($alias, 'cWhere', array($sign, $where));
-			$this->_sql['option']['where'][] = $where;
-		}
+		$where = array($alias, 'cWhere', array($sign, $where), $linkSign);
+		$this->_sql['option']['where'][] = $where;
 
 		return $this;
 	}
@@ -1418,13 +1450,13 @@ abstract class Database extends ModelBase
 		$where = array();
 
 		foreach ($data as $key => $value) {
-			list($alias, $whereType, $whereData) = $value;
+			list($alias, $whereType, $whereData, $linkSign) = $value;
 			if ($whereType == 'where') {
 				if (is_array($whereData)) {
 					$whereData = $this->map($whereData);
 				}
 				$where[] = $this->_plugin->parseCondition(
-					$whereData,  'AND', '=', $alias
+					$whereData, 'AND', '=', $alias
 				);
 			} elseif ($whereType == 'between') {
 				$where[] = call_user_func_array(array($this->_plugin, 'getBetweenSql'), $whereData);
@@ -1433,7 +1465,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		$where = $this->_plugin->linkWhere($where);
+		$where = $this->_plugin->linkWhere($where, $linkSign);
 		$where = $this->_plugin->wrapWhere($where);
 
 		return $where;
@@ -1441,7 +1473,7 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 获取字段列表
-	 * @param array $fields
+	 * @param array $data
 	 * @param array $aliasFields
 	 * @param bool $unJoined
 	 */
@@ -1566,17 +1598,18 @@ abstract class Database extends ModelBase
 	private function _getComplexWhere($data, $alias)
 	{
 		$cond = null;
+		list($sign, $where) = $data;
 
-		if ($data[1]) {
-			if (ocAssoc($data[1])) {
-				array_unshift($data[1], $data[0]);
-				$cond = $this->_getComplexWhereDetail($data[1], $alias);
+		if ($where) {
+			if (ocAssoc($where)) {
+				array_unshift($where, $sign);
+				$cond = $this->_getComplexWhereDetail($where, $alias);
 			} else {
 				$cond = array();
-				foreach ($data[1] as $val) {
+				foreach ($where as $val) {
 					$cond[] = $this->_getComplexWhereDetail($val, $alias);
 				}
-				$cond = $this->_plugin->linkWhere($cond, $data[0]);
+				$cond = $this->_plugin->linkWhere($cond, $sign);
 				$cond = $this->_plugin->wrapWhere($cond);
 			}
 		}

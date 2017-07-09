@@ -20,20 +20,15 @@ class Sql extends Base
 	public function quoteList($list, $quote = OC_QUOTE)
 	{
 		if ($list && is_array($list)) {
-			if ($this->_prepared) {
-				$list = array_map(array($this, 'parseValue'), $list);
-				$list = implode(',', $list);
+			$sql  = implode(',', $list);
+			if (is_numeric(reset($list))) {
+				$sql = $this->parseValue($sql, 'where', false, false);
 			} else {
-				$sql  = implode(',', $list);
-				$sql  = $this->parseValue($sql, 'where', false);
-				$list = explode(',', $sql);
-
-				if (is_numeric(reset($list))) return $sql;
-				$list = $quote . implode($quote . ',' . $quote, $list) . $quote;
+				$sql = $this->parseValue($sql, 'where', true, false);
 			}
 		}
 
-		return $list;
+		return $sql;
 	}
 
 	/**
@@ -79,14 +74,15 @@ class Sql extends Base
 	 * @param string $paramType
 	 * @param bool $ifQuote
 	 * @param bool $bind
+	 * @param bool $prepare
 	 */
-	public function parseValue($value, $paramType = 'where', $ifQuote = true)
+	public function parseValue($value, $paramType = 'where', $ifQuote = true, $prepare = true)
 	{
 		if (ocScalar($value)) {
 			if ($mt = self::checkOcaraSqlTag($value)) {
 				return $mt[1];
 			} else {
-				if ($this->_prepared) {
+				if ($this->_prepared && $prepare) {
 					$value = $this->filterSql($value, false);
 					$this->_params[$paramType][] = $value;
 					return '?';

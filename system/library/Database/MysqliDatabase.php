@@ -131,20 +131,27 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	public function formatFieldValues($fields, $data = array())
 	{
 		foreach ($data as $key => $value) {
+			$type = 'string';
 			if (in_array($fields[$key]['type'], self::$_quoteBackList)) {
 				$type = $fields[$key]['type'];
 				if ($type == 'float') {
-					$data[$key] = (float)$value;
+					$type = 'float';
 				} elseif ($type == 'double') {
-					$data[$key] = (double)$value;
+					$type = 'double';
 				} elseif (strstr($type, 'bool')) {
-					$data[$key] = (bool)$value;
+					$type = 'boolean';
 				} else {
-					$data[$key] = (int)$value;
+					$type = 'integer';
 				}
-			} else {
-				$data[$key] = (string)$value;
 			}
+			if (is_array($value)) {
+				foreach ($value as $k => $v) {
+					settype($value[$k], $type);
+				}
+			} elseif (ocScalar($value)) {
+				settype($value, $type);
+			}
+			$data[$key] = $value;
 		}
 		return $data;
 	}
