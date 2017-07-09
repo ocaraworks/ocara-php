@@ -1177,12 +1177,12 @@ abstract class Database extends ModelBase
 	 * @param string $field
 	 * @param string $value1
 	 * @param string $value2
-	 * @param bool $table
+	 * @param bool $alias
 	 * @return $this
 	 */
-	public function between($field, $value1, $value2, $table = false)
+	public function between($field, $value1, $value2, $alias = false)
 	{
-		$where = array($table, 'between', array($field, $value1, $value2), 'AND');
+		$where = array($alias, 'between', array($field, $value1, $value2), 'AND');
 		$this->_sql['option']['where'][] = $where;
 
 		return $this;
@@ -1193,12 +1193,12 @@ abstract class Database extends ModelBase
 	 * @param string $field
 	 * @param string $value1
 	 * @param string $value2
-	 * @param bool $table
+	 * @param bool $alias
 	 * @return $this
 	 */
-	public function orBetween($field, $value1, $value2, $table = false)
+	public function orBetween($field, $value1, $value2, $alias = false)
 	{
-		$where = array($table, 'between', array($field, $value1, $value2), 'OR');
+		$where = array($alias, 'between', array($field, $value1, $value2), 'OR');
 		$this->_sql['option']['where'][] = $where;
 
 		return $this;
@@ -1237,25 +1237,26 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 生成复杂条件
-	 * @param string $sign
+	 * @param string $operator
 	 * @param string $field
 	 * @param mixed $value
 	 * @param null $alias
 	 * @return $this
 	 */
-	public function cWhere($sign, $field, $value, $alias = null)
+	public function cWhere($operator, $field, $value, $alias = null)
 	{
 		$where = array($field => $value);
-		$signInfo = explode('/', $sign);
+		$signInfo = explode('/', $operator);
 
 		if (isset($signInfo[1])) {
-			list($linkSign, $sign) = $signInfo;
+			list($linkSign, $operator) = $signInfo;
 		} else {
 			$linkSign = 'AND';
-			$sign = $signInfo[0];
+			$operator = $signInfo[0];
 		}
 
-		$where = array($alias, 'cWhere', array($sign, $where), $linkSign);
+		$linkSign = strtoupper($linkSign);
+		$where = array($alias, 'cWhere', array($operator, $where), $linkSign);
 		$this->_sql['option']['where'][] = $where;
 
 		return $this;
