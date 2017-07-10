@@ -134,7 +134,7 @@ class Sql extends Base
 	 */
 	public function transformFields($sql, $mapFields, $field2Alias = false)
 	{
-		$exp = '/([^\w\.]+)*(\w+\.)?(%s)([^\w\.]+)*/i';
+		$exp = '/([^\w\.]+)*((\w+)\.)?(%s)([^\w\.]+)*/i';
 		$sql = chr(32) . $sql . chr(32);
 
 		$result = OC_EMPTY;
@@ -143,7 +143,7 @@ class Sql extends Base
 				$row = array_flip($row);
 			}
 			foreach ($row as $search => $replace) {
-				if (preg_match(sprintf($exp, $search), $sql)) {
+				if (preg_match(sprintf($exp, $search), $sql, $mt) && $alias == $mt[3]) {
 					$sql .= 'AS ' . $replace;
 				}
 			}
