@@ -425,6 +425,10 @@ abstract class Database extends ModelBase
 	{
 		$result = array();
 
+		if (!$this->_fields) {
+			$this->loadFields();
+		}
+
 		foreach ($data as $key => $value) {
 			$key = strtr($key, self::$_config[$this->_tag]['MAP']);
 			if (!isset($this->_fields[$key]) OR $key == FormToken::getTokenTag() OR is_object($value)) {
@@ -445,18 +449,22 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 字段别名映射
-	 * @param $field
+	 * @param string $field
+	 * @param bool $return
 	 * @return string
 	 */
-	public function mapField($field)
+	public function mapField($field, $return = true)
 	{
-		$key = strtr($field, self::$_config[$this->_tag]['MAP']);
+		if (!$this->_fields) {
+			$this->loadFields();
+		}
 
+		$key = strtr($field, self::$_config[$this->_tag]['MAP']);
 		if (isset($this->_fields[$key])) {
 			return $key;
 		}
 
-		return $field;
+		return $return ? $field : null;
 	}
 
 	/**
@@ -1261,7 +1269,6 @@ abstract class Database extends ModelBase
 	 */
 	public function cWhere($operator, $field, $value, $alias = null)
 	{
-		$where = array($field => $value);
 		$signInfo = explode('/', $operator);
 
 		if (isset($signInfo[1])) {
@@ -1272,7 +1279,7 @@ abstract class Database extends ModelBase
 		}
 
 		$linkSign = strtoupper($linkSign);
-		$where = array($alias, 'cWhere', array($operator, $where), $linkSign);
+		$where = array($alias, 'cWhere', array($operator, $field, $value), $linkSign);
 		$this->_sql['option']['where'][] = $where;
 
 		return $this;
@@ -1420,7 +1427,7 @@ abstract class Database extends ModelBase
 		$isDefault = false;
 		if (empty($fields)) {
 			$isDefault = true;
-		} else {
+		} elseif (count($fields) == 1) {
 			$fields = reset($fields);
 			if (isset($fields[1]) && preg_match('/^\{\w+\}$/', $fields[1])) {
 				$isDefault = true;
@@ -1511,7 +1518,10 @@ abstract class Database extends ModelBase
 					$where[] = call_user_func_array(array($this->_plugin, 'getBetweenSql'), $whereData);
 				}
 			} else {
-				$where[] = $this->_getComplexWhere($whereData, $alias);
+				$condition = $this->_getComplexWhere($whereData, $alias);
+				if ($condition) {
+					$where[] = $condition;
+				}
 			}
 		}
 
@@ -1612,57 +1622,31 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 详细的复杂条件
-	 * @param array $where
-	 * @param string $alias
-	 */
-	private function _getComplexWhereDetail($where, $alias)
-	{
-		$data = array_shift($where);
-		$cond = null;
-
-		if (is_string($data) && $where) {
-			$data = array_map('trim', explode(OC_DIR_SEP, $data));
-			if (!$data) {
-				Error::show('fault_cond_sign');
-			}
-			if (isset($data[1])) {
-				list($link, $sign) = $data;
-			} else {
-				$sign = $data[0];
-				$link = 'AND';
-			}
-
-			$cond = is_array($where) ? $this->map($where) : $where;
-			$cond = $this->_plugin->parseCondition($cond, $link, $sign, $alias);
-		}
-
-		return $this->_plugin->wrapWhere($cond);
-	}
-
-	/**
 	 * 复杂条件
 	 * @param array $data
 	 * @param string $alias
+	 * @return null
+	 * @throws \Ocara\Exception
 	 */
-	private function _getComplexWhere($data, $alias)
+	private function _getComplexWhere(array $data, $alias)
 	{
 		$cond = null;
-		list($sign, $where) = $data;
+		list($sign, $field, $value) = $data;
 
-		if ($where) {
-			if (ocAssoc($where)) {
-				array_unshift($where, $sign);
-				$cond = $this->_getComplexWhereDetail($where, $alias);
-			} else {
-				$cond = array();
-				foreach ($where as $val) {
-					$cond[] = $this->_getComplexWhereDetail($val, $alias);
-				}
-				$cond = $this->_plugin->linkWhere($cond, $sign);
-				$cond = $this->_plugin->wrapWhere($cond);
-			}
+		$sign = array_map('trim', explode(OC_DIR_SEP, $sign));
+		if (!$sign) {
+			Error::show('fault_cond_sign');
 		}
+
+		if (isset($sign[1])) {
+			list($link, $sign) = $sign;
+		} else {
+			$sign = $sign[0];
+			$link = 'AND';
+		}
+
+		$where = array($field => $value);
+		$cond = $this->_plugin->parseCondition($where, $link, $sign, $alias);
 
 		return $cond;
 	}
