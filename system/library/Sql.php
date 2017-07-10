@@ -136,8 +136,8 @@ class Sql extends Base
 	{
 		$exp = '/([^\w\.]+)*((\w+)\.)?(%s)([^\w\.]+)*/i';
 		$sql = chr(32) . $sql . chr(32);
-
 		$result = OC_EMPTY;
+
 		foreach ($mapFields as $alias => $row) {
 			if ($field2Alias) {
 				$row = array_flip($row);
@@ -458,11 +458,13 @@ class Sql extends Base
 		if (ocEmpty($condition)) return false;
 
 		if (is_array($condition) && $condition) {
-			return $this->getFieldCondition($condition, $link, $sign, $alias);
+			$condition = trim($this->getFieldCondition($condition, $link, $sign, $alias));
+			return $condition;
 		}
 
 		$condition = $this->filterValue($condition);
 		$alias = $this->getAliasSql($alias);
+
 		return $this->wrapWhere($alias . (string)$condition);
 	}
 
