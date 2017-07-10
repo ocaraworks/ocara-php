@@ -1507,9 +1507,11 @@ abstract class Database extends ModelBase
 				if (is_array($whereData)) {
 					$whereData = $this->map($whereData);
 				}
-				$where[] = $this->_plugin->parseCondition(
-					$whereData, 'AND', '=', $alias
-				);
+				if ($whereData) {
+					$where[] = $this->_plugin->parseCondition(
+						$whereData, 'AND', '=', $alias
+					);
+				}
 			} elseif ($whereType == 'between') {
 				$field = $this->mapField($whereData[0]);
 				if($field) {
@@ -1518,10 +1520,7 @@ abstract class Database extends ModelBase
 					$where[] = call_user_func_array(array($this->_plugin, 'getBetweenSql'), $whereData);
 				}
 			} else {
-				$condition = $this->_getComplexWhere($whereData, $alias);
-				if ($condition) {
-					$where[] = $condition;
-				}
+				$where[] = $this->_getComplexWhere($whereData, $alias);
 			}
 		}
 
