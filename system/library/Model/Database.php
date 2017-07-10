@@ -1261,9 +1261,10 @@ abstract class Database extends ModelBase
 	 * @param string $field
 	 * @param mixed $value
 	 * @param null $alias
+	 * @param string $type
 	 * @return $this
 	 */
-	public function cWhere($operator, $field, $value, $alias = null)
+	public function cWhere($operator, $field, $value, $alias = null, $type = 'where')
 	{
 		$signInfo = explode('/', $operator);
 
@@ -1276,7 +1277,7 @@ abstract class Database extends ModelBase
 
 		$linkSign = strtoupper($linkSign);
 		$where = array($alias, 'cWhere', array($operator, $field, $value), $linkSign);
-		$this->_sql['option']['where'][] = $where;
+		$this->_sql['option'][$type][] = $where;
 
 		return $this;
 	}
@@ -1344,6 +1345,20 @@ abstract class Database extends ModelBase
 	public function orHaving($having, $alias = false)
 	{
 		$this->having($having, $alias, 'OR');
+		return $this;
+	}
+
+	/**
+	 * 生成复杂条件
+	 * @param string $operator
+	 * @param string $field
+	 * @param mixed $value
+	 * @param null $alias
+	 * @return $this
+	 */
+	public function cHaving($operator, $field, $value, $alias = null)
+	{
+		$this->cWhere($operator, $field, $value, $alias, 'having');
 		return $this;
 	}
 
