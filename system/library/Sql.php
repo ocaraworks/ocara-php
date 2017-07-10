@@ -710,9 +710,19 @@ class Sql extends Base
 	 * @param string $link
 	 * @return string
 	 */
-	public function linkWhere(array $data, $link = 'AND')
+	public function linkWhere(array $data)
 	{
-		$link = $this->wrapSign($link ? $link : 'AND');
-		return implode($link, $data);
+		$sql = OC_EMPTY;
+
+		foreach ($data as $row) {
+			list($link, $condition) = $row;
+			if (!$sql) {
+				$sql = $condition;
+			} else {
+				$sql .= $this->wrapSign($link ? $link : 'AND') . OC_SPACE . $condition;
+			}
+		}
+
+		return $sql;
 	}
 }

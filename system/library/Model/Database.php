@@ -1503,28 +1503,30 @@ abstract class Database extends ModelBase
 
 		foreach ($data as $key => $value) {
 			list($alias, $whereType, $whereData, $linkSign) = $value;
+			$condition = null;
 			if ($whereType == 'where') {
 				if (is_array($whereData)) {
 					$whereData = $this->map($whereData);
 				}
 				if ($whereData) {
-					$where[] = $this->_plugin->parseCondition(
-						$whereData, 'AND', '=', $alias
-					);
+					$condition = $this->_plugin->parseCondition($whereData, 'AND', '=', $alias);
 				}
 			} elseif ($whereType == 'between') {
 				$field = $this->mapField($whereData[0]);
 				if($field) {
 					$whereData[0] = $field;
 					$whereData[] = $alias;
-					$where[] = call_user_func_array(array($this->_plugin, 'getBetweenSql'), $whereData);
+					$condition = call_user_func_array(array($this->_plugin, 'getBetweenSql'), $whereData);
 				}
 			} else {
-				$where[] = $this->_getComplexWhere($whereData, $alias);
+				$condition = $this->_getComplexWhere($whereData, $alias);
+			}
+			if ($condition) {
+				$where[] = array($linkSign, $condition);
 			}
 		}
 
-		$where = $this->_plugin->linkWhere($where, $linkSign);
+		$where = $this->_plugin->linkWhere($where);
 		$where = $this->_plugin->wrapWhere($where);
 
 		return $where;
@@ -1602,7 +1604,7 @@ abstract class Database extends ModelBase
 			$foreignField = $this->_plugin->getFieldNameSql($config['foreignKey'], $alias);
 			$primaryField = $this->_plugin->getFieldNameSql($config['primaryKey'], $this->_alias);
 			$where = array($foreignField => ocSql($primaryField));
-			$condition[] = $this->_plugin->parseCondition($where, 'AND', null, $alias);
+			$condition[] = array('AND', $this->_plugin->parseCondition($where, 'AND', null, $alias));
 			if (is_array($config['condition'])) {
 				foreach ($config['condition'] as $key => $value) {
 					$sign = null;
@@ -1611,10 +1613,10 @@ abstract class Database extends ModelBase
 					}
 					$key = $this->_plugin->getFieldNameSql($key, $alias);
 					$where = array($key => $value);
-					$condition[] = $this->_plugin->parseCondition($where, 'AND', $sign, $alias);
+					$condition[] = array('AND', $this->_plugin->parseCondition($where, 'AND', $sign, $alias));
 				}
 			}
-			$joinOn = $this->_plugin->linkWhere($condition, 'AND');;
+			$joinOn = $this->_plugin->linkWhere($condition);
 		}
 
 		return $joinOn;

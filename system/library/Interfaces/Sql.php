@@ -252,9 +252,8 @@ interface Sql
 	/**
 	 * 将条件数组连接成条件字符串
 	 * @param array $data
-	 * @param string $link
 	 */
-	public function linkWhere(array $data, $link = 'AND');
+	public function linkWhere(array $data);
 
 	/**
 	 * 魔术方法__call
