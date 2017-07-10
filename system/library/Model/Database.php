@@ -1202,11 +1202,12 @@ abstract class Database extends ModelBase
 	 * @param string $value1
 	 * @param string $value2
 	 * @param bool $alias
+	 * @param string $linkSign
 	 * @return $this
 	 */
-	public function between($field, $value1, $value2, $alias = false)
+	public function between($field, $value1, $value2, $alias = false, $linkSign = 'AND')
 	{
-		$where = array($alias, 'between', array($field, $value1, $value2), 'AND');
+		$where = array($alias, 'between', array($field, $value1, $value2), $linkSign);
 		$this->_sql['option']['where'][] = $where;
 
 		return $this;
@@ -1222,21 +1223,20 @@ abstract class Database extends ModelBase
 	 */
 	public function orBetween($field, $value1, $value2, $alias = false)
 	{
-		$where = array($alias, 'between', array($field, $value1, $value2), 'OR');
-		$this->_sql['option']['where'][] = $where;
-
+		$this->between($field, $value1, $value2, $alias, 'OR');
 		return $this;
 	}
 
 	/**
 	 * 添加条件
 	 * @param string|array $where
-	 * @param string $table
+	 * @param string $alias
+	 * @param string $linkSign
 	 */
-	public function where($where, $alias = false)
+	public function where($where, $alias = false, $linkSign = 'AND')
 	{
 		if (!ocEmpty($where)) {
-			$where = array($alias, 'where', $where, 'AND');
+			$where = array($alias, 'where', $where, $linkSign);
 			$this->_sql['option']['where'][] = $where;
 		}
 
@@ -1251,11 +1251,7 @@ abstract class Database extends ModelBase
 	 */
 	public function orWhere($where, $alias = false)
 	{
-		if (!ocEmpty($where)) {
-			$where = array($alias, 'where', $where, 'OR');
-			$this->_sql['option']['where'][] = $where;
-		}
-
+		$this->where($where, $alias, 'OR');
 		return $this;
 	}
 
@@ -1323,16 +1319,31 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 分组条件
-	 * @param string $having
+	 * AND分组条件
+	 * @param array|string $having
+	 * @param bool $alias
+	 * @param string $linkSign
+	 * @return $this
 	 */
-	public function having($having, $table = false)
+	public function having($having, $alias = false, $linkSign = 'AND')
 	{
 		if (!ocEmpty($having)) {
-			$having = array($table, 'where', $having);
+			$having = array($alias, 'where', $having, $linkSign);
 			$this->_sql['option']['having'][] = $having;
 		}
 
+		return $this;
+	}
+
+	/**
+	 * OR分组条件
+	 * @param array|string $having
+	 * @param bool $alias
+	 * @return $this
+	 */
+	public function orHaving($having, $alias = false)
+	{
+		$this->having($having, $alias, 'OR');
 		return $this;
 	}
 
