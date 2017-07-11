@@ -132,7 +132,7 @@ class Sql extends Base
 	 * @param $fields
 	 * @param bool $toAlias
 	 */
-	public function transformFields($sql, $mapFields, $field2Alias = false)
+	public function transformFields($sql, $mapFields, $currentAlias, $field2Alias = false)
 	{
 		$exp = '/([^\w\.]+)*((\w+)\.)?(%s)([^\w\.]+)*/i';
 		$sql = chr(32) . $sql . chr(32);
@@ -143,8 +143,13 @@ class Sql extends Base
 				$row = array_flip($row);
 			}
 			foreach ($row as $search => $replace) {
-				if (preg_match(sprintf($exp, $search), $sql, $mt) && $alias == $mt[3]) {
-					$sql .= 'AS ' . $replace;
+				if (preg_match(sprintf($exp, $search), $sql, $mt)) {
+					if (!$mt[3]) {
+						$mt[3] = $currentAlias;
+					}
+					if ($alias == $mt[3]) {
+						$sql .= 'AS ' . $replace;
+					}
 				}
 			}
 			$result = trim($sql);
@@ -511,16 +516,17 @@ class Sql extends Base
 	 * 字段组合
 	 * @param array $fields
 	 * @param array $aliasFields
+	 * @param string $currentAlias
 	 * @return bool|string
 	 */
-	public function getMultiFieldsSql(array $fields, array $aliasFields = array())
+	public function getMultiFieldsSql(array $fields, $currentAlias, array $aliasFields = array())
 	{
 		foreach ($fields as $key => $value) {
 			if (preg_match('/^\{(.*)\}$/', $value, $mt)) {
 				$fields[$key] = $mt[1];
 			} else {
 				if ($aliasFields) {
-					$value = $this->getAliasFieldsSql($value, $aliasFields);
+					$value = $this->getAliasFieldsSql($value, $aliasFields, $currentAlias);
 				}
 				$fields[$key] = $value . ',';
 			}
@@ -546,22 +552,23 @@ class Sql extends Base
 			return "{$alias}.{$field}";
 		}
 
-		return "`{$field}`";
+		return "{$field}";
 	}
 
 	/**
 	 * 转换字段为别名
-	 * @param $fields
-	 * @param $aliasFields
+	 * @param array $fields
+	 * @param array $aliasFields
+	 * @param string $currentAlias
 	 */
-	public function getAliasFieldsSql($fields, $aliasFields)
+	public function getAliasFieldsSql($fields, $aliasFields, $currentAlias)
 	{
 		$fields = explode(',', $fields);
 
 		foreach ($fields as $key => $value) {
 			$value = trim($value);
 			if (!preg_match('/\sas\s/', $value, $mt)) {
-				$value = $this->transformFields($value, $aliasFields, true);
+				$value = $this->transformFields($value, $aliasFields, $currentAlias, true);
 			}
 			$fields[$key] = $value;
 		}

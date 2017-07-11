@@ -67,8 +67,6 @@ abstract class Database extends ModelBase
 	 */
 	public function initialize()
 	{
-
-
 		if (self::$_requirePrimary === null) {
 			$required = ocConfig('MODEL_REQUIRE_PRIMARY', true);
 			self::$_requirePrimary = $required ? true : false;
@@ -982,8 +980,8 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		$this->connect(false);
-		$fields = $count ? $this->connect(false)->getCountSql('1', 'total') : false;
+		$slave = $this->connect(false);
+		$fields = $count ? $slave->getCountSql('1', 'total') : false;
 		$sql = $this->_genSelectSql($fields, $count);
 
 		$cacheInfo = null;
@@ -1008,7 +1006,6 @@ abstract class Database extends ModelBase
 		}
 
 		$this->_plugin->clearBindParams();
-
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
 		}
@@ -1586,7 +1583,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		return $this->_plugin->getMultiFieldsSql($fields, $aliasFields);
+		return $this->_plugin->getMultiFieldsSql($fields, $this->_alias, $aliasFields);
 	}
 
 	/**

@@ -160,9 +160,11 @@ interface Sql
 	/**
 	 * 字段组合
 	 * @param array $fields
-	 * @return bool|string
+	 * @param $currentAlias
+	 * @param array $aliasFields
+	 * @return mixed
 	 */
-	public function getMultiFieldsSql(array $fields);
+	public function getMultiFieldsSql(array $fields, $currentAlias, array $aliasFields = array());
 
 	/**
 	 * 获取字段名称SQL
@@ -174,10 +176,11 @@ interface Sql
 
 	/**
 	 * 转换字段为别名
-	 * @param $fields
-	 * @param $aliasFields
+	 * @param array $fields
+	 * @param array $aliasFields
+	 * @param string $currentAlias
 	 */
-	public function getAliasFieldsSql($fields, $aliasFields);
+	public function getAliasFieldsSql($fields, $aliasFields, $currentAlias);
 
 	/**
 	 * [别名.]字段解析
