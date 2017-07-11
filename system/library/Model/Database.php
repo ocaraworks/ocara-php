@@ -354,8 +354,7 @@ abstract class Database extends ModelBase
 	 */
 	public function data(array $data = array())
 	{
-		$data = $this->_getPostData($data);
-
+		$data = $this->_getSubmitData($data);
 		if ($data) {
 			ocDel($data, FormToken::getTokenTag());
 			$this->setProperty($data);
@@ -592,7 +591,6 @@ abstract class Database extends ModelBase
 		self::$container->transaction->push($this->_plugin);
 
 		if ($condition) {
-			call_user_func_array('ocDel', array(&$data, $this->_primaries));
 			$result = $this->_plugin->update($this->_tableName, $data, $condition, $debug);
 			if (!$debug){
 				$this->_relateSave();
@@ -663,15 +661,16 @@ abstract class Database extends ModelBase
 	 */
 	public function save($debug = false)
 	{
-		$condition = $this->_getCondition();
 		$data = array();
 
-		if ($condition) {
-			$result = $this->_update('update', $debug, $condition, $data);
-		} else {
-			$result = $this->_save($data, false, $debug);
+		$condition = array();
+		foreach ($this->_primaries as $field) {
+			if ($this->getProperty($field)) {
+				$condition[$field] = $this->getProperty($field);
+			}
 		}
 
+		$result = $this->_save($data, $condition, $debug);
 		return $result;
 	}
 
@@ -683,9 +682,28 @@ abstract class Database extends ModelBase
 	public function create(array $data = array(), $debug = false)
 	{
 		$this->connect();
-		$data = $this->map($this->_getPostData($data));
 
+		$data = $this->_getSubmitData($data);
 		$result = $this->_save($data, false, $debug);
+		return $result;
+	}
+
+	/**
+	 * 更新记录
+	 * @param array $data
+	 * @param bool $debug
+	 * @return bool
+	 * @throws \Ocara\Exception
+	 */
+	public function update(array $data = array(), $debug = false)
+	{
+		$condition = $this->_getCondition();
+		if (empty($condition)) {
+			Error::show('need_condition');
+		}
+
+		$data = $this->_getSubmitData($data);
+		$result = $this->_save($data, $condition, $debug);
 		return $result;
 	}
 
@@ -694,7 +712,7 @@ abstract class Database extends ModelBase
 	 * @param $data
 	 * @return array|null|string
 	 */
-	protected function _getPostData($data)
+	protected function _getSubmitData($data)
 	{
 		if (empty($data)) {
 			$data = Request::getPost();
@@ -707,25 +725,36 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 更新记录
-	 * @param string|array $condition
-	 * @param bool $debug
-	 */
-	public function update(array $data, $debug = false)
-	{
-		$condition = $this->_getCondition();
-		$result = $this->_update('update', $debug, $condition, $data);
-		return $result;
-	}
-
-	/**
 	 * 删除记录
 	 * @param bool $debug
 	 */
 	public function delete($debug = false)
 	{
 		$condition = $this->_getCondition();
-		$result = $this->_update('delete', $debug, $condition);
+		if (empty($condition)) {
+			Error::show('need_condition');
+		}
+
+		self::$container->transaction->push($this->_plugin);
+
+		if (!$debug && $this->_selected && method_exists($this, '_beforeDelete')) {
+			$this->_beforeDelete();
+		}
+
+		$result = $this->_plugin->delete($this->_tableName, $condition, $debug);
+		if (!$debug
+			&& !$this->_plugin->errorExists()
+			&& $this->_selected
+			&& method_exists($this, '_afterDelete')
+		) {
+			$this->_afterDelete();
+		}
+
+		if ($debug === DatabaseBase::DEBUG_RETURN) {
+			return $result;
+		}
+
+		$result = $this->_plugin->errorExists() ? false : true;
 		return $result;
 	}
 
@@ -736,45 +765,9 @@ abstract class Database extends ModelBase
 	private function _getCondition()
 	{
 		$this->connect();
-		$condition = $this->_genSql(false);
+		$condition = $this->_genWhere();
 
 		return $condition;
-	}
-
-	/**
-	 * 获取数据更新或删除的条件
-	 * @param string $type
-	 * @param bool $debug
-	 * @param string|array $condition
-	 * @param array $data
-	 * @return mixed
-	 */
-	private function _update($type, $debug, $condition, array $data = array())
-	{
-		if (empty($condition)) Error::show('need_condition');
-
-		self::$container->transaction->push($this->_plugin);
-
-		if ($type == 'update') {
-			$result = $this->_save($data, $condition, $debug);
-		} else {
-			if (!$debug && $this->_selected && method_exists($this, '_beforeDelete')) {
-				$this->_beforeDelete();
-			}
-			$result = $this->_plugin->delete($this->_tableName, $condition, $debug);
-			if (!$debug
-				&& !$this->_plugin->errorExists()
-				&& $this->_selected
-				&& method_exists($this, '_afterDelete')
-			) {
-				$this->_afterDelete();
-			}
-		}
-
-		if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
-		$result = $this->_plugin->errorExists() ? false : true;
-
-		return $result;
 	}
 
 	/**
@@ -991,7 +984,7 @@ abstract class Database extends ModelBase
 
 		$this->connect(false);
 		$fields = $count ? $this->connect(false)->getCountSql('1', 'total') : false;
-		$sql = $this->_genSql(true, $fields, $count);
+		$sql = $this->_genSelectSql($fields, $count);
 
 		$cacheInfo = null;
 		if (isset($this->_sql['cache']) && is_array($this->_sql['cache'])) {
@@ -1321,15 +1314,14 @@ abstract class Database extends ModelBase
 
 	/**
 	 * AND分组条件
-	 * @param array|string $having
-	 * @param bool $alias
+	 * @param array $having
 	 * @param string $linkSign
 	 * @return $this
 	 */
-	public function having($having, $alias = false, $linkSign = 'AND')
+	public function having($having, $linkSign = 'AND')
 	{
 		if (!ocEmpty($having)) {
-			$having = array($alias, 'where', $having, $linkSign);
+			$having = array(false, 'where', $having, $linkSign);
 			$this->_sql['option']['having'][] = $having;
 		}
 
@@ -1338,13 +1330,12 @@ abstract class Database extends ModelBase
 
 	/**
 	 * OR分组条件
-	 * @param array|string $having
-	 * @param bool $alias
+	 * @param array $having
 	 * @return $this
 	 */
-	public function orHaving($having, $alias = false)
+	public function orHaving($having)
 	{
-		$this->having($having, $alias, 'OR');
+		$this->having($having, 'OR');
 		return $this;
 	}
 
@@ -1356,9 +1347,9 @@ abstract class Database extends ModelBase
 	 * @param null $alias
 	 * @return $this
 	 */
-	public function cHaving($operator, $field, $value, $alias = null)
+	public function cHaving($operator, $field, $value)
 	{
-		$this->cWhere($operator, $field, $value, $alias, 'having');
+		$this->cWhere($operator, $field, $value, false, 'having');
 		return $this;
 	}
 
@@ -1402,8 +1393,9 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 绑定占位符参数
-	 * @param $name
-	 * @param $value
+	 * @param string $name
+	 * @param string $value
+	 * @return $this
 	 */
 	public function bind($name, $value)
 	{
@@ -1413,7 +1405,8 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 设置字段别名转换映射
-	 * @param $tables
+	 * @param array $tables
+	 * @return array
 	 */
 	private function _getAliasFields($tables)
 	{
@@ -1464,27 +1457,51 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 生成Sql
-	 * @param boolean $select
-	 * @param string $fields
+	 * 生成查询Sql
+	 * @param bool $fields
 	 * @param bool $count
+	 * @return mixed
 	 */
-	private function _genSql($select, $fields = false, $count = false)
+	private function _genSelectSql($fields = false, $count = false)
 	{
-		$where  = array();
 		$option = ocGet('option', $this->_sql, array());
 		$tables = ocGet('tables', $this->_sql, array());
-
 		$unJoined = count($tables) <= 1;
-		$from = $this->_getFromSql($select, $tables, $unJoined);
+		$from = $this->_getFromSql($tables, $unJoined);
 
-		if (empty($fields)) {
+		if (!$fields) {
 			$aliasFields = $this->_getAliasFields($tables);
 			if (!isset($option['fields']) OR $this->_isDefaultFields($option['fields'])) {
 				$option['fields'][] = array($this->_alias, array_keys($this->getFields()));
 			}
 			$fields = $this->_getFieldsSql($option['fields'], $aliasFields, $unJoined);
 		}
+
+		$option['where'] = $this->_genWhere();
+
+		if (isset($option['having'])) {
+			$option['having'] = $this->_getWhereSql($option['having']);
+		}
+
+		if (isset($option['limit'])) {
+			if ($count) {
+				ocDel($option, 'limit');
+			} else {
+				$option['limit'] = $this->_plugin->getLimitSql($option['limit']);
+			}
+		}
+
+		return $this->_plugin->getSelectSql($fields, $from, $option);
+	}
+
+	/**
+	 * 生成条件数据
+	 * @return mixed
+	 */
+	private function _genWhere()
+	{
+		$option = ocGet('option', $this->_sql, array());
+		$where = array();
 
 		if (isset($option['where']) && $option['where']) {
 			$option['where'] = $this->_getWhereSql($option['where']);
@@ -1498,24 +1515,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		$option['where'] = $this->_plugin->getWhereSql($where);
-		if (isset($option['limit'])) {
-			if ($count) {
-				ocDel($option, 'limit');
-			} else {
-				$option['limit'] = $this->_plugin->getLimitSql($option['limit']);
-			}
-		}
-
-		if (isset($option['having'])) {
-			$option['having'] = $this->_getWhereSql($option['having']);
-		}
-
-		if ($select) {
-			return $this->_plugin->getSelectSql($fields, $from, $option);
-		} else {
-			return $option['where'];
-		}
+		return $this->_plugin->getWhereSql($where);
 	}
 
 	/**
@@ -1591,11 +1591,13 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 生成数据表SQL
-	 * @param boolean $select
+	 * @param string $tables
+	 * @param bool $unJoined
+	 * @return null|string
 	 */
-	private function _getFromSql($select, $tables, $unJoined)
+	private function _getFromSql($tables, $unJoined)
 	{
-		$from = null;
+		$from = OC_EMPTY;
 
 		foreach ($tables as $alias => $param) {
 			list($type, $fullname, $on, $class, $config) = array_fill(0, 5, null);
@@ -1609,10 +1611,7 @@ abstract class Database extends ModelBase
 
 			$on = $this->parseJoinOnSql($alias, $on);
 			$fullname = $this->_plugin->getTableFullname($fullname);
-
-			if ($select) {
-				$from = $from . $this->_plugin->getJoinSql($type, $fullname, $alias, $on);
-			}
+			$from = $from . $this->_plugin->getJoinSql($type, $fullname, $alias, $on);
 		}
 
 		return $from;
@@ -1804,8 +1803,6 @@ abstract class Database extends ModelBase
 			return true;
 		}
 
-		$changes = array();
-
 		foreach ($this->_relations as $key => $object) {
 			$config = $this->_getRelateConfig($key);
 			if ($config && $this->hasProperty($config['primaryKey'])) {
@@ -1821,19 +1818,13 @@ abstract class Database extends ModelBase
 				}
 				foreach ($data as &$model) {
 					if ($model->hasChanged() && is_object($model) && $model instanceof \Ocara\ModelBase) {
-						$where = array($config['foreignKey'] => $this->$config['primaryKey']);
 						$model->$config['foreignKey'] = $this->$config['primaryKey'];
-						$class = $model->getClass();
-						$exists = $class::build()
-							->where($where)
-							->where($config['condition'])
-							->findFirst();
-						if ($exists) {
-							$model->where($where)
-								  ->where($config['condition']);
+						if ($config['condition']) {
+							foreach ($config['condition'] as $field => $value) {
+								$model->$field = $value;
+							}
 						}
 						$model->save();
-						$changes[$key] = $data;
 					}
 				}
 			}
