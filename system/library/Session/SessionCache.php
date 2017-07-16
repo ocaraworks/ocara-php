@@ -56,7 +56,7 @@ final class SessionCache extends Base
      */
     public function read($id)
     {
-    	$this->_plugin->getVar($this->_prefix . $id);
+    	$this->_plugin->get($this->_prefix . $id);
     	return false;
     }
 
@@ -68,7 +68,7 @@ final class SessionCache extends Base
     public function write($id, $data)
     {
         try {
-            $this->_plugin->setVar($this->_prefix . $id, $data);
+            $this->_plugin->set($this->_prefix . $id, $data);
         } catch(Exception $e) {
             Error::exceptionHandler($e);
         }
@@ -82,7 +82,7 @@ final class SessionCache extends Base
 	 */
     public function destroy($id)
     {
-        $this->_plugin->deleteVar($this->_prefix . $id);
+        $this->_plugin->delete($this->_prefix . $id);
         return true;
     }
 

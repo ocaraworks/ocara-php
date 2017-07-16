@@ -74,7 +74,7 @@ class Memcache extends CacheBase implements CacheInterface
 	 * @param mixed $args
 	 * @return bool
 	 */
-	public function setVar($name, $value, $exireTime = 0, $args = null)
+	public function set($name, $value, $exireTime = 0, $args = null)
 	{
 		if (is_object($this->_plugin)) {
 			return $this->_plugin->set($name, $value, $args, $exireTime);
@@ -87,7 +87,7 @@ class Memcache extends CacheBase implements CacheInterface
 	 * @param $name
 	 * @return null
 	 */
-	public function getVar($name)
+	public function get($name)
 	{
 		if (is_object($this->_plugin) && method_exists($this->_plugin, 'get')) {
 			return $this->_plugin->get($name);
@@ -100,7 +100,7 @@ class Memcache extends CacheBase implements CacheInterface
 	 * 删除KEY
 	 * @param string $name
 	 */
-	public function deleteVar($name)
+	public function delete($name)
 	{
 		return $this->_plugin->delete($name);
 	}

@@ -60,7 +60,7 @@ class Redis extends CacheBase implements CacheInterface
 	 * @param mixed $args
 	 * @return bool
 	 */
-	public function setVar($name, $value, $exireTime = 0, $args = null)
+	public function set($name, $value, $exireTime = 0, $args = null)
 	{
 		$result = $this->_plugin->set($name, serialize($value));
 		$this->_plugin->setTimeout($name, $exireTime);
@@ -71,16 +71,20 @@ class Redis extends CacheBase implements CacheInterface
 	 * @param string $name
 	 * @return mixed
 	 */
-	public function getVar($name)
+	public function get($name)
 	{
-		return unserialize($this->_plugin->set($name));
+		if (is_object($this->_plugin) && method_exists($this->_plugin, 'get')) {
+			return unserialize($this->_plugin->get($name));
+		}
+
+		return null;
 	}
 
 	/**
 	 * 删除KEY
 	 * @param string $name
 	 */
-	public function deleteVar($name)
+	public function delete($name)
 	{
 		return $this->_plugin->delete($name);
 	}

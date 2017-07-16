@@ -27,17 +27,17 @@ interface Cache
 	 * @param mixed $args
 	 * @return bool
 	 */
-	public function setVar($name, $value, $exireTime = 0, $args = null);
+	public function set($name, $value, $exireTime = 0, $args = null);
 	
 	/**
 	 * 获取KEY
 	 * @param string $name
 	 */
-	public function getVar($name);
+	public function get($name);
 
 	/**
 	 * 删除KEY
 	 * @param string $name
 	 */
-	public function deleteVar($name);
+	public function delete($name);
 }

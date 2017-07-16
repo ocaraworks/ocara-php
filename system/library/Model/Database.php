@@ -26,8 +26,7 @@ abstract class Database extends ModelBase
 	 * @var @_primary 主键字段列表
 	 * @var $_primaries 主键字段数组
 	 */
-	protected $_plugin = null;
-
+	protected $_plugin;
 	protected $_primary;
 	protected $_table;
 	protected $_server;
@@ -1068,7 +1067,7 @@ abstract class Database extends ModelBase
 					return $result;
 				}
 			} else {
-				if ($cacheData = $cacheObj->getVar($sqlEncode)) {
+				if ($cacheData = $cacheObj->get($sqlEncode)) {
 					return json_decode($cacheData);
 				}
 			}
@@ -1091,7 +1090,7 @@ abstract class Database extends ModelBase
 			$params = array($cacheObj, $sql, $result, $cacheRequired);
 			Call::run($callback, $params);
 		} else {
-			$cacheObj->setVar($sqlEncode, json_encode($result));
+			$cacheObj->set($sqlEncode, json_encode($result));
 		}
 	}
 

@@ -8,9 +8,81 @@
  ************************************************************************************************/
 namespace Ocara\Model;
 
+use Ocara\Cache as CacheFactory;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 abstract class Cache extends ModelBase
 {
+    protected $_plugin;
+    protected $_master;
+    protected $_slave;
+    protected $_server;
+    protected $_tag;
 
+    /**
+     * Model constructor.
+     */
+    public function __construct()
+    {
+        $this->initialize();
+    }
+
+    /**
+     * 初始化
+     */
+    public function initialize()
+    {
+        $this->_tag = self::getClass();
+        $this->connect();
+    }
+
+    /**
+     * 获取Model标记
+     * @return string
+     */
+    public function getTag()
+    {
+        return $this->_tag;
+    }
+
+    /**
+     * 获取当前服务器
+     * @return mixed
+     */
+    public function getServer()
+    {
+        return $this->_server;
+    }
+
+    /**
+     * 连接数据库
+     * @param bool $master
+     */
+    public function connect($master = true)
+    {
+        $this->_plugin = null;
+
+        if (!$master) {
+            if (!is_object($this->_slave)) {
+                $this->_slave = CacheFactory::create($this->_server, false, false);
+            }
+            $this->_plugin = $this->_slave;
+        }
+
+        if (!is_object($this->_plugin)) {
+            if (!is_object($this->_master)) {
+                $this->_master = CacheFactory::create($this->_server);
+            }
+            $this->_plugin = $this->_master;
+        }
+
+        if ($this->_database) {
+            $this->_plugin->selectDatabase($this->_database);
+        }
+
+        $this->_plugin->setDataType($this->_dataType);
+
+        return $this->_plugin;
+    }
 }
