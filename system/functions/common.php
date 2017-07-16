@@ -97,16 +97,16 @@ function ocObject($data)
 /**
  * 检查路径是否存在，如果不存在则新建
  * @param string $path
- * @param integer $perm
+ * @param integer $mode
  * @param bool $required
  */
-function ocCheckPath($path, $perm = 0755, $required = false)
+function ocCheckPath($path, $mode = null, $required = false)
 {
 	if (empty($path)) return false;
 
 	if (!is_dir($path)) {
-		if (!$perm) $perm = 0755;
-		if (!@mkdir($path, $perm, true)) {
+		if (!$mode) $mode = 0755;
+		if (!@mkdir($path, $mode, true)) {
 			if ($required) {
 				Error::show('failed_make_dir');
 			} else {

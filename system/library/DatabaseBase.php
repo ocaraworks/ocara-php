@@ -589,7 +589,7 @@ class DatabaseBase extends Sql
 	 */
 	public function selectDatabase($name)
 	{
-		$result = $this->selectDb($name);
+		$result = $this->_plugin->selectDatabase($name);
 
 		if ($result) {
 			$this->_config['name'] = $name;

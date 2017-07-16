@@ -24,8 +24,10 @@ class Container extends Base
     private $_replaces = array();
 
     /**
+     * 魔术方法（设置未定义属性）
      * @param string $key
      * @param string $value
+     * @return Container
      */
     public function __set($key, $value)
     {
@@ -33,6 +35,7 @@ class Container extends Base
     }
 
     /**
+     * 魔术方法（获取未定义属性）
      * @param string $key
      * @return mixed
      */
@@ -44,15 +47,25 @@ class Container extends Base
 
     /**
      * 获取实例
-     * @param $name
+     * @param string $name
+     * @param array $params
+     * @param array $dependencies
      * @return mixed
      */
-    public function get($name)
+    public function get($name, array $params = array(), array $dependencies = array())
     {
         if (!empty($this->_instances[$name])) {
             $instance = $this->_instances[$name];
         } else {
-            $instance = $this->_instances[$name] = $this->create($name);
+            $instance = $this->create($name, $params);
+            $this->_instances[$name] = $instance;
+        }
+
+        foreach ($dependencies as $name => $object) {
+            $method = 'set' . ucfirst($name);
+            if (method_exists($instance, $method)){
+                $instance->$method($object);
+            }
         }
 
         return $instance;
@@ -62,14 +75,14 @@ class Container extends Base
      * 绑定实例
      * @param string $name
      * @param mixed $source
-     * @param array $params
+     * @return $this
      */
-    public function bind($name, $source, $params = array())
+    public function bind($name, $source)
     {
         if (strstr($name, OC_NS_SEP)) {
             $this->_replaces[$name] = $source;
         } else {
-            $this->_binds[$name] = $this->_getMatter($name, $source, $params);
+            $this->_binds[$name] = $this->_getMatter($name, $source);
         }
         return $this;
     }
@@ -78,32 +91,28 @@ class Container extends Base
      * 单例模式绑定实例
      * @param string $name
      * @param mixed $source
-     * @param array $params
      * @return $this
-     * @throws Exception
      */
-    public function bindSingleton($name, $source, $params = array())
+    public function bindSingleton($name, $source)
     {
-        $this->_singletons[$name] = $this->_getMatter($name, $source, $params);
+        $this->_singletons[$name] = $this->_getMatter($name, $source);
         return $this;
     }
 
     /**
      * 获取绑定信息
-     * @param $name
-     * @param $source
-     * @param $params
-     * @return $this
+     * @param string $name
+     * @param mixed $source
+     * @return mixed
+     * @throws Exception
      */
-    protected function _getMatter($name, $source, $params)
+    protected function _getMatter($name, $source)
     {
         if (!empty($this->_singletons[$name])) {
             Error::show('exists_singleton.');
         }
 
-        $matter[] = $source;
-        $matter[] = $params ? (array)$params : array();
-        return $matter;
+        return $source;
     }
 
     /**
@@ -133,30 +142,30 @@ class Container extends Base
 
     /**
      * 新建实例
-     * @param $name
+     * @param string $name
+     * @param array $params
      * @return mixed
      * @throws Exception
      */
-    public function create($name)
+    public function create($name, array $params = array())
     {
-        $matter = array();
+        $source = null;
         $isSingleton = false;
 
         if (!empty($this->_singletons[$name])) {
-            $matter = (array)$this->_singletons[$name];
+            $source = (array)$this->_singletons[$name];
             if (!empty($this->_instances[$name])) {
                 return $this->_instances[$name];
             }
             $isSingleton = true;
         } elseif (!empty($this->_binds[$name])) {
-            $matter = (array)$this->_binds[$name];
+            $source = (array)$this->_binds[$name];
         }
 
-        if (empty($matter)) {
+        if (empty($source)) {
             Error::show("not_exists_dependence_set");
         }
 
-        list($source, $params) = $matter;
         if (is_array($source)) {
             $source = array_values($source);
             list($sourceClass, $sourceMethod) = $source;
@@ -181,12 +190,12 @@ class Container extends Base
 
     /**
      * 生产实例
-     * @param $object
-     * @param $params
+     * @param mixed $source
+     * @param array $params
      * @return mixed
      * @throws Exception
      */
-    public function make($source, $params)
+    public function make($source, array $params = array())
     {
         $type = gettype($source);
         if ($type == 'object' && $source instanceof \Closure
@@ -219,7 +228,9 @@ class Container extends Base
     }
 
     /**
+     * 获取依赖
      * @param array $params
+     * @return array
      * @throws Exception
      */
     public function getDependencies($params)

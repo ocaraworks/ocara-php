@@ -104,4 +104,14 @@ class Memcache extends CacheBase implements CacheInterface
 	{
 		return $this->_plugin->delete($name);
 	}
+
+	/**
+	 * 选择数据库
+	 * @param string $name
+	 * @return bool
+	 */
+	public function selectDatabase($name)
+	{
+		return true;
+	}
 }

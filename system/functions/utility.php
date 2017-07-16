@@ -541,11 +541,13 @@ function ocUrl($route, $params = array(), $relative = false, $urlType = false, $
 function ocFileExists($filePath, $check = false)
 {
 	if ($filePath) {
+		$filePath = ocCommPath($filePath);
 		if ($check) {
 			$filePath = ocCheckFilePath($filePath);
 		}
-		if (OC_IS_WIN && ocBasename(realpath($filePath)) == ocBasename($filePath) ||
-		 	is_file($filePath)
+		if (OC_IS_WIN
+			&& ocBasename(ocCommPath(realpath($filePath))) == ocBasename($filePath)
+			&& is_file($filePath)
 		) {
 			return $filePath;
 		}

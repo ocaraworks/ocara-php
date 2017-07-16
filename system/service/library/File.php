@@ -18,11 +18,11 @@ class File extends ServiceBase
 	 * @param string $filePath
 	 * @param integer $perm
 	 */
-	public static function createFile($filePath, $perm = false)
+	public static function createFile($filePath, $perm = false, $mode = null)
 	{
 		if (ocFileExists($filePath, true)) return $filePath;
 
-		ocCheckPath(dirname($filePath), $perm);
+		ocCheckPath(dirname($filePath), $mode);
 		$filePath = ocCheckFilePath($filePath);
 		
 		if (function_exists('file_put_contents')) {

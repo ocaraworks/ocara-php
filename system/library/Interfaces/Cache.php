@@ -40,4 +40,10 @@ interface Cache
 	 * @param string $name
 	 */
 	public function delete($name);
+
+	/**
+	 * 选择数据库
+	 * @param string $name
+	 */
+	public function selectDatabase($name);
 }

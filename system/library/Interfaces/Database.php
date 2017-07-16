@@ -38,7 +38,7 @@ interface Database
 	 * 选择数据库
 	 * @param $name
 	 */
-	public function selectDb($name);
+	public function selectDatabase($name);
 
 	/**
 	 * 通过字段类型转换数据类型

@@ -15,6 +15,7 @@ use Ocara\Service\FileCache;
 
 class model_admin
 {
+	private $_modelType;
 	private $_server;
 	private $_table;
 	private $_model;
@@ -23,6 +24,8 @@ class model_admin
 
 	public function add()
 	{
+		$this->_modelType = Request::getPost('modelType');
+
 		$this->_server = Request::getPost('server');
 		$this->_database = Request::getPost('database');
 		$this->_table = Request::getPost('table');
@@ -40,15 +43,26 @@ class model_admin
 			$this->_model = ocStandardName($this->_table);
 		}
 
-		$this->createModel();
+		if ($this->_modelType == 'Database') {
+			$this->createDatabaseModel();
+		} elseif ($this->_modelType == 'Cache') {
+			$this->createCacheModel();
+		}
 	}
 
-	public function createModel()
+	public function createDatabaseModel()
 	{
-		$serverPath = $this->_server ? $this->_server . OC_DIR_SEP : OC_EMPTY;
-		$dbPath = $this->_database ? $this->_database . OC_DIR_SEP : OC_EMPTY;
-		$namespace = $this->_server ? OC_NS_SEP . $this->_server : OC_EMPTY;
-		$namespace = $namespace . ($this->_database ? OC_NS_SEP . $this->_database : OC_EMPTY);
+		$server = ucfirst($this->_server);
+		$database = ucfirst($this->_database);
+
+		$serverPath = $this->_server ? $server . OC_DIR_SEP : OC_EMPTY;
+		$dbPath = $this->_database ? $database . OC_DIR_SEP : OC_EMPTY;
+		$namespace = $this->_server ? OC_NS_SEP . $server : OC_EMPTY;
+
+		if ($this->_database) {
+			$namespace = $namespace . OC_NS_SEP . $database;
+		}
+
 		$modelName = ucfirst($this->_model);
 
 		$content = "<?php\r\n";
@@ -148,6 +162,64 @@ class model_admin
 		FileCache::build();
 		$fileCache->setData($fields, null, $modelClass . ' Fields');
 		$fileCache->save($path);
+
+		die("添加成功！");
+	}
+
+	public function createCacheModel()
+	{
+		$server = ucfirst($this->_server);
+		$database = ucfirst($this->_database);
+
+		$serverPath = $this->_server ? $server . OC_DIR_SEP : OC_EMPTY;
+		$dbPath = $this->_database ?  $database . OC_DIR_SEP : OC_EMPTY;
+		$namespace = OC_NS_SEP . 'Cache';
+
+		if ($this->_server) {
+			$namespace = $namespace . OC_NS_SEP . $server;
+		}
+
+		if ($this->_database) {
+			$namespace = $namespace . OC_NS_SEP . $database;
+		}
+
+		$modelName = ucfirst($this->_model);
+
+		$content = "<?php\r\n";
+		$content .= "namespace Model{$namespace};\r\n";
+		$content .= "use Ocara\\Model\\Cache;\r\n";
+		$content .= "\r\n";
+		$content .= "class {$modelName} extends Cache\r\n";
+		$content .= "{\r\n";
+
+		if ($this->_server) {
+			$content .= "\tprotected \$_server = '{$this->_server}';\r\n";
+		}
+		if ($this->_database) {
+			$content .= "\tprotected \$_database = '{$this->_database}';\r\n";
+		}
+
+		$content .= "\r\n";
+		$content .= "\t/**\r\n";
+		$content .= "\t * 初始化模型\r\n";
+		$content .= "\t */\r\n";
+		$content .= "\tprotected function _model()\r\n\t{}\r\n";
+		$content .= "}";
+
+		$appDir = 'application';
+
+		if (!is_dir($modelPath = OC_ROOT . "{$appDir}/model/Cache/")) {
+			@mkdir($modelPath);
+		}
+
+		$modelPath = $modelPath . $serverPath . $dbPath;
+
+		if (ocFileExists($path = $modelPath . "{$modelName}.php")) {
+			Develop::error(Develop::back('Model文件已存在，如果需要覆盖，请先手动删除！'));
+		}
+
+		File::createFile($path, 'wb');
+		File::writeFile($path, $content);
 
 		die("添加成功！");
 	}

@@ -3,9 +3,16 @@
 <div class="section-title">添加模型</div>
 <div class="section-body">
 <form id="" action="<?php echo ocUrl(array(OC_DEV_SIGN, 'home', 'adminModel'));?>" method="post">
-	
+
+
 <div>
-<span class="left-span">数据库服务器名称：</span>
+    <span class="left-span">模型类型</span>
+    <input type="radio" value="Database" name="modelType" id="modelType1" checked /> 数据库模型&nbsp;
+    <input type="radio" value="Cache" name="modelType" id="modelType2" /> 缓存模型
+</div>
+
+<div>
+<span class="left-span">服务器名称：</span>
 <input type="text" name="server" id="server" value="default">
 </div>
 

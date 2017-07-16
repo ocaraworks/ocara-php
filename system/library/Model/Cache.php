@@ -15,10 +15,12 @@ defined('OC_PATH') or exit('Forbidden!');
 abstract class Cache extends ModelBase
 {
     protected $_plugin;
+    protected $_database;
+
+    protected $_tag;
     protected $_master;
     protected $_slave;
     protected $_server;
-    protected $_tag;
 
     /**
      * Model constructor.
@@ -35,6 +37,9 @@ abstract class Cache extends ModelBase
     {
         $this->_tag = self::getClass();
         $this->connect();
+
+        if (method_exists($this, '_model')) $this->_model();
+        return $this;
     }
 
     /**
