@@ -53,7 +53,7 @@ class model_admin
 
 		$content = "<?php\r\n";
 		$content .= "namespace Model{$namespace};\r\n";
-		$content .= "use Ocara\Model\Database;\r\n";
+		$content .= "use Ocara\\Model\\Database;\r\n";
 		$content .= "\r\n";
 		$content .= "class {$modelName} extends Database\r\n";
 		$content .= "{\r\n";

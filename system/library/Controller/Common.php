@@ -50,7 +50,7 @@ class Common extends ControllerBase implements ControllerInterface
 			 ->bindSingleton('view', array($this->feature, 'getView'), array($this->getRoute()))
 			 ->bindSingleton('formToken', array($this->feature, 'getFormToken'))
 			 ->bindSingleton('validator', array($this->feature, 'getValidator'))
-			 ->bindSingleton('db', function(){ Database::factory('default'); })
+			 ->bindSingleton('db', function(){ Database::create('default'); })
 			 ->bindSingleton('pager', array($this->feature, 'getPager'));
 
 		$this->session->initialize();

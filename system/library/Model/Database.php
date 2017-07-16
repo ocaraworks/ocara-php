@@ -12,7 +12,7 @@ use Ocara\Error;
 use Ocara\Call;
 use Ocara\Cache;
 use Ocara\FormToken;
-use Ocara\Database as DefaultDatabase;
+use Ocara\Database as DatabaseFactory;
 use Ocara\DatabaseBase;
 use Ocara\ModelBase;
 use Ocara\Iterator\Database\ObjectRecords;
@@ -1031,14 +1031,14 @@ abstract class Database extends ModelBase
 
 		if (!($master || ocGet('option.master', $this->_sql))) {
 			if (!is_object($this->_slave)) {
-				$this->_slave = DefaultDatabase::factory($this->_server, false, false);
+				$this->_slave = DatabaseFactory::create($this->_server, false, false);
 			}
 			$this->_plugin = $this->_slave;
 		}
 
 		if (!is_object($this->_plugin)) {
 			if (!is_object($this->_master)) {
-				$this->_master = DefaultDatabase::factory($this->_server);
+				$this->_master = DatabaseFactory::create($this->_server);
 			}
 			$this->_plugin = $this->_master;
 		}

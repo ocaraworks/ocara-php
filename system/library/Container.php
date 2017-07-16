@@ -54,6 +54,7 @@ class Container extends Base
         } else {
             $instance = $this->_instances[$name] = $this->create($name);
         }
+
         return $instance;
     }
 

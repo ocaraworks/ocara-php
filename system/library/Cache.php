@@ -19,11 +19,11 @@ final class Cache extends Base
 	private function __construct(){}
 
 	/**
-	 * 获取缓存实例
+	 * 新建缓存实例
 	 * @param string $server
 	 * @param bool $required
 	 */
-	public static function factory($server = 'default', $required = true)
+	public static function create($server = 'default', $required = true)
 	{
 		if (empty($server)) {
 			$server = 'default';

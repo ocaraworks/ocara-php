@@ -45,7 +45,7 @@ class Rest extends ControllerBase
 		self::$container
 			 ->bindSingleton('view', array($this->feature, 'getView'), array($this->getRoute()))
 			 ->bindSingleton('validator', array($this->feature, 'getValidator'))
-			 ->bindSingleton('db', function(){ Database::factory('default'); })
+			 ->bindSingleton('db', function(){ Database::create('default'); })
 			 ->bindSingleton('pager', array($this->feature, 'getPager'));
 
 		$this->session->initialize();

@@ -24,7 +24,7 @@ final class Database extends Base
 	 * @param bool $master
 	 * @param bool $required
 	 */
-	public static function factory($server = null, $master = true, $required = true)
+	public static function create($server = null, $master = true, $required = true)
 	{
 		if (empty($server)) {
 			$server = 'default';
