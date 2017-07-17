@@ -17,17 +17,17 @@ interface Cache
 	 * @param array $config
 	 * @param bool $required
 	 */
-	public function __construct($config, $required = true);
+	public function connect($config, $required = true);
 
 	/**
 	 * 设置KEY
 	 * @param string $name
 	 * @param boolean $value
-	 * @param integer $exireTime
+	 * @param integer $expireTime
 	 * @param mixed $args
 	 * @return bool
 	 */
-	public function set($name, $value, $exireTime = 0, $args = null);
+	public function set($name, $value, $expireTime = 0, $args = null);
 	
 	/**
 	 * 获取KEY

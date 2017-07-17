@@ -34,6 +34,8 @@ class Error extends Base
 	 * @param string $error
 	 * @param array $params
 	 * @param bool $required
+	 * @return null
+	 * @throws Exception
 	 */
 	public static function check($error, array $params = array(), $required = false)
 	{
@@ -62,6 +64,7 @@ class Error extends Base
 	 * 显示异常错误
 	 * @param string $error
 	 * @param array $params
+	 * @throws Exception
 	 */
 	public static function show($error, array $params = array())
 	{

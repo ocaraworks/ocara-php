@@ -13,21 +13,16 @@ use Ocara\Interfaces\Cache as CacheInterface;
 
 class Memcache extends CacheBase implements CacheInterface
 {
-	protected $_plugin = null;
-	private $_config = array();
-
 	/**
-	 * OCMemcache constructor.
+	 * 初始化代码
 	 * @param array $config
 	 * @param bool $required
+	 * @return null
 	 */
-	public function __construct($config, $required = true)
+	public function connect($config, $required = true)
 	{
-		$this->_config = $config;
 		if (!ocGet('open', $config, false)) {
-			return Error::check(
-				'no_open_service_config', array('Memcache'), $required
-			);
+			return Error::check('no_open_service_config', array('Memcache'), $required);
 		}
 
 		if (class_exists($class = 'Memcache', false)) {
@@ -70,14 +65,14 @@ class Memcache extends CacheBase implements CacheInterface
 	/**
 	 * @param string $name
 	 * @param boolean $value
-	 * @param integer $exireTime
+	 * @param integer $expireTime
 	 * @param mixed $args
 	 * @return bool
 	 */
-	public function set($name, $value, $exireTime = 0, $args = null)
+	public function set($name, $value, $expireTime = 0, $args = null)
 	{
 		if (is_object($this->_plugin)) {
-			return $this->_plugin->set($name, $value, $args, $exireTime);
+			return $this->_plugin->set($name, $value, $args, $expireTime);
 		}
 
 		return false;

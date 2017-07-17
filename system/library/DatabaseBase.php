@@ -157,7 +157,6 @@ class DatabaseBase extends Sql
 		$this->setConnectName($connectName);
 
 		$exists = isset(self::$_connects[$connectName]) && self::$_connects[$connectName] instanceof DriverBase;
-
 		if ($exists) {
 			$this->_plugin = self::$_connects[$connectName];
 		} else {

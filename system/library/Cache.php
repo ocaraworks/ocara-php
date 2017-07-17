@@ -78,6 +78,7 @@ final class Cache extends Base
 			include_once($path);
 			$class  = $namespace . 'Cache' . OC_NS_SEP . $type;
 			if (class_exists($class, false)) {
+				$config['connect_name'] = $server;
 				$object = new $class($config, $required);
 				return $object;
 			}

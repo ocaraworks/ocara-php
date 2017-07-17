@@ -13,18 +13,8 @@ use Ocara\Interfaces\Cache as CacheInterface;
 
 class Redis extends CacheBase implements CacheInterface
 {
-	protected $_plugin = null;
-	private $_config = array();
-
-	/**
-	 * OCRedis constructor.
-	 * @param array $config
-	 * @param bool $required
-	 */
-	public function __construct($config, $required = true)
+	public function connect($config, $required = true)
 	{
-		$this->_config = $config;
-
 		if (!ocGet('open', $config, false)) {
 			return Error::check('no_open_service_config', array('Redis'), $required);
 		}
@@ -46,9 +36,7 @@ class Redis extends CacheBase implements CacheInterface
 		if ($password) {
 			$auth = $this->_plugin->auth($password);
 			if (empty($auth)) {
-				return Error::check(
-					'fault_redis_password', array(), $required
-				);
+				return Error::check('fault_redis_password', array(), $required);
 			}
 		}
 	}
@@ -56,14 +44,14 @@ class Redis extends CacheBase implements CacheInterface
 	/**
 	 * @param string $name
 	 * @param boolean $value
-	 * @param integer $exireTime
+	 * @param integer $expireTime
 	 * @param mixed $args
 	 * @return bool
 	 */
-	public function set($name, $value, $exireTime = 0, $args = null)
+	public function set($name, $value, $expireTime = 0, $args = null)
 	{
 		$result = $this->_plugin->set($name, serialize($value));
-		$this->_plugin->setTimeout($name, $exireTime);
+		$this->_plugin->setTimeout($name, $expireTime);
 		return $result;
 	}
 
