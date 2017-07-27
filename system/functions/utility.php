@@ -590,7 +590,6 @@ function ocChmod($path, $perm)
 		return true;
 	}
 
-	$result  = false;
 	$oldMask = umask(0);
 	$result  = @chmod($path, $perm);
 
