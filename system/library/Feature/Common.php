@@ -50,6 +50,7 @@ class Common extends FeatureBase implements Feature
      * @param string $module
      * @param string $controller
      * @param string $action
+     * @return array
      */
     public static function getDefaultRoute($module, $controller, $action)
     {
@@ -67,7 +68,7 @@ class Common extends FeatureBase implements Feature
     /**
      * 获取表单令牌类
      */
-    public function getFormToken(Container $container)
+    public function getFormToken()
     {
         ocImport(OC_LIB . 'FormToken.php');
         $formToken = new FormToken($this->getRoute());
@@ -77,7 +78,7 @@ class Common extends FeatureBase implements Feature
     /**
      * 获取View视图类
      */
-    public static function getView(Container $container, $route)
+    public static function getView($route)
     {
         ocImport(OC_LIB . '/View/Common.php');
         $view = new CommonView();

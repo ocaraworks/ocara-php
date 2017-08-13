@@ -281,12 +281,12 @@ abstract class Database extends ModelBase
 	/**
 	 * 字段映射
 	 * @param array $fields
-	 * @param array $class
+	 * @param string $class
+	 * @return array
 	 */
 	public static function mapFields(array $fields, $class)
 	{
-		$config = self::getConfig(null, null, $class);
-
+		$config = self::getConfig('MAP', null, $class);
 		if (!$config) {
 			return $fields;
 		}
@@ -348,6 +348,7 @@ abstract class Database extends ModelBase
 	/**
 	 * 新建ORM模型
 	 * @param array $data
+	 * @return $this
 	 */
 	public function data(array $data = array())
 	{
@@ -658,7 +659,7 @@ abstract class Database extends ModelBase
 	 */
 	public function save($debug = false)
 	{
-		$data = array();
+		$data = $this->getProperty();
 
 		$condition = array();
 		foreach ($this->_primaries as $field) {
@@ -675,6 +676,7 @@ abstract class Database extends ModelBase
 	 * 新建记录
 	 * @param array $data
 	 * @param bool $debug
+	 * @return bool
 	 */
 	public function create(array $data = array(), $debug = false)
 	{
@@ -724,6 +726,8 @@ abstract class Database extends ModelBase
 	/**
 	 * 删除记录
 	 * @param bool $debug
+	 * @return bool
+	 * @throws \Ocara\Exception
 	 */
 	public function delete($debug = false)
 	{
@@ -807,9 +811,10 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 按条件选择首行
-	 * @param string|numric|array $condition
-	 * @param string|array $option
+	 * @param bool $condition
+	 * @param null $option
 	 * @param bool $debug
+	 * @return $this|array|null
 	 */
 	public function selectFirst($condition = false, $option = null, $debug = false)
 	{
@@ -827,9 +832,10 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 按主键选择一行记录
-	 * @param string|numric|array $primaryValues
-	 * @param string|array $option
+	 * @param string|array|number $primaryValues
+	 * @param null $option
 	 * @param bool $debug
+	 * @return static
 	 */
 	public static function select($primaryValues, $option = null, $debug = false)
 	{
@@ -918,8 +924,9 @@ abstract class Database extends ModelBase
 	/**
 	 * 获取某个字段值
 	 * @param string $field
-	 * @param string|array $condition
+	 * @param bool $condition
 	 * @param bool $debug
+	 * @return array|null|string
 	 */
 	public function findValue($field, $condition = false, $debug = false)
 	{
@@ -937,7 +944,8 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 查询总数
-	 * @param boolean $debug
+	 * @param bool $debug
+	 * @return array|int
 	 */
 	public function getTotal($debug = false)
 	{
@@ -954,10 +962,11 @@ abstract class Database extends ModelBase
 	/**
 	 * 查询数据
 	 * @param string|array $condition
-	 * @param string|array $option
+	 * @param string|array$option
 	 * @param bool $debug
 	 * @param bool $queryRow
 	 * @param bool $count
+	 * @return array
 	 */
 	private function _find($condition, $option, $debug, $queryRow, $count = false)
 	{
@@ -972,16 +981,15 @@ abstract class Database extends ModelBase
 
 		if ($option) {
 			if (ocScalar($option)) {
-				$option = array('fields' => $option);
-			}
-			foreach ($option as $key => $value) {
-				$this->_sql['option'][$key] = $value;
+				$this->fields($option);
+			} else {
+				foreach ($option as $key => $value) {
+					$this->_sql['option'][$key] = $value;
+				}
 			}
 		}
 
-		$slave = $this->connect(false);
-		$fields = $count ? $slave->getCountSql('1', 'total') : false;
-		$sql = $this->_genSelectSql($fields, $count);
+		$sql = $this->_genSelectSql($count);
 
 		$cacheInfo = null;
 		if (isset($this->_sql['cache']) && is_array($this->_sql['cache'])) {
@@ -1023,6 +1031,7 @@ abstract class Database extends ModelBase
 	/**
 	 * 连接数据库
 	 * @param bool $master
+	 * @return null
 	 */
 	public function connect($master = true)
 	{
@@ -1057,6 +1066,7 @@ abstract class Database extends ModelBase
 	 * @param string $sql
 	 * @param string $sqlEncode
 	 * @param bool $cacheRequired
+	 * @return array|bool|\mix|mixed|null|\stdClass|string
 	 */
 	public function _getCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired)
 	{
@@ -1097,8 +1107,9 @@ abstract class Database extends ModelBase
 	/**
 	 * 左联接
 	 * @param string $class
-	 * @param string $alias
-	 * @param string $on
+	 * @param null $alias
+	 * @param null $on
+	 * @return $this|Database
 	 */
 	public function leftJoin($class, $alias = null, $on = null)
 	{
@@ -1108,8 +1119,9 @@ abstract class Database extends ModelBase
 	/**
 	 * 右联接
 	 * @param string $class
-	 * @param string $alias
-	 * @param string $on
+	 * @param null $alias
+	 * @param null $on
+	 * @return $this|Database
 	 */
 	public function rightJoin($class, $alias = null, $on = null)
 	{
@@ -1117,10 +1129,11 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 全联接
+	 * 内全联接
 	 * @param string $class
-	 * @param string $alias
-	 * @param string $on
+	 * @param null $alias
+	 * @param null $on
+	 * @return $this|Database
 	 */
 	public function innerJoin($class, $alias = null, $on = null)
 	{
@@ -1131,6 +1144,7 @@ abstract class Database extends ModelBase
 	 * 解析on参数
 	 * @param string $alias
 	 * @param string $on
+	 * @return mixed
 	 */
 	public function parseJoinOnSql($alias, $on)
 	{
@@ -1144,7 +1158,8 @@ abstract class Database extends ModelBase
 	/**
 	 * 解析fields参数
 	 * @param string $alias
-	 * @param string $fields
+	 * @param array $fields
+	 * @return string
 	 */
 	public function parseField($alias, $fields)
 	{
@@ -1162,7 +1177,8 @@ abstract class Database extends ModelBase
 	/**
 	 * 附加字段
 	 * @param string|array $fields
-	 * @param string $alias
+	 * @param bool $alias
+	 * @return $this
 	 */
 	public function fields($fields, $alias = false)
 	{
@@ -1177,7 +1193,8 @@ abstract class Database extends ModelBase
 	/**
 	 * 附加联接关系
 	 * @param string $on
-	 * @param string $table
+	 * @param bool $alias
+	 * @return $this
 	 */
 	private function _addOn($on, $alias = false)
 	{
@@ -1218,9 +1235,10 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 添加条件
-	 * @param string|array $where
-	 * @param string $alias
+	 * @param array $where
+	 * @param bool $alias
 	 * @param string $linkSign
+	 * @return $this
 	 */
 	public function where($where, $alias = false, $linkSign = 'AND')
 	{
@@ -1274,7 +1292,8 @@ abstract class Database extends ModelBase
 	/**
 	 * 更多条件
 	 * @param string $where
-	 * @param string $link
+	 * @param bool $link
+	 * @return $this
 	 */
 	public function mWhere($where, $link = false)
 	{
@@ -1286,6 +1305,7 @@ abstract class Database extends ModelBase
 	/**
 	 * 尾部更多SQL语句
 	 * @param string $sql
+	 * @return $this
 	 */
 	public function more($sql)
 	{
@@ -1299,6 +1319,7 @@ abstract class Database extends ModelBase
 	/**
 	 * 分组
 	 * @param string $groupBy
+	 * @return $this
 	 */
 	public function groupBy($groupBy)
 	{
@@ -1339,8 +1360,7 @@ abstract class Database extends ModelBase
 	 * 生成复杂条件
 	 * @param string $operator
 	 * @param string $field
-	 * @param mixed $value
-	 * @param null $alias
+	 * @param string|int $value
 	 * @return $this
 	 */
 	public function cHaving($operator, $field, $value)
@@ -1352,6 +1372,7 @@ abstract class Database extends ModelBase
 	/**
 	 * 附加排序
 	 * @param string $orderBy
+	 * @return $this
 	 */
 	public function orderBy($orderBy)
 	{
@@ -1363,7 +1384,9 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 附加Limit
-	 * @param string $limit
+	 * @param int $offset
+	 * @param int $rows
+	 * @return $this
 	 */
 	public function limit($offset, $rows = 1)
 	{
@@ -1379,6 +1402,7 @@ abstract class Database extends ModelBase
 	/**
 	 * 分页处理
 	 * @param array $limitInfo
+	 * @return Database
 	 */
 	public function page(array $limitInfo)
 	{
@@ -1442,10 +1466,16 @@ abstract class Database extends ModelBase
 		$isDefault = false;
 		if (empty($fields)) {
 			$isDefault = true;
-		} elseif (count($fields) == 1) {
-			$fields = reset($fields);
-			if (isset($fields[1]) && preg_match('/^\{\w+\}$/', $fields[1])) {
-				$isDefault = true;
+		} else {
+			$exp = '/^\{\w+\}$/';
+			if (is_array($fields) && count($fields) == 1) {
+				if (isset($fields[1]) && preg_match($exp, $fields[1])) {
+					$isDefault = true;
+				}
+			} elseif (is_string($fields)) {
+				if (isset($fields) && preg_match($exp, $fields)) {
+					$isDefault = true;
+				}
 			}
 		}
 
@@ -1454,18 +1484,19 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 生成查询Sql
-	 * @param bool $fields
 	 * @param bool $count
 	 * @return mixed
 	 */
-	private function _genSelectSql($fields = false, $count = false)
+	private function _genSelectSql($count = false)
 	{
 		$option = ocGet('option', $this->_sql, array());
 		$tables = ocGet('tables', $this->_sql, array());
 		$unJoined = count($tables) <= 1;
 		$from = $this->_getFromSql($tables, $unJoined);
 
-		if (!$fields) {
+		if ($count) {
+			$fields = $this->_plugin->getCountSql('1', 'total');
+		} else {
 			$aliasFields = $this->_getAliasFields($tables);
 			if (!isset($option['fields']) OR $this->_isDefaultFields($option['fields'])) {
 				$option['fields'][] = array($this->_alias, array_keys($this->getFields()));
@@ -1474,7 +1505,6 @@ abstract class Database extends ModelBase
 		}
 
 		$option['where'] = $this->_genWhere();
-
 		if (isset($option['having'])) {
 			$option['having'] = $this->_getWhereSql($option['having']);
 		}
@@ -1582,7 +1612,9 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		return $this->_plugin->getMultiFieldsSql($fields, $this->_alias, $aliasFields);
+		$primaries = $this->_selected ? $this->_primaries: array();
+		$sql = $this->_plugin->getMultiFieldsSql($unJoined, $this->_alias, $fields, $aliasFields, $primaries);
+		return $sql;
 	}
 
 	/**
@@ -1615,7 +1647,9 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 获取关联链接条件
-	 * @param $alias
+	 * @param string $alias
+	 * @param array $config
+	 * @return bool
 	 */
 	public function getJoinOnSql($alias, $config)
 	{
@@ -1685,18 +1719,20 @@ abstract class Database extends ModelBase
 	/**
 	 * 获取全表名
 	 * @param string $table
+	 * @return mixed
 	 */
 	protected function _getTable($table)
 	{
 		return empty($table) ? $this->_tableName : $table;
 	}
-	
+
 	/**
 	 * 联接查询
 	 * @param string $type
-	 * @param string $model
+	 * @param string $class
 	 * @param string $alias
-	 * @param string $on
+	 * @param bool $on
+	 * @return $this
 	 */
 	private function _join($type, $class, $alias, $on = false)
 	{

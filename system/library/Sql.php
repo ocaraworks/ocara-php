@@ -514,12 +514,14 @@ class Sql extends Base
 
 	/**
 	 * 字段组合
+	 * @param bool $unJoined
+	 * @param string $currentAlias
 	 * @param array $fields
 	 * @param array $aliasFields
-	 * @param string $currentAlias
+	 * @param array $primaries
 	 * @return bool|string
 	 */
-	public function getMultiFieldsSql(array $fields, $currentAlias, array $aliasFields = array())
+	public function getMultiFieldsSql($unJoined, $currentAlias, array $fields, array $aliasFields, array $primaries = array())
 	{
 		foreach ($fields as $key => $value) {
 			if (preg_match('/^\{(.*)\}$/', $value, $mt)) {
@@ -532,13 +534,23 @@ class Sql extends Base
 			}
 		}
 
+		foreach ($primaries as $primaryField) {
+			if (!in_array($primaryField, $fields)) {
+				if ($unJoined) {
+					$fields[] = $this->getAliasFieldsSql($primaryField, $aliasFields, $currentAlias);
+				} elseif (!in_array($primaryField, $fields)) {
+					$primaryField = $this->getFieldNameSql($primaryField, $currentAlias);
+					$fields[] = $this->getAliasFieldsSql($primaryField, $aliasFields, $currentAlias);
+				}
+			}
+		}
+
 		return trim(implode(OC_SPACE, $fields), ',');
 	}
 
 	/**
 	 * 获取字段名称SQL
-	 * @param $field
-	 * @param bool $addAlias
+	 * @param string $field
 	 * @param bool $alias
 	 * @return string
 	 */
@@ -557,9 +569,10 @@ class Sql extends Base
 
 	/**
 	 * 转换字段为别名
-	 * @param array $fields
+	 * @param string $fields
 	 * @param array $aliasFields
-	 * @param string $currentAlias
+	 * @param array $currentAlias
+	 * @return string
 	 */
 	public function getAliasFieldsSql($fields, $aliasFields, $currentAlias)
 	{

@@ -57,8 +57,9 @@ interface Sql
 	/**
 	 * 生成DELETE语句
 	 * @param string $table
-	 * @param string $where
-	 * @param string $delete
+	 * @param array $where
+	 * @param bool $delete
+	 * @return mixed
 	 */
 	public function getDeleteSql($table, $where, $delete = false);
 
@@ -91,9 +92,10 @@ interface Sql
 	/**
 	 * 生成In语句
 	 * @param string $field
-	 * @param string|array $list
-	 * @param string $alias
+	 * @param array $list
+	 * @param bool $alias
 	 * @param string $sign
+	 * @return mixed
 	 */
 	public function getInSql($field, $list, $alias = false, $sign = 'IN');
 	
@@ -117,7 +119,8 @@ interface Sql
 	 * @param array $data
 	 * @param string $link
 	 * @param string $sign
-	 * @param string $alias
+	 * @param bool $alias
+	 * @return mixed
 	 */
 	public function getFieldCondition($data, $link = 'AND', $sign = '=', $alias = false);
 
@@ -136,10 +139,10 @@ interface Sql
 
 	/**
 	 * 解析查询条件
-	 * @param string|array $condition
+	 * @param $condition
 	 * @param string $link
 	 * @param string $sign
-	 * @param string $alias
+	 * @param bool $alias
 	 */
 	public function parseCondition($condition, $link = 'AND', $sign = '=', $alias = false);
 
@@ -159,12 +162,14 @@ interface Sql
 
 	/**
 	 * 字段组合
+	 * @param bool $unJoined
+	 * @param string $currentAlias
 	 * @param array $fields
-	 * @param $currentAlias
 	 * @param array $aliasFields
-	 * @return mixed
+	 * @param array $primaries
+	 * @return bool|string
 	 */
-	public function getMultiFieldsSql(array $fields, $currentAlias, array $aliasFields = array());
+	public function getMultiFieldsSql($unJoined, $currentAlias, array $fields, array $aliasFields, array $primaries = array());
 
 	/**
 	 * 获取字段名称SQL
@@ -185,7 +190,8 @@ interface Sql
 	/**
 	 * [别名.]字段解析
 	 * @param string $field
-	 * @param string $alias
+	 * @param bool $alias
+	 * @return mixed
 	 */
 	public function parseField($field, $alias = false);
 
@@ -226,8 +232,9 @@ interface Sql
 
 	/**
 	 * 给逗号分隔的列表加引号
-	 * @param string $string
+	 * @param string $list
 	 * @param string $quote
+	 * @return mixed
 	 */
 	public function quoteList($list, $quote = OC_QUOTE);
 	

@@ -21,7 +21,6 @@ class Container extends Base
     private $_binds = array();
     private $_singletons = array();
     private $_instances = array();
-    private $_replaces = array();
 
     /**
      * 魔术方法（设置未定义属性）
@@ -49,23 +48,16 @@ class Container extends Base
      * 获取实例
      * @param string $name
      * @param array $params
-     * @param array $dependencies
+     * @param array $deps
      * @return mixed
      */
-    public function get($name, array $params = array(), array $dependencies = array())
+    public function get($name, array $params = array(), array $deps = array())
     {
         if (!empty($this->_instances[$name])) {
             $instance = $this->_instances[$name];
         } else {
-            $instance = $this->create($name, $params);
+            $instance = $this->create($name, $params, $deps);
             $this->_instances[$name] = $instance;
-        }
-
-        foreach ($dependencies as $name => $object) {
-            $method = 'set' . ucfirst($name);
-            if (method_exists($instance, $method)){
-                $instance->$method($object);
-            }
         }
 
         return $instance;
@@ -75,15 +67,17 @@ class Container extends Base
      * 绑定实例
      * @param string $name
      * @param mixed $source
+     * @param array $params
+     * @param array $deps
      * @return $this
      */
-    public function bind($name, $source)
+    public function bind($name, $source, array $params = array(), array $deps = array())
     {
         if (strstr($name, OC_NS_SEP)) {
-            $this->_replaces[$name] = $source;
-        } else {
-            $this->_binds[$name] = $this->_getMatter($name, $source);
+            $name = OC_NS_SEP . ltrim($name, OC_NS_SEP);
         }
+
+        $this->_binds[$name] = $this->_getMatter($name, $source, $params, $deps);
         return $this;
     }
 
@@ -91,28 +85,76 @@ class Container extends Base
      * 单例模式绑定实例
      * @param string $name
      * @param mixed $source
+     * @param array $params
+     * @param array $deps
      * @return $this
      */
-    public function bindSingleton($name, $source)
+    public function bindSingleton($name, $source, array $params = array(), array $deps = array())
     {
-        $this->_singletons[$name] = $this->_getMatter($name, $source);
+        if (strstr($name, OC_NS_SEP)) {
+            $name = OC_NS_SEP . ltrim($name, OC_NS_SEP);
+        }
+
+        $this->_singletons[$name] = $this->_getMatter($name, $source, $params, $deps);
         return $this;
     }
 
     /**
      * 获取绑定信息
      * @param string $name
+     * @return null
+     */
+    public function getBound($name)
+    {
+        if (array_key_exists($name, $this->_binds)) {
+            return $this->_binds[$name][0];
+        }
+
+        if (array_key_exists($name, $this->_singletons)) {
+            return $this->_singletons[$name][0];
+        }
+
+        return null;
+    }
+
+    /**
+     * 获取绑定信息
+     * @param string $name
+     * @return null
+     */
+    public function getBoundParams($name)
+    {
+        if (array_key_exists($name, $this->_binds)) {
+            return $this->_binds[$name][1];
+        }
+
+        if (array_key_exists($name, $this->_singletons)) {
+            return $this->_singletons[$name][1];
+        }
+
+        return array();
+    }
+
+    /**
+     * 获取绑定信息
+     * @param string $name
      * @param mixed $source
+     * @param array $params
+     * @param array $deps
      * @return mixed
      * @throws Exception
      */
-    protected function _getMatter($name, $source)
+    protected function _getMatter($name, $source, $params, $deps)
     {
         if (!empty($this->_singletons[$name])) {
             Error::show('exists_singleton.');
         }
 
-        return $source;
+        $matter[] = $source;
+        $matter[] = $params ? (array)$params : array();
+        $matter[] = $deps ? (array)$deps : array();
+
+        return $matter;
     }
 
     /**
@@ -123,7 +165,7 @@ class Container extends Base
     public function isBound($name)
     {
         if (strstr($name, OC_NS_SEP)) {
-            return array_key_exists($name, $this->_replaces);
+            $name = OC_NS_SEP . ltrim($name, OC_NS_SEP);
         }
 
         return array_key_exists($name, $this->_binds)
@@ -144,27 +186,33 @@ class Container extends Base
      * 新建实例
      * @param string $name
      * @param array $params
+     * @param array $deps
      * @return mixed
      * @throws Exception
      */
-    public function create($name, array $params = array())
+    public function create($name, array $params = array(), array $deps = array())
     {
         $source = null;
         $isSingleton = false;
 
+        $matter = array();
         if (!empty($this->_singletons[$name])) {
-            $source = (array)$this->_singletons[$name];
             if (!empty($this->_instances[$name])) {
                 return $this->_instances[$name];
             }
+            $matter = (array)$this->_singletons[$name];
             $isSingleton = true;
         } elseif (!empty($this->_binds[$name])) {
-            $source = (array)$this->_binds[$name];
+            $matter = (array)$this->_binds[$name];
         }
 
-        if (empty($source)) {
+        if (empty($matter)) {
             Error::show("not_exists_dependence_set");
         }
+
+        list($source, $inputParams, $inputDeps) = $matter;
+        $params = array_merge($inputParams, $params);
+        $deps = array_merge($inputDeps, $deps);
 
         if (is_array($source)) {
             $source = array_values($source);
@@ -177,49 +225,57 @@ class Container extends Base
             }
         }
 
-        $params = (array)$params;
-        array_unshift($params, $this);
-        $instance = $this->make($source, $params);
-
+        $instance = $this->make($source, $params, $deps);
         if ($isSingleton) {
             $this->_instances[$name] = $instance;
         }
 
-       return $instance;
+        return $instance;
     }
 
     /**
      * 生产实例
      * @param mixed $source
      * @param array $params
+     * @param array $deps
      * @return mixed
      * @throws Exception
      */
-    public function make($source, array $params = array())
+    public function make($source, array $params = array(), array $deps = array())
     {
         $type = gettype($source);
-        if ($type == 'object' && $source instanceof \Closure
-            OR $type == 'array'
-            OR $type == 'string' && function_exists($source)
-        ) {
-            return call_user_func_array($source, $params);
-        }
-
-        if ($type == 'object') {
-            return $source;
-        }
-
-        if ($type == 'string') {
-            $reflection = new ReflectionClass($source);
-            if (!$reflection->isInstantiable()) {
-                Error::show("cannot_instance.");
-            }
-            $constructor = $reflection->getConstructor();
-            if ($constructor === null) {
-                $instance = new $source();
+        if ($type == 'array') {
+            $instance = call_user_func_array($source, $params);
+        } elseif ($type == 'object') {
+            if ($source instanceof \Closure) {
+                $instance = call_user_func_array($source, $params);
             } else {
-                $dependencies = $this->getDependencies($constructor->getParameters());
-                $instance = $reflection->newInstanceArgs($dependencies);
+                $instance = $source;
+            }
+        } elseif ($type == 'string') {
+            if (function_exists($source)) {
+                $instance = call_user_func_array($source, $params);
+            } else {
+                $reflection = new \ReflectionClass($source);
+                if (!$reflection->isInstantiable()) {
+                    Error::show("cannot_instance.");
+                }
+                $constructor = $reflection->getConstructor();
+                if ($constructor === null) {
+                    $instance = new $source();
+                } else {
+                    $dependencies = $this->getDependencies($constructor->getParameters(), $params);
+                    $instance = $reflection->newInstanceArgs($dependencies);
+                }
+            }
+        }
+
+        if ($instance) {
+            foreach ($deps as $name => $object) {
+                $method = 'set' . ucfirst($name);
+                if (method_exists($instance, $method)){
+                    $instance->$method($object);
+                }
             }
             return $instance;
         }
@@ -230,25 +286,33 @@ class Container extends Base
     /**
      * 获取依赖
      * @param array $params
+     * @param array $data
      * @return array
      * @throws Exception
      */
-    public function getDependencies($params)
+    public function getDependencies($params, $data)
     {
         $dependencies = array();
 
-        foreach ($params as $object) {
+        foreach ($params as $key => $object) {
             $dependency = $object->getClass();
             if ($dependency === null) {
-                if ($object->isDefaultValueAvailable()) {
-                    $class = $object->getDefaultValue();
+                if (isset($data[$key])) {
+                    $class = $data[$key];
+                } else {
+                    if ($object->isDefaultValueAvailable()) {
+                        $class = $object->getDefaultValue();
+                    } else {
+                        Error::show('fault_method_param');
+                    }
                 }
-                Error::show('Invalid_param');
             } else {
-                $class = $this->create($dependency->name);
-            }
-            if ($this->isReplace($class)) {
-                $class = $this->_replaces[$class];
+                $name = OC_NS_SEP . $dependency->name;
+                if (isset($data[$key]) && is_object($data[$key])) {
+                    $class = $data[$key];
+                } elseif ($this->isBound($name)) {
+                    $class = $this->get($name);
+                }
             }
             $dependencies[] = $class;
         }

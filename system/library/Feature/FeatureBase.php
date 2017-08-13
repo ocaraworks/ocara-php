@@ -19,7 +19,7 @@ class FeatureBase extends Base
     /**
      * 获取验证器
      */
-    public function getValidator(Container $container)
+    public function getValidator()
     {
         ocImport(OC_LIB . 'Validator.php');
         $class = ocConfig('VALIDATE_CLASS', 'Ocara\Service\Validate', true);
@@ -30,7 +30,7 @@ class FeatureBase extends Base
     /**
      * 获取分页器
      */
-    public function getPager(Container $container)
+    public function getPager()
     {
         ocImport(OC_SERVICE . 'library/Pager.php');
         $pager = new Pager();

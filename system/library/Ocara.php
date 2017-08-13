@@ -291,12 +291,18 @@ final class Ocara
 	/**
 	 * 自动加载类
 	 * @param string $class
+	 * @return bool|mixed
+	 * @throws Exception
 	 */
 	public static function autoload($class)
 	{
 		$newClass = trim($class, OC_NS_SEP);
 		if (strstr($newClass, OC_NS_SEP)) {
-			$filePath = strtr($newClass, ocConfig('AUTOLOAD_MAP')) . '.php';
+			$filePath = strtr($newClass, ocConfig('AUTOLOAD_MAP'));
+			if ($filePath == $newClass) {
+				$filePath = OC_ROOT . 'service/library/' . ocCommPath($newClass);
+			}
+			$filePath .= '.php';
 		} else {
 			$filePath = OC_ROOT . 'service/library/' . $newClass . '.php';
 		}

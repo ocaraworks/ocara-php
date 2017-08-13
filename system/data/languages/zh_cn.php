@@ -97,6 +97,7 @@ return array(
 	'fault_route_path'				=> array(2315, 'MVC路径错误'),
 	'fault_session_table'			=> array(2316, 'Session表名配置有误'),
 	'fault_relate_config'			=> array(2317, '关联配置有误'),
+	'fault_method_param'			=> array(2318, '函数或方法参数缺失或格式错误'),
 
 	//不存在或找不到
 	'not_exists_part' 				=> array(2400, '指定的part文件不存在：{file}.php。'),
@@ -122,6 +123,7 @@ return array(
 	'not_exists_http_content_type'	=> array(2420, 'HTTP返回类型不正确'),
 	'not_exists_http_status'		=> array(2421, 'HTTP状态码不正确。'),
 	'no_exists_const'				=> array(2422, '缺少常量'),
+	'not_exists_dependence_set' 	=> array(2423, '依赖不存在'),
 
 	//没有
 	'no_config'						=> array(2501, '找不到该配置：%s。'),

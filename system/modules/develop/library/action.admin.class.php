@@ -72,7 +72,6 @@ class action_admin
 	
 	public function createAction()
 	{
-		$actions = Develop::$config['controller_actions']['Controller'];
 		$mdlname = ucfirst($this->mdlname);
 		$cname = ucfirst($this->cname);
 		$actionName = ucfirst($this->actionName);
@@ -80,7 +79,6 @@ class action_admin
 		$controlClassName = $cname . 'Controller';
 		$className = $actionName . 'Action';
 
-		$extends = $cname . 'Controller';
 		$appDir = 'application';
 		
 		if (!is_dir($controlPath = OC_ROOT . "{$appDir}/controller/{$mdlname}")) {
@@ -105,7 +103,7 @@ class action_admin
 		$controlLongClass = 'Controller\\' . $moduleNamespace . $cname . '\\' . $controlClass;
 
 		foreach (Develop::$config['controller_actions'] as $controllerType => $controllerActions) {
-			$controllerNamespace = 'Ocara\\' . $controllerType;
+			$controllerNamespace = 'Ocara\Controller\\' . $controllerType;
 			$reflection = new \ReflectionClass($controlLongClass);
 			if ($reflection->isSubclassOf($controllerNamespace)) {
 				$this->controllerType = $controllerType;

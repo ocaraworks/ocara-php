@@ -55,15 +55,15 @@ class Bootstrap extends Base
     {
         $classes = ocConfig('SYSTEM_SERVICE_CLASS');
 
-        foreach ($classes as $class => $namspace) {
+        foreach ($classes as $class => $namespace) {
             $name = lcfirst($class);
-            self::$container->bindSingleton($name, function() use($namspace) {
-                $file = strtr($namspace, ocConfig('AUTOLOAD_MAP')) . '.php';
+            self::$container->bindSingleton($name, function() use($namespace) {
+                $file = strtr($namespace, ocConfig('AUTOLOAD_MAP')) . '.php';
                 ocImport($file);
-                if (method_exists($namspace, 'getInstance')) {
-                    return $namspace::getInstance();
+                if (method_exists($namespace, 'getInstance')) {
+                    return $namespace::getInstance();
                 } else {
-                    return new $namspace();
+                    return new $namespace();
                 }
             });
         }
@@ -97,7 +97,8 @@ class Bootstrap extends Base
 
     /**
      * 生成伪静态文件
-     * @param string $moreContent
+     * @param bool $moreContent
+     * @throws Exception
      */
     public static function createHtaccess($moreContent = false)
     {

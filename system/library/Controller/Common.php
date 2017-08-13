@@ -63,7 +63,6 @@ class Common extends ControllerBase implements ControllerInterface
 	/**
 	 * 执行动作
 	 * @param string $actionMethod
-	 * @param bool $display
 	 */
 	public function doAction($actionMethod)
 	{
@@ -77,7 +76,6 @@ class Common extends ControllerBase implements ControllerInterface
 
 	/**
 	 * 执行动作（类方法）
-	 * @param $display
 	 */
 	public function doClassAction()
 	{
@@ -100,6 +98,8 @@ class Common extends ControllerBase implements ControllerInterface
 	 * 执行动作（返回值）
 	 * @param string $method
 	 * @param array $params
+	 * @return mixed
+	 * @throws \Ocara\Exception
 	 */
 	public function doReturnAction($method, array $params = array())
 	{
@@ -112,7 +112,8 @@ class Common extends ControllerBase implements ControllerInterface
 
 	/**
 	 * 设置和获取表单提交方式
-	 * @param string $method
+	 * @param null $method
+	 * @return string
 	 */
 	public function submitMethod($method = null)
 	{
@@ -143,8 +144,9 @@ class Common extends ControllerBase implements ControllerInterface
 
 	/**
 	 * 获取表单提交的数据
-	 * @param string $key
-	 * @param string $default
+	 * @param null $key
+	 * @param null $default
+	 * @return array|null|string
 	 */
 	public function getSubmit($key = null, $default = null)
 	{
@@ -155,7 +157,7 @@ class Common extends ControllerBase implements ControllerInterface
 
 	/**
 	 * 打印模板
-	 * @param string $file
+	 * @param bool $file
 	 * @param array $vars
 	 */
 	public function display($file = false, array $vars = array())
@@ -196,7 +198,9 @@ class Common extends ControllerBase implements ControllerInterface
 
 	/**
 	 * 获取表单并自动验证
-	 * @param string $name
+	 * @param null $name
+	 * @return $this|Form
+	 * @throws \Ocara\Exception
 	 */
 	public function form($name = null)
 	{
@@ -238,7 +242,8 @@ class Common extends ControllerBase implements ControllerInterface
 
 	/**
 	 * 开启/关闭/检测表单验证功能
-	 * @param bool|null $check
+	 * @param null $check
+	 * @return bool
 	 */
 	public function checkForm($check = null)
 	{
