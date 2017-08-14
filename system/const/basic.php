@@ -24,9 +24,6 @@ define('OC_DIR_SEP', '/');
 //命名空间分隔符（顺斜杠）
 define('OC_NS_SEP', "\\");
 
-//回车换行
-define('OC_ENTER', "\r\n");
-
 //英文单引号
 define('OC_QUOTE', "'");
 

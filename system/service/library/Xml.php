@@ -158,9 +158,9 @@ class Xml extends ServiceBase
 		}
 		
 		$xmlData = "<?xml version=\"1.0\" encoding=\"{$this->encoding}\"?>"
-			. OC_ENTER
+			. PHP_EOL
 			. "<{$root}>"
-			. OC_ENTER;
+			. PHP_EOL;
 		
 		if (is_array($list = ocGet(1, $xmlSource))) {
 			$xmlData .= $this->_makeXml($list);

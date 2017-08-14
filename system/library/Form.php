@@ -122,10 +122,10 @@ class Form extends Base
 	{
 		$begin = $this->_plugin->createElement('form', $this->_attributes, null);
 		$token = $this->_plugin->input('hidden', $this->_tokenTag, $this->_token);
-		$begin = $begin . OC_ENTER . "\t" . $token;
+		$begin = $begin . PHP_EOL . "\t" . $token;
 
 		$this->loadModel();
-		return $begin . OC_ENTER;
+		return $begin . PHP_EOL;
 	}
 
 	/**
@@ -146,7 +146,7 @@ class Form extends Base
 	 */
 	public function end()
 	{
-		return $this->end = $this->_plugin->createEndHtmlTag('form') . OC_ENTER;
+		return $this->end = $this->_plugin->createEndHtmlTag('form') . PHP_EOL;
 	}
 
 	/**

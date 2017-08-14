@@ -154,7 +154,7 @@ class Error extends Base
 		if (OC_PHP_SAPI == 'cli') {
 			list ($trace, $traceInfo) = ocDel($error, 'trace', 'traceInfo');
 			$error = array_merge(array('time' => date('Y-m-d H:i:s')), $error);
-			$content = ocBr2nl(ocJsonEncode($error) . OC_ENTER . $trace);
+			$content = ocBr2nl(ocJsonEncode($error) . PHP_EOL . $trace);
 		} else {
 			$filePath = OC_SYS . 'modules/exception/index.php';
 			self::$container->response->sendHeaders();

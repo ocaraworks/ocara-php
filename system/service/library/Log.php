@@ -95,7 +95,7 @@ class Log extends ServiceBase
 			$lastLogFile = $this->_createLogFile($logName);
 		}
 
-		return File::appendFile($lastLogFile, "{$content}" . OC_ENTER);
+		return File::appendFile($lastLogFile, "{$content}" . PHP_EOL);
 	}
 
 	/**

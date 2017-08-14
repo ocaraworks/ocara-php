@@ -394,12 +394,11 @@ function ocGetLanguage(array $languages, $message, array $params = array())
 			$content   = $content[1];
 		}
 		if ($params) {
-			array_unshift($params, $content);
 			if (strstr($content, '%s')) {
-				$content = call_user_func_array('sprintf', $params);
+				$content = vsprintf($content, $params);
 			}
 			foreach ($params as $key => $value) {
-				if (!is_numeric($key)) {
+				if (is_string($key)) {
 					$content = str_ireplace("{{$key}}", $value, $content);
 				}
 			}

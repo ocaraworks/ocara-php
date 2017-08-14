@@ -161,13 +161,13 @@ class Mail extends ServiceBase
 	 */
 	protected function getHeader($contentType)
 	{
-		$header  = "From: {$this->sender}<{$this->sender}>" . OC_ENTER;
-		$header .= $this->replyTo ? "Reply-To: {$this->replyTo}" . OC_ENTER : false;
-		$header .= "To: {$this->receiver}" . OC_ENTER;
+		$header  = "From: {$this->sender}<{$this->sender}>" . PHP_EOL;
+		$header .= $this->replyTo ? "Reply-To: {$this->replyTo}" . PHP_EOL : false;
+		$header .= "To: {$this->receiver}" . PHP_EOL;
 		$header .= $this->cc . $this->bcc;
-		$header .= "Subject: {$this->subject}" . OC_ENTER;
-		$header .= "Mime-Version: 1.0" . OC_ENTER;
-		$header .= "Content-Type: {$contentType}; boundary=\"{$this->boundary}\"" . OC_ENTER;
+		$header .= "Subject: {$this->subject}" . PHP_EOL;
+		$header .= "Mime-Version: 1.0" . PHP_EOL;
+		$header .= "Content-Type: {$contentType}; boundary=\"{$this->boundary}\"" . PHP_EOL;
 		
 		return $header . "\r\n";
 	}
@@ -183,24 +183,24 @@ class Mail extends ServiceBase
 			$subBoundary 	  = $this->newBoundary(2);
 			$thirdSubBoundary = $this->newBoundary(3);
 			
-			$content .= "--{$this->boundary}" . OC_ENTER;
-			$content .= "Content-type: multipart/related; type=\"multipart/alternative\"; boundary=\"{$subBoundary}\"" . OC_ENTER;
-			$content .= OC_ENTER . "--{$subBoundary}" . OC_ENTER;
-			$content .= "Content-type: multipart/alternative; boundary=\"{$thirdSubBoundary}\"" . OC_ENTER;
+			$content .= "--{$this->boundary}" . PHP_EOL;
+			$content .= "Content-type: multipart/related; type=\"multipart/alternative\"; boundary=\"{$subBoundary}\"" . PHP_EOL;
+			$content .= PHP_EOL . "--{$subBoundary}" . PHP_EOL;
+			$content .= "Content-type: multipart/alternative; boundary=\"{$thirdSubBoundary}\"" . PHP_EOL;
 			$content .= $this->getText($thirdSubBoundary);
-			$content .= OC_ENTER . "--{$subBoundary}--" . OC_ENTER;
+			$content .= PHP_EOL . "--{$subBoundary}--" . PHP_EOL;
 			
 			if ($this->attachments) {
 				$content .= $this->attachments;
 			}
-			$content .= OC_ENTER;
+			$content .= PHP_EOL;
 		} else {
 			$content .= $this->getText($this->boundary);
 		}
 		
-		$content .= OC_ENTER . "--{$this->boundary}--" . OC_ENTER;
+		$content .= PHP_EOL . "--{$this->boundary}--" . PHP_EOL;
 		
-		return $content . OC_ENTER;
+		return $content . PHP_EOL;
 	}
 
 	/**
@@ -212,16 +212,16 @@ class Mail extends ServiceBase
 		$content = false;
 		
 		if ($this->text) {
-			$content .= "--{$subBoundary}" . OC_ENTER;
-			$content .= $this->text . OC_ENTER;
+			$content .= "--{$subBoundary}" . PHP_EOL;
+			$content .= $this->text . PHP_EOL;
 		}
 		
 		if ($this->html) {
-			$content .= "--{$subBoundary}" . OC_ENTER;
-			$content .= $this->html  . OC_ENTER;
+			$content .= "--{$subBoundary}" . PHP_EOL;
+			$content .= $this->html  . PHP_EOL;
 		}
 		
-		return OC_ENTER . $content  . OC_ENTER;
+		return PHP_EOL . $content  . PHP_EOL;
 	}
 	
 	/**
@@ -234,7 +234,7 @@ class Mail extends ServiceBase
 			$this->cc = implode(',', $cc);
 		}
 		
-		return $this->cc ? "Cc: {$this->cc}" . OC_ENTER : false;
+		return $this->cc ? "Cc: {$this->cc}" . PHP_EOL : false;
 	}
 
 	/**
@@ -247,7 +247,7 @@ class Mail extends ServiceBase
 			$this->bcc = implode(',', $bcc);
 		}
 		
-		return $this->bcc ? "Bcc: {$this->bcc}" . OC_ENTER: false;
+		return $this->bcc ? "Bcc: {$this->bcc}" . PHP_EOL: false;
 	}
 	
 	/**
@@ -275,9 +275,9 @@ class Mail extends ServiceBase
 	 */
 	public function setText($text, $charset = 'UTF-8', $encoding = 'quoted-printable')
 	{
-		$content  = "Content-Type: text/plain; charset=\"{$charset}\"" . OC_ENTER;
-		$content .= "Content-Transfer-Encoding: {$encoding}" . OC_ENTER;
-		$content .= OC_ENTER . "{$text}" . OC_ENTER;
+		$content  = "Content-Type: text/plain; charset=\"{$charset}\"" . PHP_EOL;
+		$content .= "Content-Transfer-Encoding: {$encoding}" . PHP_EOL;
+		$content .= PHP_EOL . "{$text}" . PHP_EOL;
 		
 		$this->text = $content;
 	}
@@ -290,11 +290,11 @@ class Mail extends ServiceBase
 	 */
 	public function setHtml($html, $charset = 'UTF-8', $encoding = 'quoted-printable')
 	{
-		$content = "Content-Type: text/html; charset=\"{$charset}\"" . OC_ENTER;
-		$content .= "Content-Transfer-Encoding: {$encoding}" . OC_ENTER;
-		$content .= OC_ENTER . "{$html}" . OC_ENTER;
+		$content = "Content-Type: text/html; charset=\"{$charset}\"" . PHP_EOL;
+		$content .= "Content-Transfer-Encoding: {$encoding}" . PHP_EOL;
+		$content .= PHP_EOL . "{$html}" . PHP_EOL;
 		
-		$this->html = $content . OC_ENTER;
+		$this->html = $content . PHP_EOL;
 	}
 
 	/**
@@ -322,15 +322,15 @@ class Mail extends ServiceBase
 			{
 				$basename = ocBasename($file);
 				$extName = strrchr($basename, '.');
-				$content .= OC_ENTER . "--{$this->boundary}" . OC_ENTER;
-				$content .= "Content-type:" . $this->getMimeType($extName) . ";name={$basename}" . OC_ENTER;
-				$content .= "Content-Disposition: attachment;filename={$basename}" . OC_ENTER;
-				$content .= "Content-Transfer-Encoding: base64" . OC_ENTER . OC_ENTER;
-				$content .= chunk_split(base64_encode($fileContent)) . OC_ENTER;
+				$content .= PHP_EOL . "--{$this->boundary}" . PHP_EOL;
+				$content .= "Content-type:" . $this->getMimeType($extName) . ";name={$basename}" . PHP_EOL;
+				$content .= "Content-Disposition: attachment;filename={$basename}" . PHP_EOL;
+				$content .= "Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL;
+				$content .= chunk_split(base64_encode($fileContent)) . PHP_EOL;
 			}
 		}
 		
-		$this->attachments = $content . OC_ENTER;
+		$this->attachments = $content . PHP_EOL;
 	}
 
 	/**

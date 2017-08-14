@@ -505,7 +505,7 @@ class Common extends ViewBase implements ViewInterfaces
 				);
 				$value = Html::createElement('link', $attr, false);
 			}
-			return $value . OC_ENTER;
+			return $value . PHP_EOL;
 		}
 			
 		return $value;

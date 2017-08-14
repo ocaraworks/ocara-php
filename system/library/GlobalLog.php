@@ -67,7 +67,7 @@ class GlobalLog extends Base
 
         $content  = '['.$datetime.']['.$type.']' . $content;
         if ($traceString) {
-            $content = $content . OC_ENTER . $traceString;
+            $content = $content . PHP_EOL . $traceString;
         }
 
         try {
@@ -119,7 +119,7 @@ class GlobalLog extends Base
             }
         }
 
-        return implode(OC_ENTER, $content);
+        return implode(PHP_EOL, $content);
     }
 
     /**

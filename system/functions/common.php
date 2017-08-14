@@ -268,7 +268,7 @@ function ocWrite($filePath, $content, $append = false, $perm = 0755)
 			}
 			if (is_array($content)) {
 				foreach ($content as $row){
-					$result = @fwrite($fo, $row . OC_ENTER);
+					$result = @fwrite($fo, $row . PHP_EOL);
 					if (!$result) break;
 				}
 			} else {
@@ -281,7 +281,7 @@ function ocWrite($filePath, $content, $append = false, $perm = 0755)
 				if (function_exists('file_put_contents')) {
 					$writeMode = $append ? FILE_APPEND : LOCK_EX;
 					if (is_array($content)) {
-						$content = implode(OC_ENTER, $content);
+						$content = implode(PHP_EOL, $content);
 					}
 					$result = @file_put_contents($filePath, $content, $writeMode);
 				}
