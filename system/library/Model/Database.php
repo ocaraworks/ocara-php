@@ -39,7 +39,6 @@ abstract class Database extends ModelBase
 	private $_slave;
 	private $_database;
 	private $_tableName;
-	private $_oldTable;
 	private $_isOrm;
 	private $_selected;
 	private $_insertId;
@@ -77,8 +76,7 @@ abstract class Database extends ModelBase
 
 		$this->_tag = self::getClass();
 		$this->_alias = $this->_alias ? $this->_alias : 'a';
-		$this->_tableName = empty($this->_table) ? ucfirst(self::getClassName()) : $this->_table;
-		$this->_oldTable = $this->_tableName;
+		$this->_tableName = empty($this->_table) ? lcfirst(self::getClassName()) : $this->_table;
 
 		$this->_join(false, $this->_tag, $this->_alias);
 		$this->setDataType($this->_dataType);
@@ -140,6 +138,7 @@ abstract class Database extends ModelBase
 	/**
 	 * 执行分库分表
 	 * @param array $data
+	 * @return $this
 	 */
 	public function sharding(array $data = array())
 	{
@@ -152,7 +151,7 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 合并查询（去除重复值）
-	 * @param object $model
+	 * @param ModelBase $model
 	 * @return $this
 	 */
 	public function union(\Ocara\ModelBase $model)
@@ -163,37 +162,13 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 合并查询
-	 * @param object $model
+	 * @param ModelBase $model
 	 * @return $this
 	 */
 	public function unionAll(\Ocara\ModelBase $model)
 	{
 		$this->connect()->union($model, true);
 		return $this;
-	}
-
-	/**
-	 * 分库分表 - 修改表名后初始化设置
-	 */
-	private function _tableInit()
-	{
-		$tables = $this->_sql['tables'];
-		$oldTable = ocDel($tables, $this->_oldTable);
-		$this->_sql['tables'] = array();
-		$this->_join(false, $this->_tag, $this->_alias);
-
-		$newTables = $this->_sql['tables'];
-		$newTables[$this->_tableName] = array_merge(
-			$oldTable,
-			$newTables[$this->_tableName]
-		);
-		$newTables = array_merge(
-			$newTables,
-			$tables
-		);
-
-		$this->_sql['tables'] = $newTables;
-		$this->_oldTable = $this->_tableName;
 	}
 
 	/**
@@ -329,6 +304,7 @@ abstract class Database extends ModelBase
 	/**
 	 * 切换数据表
 	 * @param $name
+	 * @param null $primary
 	 */
 	public function selectTable($name, $primary = null)
 	{
@@ -342,7 +318,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		$this->_tableInit();
+		$this->_sql['tables'][$this->_alias]['fullname'] = $this->getTableName();
 	}
 
 	/**
