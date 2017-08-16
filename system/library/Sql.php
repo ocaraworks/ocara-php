@@ -70,11 +70,12 @@ class Sql extends Base
 
 	/**
 	 * 值格式解析
-	 * @param $value
+	 * @param string $value
 	 * @param string $paramType
 	 * @param bool $ifQuote
-	 * @param bool $bind
 	 * @param bool $prepare
+	 * @return array|bool|mixed|string
+	 * @throws Exception
 	 */
 	public function parseValue($value, $paramType = 'where', $ifQuote = true, $prepare = true)
 	{
@@ -98,6 +99,8 @@ class Sql extends Base
 	 * [别名.]字段解析
 	 * @param string $field
 	 * @param bool $alias
+	 * @return bool|string
+	 * @throws Exception
 	 */
 	public function parseField($field, $alias = false)
 	{
@@ -121,6 +124,7 @@ class Sql extends Base
 	 * @param string $content
 	 * @param bool $addSlashes
 	 * @param bool $equal
+	 * @return array|bool|mixed|string
 	 */
 	public function filterSql($content, $addSlashes = true, $equal = false)
 	{
@@ -129,14 +133,16 @@ class Sql extends Base
 
 	/**
 	 * 字段转换
-	 * @param $fields
-	 * @param bool $toAlias
+	 * @param string $sql
+	 * @param array $mapFields
+	 * @param string $currentAlias
+	 * @param bool $field2Alias
+	 * @return bool|string
 	 */
 	public function transformFields($sql, $mapFields, $currentAlias, $field2Alias = false)
 	{
-		$exp = '/([^\w\.]+)*((\w+)\.)?(%s)([^\w\.]+)*/i';
+		$exp = '/([^\w\.]+)+((\w+)\.)?(%s)([^\w\.]+)+/i';
 		$sql = chr(32) . $sql . chr(32);
-		$result = OC_EMPTY;
 
 		foreach ($mapFields as $alias => $row) {
 			if ($field2Alias) {
@@ -152,15 +158,15 @@ class Sql extends Base
 					}
 				}
 			}
-			$result = trim($sql);
 		}
 
-		return $result;
+		return trim($sql);
 	}
 
 	/**
 	 * 检查Ocara代码标记
 	 * @param string $value
+	 * @return array
 	 */
 	public static function checkOcaraSqlTag($value)
 	{
@@ -172,7 +178,9 @@ class Sql extends Base
 
 	/**
 	 * 检查是否是字符串或数字条件
-	 * @param string|numric|array $condition
+	 * @param mixed $condition
+	 * @return bool
+	 * @throws Exception
 	 */
 	public function checkStringCondition($condition)
 	{

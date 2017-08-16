@@ -166,16 +166,19 @@ class Form extends Base
 	 * 获取或修改字段语言
 	 * @param string $field
 	 * @param string $value
+	 * @return array|null
 	 */
 	public function lang($field, $value = null)
 	{
-		return $this->_fieldConfig('lang', $field, $value);
+		$lang = $this->_fieldConfig('lang', $field, $value);
+		return empty($lang) ? $field : $lang;
 	}
 
 	/**
 	 * 获取或修改字段映射
 	 * @param string $field
 	 * @param string $value
+	 * @return array|null
 	 */
 	public function map($field, $value = null)
 	{
@@ -200,7 +203,7 @@ class Form extends Base
 
 		$fields = explode('.', $field);
 		if (!isset($fields[1])) {
-			return ocGet($field[0], $config);
+			return ocGet($fields[0], $config);
 		}
 
 		$field = $fields[1];
@@ -215,8 +218,9 @@ class Form extends Base
 	}
 
 	/**
-	 * 开启/关闭/检测表单验证功能
+	 * 	 * 开启/关闭/检测表单验证功能
 	 * @param bool|null $validate
+	 * @return $this|bool
 	 */
 	public function validateForm($validate = null)
 	{
@@ -229,8 +233,9 @@ class Form extends Base
 
 	/**
 	 * 表单验证
-	 * @param $validator
+	 * @param Validator $validator
 	 * @param array $data
+	 * @return bool
 	 */
 	public function validate(Validator &$validator, array $data)
 	{
@@ -247,6 +252,7 @@ class Form extends Base
 	/**
 	 * 获取表单元素
 	 * @param string $name
+	 * @return array|null
 	 */
 	public function element($name = null)
 	{
@@ -268,11 +274,13 @@ class Form extends Base
 
 		return $this->_elements;
 	}
-	
+
 	/**
 	 * 魔术方法-调用未定义的方法
 	 * @param string $name
 	 * @param array $params
+	 * @return mixed
+	 * @throws Exception
 	 */
 	public function __call($name, $params)
 	{
