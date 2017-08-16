@@ -32,6 +32,7 @@ class Validator extends Base
 	 * 表单验证
 	 * @param array $data
 	 * @param string $class
+	 * @return bool
 	 */
 	public function validate(array $data, $class)
 	{
@@ -68,7 +69,8 @@ class Validator extends Base
 	 * 普通验证
 	 * @param string $field
 	 * @param string $value
-	 * @param array $validates
+	 * @param mixed $validates
+	 * @return bool
 	 */
 	public function common($field, $value, $validates)
 	{
