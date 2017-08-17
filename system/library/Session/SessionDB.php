@@ -23,7 +23,7 @@ class SessionDB extends Base
 	 */
 	public function __construct()
 	{
-		$location = ocConfig('SESSION.location', '\Ocara\Service\Model\Session');
+		$location = ocConfig('SESSION.location', '\Ocara\Service\Model\Session', true);
 		$this->_plugin = new $location();
 
 		if (!(is_object($this->_plugin) && $this->_plugin instanceof ModelBase)) {
