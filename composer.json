@@ -15,22 +15,12 @@
     "autoload": {
         "psr-4": {
 			"Ocara\\":"system/library/",
-            "Ocara\\Controller\\":"system/library/Controller/",
-            "Ocara\\Model\\":"system/library/Model/",
-            "Ocara\\View\\":"system/library/View/",
-			"Ocara\\Cache\\":"system/library/Cache/",
-			"Ocara\\Database\\": "system/library/Database/",
-			"Ocara\\Interfaces\\":"system/library/Interfaces/",
-			"Ocara\\Feature\\":"system/library/Feature/",
-			"Ocara\\Session\\":"system/library/Session/",
+            "Ocara\\Functions\\":"system/functions/",
             "Ocara\\Develop\\":"system/modules/develop/library/",
-            "Ocara\\Functions\\":"system/Functions/",
 			"Ocara\\Service\\":"system/service/library/",
-			"Ocara\\Service\\Interfaces\\":"system/service/library/Interfaces/",
 			"Ocara\\Service\\Functions\\":"system/service/functions/",
 			"Ocara\\Extension\\Service\\":"extension/service/library/",
-			"Ocara\\Extension\\Service\\Functions\\":"extension/service/functions/",
-			"Ocara\\Extension\\Service\\Interfaces\\":"extension/service/library/Interfaces/"
+			"Ocara\\Extension\\Service\\Functions\\":"extension/service/functions/"
         }
     }
 }
