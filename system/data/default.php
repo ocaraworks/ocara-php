@@ -147,38 +147,31 @@ $OC_CONF['APP_PATH_INFO'] = array(
 );
 
 /**
- * 自动加载路径配置
+ * 自动加载映射
  */
 $OC_CONF['AUTOLOAD_MAP'] = array(
-	/*应用程序*/
-	'Controller\\' 							=> OC_ROOT . 'application/controller/',
-	'Model\\' 								=> OC_ROOT . 'application/model/',
-	'View\\' 								=> OC_ROOT . 'application/view/',
-	'View\Helper\\' 						=> OC_ROOT . 'application/view/helper/',
-
 	/*Ocara框架*/
 	'Ocara\\' 								=> OC_SYS . 'library/',
-	'Ocara\Controller\\' 					=> OC_LIB . 'Controller/',
-	'Ocara\Model\\' 						=> OC_LIB . 'Model/',
-	'Ocara\View\\' 							=> OC_LIB . 'View/',
-	'Ocara\Cache\\' 						=> OC_LIB . 'Cache/',
-	'Ocara\Database\\' 						=> OC_LIB . 'Database/',
-	'Ocara\Interfaces\\' 					=> OC_LIB . 'Interfaces/',
-	'Ocara\Feature\\' 						=> OC_LIB . 'Feature/',
-	'Ocara\Session\\' 						=> OC_LIB . 'Session/',
-
-	'Ocara\Develop\\' 						=> OC_SYS . 'modules/develop/library/',
 	'Ocara\Functions\\'     				=> OC_SYS . 'functions/',
+	'Ocara\Develop\\' 						=> OC_SYS . 'modules/develop/library/',
 
 	/*Ocara框架插件*/
 	'Ocara\Service\\' 						=> OC_SYS . 'service/library/',
-	'Ocara\Service\Interfaces\\' 			=> OC_SYS . 'service/library/Interfaces/',
-	'Ocara\service\Functions\\'   			=> OC_SYS . 'service/functions/',
+	'Ocara\Service\Functions\\'   			=> OC_SYS . 'service/functions/',
 
 	/*Ocara框架扩展插件*/
 	'Ocara\Extension\Service\\'   			=> OC_EXT . 'service/library/',
 	'Ocara\Extension\Service\Functions\\'   => OC_EXT . 'service/functions/',
-	'Ocara\Extension\Service\Interfaces\\'  => OC_EXT . 'service/library/Interfaces/',
+);
+
+/**
+ * 应用程序自动加载映射
+ */
+$OC_CONF['APP_AUTOLOAD_MAP'] = array(
+	'Controller\\' 							=> OC_ROOT . 'application/controller/',
+	'Model\\' 								=> OC_ROOT . 'application/model/',
+	'View\\' 								=> OC_ROOT . 'application/view/',
+	'View\Helper\\' 						=> OC_ROOT . 'application/view/helper/',
 );
 
 /**

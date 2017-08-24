@@ -299,6 +299,9 @@ final class Ocara
 		$newClass = trim($class, OC_NS_SEP);
 		if (strstr($newClass, OC_NS_SEP)) {
 			$filePath = strtr($newClass, ocConfig('AUTOLOAD_MAP'));
+			if ($filePath == $class) {
+				$filePath = strtr($newClass, ocConfig('APP_AUTOLOAD_MAP'));
+			}
 			if ($filePath == $newClass) {
 				$filePath = OC_ROOT . 'service/library/' . ocCommPath($newClass);
 			}
