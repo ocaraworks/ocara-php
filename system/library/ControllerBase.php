@@ -101,7 +101,7 @@ class ControllerBase extends Base implements ControllerInterface
 	public function &__get($key)
 	{
 		if ($this->hasProperty($key)) {
-			$value = $this->getProperty($key);
+			$value = &$this->getProperty($key);
 			return $value;
 		}
 		if (self::$container->isBound($key)) {

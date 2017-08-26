@@ -35,7 +35,7 @@ abstract class Base
 	 * 获取自定义属性
 	 * @param string $name
 	 */
-	public function getProperty($name = false)
+	public function &getProperty($name = false)
 	{
 		if (func_num_args()) {
 			if ($this->hasProperty($name)) {

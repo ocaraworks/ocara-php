@@ -569,10 +569,10 @@ class Sql extends Base
 		}
 
 		if ($alias) {
-			return "{$alias}.{$field}";
+			return "{$alias}.`{$field}`";
 		}
 
-		return "{$field}";
+		return "`{$field}`";
 	}
 
 	/**
