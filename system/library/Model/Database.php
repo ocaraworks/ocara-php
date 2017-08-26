@@ -1579,23 +1579,19 @@ abstract class Database extends ModelBase
 		}
 
 		$fields = array();
+		$primaries = $this->_selected ? $this->_primaries: array();
+
 		foreach ($data as $key => $value) {
 			list($alias, $fieldData) = $value;
-			if ($alias) {
-				if (is_string($fieldData)) {
-					$fieldData = array_map('trim', (explode(',', $fieldData)));
-				}
+			if (is_string($fieldData)) {
+				$fieldData = array_map('trim', (explode(',', $fieldData)));
 			}
-			if (is_array($fieldData)) {
-				$alias = $unJoined ? false : $alias;
-				$fields[] = $this->_plugin->getFieldsSql($fieldData, $alias);
-			} else {
-				$fields[] = $fieldData;
-			}
+			$alias = $unJoined ? false : $alias;
+			$fieldData = (array)$fieldData;
+			$fields[] = $this->_plugin->getFieldsSql($fieldData, $aliasFields, $this->_alias, $alias);
 		}
 
-		$primaries = $this->_selected ? $this->_primaries: array();
-		$sql = $this->_plugin->getMultiFieldsSql($unJoined, $this->_alias, $fields, $aliasFields, $primaries);
+		$sql = $this->_plugin->combineFieldsSql($fields, $aliasFields, $unJoined, $this->_alias, $primaries);
 		return $sql;
 	}
 

@@ -154,20 +154,13 @@ class Sql extends Base
 				if (preg_match(sprintf($exp, $search), $newSql, $mt)) {
 					if (!$mt[3]) {
 						$mt[3] = $currentAlias;
-						if (ocIsStandardName($sql)) {
-							$newSql = $this->getFieldNameSql($sql);
-						}
 					}
 					if ($alias == $mt[3]) {
-						$newSql = $this->getFieldAliasSql($newSql, $replace);
+						$newSql = $this->getFieldAliasSql($sql, $replace);
 					}
 					return trim($newSql);
 				}
 			}
-		}
-
-		if (ocIsStandardName($sql)) {
-			$sql = $this->getFieldNameSql($sql);
 		}
 
 		return $sql;
@@ -529,51 +522,73 @@ class Sql extends Base
 	/**
 	 * 获取字段列表SQL
 	 * @param array $fields
+	 * @param array $aliasFields
+	 * @param $currentAlias
 	 * @param bool $alias
 	 * @return string
 	 */
-	public function getFieldsSql(array $fields, $alias = false)
+	public function getFieldsSql(array $fields, array $aliasFields, $currentAlias, $alias = false)
 	{
 		foreach ($fields as $key => $value) {
-			$fields[$key] = $this->getFieldNameSql($value,  $alias);
+			if (!self::isOptionFieldSql($value)) {
+				$value = $this->getFieldNameSql($value,  $alias);
+				if (!preg_match('/\sas\s/', $value, $mt)) {
+					$value = $this->transformFields($value, $aliasFields, $currentAlias, true);
+				}
+				$fields[$key] = $value;
+			}
 		}
+
 		return implode(',', $fields);
 	}
 
 	/**
 	 * 字段组合
-	 * @param bool $unJoined
-	 * @param string $currentAlias
 	 * @param array $fields
 	 * @param array $aliasFields
+	 * @param bool $unJoined
+	 * @param $currentAlias
 	 * @param array $primaries
-	 * @return bool|string
+	 * @return mixed
 	 */
-	public function getMultiFieldsSql($unJoined, $currentAlias, array $fields, array $aliasFields, array $primaries = array())
+	public function combineFieldsSql(array $fields, array $aliasFields, $unJoined, $currentAlias, array $primaries = array())
 	{
 		foreach ($fields as $key => $value) {
-			if (preg_match('/^\{(.*)\}$/', $value, $mt)) {
-				$fields[$key] = $mt[1];
+			if ($option = self::isOptionFieldSql($value)) {
+				$fields[$key] = $option;
 			} else {
-				if ($aliasFields) {
-					$value = $this->getAliasFieldsSql($value, $aliasFields, $currentAlias);
-				}
 				$fields[$key] = $value . ',';
 			}
 		}
 
+		$primaryFields = array();
 		foreach ($primaries as $primaryField) {
 			if (!in_array($primaryField, $fields)) {
-				if ($unJoined) {
-					$fields[] = $this->getAliasFieldsSql($primaryField, $aliasFields, $currentAlias);
-				} elseif (!in_array($primaryField, $fields)) {
-					$primaryField = $this->getFieldNameSql($primaryField, $currentAlias);
-					$fields[] = $this->getAliasFieldsSql($primaryField, $aliasFields, $currentAlias);
-				}
+				$primaryFields[] = $primaryField;
 			}
 		}
 
+		$alias = $unJoined ? false : $currentAlias;
+		$primaryFields = $this->getFieldsSql($primaryFields, $aliasFields, $currentAlias, $alias);
+		if ($primaryFields) {
+			$fields[] = $primaryFields;
+		}
+
 		return trim(implode(OC_SPACE, $fields), ',');
+	}
+
+	/**
+	 * 是否字段选项
+	 * @param $value
+	 * @return null
+	 */
+	public static function isOptionFieldSql($value)
+	{
+		if (preg_match('/^\{(.*)\}$/', $value, $mt)) {
+			return $mt[1];
+		}
+
+		return null;
 	}
 
 	/**
@@ -584,7 +599,7 @@ class Sql extends Base
 	 */
 	public function getFieldNameSql($field, $alias = false)
 	{
-		if ($this->hasAlias($field)) {
+		if ($this->hasAlias($field) || $field == '*') {
 			return $field;
 		}
 
@@ -592,7 +607,8 @@ class Sql extends Base
 			return "{$alias}.{$field}";
 		}
 
-		return "`{$field}`";
+		$field = ocIsStandardName($field) ? "`{$field}`" : $field;
+		return $field;
 	}
 
 	/**
@@ -602,33 +618,11 @@ class Sql extends Base
 	 */
 	public function hasAlias($field)
 	{
-		if (preg_match('/^([`\w]*)\.([`\s\w]+)$/', $field, $mt)) {
+		if (preg_match('/^([`\w]*)\.(([`\s\w]+)|(\*))$/', $field, $mt)) {
 			return $mt;
 		}
 
 		return false;
-	}
-
-	/**
-	 * 转换字段为别名
-	 * @param string $fields
-	 * @param array $aliasFields
-	 * @param array $currentAlias
-	 * @return string
-	 */
-	public function getAliasFieldsSql($fields, $aliasFields, $currentAlias)
-	{
-		$fields = explode(',', $fields);
-
-		foreach ($fields as $key => $value) {
-			$value = trim($value);
-			if (!preg_match('/\sas\s/', $value, $mt)) {
-				$value = $this->transformFields($value, $aliasFields, $currentAlias, true);
-			}
-			$fields[$key] = $value;
-		}
-
-		return implode(',', $fields);
 	}
 
 	/**

@@ -155,21 +155,23 @@ interface Sql
 	/**
 	 * 获取字段列表SQL
 	 * @param array $fields
+	 * @param array $aliasFields
+	 * @param $currentAlias
 	 * @param bool $alias
-	 * @return string
+	 * @return mixed
 	 */
-	public function getFieldsSql(array $fields, $alias = false);
+	public function getFieldsSql(array $fields, array $aliasFields, $currentAlias, $alias = false);
 
 	/**
 	 * 字段组合
-	 * @param bool $unJoined
-	 * @param string $currentAlias
 	 * @param array $fields
 	 * @param array $aliasFields
+	 * @param bool $unJoined
+	 * @param $currentAlias
 	 * @param array $primaries
-	 * @return bool|string
+	 * @return mixed
 	 */
-	public function getMultiFieldsSql($unJoined, $currentAlias, array $fields, array $aliasFields, array $primaries = array());
+	public function combineFieldsSql(array $fields, array $aliasFields, $unJoined, $currentAlias, array $primaries = array());
 
 	/**
 	 * 获取字段名称SQL
@@ -178,14 +180,6 @@ interface Sql
 	 * @return string
 	 */
 	public function getFieldNameSql($field, $alias = false);
-
-	/**
-	 * 转换字段为别名
-	 * @param array $fields
-	 * @param array $aliasFields
-	 * @param string $currentAlias
-	 */
-	public function getAliasFieldsSql($fields, $aliasFields, $currentAlias);
 
 	/**
 	 * [别名.]字段解析
