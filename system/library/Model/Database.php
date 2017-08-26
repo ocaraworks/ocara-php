@@ -404,8 +404,10 @@ abstract class Database extends ModelBase
 
 		foreach ($data as $key => $value) {
 			$key = strtr($key, self::$_config[$this->_tag]['MAP']);
-			if (!isset($this->_fields[$key]) OR $key == FormToken::getTokenTag() OR is_object($value)) {
-				continue;
+			if (!$this->_plugin->hasAlias($key)) {
+				if (!isset($this->_fields[$key]) OR $key == FormToken::getTokenTag() OR is_object($value)) {
+					continue;
+				}
 			}
 			$result[$key] = $value;
 		}
@@ -1517,7 +1519,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		return $this->_plugin->getWhereSql($where);
+		return $where ? $this->_plugin->getWhereSql($where) : OC_EMPTY;
 	}
 
 	/**
@@ -1531,6 +1533,7 @@ abstract class Database extends ModelBase
 
 		foreach ($data as $key => $value) {
 			list($alias, $whereType, $whereData, $linkSign) = $value;
+
 			$condition = null;
 			if ($whereType == 'where') {
 				if (is_array($whereData)) {

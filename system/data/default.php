@@ -140,9 +140,9 @@ $OC_CONF['APP_PATH_INFO'] = array(
 	/*目录映射*/
 	'map' => array(
 		'action' 	  => 'controller',
-		'function'	  => 'service/functions',
-		'image'		  => 'public/images',
-		'attachment'  => 'public/attachments',
+		'function'	  => 'functions',
+		'image'		  => 'images',
+		'attachment'  => 'attachments',
 	)
 );
 

@@ -463,8 +463,7 @@ class Sql extends Base
 	 * @param string $link
 	 * @param string $sign
 	 * @param bool $alias
-	 * @param bool $bind
-	 * @return bool|string
+	 * @return array|bool|mixed|string
 	 */
 	public function parseCondition($condition, $link = 'AND', $sign = '=', $alias = false)
 	{
@@ -564,7 +563,7 @@ class Sql extends Base
 	 */
 	public function getFieldNameSql($field, $alias = false)
 	{
-		if (preg_match('/^([`\w]*)\.([`\s\w]+)$/', $field, $mt)) {
+		if ($this->hasAlias($field)) {
 			return $field;
 		}
 
@@ -573,6 +572,20 @@ class Sql extends Base
 		}
 
 		return "`{$field}`";
+	}
+
+	/**
+	 * 检测是否含有别名
+	 * @param $field
+	 * @return bool
+	 */
+	public function hasAlias($field)
+	{
+		if (preg_match('/^([`\w]*)\.([`\s\w]+)$/', $field, $mt)) {
+			return $mt;
+		}
+
+		return false;
 	}
 
 	/**

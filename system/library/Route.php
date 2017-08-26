@@ -27,9 +27,9 @@ class Route extends Base
         $isStandard = false;
 
         if (isset($_GET[1])) {
-            $controller = ($c = Request::getGet(1)) ? strtolower($c) : null;
+            $controller = ($c = Request::getGet(1)) ? $c: null;
             $param2 = Request::getGet(2);
-            $action = $param2 && !is_array($param2) ? strtolower($param2) : null;
+            $action = $param2 && !is_array($param2) ? $param2 : null;
             $ucontroller = ucfirst($controller);
             if ($module && $module != OC_DEV_SIGN) {
                 $umodule = ucfirst($module);

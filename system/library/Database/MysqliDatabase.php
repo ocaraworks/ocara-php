@@ -117,6 +117,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	/**
 	 * 切换数据库的SQL
 	 * @param string $name
+	 * @return string
 	 */
 	public function getSelectDbSql($name)
 	{
@@ -132,7 +133,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	{
 		foreach ($data as $key => $value) {
 			$type = 'string';
-			if (in_array($fields[$key]['type'], self::$_quoteBackList)) {
+			if (isset($fields[$key]) && in_array($fields[$key]['type'], self::$_quoteBackList)) {
 				$type = $fields[$key]['type'];
 				if ($type == 'float') {
 					$type = 'float';

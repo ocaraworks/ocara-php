@@ -60,7 +60,7 @@ class Path extends Base
 			$mapDir = self::$_data['map'][$dir];
 		}
 
-		$mapDir = strtr($dir, self::$_data['belong']) . OC_DIR_SEP . $mapDir;
+		$mapDir = strtr($mapDir, self::$_data['belong']) . OC_DIR_SEP . $mapDir;
 		$result = ocDir($root, $mapDir) . $path;
 		if (isset($result)) {
 			if ($local && $isFile && ($result = ocFileExists($result)) == false) {
