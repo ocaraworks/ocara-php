@@ -19,6 +19,8 @@ class Sql extends Base
 	 */
 	public function quoteList($list, $quote = OC_QUOTE)
 	{
+		$sql = $list;
+
 		if ($list && is_array($list)) {
 			$sql  = implode(',', $list);
 			if (is_numeric(reset($list))) {
