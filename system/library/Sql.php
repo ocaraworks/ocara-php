@@ -142,25 +142,42 @@ class Sql extends Base
 	public function transformFields($sql, $mapFields, $currentAlias, $field2Alias = false)
 	{
 		$exp = '/([^\w\.]+)+((\w+)\.)?(%s)([^\w\.]+)+/i';
-		$sql = chr(32) . $sql . chr(32);
+		$newSql = chr(32) . $sql . chr(32);
 
 		foreach ($mapFields as $alias => $row) {
 			if ($field2Alias) {
 				$row = array_flip($row);
 			}
 			foreach ($row as $search => $replace) {
-				if (preg_match(sprintf($exp, $search), $sql, $mt)) {
+				if (preg_match(sprintf($exp, $search), $newSql, $mt)) {
 					if (!$mt[3]) {
 						$mt[3] = $currentAlias;
+						$newSql = $this->getAliasSql($sql);
 					}
 					if ($alias == $mt[3]) {
-						$sql .= 'AS ' . $replace;
+						$newSql = $this->getFieldAliasSql($newSql, $replace);
 					}
+					return trim($newSql);
 				}
 			}
 		}
 
-		return trim($sql);
+		if (!$this->hasAlias($sql)) {
+			$sql = $this->getAliasSql($sql);
+		}
+
+		return $sql;
+	}
+
+	/**
+	 * 获取字段别名SQL
+	 * @param string $field
+	 * @param string $alias
+	 * @return string
+	 */
+	public function getFieldAliasSql($field, $alias)
+	{
+		return $field ? $field . ' AS ' . $alias : OC_EMPTY;
 	}
 
 	/**
@@ -568,7 +585,7 @@ class Sql extends Base
 		}
 
 		if ($alias) {
-			return "{$alias}.`{$field}`";
+			return "{$alias}.{$field}";
 		}
 
 		return "`{$field}`";

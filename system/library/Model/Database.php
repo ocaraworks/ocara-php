@@ -962,7 +962,10 @@ abstract class Database extends ModelBase
 				$this->fields($option);
 			} else {
 				foreach ($option as $key => $value) {
-					$this->_sql['option'][$key] = $value;
+					if (method_exists($this, $key)) {
+						$value = (array)$value;
+						call_user_func_array(array($this, $key), $value);
+					}
 				}
 			}
 		}
