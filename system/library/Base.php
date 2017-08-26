@@ -34,14 +34,15 @@ abstract class Base
 	/**
 	 * 获取自定义属性
 	 * @param string $name
+	 * @return array
 	 */
-	public function &getProperty($name = false)
+	public function &getProperty($name = null)
 	{
 		if (func_num_args()) {
 			if ($this->hasProperty($name)) {
 				return $this->_properties[$name];
 			}
-			return null;
+			return $this->$name;
 		}
 		return $this->_properties;
 	}
@@ -49,9 +50,9 @@ abstract class Base
 	/**
 	 * 设置自定义属性
 	 * @param string $name
-	 * @param string $value
+	 * @param mixed $value
 	 */
-	protected function setProperty($name, $value = false)
+	public function setProperty($name, $value = null)
 	{
 		if (is_array($name)) {
 			$this->_properties = array_merge($this->_properties, $name);
@@ -61,10 +62,11 @@ abstract class Base
 	}
 
 	/**
-	 * 是否存在自定义属性
+	 * 设置自定义属性
 	 * @param string $name
+	 * @return bool
 	 */
-	protected function hasProperty($name)
+	public function hasProperty($name)
 	{
 		return array_key_exists($name, $this->_properties);
 	}
@@ -81,8 +83,9 @@ abstract class Base
 	/**
 	 * 获取当前路由
 	 * @param string $name
+	 * @return null
 	 */
-	public function getRoute($name = false)
+	public function getRoute($name = null)
 	{
 		if (empty($name)) {
 			return $this->_route;
@@ -96,6 +99,7 @@ abstract class Base
 
 	/**
 	 * 返回当前类名（去除命名空间）
+	 * @return string
 	 */
 	public static function getClassName()
 	{
@@ -105,6 +109,7 @@ abstract class Base
 
 	/**
 	 * 返回当前类名（含命名空间）
+	 * @return string
 	 */
 	public static function getClass()
 	{
@@ -121,12 +126,12 @@ abstract class Base
 
 	/**
 	 * 写全局日志
-	 * @param string|array $content
+	 * @param string $content
 	 * @param string $logName
 	 * @param string $type
 	 * @param bool $traceLog
 	 */
-	public static function globalLog($content, $logName = false, $type = 'info', $traceLog = false)
+	public static function globalLog($content, $logName = null, $type = 'info', $traceLog = false)
 	{
 		if (empty($logName)) {
 			$logName = 'common';
@@ -155,6 +160,8 @@ abstract class Base
 	 * 魔术方法-调用未定义的方法时
 	 * @param string $name
 	 * @param array $params
+	 * @return mixed
+	 * @throws Exception
 	 */
 	public function __call($name, $params)
 	{
@@ -176,6 +183,7 @@ abstract class Base
 	 * >= php 5.3
 	 * @param string $name
 	 * @param array $params
+	 * @throws Exception
 	 */
 	public static function __callStatic($name, $params)
 	{
@@ -184,7 +192,8 @@ abstract class Base
 
 	/**
 	 * 魔术方法-检测属性是否存在
-	 * @param mixed $property
+	 * @param string $property
+	 * @return bool
 	 */
 	public function __isset($property)
 	{
@@ -194,6 +203,8 @@ abstract class Base
 	/**
 	 * 魔术方法-获取自定义属性
 	 * @param string $key
+	 * @return mixed
+	 * @throws Exception
 	 */
 	public function &__get($key)
 	{
@@ -206,9 +217,9 @@ abstract class Base
 
 	/**
 	 * 魔术方法-设置自定义属性
-	 * 
 	 * @param string $key
-	 * @param string $value
+	 * @param mxied $value
+	 * @return mixed
 	 */
 	public function __set($key, $value)
 	{
