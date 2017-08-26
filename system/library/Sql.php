@@ -154,7 +154,9 @@ class Sql extends Base
 				if (preg_match(sprintf($exp, $search), $newSql, $mt)) {
 					if (!$mt[3]) {
 						$mt[3] = $currentAlias;
-						$newSql = $this->getAliasSql($sql);
+						if (ocIsStandardName($sql)) {
+							$newSql = $this->getFieldNameSql($sql);
+						}
 					}
 					if ($alias == $mt[3]) {
 						$newSql = $this->getFieldAliasSql($newSql, $replace);
@@ -165,7 +167,7 @@ class Sql extends Base
 		}
 
 		if (ocIsStandardName($sql)) {
-			$sql = $this->getAliasSql($sql);
+			$sql = $this->getFieldNameSql($sql);
 		}
 
 		return $sql;
@@ -690,11 +692,10 @@ class Sql extends Base
 
 	/**
 	 * 格式化键值数组
-	 * @param $data
+	 * @param mixed $data
 	 * @param string $link
 	 * @param string $sign
 	 * @param bool $alias
-	 * @param bool $bind
 	 * @return string
 	 */
 	public function getFieldCondition($data, $link = ',', $sign = '=', $alias = false)
@@ -767,7 +768,6 @@ class Sql extends Base
 	/**
 	 * 将条件数组连接成条件字符串
 	 * @param array $data
-	 * @param string $link
 	 * @return string
 	 */
 	public function linkWhere(array $data)
