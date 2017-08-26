@@ -162,7 +162,7 @@ class Sql extends Base
 			}
 		}
 
-		if (!$this->hasAlias($sql)) {
+		if (ocIsStandardName($sql)) {
 			$sql = $this->getAliasSql($sql);
 		}
 

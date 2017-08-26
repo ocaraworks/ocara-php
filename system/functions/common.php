@@ -169,6 +169,16 @@ function ocSql($sql)
 }
 
 /**
+ * 是否是标准名称
+ * @param $field
+ * @return int
+ */
+function ocIsStandardName($name)
+{
+	return preg_match('/^[^\d]\w*$/', $name);
+}
+
+/**
  * 获取语言
  * @param string|array $key
  * @param mixed $params
