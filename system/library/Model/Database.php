@@ -939,7 +939,8 @@ abstract class Database extends ModelBase
 	 */
 	public function getTotal($debug = false)
 	{
-		$result = $this->_find(false, false, $debug, true, true);
+		$queryRow = empty($this->_sql['option']['group']) ? false : true;
+		$result = $this->_find(false, false, $debug, $queryRow, true);
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
@@ -982,8 +983,8 @@ abstract class Database extends ModelBase
 		}
 
 		$sql = $this->_genSelectSql($count);
-
 		$cacheInfo = null;
+
 		if (isset($this->_sql['cache']) && is_array($this->_sql['cache'])) {
 			$cacheInfo = $this->_sql['cache'];
 		}

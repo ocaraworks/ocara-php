@@ -264,11 +264,15 @@ class DatabaseBase extends Sql
 	 * @param bool $required
 	 * @param bool $queryRow
 	 * @param bool $count
+	 * @return array|bool|object|void
+	 * @throws Exception\Exception
 	 */
 	public function query($sql, $debug = false, $query = true, $required = true, $queryRow = false, $count = false)
 	{
 		$ret = $this->_checkDebug($debug, $sql);
-		if ($ret) return $ret;
+		if ($ret) {
+			return $ret;
+		}
 
 		$sql = trim($sql);
 		if ($callback = ocConfig('CALLBACK.database.execute_sql.before', null)) {
@@ -277,6 +281,8 @@ class DatabaseBase extends Sql
 
 		try {
 			$params = $this->_params ? array($this->_params) : array();
+			$this->_params = array();
+
 			if ($query) {
 				foreach ($this->_unions as $union) {
 					if ($count) {
@@ -301,12 +307,16 @@ class DatabaseBase extends Sql
 				if ($count) {
 					$result = $this->_plugin->get_result($this->_dataType);
 					$total = 0;
-					foreach ($result as $row) {
-						$num = (integer)reset($row);
-						$num = $num == 0 ? 1 : $num;
-						$total += $num;
+					if ($count && $queryRow) {
+						$total = $result['total'];
+					} else {
+						foreach ($result as $row) {
+							$num = (integer)reset($row);
+							$num = $num == 0 ? 1 : $num;
+							$total += $num;
+						}
 					}
-					$result = array(array('total' => $total));
+					$result = array('total' => $total);
 				} else {
 					$result = $this->_plugin->get_result($this->_dataType, $queryRow);
 				}
