@@ -600,7 +600,7 @@ abstract class Database extends ModelBase
 		}
 
 		$where = $this->_getPrimaryCondition($primaries);
-		$this->selectFirst($where);
+		$this->findRow($where);
 	}
 
 	/**
@@ -744,6 +744,7 @@ abstract class Database extends ModelBase
 	 * 用SQL语句获取多条记录
 	 * @param string $sql
 	 * @param bool $debug
+	 * @return bool
 	 */
 	public function query($sql, $debug = false)
 	{
@@ -754,6 +755,7 @@ abstract class Database extends ModelBase
 	 * 用SQL语句获取一条记录
 	 * @param string $sql
 	 * @param bool $debug
+	 * @return bool
 	 */
 	public function queryRow($sql, $debug = false)
 	{
@@ -779,16 +781,32 @@ abstract class Database extends ModelBase
 	}
 
 	/**
+	 * 按主键选择一行记录
+	 * @param string|array|number $primaryValues
+	 * @param null $option
+	 * @param bool $debug
+	 * @return static
+	 */
+	public static function select($primaryValues, $option = null, $debug = false)
+	{
+		$model = new static();
+		$condition = $model->_getPrimaryCondition($primaryValues);
+		$model->findRow($condition, $option, $debug);
+
+		return $model;
+	}
+
+	/**
 	 * 按条件选择首行
 	 * @param bool $condition
 	 * @param null $option
 	 * @param bool $debug
 	 * @return $this|array|null
 	 */
-	public function selectFirst($condition = false, $option = null, $debug = false)
+	public function findRow($condition = false, $option = null, $debug = false)
 	{
 		$this->_selected = true;
-		$data = $this->findFirst($condition, $option, $debug);
+		$data = $this->getRow($condition, $option, $debug);
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $data;
 		if ($data) {
@@ -800,29 +818,13 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 按主键选择一行记录
-	 * @param string|array|number $primaryValues
-	 * @param null $option
-	 * @param bool $debug
-	 * @return static
-	 */
-	public static function select($primaryValues, $option = null, $debug = false)
-	{
-		$model = new static();
-		$condition = $model->_getPrimaryCondition($primaryValues);
-		$model->selectFirst($condition, $option, $debug);
-
-		return $model;
-	}
-
-	/**
 	 * 选择多条记录
 	 * @param $condition
 	 * @param null $options
 	 * @param bool $debug
 	 * @return array|ObjectRecords
 	 */
-	public static function selectAll($condition, $options = null, $debug = false)
+	public static function find($condition, $options = null, $debug = false)
 	{
 		$records = new ObjectRecords(self::getClass(), array($condition), $options, $debug);
 
@@ -870,22 +872,24 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 查询多条记录
-	 * @param string|array $condition
-	 * @param string|array $option
+	 * @param null $condition
+	 * @param null $option
 	 * @param bool $debug
+	 * @return array
 	 */
-	public function find($condition = false, $option = false, $debug = false)
+	public function getAll($condition = null, $option = null, $debug = false)
 	{
 		return $this->_find($condition, $option, $debug, false);
 	}
 
 	/**
 	 * 查询一条记录
-	 * @param string|array $condition
-	 * @param string|array $option
+	 * @param bool $condition
+	 * @param bool $option
 	 * @param bool $debug
+	 * @return array
 	 */
-	public function findFirst($condition = false, $option = false, $debug = false)
+	public function getRow($condition = null, $option = null, $debug = false)
 	{
 		return $this->_find($condition, $option, $debug, true);
 	}
@@ -897,9 +901,9 @@ abstract class Database extends ModelBase
 	 * @param bool $debug
 	 * @return array|null|string
 	 */
-	public function findValue($field, $condition = false, $debug = false)
+	public function getValue($field, $condition = false, $debug = false)
 	{
-		$row = $this->findFirst($condition, $field, $debug);
+		$row = $this->getRow($condition, $field, $debug);
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $row;
 
@@ -1828,7 +1832,7 @@ abstract class Database extends ModelBase
 	/**
 	 * 获取关联模型
 	 * @param string $key
-	 * @param mixed $value
+	 * @param \Ocara\mxied $value
 	 */
 	public function __set($key, $value)
 	{
@@ -1842,7 +1846,8 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 关联模型查询
-	 * @param string $alias
+	 * @param $alias
+	 * @return null|ObjectRecords
 	 */
 	private function _relateFind($alias)
 	{
@@ -1855,7 +1860,7 @@ abstract class Database extends ModelBase
 				$result = $config['class']::build()
 					->where($where)
 					->where($config['condition'])
-					->selectFirst();
+					->findRow();
 			} elseif (in_array($config['joinType'], array('oneMany','many'))) {
 				$result = new ObjectRecords($config['class'], array($where, $config['condition']));
 				$result->setLimit(0, 0, 1);
@@ -1867,7 +1872,7 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 关联模型数据保存
-	 * @param bool $isCreate
+	 * @return bool
 	 */
 	private function _relateSave()
 	{

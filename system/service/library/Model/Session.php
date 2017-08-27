@@ -25,7 +25,7 @@ class Session extends Database implements SessionInerface
 
 		$result = $this
 			->where($where)
-			->findFirst();
+			->getRow();
 
 		return $result ? $result['session_data'] : null;
 	}
@@ -40,7 +40,7 @@ class Session extends Database implements SessionInerface
 			'session_id' => $data['session_id']
 		);
 
-		$sessionInfo = $this->findFirst($where);
+		$sessionInfo = $this->getRow($where);
 		if ($sessionInfo) {
 			$data['modify_time'] = time();
 			$this->where($where)->update($data);
@@ -61,7 +61,7 @@ class Session extends Database implements SessionInerface
 			'session_id' => $sessionId
 		);
 
-		$sessionInfo = $this->findFirst($where);
+		$sessionInfo = $this->getRow($where);
 		if ($sessionInfo) {
 			$this->select($sessionInfo['id'])->delete();
 		}

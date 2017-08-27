@@ -143,7 +143,7 @@ class ObjectRecords implements \Iterator
             $model->where($condition);
         }
 
-        $result = $model->selectFirst(false, $this->_options);
+        $result = $model->findRow(false, $this->_options);
 
         return $result;
     }
