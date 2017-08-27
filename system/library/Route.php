@@ -17,7 +17,7 @@ class Route extends Base
      */
     public static function parseRouteInfo()
     {
-        $module = Request::getGet(0);
+        $module = ocGet(0, $_GET);
         $controller = $action = null;
         $isModule = false;
 
@@ -27,8 +27,8 @@ class Route extends Base
         $isStandard = false;
 
         if (isset($_GET[1])) {
-            $controller = ($c = Request::getGet(1)) ? $c: null;
-            $param2 = Request::getGet(2);
+            $controller = ($c = ocGet(1, $_GET)) ? $c: null;
+            $param2 = ocGet(2, $_GET);
             $action = $param2 && !is_array($param2) ? $param2 : null;
             $ucontroller = ucfirst($controller);
             if ($module && $module != OC_DEV_SIGN) {
