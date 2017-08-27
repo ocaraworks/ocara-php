@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Exception\Exception;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 class ServiceBase extends Base

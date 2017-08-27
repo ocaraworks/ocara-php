@@ -9,7 +9,8 @@
 use Ocara\Config;
 use Ocara\Url;
 use Ocara\Error;
-use Ocara\ErrorException;
+use Ocara\Exception\Exception;
+use Ocara\Exception\ErrorException;
 use Ocara\Response;
 use Ocara\Ocara;
 

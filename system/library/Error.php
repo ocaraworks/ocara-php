@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Exception\Exception;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 class Error extends Base
@@ -203,6 +205,7 @@ class Error extends Base
 	/**
 	 * 去除当前出错文件路径的根目录
 	 * @param string $errorFile
+	 * @return mixed
 	 */
 	private static function _stripRootPath($errorFile)
 	{

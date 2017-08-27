@@ -28,7 +28,7 @@ class fields_admin
 		}
 
 		$modelClass = stripslashes($this->_model);
-		$modelSubPath = ltrim(ltrim($modelClass, '\Model'), OC_NS_SEP);
+		$modelSubPath = ltrim(preg_replace('/^([\\\\]?Model)([\w\\\\]+)$/', '\2', $modelClass), OC_NS_SEP);
 
 		if (!class_exists($modelClass)) {
 			Develop::error(Develop::back('Model类不存在，请重新输入！'));

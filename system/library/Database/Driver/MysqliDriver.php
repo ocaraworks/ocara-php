@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Database\Driver;
 use \mysqli;
-use Ocara\OcaraExeption;
+use Ocara\Exception\Exception;
 use Ocara\DriverBase;
 use Ocara\Error;
 use Ocara\Interfaces\Driver as DriverInterface;

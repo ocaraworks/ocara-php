@@ -8,8 +8,6 @@
  ************************************************************************************************/
 namespace Ocara;
 
-use Ocara\Model\Database as DatabaseModel;
-
 defined('OC_PATH') or exit('Forbidden!');
 
 class Validator extends Base
@@ -111,7 +109,8 @@ class Validator extends Base
 	 * 正则表达式验证
 	 * @param string $field
 	 * @param string $value
-	 * @param string $expression
+	 * @param $expression
+	 * @return bool
 	 */
 	public function expression($field, $value, $expression)
 	{
@@ -143,6 +142,8 @@ class Validator extends Base
 	 * @param string $field
 	 * @param string $value
 	 * @param string|array $callback
+	 * @return bool
+	 * @throws Exception\Exception
 	 */
 	public function callback($field, $value, $callback)
 	{
