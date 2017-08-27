@@ -1249,10 +1249,23 @@ abstract class Database extends ModelBase
 	 * @param string $field
 	 * @param mixed $value
 	 * @param null $alias
+	 * @return $this
+	 */
+	public function cWhere($operator, $field, $value, $alias = null)
+	{
+		return $this->complexWhere('where', $operator, $field, $value, $alias);
+	}
+
+	/**
+	 * 生成复杂条件
+	 * @param string $operator
+	 * @param string $field
+	 * @param mixed $value
+	 * @param null $alias
 	 * @param string $type
 	 * @return $this
 	 */
-	public function cWhere($operator, $field, $value, $alias = null, $type = 'where')
+	public function complexWhere($type, $operator, $field, $value, $alias = null)
 	{
 		$signInfo = explode('/', $operator);
 
@@ -1280,20 +1293,6 @@ abstract class Database extends ModelBase
 	{
 		$link = $link ? $link : 'AND';
 		$this->_sql['option']['mWhere'][] = compact('where', 'link');
-		return $this;
-	}
-
-	/**
-	 * 尾部更多SQL语句
-	 * @param string $sql
-	 * @return $this
-	 */
-	public function more($sql)
-	{
-		$sql = (array)$sql;
-		foreach ($sql as $value) {
-			$this->_sql['option']['more'][] = $value;
-		}
 		return $this;
 	}
 
@@ -1338,7 +1337,7 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 生成复杂条件
+	 * 生成复杂分组条件
 	 * @param string $operator
 	 * @param string $field
 	 * @param string|int $value
@@ -1346,8 +1345,7 @@ abstract class Database extends ModelBase
 	 */
 	public function cHaving($operator, $field, $value)
 	{
-		$this->cWhere($operator, $field, $value, false, 'having');
-		return $this;
+		return $this->complexWhere('having', $operator, $field, $value, null);
 	}
 
 	/**
@@ -1570,7 +1568,8 @@ abstract class Database extends ModelBase
 	 * 获取字段列表
 	 * @param array $data
 	 * @param array $aliasFields
-	 * @param bool $unJoined
+	 * @param $unJoined
+	 * @return mixed
 	 */
 	private function _getFieldsSql($data, $aliasFields, $unJoined)
 	{
