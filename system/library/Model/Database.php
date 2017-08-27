@@ -726,6 +726,8 @@ abstract class Database extends ModelBase
 			return $result;
 		}
 
+		$this->clearSql();
+
 		$result = $this->_plugin->errorExists() ? false : true;
 		return $result;
 	}
@@ -810,23 +812,24 @@ abstract class Database extends ModelBase
 		$this->clearData();
 
 		if ($condition) {
-			$this->_selected['where'] = $condition;
-		} else {
-			if (!empty($this->_sql['option']['where'])) {
-				$this->_selected['where'] = $this->_sql['option']['where'];
-			}
-			if (!empty($this->_sql['option']['mWhere'])) {
-				$this->_selected['mWhere'] = $this->_sql['option']['mWhere'];
-			}
+			$this->where($condition);
 		}
 
-		if (empty($condition)) {
+		if (!empty($this->_sql['option']['where'])) {
+			$this->_selected['where'] = $this->_sql['option']['where'];
+		}
+
+		if (!empty($this->_sql['option']['mWhere'])) {
+			$this->_selected['mWhere'] = $this->_sql['option']['mWhere'];
+		}
+
+		if (empty($this->_selected)) {
 			Error::show('need_condition');
 		}
 
-		$data = $this->getRow($condition, $option, $debug);
-
+		$data = $this->getRow(false, $option, $debug);
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $data;
+
 		if ($data) {
 			$this->data($data);
 			return $this;
@@ -1007,9 +1010,7 @@ abstract class Database extends ModelBase
 		}
 
 		$this->_plugin->clearBindParams();
-
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
-			$this->clearSql();
 			return $result;
 		}
 
