@@ -263,7 +263,7 @@ class Common extends ControllerBase implements ControllerInterface
 			$this->response->setStatusCode(Response::STATUS_OK);
 			return $result;
 		} else {
-			if (!$this->response->getHeader('statusCode')) {
+			if (!$this->response->getOption('statusCode')) {
 				$this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
 			}
 			return $result;

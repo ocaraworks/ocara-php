@@ -54,6 +54,13 @@ $CONF['SQL_FILTER_KEYWORDS'] = 0; //是否过滤SQL关键词
 $CONF['LOG_PATH'] = 'logs'; //日志保存路径，会放在resource/data目录下面
 
 /*
+ * AJAX配置
+ */
+$CONF['AJAX'] = array(
+	'response_http_error_status' => '1', //返回HTTP错误码
+);
+
+/*
  * 表单配置
  */
 $CONF['FORM'] = array(
@@ -107,7 +114,7 @@ $CONF['DEFAULT_AJAX_CONTENT_TYPE'] = 'json'; //默认Ajax返回文档类型
  */
 $CONF['DEFAULT_FONT'] = 'simhei';
 
-/**
+/*
  * 时间格式设置
  */
 $OC_CONF['DATE_FORMAT'] = array(

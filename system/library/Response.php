@@ -36,47 +36,53 @@ class Response extends Base
 	 */
 	public function sendHeaders(array $data = array())
 	{
-		if (empty($data)) {
-			$data = $this->prepareSendHeaders();
-		}
-
-		foreach ($data as $key => $header) {
-			if (is_string($key)) {
-				$method = '_get' . ucfirst($key);
-				if (method_exists($this, $method)) {
-					$data[$key] = $this->$method();
-				} else {
-					$data[$key] = $key . ':' . $header;
-				}
+		if (!headers_sent()) {
+			if (empty($data)) {
+				$data = $this->prepareHeaders();
 			}
-			header($data[$key]);
+
+			foreach ($data as $key => $header) {
+				if (is_string($key)) {
+					$method = '_get' . ucfirst($key);
+					if (method_exists($this, $method)) {
+						$data[$key] = $this->$method();
+					} else {
+						$data[$key] = $key . ':' . $header;
+					}
+				}
+				header($data[$key]);
+			}
 		}
 	}
 
 	/**
-	 * 获取要发送的头数据
-	 * @return null
+	 * 设置头部信息
+	 * @param string|array $headers
 	 */
-	public function prepareSendHeaders()
+	public function setHeader($headers)
 	{
-		if (headers_sent()) return array();
+		$this->_headers = array_merge($this->_headers, (array)$headers);
+	}
 
-		$data = $this->_headers;
-		if (isset($this->_headers['statusCode'])) {
-			$data['statusCode'] = $this->_getStatusCode();
-		}
+	/**
+	 * 设置头部选项
+	 * @param $name
+	 * @param null $value
+	 */
+	public function setOption($name, $value = null)
+	{
+		$this->_headers[$name] = $value;
+	}
 
-		if (empty($this->_headers['contentType'])) {
-			if (Request::isAjax()) {
-				$this->_headers['contentType'] = ocConfig('DEFAULT_AJAX_CONTENT_TYPE', 'json');
-			} else {
-				$this->_headers['contentType'] = ocConfig('DEFAULT_CONTENT_TYPE', 'html');
-			}
-		}
-
-		$data['contentType'] = $this->_getContentType();
-
-		return $data;
+	/**
+	 * 获取头部设置
+	 * @param $name
+	 * @return mixed|null
+	 */
+	public function getOption($name)
+	{
+		$this->prepareHeaders();
+		return $this->_getOption($name);
 	}
 
 	/**
@@ -107,64 +113,6 @@ class Response extends Base
 	public function setCharset($charset = 'utf-8')
 	{
 		$this->_headers['charset'] = $charset;
-	}
-
-	/**
-	 * 设置头部
-	 * @param $header
-	 * @param $value
-	 */
-	public function setHeader($header, $value = null)
-	{
-		if (isset($value)) {
-			$this->_headers[$header] = $value;
-		} else {
-			$this->_headers = array_merge($this->_headers, (array)$header);
-		}
-	}
-
-	/**
-	 * 获取头部设置
-	 * @param $name
-	 * @return mixed|null
-	 */
-	public function getHeader($name)
-	{
-		if (isset($this->_headers[$name])) {
-			return $this->_headers[$name];
-		}
-		return null;
-	}
-
-	/**
-	 * 返回状态码
-	 */
-	public function _getStatusCode()
-	{
-		$httpStatus = ocConfig('HTTP_STATUS');
-		$result = $httpStatus[$this->_headers['statusCode']];
-		return $result;
-	}
-
-	/**
-	 * 设置返回内容类型
-	 */
-	public function _getContentType()
-	{
-		$contentType = strtolower($this->_headers['contentType']);
-		$mineTypes = ocConfig('MINE_TYPES');
-		if (array_key_exists($contentType, $mineTypes)) {
-			$contentType = $mineTypes[$contentType];
-		}
-
-		if (!empty($this->_headers['charset'])) {
-			$charset = $this->_headers['charset'];
-		} else {
-			$charset = 'utf-8';
-		}
-
-		$result = "Content-Type:{$contentType}; charset={$charset}";
-		return $result;
 	}
 
 	/**
@@ -202,5 +150,86 @@ class Response extends Base
 		} else {
 			Error::show('not_null', array('url'));
 		}
+	}
+
+	/**
+	 * 获取要发送的头数据
+	 * @return null
+	 */
+	public function prepareHeaders()
+	{
+		$data = $this->_headers;
+		if ($statusCode = $this->_getOption('statusCode')) {
+			$data['statusCode'] = $statusCode;
+		}
+
+		if (empty($this->_headers['contentType'])) {
+			if (Request::isAjax()) {
+				$this->_headers['contentType'] = ocConfig('DEFAULT_AJAX_CONTENT_TYPE', 'json');
+			} else {
+				$this->_headers['contentType'] = ocConfig('DEFAULT_CONTENT_TYPE', 'html');
+			}
+		}
+
+		$data['contentType'] = $this->_getOption('contentType');
+
+		return $data;
+	}
+
+	/**
+	 * 获取设置选项
+	 * @param $name
+	 * @return null
+	 */
+	public function _getOption($name)
+	{
+		if (isset($this->_headers[$name])) {
+			return $this->_headers[$name];
+		}
+
+		return null;
+	}
+
+	/**
+	 * 返回状态码
+	 */
+	public function _getStatusCode()
+	{
+		$result = null;
+
+		if (isset($this->_headers['statusCode'])) {
+			$httpStatus = ocConfig('HTTP_STATUS');
+			if (isset($httpStatus[$this->_headers['statusCode']])) {
+				$result = $httpStatus[$this->_headers['statusCode']];
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * 设置返回内容类型
+	 */
+	public function _getContentType()
+	{
+		$result = null;
+
+		if (isset($this->_headers['contentType'])) {
+			$contentType = strtolower($this->_headers['contentType']);
+			$mineTypes = ocConfig('MINE_TYPES');
+			if (array_key_exists($contentType, $mineTypes)) {
+				$contentType = $mineTypes[$contentType];
+			}
+
+			if (!empty($this->_headers['charset'])) {
+				$charset = $this->_headers['charset'];
+			} else {
+				$charset = 'utf-8';
+			}
+
+			$result = "Content-Type:{$contentType}; charset={$charset}";
+		}
+
+		return $result;
 	}
 }

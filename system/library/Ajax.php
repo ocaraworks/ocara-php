@@ -32,8 +32,7 @@ class Ajax extends Base
 	 * 输出结果
 	 * @param string $status
 	 * @param array $message
-	 * @param string|array $body
-	 * @param bool $contentType
+	 * @param string $body
 	 */
 	public static function show($status, array $message = array(), $body = OC_EMPTY)
 	{
@@ -51,9 +50,14 @@ class Ajax extends Base
 		}
 
 		$response = self::$container->response;
-		$data = $response->prepareSendHeaders();
-		$contentType = $response->getHeader('contentType');
-		$response->sendHeaders($data);
+
+		if (ocConfig('AJAX.response_http_error_status', 0) == 1) {
+			$result['statusCode'] 	= $response->getOption('statusCode');
+			$response->setStatusCode(Response::STATUS_OK);
+		}
+
+		$contentType = $response->getOption('contentType');
+		$response->sendHeaders();
 
 		switch ($contentType)
 		{

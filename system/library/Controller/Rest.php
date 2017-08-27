@@ -149,7 +149,7 @@ class Rest extends ControllerBase
 			$this->response->setStatusCode($successCode);
 			return $result['body'];
 		} else {
-			if (!$this->response->getHeader('statusCode')) {
+			if (!$this->response->getOption('statusCode')) {
 				$this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
 			}
 			return $result;

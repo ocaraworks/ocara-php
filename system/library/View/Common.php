@@ -77,8 +77,9 @@ class Common extends ViewBase implements ViewInterfaces
 	}
 
 	/**
-	 * 开启/关闭/检测是否使用CSS或JS缓存
+	 * 检测是否使用CSS或JS缓存
 	 * @param bool|null $use
+	 * @return bool
 	 */
 	public function useCache($use = null)
 	{
@@ -116,6 +117,8 @@ class Common extends ViewBase implements ViewInterfaces
 	 * 获取所有已注册变量
 	 * @param string $name
 	 * @param mixed $default
+	 * @return array|null
+	 * @throws \Ocara\Exception\Exception
 	 */
 	public function getVar($name = null, $default = null)
 	{
@@ -138,15 +141,17 @@ class Common extends ViewBase implements ViewInterfaces
 	/**
 	 * 是否含有模板变量
 	 * @param string $name
+	 * @return bool
 	 */
 	public function hasVar($name)
 	{
 		return array_key_exists($name, $this->_vars);
 	}
-	
+
 	/**
 	 * 设置layout
 	 * @param string $layout
+	 * @return $this
 	 */
 	public function setLayout($layout = false)
 	{
@@ -388,7 +393,7 @@ class Common extends ViewBase implements ViewInterfaces
 	public function output($data)
 	{
 		if (ocConfig('FORM.data_cahce', 1)) {
-			self::$container->response->setHeader(
+			self::$container->response->setOption(
 				'Cache-control',
 				'private, must-revalidate'
 			);
