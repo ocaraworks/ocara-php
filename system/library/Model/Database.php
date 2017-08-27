@@ -40,9 +40,9 @@ abstract class Database extends ModelBase
 	private $_database;
 	private $_tableName;
 	private $_isOrm;
-	private $_selected;
 	private $_insertId;
 
+	private $_selected = array();
 	private $_relations = array();
 	private $_sql = array();
 	private $_primaries = array();
@@ -459,7 +459,7 @@ abstract class Database extends ModelBase
 	 */
 	public function clearData()
 	{
-		$this->_selected = false;
+		$this->_selected = array();
 		$this->_isOrm = false;
 		$this->clearProperty();
 		return $this;
@@ -576,6 +576,8 @@ abstract class Database extends ModelBase
 				}
 			}
 		}
+
+		$this->clearSql();
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
 
@@ -805,7 +807,23 @@ abstract class Database extends ModelBase
 	 */
 	public function findRow($condition = false, $option = null, $debug = false)
 	{
-		$this->_selected = true;
+		$this->clearData();
+
+		if ($condition) {
+			$this->_selected['where'] = $condition;
+		} else {
+			if (!empty($this->_sql['option']['where'])) {
+				$this->_selected['where'] = $this->_sql['option']['where'];
+			}
+			if (!empty($this->_sql['option']['mWhere'])) {
+				$this->_selected['mWhere'] = $this->_sql['option']['mWhere'];
+			}
+		}
+
+		if (empty($condition)) {
+			Error::show('need_condition');
+		}
+
 		$data = $this->getRow($condition, $option, $debug);
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $data;
@@ -989,7 +1007,9 @@ abstract class Database extends ModelBase
 		}
 
 		$this->_plugin->clearBindParams();
+
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
+			$this->clearSql();
 			return $result;
 		}
 
@@ -997,11 +1017,11 @@ abstract class Database extends ModelBase
 			$result = array('total' => $this->getTotal($debug), 'data'	=> $result);
 		}
 
+		$this->clearSql();
+
 		if ($ifCache && is_object($cacheObj)) {
 			$this->_saveCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired, $result);
 		}
-
-		$this->clearSql();
 
 		return $result;
 	}
@@ -1534,12 +1554,21 @@ abstract class Database extends ModelBase
 		$option = ocGet('option', $this->_sql, array());
 		$where = array();
 
-		if (isset($option['where']) && $option['where']) {
+		if (empty($option['where'])) {
+			if (isset($this->_selected['where'])) {
+				$option['where'] = $this->_selected['where'];
+			}
+			if (isset($this->_selected['mWhere'])) {
+				$option['mWhere'] = $this->_selected['mWhere'];
+			}
+		}
+
+		if (!empty($option['where'])) {
 			$option['where'] = $this->_getWhereSql($option['where']);
 			$where[] = array('where' => $option['where'], 'link' => 'AND');
 		}
 
-		if (isset($option['mWhere']) && $option['mWhere']) {
+		if (!empty($option['mWhere'])) {
 			foreach ($option['mWhere'] as $row) {
 				$row['where'] = $this->_plugin->parseCondition($row['where']);
 				$where[] = $row;
