@@ -346,12 +346,7 @@ abstract class Database extends ModelBase
 	public function loadFields($cache = true)
 	{
 		if ($cache) {
-			$filePath = self::getConfigPath($this->_tag);
-			$path = ocPath('conf', "fields/{$filePath}");
-
-			if (ocFileExists($path)) {
-				$this->_fields = @include($path);
-			}
+			$this->_fields = self::getFieldsConfig($this->getClass());
 		}
 
 		if (!$this->_fields) {
@@ -359,6 +354,23 @@ abstract class Database extends ModelBase
 		}
 
 		return $this;
+	}
+
+	/**
+	 * 获取字段配置
+	 * @param $class
+	 * @return array|mixed
+	 */
+	public static function getFieldsConfig($class)
+	{
+		$filePath = self::getConfigPath($class);
+		$path = ocPath('conf', "fields/{$filePath}");
+
+		if (ocFileExists($path)) {
+			return @include($path);
+		}
+
+		return array();
 	}
 
 	/**
@@ -1253,8 +1265,10 @@ abstract class Database extends ModelBase
 	 */
 	public function cWhere($operator, $field, $value, $alias = null)
 	{
-		return $this->complexWhere('where', $operator, $field, $value, $alias);
+		$this->complexWhere('where', $operator, $field, $value, $alias);
+		return $this;
 	}
+
 
 	/**
 	 * 生成复杂条件
@@ -1293,6 +1307,20 @@ abstract class Database extends ModelBase
 	{
 		$link = $link ? $link : 'AND';
 		$this->_sql['option']['mWhere'][] = compact('where', 'link');
+		return $this;
+	}
+
+	/**
+	 * 尾部更多SQL语句
+	 * @param string $sql
+	 * @return $this
+	 */
+	public function more($sql)
+	{
+		$sql = (array)$sql;
+		foreach ($sql as $value) {
+			$this->_sql['option']['more'][] = $value;
+		}
 		return $this;
 	}
 
@@ -1337,7 +1365,7 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 生成复杂分组条件
+	 * 生成复杂条件
 	 * @param string $operator
 	 * @param string $field
 	 * @param string|int $value
@@ -1345,7 +1373,9 @@ abstract class Database extends ModelBase
 	 */
 	public function cHaving($operator, $field, $value)
 	{
-		return $this->complexWhere('having', $operator, $field, $value, null);
+		$this->complexWhere('having', $operator, $field, $value, $alias);
+		$this->cWhere($operator, $field, $value, false, 'having');
+		return $this;
 	}
 
 	/**

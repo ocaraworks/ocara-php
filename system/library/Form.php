@@ -134,7 +134,7 @@ class Form extends Base
 	public function loadModel()
 	{
 		foreach ($this->_modelInfo as $key => $class) {
-			$this->_lang = array_merge($this->_lang, DatabaseModel::getConfig('LANG', null, $class));
+			$this->_lang = array_merge($this->_lang, ocColumn(DatabaseModel::getFieldsConfig($class), 'desc'));
 			$this->_map =array_merge($this->_map, DatabaseModel::getConfig('MAP', null, $class));
 		}
 
@@ -151,9 +151,9 @@ class Form extends Base
 
 	/**
 	 * 添加关联Model
-	 * @param string $name
-	 * @param string $server
-	 * @param bool $required
+	 * @param string $class
+	 * @param null $alias
+	 * @return $this
 	 */
 	public function model($class, $alias = null)
 	{
@@ -218,7 +218,7 @@ class Form extends Base
 	}
 
 	/**
-	 * 	 * 开启/关闭/检测表单验证功能
+	 * 开启/关闭/检测表单验证功能
 	 * @param bool|null $validate
 	 * @return $this|bool
 	 */

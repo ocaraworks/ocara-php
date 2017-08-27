@@ -17,7 +17,7 @@ class Filter extends Base
 	 */
 	private static $_instance = null;
 
-	public static $_jsEvents = array();
+	public static $_jsEvents;
 	
 	private function __clone(){}
 	private function __construct(){}
@@ -113,7 +113,7 @@ class Filter extends Base
 			$content = preg_replace('/<noframes[^>]*>.*<\/norame>/i', OC_EMPTY, $content);
 			$content = preg_replace('/<object[^>]*>.*<\/object>/i', OC_EMPTY, $content);
 			$content = preg_replace('/javascript:/i', OC_EMPTY, $content);
-			
+
 			$expression = '/(on('.self::$_jsEvents.'))|(('.self::$_jsEvents.')\((\s*function\()?)/i';
 			$content = preg_replace($expression, OC_EMPTY, $content);
 			

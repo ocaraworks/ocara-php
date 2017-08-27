@@ -423,3 +423,31 @@ function ocCurl($url, $data = null, array $headers = array(), $showError = false
 	
 	return null;
 }
+
+/**
+ * 获取二维数组字段值（保留原来的KEY）
+ * @param array $array
+ * @param string $field
+ * @return array
+ */
+function ocColumn(array $array, $field)
+{
+	$data = array();
+	foreach ($array as $key => $value) {
+		$data[$key] = $value[$field];
+	}
+	return $data;
+}
+
+/**
+ * 兼容函数
+ */
+if (!function_exists('array_column')) {
+	function array_column($array, $field) {
+		$data = array();
+		foreach ($array as $key => $value) {
+			$data[] = $value[$field];
+		}
+		return $data;
+	}
+}
