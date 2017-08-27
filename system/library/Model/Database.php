@@ -48,6 +48,7 @@ abstract class Database extends ModelBase
 	private $_primaries = array();
 	private $_joins = array();
 	private $_changes = array();
+	private $_unions = array();
 
 	private static $_config = array();
 	private static $_requirePrimary;
@@ -146,28 +147,6 @@ abstract class Database extends ModelBase
 			$this->_sharding($data);
 		}
 
-		return $this;
-	}
-
-	/**
-	 * 合并查询（去除重复值）
-	 * @param ModelBase $model
-	 * @return $this
-	 */
-	public function union(\Ocara\ModelBase $model)
-	{
-		$this->connect()->union($model, false);
-		return $this;
-	}
-
-	/**
-	 * 合并查询
-	 * @param ModelBase $model
-	 * @return $this
-	 */
-	public function unionAll(\Ocara\ModelBase $model)
-	{
-		$this->connect()->union($model, true);
 		return $this;
 	}
 
@@ -1000,9 +979,9 @@ abstract class Database extends ModelBase
 		}
 
 		if ($queryRow) {
-			$result = $this->_plugin->queryRow($sql, $debug, $count);
+			$result = $this->_plugin->queryRow($sql, $debug, $count, $this->_unions);
 		} else {
-			$result = $this->_plugin->query($sql, $debug, true, true, false, $count);
+			$result = $this->_plugin->query($sql, $debug, true, true, false, $count, $this->_unions);
 		}
 
 		$this->_plugin->clearBindParams();
@@ -1733,6 +1712,48 @@ abstract class Database extends ModelBase
 	protected function getTable()
 	{
 		return $this->_table;
+	}
+
+
+	/**
+	 * 合并查询（去除重复值）
+	 * @param ModelBase $model
+	 * @return $this
+	 */
+	public function union(\Ocara\ModelBase $model)
+	{
+		$this->_union($model, false);
+		return $this;
+	}
+
+	/**
+	 * 合并查询
+	 * @param ModelBase $model
+	 * @return $this
+	 */
+	public function unionAll(\Ocara\ModelBase $model)
+	{
+		$this->_union($model, true);
+		return $this;
+	}
+
+	/**
+	 * 合并查询
+	 * @param $model
+	 * @param bool $unionAll
+	 */
+	public function _Union($model, $unionAll = false)
+	{
+		$this->_unions[] = compact('model', 'unionAll');
+	}
+
+	/**
+	 * 获取合并设置
+	 * @return array
+	 */
+	public function getUnions()
+	{
+		return $this->_unions;
 	}
 
 	/**

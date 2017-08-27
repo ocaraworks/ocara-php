@@ -137,16 +137,6 @@ class DatabaseBase extends Sql
 	}
 
 	/**
-	 * 合并查询
-	 * @param $model
-	 * @param bool $unionAll
-	 */
-	public function union($model, $unionAll = false)
-	{
-		$this->_unions[] = compact('model', 'unionAll');;
-	}
-
-	/**
 	 * 初始化设置
 	 * @param array $config
 	 */
@@ -248,15 +238,6 @@ class DatabaseBase extends Sql
 	}
 
 	/**
-	 * 获取合并设置
-	 * @return array
-	 */
-	public function getUnions()
-	{
-		return $this->_unions;
-	}
-
-	/**
 	 * 执行SQL语句
 	 * @param string $sql
 	 * @param bool $debug
@@ -264,10 +245,11 @@ class DatabaseBase extends Sql
 	 * @param bool $required
 	 * @param bool $queryRow
 	 * @param bool $count
+	 * @param array $unions
 	 * @return array|bool|object|void
 	 * @throws Exception\Exception
 	 */
-	public function query($sql, $debug = false, $query = true, $required = true, $queryRow = false, $count = false)
+	public function query($sql, $debug = false, $query = true, $required = true, $queryRow = false, $count = false, $unions = array())
 	{
 		$ret = $this->_checkDebug($debug, $sql);
 		if ($ret) {
@@ -282,9 +264,8 @@ class DatabaseBase extends Sql
 		try {
 			$params = $this->_params ? array($this->_params) : array();
 			$this->_params = array();
-
 			if ($query) {
-				foreach ($this->_unions as $union) {
+				foreach ($unions as $union) {
 					if ($count) {
 						$unionData = $union['model']->getTotal(self::DEBUG_RETURN);
 					} else {
@@ -294,7 +275,6 @@ class DatabaseBase extends Sql
 					$params[] = $unionData['params'];
 				}
 			}
-
 			if ($this->_prepared && $params) {
 				$this->_plugin->prepare($sql);
 				$this->_bindParams($params);
@@ -332,13 +312,15 @@ class DatabaseBase extends Sql
 
 	/**
 	 * 查询一条记录
-	 * @param string $sql
+	 * @param $sql
 	 * @param bool $debug
 	 * @param bool $count
+	 * @param array $unions
+	 * @return array|bool|mixed|object|void
 	 */
-	public function queryRow($sql, $debug = false, $count = false)
+	public function queryRow($sql, $debug = false, $count = false, $unions = array())
 	{
-		$result = $this->query($sql, $debug, true, true, true, $count);
+		$result = $this->query($sql, $debug, true, true, true, $count, $unions);
 
 		if ($result && empty($debug)) {
 			$result = reset($result);
@@ -736,8 +718,8 @@ class DatabaseBase extends Sql
 
 	/**
 	 * 检测错误
-	 * @param array $ret
-	 * @param string $sql
+	 * @param $ret
+	 * @param $sql
 	 * @param bool $required
 	 */
 	public function checkError($ret, $sql, $required = true)
@@ -763,8 +745,9 @@ class DatabaseBase extends Sql
 
 	/**
 	 * debug参数检查
-	 * @param boolean $debug
-	 * @param string $sql
+	 * @param $debug
+	 * @param $sql
+	 * @return array|bool
 	 */
 	private function _checkDebug($debug, $sql)
 	{
