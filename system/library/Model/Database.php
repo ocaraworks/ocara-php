@@ -1265,8 +1265,7 @@ abstract class Database extends ModelBase
 	 */
 	public function cWhere($operator, $field, $value, $alias = null)
 	{
-		$this->complexWhere('where', $operator, $field, $value, $alias);
-		return $this;
+		return $this->complexWhere('where', $operator, $field, $value, $alias);
 	}
 
 
@@ -1307,20 +1306,6 @@ abstract class Database extends ModelBase
 	{
 		$link = $link ? $link : 'AND';
 		$this->_sql['option']['mWhere'][] = compact('where', 'link');
-		return $this;
-	}
-
-	/**
-	 * 尾部更多SQL语句
-	 * @param string $sql
-	 * @return $this
-	 */
-	public function more($sql)
-	{
-		$sql = (array)$sql;
-		foreach ($sql as $value) {
-			$this->_sql['option']['more'][] = $value;
-		}
 		return $this;
 	}
 
@@ -1373,9 +1358,7 @@ abstract class Database extends ModelBase
 	 */
 	public function cHaving($operator, $field, $value)
 	{
-		$this->complexWhere('having', $operator, $field, $value, $alias);
-		$this->cWhere($operator, $field, $value, false, 'having');
-		return $this;
+		return $this->complexWhere('having', $operator, $field, $value, null);
 	}
 
 	/**
