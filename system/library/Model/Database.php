@@ -448,7 +448,6 @@ abstract class Database extends ModelBase
 	 */
 	public function clearSql()
 	{
-		$this->_selected = false;
 		$this->_sql = array();
 		$this->_join(false, $this->_tableName, $this->_alias);
 		$this->_plugin = $this->_master;
@@ -460,6 +459,7 @@ abstract class Database extends ModelBase
 	 */
 	public function clearData()
 	{
+		$this->_selected = false;
 		$this->_isOrm = false;
 		$this->clearProperty();
 		return $this;
@@ -1001,6 +1001,8 @@ abstract class Database extends ModelBase
 			$this->_saveCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired, $result);
 		}
 
+		$this->clearSql();
+
 		return $result;
 	}
 
@@ -1251,7 +1253,6 @@ abstract class Database extends ModelBase
 		$this->complexWhere('where', $operator, $field, $value, $alias);
 		return $this;
 	}
-
 
 	/**
 	 * 生成复杂条件
