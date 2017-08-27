@@ -1432,6 +1432,17 @@ abstract class Database extends ModelBase
 	}
 
 	/**
+	 * * 设置统计字段
+	 * @param string $field
+	 * @return $this
+	 */
+	public function countField($field)
+	{
+		$this->_sql['countField'] = $field;
+		return $this;
+	}
+
+	/**
 	 * 设置字段别名转换映射
 	 * @param array $tables
 	 * @return array
@@ -1503,11 +1514,8 @@ abstract class Database extends ModelBase
 		$from = $this->_getFromSql($tables, $unJoined);
 
 		if ($count) {
-			if (ocGet('option.group', $this->_sql)) {
-				$fields = $this->_plugin->getCountSql('1', 'total', true);
-			} else {
-				$fields = $this->_plugin->getCountSql('1', 'total');
-			}
+			$countField = ocGet('countField', $this->_sql, null);
+			$fields = $this->_plugin->getCountSql($countField, 'total');
 		} else {
 			$aliasFields = $this->_getAliasFields($tables);
 			if (!isset($option['fields']) OR $this->_isDefaultFields($option['fields'])) {
