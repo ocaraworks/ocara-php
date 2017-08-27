@@ -943,7 +943,7 @@ abstract class Database extends ModelBase
 	 */
 	public function getTotal($debug = false)
 	{
-		$queryRow = empty($this->_sql['option']['group']) ? false : true;
+		$queryRow = empty($this->_sql['option']['group']) ? true : false;
 		$result = $this->_find(false, false, $debug, $queryRow, true);
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
