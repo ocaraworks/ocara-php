@@ -350,6 +350,7 @@ class DatabaseBase extends Sql
 	/**
 	 * 是否预处理
 	 * @param bool $pconnect
+	 * @return bool
 	 */
 	public function isPconnect($pconnect = true)
 	{
@@ -363,6 +364,7 @@ class DatabaseBase extends Sql
 	/**
 	 * 是否预处理
 	 * @param bool $prepare
+	 * @return bool
 	 */
 	public function isPrepare($prepare = true)
 	{
@@ -477,8 +479,9 @@ class DatabaseBase extends Sql
 	 * 获取最后一次插入记录的自增ID
 	 * @param string $sql
 	 * @param bool $debug
+	 * @return bool
 	 */
-	public function getInsertId($sql = false, $debug = false)
+	public function getInsertId($sql = null, $debug = false)
 	{
 		if (empty($sql)) $sql = $this->getLastIdSql();
 		$result = $this->queryRow($sql, $debug);
@@ -489,6 +492,7 @@ class DatabaseBase extends Sql
 	 * 检测表是否存在
 	 * @param string $table
 	 * @param bool $required
+	 * @return array|bool|object|void
 	 */
 	public function tableExists($table, $required = false)
 	{
@@ -508,6 +512,7 @@ class DatabaseBase extends Sql
 	 * @param string $table
 	 * @param array $data
 	 * @param bool $debug
+	 * @return bool
 	 */
 	public function insert($table, $data = null, $debug = false)
 	{
@@ -533,8 +538,9 @@ class DatabaseBase extends Sql
 	 * @param string|array $data
 	 * @param string|array $condition
 	 * @param bool $debug
+	 * @return array|bool|object|void
 	 */
-	public function update($table, $data = false, $condition = null, $debug = false)
+	public function update($table, $data = null, $condition = null, $debug = false)
 	{
 		if (empty($data)) {
 			$this->showError('fault_save_data');
@@ -558,6 +564,7 @@ class DatabaseBase extends Sql
 	 * @param string $table
 	 * @param string|array $condition
 	 * @param bool $debug
+	 * @return array|bool|object|void
 	 */
 	public function delete($table, $condition, $debug = false)
 	{
@@ -574,6 +581,7 @@ class DatabaseBase extends Sql
 	/**
 	 * 获取表全名
 	 * @param string $table
+	 * @return string
 	 */
 	public function getTableFullname($table)
 	{
@@ -728,8 +736,8 @@ class DatabaseBase extends Sql
 
 	/**
 	 * 检测错误
-	 * @param array|object $ret
-	 * @param stirng $sql
+	 * @param array $ret
+	 * @param string $sql
 	 * @param bool $required
 	 */
 	public function checkError($ret, $sql, $required = true)
@@ -766,9 +774,7 @@ class DatabaseBase extends Sql
 			if ($debug === self::DEBUG_RETURN) {
 				return $ret;
 			}
-			if ($debug === self::DEBUG_PRINT
-				|| $debug === self::DEBUG_DUMP
-			) {
+			if ($debug === self::DEBUG_PRINT || $debug === self::DEBUG_DUMP) {
 				if (OC_SYS_MODEL == 'develop') {
 					if ($debug === self::DEBUG_DUMP) {
 						ocDump($ret);
