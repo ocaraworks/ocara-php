@@ -653,7 +653,7 @@ abstract class Database extends ModelBase
 
 		$condition = array();
 		foreach ($this->_primaries as $field) {
-			if ($this->getProperty($field)) {
+			if ($this->hasProperty($field)) {
 				$condition[$field] = $this->getProperty($field);
 			}
 		}
@@ -1372,7 +1372,7 @@ abstract class Database extends ModelBase
 	 */
 	public function cHaving($operator, $field, $value)
 	{
-		$this->complexWhere('having', $operator, $field, $value, $alias);
+		$this->complexWhere('having', $operator, $field, $value, false);
 		$this->cWhere($operator, $field, $value, false, 'having');
 		return $this;
 	}
