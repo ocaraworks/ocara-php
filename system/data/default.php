@@ -135,6 +135,7 @@ $OC_CONF['APP_PATH_INFO'] = array(
 		'functions'		=> 'service',
 		'library'		=> 'service',
 		'support'		=> 'service',
+		'pass'			=> '',
 	),
 
 	/*目录映射*/
@@ -143,7 +144,7 @@ $OC_CONF['APP_PATH_INFO'] = array(
 		'function'	  => 'functions',
 		'image'		  => 'images',
 		'attachment'  => 'attachments',
-	)
+	),
 );
 
 /**

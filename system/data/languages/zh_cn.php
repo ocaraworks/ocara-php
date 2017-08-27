@@ -156,4 +156,5 @@ return array(
 
 	//已存在
 	'exists_dir'		    		=> array(2601, '已存在同名的目录！'),
+	'exists_container_singleton'	=> array(2602, '容器中已存在单例类'),
 );

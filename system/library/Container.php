@@ -77,7 +77,11 @@ class Container extends Base
             $name = OC_NS_SEP . ltrim($name, OC_NS_SEP);
         }
 
-        $this->_binds[$name] = $this->_getMatter($name, $source, $params, $deps);
+        $matter = $this->_getMatter($name, $source, $params, $deps);
+        if ($matter) {
+            $this->_binds[$name] = $matter;
+        }
+
         return $this;
     }
 
@@ -95,7 +99,11 @@ class Container extends Base
             $name = OC_NS_SEP . ltrim($name, OC_NS_SEP);
         }
 
-        $this->_singletons[$name] = $this->_getMatter($name, $source, $params, $deps);
+        $matter = $this->_getMatter($name, $source, $params, $deps, true);
+        if ($matter) {
+            $this->_singletons[$name] = $matter;
+        }
+
         return $this;
     }
 
@@ -141,13 +149,17 @@ class Container extends Base
      * @param mixed $source
      * @param array $params
      * @param array $deps
+     * @param bool $singleton
      * @return mixed
      * @throws Exception
      */
-    protected function _getMatter($name, $source, $params, $deps)
+    protected function _getMatter($name, $source, $params, $deps, $singleton = false)
     {
         if (!empty($this->_singletons[$name])) {
-            Error::show('exists_singleton.');
+            if (!$singleton) {
+                Error::show('exists_container_singleton');
+            }
+            return array();
         }
 
         $matter[] = $source;

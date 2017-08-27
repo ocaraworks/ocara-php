@@ -40,27 +40,37 @@ class Path extends Base
 	public static function initialize()
 	{
 		self::$_data = ocConfig('APP_PATH_INFO');
-		self::$_data['map']['lang'] = 'lang/' . Ocara::language();
+		self::$_data['replace']['lang'] = 'lang/' . Ocara::language();
 	}
-	
+
 	/**
 	 * 生成文件或目录的路径
-	 * @param string  $dir
-	 * @param string  $path
-	 * @param string  $root
+	 * @param string $dir
+	 * @param string $path
+	 * @param string $root
 	 * @param bool $local
 	 * @param bool $isFile
+	 * @return bool|mixed|string
+	 * @throws Exception\Exception
 	 */
-	public static function get($dir, $path, $root = false, $local = true, $isFile = true)
+	public static function get($dir, $path, $root = null, $local = true, $isFile = true)
 	{
 		Path::getInstance();
 		$mapDir = $dir;
-		
+
 		if (isset(self::$_data['map'][$dir])) {
 			$mapDir = self::$_data['map'][$dir];
 		}
 
-		$mapDir = strtr($mapDir, self::$_data['belong']) . OC_DIR_SEP . $mapDir;
+		if (isset(self::$_data['belong'][$mapDir])) {
+			if (isset(self::$_data['replace'][$mapDir])) {
+				$replace = self::$_data['replace'][$mapDir];
+			} else {
+				$replace = $mapDir;
+			}
+			$mapDir = self::$_data['belong'][$mapDir] . OC_DIR_SEP . $replace;
+		}
+
 		$result = ocDir($root, $mapDir) . $path;
 		if (isset($result)) {
 			if ($local && $isFile && ($result = ocFileExists($result)) == false) {
