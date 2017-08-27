@@ -419,14 +419,22 @@ class Sql extends Base
 
 	/**
 	 * 获取统计字段SQL
-	 * @param $countFiled
-	 * @param $fieldName
+	 * @param string $countFiled
+	 * @param string $fieldName
+	 * @param bool $groupCount
 	 * @return array|string
 	 */
-	public function getCountSql($countFiled, $fieldName)
+	public function getCountSql($countFiled, $fieldName = 'total', $groupCount = false)
 	{
 		$fieldName = $this->filterName($fieldName);
-		return Filter::addSlashes("COUNT({$countFiled}) AS {$fieldName}");
+
+		if ($groupCount) {
+			$sql = Filter::addSlashes("1 AS {$fieldName}");
+		} else {
+			$sql = Filter::addSlashes("COUNT({$countFiled}) AS {$fieldName}");
+		}
+
+		return $sql;
 	}
 
 	/**

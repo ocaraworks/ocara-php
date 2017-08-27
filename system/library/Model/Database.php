@@ -939,14 +939,13 @@ abstract class Database extends ModelBase
 	 */
 	public function getTotal($debug = false)
 	{
-		if (ocGet('option.group', $this->_sql)) {
-			$result = $this->_find(false, false, $debug, false, true);
-			return $debug === DatabaseBase::DEBUG_RETURN ? $result : count($result);
-		} else {
-			$result = $this->_find(false, false, $debug, true, true);
-			if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
-			return $result ? $result['total'] : 0;
+		$result = $this->_find(false, false, $debug, true, true);
+
+		if ($debug === DatabaseBase::DEBUG_RETURN) {
+			return $result;
 		}
+
+		return $result ? $result['total'] : 0;
 	}
 
 	/**
@@ -1265,7 +1264,8 @@ abstract class Database extends ModelBase
 	 */
 	public function cWhere($operator, $field, $value, $alias = null)
 	{
-		return $this->complexWhere('where', $operator, $field, $value, $alias);
+		$this->complexWhere('where', $operator, $field, $value, $alias);
+		return $this;
 	}
 
 
@@ -1306,6 +1306,20 @@ abstract class Database extends ModelBase
 	{
 		$link = $link ? $link : 'AND';
 		$this->_sql['option']['mWhere'][] = compact('where', 'link');
+		return $this;
+	}
+
+	/**
+	 * 尾部更多SQL语句
+	 * @param string $sql
+	 * @return $this
+	 */
+	public function more($sql)
+	{
+		$sql = (array)$sql;
+		foreach ($sql as $value) {
+			$this->_sql['option']['more'][] = $value;
+		}
 		return $this;
 	}
 
@@ -1358,7 +1372,9 @@ abstract class Database extends ModelBase
 	 */
 	public function cHaving($operator, $field, $value)
 	{
-		return $this->complexWhere('having', $operator, $field, $value, null);
+		$this->complexWhere('having', $operator, $field, $value, $alias);
+		$this->cWhere($operator, $field, $value, false, 'having');
+		return $this;
 	}
 
 	/**
@@ -1487,7 +1503,11 @@ abstract class Database extends ModelBase
 		$from = $this->_getFromSql($tables, $unJoined);
 
 		if ($count) {
-			$fields = $this->_plugin->getCountSql('1', 'total');
+			if (ocGet('option.group', $this->_sql)) {
+				$fields = $this->_plugin->getCountSql('1', 'total', true);
+			} else {
+				$fields = $this->_plugin->getCountSql('1', 'total');
+			}
 		} else {
 			$aliasFields = $this->_getAliasFields($tables);
 			if (!isset($option['fields']) OR $this->_isDefaultFields($option['fields'])) {

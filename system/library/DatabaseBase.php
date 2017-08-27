@@ -302,7 +302,9 @@ class DatabaseBase extends Sql
 					$result = $this->_plugin->get_result($this->_dataType);
 					$total = 0;
 					foreach ($result as $row) {
-						$total += reset($row);
+						$num = (integer)reset($row);
+						$num = $num == 0 ? 1 : $num;
+						$total += $num;
 					}
 					$result = array(array('total' => $total));
 				} else {
