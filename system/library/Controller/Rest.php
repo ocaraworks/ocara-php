@@ -49,6 +49,7 @@ class Rest extends ControllerBase
 			 ->bindSingleton('pager', array($this->feature, 'getPager'));
 
 		$this->session->initialize();
+		$this->setReturnAjaxHeaderErrorCode(true);
 
 		method_exists($this, '_start')   && $this->_start();
 		method_exists($this, '_module')  && $this->_module();
@@ -78,6 +79,8 @@ class Rest extends ControllerBase
 	 * 执行动作（返回值）
 	 * @param string $method
 	 * @param array $params
+	 * @return mixed
+	 * @throws \Ocara\Exception\Exception
 	 */
 	public function doReturnAction($method, array $params = array())
 	{

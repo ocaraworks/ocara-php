@@ -50,15 +50,12 @@ class Ajax extends Base
 		}
 
 		$response = self::$container->response;
-
-		if (ocConfig('AJAX.response_http_error_status', 0) == 1) {
-			$result['statusCode'] 	= $response->getOption('statusCode');
+		if (!ocConfig('AJAX.return_header_error_code', 0)) {
 			$response->setStatusCode(Response::STATUS_OK);
+			$result['statusCode'] 	= $response->getOption('statusCode');
 		}
 
 		$contentType = $response->getOption('contentType');
-		$response->sendHeaders();
-
 		switch ($contentType)
 		{
 			case 'json':
@@ -69,6 +66,7 @@ class Ajax extends Base
 				break;
 		}
 
+		$response->sendHeaders();
 		echo($content);
 	}
 

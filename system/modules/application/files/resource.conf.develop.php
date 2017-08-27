@@ -57,7 +57,7 @@ $CONF['LOG_PATH'] = 'logs'; //日志保存路径，会放在resource/data目录�
  * AJAX配置
  */
 $CONF['AJAX'] = array(
-	'response_http_error_status' => '1', //返回HTTP错误码
+	'return_header_error_code' => 0, //AJAX是否在HTTP头部返回HTTP错误码
 );
 
 /*

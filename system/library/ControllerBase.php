@@ -47,6 +47,16 @@ class ControllerBase extends Base implements ControllerInterface
 	{}
 
 	/**
+	 * 是否在HTTP头部返回错误码
+	 * @param bool $value
+	 */
+	public function setReturnAjaxHeaderErrorCode($value)
+	{
+		$value = $value ? 1 : 0;
+		Config::set('AJAX.return_header_error_code', $value);
+	}
+
+	/**
 	 * Ajax返回数据
 	 * @param string $data
 	 * @param string $message
@@ -68,13 +78,13 @@ class ControllerBase extends Base implements ControllerInterface
 		$this->response->setContentType($contentType);
 		Ajax::show('success', $message, $data);
 		method_exists($this, '_after') && $this->_after();
+
 		die();
 	}
 
 	/**
 	 * 获取或设置Model-静态属性保存
 	 * @param string $class
-	 * @param bool $required
 	 */
 	public function model($class = null)
 	{

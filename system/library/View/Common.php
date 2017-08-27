@@ -153,7 +153,7 @@ class Common extends ViewBase implements ViewInterfaces
 	 * @param string $layout
 	 * @return $this
 	 */
-	public function setLayout($layout = false)
+	public function setLayout($layout = null)
 	{
 		$layout = empty($layout) ? ocConfig('TEMPLATE.default_layout', 'layout') : $layout;
 		
@@ -187,7 +187,8 @@ class Common extends ViewBase implements ViewInterfaces
 
 	/**
 	 * 开启/关闭/检测是否使用layout
-	 * @param bool|null $use
+	 * @param null|bool $use
+	 * @return bool
 	 */
 	public function useLayout($use = null)
 	{

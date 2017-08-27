@@ -31,7 +31,6 @@ class Common extends ControllerBase implements ControllerInterface
 	private $_isSubmit = null;
 	private $_submitMethod = 'post';
 	private $_checkForm = true;
-
 	private $_forms = array();
 
 	/**
@@ -54,6 +53,7 @@ class Common extends ControllerBase implements ControllerInterface
 			 ->bindSingleton('pager', array($this->feature, 'getPager'));
 
 		$this->session->initialize();
+		$this->setReturnAjaxHeaderErrorCode(false);
 
 		method_exists($this, '_start')   && $this->_start();
 		method_exists($this, '_module')  && $this->_module();
