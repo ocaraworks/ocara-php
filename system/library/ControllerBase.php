@@ -76,7 +76,7 @@ class ControllerBase extends Base implements ControllerInterface
 		}
 
 		$this->response->setContentType($contentType);
-		Ajax::show('success', $message, $data);
+		$this->view->ajaxOutput($data, $message);
 		method_exists($this, '_after') && $this->_after();
 
 		die();

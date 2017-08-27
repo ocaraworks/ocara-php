@@ -84,7 +84,11 @@ class Common extends ControllerBase implements ControllerInterface
 		$this->_checkForm();
 
 		if (Request::isAjax()) {
-			method_exists($this, '_ajax') && $this->_ajax();
+			$data = OC_EMPTY;
+			if (method_exists($this, '_ajax')) {
+				$data = $this->_ajax();
+			}
+			$this->ajaxReturn($data);
 		} elseif ($this->_isSubmit && method_exists($this, '_submit')) {
 			$this->_submit();
 			$this->formToken->clear();
@@ -165,6 +169,7 @@ class Common extends ControllerBase implements ControllerInterface
 		$content = $this->render($file, $vars);
 		$this->view->output(array('content' => $content));
 		method_exists($this, '_after') && $this->_after();
+
 		die();
 	}
 

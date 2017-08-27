@@ -11,6 +11,7 @@ namespace Ocara\View;
 use Ocara\Error;
 use Ocara\Filter;
 use Ocara\Html;
+use Ocara\Ajax;
 use Ocara\ViewBase;
 use Ocara\Interfaces\View as ViewInterfaces;
 use Ocara\Service\Interfaces\Template as TemplateInterface;
@@ -399,8 +400,19 @@ class Common extends ViewBase implements ViewInterfaces
 				'private, must-revalidate'
 			);
 		}
+
 		self::$container->response->sendHeaders();
 		echo $data['content'];
+	}
+
+	/**
+	 * Ajax输出
+	 * @param mixed $data
+	 * @param array $message
+	 */
+	public function ajaxOutput($data, $message)
+	{
+		Ajax::show('success', $message, $data);
 	}
 
 	/**
