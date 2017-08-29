@@ -14,8 +14,9 @@ class Sql extends Base
 {
 	/**
 	 * 给逗号分隔的列表加引号
-	 * @param string|array $list
+	 * @param array|string $list
 	 * @param string $quote
+	 * @return array|bool|mixed|string
 	 */
 	public function quoteList($list, $quote = OC_QUOTE)
 	{
@@ -37,6 +38,7 @@ class Sql extends Base
 	 * 转义字符
 	 * @param string $name
 	 * @param bool $addSlashes
+	 * @return array|bool|mixed|string
 	 */
 	public function filterName($name, $addSlashes = true)
 	{
@@ -50,10 +52,11 @@ class Sql extends Base
 		return $this->filterSql($name, $addSlashes, true, true);
 	}
 
-	/**
+	/***
 	 * SQL安全过滤
 	 * @param string $content
 	 * @param bool $addSlashes
+	 * @return array|bool|mixed|string
 	 */
 	public function filterValue($content, $addSlashes = true)
 	{
@@ -409,7 +412,7 @@ class Sql extends Base
 	 * @param string $alias
 	 * @return string
 	 */
-	public function getBetweenSql($field, $value1, $value2, $alias = false)
+	public function getBetweenSql($field, $value1, $value2, $alias = null)
 	{
 		$value1 = $this->parseValue($value1, 'where');
 		$value2 = $this->parseValue($value2, 'where');

@@ -384,6 +384,7 @@ abstract class Database extends ModelBase
 	/**
 	 * 别名字段数据映射
 	 * @param array $data
+	 * @return array
 	 */
 	public function map(array $data)
 	{
@@ -530,8 +531,10 @@ abstract class Database extends ModelBase
 	/**
 	 * 保存记录
 	 * @param array $data
-	 * @param string|array $condition
+	 * @param mixed $condition
 	 * @param bool $debug
+	 * @return bool
+	 * @throws \Ocara\Exception\Exception
 	 */
 	private function _save($data, $condition, $debug = false)
 	{

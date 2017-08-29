@@ -145,12 +145,14 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 					$type = 'integer';
 				}
 			}
-			if (is_array($value)) {
-				foreach ($value as $k => $v) {
-					settype($value[$k], $type);
+			if (!self::checkOcaraSqlTag($value)) {
+				if (is_array($value)) {
+					foreach ($value as $k => $v) {
+						settype($value[$k], $type);
+					}
+				} elseif (ocScalar($value)) {
+					settype($value, $type);
 				}
-			} elseif (ocScalar($value)) {
-				settype($value, $type);
 			}
 			$data[$key] = $value;
 		}

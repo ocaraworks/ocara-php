@@ -318,20 +318,24 @@ final class Ocara
 				}
 				return true;
 			}
-			return interface_exists($newClass, false);
+			if (interface_exists($newClass, false)) {
+				return true;
+			}
 		}
 
 		$autoloads = spl_autoload_functions();
 		foreach ($autoloads as $func) {
 			if (is_string($func)) {
-				$result = call_user_func($func, $class);
+				call_user_func_array($func, array($class));
 			} elseif (is_array($func)) {
 				if (reset($func) === __CLASS__) continue;
-				$result = call_user_func($func, $class);
-			} else
+				call_user_func_array($func, array($class));
+			} else {
 				continue;
-			if ($result)
-				return $result;
+			}
+			if (class_exists($class, false) || interface_exists($newClass, false)) {
+				return true;
+			}
 		}
 
 		Error::show('not_exists_class', array($class));
@@ -340,6 +344,7 @@ final class Ocara
 	/**
 	 * 框架更新
 	 * @param array $params
+	 * @return bool
 	 */
 	public static function update(array $params = array())
 	{
@@ -350,7 +355,8 @@ final class Ocara
 
 	/**
 	 * 获取框架信息
-	 * @param string $key
+	 * @param null $key
+	 * @return array|bool|mixed|null
 	 */
 	public static function getFrameworkInfo($key = null)
 	{
