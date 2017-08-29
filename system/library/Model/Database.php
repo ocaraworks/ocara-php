@@ -943,14 +943,25 @@ abstract class Database extends ModelBase
 	 */
 	public function getTotal($debug = false)
 	{
-		$queryRow = empty($this->_sql['option']['group']) ? true : false;
+		$queryRow = true;
+		if ($this->_unions || !empty($this->_sql['option']['group'])) {
+			$queryRow = false;
+		}
+
 		$result = $this->_find(false, false, $debug, $queryRow, true);
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
 		}
 
-		return $result ? $result['total'] : 0;
+		if ($result) {
+			if (!$queryRow) {
+				$result = reset($result);
+			}
+			return (integer)$result['total'];
+		}
+
+		return 0;
 	}
 
 	/**
@@ -987,8 +998,8 @@ abstract class Database extends ModelBase
 		}
 
 		$sql = $this->_genSelectSql($count);
-		$cacheInfo = null;
 
+		$cacheInfo = null;
 		if (isset($this->_sql['cache']) && is_array($this->_sql['cache'])) {
 			$cacheInfo = $this->_sql['cache'];
 		}
@@ -997,9 +1008,9 @@ abstract class Database extends ModelBase
 		$ifCache = empty($debug) && $cacheConnect;
 
 		if ($ifCache) {
-			$sqlEncode = md5($sql);
+			$encodeSql = md5($sql);
 			$cacheObj  = Cache::connect($cacheConnect, $cacheRequired);
-			$cacheData = $this->_getCacheData($sql, $sqlEncode, $cacheObj, $cacheRequired);
+			$cacheData = $this->_getCacheData($sql, $encodeSql, $cacheObj, $cacheRequired);
 			if ($cacheData) return $cacheData;
 		}
 
@@ -1021,7 +1032,7 @@ abstract class Database extends ModelBase
 		$this->clearSql();
 
 		if ($ifCache && is_object($cacheObj)) {
-			$this->_saveCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired, $result);
+			$this->_saveCacheData($cacheObj, $sql, $encodeSql, $cacheRequired, $result);
 		}
 
 		return $result;
@@ -1521,7 +1532,8 @@ abstract class Database extends ModelBase
 
 		if ($count) {
 			$countField = ocGet('countField', $this->_sql, null);
-			$fields = $this->_plugin->getCountSql($countField, 'total');
+			$isGroup = !empty($option['group']);
+			$fields = $this->_plugin->getCountSql($countField, 'total', $isGroup);
 		} else {
 			$aliasFields = $this->_getAliasFields($tables);
 			if (!isset($option['fields']) OR $this->_isDefaultFields($option['fields'])) {

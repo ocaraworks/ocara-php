@@ -275,6 +275,7 @@ class DatabaseBase extends Sql
 					$params[] = $unionData['params'];
 				}
 			}
+
 			if ($this->_prepared && $params) {
 				$this->_plugin->prepare($sql);
 				$this->_bindParams($params);
@@ -285,18 +286,19 @@ class DatabaseBase extends Sql
 
 			if ($query) {
 				if ($count) {
-					$result = $this->_plugin->get_result($this->_dataType);
+					$result = $this->_plugin->get_result($this->_dataType, $queryRow);
 					$total = 0;
-					if ($count && $queryRow) {
-						$total = $result['total'];
-					} else {
+					if ($unions) {
 						foreach ($result as $row) {
-							$num = (integer)reset($row);
-							$num = $num == 0 ? 1 : $num;
-							$total += $num;
+							$num = reset($row);
+							$total += (integer)$num;
 						}
+					} elseif ($queryRow) {
+						$total = $result[0]['total'];
+					} else {
+						$total = count($result);
 					}
-					$result = array('total' => $total);
+					$result = array(array('total' => $total));
 				} else {
 					$result = $this->_plugin->get_result($this->_dataType, $queryRow);
 				}
