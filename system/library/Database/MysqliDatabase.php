@@ -67,10 +67,10 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	 */
 	public function getFields($table)
 	{
-		$table  = $this->getTableFullname($table);
-		$sql    = $this->getShowFieldsSql($table);
-		$data   = $this->query($sql);
-		$fields = array();
+		$table   = $this->getTableFullname($table);
+		$sqlData = $this->getShowFieldsSql($table);
+		$data    = $this->query($sqlData);
+		$fields  = array();
 
 		foreach ($data as $row) {
 			$fieldRow = array();
@@ -97,7 +97,8 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	 */
 	public function setCharset($charset)
 	{
-		return $this->query('SET NAMES ' . $charset);
+		$sqlData = $this->getSetCharsetSql($charset);
+		return $this->query($sqlData);
 	}
 
 	/**
@@ -107,21 +108,11 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	public function selectDatabase($name)
 	{
 		if ($this->_isPdo) {
-			$sql = $this->getSelectDbSql($name);
-			return $this->_plugin->query($sql);
+			$sqlData = $this->getSelectDbSql($name);
+			return $this->query($sqlData);
 		}
 
 		return $this->_plugin->select_db($name);
-	}
-
-	/**
-	 * 切换数据库的SQL
-	 * @param string $name
-	 * @return string
-	 */
-	public function getSelectDbSql($name)
-	{
-		return "USE " . $name;
 	}
 
 	/**

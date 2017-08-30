@@ -437,6 +437,7 @@ abstract class Database extends ModelBase
 	/**
 	 * 设置结果集返回数据类型
 	 * @param string $dataType
+	 * @return $this
 	 */
 	public function setDataType($dataType)
 	{
@@ -481,6 +482,7 @@ abstract class Database extends ModelBase
 	 * 缓存查询的数据
 	 * @param string $server
 	 * @param bool $required
+	 * @return $this
 	 */
 	public function cache($server = null, $required = false)
 	{
@@ -755,7 +757,12 @@ abstract class Database extends ModelBase
 	 */
 	public function query($sql, $debug = false)
 	{
-		return $sql ? $this->connect(false)->query($sql, $debug) : false;
+		if ($sql) {
+			$sqlData = $this->_plugin->getSqlData($sql);
+			return $this->connect(false)->query($sqlData, $debug);
+		}
+
+		return false;
 	}
 
 	/**
@@ -766,7 +773,12 @@ abstract class Database extends ModelBase
 	 */
 	public function queryRow($sql, $debug = false)
 	{
-		return $sql ? $this->connect(false)->queryRow($sql, $debug) : false;
+		if ($sql) {
+			$sqlData = $this->_plugin->getSqlData($sql);
+			return $this->connect(false)->queryRow($sqlData, $debug);
+		}
+
+		return false;
 	}
 
 	/**
@@ -824,10 +836,6 @@ abstract class Database extends ModelBase
 
 		if (!empty($this->_sql['option']['mWhere'])) {
 			$this->_selected['mWhere'] = $this->_sql['option']['mWhere'];
-		}
-
-		if (empty($this->_selected)) {
-			Error::show('need_condition');
 		}
 
 		$data = $this->getRow(false, $option, $debug);
@@ -1023,7 +1031,6 @@ abstract class Database extends ModelBase
 			$result = $this->_plugin->query($sql, $debug, true, true, false, $count, $this->_unions);
 		}
 
-		$this->_plugin->clearBindParams();
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
 		}

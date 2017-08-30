@@ -23,17 +23,9 @@ class DatabaseBase extends Sql
 	/**
 	 * 连接属性
 	 */
-	protected $_plugin = null;
-	protected $_isPdo = false;
-
-	protected $_config;
 	protected $_pdoName;
-	protected $_prepared;
 	protected $_dataType;
 	protected $_connectName;
-
-	protected $_params = array();
-	protected $_unions = array();
 
 	private $_error = array();
 	private static $_connects = array();
@@ -105,35 +97,6 @@ class DatabaseBase extends Sql
 	public function getConnectName()
 	{
 		return $this->_connectName;
-	}
-
-	/**
-	 * 清理绑定参数
-	 */
-	public function clearBindParams()
-	{
-		$this->_params = array();
-	}
-
-	/**
-	 * 获取绑定参数
-	 * @return array
-	 */
-	public function getBindParams()
-	{
-		return $this->_params;
-	}
-
-	/**
-	 * 绑定占位符参数
-	 * @param $name
-	 * @param $value
-	 */
-	public function bind($name, $value)
-	{
-		if (preg_match('/^:\w+$/', $name)) {
-			$this->_params['bind'][$name] = $value;
-		}
 	}
 
 	/**
@@ -239,7 +202,7 @@ class DatabaseBase extends Sql
 
 	/**
 	 * 执行SQL语句
-	 * @param string $sql
+	 * @param array $sqlData
 	 * @param bool $debug
 	 * @param bool $query
 	 * @param bool $required
@@ -249,21 +212,20 @@ class DatabaseBase extends Sql
 	 * @return array|bool|object|void
 	 * @throws Exception\Exception
 	 */
-	public function query($sql, $debug = false, $query = true, $required = true, $queryRow = false, $count = false, $unions = array())
+	public function query(array $sqlData, $debug = false, $query = true, $required = true, $queryRow = false, $count = false, $unions = array())
 	{
-		$ret = $this->_checkDebug($debug, $sql);
+		$ret = $this->_checkDebug($debug, $sqlData);
 		if ($ret) {
 			return $ret;
 		}
 
-		$sql = trim($sql);
+		list($sql, $params) = $sqlData;
 		if ($callback = ocConfig('CALLBACK.database.execute_sql.before', null)) {
 			Call::run($callback, array($sql, date(ocConfig('DATE_FORMAT.datetime'))));
 		}
 
 		try {
-			$params = $this->_params ? array($this->_params) : array();
-			$this->_params = array();
+			$params = $params ? array($params) : array();
 			if ($query) {
 				foreach ($unions as $union) {
 					if ($count) {
@@ -271,8 +233,9 @@ class DatabaseBase extends Sql
 					} else {
 						$unionData = $union['model']->getAll(false, false, self::DEBUG_RETURN);
 					}
-					$sql .= $this->getUnionSql($unionData['sql'], $union['unionAll']);
-					$params[] = $unionData['params'];
+					list($unionSql, $unionParams) = $unionData;
+					$sql .= $this->getUnionSql($unionSql, $union['unionAll']);
+					$params[] = $unionParams;
 				}
 			}
 
@@ -307,7 +270,7 @@ class DatabaseBase extends Sql
 			Error::show($exception->getMessage());
 		}
 
-		$ret = $this->checkError($result, $sql, $required);
+		$ret = $this->checkError($result, $sqlData, $required);
 
 		return $ret;
 	}
@@ -360,106 +323,6 @@ class DatabaseBase extends Sql
 	}
 
 	/**
-	 * 绑定参数
-	 * @param string $type
-	 * @param array $option
-	 * @param scalar $params
-	 */
-	public function bindParam($option, $type, &$params)
-	{
-		if (is_string($type)) {
-			$type = explode(OC_EMPTY, strtolower($type));
-		} elseif (is_array($type)) {
-			$type = array_map('strtolower', $type);
-		}
-
-		$types = $this->mapParamType($type);
-		$data = array();
-
-		foreach ($params as $key => &$value) {
-			$dataType = empty($types[$key]) ? $this->parseParamType($value) : $types[$key];
-			$data[] = array('type' => $dataType, 'value' => $value);
-		}
-
-		$option = strtolower($option);
-		$this->_params[$option] = array_merge($this->_params[$option], $data);
-	}
-
-	/**
-	 * 扩展函数（字段类型映射）
-	 * @param array $types
-	 * @return array
-	 */
-	protected function mapParamType($types)
-	{
-		return array();
-	}
-
-	/**
-	 * 绑定参数
-	 * @param array $params
-	 */
-	private function _bindParams(array $params)
-	{
-		$types = false;
-		$data = array();
-		$paramData = array();
-		$bindValues = array();
-
-		foreach ($params as $row) {
-			foreach (self::$paramOptions as $option) {
-				if ($option == 'bind') {
-					if (isset($row[$option])) {
-						$bindValues = $row[$option];
-					}
-				} elseif (!empty($row[$option])) {
-					$paramData = array_merge($paramData, $row[$option]);
-				}
-			}
-		}
-
-		foreach ($paramData as $key => &$value) {
-			$type = $this->parseParamType($value);
-			if ($this->_isPdo) {
-				$this->_plugin->bind_param($key + 1, $value, $type);
-			} else {
-				$types = $types . $type;
-				$data[] = &$value;
-			}
-		}
-
-		if (!$this->_isPdo) {
-			array_unshift($data, $types);
-			call_user_func_array(array($this->_plugin, 'bind_param'), $data);
-		}
-
-		if ($bindValues && method_exists($this->_plugin, 'bind_value')) {
-			foreach ($bindValues as $name => $value) {
-				$this->_plugin->bind_value($name, $value);
-			}
-		}
-	}
-
-	/**
-	 * 解析参数类型
-	 * @param mixed $value
-	 */
-	private function parseParamType($value)
-	{
-		$mapTypes = $this->_plugin->get_param_types();
-
-		if (is_numeric($value)) {
-			return $mapTypes['integer'];
-		} elseif (is_string($value)) {
-			return $mapTypes['string'];
-		} elseif (is_bool($value)) {
-			return $mapTypes['boolean'];
-		} else {
-			return $mapTypes['string'];
-		}
-	}
-
-	/**
 	 * 获取最后一次插入记录的自增ID
 	 * @param string $sql
 	 * @param bool $debug
@@ -481,8 +344,8 @@ class DatabaseBase extends Sql
 	public function tableExists($table, $required = false)
 	{
 		$table = $this->getTableFullname($table);
-		$sql = $this->getSelectSql(1, $table, array('limit' => 1));
-		$ret = $this->query($sql, false, false, false);
+		$sqlData = $this->getSelectSql(1, $table, array('limit' => 1));
+		$ret = $this->query($sqlData, false, false, false);
 
 		if ($required) {
 			return $ret;
@@ -505,14 +368,13 @@ class DatabaseBase extends Sql
 		}
 
 		$table = $this->getTableFullname($table);
-		$sql = $this->getInsertSql($table, $data);
+		$sqlData = $this->getInsertSql($table, $data);
 
-		$ret = $this->_checkDebug($debug, $sql);
+		$ret = $this->_checkDebug($debug, $sqlData);
 		if ($ret) return $ret;
 
-		$insertResult = $data ? $this->query($sql, false, false) : false;
+		$insertResult = $data ? $this->query($sqlData, false, false) : false;
 
-		$this->clearBindParams();
 		return $insertResult ? $this->getInsertId() : false;
 	}
 
@@ -532,14 +394,13 @@ class DatabaseBase extends Sql
 
 		$table = $this->getTableFullname($table);
 		$condition = $this->parseCondition($condition);
-		$sql = $this->getUpdateSql($table, $data, $condition);
+		$sqlData = $this->getUpdateSql($table, $data, $condition);
 
-		$ret = $this->_checkDebug($debug, $sql);
+		$ret = $this->_checkDebug($debug, $sqlData);
 		if ($ret) return $ret;
 
-		$ret = $data ? $this->query($sql, $debug, false) : false;
+		$ret = $data ? $this->query($sqlData, $debug, false) : false;
 
-		$this->clearBindParams();
 		return $ret;
 	}
 
@@ -554,10 +415,9 @@ class DatabaseBase extends Sql
 	{
 		$table = $this->getTableFullname($table);
 		$condition = $this->parseCondition($condition);
-		$sql = $this->getDeleteSql($table, $condition);
+		$sqlData = $this->getDeleteSql($table, $condition);
 
-		$ret = $this->query($sql, $debug, false);
-		$this->clearBindParams();
+		$ret = $this->query($sqlData, $debug, false);
 
 		return $ret;
 	}
@@ -661,6 +521,106 @@ class DatabaseBase extends Sql
 	}
 
 	/**
+	 * 绑定参数
+	 * @param string $type
+	 * @param array $option
+	 * @param scalar $params
+	 */
+	public function bindParam($option, $type, &$params)
+	{
+		if (is_string($type)) {
+			$type = explode(OC_EMPTY, strtolower($type));
+		} elseif (is_array($type)) {
+			$type = array_map('strtolower', $type);
+		}
+
+		$types = $this->mapParamType($type);
+		$data = array();
+
+		foreach ($params as $key => &$value) {
+			$dataType = empty($types[$key]) ? $this->parseParamType($value) : $types[$key];
+			$data[] = array('type' => $dataType, 'value' => $value);
+		}
+
+		$option = strtolower($option);
+		$this->_params[$option] = array_merge($this->_params[$option], $data);
+	}
+
+	/**
+	 * 扩展函数（字段类型映射）
+	 * @param array $types
+	 * @return array
+	 */
+	protected function mapParamType($types)
+	{
+		return array();
+	}
+
+	/**
+	 * 解析参数类型
+	 * @param mixed $value
+	 */
+	private function parseParamType($value)
+	{
+		$mapTypes = $this->_plugin->get_param_types();
+
+		if (is_numeric($value)) {
+			return $mapTypes['integer'];
+		} elseif (is_string($value)) {
+			return $mapTypes['string'];
+		} elseif (is_bool($value)) {
+			return $mapTypes['boolean'];
+		} else {
+			return $mapTypes['string'];
+		}
+	}
+
+	/**
+	 * 绑定参数
+	 * @param array $params
+	 */
+	protected function _bindParams(array $params)
+	{
+		$types = false;
+		$data = array();
+		$paramData = array();
+		$bindValues = array();
+
+		foreach ($params as $row) {
+			foreach (self::$paramOptions as $option) {
+				if ($option == 'bind') {
+					if (isset($row[$option])) {
+						$bindValues = $row[$option];
+					}
+				} elseif (!empty($row[$option])) {
+					$paramData = array_merge($paramData, $row[$option]);
+				}
+			}
+		}
+
+		foreach ($paramData as $key => &$value) {
+			$type = $this->parseParamType($value);
+			if ($this->_isPdo) {
+				$this->_plugin->bind_param($key + 1, $value, $type);
+			} else {
+				$types = $types . $type;
+				$data[] = &$value;
+			}
+		}
+
+		if (!$this->_isPdo) {
+			array_unshift($data, $types);
+			call_user_func_array(array($this->_plugin, 'bind_param'), $data);
+		}
+
+		if ($bindValues && method_exists($this->_plugin, 'bind_value')) {
+			foreach ($bindValues as $name => $value) {
+				$this->_plugin->bind_value($name, $value);
+			}
+		}
+	}
+
+	/**
 	 * 保存错误信息
 	 */
 	public function setError()
@@ -721,19 +681,19 @@ class DatabaseBase extends Sql
 	/**
 	 * 检测错误
 	 * @param $ret
-	 * @param $sql
+	 * @param $sqlData
 	 * @param bool $required
 	 */
-	public function checkError($ret, $sql, $required = true)
+	public function checkError($ret, $sqlData, $required = true)
 	{
 		$this->setError();
 		$errorExists = $this->errorExists();
 		$error = $errorExists ? $this->getError() : null;
 
-		if ($sql) {
+		if ($sqlData) {
 			$callback = ocConfig('CALLBACK.database.execute_sql.after', false);
 			if ($callback) {
-				$params = array($sql, $errorExists, $error,$ret, date(ocConfig('DATE_FORMAT.datetime')));
+				$params = array($sqlData, $errorExists, $error,$ret, date(ocConfig('DATE_FORMAT.datetime')));
 				Call::run($callback, $params);
 			}
 		}
@@ -747,24 +707,22 @@ class DatabaseBase extends Sql
 
 	/**
 	 * debug参数检查
-	 * @param $debug
-	 * @param $sql
+	 * @param bool $debug
+	 * @param array $sqlData
 	 * @return array|bool
 	 */
-	private function _checkDebug($debug, $sql)
+	private function _checkDebug($debug, $sqlData)
 	{
 		if ($debug) {
-			$ret = array('sql' => $sql, 'params' => $this->_params);
-			$this->_params = array();
 			if ($debug === self::DEBUG_RETURN) {
-				return $ret;
+				return $sqlData;
 			}
 			if ($debug === self::DEBUG_PRINT || $debug === self::DEBUG_DUMP) {
 				if (OC_SYS_MODEL == 'develop') {
 					if ($debug === self::DEBUG_DUMP) {
-						ocDump($ret);
+						ocDump($sqlData);
 					} else {
-						ocPrint($ret);
+						ocPrint($sqlData);
 					}
 				} else {
 					$this->showError('invalid_debug');

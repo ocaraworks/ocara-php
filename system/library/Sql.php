@@ -12,6 +12,35 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Sql extends Base
 {
+	protected $_isPdo = false;
+	protected $_prepared;
+	protected $_plugin = null;
+
+	protected $_params = array();
+	protected $_config = array();
+
+	/**
+	 * 获取设置编码SQL
+	 * @param $charset
+	 * @return array
+	 */
+	public function getSetCharsetSql($charset)
+	{
+		$sql = 'SET NAMES ' . $charset;
+		return $this->getSqlData($sql, false);
+	}
+
+	/**
+	 * 切换数据库的SQL
+	 * @param string $name
+	 * @return string
+	 */
+	public function getSelectDbSql($name)
+	{
+		$sql = "USE " . $name;
+		return $this->getSqlData($sql, false);
+	}
+
 	/**
 	 * 给逗号分隔的列表加引号
 	 * @param array|string $list
@@ -216,13 +245,15 @@ class Sql extends Base
 	 */
 	public function getSelectSql($fields, $tables, $options)
 	{
-		return "SELECT {$fields} FROM {$tables} "
+		$sql = "SELECT {$fields} FROM {$tables} "
 			. $this->getOptionSql('WHERE', $options)
 			. $this->getOptionSql('GROUP', $options)
 			. $this->getOptionSql('HAVING', $options)
 			. $this->getOptionSql('ORDER', $options)
 			. $this->getOptionSql('LIMIT', $options)
 			. $this->getOptionSql('MORE', $options);
+
+		return $this->getSqlData($sql);
 	}
 
 	/**
@@ -233,7 +264,8 @@ class Sql extends Base
 	 */
 	public function getInsertSql($table, $data)
 	{
-		return $this->getInsertSqlBase('INSERT', $table, $data);
+		$sql = $this->getInsertSqlBase('INSERT', $table, $data);
+		return $this->getSqlData($sql);
 	}
 
 	/**
@@ -283,7 +315,8 @@ class Sql extends Base
 			$set = implode(',', $array);
 		}
 
-		return "UPDATE {$table} SET {$set} " . ($where ? " WHERE {$where} " : OC_EMPTY);
+		$sql = "UPDATE {$table} SET {$set} " . ($where ? " WHERE {$where} " : OC_EMPTY);
+		return $this->getSqlData($sql);
 	}
 
 	/**
@@ -294,7 +327,8 @@ class Sql extends Base
 	 */
 	public function getReplaceSql($table, $data)
 	{
-		return $this->getInsertSqlBase('REPLACE', $table, $data);
+		$sql = $this->getInsertSqlBase('REPLACE', $table, $data);
+		return $this->getSqlData($sql);
 	}
 
 	/**
@@ -311,7 +345,8 @@ class Sql extends Base
 		$table = $this->filterName($table);
 		$delete = $this->filterName($delete);
 
-		return "DELETE {$delete} FROM {$table}" . ($where ? " WHERE {$where} " : OC_EMPTY);
+		$sql = "DELETE {$delete} FROM {$table}" . ($where ? " WHERE {$where} " : OC_EMPTY);
+		return $this->getSqlData($sql);
 	}
 
 	/**
@@ -322,7 +357,8 @@ class Sql extends Base
 	public function getShowFieldsSql($table)
 	{
 		$table = $this->filterName($table);
-		return "SHOW FULL FIELDS FROM {$table}";
+		$sql = "SHOW FULL FIELDS FROM {$table}";
+		return $this->getSqlData($sql, false);
 	}
 
 	/**
@@ -358,7 +394,8 @@ class Sql extends Base
 	 */
 	public function getLastIdSql()
 	{
-		return "SELECT last_insert_id() AS id";
+		$sql = "SELECT last_insert_id() AS id";
+		return $this->getSqlData($sql, false);
 	}
 
 	/**
@@ -790,5 +827,46 @@ class Sql extends Base
 		}
 
 		return $sql;
+	}
+
+	/**
+	 * 绑定占位符参数
+	 * @param $name
+	 * @param $value
+	 */
+	public function bind($name, $value)
+	{
+		if (preg_match('/^:\w+$/', $name)) {
+			$this->_params['bind'][$name] = $value;
+		}
+	}
+
+	/**
+	 * 获取绑定参数
+	 * @return array
+	 */
+	public function getBindParams()
+	{
+		return $this->_params;
+	}
+
+	/**
+	 * 获取SQL语句数据
+	 * @param string $sql
+	 * @param bool $checkParams
+	 * @return array
+	 */
+	public function getSqlData($sql, $checkParams = true)
+	{
+		$params = array();
+		if ($checkParams && $this->_params) {
+			$params = $this->_params;
+			$this->_params = array();
+		}
+
+		$sql = trim($sql);
+		$data = array($sql, $params);
+
+		return $data;
 	}
 }
