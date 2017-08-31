@@ -202,7 +202,7 @@ class DatabaseBase extends Sql
 
 	/**
 	 * 执行SQL语句
-	 * @param array $sqlData
+	 * @param array|string $sql
 	 * @param bool $debug
 	 * @param bool $query
 	 * @param bool $required
@@ -212,8 +212,14 @@ class DatabaseBase extends Sql
 	 * @return array|bool|object|void
 	 * @throws Exception\Exception
 	 */
-	public function query(array $sqlData, $debug = false, $query = true, $required = true, $queryRow = false, $count = false, $unions = array())
+	public function query($sql, $debug = false, $query = true, $required = true, $queryRow = false, $count = false, $unions = array())
 	{
+		if (is_string($sql)) {
+			$sqlData = array($sql, array());
+		} elseif (is_array($sql)) {
+			$sqlData = $sql;
+		}
+
 		$ret = $this->_checkDebug($debug, $sqlData);
 		if ($ret) {
 			return $ret;

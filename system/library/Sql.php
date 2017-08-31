@@ -26,8 +26,7 @@ class Sql extends Base
 	 */
 	public function getSetCharsetSql($charset)
 	{
-		$sql = 'SET NAMES ' . $charset;
-		return $this->getSqlData($sql, false);
+		return 'SET NAMES ' . $charset;
 	}
 
 	/**
@@ -37,8 +36,7 @@ class Sql extends Base
 	 */
 	public function getSelectDbSql($name)
 	{
-		$sql = "USE " . $name;
-		return $this->getSqlData($sql, false);
+		return "USE " . $name;
 	}
 
 	/**
@@ -357,8 +355,7 @@ class Sql extends Base
 	public function getShowFieldsSql($table)
 	{
 		$table = $this->filterName($table);
-		$sql = "SHOW FULL FIELDS FROM {$table}";
-		return $this->getSqlData($sql, false);
+		return "SHOW FULL FIELDS FROM {$table}";
 	}
 
 	/**
@@ -394,8 +391,7 @@ class Sql extends Base
 	 */
 	public function getLastIdSql()
 	{
-		$sql = "SELECT last_insert_id() AS id";
-		return $this->getSqlData($sql, false);
+		return "SELECT last_insert_id() AS id";
 	}
 
 	/**
@@ -853,17 +849,12 @@ class Sql extends Base
 	/**
 	 * 获取SQL语句数据
 	 * @param string $sql
-	 * @param bool $checkParams
 	 * @return array
 	 */
-	public function getSqlData($sql, $checkParams = true)
+	public function getSqlData($sql)
 	{
-		$params = array();
-		if ($checkParams && $this->_params) {
-			$params = $this->_params;
-			$this->_params = array();
-		}
-
+		$params = $this->_params ? $this->_params : array();
+		$this->_params = array();
 		$sql = trim($sql);
 		$data = array($sql, $params);
 
