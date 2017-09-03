@@ -160,9 +160,10 @@ class Url extends Base
 	 */
 	public static function create($route, $params = array(), $relative = false, $urlType = false, $static = true)
 	{
-		extract(Ocara::parseRoute($route));
+		$route = Ocara::parseRoute($route);
 		if (empty($route)) return false;
 
+		extract($route);
 		$urlType = $urlType ? $urlType : OC_URL_ROUTE_TYPE;
 
 		if (is_numeric($params) || is_string($params)) {
