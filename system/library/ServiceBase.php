@@ -20,7 +20,6 @@ class ServiceBase extends Base
 	/**
 	 * 加载语言文件
 	 * @param string $filePath
-	 * @param string $className
 	 */
 	public static function loadLanguage($filePath)
 	{
@@ -48,11 +47,12 @@ class ServiceBase extends Base
 			self::$_lang[self::getClass()] = $lang;
 		}
 	}
-	
+
 	/**
 	 * 获取语言配置信息
 	 * @param string $key
 	 * @param array $params
+	 * @return array
 	 */
 	public static function getLanguage($key, array $params = array())
 	{				
@@ -70,6 +70,7 @@ class ServiceBase extends Base
 	/**
 	 * 类文件是否存在
 	 * @param string $classFile
+	 * @return array
 	 */
 	public static function classFileExists($classFile)
 	{
@@ -103,6 +104,7 @@ class ServiceBase extends Base
 	 * 显示错误信息
 	 * @param string $error
 	 * @param array $params
+	 * @throws Exception
 	 */
 	public static function showError($error, array $params = array())
 	{
@@ -133,6 +135,7 @@ class ServiceBase extends Base
 	 * 设置错误信息
 	 * @param string $name
 	 * @param array $params
+	 * @return bool
 	 */
 	protected function setError($name, array $params = array())
 	{
