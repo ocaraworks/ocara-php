@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-			"Ocara\\":"system/library/",
+			"Ocara\\":"system/core/",
 			"Ocara\\Functions\\":"system/functions/",
 			"Ocara\\Develop\\":"system/modules/develop/library/",
 			"Ocara\\Service\\":"system/service/library/",

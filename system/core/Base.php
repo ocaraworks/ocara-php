@@ -19,6 +19,7 @@ abstract class Base
 	 */
 	private $_route;
 	private $_properties = array();
+	protected $_eventManager = array();
 
 	public static $container;
 
@@ -69,6 +70,11 @@ abstract class Base
 	public function hasProperty($name)
 	{
 		return array_key_exists($name, $this->_properties);
+	}
+
+	public function setEventManager(\Ocara\EventListener $eventListener)
+	{
+
 	}
 
 	/**

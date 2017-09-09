@@ -60,7 +60,7 @@ define('OC_SYS', OC_PATH . 'system/');
 define('OC_EXT', OC_PATH . 'extension/');
 
 //框架系统处理类目录
-define('OC_LIB', OC_SYS . 'library/');
+define('OC_CORE', OC_SYS . 'core/');
 
 //框架系统服务目录
 define('OC_SERVICE', OC_SYS . 'service/');

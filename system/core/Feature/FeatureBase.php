@@ -21,7 +21,7 @@ class FeatureBase extends Base
      */
     public function getValidator()
     {
-        ocImport(OC_LIB . 'Validator.php');
+        ocImport(OC_CORE . 'Validator.php');
         $class = ocConfig('VALIDATE_CLASS', 'Ocara\Service\Validate', true);
         $validator = new Validator(new $class);
         return $validator;

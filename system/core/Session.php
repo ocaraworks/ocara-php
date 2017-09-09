@@ -95,7 +95,8 @@ class Session extends Base
 
 	/**
 	 * 获取session变量值
-	 * @param string|array $key
+	 * @param bool $key
+	 * @return array|bool|mixed|null
 	 */
 	public static function get($key = false)
 	{
@@ -159,7 +160,8 @@ class Session extends Base
 
 	/**
 	 * 检测session是否设置
-	 * @param string|array $key
+	 * @param $key
+	 * @return array|bool|mixed|null
 	 */
 	public static function exists($key)
 	{
@@ -178,7 +180,7 @@ class Session extends Base
 
 	/**
 	 * cookie保存session设置
-	 * @param integer $saveTime
+	 * @param $saveTime
 	 * @param string $path
 	 * @param string $domain
 	 * @param bool $secure
@@ -194,6 +196,7 @@ class Session extends Base
 	/**
 	 * 设置session有效期(单位为秒)
 	 * @param integer $saveTime
+	 * @return string
 	 */
 	public static function setSaveTime($saveTime)
 	{
@@ -211,6 +214,7 @@ class Session extends Base
 	/**
 	 * 反序列化session串
 	 * @param string $data
+	 * @return bool
 	 */
 	public static function unserialize($data)
 	{

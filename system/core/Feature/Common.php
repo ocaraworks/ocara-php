@@ -70,7 +70,7 @@ class Common extends FeatureBase implements Feature
      */
     public function getFormToken()
     {
-        ocImport(OC_LIB . 'FormToken.php');
+        ocImport(OC_CORE . 'FormToken.php');
         $formToken = new FormToken($this->getRoute());
         return $formToken;
     }
@@ -80,7 +80,7 @@ class Common extends FeatureBase implements Feature
      */
     public static function getView($route)
     {
-        ocImport(OC_LIB . '/View/Common.php');
+        ocImport(OC_CORE . '/View/Common.php');
         $view = new CommonView();
         $view->setRoute($route);
         $view->initialize();

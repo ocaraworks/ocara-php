@@ -16,9 +16,9 @@ defined('OC_PATH') OR define(
 
 require_once (OC_PATH . 'system/functions/utility.php');
 require_once (OC_PATH . 'system/const/basic.php');
-require_once (OC_SYS . 'library/Base.php');
-require_once (OC_LIB . 'Config.php');
-require_once (OC_LIB . 'Container.php');
+require_once (OC_SYS . 'core/Base.php');
+require_once (OC_CORE . 'Config.php');
+require_once (OC_CORE . 'Container.php');
 
 final class Ocara
 {
@@ -71,7 +71,7 @@ final class Ocara
 	 */
 	public static function create()
 	{
-		include_once (OC_LIB . 'Application.php');
+		include_once (OC_CORE . 'Application.php');
 		Application::create();
 	}
 	

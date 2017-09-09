@@ -152,7 +152,7 @@ $OC_CONF['APP_PATH_INFO'] = array(
  */
 $OC_CONF['AUTOLOAD_MAP'] = array(
 	/*Ocara框架*/
-	'Ocara\\' 								=> OC_SYS . 'library/',
+	'Ocara\\' 								=> OC_SYS . 'core/',
 	'Ocara\Functions\\'     				=> OC_SYS . 'functions/',
 	'Ocara\Develop\\' 						=> OC_SYS . 'modules/develop/library/',
 

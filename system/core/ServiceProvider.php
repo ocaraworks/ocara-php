@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara;
 
-class Component extends ServiceBase
+class ServiceProvider extends Base
 {
     protected $_container;
 
