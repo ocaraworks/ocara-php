@@ -19,7 +19,7 @@ class Rest extends ViewBase implements ViewInterfaces
     /**
      * 初始化
      */
-    public function initialize()
+    public function init()
     {
         return $this;
     }

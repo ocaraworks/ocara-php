@@ -74,7 +74,7 @@ final class Rest extends FeatureBase implements Feature
         ocImport(OC_CORE . '/View/Rest.php');
         $view = new RestView();
         $view->setRoute($route);
-        $view->initialize();
+        $view->init();
         return $view;
     }
 }

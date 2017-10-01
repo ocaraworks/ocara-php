@@ -53,6 +53,6 @@ final class OcaraInvoke
 
 		$bootstrap = $bootstrap ? $bootstrap : '\Ocara\Bootstrap';
 		$bootstrap = new $bootstrap();
-		$bootstrap->initialize();
+		$bootstrap->init();
 	}
 }

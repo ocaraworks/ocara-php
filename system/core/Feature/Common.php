@@ -83,7 +83,18 @@ class Common extends FeatureBase implements Feature
         ocImport(OC_CORE . '/View/Common.php');
         $view = new CommonView();
         $view->setRoute($route);
-        $view->initialize();
+        $view->init();
+        return $view;
+    }
+
+    /**
+     * 获取View视图类
+     */
+    public static function getFormManager($route)
+    {
+        ocImport(OC_CORE . '/FormManager.php');
+        $view = new FormManager();
+        $view->setRoute($route);
         return $view;
     }
 }

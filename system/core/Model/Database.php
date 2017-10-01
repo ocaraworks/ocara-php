@@ -58,13 +58,13 @@ abstract class Database extends ModelBase
 	 */
 	public function __construct()
 	{
-		$this->initialize();
+		$this->init();
 	}
 
 	/**
 	 * 初始化
 	 */
-	public function initialize()
+	public function init()
 	{
 		if (self::$_requirePrimary === null) {
 			$required = ocConfig('MODEL_REQUIRE_PRIMARY', true);

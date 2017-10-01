@@ -31,7 +31,7 @@ class Rest extends ControllerBase
 	 * 初始化设置
 	 * @param array $route
 	 */
-	public function initialize(array $route)
+	public function init(array $route)
 	{
 		Request::setAjax();
 		$this->setRoute($route);
@@ -48,7 +48,7 @@ class Rest extends ControllerBase
 			 ->bindSingleton('db', function(){ Database::create('default'); })
 			 ->bindSingleton('pager', array($this->feature, 'getPager'));
 
-		$this->session->initialize();
+		$this->session->init();
 		$this->setReturnAjaxHeaderErrorCode(true);
 
 		method_exists($this, '_start')   && $this->_start();

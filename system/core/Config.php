@@ -36,7 +36,7 @@ final class Config extends Base
 	{
 		if (self::$_instance === null) {
 			self::$_instance = new self();
-			self::initialize();
+			self::init();
 		}
 		return self::$_instance;
 	}
@@ -44,7 +44,7 @@ final class Config extends Base
 	/**
 	 * 初始化
 	 */
-	public static function initialize()
+	public static function init()
 	{
 		if (!file_exists($path = OC_SYS . 'data/default.php')) {
 			Error::show('Lost ocara config file: default.php.');

@@ -38,7 +38,7 @@ class Form extends Base
 	 * 初始化
 	 * @param string $name
 	 */
-	public function initialize($name)
+	public function init($name)
 	{
 		$this->_sign = $name;
 		$this->_validateForm = true;

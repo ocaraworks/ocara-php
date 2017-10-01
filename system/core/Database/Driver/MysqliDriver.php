@@ -31,7 +31,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
 	 * 初始化配置
 	 * @param array $config
 	 */
-	public function initialize($config)
+	public function init($config)
 	{
 		$this->_config = $config;
 	}

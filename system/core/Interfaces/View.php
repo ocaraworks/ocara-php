@@ -16,7 +16,7 @@ interface View
 	/**
 	 * 初始化设置
 	 */
-	public function initialize();
+	public function init();
 
 	/**
 	 * 输出内容

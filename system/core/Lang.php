@@ -37,7 +37,7 @@ class Lang extends Base
 	 * 初始化
 	 * @throws Exception
 	 */
-	public static function initialize()
+	public static function init()
 	{
 		if  (self::$_ocData === null){
 			self::$_ocData = array();
@@ -126,7 +126,7 @@ class Lang extends Base
 	 */
 	public static function get($key = null, array $params = array())
 	{
-		self::initialize();
+		self::init();
 
 		if (func_num_args()) {
 			if (ocKeyExists($key, self::$_data)) {
@@ -145,7 +145,7 @@ class Lang extends Base
 	 */
 	public static function getDefault($key = null, array $params = array())
 	{
-		self::initialize();
+		self::init();
 
 		if (func_num_args()) {
 			return ocGetLanguage(self::$_ocData, $key, $params);
@@ -161,7 +161,7 @@ class Lang extends Base
 	 */
 	public static function set($key, $value)
 	{
-		self::initialize();
+		self::init();
 		ocSet(self::$_data, $key, $value);
 	}
 	
@@ -171,7 +171,7 @@ class Lang extends Base
 	 */
 	public static function exists($key = null)
 	{
-		self::initialize();
+		self::init();
 		return ocKeyExists($key, self::$_data);
 	}
 	
@@ -181,7 +181,7 @@ class Lang extends Base
 	 */
 	public static function del($key)
 	{
-		self::initialize();
+		self::init();
 		return ocDel(self::$_data, $key);
 	}
 }

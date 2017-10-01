@@ -1,21 +1,30 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架 服务组件基类Component
+ * Ocara开源框架 服务提供器类Provider
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara;
 
-class ServiceProvider extends Base
+class ServiceLocator extends Base
 {
-    protected $_container;
+    protected $_plugin;
+    protected $_services;
 
     public function __construct()
     {
-        $this->_container = new Container();
+        $this->_plugin = new Container();
+        $this->_register();
+        $this->_init();
     }
+
+    public function _register()
+    {}
+
+    public function _init()
+    {}
 
     /**
      * 获取不存在的属性时
@@ -28,26 +37,17 @@ class ServiceProvider extends Base
             $value = &$this->getProperty($key);
             return $value;
         }
-        if ($this->_container->isBound($key)) {
-            $instance = $this->_container->get($key);
-            $this->setProperty($key, $instance);
-            return $instance;
-        }
-        Error::show('no_property', array($key));
-    }
 
-    /**
-     * 调用未定义的方法时
-     * @param string $name
-     * @param array $params
-     * @return mixed
-     * @throws Exception\Exception
-     */
-    public function __call($name, $params)
-    {
-        if (is_object($this->_container) && method_exists($this->_container, $name)) {
-            return call_user_func_array(array(&$this->_container, $name), $params);
+        if (isset($this->_services[$key])) {
+            return $this->_services[$key];
         }
-        Error::show('no_method', array($name));
+
+        if ($this->_plugin) {
+            $instance = $this->_plugin->get($key);
+            $this->setProperty($key, $instance);
+            return $this->_services[$key] = $instance;
+        }
+
+        Error::show('no_property', array($key));
     }
 }

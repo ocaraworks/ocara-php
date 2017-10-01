@@ -27,13 +27,13 @@ abstract class Cache extends ModelBase
      */
     public function __construct()
     {
-        $this->initialize();
+        $this->init();
     }
 
     /**
      * 初始化
      */
-    public function initialize()
+    public function init()
     {
         $this->_tag = self::getClass();
         $this->connect();

@@ -17,7 +17,7 @@ interface Controller
 	 * 初始化设置
 	 * @param array $route
 	 */
-	public function initialize(array $route);
+	public function init(array $route);
 
 	/**
 	 * 执行动作

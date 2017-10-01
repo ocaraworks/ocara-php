@@ -44,7 +44,7 @@ final class Ocara
 	{
 		if (self::$_instance === null) {
 			self::$_instance = new self();
-			self::initialize();
+			self::init();
 		}
 		return self::$_instance;
 	}
@@ -58,7 +58,7 @@ final class Ocara
 
 		$bootstrap = $bootstrap ? $bootstrap : '\Ocara\Bootstrap';
 		$bootstrap = new $bootstrap();
-		$bootstrap->initialize();
+		$bootstrap->init();
 
 		self::$_route = $bootstrap->getRouteInfo();
 		define('OC_MODULE_URL', OC_ROOT_URL . ocDir(self::$_route['module']));
@@ -121,7 +121,7 @@ final class Ocara
 			Error::show('no_special_class', array('Action', $uaction));
 		}
 
-		$Control->initialize($route);
+		$Control->init($route);
 		if ($return) {
 			$Control->checkForm(false);
 			return $Control->doReturnAction($method, $params);
@@ -146,7 +146,7 @@ final class Ocara
 	/**
 	 * 初始化设置
 	 */
-	public static function initialize()
+	public static function init()
 	{
 		@ini_set('register_globals', 'Off');
 		register_shutdown_function("ocShutdownHandler");

@@ -29,7 +29,7 @@ class Path extends Base
 	{
 		if (self::$_instance === null) {
 			self::$_instance = new self();
-			self::initialize();
+			self::init();
 		}
 		return self::$_instance;
 	}
@@ -37,7 +37,7 @@ class Path extends Base
 	/**
 	 * 初始化
 	 */
-	public static function initialize()
+	public static function init()
 	{
 		self::$_data = ocConfig('APP_PATH_INFO');
 		self::$_data['replace']['lang'] = 'lang/' . Ocara::language();

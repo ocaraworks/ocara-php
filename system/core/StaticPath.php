@@ -30,7 +30,7 @@ class StaticPath extends Base
 	{
 		if (self::$_instance === null) {
 			self::$_instance = new self();
-			self::initialize();
+			self::init();
 		}
 		return self::$_instance;
 	}
@@ -38,7 +38,7 @@ class StaticPath extends Base
 	/**
 	 * 初始化函数
 	 */
-	private function initialize()
+	private function init()
 	{
 		self::$open      = ocConfig('STATIC.open', 0);
 		self::$fileType  = ocConfig('STATIC.file_type', 'html');

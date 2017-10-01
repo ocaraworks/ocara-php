@@ -14,7 +14,7 @@ class Bootstrap extends Base
     /**
      * 初始化
      */
-    public function initialize()
+    public function init()
     {
         self::loadSingleClass();
 

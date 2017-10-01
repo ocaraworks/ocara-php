@@ -37,7 +37,7 @@ class Common extends ControllerBase implements ControllerInterface
 	 * 初始化设置
 	 * @param array $route
 	 */
-	public function initialize(array $route)
+	public function init(array $route)
 	{
 		$this->setRoute($route);
 		Config::set('CALLBACK.ajax_return', array($this, 'formatAjaxResult'));
@@ -50,9 +50,10 @@ class Common extends ControllerBase implements ControllerInterface
 			 ->bindSingleton('formToken', array($this->feature, 'getFormToken'))
 			 ->bindSingleton('validator', array($this->feature, 'getValidator'))
 			 ->bindSingleton('db', function(){ Database::create('default'); })
-			 ->bindSingleton('pager', array($this->feature, 'getPager'));
+			 ->bindSingleton('pager', array($this->feature, 'getPager'))
+			 ->bindSingleton('formManager', array($this->feature, 'getFormManager'), array($this->getRoute()));
 
-		$this->session->initialize();
+		$this->session->init();
 		$this->setReturnAjaxHeaderErrorCode(false);
 
 		method_exists($this, '_start')   && $this->_start();
@@ -91,7 +92,7 @@ class Common extends ControllerBase implements ControllerInterface
 			$this->ajaxReturn($data);
 		} elseif ($this->_isSubmit && method_exists($this, '_submit')) {
 			$this->_submit();
-			$this->formToken->clear();
+			$this->formManager->clearToken();
 		} else{
 			method_exists($this, '_display') && $this->_display();
 			$this->display();
@@ -181,15 +182,7 @@ class Common extends ControllerBase implements ControllerInterface
 	 */
 	public function render($file = false, array $vars = array())
 	{
-		$tokenTag  = $this->formToken->getTokenTag();
-
-		foreach ($this->_forms as $formName => $form) {
-			if (is_object($form) && $form instanceof Form) {
-				$this->formToken->setRoute($form->getRoute());
-				$token = $this->formToken->setToken($formName);
-				$form->setToken($tokenTag, $token);
-			}
-		}
+		$this->formManager->setToken();
 
 		if (empty($file)) {
 			$tpl = $this->view->getTpl();
@@ -209,32 +202,54 @@ class Common extends ControllerBase implements ControllerInterface
 	 */
 	public function form($name = null)
 	{
-		if (empty($name)) {
-			$name  = $this->getRoute('controller');
-			$model = $this->model();
-			if (is_object($model) && $model instanceof ModelBase) {
-				$table = $model->getTable();
-			} else {
-				$table = $name;
-			}
-			if ($this->db->tableExists($table, false)) {
-				$form = $this->form($name)->model($table, false);
-			} else {
-				Error::show('no_form');
-			}
-		} elseif (isset($this->_forms[$name])
-			&& is_object($obj = $this->_forms[$name])
-			&& $obj instanceof Form
-		) {
-			$form = $this->_forms[$name];
-		} else {
-			$this->_forms[$name]= $form = new Form();
-			$form->initialize($name);
-			$form->setRoute($this->getRoute());
-			$this->view->assign($name, $form);
+		if ($name) {
+			$form = $this->formManager->append($name);
+			return $form;
 		}
 
+		$name  = $this->getRoute('controller');
+		$model = $this->model();
+
+		if (is_object($model) && $model instanceof ModelBase) {
+			$table = $model->getTable();
+		} else {
+			$table = $name;
+		}
+
+		if (!$this->db->tableExists($table, false)) {
+			Error::show('no_form');
+		}
+
+		$form = $this->formManager
+			->append($name)
+			->model($model, false);
+
 		return $form;
+//		if (empty($name)) {
+//			$name  = $this->getRoute('controller');
+//			$model = $this->model();
+//			if (is_object($model) && $model instanceof ModelBase) {
+//				$table = $model->getTable();
+//			} else {
+//				$table = $name;
+//			}
+//			if ($this->db->tableExists($table, false)) {
+//				$form = $this->form($name)->model($table, false);
+//			} else {
+//				Error::show('no_form');
+//			}
+//		} elseif (isset($this->_forms[$name])
+//			&& is_object($obj = $this->_forms[$name])
+//			&& $obj instanceof Form
+//		) {
+//			$form = $this->_forms[$name];
+//		} else {
+//			$this->_forms[$name]= $form = new Form();
+//			$form->init($name);
+//			$form->setRoute($this->getRoute());
+//			$this->view->assign($name, $form);
+//		}
+//		return $form;
 	}
 
 	/**
@@ -297,60 +312,44 @@ class Common extends ControllerBase implements ControllerInterface
 		if (!($this->_isSubmit && $this->_checkForm && $this->_forms))
 			return true;
 
-		$tokenTag  = $this->formToken->getTokenTag();
-		$postToken = $this->getSubmit($tokenTag);
-		$postForm  = null;
-
-		if (empty($postToken)) {
-			$this->_showCheckFormError('failed_validate_token');
-		}
-
-		foreach ($this->_forms as $formName => $form) {
-			$this->formToken->setRoute($form->getRoute());
-			if ($this->formToken->exists($formName, $postToken)) {
-				$postForm = $form;
-				$this->formToken->setCurrentForm($formName);
-				break;
-			}
-		}
-
-		if ($postForm === null) {
-			$this->_showCheckFormError('not_exists_form');
-		}
-
-		if ($postForm->validateForm()) {
+		$postForm = $this->formManager->getPostForm();
+		if ($postForm) {
 			$data = $this->getSubmit();
-			if (!$postForm->validate($this->validator, $data)) {
-				$this->_showCheckFormError(
-					'failed_validate_form',
-					array($this->validator->getError()),
-					$this->validator->getErrorSource()
-				);
-			}
+			$this->formManager->validate($postForm, $data);
 		}
+//
+//		$tokenTag  = $this->formToken->getTokenTag();
+//		$postToken = $this->getSubmit($tokenTag);
+//		$postForm  = null;
+//
+//		if (empty($postToken)) {
+//			$this->_showCheckFormError('failed_validate_token');
+//		}
+//
+//		foreach ($this->_forms as $formName => $form) {
+//			$this->formToken->setRoute($form->getRoute());
+//			if ($this->formToken->exists($formName, $postToken)) {
+//				$postForm = $form;
+//				$this->formToken->setCurrentForm($formName);
+//				break;
+//			}
+//		}
+//
+//		if ($postForm === null) {
+//			$this->_showCheckFormError('not_exists_form');
+//		}
+//
+//		if ($postForm->validateForm()) {
+//			$data = $this->getSubmit();
+//			if (!$postForm->validate($this->validator, $data)) {
+//				$this->_showCheckFormError(
+//					'failed_validate_form',
+//					array($this->validator->getError()),
+//					$this->validator->getErrorSource()
+//				);
+//			}
+//		}
 
 		return true;
-	}
-
-	/**
-	 * 显示表单检测错误
-	 * @param string $errorType
-	 * @param array $params
-	 * @param array $data
-	 */
-	private function _showCheckFormError($errorType, $params = array(), $data = array())
-	{
-		$error['errorType'] = $errorType;
-		$error['errorInfo'] = Lang::get($errorType, $params);;
-		$error['errorData'] = $data;
-
-		$callback = ocConfig(array('CALLBACK', 'form', 'check_error'), false);
-		if ($callback) {
-			Call::run($callback, array($error, $this->getRoute()));
-		} else {
-			Error::show($error['errorInfo']);
-		}
-
-		die();
 	}
 }

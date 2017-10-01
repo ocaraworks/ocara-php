@@ -40,7 +40,7 @@ class Session extends Base
 	 * Session初始化处理
 	 * @param $start
 	 */
-	public static function initialize($start = true)
+	public static function init($start = true)
 	{
 		$saveType = ocConfig('SESSION.save_type', Session::SAVE_TYPE_FILE);
 

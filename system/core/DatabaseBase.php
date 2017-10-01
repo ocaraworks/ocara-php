@@ -78,7 +78,7 @@ class DatabaseBase extends Sql
 
 		$this->_config = $config;
 		ocDel($this->_config, 'password');
-		$this->initialize($config);
+		$this->init($config);
 	}
 
 	/**
@@ -103,7 +103,7 @@ class DatabaseBase extends Sql
 	 * 初始化设置
 	 * @param array $config
 	 */
-	public function initialize(array $config)
+	public function init(array $config)
 	{
 		$config['password'] = ocGet('password', $config);
 		$connectName = $config['connect_name'];
@@ -137,10 +137,10 @@ class DatabaseBase extends Sql
 	{
 		if (ocCheckExtension($this->_pdoName, false)) {
 			$object = $this->loadDatabase('Pdo');
-			$object->initialize($this->getPdoParams($data));
+			$object->init($this->getPdoParams($data));
 		} else {
 			$object = $this->loadDatabase($data['class']);
-			$object->initialize($data);
+			$object->init($data);
 		}
 
 		return $object;
