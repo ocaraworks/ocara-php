@@ -79,7 +79,7 @@ final class Call extends Base
 	{
 		$route = array_values($route);
 
-		if ((count($route) < 2 || !is_string($route[1]))) {
+		if (count($route) < 2 || !is_string($route[1])) {
 			self::_throwError('invalid_call_func');
 		} else {
 			if (is_object($route[0])) {

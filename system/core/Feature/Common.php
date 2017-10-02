@@ -64,37 +64,4 @@ class Common extends FeatureBase implements Feature
 
         return array($module, $controller, $action);
     }
-
-    /**
-     * 获取表单令牌类
-     */
-    public function getFormToken()
-    {
-        ocImport(OC_CORE . 'FormToken.php');
-        $formToken = new FormToken($this->getRoute());
-        return $formToken;
-    }
-
-    /**
-     * 获取View视图类
-     */
-    public static function getView($route)
-    {
-        ocImport(OC_CORE . '/View/Common.php');
-        $view = new CommonView();
-        $view->setRoute($route);
-        $view->init();
-        return $view;
-    }
-
-    /**
-     * 获取View视图类
-     */
-    public static function getFormManager($route)
-    {
-        ocImport(OC_CORE . '/FormManager.php');
-        $view = new FormManager();
-        $view->setRoute($route);
-        return $view;
-    }
 }

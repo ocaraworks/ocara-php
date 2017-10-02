@@ -19,9 +19,9 @@ class ControllerBase extends Base implements ControllerInterface
 	 * @var $_models 模型类
 	 */
 	public $feature;
+	public $service;
 
 	protected $_ajaxContentType;
-
 	private $_models = array();
 
 	/**
@@ -29,7 +29,8 @@ class ControllerBase extends Base implements ControllerInterface
 	 * @param array $route
 	 */
 	public function init(array $route)
-	{}
+	{
+	}
 
 	/**
 	 * 执行动作
@@ -114,9 +115,7 @@ class ControllerBase extends Base implements ControllerInterface
 			$value = &$this->getProperty($key);
 			return $value;
 		}
-		if (self::$container->isBound($key)) {
-			$instance = self::$container->get($key);
-			$this->setProperty($key, $instance);
+		if ($instance = $this->service->get($key)) {
 			return $instance;
 		}
 		Error::show('no_property', array($key));

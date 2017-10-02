@@ -10,22 +10,10 @@ namespace Ocara\Interfaces;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-interface Feature
+interface ServiceManager
 {
 	/**
-	 * 获取路由
-	 * @param string $action
-	 * @param bool $isModule
-	 * @param bool $isStandard
-	 * @return bool|null|string
+	 * 注册服务组件
 	 */
-	public static function getControllerAction($action, $isModule = false, $isStandard = false);
-
-	/**
-	 * 设置最终路由
-	 * @param string $module
-	 * @param string $controller
-	 * @param string $action
-	 */
-	public static function getDefaultRoute($module, $controller, $action);
+	public function register();
 }

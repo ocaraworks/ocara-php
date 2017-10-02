@@ -18,10 +18,11 @@ abstract class Base
 	 * @var $_properties 自定义属性
 	 */
 	private $_route;
+	protected $_plugin;
+	public static $container;
+
 	private $_properties = array();
 	protected $_eventManager = array();
-
-	public static $container;
 
 	/**
 	 * 实例化
@@ -70,11 +71,6 @@ abstract class Base
 	public function hasProperty($name)
 	{
 		return array_key_exists($name, $this->_properties);
-	}
-
-	public function setEventManager(\Ocara\EventListener $eventListener)
-	{
-
 	}
 
 	/**

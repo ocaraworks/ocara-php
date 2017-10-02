@@ -174,7 +174,7 @@ class Container extends Base
      * @param string $name
      * @return bool
      */
-    public function isBound($name)
+    public function has($name)
     {
         if (strstr($name, OC_NS_SEP)) {
             $name = OC_NS_SEP . ltrim($name, OC_NS_SEP);
@@ -322,7 +322,7 @@ class Container extends Base
                 $name = OC_NS_SEP . $dependency->name;
                 if (isset($data[$key]) && is_object($data[$key])) {
                     $class = $data[$key];
-                } elseif ($this->isBound($name)) {
+                } elseif ($this->has($name)) {
                     $class = $this->get($name);
                 }
             }

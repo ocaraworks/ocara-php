@@ -29,8 +29,7 @@ class FormManager extends Base
 		) {
 			$form = $this->_forms[$name];
 		} else {
-			$form = new Form();
-			$form->init($name);
+			$form = new Form($name);
 			$form->setRoute($this->getRoute());
 			$this->_forms[$name];
 		}

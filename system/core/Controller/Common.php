@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Controller;
 use Ocara\Interfaces\Controller as ControllerInterface;
+use \Ocara\Service\Manager\Controller\Common as CommonServiceManager;
 use Ocara\Ocara;
 use Ocara\Config;
 use Ocara\Request;
@@ -42,17 +43,7 @@ class Common extends ControllerBase implements ControllerInterface
 		$this->setRoute($route);
 		Config::set('CALLBACK.ajax_return', array($this, 'formatAjaxResult'));
 
-		$featureClass = Ocara::getControllerFeatureClass($this);
-		$this->feature = new $featureClass();
-
-		self::$container
-			 ->bindSingleton('view', array($this->feature, 'getView'), array($this->getRoute()))
-			 ->bindSingleton('formToken', array($this->feature, 'getFormToken'))
-			 ->bindSingleton('validator', array($this->feature, 'getValidator'))
-			 ->bindSingleton('db', function(){ Database::create('default'); })
-			 ->bindSingleton('pager', array($this->feature, 'getPager'))
-			 ->bindSingleton('formManager', array($this->feature, 'getFormManager'), array($this->getRoute()));
-
+		$this->service = new CommonServiceManager();
 		$this->session->init();
 		$this->setReturnAjaxHeaderErrorCode(false);
 
@@ -244,8 +235,7 @@ class Common extends ControllerBase implements ControllerInterface
 //		) {
 //			$form = $this->_forms[$name];
 //		} else {
-//			$this->_forms[$name]= $form = new Form();
-//			$form->init($name);
+//			$this->_forms[$name]= $form = new Form($name);
 //			$form->setRoute($this->getRoute());
 //			$this->view->assign($name, $form);
 //		}

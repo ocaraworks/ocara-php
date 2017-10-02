@@ -7,6 +7,7 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Controller;
+use Ocara\Service\Manager\Controller\Rest as RestServiceManager;
 use Ocara\Ocara;
 use Ocara\Config;
 use Ocara\Request;
@@ -37,16 +38,8 @@ class Rest extends ControllerBase
 		$this->setRoute($route);
 		Config::set('CALLBACK.ajax_return', array($this, 'formatAjaxResult'));
 
-		$defaultContentType = ocConfig('CONTROLLERS.rest.content_type','json');
-		$featureClass = Ocara::getControllerFeatureClass($this);
-		$this->feature = new $featureClass();
-
-		self::$container->response->setContentType($defaultContentType);
-		self::$container
-			 ->bindSingleton('view', array($this->feature, 'getView'), array($this->getRoute()))
-			 ->bindSingleton('validator', array($this->feature, 'getValidator'))
-			 ->bindSingleton('db', function(){ Database::create('default'); })
-			 ->bindSingleton('pager', array($this->feature, 'getPager'));
+		$this->service = new RestServiceManager();
+		$this->response->setContentType(ocConfig('CONTROLLERS.rest.content_type','json'));
 
 		$this->session->init();
 		$this->setReturnAjaxHeaderErrorCode(true);

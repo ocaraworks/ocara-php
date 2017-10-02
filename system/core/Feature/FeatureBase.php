@@ -16,24 +16,4 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class FeatureBase extends Base
 {
-    /**
-     * 获取验证器
-     */
-    public function getValidator()
-    {
-        ocImport(OC_CORE . 'Validator.php');
-        $class = ocConfig('VALIDATE_CLASS', 'Ocara\Service\Validate', true);
-        $validator = new Validator(new $class);
-        return $validator;
-    }
-
-    /**
-     * 获取分页器
-     */
-    public function getPager()
-    {
-        ocImport(OC_SERVICE . 'library/Pager.php');
-        $pager = new Pager();
-        return $pager;
-    }
 }
