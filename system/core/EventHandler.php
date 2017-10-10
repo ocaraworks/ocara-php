@@ -66,6 +66,14 @@ class EventHandler extends Basis
     }
 
     /**
+     * 清空事件处理器
+     */
+    public function clear()
+    {
+        $this->_handlers = array();
+    }
+
+    /**
      * 触发事件
      * @param $data
      * @return mixed
