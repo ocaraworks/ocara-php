@@ -10,68 +10,18 @@ namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-abstract class Base
+abstract class Base extends Basis
 {
 	/**
 	 * @var $_error 错误信息
 	 * @var $_route 路由信息
 	 * @var $_properties 自定义属性
 	 */
-	private $_route;
+	protected $_route;
 	protected $_plugin;
-	public static $container;
+	protected $_eventHandler;
 
-	private $_properties = array();
-	protected $_eventManager = array();
-
-	/**
-	 * 实例化
-	 * @return static
-	 */
-	public static function build()
-	{
-		return new static();
-	}
-
-	/**
-	 * 获取自定义属性
-	 * @param string $name
-	 * @return array
-	 */
-	public function &getProperty($name = null)
-	{
-		if (func_num_args()) {
-			if ($this->hasProperty($name)) {
-				return $this->_properties[$name];
-			}
-			return $this->$name;
-		}
-		return $this->_properties;
-	}
-
-	/**
-	 * 设置自定义属性
-	 * @param string $name
-	 * @param mixed $value
-	 */
-	public function setProperty($name, $value = null)
-	{
-		if (is_array($name)) {
-			$this->_properties = array_merge($this->_properties, $name);
-		} else {
-			$this->_properties[$name] = $value;
-		}
-	}
-
-	/**
-	 * 设置自定义属性
-	 * @param string $name
-	 * @return bool
-	 */
-	public function hasProperty($name)
-	{
-		return array_key_exists($name, $this->_properties);
-	}
+	protected $_events = array();
 
 	/**
 	 * 设置路由
@@ -100,30 +50,52 @@ abstract class Base
 	}
 
 	/**
-	 * 返回当前类名（去除命名空间）
-	 * @return string
+	 * 获取事件
+	 * @param $eventName
+	 * @return mixed
 	 */
-	public static function getClassName()
+	public function event($eventName)
 	{
-		$class = get_called_class();
-		return substr($class, strrpos($class, OC_NS_SEP) + 1);
+		if (!isset($this->_events[$eventName])) {
+			$this->_events[$eventName] = new $this->_eventHandler();
+		}
+
+		return $this->_events[$eventName];
 	}
 
 	/**
-	 * 返回当前类名（含命名空间）
-	 * @return string
+	 * 设置事件管理器
+	 * @param $class
 	 */
-	public static function getClass()
+	public function setEventHandler($class)
 	{
-		return OC_NS_SEP . get_called_class();
+		if (class_exists($class)) {
+			return $this->_eventHandler = $class;
+		}
+
+		Error::show('not_exists_class', $class);
 	}
 
 	/**
-	 * 清理自定义属性
+	 * 魔术方法-调用未定义的方法时
+	 * @param string $name
+	 * @param array $params
+	 * @return mixed
+	 * @throws Exception
 	 */
-	public function clearProperty()
+	public function __call($name, $params)
 	{
-		$this->_properties = array();
+		$obj = $this;
+
+		while (isset($obj->_plugin) && is_object($obj->_plugin)) {
+			if (method_exists($obj->_plugin, $name)) {
+				return call_user_func_array(array(&$obj->_plugin, $name), $params);
+			} else {
+				$obj = $obj->_plugin;
+			}
+		}
+		
+		Error::show('no_method', array($name));
 	}
 
 	/**
@@ -156,86 +128,6 @@ abstract class Base
 		} else {
 			Call::run(array(GlobalLog::getInstance(), $type), $params);
 		}
-	}
-
-	/**
-	 * 魔术方法-调用未定义的方法时
-	 * @param string $name
-	 * @param array $params
-	 * @return mixed
-	 * @throws Exception
-	 */
-	public function __call($name, $params)
-	{
-		$obj = $this;
-
-		while (isset($obj->_plugin) && is_object($obj->_plugin)) {
-			if (method_exists($obj->_plugin, $name)) {
-				return call_user_func_array(array(&$obj->_plugin, $name), $params);
-			} else {
-				$obj = $obj->_plugin;
-			}
-		}
-		
-		Error::show('no_method', array($name));
-	}
-
-	/**
-	 * 魔术方法-调用未定义的静态方法时
-	 * >= php 5.3
-	 * @param string $name
-	 * @param array $params
-	 * @throws Exception
-	 */
-	public static function __callStatic($name, $params)
-	{
-		Error::show('no_method', array($name));
-	}
-
-	/**
-	 * 魔术方法-检测属性是否存在
-	 * @param string $property
-	 * @return bool
-	 */
-	public function __isset($property)
-	{
-		return array_key_exists($property, $this->_properties);
-	}
-
-	/**
-	 * 魔术方法-获取自定义属性
-	 * @param string $key
-	 * @return mixed
-	 * @throws Exception
-	 */
-	public function &__get($key)
-	{
-		if (array_key_exists($key, $this->_properties)) {
-			return $this->_properties[$key];
-		}
-
-		Error::show('no_property', array($key));
-	}
-
-	/**
-	 * 魔术方法-设置自定义属性
-	 * @param string $key
-	 * @param mxied $value
-	 * @return mixed
-	 */
-	public function __set($key, $value)
-	{
-		return $this->_properties[$key] = $value;
-	}
-
-	/**
-	 * 魔术方法-删除属性
-	 * @param string $property
-	 */
-	public function __unset($property)
-	{
-		$this->_properties[$property] = null;
-		unset($this->_properties[$property]);
 	}
 
 	/**
