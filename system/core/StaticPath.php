@@ -52,7 +52,8 @@ class StaticPath extends Base
 	 * @param string $module
 	 * @param string $controller
 	 * @param string $action
-	 * @param array $data
+	 * @param string $data
+	 * @return array|bool
 	 */
 	public static function getStaticFile($module, $controller, $action, $data = null)
 	{
@@ -90,6 +91,8 @@ class StaticPath extends Base
 	 * @param array $params
 	 * @param array $data
 	 * @param string $paramsStr
+	 * @return array
+	 * @throws Exception\Exception
 	 */
 	private static function getParams($offset, $params, $data, $paramsStr)
 	{

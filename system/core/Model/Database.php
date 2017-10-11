@@ -87,6 +87,8 @@ abstract class Database extends ModelBase
 			$this->_primaries = explode(',', $this->_primary);
 		}
 
+		$this->listenEvent($this);
+
 		if (method_exists($this, '_model')) $this->_model();
 		return $this;
 	}
@@ -543,11 +545,11 @@ abstract class Database extends ModelBase
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
 			if ($this->_selected && method_exists($this, '_beforeUpdate')) {
-				$this->_beforeUpdate();
+				$this->event('_beforeUpdate')->trigger();
 			}
 		} else {
 			if (method_exists($this, '_beforeCreate')) {
-				$this->_beforeCreate();
+				$this->event('_beforeCreate')->trigger();
 			}
 		}
 
@@ -567,7 +569,7 @@ abstract class Database extends ModelBase
 			if (!$debug){
 				$this->_relateSave();
 				if($this->_selected && method_exists($this, '_afterUpdate')) {
-					$this->_afterUpdate();
+					$this->event('_afterUpdate')->trigger();
 				}
 			}
 		} else {
@@ -577,7 +579,7 @@ abstract class Database extends ModelBase
 				$this->_selectInsertRow($data);
 				$this->_relateSave();
 				if (method_exists($this, '_afterCreate')) {
-					$this->_afterCreate();
+					$this->event('_afterCreate')->trigger();
 				}
 			}
 		}
@@ -715,7 +717,7 @@ abstract class Database extends ModelBase
 		self::$container->transaction->push($this->_plugin);
 
 		if (!$debug && $this->_selected && method_exists($this, '_beforeDelete')) {
-			$this->_beforeDelete();
+			$this->event('_beforeDelete')->trigger();
 		}
 
 		$result = $this->_plugin->delete($this->_tableName, $condition, $debug);
@@ -724,7 +726,7 @@ abstract class Database extends ModelBase
 			&& $this->_selected
 			&& method_exists($this, '_afterDelete')
 		) {
-			$this->_afterDelete();
+			$this->event('_afterDelete')->trigger();
 		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {

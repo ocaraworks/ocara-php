@@ -19,9 +19,11 @@ abstract class Base extends Basis
 	 */
 	protected $_route;
 	protected $_plugin;
+	protected $_eventListener;
 	protected $_eventHandler;
 
 	protected $_events = array();
+	protected static $container;
 
 	/**
 	 * 设置路由
@@ -50,17 +52,33 @@ abstract class Base extends Basis
 	}
 
 	/**
-	 * 获取事件
+	 * 设置或获取事件
 	 * @param $eventName
 	 * @return mixed
 	 */
 	public function event($eventName)
 	{
 		if (!isset($this->_events[$eventName])) {
-			$this->_events[$eventName] = new $this->_eventHandler();
+			$event = new $this->_eventHandler($eventName);
+			$this->_events[$eventName] = $event;
+			if ($this->_eventListener && method_exists($this->_eventListener, $eventName)) {
+				$event->clear();
+				$event->set($eventName, array($this->_eventListener, $eventName));
+			}
 		}
 
 		return $this->_events[$eventName];
+	}
+
+	/**
+	 * 监听事件提供器
+	 * @param $eventListener
+	 * @return $this
+	 */
+	public function listenEvent($eventListener)
+	{
+		$this->_eventListener = $eventListener;
+		return $this;
 	}
 
 	/**

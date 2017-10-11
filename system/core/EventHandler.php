@@ -19,7 +19,7 @@ class EventHandler extends Basis
      * @param $callback
      * @param int $priority
      */
-    public function append($name, $callback, $priority = 0)
+    public function set($name, $callback, $priority = 0)
     {
         if (!isset($this->_handlers[$name])) {
             $this->_handlers[$name] = array();
@@ -28,11 +28,23 @@ class EventHandler extends Basis
         $priority = $priority ? (integer)$priority : 0;
         $index = count($this->_handlers);
 
-        $this->_handlers[$name][] = array(
+        $this->_handlers[$name] = array(
             'callback' => $callback,
             'index' => $index,
             'priority' => $priority,
         );
+    }
+
+    /**
+     * 修改优先级
+     * @param $name
+     * @param $priority
+     */
+    public function setPriority($name, $priority)
+    {
+        if (isset($this->_handlers[$name])) {
+            $this->_handlers[$name]['priority'] = $priority;
+        }
     }
 
     /**
