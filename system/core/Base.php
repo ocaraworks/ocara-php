@@ -19,8 +19,7 @@ abstract class Base extends Basis
 	 */
 	protected $_route;
 	protected $_plugin;
-	protected $_eventListener;
-	protected $_eventHandler;
+	protected $_event;
 
 	protected $_events = array();
 	protected static $container;
@@ -59,11 +58,11 @@ abstract class Base extends Basis
 	public function event($eventName)
 	{
 		if (!isset($this->_events[$eventName])) {
-			$event = new $this->_eventHandler($eventName);
+			$event = self::$container->create('event', $eventName);
 			$this->_events[$eventName] = $event;
-			if ($this->_eventListener && method_exists($this->_eventListener, $eventName)) {
+			if ($this->_event && method_exists($this->_event, $eventName)) {
 				$event->clear();
-				$event->set($eventName, array($this->_eventListener, $eventName));
+				$event->set($eventName, array($this->_event, $eventName));
 			}
 		}
 
@@ -71,27 +70,14 @@ abstract class Base extends Basis
 	}
 
 	/**
-	 * 监听事件提供器
-	 * @param $eventListener
+	 * 绑定事件资源包
+	 * @param $eventObject
 	 * @return $this
 	 */
-	public function listenEvent($eventListener)
+	public function bindEvents($eventObject)
 	{
-		$this->_eventListener = $eventListener;
+		$this->_event = $eventObject;
 		return $this;
-	}
-
-	/**
-	 * 设置事件管理器
-	 * @param $class
-	 */
-	public function setEventHandler($class)
-	{
-		if (class_exists($class)) {
-			return $this->_eventHandler = $class;
-		}
-
-		Error::show('not_exists_class', $class);
 	}
 
 	/**

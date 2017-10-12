@@ -87,7 +87,7 @@ abstract class Database extends ModelBase
 			$this->_primaries = explode(',', $this->_primary);
 		}
 
-		$this->listenEvent($this);
+		$this->bindEvent($this);
 
 		if (method_exists($this, '_model')) $this->_model();
 		return $this;

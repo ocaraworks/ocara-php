@@ -10,7 +10,7 @@ namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class Container extends Base
+class Container extends Basis
 {
     /**
      * @var array $_binds 动态绑定类

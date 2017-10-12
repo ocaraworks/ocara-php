@@ -1,12 +1,12 @@
 <?php
 namespace Ocara\Service\Manager\Controller;
-use Ocara\ServiceManager;
+use Ocara\ServiceProvider;
 use Ocara\Validator;
 use Ocara\View\Rest as RestView;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class Rest extends ServiceManager
+class Rest extends ServiceProvider
 {
     /**
      * 注册基本组件

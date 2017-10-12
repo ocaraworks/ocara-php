@@ -8,15 +8,15 @@
  ************************************************************************************************/
 namespace Ocara;
 
-use Ocara\Interfaces\ServiceManager as ServiceManagerInterface;
+use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
 
-class ServiceManager extends Base implements ServiceManagerInterface
+class ServiceProvider extends Base implements ServiceProviderInterface
 {
     protected $_services;
 
     /**
      * 初始化
-     * ServiceManager constructor.
+     * ServiceProvider constructor.
      */
     public function __construct()
     {

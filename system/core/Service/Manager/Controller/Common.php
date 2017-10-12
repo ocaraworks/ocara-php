@@ -9,12 +9,12 @@
 namespace Ocara\Service\Manager\Controller;
 
 use Ocara\FormToken;
-use Ocara\ServiceManager;
+use Ocara\ServiceProvider;
 use Ocara\View\Common as CommonView;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class Common extends ServiceManager
+class Common extends ServiceProvider
 {
     /**
      * 注册基本的组件

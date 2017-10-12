@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara;
 
-class EventHandler extends Basis
+class Event extends Basis
 {
     protected $_handlers;
     protected $_running;

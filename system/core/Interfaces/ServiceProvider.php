@@ -10,7 +10,7 @@ namespace Ocara\Interfaces;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-interface ServiceManager
+interface ServiceProvider
 {
 	/**
 	 * 注册服务组件

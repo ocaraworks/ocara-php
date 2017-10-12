@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Controller;
 use Ocara\Interfaces\Controller as ControllerInterface;
-use \Ocara\Service\Manager\Controller\Common as CommonServiceManager;
+use \Ocara\Service\Provider\Controller\Common as CommonServiceProvider;
 use Ocara\Ocara;
 use Ocara\Config;
 use Ocara\Request;
@@ -43,7 +43,7 @@ class Common extends ControllerBase implements ControllerInterface
 		$this->setRoute($route);
 		Config::set('CALLBACK.ajax_return', array($this, 'formatAjaxResult'));
 
-		$this->service = new CommonServiceManager();
+		$this->service = new CommonServiceProvider();
 		$this->session->init();
 		$this->setReturnAjaxHeaderErrorCode(false);
 

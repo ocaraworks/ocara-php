@@ -115,7 +115,7 @@ class ControllerBase extends Base implements ControllerInterface
 			$value = &$this->getProperty($key);
 			return $value;
 		}
-		if ($instance = $this->service->get($key)) {
+		if ($instance = $this->service->getService($key)) {
 			return $instance;
 		}
 		Error::show('no_property', array($key));
