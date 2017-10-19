@@ -6,33 +6,31 @@
  * Time: 下午 1:50
  */
 namespace Ocara;
+use Ocara\Interfaces\Bootstrap as BootstrapInterface;
 
-class Bootstrap extends Base
+class Bootstrap extends BootstrapBase implements BootstrapInterface
 {
-    public $services = array();
-
     /**
      * 初始化
      */
     public function init()
     {
-        self::loadSingleClass();
+        date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
 
-        $services = $this->services;
-        foreach ($services as $name => $method) {
-            self::$container->bind($name, $this->$method());
+        if (!@ini_get('short_open_tag')) {
+            Error::show('need_short_open_tag');
         }
 
-        self::_checkEnvironment();
         if (!ocFileExists(OC_ROOT . '.htaccess')) {
             self::createHtaccess();
         }
+
+        $this->event('routeVisit')
+             ->set('authCheck', array('Ocara\Events\RouteVisit', 'authCheck'));
     }
 
     /**
-     * 访问控制器
-     * @param $route
-     * @throws Exception
+     * 运行访问控制器
      */
     public function run($route)
     {
@@ -44,55 +42,8 @@ class Bootstrap extends Base
             }
         }
 
-        Ocara::checkRouteAccess($route);
+        $this->event('routeVisit')->trigger();
         Ocara::boot($route);
-    }
-
-    /**
-     * 加载单例模式类
-     */
-    private static function loadSingleClass()
-    {
-        $classes = ocConfig('SYSTEM_SERVICE_CLASS');
-
-        foreach ($classes as $class => $namespace) {
-            $name = lcfirst($class);
-            self::$container->bindSingleton($name, function() use($namespace) {
-                $file = strtr($namespace, ocConfig('AUTOLOAD_MAP')) . '.php';
-                ocImport($file);
-                if (method_exists($namespace, 'getInstance')) {
-                    return $namespace::getInstance();
-                } else {
-                    return new $namespace();
-                }
-            });
-        }
-    }
-
-    /**
-     * 环境检测
-     */
-    private static function _checkEnvironment()
-    {
-        date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
-        if (!@ini_get('short_open_tag')) {
-            Error::show('need_short_open_tag');
-        }
-        if (empty($_SERVER['REQUEST_METHOD'])) {
-            $_SERVER['REQUEST_METHOD'] = 'GET';
-        }
-    }
-
-    /**
-     * 获取路由信息
-     */
-    public static function getRouteInfo()
-    {
-        $_GET = Url::parseGet();
-        $route = self::$container->route;
-        list($module, $controller, $action) = $route::parseRouteInfo();
-        $route = compact('module', 'controller', 'action');
-        return $route;
     }
 
     /**

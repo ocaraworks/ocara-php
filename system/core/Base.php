@@ -22,7 +22,6 @@ abstract class Base extends Basis
 	protected $_event;
 
 	protected $_events = array();
-	protected static $container;
 
 	/**
 	 * 设置路由
@@ -58,7 +57,7 @@ abstract class Base extends Basis
 	public function event($eventName)
 	{
 		if (!isset($this->_events[$eventName])) {
-			$event = self::$container->create('event', $eventName);
+			$event = Ocara::container()->create('event', $eventName);
 			$this->_events[$eventName] = $event;
 			if ($this->_event && method_exists($this->_event, $eventName)) {
 				$event->clear();

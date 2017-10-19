@@ -70,7 +70,7 @@ class Error extends Base
 	 */
 	public static function show($error, array $params = array())
 	{
-		self::$container->transaction->rollback();
+		Ocara::services()->transaction->rollback();
 
 		if (!is_array($error)) {
 			$error = Lang::get($error, $params);
@@ -122,8 +122,8 @@ class Error extends Base
 	 */
     public static function output($error)
 	{
-		if (!self::$container->response->getOption('statusCode')) {
-			self::$container->response->setStatusCode(Response::STATUS_SERVER_ERROR);
+		if (!Ocara::services()->response->getOption('statusCode')) {
+			Ocara::services()->response->setStatusCode(Response::STATUS_SERVER_ERROR);
 		}
 
 		if (Request::isAjax()) {
@@ -159,7 +159,7 @@ class Error extends Base
 			$content = ocBr2nl(ocJsonEncode($error) . PHP_EOL . $trace);
 		} else {
 			$filePath = OC_SYS . 'modules/exception/index.php';
-			self::$container->response->sendHeaders();
+			Ocara::services()->response->sendHeaders();
 			if (ocFileExists($filePath)) {
 				ob_start();
 				include($filePath);

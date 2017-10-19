@@ -395,13 +395,13 @@ class Common extends ViewBase implements ViewInterfaces
 	public function output($data)
 	{
 		if (ocConfig('FORM.data_cahce', 1)) {
-			self::$container->response->setOption(
+			Ocara::services()->response->setOption(
 				'Cache-control',
 				'private, must-revalidate'
 			);
 		}
 
-		self::$container->response->sendHeaders();
+		Ocara::services()->response->sendHeaders();
 		echo $data['content'];
 	}
 

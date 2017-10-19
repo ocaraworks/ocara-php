@@ -559,10 +559,10 @@ abstract class Database extends ModelBase
 		}
 
 		if (!$debug && $this->_relations) {
-			self::$container->transaction->begin();
+			Ocara::services()->transaction->begin();
 		}
 
-		self::$container->transaction->push($this->_plugin);
+		Ocara::services()->transaction->push($this->_plugin);
 
 		if ($condition) {
 			$result = $this->_plugin->update($this->_tableName, $data, $condition, $debug);
@@ -714,7 +714,7 @@ abstract class Database extends ModelBase
 			Error::show('need_condition');
 		}
 
-		self::$container->transaction->push($this->_plugin);
+		Ocara::services()->transaction->push($this->_plugin);
 
 		if (!$debug && $this->_selected && method_exists($this, '_beforeDelete')) {
 			$this->event('_beforeDelete')->trigger();
@@ -1962,7 +1962,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		self::$container->transaction->commit();
+		Ocara::services()->transaction->commit();
 
 		return true;
 	}

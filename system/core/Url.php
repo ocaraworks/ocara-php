@@ -48,7 +48,7 @@ class Url extends Base
 	 * URL请求参数解析
 	 * @param string $url
 	 */
-	public static function parseGet($url = false)
+	public function parseGet($url = false)
 	{
 		if (empty($url)) {
 			if (OC_PHP_SAPI == 'cli') {

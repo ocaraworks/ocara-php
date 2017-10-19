@@ -13,6 +13,7 @@ use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
 class ServiceProvider extends Base implements ServiceProviderInterface
 {
     protected $_services;
+    protected $_container;
 
     /**
      * 初始化
@@ -20,7 +21,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function __construct()
     {
-        $this->_plugin = new Container();
+        $this->_container = new Container();
         $this->register();
     }
 
@@ -37,7 +38,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function hasService($key)
     {
-        return $this->_plugin->has($key);
+        return $this->_container->has($key);
     }
 
     /**
@@ -51,11 +52,9 @@ class ServiceProvider extends Base implements ServiceProviderInterface
             return $this->_services[$key];
         }
 
-        if ($this->_plugin) {
-            if ($instance = $this->_plugin->create($key)) {
-                $this->setService($key, $instance);
-                return $instance;
-            }
+        if ($this->_container && $instance = $this->_container->create($key)) {
+            $this->setService($key, $instance);
+            return $instance;
         } else {
             $container = Ocara::container();
             if ($instance = $container->create($key)) {
@@ -84,6 +83,10 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function &__get($key)
     {
+        if (array_key_exists($key, $this->_properties)) {
+            return $this->_properties[$key];
+        }
+
         if ($instance = $this->getService($key)) {
             return $instance;
         }

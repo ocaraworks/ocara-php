@@ -7,6 +7,7 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara;
+use Ocara\Service\Provider\Defaults;
 
 defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(true));
 
@@ -18,7 +19,6 @@ require_once (OC_PATH . 'system/functions/utility.php');
 require_once (OC_PATH . 'system/const/basic.php');
 require_once (OC_SYS . 'core/Base.php');
 require_once (OC_CORE . 'Config.php');
-require_once (OC_CORE . 'Container.php');
 
 final class Ocara
 {
@@ -28,8 +28,9 @@ final class Ocara
 	 * @var $OC_LANG    框架语言数据
 	 */
 	private static $_container;
+	private static $_services;
 	private static $_instance;
-	private static $_frameworkInfo;
+	private static $_info;
 
 	private static $_language = array();
 	private static $_route    = array();
@@ -50,20 +51,32 @@ final class Ocara
 	}
 
 	/**
-	 * 运行框架
+	 * 初始化设置
 	 */
-	public static function run($bootstrap = null)
+	public static function init()
 	{
-		self::getInstance();
+		@ini_set('register_globals', 'Off');
+		register_shutdown_function("ocShutdownHandler");
 
-		$bootstrap = $bootstrap ? $bootstrap : '\Ocara\Bootstrap';
-		$bootstrap = new $bootstrap();
-		$bootstrap->init();
+		Config::getInstance();
+		define('OC_SYS_MODEL', ocConfig('SYS_MODEL', 'application'));
+		self::$_language = ocConfig('LANGUAGE', 'zh_cn');
 
-		self::$_route = $bootstrap->getRouteInfo();
-		define('OC_MODULE_URL', OC_ROOT_URL . ocDir(self::$_route['module']));
+		error_reporting(self::errorReporting());
+		set_exception_handler(
+			ocConfig('ERROR_HANDLER.exception_error', 'ocExceptionHandler', true)
+		);
 
-		$bootstrap->run(self::$_route);
+		spl_autoload_register(array(__CLASS__, 'autoload'));
+
+		if (empty($_SERVER['REQUEST_METHOD'])) {
+			$_SERVER['REQUEST_METHOD'] = 'GET';
+		}
+
+		ocImport(array(
+			OC_SYS . 'const/config.php',
+			OC_SYS . 'functions/common.php',
+		));
 	}
 
 	/**
@@ -74,7 +87,30 @@ final class Ocara
 		include_once (OC_CORE . 'Application.php');
 		Application::create();
 	}
-	
+
+	/**
+	 * 运行框架
+	 * @param string $bootstrap
+	 */
+	public static function run($bootstrap = null)
+	{
+		self::getInstance();
+
+		$bootstrap = $bootstrap ? $bootstrap : '\Ocara\Bootstrap';
+		$bootstrap = new $bootstrap();
+
+		self::$_container = $bootstrap->getContainer();
+		self::$_services = $bootstrap->getServiceProvider();
+
+		$bootstrap->register();
+		$bootstrap->init();
+
+		self::$_route = self::getRoute();
+		define('OC_MODULE_URL', OC_ROOT_URL . ocDir(self::$_route['module']));
+
+		$bootstrap->run(self::$_route);
+	}
+
 	/**
 	 * 启动控制器
 	 * @param array|string $route
@@ -103,14 +139,15 @@ final class Ocara
 		$controlClass = $controllerNamespace . $ucontroller . 'Controller';
 		$method = $action . 'Action';
 
-		if (!method_exists($controlClass, $method)
-			&& ocFileExists($actionPath = $controllerPath . "Action/{$uaction}Action.php")
-		) {
-			include_once ($actionPath);
-			$actionClass = $controllerNamespace . 'Action' . OC_NS_SEP . $uaction . 'Action';
-			if (class_exists($actionClass, false)) {
-				$controlClass = $actionClass;
-				$method = '_action';
+		if (!method_exists($controlClass, $method)) {
+			$actionPath = $controllerPath . "Action/{$uaction}Action.php";
+			if (ocFileExists($actionPath)) {
+				include_once ($actionPath);
+				$actionClass = $controllerNamespace . 'Action' . OC_NS_SEP . $uaction . 'Action';
+				if (class_exists($actionClass, false)) {
+					$controlClass = $actionClass;
+					$method = '_action';
+				}
 			}
 		}
 
@@ -131,93 +168,46 @@ final class Ocara
 	}
 
 	/**
-	 * 当前权限检测
-	 * @param array $route
-	 */
-	public static function checkRouteAccess(array $route)
-	{
-		$route = array_values($route);
-		$callback = ocConfig('CALLBACK.auth.check', false);
-		if ($callback) {
-			self::accessResult(Call::run($callback, $route), $route);
-		}
-	}
-
-	/**
-	 * 初始化设置
-	 */
-	public static function init()
-	{
-		@ini_set('register_globals', 'Off');
-		register_shutdown_function("ocShutdownHandler");
-
-		Config::getInstance();
-		define('OC_SYS_MODEL', ocConfig('SYS_MODEL', 'application'));
-		self::$_language = ocConfig('LANGUAGE', 'zh_cn');
-
-		error_reporting(self::errorReporting());
-		set_exception_handler(
-			ocConfig('ERROR_HANDLER.exception_error', 'ocExceptionHandler', true)
-		);
-
-		self::container();
-		spl_autoload_register(array(__CLASS__, 'autoload'));
-		Base::$container = self::$_container;
-
-		ocImport(array(
-			OC_SYS . 'const/config.php',
-			OC_SYS . 'functions/common.php',
-		));
-	}
-
-	/**
-	 * 获取控制器特性类
-	 * @param $class
-	 */
-	public static function getControllerFeatureClass($class)
-	{
-		$controller = new \ReflectionClass($class);
-		$className = $controller->getName();
-		$controllers = ocConfig('CONTROLLER_FEATURE_CLASS', array());
-
-		foreach ($controllers as $name) {
-			if ($controller->isSubclassOf('Ocara\\Controller\\' . $name)) {
-				return 'Ocara\Feature\\' . $name;
-			}
-		}
-
-		Error::show('error_class_extends', array($className, 'Controller'));
-	}
-
-	/**
 	 * 规定在哪个错误报告级别会显示用户定义的错误
 	 * @param integer $error
+	 * @return bool|int
 	 */
-	public static function errorReporting($error = false)
+	public static function errorReporting($error = null)
 	{
 		$error = $error ? $error : (OC_SYS_MODEL == 'develop' ? E_ALL : 0);
+
 		set_error_handler(
 			ocConfig('ERROR_HANDLER.program_error', 'ocErrorHandler', true),
 			$error
 		);
+
 		return $error;
 	}
 
 	/**
 	 * 获取路由信息
 	 * @param string $name
+	 * @return array|null
 	 */
-	public static function getRoute($name = false)
+	public static function getRoute($name = null)
 	{
+		if (!self::$_route) {
+			$_GET = self::$_services->url->parseGet();
+			list($module, $controller, $action) = self::$_services->route->parseRouteInfo();
+			self::$_route = compact('module', 'controller', 'action');
+		}
+
 		if (func_num_args()) {
 			return isset(self::$_route[$name]) ? self::$_route[$name] : null;
 		}
+
 		return self::$_route;
 	}
 
 	/**
 	 * 解析路由字符串
-	 * @param string $route
+	 * @param string|array $route
+	 * @return array
 	 */
 	public static function parseRoute($route)
 	{
@@ -250,7 +240,7 @@ final class Ocara
 
 		return compact('module', 'controller', 'action');
 	}
-	
+
 	/**
 	 * 获取当前语言
 	 */
@@ -260,32 +250,19 @@ final class Ocara
 	}
 
 	/**
-	 * 获取服务容器
+	 * 获取默认服务容器
 	 */
 	public static function container()
 	{
-		if (self::$_container === null) {
-			self::$_container = new Container();
-		}
 		return self::$_container;
 	}
 
 	/**
-	 * 权限访问检测结果
-	 * @param bool $result
-	 * @param array $route
+	 * 获取默认服务提供者
 	 */
-	public static function accessResult($result, array $route)
+	public static function services()
 	{
-		$result = $result === true;
-		if (!$result) {
-			$callback = ocConfig('CALLBACK.auth.check', false);
-			if ($callback) {
-				Call::run($callback, $route);
-			} else {
-				Error::show('no_access');
-			}
-		}
+		return self::$_services;
 	}
 
 	/**
@@ -358,24 +335,24 @@ final class Ocara
 	 * @param null $key
 	 * @return array|bool|mixed|null
 	 */
-	public static function getFrameworkInfo($key = null)
+	public static function getInfo($key = null)
 	{
-		if (is_null(self::$_frameworkInfo)) {
+		if (is_null(self::$_info)) {
 			$path = OC_SYS . 'data/framework.php';
 			if (ocFileExists($path)) {
 				include($path);
 			}
 			if (isset($FRAMEWORK_INFO) && is_array($FRAMEWORK_INFO)) {
-				self::$_frameworkInfo = $FRAMEWORK_INFO;
+				self::$_info = $FRAMEWORK_INFO;
 			} else {
-				self::$_frameworkInfo = array();
+				self::$_info = array();
 			}
 		}
 
 		if (func_num_args()) {
-			return ocGet($key, self::$_frameworkInfo);
+			return ocGet($key, self::$_info);
 		}
 
-		return self::$_frameworkInfo;
+		return self::$_info;
 	}
 }

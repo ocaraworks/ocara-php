@@ -63,6 +63,7 @@ abstract class Cache extends ModelBase
     /**
      * 连接数据库
      * @param bool $master
+     * @return null
      */
     public function connect($master = true)
     {

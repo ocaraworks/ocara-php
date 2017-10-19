@@ -15,7 +15,7 @@ class Route extends Base
     /**
      * 解析路由
      */
-    public static function parseRouteInfo()
+    public function parseRouteInfo()
     {
         $module = ocGet(0, $_GET);
         $controller = $action = null;
@@ -70,7 +70,7 @@ class Route extends Base
                     . $ucontroller
                     . 'Controller';
             }
-            $featureClass = Ocara::getControllerFeatureClass($controllerClass);
+            $featureClass = self::getControllerFeature($controllerClass);
             $action = call_user_func_array(
                 array($featureClass, 'getControllerAction'), array($action, $isModule, $isStandard)
             );
@@ -79,9 +79,10 @@ class Route extends Base
         $route = call_user_func_array(
             array($featureClass, 'getDefaultRoute'), array($module, $controller, $action)
         );
+
         return $route;
     }
- 
+
     /**
      * MVC文件和类检测
      * @param string $root
@@ -89,8 +90,10 @@ class Route extends Base
      * @param string $namespace
      * @param string $type
      * @param bool $required
+     * @return bool
+     * @throws Exception\Exception
      */
-    public static function loadRoute($root, $target, $namespace, $type = false, $required = true)
+    public static function loadRoute($root, $target, $namespace, $type = null, $required = true)
     {
         $path = ocDir($root) . $target . $type . '.php';
         if (!ocFileExists($path)) {
@@ -114,6 +117,7 @@ class Route extends Base
     /**
      * 格式化GET参数
      * @param array $data
+     * @return array
      */
     public static function formatGet(array $data)
     {
@@ -133,11 +137,34 @@ class Route extends Base
         return $last ? $get + $last : $get;
     }
 
+
+    /**
+     * 获取控制器特性类
+     * @param $class
+     * @return string
+     * @throws Exception\Exception
+     */
+    public static function getControllerFeature($class)
+    {
+        $controller = new \ReflectionClass($class);
+        $className = $controller->getName();
+        $controllers = ocConfig('CONTROLLER_FEATURE_CLASS', array());
+
+        foreach ($controllers as $name) {
+            if ($controller->isSubclassOf('Ocara\\Controller\\' . $name)) {
+                return 'Ocara\Feature\\' . $name;
+            }
+        }
+
+        Error::show('error_class_extends', array($className, 'Controller'));
+    }
+
     /**
      * 检测路由
      * @param string $path
      * @param string $name
      * @param bool $isDir
+     * @return bool|mixed|string
      */
     private static function _checkRoute($path, $name, $isDir)
     {

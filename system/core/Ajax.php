@@ -49,7 +49,7 @@ class Ajax extends Base
 			$result = Call::run($callback, array($result));
 		}
 
-		$response = self::$container->response;
+		$response = Ocara::services()->response;
 		if (!ocConfig('AJAX.return_header_error_code', 0)) {
 			$response->setStatusCode(Response::STATUS_OK);
 			$result['statusCode'] 	= $response->getOption('statusCode');

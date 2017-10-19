@@ -6,14 +6,11 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Feature;
+namespace Ocara\Route;
 use Ocara\Interfaces\Feature;
-use Ocara\Container;
 use Ocara\Request;
-use Ocara\FormToken;
 use Ocara\Route;
 use Ocara\Url;
-use Ocara\View\Common as CommonView;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -55,7 +52,7 @@ class Common extends FeatureBase implements Feature
     public static function getDefaultRoute($module, $controller, $action)
     {
         if (Url::isVirtualUrl(OC_URL_ROUTE_TYPE)) {
-            $_GET = self::$container->route->formatGet($_GET);
+            $_GET = Ocara::services()->route->formatGet($_GET);
         }
 
         if (empty($action)) {
