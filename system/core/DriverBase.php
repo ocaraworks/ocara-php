@@ -21,10 +21,12 @@ class DriverBase extends Base
 	protected $_errno;
 	protected $_error;
 	protected $_config;
+	protected $_paramTypesMap = array();
 
 	/**
 	 * 是否长连接
 	 * @param bool $pconnect
+	 * @return bool
 	 */
 	public function is_pconnect($pconnect = true)
 	{
@@ -37,6 +39,7 @@ class DriverBase extends Base
 	/**
 	 * 是否预处理
 	 * @param bool $prepare
+	 * @return bool
 	 */
 	public function is_prepare($prepare = true)
 	{
@@ -48,8 +51,9 @@ class DriverBase extends Base
 
 	/**
 	 * 获取结果集数据
-	 * @param string $dataType
+	 * @param $dataType
 	 * @param bool $queryRow
+	 * @return array
 	 */
 	public function get_result($dataType, $queryRow = false)
 	{

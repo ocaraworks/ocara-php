@@ -12,39 +12,97 @@ class Event extends Basis
 {
     protected $_handlers;
     protected $_running;
+    protected $_registry;
 
     /**
-     * 附加事件处理器
-     * @param $name
+     * 添加事件处理器
      * @param $callback
-     * @param int $priority
+     * @param int $args
+     * @return $this
      */
-    public function set($name, $callback, $priority = 0)
+    public function append($callback, $args = 0)
     {
-        if (!isset($this->_handlers[$name])) {
-            $this->_handlers[$name] = array();
+        $params = func_get_args();
+        $name = null;
+
+        if (isset($params[2])) {
+            $name = $args;
+            $priority = (integer)$params[2];
+        } else {
+            if (is_string($args)) {
+                $name = $args;
+            } else {
+                $priority = $args;
+            }
         }
 
-        $priority = $priority ? (integer)$priority : 0;
-        $index = count($this->_handlers);
-
-        $this->_handlers[$name] = array(
+        $count = count($this->_handlers);
+        $this->_handlers[$count] = array(
             'callback' => $callback,
-            'index' => $index,
+            'index' => $count,
             'priority' => $priority,
         );
+
+        if ($name) {
+            $this->_registry[$name] = $count;
+        }
+
+        return $this;
     }
 
     /**
-     * 修改优先级
+     * 修改事件处理器
+     * @param $name
+     * @param $callback
+     * @return $this
+     */
+    public function modify($name, $callback)
+    {
+        $key = $this->_getKey($name);
+        if (is_integer($key)) {
+            $this->_handlers[$name] = $callback;
+        }
+
+        return $this;
+    }
+
+    /**
+     * 获取KEY
+     * @param $name
+     * @return int|null
+     */
+    protected function _getKey($name)
+    {
+        $key = null;
+
+        if (is_string($name)) {
+            if (isset($this->_registry[$name])) {
+                $key = $this->_registry[$name];
+            }
+        } elseif(is_integer($name)) {
+            $name = $name - 1;
+            if (isset($this->_handlers[$name])) {
+                $key = $name;
+            }
+        }
+
+        return $key;
+    }
+
+    /**
+     * 修改事件处事理器的优先级
      * @param $name
      * @param $priority
+     * @return $this
      */
     public function setPriority($name, $priority)
     {
-        if (isset($this->_handlers[$name])) {
-            $this->_handlers[$name]['priority'] = $priority;
+        $key = $this->_getKey($name);
+        if (is_integer($key)) {
+            $this->_handlers[$key]['priority'] = $priority;
         }
+
+        return $this;
     }
 
     /**
@@ -54,7 +112,12 @@ class Event extends Basis
      */
     public function remove($name)
     {
-        return !empty($this->_handlers[$name]) ? ocDel($this->_handlers, $name) : true;
+        $key = $this->_getKey($name);
+        if (is_integer($key)) {
+            ocDel($this->_handlers, $key);
+        }
+
+        return $this;
     }
 
     /**
@@ -64,7 +127,12 @@ class Event extends Basis
      */
     public function get($name)
     {
-        return !empty($this->_handlers[$name]) ? $this->_handlers[$name] : array();
+        $key = $this->_getKey($name);
+        if (is_integer($key)) {
+            return $this->_handlers[$name];
+        }
+
+        return null;
     }
 
     /**
@@ -74,7 +142,8 @@ class Event extends Basis
      */
     public function has($name)
     {
-        return isset($this->_handlers[$name]);
+        $key = $this->_getKey($name);
+        return is_integer($key);
     }
 
     /**
@@ -83,6 +152,7 @@ class Event extends Basis
     public function clear()
     {
         $this->_handlers = array();
+        return $this;
     }
 
     /**
@@ -108,6 +178,8 @@ class Event extends Basis
                 call_user_func_array($callback, $params);
             }
         }
+
+        return $this;
     }
 
     /**
@@ -116,6 +188,7 @@ class Event extends Basis
     public function stop()
     {
         $this->_running = false;
+        return $this;
     }
 
     /**
