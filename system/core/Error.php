@@ -27,6 +27,15 @@ class Error extends Base
 	{
 		if (self::$_instance === null) {
 			self::$_instance = new self();
+			if ($callback = ocConfig('CALLBACK.error.write_log', null)) {
+				self::$_instance->event('write_log')->append($callback);
+			}
+			if ($callback = ocConfig('CALLBACK.error.output', null)) {
+				self::$_instance->event('output')->append($callback);
+			}
+			if ($callback = ocConfig('CALLBACK.error.ajax_output', null)) {
+				self::$_instance->event('ajax_output')->append($callback);
+			}
 		}
 		return self::$_instance;
 	}
@@ -56,9 +65,7 @@ class Error extends Base
 			$error = Lang::get($error, $params);
 			throw new Exception($error['message'], $error['code']);
 		} catch(Exception $exception) {
-			if ($callback = ocConfig('CALLBACK.error.write_log', null)) {
-				Call::run($callback, array(ocGetExceptionData($exception)));
-			}
+			self::$_instance->event('write_log')->fire(array(ocGetExceptionData($exception)));
 		}
 	}
 
@@ -114,6 +121,22 @@ class Error extends Base
 		if (function_exists($function)) {
 			call_user_func($function, $exception);
 		}
+	}
+
+	/**
+	 * 错误处理
+	 * @param $exception
+	 */
+	public function handler($exception)
+	{
+		$params = ocGetExceptionData($exception);
+		self::$_instance->event('write_log')->fire(array($params));
+
+		if (self::$_instance->event('output')->get()) {
+			self::$_instance->event('output')->fire(array($params));
+		}
+
+		self::output($params);
 	}
 
 	/**
@@ -190,8 +213,8 @@ class Error extends Base
 	 */
 	private static function _ajaxOutput($error)
 	{
-		if ($callback = ocConfig('CALLBACK.error.ajax_output', null)) {
-			Call::run($callback, array($error));
+		if (self::$_instance->event('ajax_output')->get()) {
+			self::$_instance->event('ajax_output')->fire(array($error));
 		} else {
 			$message = array();
 			$message['code'] = $error['code'];

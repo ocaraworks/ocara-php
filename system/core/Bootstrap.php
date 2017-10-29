@@ -25,8 +25,8 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
             self::createHtaccess();
         }
 
-        $this->event('routeVisit')
-             ->set('authCheck', array('Ocara\Events\RouteVisit', 'authCheck'));
+        $this->event('authCheck')
+             ->append(ocConfig('CALLBACK.auth.check', null));
     }
 
     /**
@@ -42,7 +42,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
             }
         }
 
-        $this->event('routeVisit')->trigger();
+        $this->event('authCheck')->fire(array($route));
         Ocara::boot($route);
     }
 

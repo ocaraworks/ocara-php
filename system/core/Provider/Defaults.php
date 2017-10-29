@@ -6,7 +6,8 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Service\Provider;
+namespace Ocara\Provider;
+use Ocara\Ocara;
 use Ocara\ServiceProvider;
 
 class Defaults extends ServiceProvider
@@ -14,10 +15,11 @@ class Defaults extends ServiceProvider
     public function register()
     {
         $classes = ocConfig('SYSTEM_SERVICE_CLASS');
+        $container = Ocara::container();
 
         foreach ($classes as $class => $namespace) {
             $name = lcfirst($class);
-            $this->_plugin->bindSingleton($name, function() use($namespace) {
+            $container->bindSingleton($name, function() use($namespace) {
                 $file = strtr($namespace, ocConfig('AUTOLOAD_MAP')) . '.php';
                 ocImport($file);
                 if (method_exists($namespace, 'getInstance')) {

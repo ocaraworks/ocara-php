@@ -6,8 +6,9 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Route;
+namespace Ocara\Feature;
 use Ocara\Interfaces\Feature;
+use Ocara\Ocara;
 use Ocara\Request;
 use Ocara\Route;
 use Ocara\Url;

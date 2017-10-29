@@ -126,7 +126,16 @@ class Container extends Basis
     }
 
     /**
-     * 获取绑定信息
+     * 获取所有绑定数扰
+     * @return array
+     */
+    public function getAllBounds()
+    {
+        return $this->_binds;
+    }
+
+    /**
+     * 获取绑定参数
      * @param string $name
      * @return null
      */

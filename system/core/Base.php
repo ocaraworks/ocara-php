@@ -19,9 +19,6 @@ abstract class Base extends Basis
 	 */
 	protected $_route;
 	protected $_plugin;
-	protected $_event;
-
-	protected $_events = array();
 
 	/**
 	 * 设置路由
@@ -47,36 +44,6 @@ abstract class Base extends Basis
 		}
 
 		return null;
-	}
-
-	/**
-	 * 设置或获取事件
-	 * @param $eventName
-	 * @return mixed
-	 */
-	public function event($eventName)
-	{
-		if (!isset($this->_events[$eventName])) {
-			$event = Ocara::container()->create('event', $eventName);
-			$this->_events[$eventName] = $event;
-			if ($this->_event && method_exists($this->_event, $eventName)) {
-				$event->clear();
-				$event->set($eventName, array($this->_event, $eventName));
-			}
-		}
-
-		return $this->_events[$eventName];
-	}
-
-	/**
-	 * 绑定事件资源包
-	 * @param $eventObject
-	 * @return $this
-	 */
-	public function bindEvents($eventObject)
-	{
-		$this->_event = $eventObject;
-		return $this;
 	}
 
 	/**

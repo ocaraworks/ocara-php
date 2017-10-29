@@ -22,8 +22,23 @@ class Event extends Basis
      */
     public function append($callback, $args = 0)
     {
+        if ($callback) {
+            call_user_func_array(array(&$this, '_create'), func_get_args());
+        }
+
+        return $this;
+    }
+
+    /**
+     * 新建事件处理器
+     * @param $callback
+     * @param int $args
+     */
+    protected function _create($callback, $args = 0)
+    {
         $params = func_get_args();
         $name = null;
+        $priority = 0;
 
         if (isset($params[2])) {
             $name = $args;
@@ -47,7 +62,6 @@ class Event extends Basis
             $this->_registry[$name] = $count;
         }
 
-        return $this;
     }
 
     /**
@@ -125,8 +139,12 @@ class Event extends Basis
      * @param $name
      * @return mixed
      */
-    public function get($name)
+    public function get($name = null)
     {
+        if (!isset($name)) {
+            return $this->_handlers;
+        }
+
         $key = $this->_getKey($name);
         if (is_integer($key)) {
             return $this->_handlers[$name];
@@ -157,29 +175,30 @@ class Event extends Basis
 
     /**
      * 触发事件
-     * @param $data
+     * @param $params
      * @return mixed
      */
-    public function trigger(array $data = array())
+    public function fire(array $params = array(), $name = null)
     {
         $handlers = $this->_handlers;
-        array_multisort(array_column(
-            $handlers, 'priority'), SORT_DESC,
-            array_column($handlers, 'index'), SORT_ASC,
-            $handlers
-        );
 
-        $this->setProperty($data);
-        $params = array($this);
+        if ($handlers) {
+            array_multisort(array_column(
+                $handlers, 'priority'), SORT_DESC,
+                array_column($handlers, 'index'), SORT_ASC,
+                $handlers
+            );
 
-        $this->_running = true;
-        foreach ($this->_handlers as $callback) {
-            if ($this->_running) {
-                call_user_func_array($callback, $params);
+            array_unshift($params, $this);
+            $this->_running = true;
+
+            foreach ($this->_handlers as $row) {
+                $callback = $row['callback'];
+                if ($this->_running) {
+                    Call::run($callback, $params);
+                }
             }
         }
-
-        return $this;
     }
 
     /**

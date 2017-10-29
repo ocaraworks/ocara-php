@@ -1,6 +1,7 @@
 <?php
 namespace Ocara\Feature;
 use Ocara\Interfaces\Feature;
+use Ocara\Ocara;
 use Ocara\Container;
 use Ocara\Error;
 use Ocara\Request;

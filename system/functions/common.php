@@ -15,9 +15,10 @@ use Ocara\Request;
 defined('OC_PATH') or exit('Forbidden!');
 
 /**
- * 替换空白字符
+ * 使用CURL扩展获取远程内容
  * @param string $string
  * @param string $replace
+ * @return mixed
  */
 function ocReplaceSpace($string, $replace = '')
 {
@@ -25,9 +26,11 @@ function ocReplaceSpace($string, $replace = '')
 }
 
 /**
- * common-检查扩展
+ * 检查扩展
  * @param string $extension
  * @param bool $required
+ * @return bool
+ * @throws \Ocara\Exception\Exception
  */
 function ocCheckExtension($extension, $required = true)
 {
@@ -43,8 +46,9 @@ function ocCheckExtension($extension, $required = true)
 
 /**
  * 设置或获取全局变量
- * @param string $variable
+ * @param string $name
  * @param mixed $value
+ * @return array|null
  */
 function ocGlobal($name, $value = null)
 {
@@ -57,7 +61,8 @@ function ocGlobal($name, $value = null)
 
 /**
  * 对象递归转换成关联数组
- * @param mixed $data
+ * @param object $data
+ * @return array
  */
 function ocArray($data)
 {
@@ -74,7 +79,8 @@ function ocArray($data)
 
 /**
  * 检测是否关联数组
- * @param $data
+ * @param array $data
+ * @return bool
  */
 function ocAssoc(array $data)
 {
@@ -84,6 +90,7 @@ function ocAssoc(array $data)
 /**
  * 数组递归转换成对象
  * @param mixed $data
+ * @return object
  */
 function ocObject($data)
 {
@@ -99,6 +106,8 @@ function ocObject($data)
  * @param string $path
  * @param integer $mode
  * @param bool $required
+ * @return bool
+ * @throws \Ocara\Exception\Exception
  */
 function ocCheckPath($path, $mode = null, $required = false)
 {
@@ -122,6 +131,7 @@ function ocCheckPath($path, $mode = null, $required = false)
  * 新建类实例
  * @param string $name
  * @param array $params
+ * @return object
  */
 function ocClass($name, array $params = array())
 {
@@ -138,6 +148,7 @@ function ocClass($name, array $params = array())
 /**
  * 加载函数库文件
  * @param string $filePath
+ * @throws \Ocara\Exception\Exception
  */
 function ocFunc($filePath)
 {
@@ -157,6 +168,7 @@ function ocFunc($filePath)
 /**
  * 使用原生的SQL语句，防止框架进行SQL安全过滤和转义
  * @param string $sql
+ * @return mixed|string
  */
 function ocSql($sql)
 {
@@ -170,7 +182,7 @@ function ocSql($sql)
 
 /**
  * 是否是标准名称
- * @param $field
+ * @param string $name
  * @return int
  */
 function ocIsStandardName($name)
@@ -180,8 +192,10 @@ function ocIsStandardName($name)
 
 /**
  * 获取语言
- * @param string|array $key
- * @param mixed $params
+ * @param string|array $name
+ * @param array $params
+ * @param null $default
+ * @return array|null
  */
 function ocLang($name, array $params = array(), $default = null)
 {
@@ -204,6 +218,7 @@ function ocLang($name, array $params = array(), $default = null)
  * 获取完整路径
  * @param string $dir
  * @param string $path
+ * @return bool|mixed|string
  */
 function ocPath($dir, $path = false)
 {
@@ -214,6 +229,7 @@ function ocPath($dir, $path = false)
  * 获取完整文件路径，检查文件是否存在
  * @param string $dir
  * @param string $path
+ * @return bool|mixed|string
  */
 function ocFile($dir, $path)
 {
@@ -223,8 +239,9 @@ function ocFile($dir, $path)
 /**
  * 获取绝对URL
  * @param string $dir
- * @param string $file
+ * @param string $subPath
  * @param string $root
+ * @return bool|mixed|string
  */
 function ocRealUrl($dir, $subPath = false, $root = false)
 {
@@ -236,7 +253,8 @@ function ocRealUrl($dir, $subPath = false, $root = false)
 /**
  * 获取相对URL
  * @param string $dir
- * @param string $file
+ * @param string $subPath
+ * @return bool|mixed|string
  */
 function ocSimpleUrl($dir, $subPath)
 {
@@ -250,9 +268,11 @@ function ocSimpleUrl($dir, $subPath)
 /**
  * 写入文件
  * @param string $filePath
- * @param string|array $content
+ * @param string $content
  * @param bool $append
- * @param integer $perm
+ * @param int $perm
+ * @return bool|int|void
+ * @throws \Ocara\Exception\Exception
  */
 function ocWrite($filePath, $content, $append = false, $perm = 0755)
 {
@@ -306,6 +326,8 @@ function ocWrite($filePath, $content, $append = false, $perm = 0755)
  * 获取本地文件内容
  * @param string $filePath
  * @param bool $checkPath
+ * @return bool|mix|string
+ * @throws \Ocara\Exception\Exception
  */
 function ocRead($filePath, $checkPath = true)
 {
@@ -347,6 +369,7 @@ function ocRead($filePath, $checkPath = true)
  * @param string $url
  * @param mixed $data
  * @param array $headers
+ * @return bool|mix|mixed|null|string
  */
 function ocRemote($url, $data = null, array $headers = array())
 {
@@ -384,9 +407,11 @@ function ocRemote($url, $data = null, array $headers = array())
 /**
  * 使用CURL扩展获取远程内容
  * @param string $url
- * @param string $data
+ * @param null $data
  * @param array $headers
  * @param bool $showError
+ * @return mixed|null
+ * @throws \Ocara\Exception\Exception
  */
 function ocCurl($url, $data = null, array $headers = array(), $showError = false)
 {

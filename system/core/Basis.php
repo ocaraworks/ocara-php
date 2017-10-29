@@ -16,6 +16,9 @@ abstract class Basis
 	 * @var $_properties 自定义属性
 	 */
 	private $_properties = array();
+	protected $_event;
+
+	protected $_events = array();
 
 	/**
 	 * 实例化
@@ -72,6 +75,36 @@ abstract class Basis
 	public function clearProperty()
 	{
 		$this->_properties = array();
+	}
+
+	/**
+	 * 设置或获取事件
+	 * @param $eventName
+	 * @return mixed
+	 */
+	public function event($eventName)
+	{
+		if (!isset($this->_events[$eventName])) {
+			$event = Ocara::container()->create('event', array($eventName));
+			$this->_events[$eventName] = $event;
+			if ($this->_event && method_exists($this->_event, $eventName)) {
+				$event->clear();
+				$event->append(array(&$this->_event, $eventName), $eventName);
+			}
+		}
+
+		return $this->_events[$eventName];
+	}
+
+	/**
+	 * 绑定事件资源包
+	 * @param $eventObject
+	 * @return $this
+	 */
+	public function bindEvents($eventObject)
+	{
+		$this->_event = $eventObject;
+		return $this;
 	}
 
 	/**

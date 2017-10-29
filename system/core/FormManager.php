@@ -8,20 +8,26 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\ServiceProvider;
 use Ocara\Exception\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class FormManager extends Base
+class FormManager extends ServiceProvider
 {
-	protected $_forms;
+	protected $_forms = array();
+
+	public function register()
+	{
+		$this->_container->bindSingleton('formToken', '\Ocara\FormToken');
+	}
 
 	/**
 	 * 新建表单
 	 * @param $name
 	 * @return Form
 	 */
-	public function createForm($name)
+	public function create($name)
 	{
 		if (isset($this->_forms[$name])
 			&& is_object($obj = $this->_forms[$name])
@@ -31,7 +37,7 @@ class FormManager extends Base
 		} else {
 			$form = new Form($name);
 			$form->setRoute($this->getRoute());
-			$this->_forms[$name];
+			$this->_forms[$name] = $form;
 		}
 
 		return $form;
@@ -90,7 +96,7 @@ class FormManager extends Base
 	 */
 	public function setToken()
 	{
-		$tokenTag  = $this->formToken->getTokenTag();
+		$tokenTag = $this->formToken->getTokenTag();
 
 		foreach ($this->_forms as $formName => $form) {
 			if (is_object($form) && $form instanceof Form) {

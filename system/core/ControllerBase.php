@@ -125,6 +125,8 @@ class ControllerBase extends Base implements ControllerInterface
 	 * 调用未定义的方法时
 	 * @param string $name
 	 * @param array $params
+	 * @return mixed
+	 * @throws Exception\Exception
 	 */
 	public function __call($name, $params)
 	{

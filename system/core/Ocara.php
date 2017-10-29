@@ -7,7 +7,6 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara;
-use Ocara\Service\Provider\Defaults;
 
 defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(true));
 
@@ -17,10 +16,11 @@ defined('OC_PATH') OR define(
 
 require_once (OC_PATH . 'system/functions/utility.php');
 require_once (OC_PATH . 'system/const/basic.php');
+require_once (OC_SYS . 'core/Basis.php');
 require_once (OC_SYS . 'core/Base.php');
 require_once (OC_CORE . 'Config.php');
 
-final class Ocara
+final class Ocara extends Basis
 {
 	/**
 	 * @var $OC_CONF 	框架信息
@@ -274,19 +274,21 @@ final class Ocara
 	public static function autoload($class)
 	{
 		$newClass = trim($class, OC_NS_SEP);
+
 		if (strstr($newClass, OC_NS_SEP)) {
 			$filePath = strtr($newClass, ocConfig('AUTOLOAD_MAP'));
 			if ($filePath == $class) {
 				$filePath = strtr($newClass, ocConfig('APP_AUTOLOAD_MAP'));
 			}
 			if ($filePath == $newClass) {
-				$filePath = OC_ROOT . 'service/library/' . ocCommPath($newClass);
+				$filePath = OC_ROOT . 'service/library/' . $newClass;
 			}
 			$filePath .= '.php';
 		} else {
 			$filePath = OC_ROOT . 'service/library/' . $newClass . '.php';
 		}
 
+		$filePath = ocCommPath($filePath);
 		if (ocFileExists($filePath)) {
 			include_once($filePath);
 			if (class_exists($newClass, false)) {
@@ -328,6 +330,17 @@ final class Ocara
 		ocImport(OC_ROOT . 'pass/Update.php');
 		$args = func_get_args();
 		return class_exists('Update', false) ? Update::run($args) : false;
+	}
+
+	/**
+	 * 获取View视图类
+	 */
+	public function getView($route)
+	{
+		$view = new CommonView();
+		$view->setRoute($route);
+		$view->init();
+		return $view;
 	}
 
 	/**

@@ -33,9 +33,12 @@ final class Call extends Base
 
 	/**
 	 * 运行函数、类方法或路由，返回值
-	 * @param string $route
+	 * @param mixed $route
 	 * @param array $params
-	 * @param boolean $required
+	 * @param bool $return
+	 * @param bool $required
+	 * @return bool|mixed|null
+	 * @throws Exception
 	 */
 	public static function run($route, array $params = array(), $return = true,$required = false)
 	{
@@ -59,6 +62,7 @@ final class Call extends Base
 	 * @param string $route
 	 * @param array $params
 	 * @param bool $return
+	 * @return mixed
 	 */
 	private static function _runByString($route, array $params = array(), $return = true)
 	{
@@ -74,12 +78,14 @@ final class Call extends Base
 	 * 数组调用
 	 * @param array $route
 	 * @param array $params
+	 * @return mixed
+	 * @throws Exception
 	 */
 	private static function _runByArray(array $route, array $params)
 	{
 		$route = array_values($route);
 
-		if (count($route) < 2 || !is_string($route[1])) {
+		if (count($route) < 2) {
 			self::_throwError('invalid_call_func');
 		} else {
 			if (is_object($route[0])) {
@@ -88,7 +94,7 @@ final class Call extends Base
 				}
 				self::_throwError('not_exists_method', array($route[1]));
 			} else {
-				return Ocara::boot($route, true, $params);
+				return call_user_func_array($route, $params);
 			}
 		}
 	}
@@ -97,6 +103,7 @@ final class Call extends Base
 	 * 输出错误
 	 * @param string $error
 	 * @param array $params
+	 * @throws Exception
 	 */
 	private static function _throwError($error, array $params = array())
 	{

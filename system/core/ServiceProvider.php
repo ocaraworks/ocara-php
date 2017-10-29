@@ -52,12 +52,18 @@ class ServiceProvider extends Base implements ServiceProviderInterface
             return $this->_services[$key];
         }
 
-        if ($this->_container && $instance = $this->_container->create($key)) {
-            $this->setService($key, $instance);
-            return $instance;
-        } else {
-            $container = Ocara::container();
-            if ($instance = $container->create($key)) {
+        if ($this->_container && $this->_container->has($key)) {
+            $instance = $this->_container->create($key);
+            if ($instance) {
+                $this->setService($key, $instance);
+                return $instance;
+            }
+        }
+
+        $container = Ocara::container();
+        if ($container->has($key)) {
+            $instance = $container->create($key);
+            if ($instance) {
                 $this->setService($key, $instance);
                 return $instance;
             }
@@ -83,8 +89,8 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function &__get($key)
     {
-        if (array_key_exists($key, $this->_properties)) {
-            return $this->_properties[$key];
+        if ($this->hasProperty($key)) {
+            return $this->getProperty($key);
         }
 
         if ($instance = $this->getService($key)) {

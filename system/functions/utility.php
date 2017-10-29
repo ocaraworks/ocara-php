@@ -28,10 +28,12 @@ function ocCommPath($path)
 
 /**
  * 获取数组元素值
- * @param string|integer|array $key
+ * @param mixed $key
  * @param array $data
- * @param mixed $default
+ * @param null $default
  * @param bool $required
+ * @return array|bool|mixed|null
+ * @throws Exception
  */
 function ocGet($key, array $data, $default = null, $required = false)
 {
@@ -47,7 +49,8 @@ function ocGet($key, array $data, $default = null, $required = false)
 
 /**
  * 是否标量或null
- * @param $data
+ * @param mixed $data
+ * @return bool
  */
 function ocScalar($data)
 {
@@ -56,8 +59,9 @@ function ocScalar($data)
 
 /**
  * 检测键名是否存在
- * @param string|integer|array $key
+ * @param mixed $key
  * @param array $data
+ * @return array|bool|mixed|null
  */
 function ocKeyExists($key, array $data)
 {
@@ -66,11 +70,12 @@ function ocKeyExists($key, array $data)
 
 /**
  * 检测键名
- * @param bool $exists
- * @param string|integer|array $key
+ * @param $exists
+ * @param mixed $key
  * @param array $data
  * @param bool $return
- * @param mixed $default
+ * @param null $default
+ * @return array|bool|null
  */
 function ocCheckKey($exists, $key, array $data, $return = false, $default = null)
 {
@@ -109,8 +114,11 @@ function ocCheckKey($exists, $key, array $data, $return = false, $default = null
 
 /**
  * 获取配置
- * @param string $key
- * @param mixed $default
+ * @param $key
+ * @param null $default
+ * @param bool $unempty
+ * @return null
+ * @throws Exception
  */
 function ocConfig($key, $default = null, $unempty = false)
 {
@@ -124,7 +132,8 @@ function ocConfig($key, $default = null, $unempty = false)
 
 /**
  * Ocara内部函数-解析数组组键
- * @param string|integer|array $key
+ * @param mixed $key
+ * @return array
  */
 function ocParseKey($key)
 {
@@ -143,8 +152,10 @@ function ocParseKey($key)
 /**
  * 递归设置数组元素值
  * @param array $data
- * @param string|integer|array $key
- * @param mixed $value
+ * @param $key
+ * @param $value
+ * @return mixed
+ * @throws Exception
  */
 function ocSet(array &$data, $key, $value)
 {
@@ -175,7 +186,8 @@ function ocSet(array &$data, $key, $value)
 
 /**
  * 检查是否为非0的空值
- * @param mixed $content
+ * @param string $content
+ * @return bool
  */
 function ocEmpty($content)
 {
@@ -186,6 +198,7 @@ function ocEmpty($content)
  * 变量转换成指定键名的数组
  * @param mixed $content
  * @param bool $emptyStr
+ * @return array
  */
 function ocForceArray($content, $emptyStr = false)
 {
@@ -202,8 +215,9 @@ function ocForceArray($content, $emptyStr = false)
 
 /**
  * 递归array_map操作
- * @param string $callback
+ * @param mixed $callback
  * @param array $data
+ * @return array
  */
 function ocArrayMap($callback, array $data)
 {
@@ -220,7 +234,8 @@ function ocArrayMap($callback, array $data)
 /**
  * 删除数组元素
  * @param array $data
- * @param string $key
+ * @param $key
+ * @return array|null
  */
 function ocDel(array &$data, $key)
 {
@@ -256,6 +271,8 @@ function ocDel(array &$data, $key)
 /**
  * 获取异常错误数据
  * @param $exception
+ * @return array
+ * @throws Exception
  */
 function ocGetExceptionData($exception)
 {
@@ -281,26 +298,21 @@ function ocGetExceptionData($exception)
 
 /**
  * 程序错误
- * @param string $level
- * @param string $message
- * @param string $file
- * @param integer $line
+ * @param $level
+ * @param $message
+ * @param $file
+ * @param $line
  * @param string $context
+ * @return bool
  */
 function ocErrorHandler($level, $message, $file, $line, $context = '')
 {
 	try {
 		throw new ErrorException($message, $level, $level, $file, $line);
 	} catch (ErrorException $exception) {
-		$callback = ocConfig('CALLBACK.error.write_log', null);
-		if ($callback) {
-			try {
-				$params = ocGetExceptionData($exception);
-				Call::run($callback, array($params));
-			} catch (\Exception $e){
-				ocExceptionHandler($e);
-			}
-		}
+		Error::getInstance()
+			->event('write_log')
+			->fire(array(ocGetExceptionData($exception)));
 		$exceptErrors = ocForceArray(ocConfig('ERROR_HANDLER.except_error_list', array()));
 		if (!in_array($level, $exceptErrors)) {
 			ocExceptionHandler($exception);
@@ -316,23 +328,7 @@ function ocErrorHandler($level, $message, $file, $line, $context = '')
  */
 function ocExceptionHandler($exception)
 {
-	$callbackList = array('CALLBACK.error.write_log', 'CALLBACK.error.output');
-	$params = ocGetExceptionData($exception);
-
-	foreach ($callbackList as $key) {
-		if ($callback = ocConfig($key, null)) {
-			try {
-				$params['errorTraceInfo'] = $exception->getTrace();
-				Call::run($callback, array($params));
-			} catch(\Exception $e) {
-				if ($key == 'CALLBACK.error.write_log') continue;
-				$params = ocGetExceptionData($e);
-				call_user_func(array('Ocara\Error', 'output'), $params);
-			}
-		}
-	}
-
-	call_user_func(array('Ocara\Error', 'output'), $params);
+	Error::getInstance()->handler($exception);
 }
 
 /**
@@ -378,10 +374,10 @@ function ocDump($content)
 
 /**
  * 获取提示内容
- * @param string $languages
- * @param string $message
- * @param array $data
+ * @param array $languages
+ * @param $message
  * @param array $params
+ * @return array
  */
 function ocGetLanguage(array $languages, $message, array $params = array())
 {
@@ -417,6 +413,8 @@ function ocGetLanguage(array $languages, $message, array $params = array())
  * @param bool $required
  * @param bool $once
  * @param array $vars
+ * @return array|mixed
+ * @throws Exception
  */
 function ocImport($path, $required = true, $once = true, array $vars = array())
 {
@@ -443,6 +441,7 @@ function ocImport($path, $required = true, $once = true, array $vars = array())
 /**
  * 给目录结尾加上/号
  * @param string $path
+ * @return string
  */
 function ocDir($path)
 {
@@ -458,6 +457,7 @@ function ocDir($path)
 /**
  * 给命名空间加上\号
  * @param string $path
+ * @return string
  */
 function ocNamespace($path)
 {
@@ -473,6 +473,7 @@ function ocNamespace($path)
 /**
  * 首字母小写-兼容PHP5.2版本框架，PHP5.3以上如果没有使用可删除
  * @param string $str
+ * @return string
  */
 function ocLf($str)
 {
@@ -481,7 +482,7 @@ function ocLf($str)
 
 /**
  * <br/>转nl
- * @param $text
+ * @param string $str
  * @return mixed
  */
 function ocBr2nl($str)
@@ -501,7 +502,7 @@ function ocJsonEncode($content)
 	}
 
 	$content = preg_replace_callback(
-		"#\\\u([0-9a-f]{4})#i",
+		'#\\\u([0-9a-f]{4})#i',
 		function($matchs)
 		{
 			return iconv('UCS-2BE', 'UTF-8', pack('H4', $matchs[1]));
@@ -514,6 +515,7 @@ function ocJsonEncode($content)
 /**
  * 支持中文的basename
  * @param string $filePath
+ * @return mixed
  */
 function ocBasename($filePath)
 {
@@ -522,11 +524,12 @@ function ocBasename($filePath)
 
 /**
  * 新建URL
- * @param string|array $route
- * @param string|array $params
+ * @param $route
+ * @param array $params
  * @param bool $relative
- * @param integer $urlType
+ * @param bool $urlType
  * @param bool $static
+ * @return string
  */
 function ocUrl($route, $params = array(), $relative = false, $urlType = false, $static = true)
 {
@@ -537,6 +540,7 @@ function ocUrl($route, $params = array(), $relative = false, $urlType = false, $
  * 文件是否存在(windows中区分大小写)
  * @param string $filePath
  * @param bool $check
+ * @return bool|mixed|string
  */
 function ocFileExists($filePath, $check = false)
 {
@@ -558,7 +562,8 @@ function ocFileExists($filePath, $check = false)
 
 /**
  * 获取驼峰式名称
- * @param $name
+ * @param string $name
+ * @param string $sep
  * @return string
  */
 function ocStandardName($name, $sep = '')
@@ -569,6 +574,7 @@ function ocStandardName($name, $sep = '')
 /**
  * 检查文件路径
  * @param string $filePath
+ * @return bool|mixed|string
  */
 function ocCheckFilePath($filePath) 
 {
@@ -583,6 +589,7 @@ function ocCheckFilePath($filePath)
  * 设置文件或目录权限
  * @param string $path
  * @param integer $perm
+ * @return bool
  */
 function ocChmod($path, $perm)
 {

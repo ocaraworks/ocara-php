@@ -70,6 +70,7 @@ class Form extends Base
 	/**
 	 * 设置表单的提交方式
 	 * @param string $method
+	 * @return $this
 	 */
 	public function method($method = 'POST')
 	{
@@ -89,7 +90,8 @@ class Form extends Base
 
 	/**
 	 * 获取表单属性
-	 * @param string $attr
+	 * @param $attr
+	 * @return null
 	 */
 	public function getAttr($attr)
 	{

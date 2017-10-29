@@ -7,7 +7,7 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Controller;
-use Ocara\Service\Provider\Controller\Rest as RestServiceProvider;
+use Ocara\Provider\Controller\Rest as ServiceProvider;
 use Ocara\Ocara;
 use Ocara\Config;
 use Ocara\Request;
@@ -38,11 +38,13 @@ class Rest extends ControllerBase
 		$this->setRoute($route);
 		Config::set('CALLBACK.ajax_return', array($this, 'formatAjaxResult'));
 
-		$this->service = new RestServiceProvider();
+		$this->service = new ServiceProvider();
+		$this->service->setRoute($route);
 		$this->response->setContentType(ocConfig('CONTROLLERS.rest.content_type','json'));
 
 		$this->session->init();
 		$this->setReturnAjaxHeaderErrorCode(true);
+		$this->bindEvents($this);
 
 		method_exists($this, '_start')   && $this->_start();
 		method_exists($this, '_module')  && $this->_module();

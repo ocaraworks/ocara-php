@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\View;
 
+use Ocara\Ocara;
 use Ocara\Error;
 use Ocara\Filter;
 use Ocara\Html;

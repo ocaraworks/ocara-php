@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Controller;
 use Ocara\Interfaces\Controller as ControllerInterface;
-use \Ocara\Service\Provider\Controller\Common as CommonServiceProvider;
+use Ocara\Provider\Controller\Common as ServiceProvider;
 use Ocara\Ocara;
 use Ocara\Config;
 use Ocara\Request;
@@ -43,9 +43,12 @@ class Common extends ControllerBase implements ControllerInterface
 		$this->setRoute($route);
 		Config::set('CALLBACK.ajax_return', array($this, 'formatAjaxResult'));
 
-		$this->service = new CommonServiceProvider();
+		$this->service = new ServiceProvider();
+		$this->service->setRoute($route);
 		$this->session->init();
+
 		$this->setReturnAjaxHeaderErrorCode(false);
+		$this->bindEvents($this);
 
 		method_exists($this, '_start')   && $this->_start();
 		method_exists($this, '_module')  && $this->_module();
@@ -194,7 +197,8 @@ class Common extends ControllerBase implements ControllerInterface
 	public function form($name = null)
 	{
 		if ($name) {
-			$form = $this->formManager->append($name);
+			$form = $this->formManager->create($name);
+			$this->event('afterCreateForm')->fire(array($name, $form));
 			return $form;
 		}
 
@@ -212,8 +216,10 @@ class Common extends ControllerBase implements ControllerInterface
 		}
 
 		$form = $this->formManager
-			->append($name)
+			->create($name)
 			->model($model, false);
+
+		$this->event('afterCreateForm')->fire(array($name, $form));
 
 		return $form;
 //		if (empty($name)) {
@@ -248,6 +254,16 @@ class Common extends ControllerBase implements ControllerInterface
 	public function getForms()
 	{
 		return $this->_forms;
+	}
+
+	/**
+	 * 新建表单后处理
+	 * @param $name
+	 * @param $form
+	 */
+	public function afterCreateForm($event, $name, $form)
+	{
+		$this->view->assign($name, $form);
 	}
 
 	/**

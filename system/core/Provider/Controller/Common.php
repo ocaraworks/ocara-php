@@ -6,11 +6,15 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Service\Manager\Controller;
+namespace Ocara\Provider\Controller;
 
-use Ocara\FormToken;
+use Ocara\Ocara;
 use Ocara\ServiceProvider;
 use Ocara\View\Common as CommonView;
+use Ocara\Service\Pager;
+use Ocara\Service\Validator;
+use Ocara\FormToken;
+use Ocara\FormManager;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -21,21 +25,20 @@ class Common extends ServiceProvider
      */
     public function register()
     {
-        $this->_plugin
-            ->bindSingleton('view', array($this, ' _getView'), array($this->getRoute()))
-            ->bindSingleton('formToken', array($this, ' _getFormToken'))
-            ->bindSingleton('validator', array($this, ' _getValidator'))
-            ->bindSingleton('db', function(){ Database::create('default'); })
-            ->bindSingleton('pager', array($this, ' _getPager'))
-            ->bindSingleton('formManager', array($this, ' _getFormManager'), array($this->getRoute()));
+        $this->_container
+            ->bindSingleton('view', array(&$this, 'getView'))
+            ->bindSingleton('formToken', array(&$this, 'getFormToken'))
+            ->bindSingleton('validator', array(&$this, 'getValidator'))
+            ->bindSingleton('db', function(){Database::create('default');})
+            ->bindSingleton('pager', array(&$this, 'getPager'))
+            ->bindSingleton('formManager', array(&$this, 'getFormManager'));
     }
 
     /**
      * 获取验证器
      */
-    protected function _getValidator()
+    public function getValidator()
     {
-        ocImport(OC_CORE . 'Validator.php');
         $class = ocConfig('VALIDATE_CLASS', 'Ocara\Service\Validate', true);
         $validator = new Validator(new $class);
         return $validator;
@@ -44,9 +47,8 @@ class Common extends ServiceProvider
     /**
      * 获取分页器
      */
-    protected function _getPager()
+    public function getPager()
     {
-        ocImport(OC_SERVICE . 'library/Pager.php');
         $pager = new Pager();
         return $pager;
     }
@@ -54,9 +56,8 @@ class Common extends ServiceProvider
     /**
      * 获取表单令牌类
      */
-    protected function _getFormToken()
+    public function getFormToken()
     {
-        ocImport(OC_CORE . 'FormToken.php');
         $formToken = new FormToken($this->getRoute());
         return $formToken;
     }
@@ -64,11 +65,10 @@ class Common extends ServiceProvider
     /**
      * 获取View视图类
      */
-    protected static function _getView($route)
+    public function getView()
     {
-        ocImport(OC_CORE . '/View/Common.php');
         $view = new CommonView();
-        $view->setRoute($route);
+        $view->setRoute($this->getRoute());
         $view->init();
         return $view;
     }
@@ -76,11 +76,10 @@ class Common extends ServiceProvider
     /**
      * 获取View视图类
      */
-    protected static function _getFormManager($route)
+    public function getFormManager()
     {
-        ocImport(OC_CORE . '/FormManager.php');
         $view = new FormManager();
-        $view->setRoute($route);
+        $view->setRoute($this->getRoute());
         return $view;
     }
 }

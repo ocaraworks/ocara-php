@@ -7,6 +7,7 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Model;
+use Ocara\Ocara;
 use Ocara\Request;
 use Ocara\Error;
 use Ocara\Call;
@@ -87,7 +88,7 @@ abstract class Database extends ModelBase
 			$this->_primaries = explode(',', $this->_primary);
 		}
 
-		$this->bindEvent($this);
+		$this->bindEvents($this);
 
 		if (method_exists($this, '_model')) $this->_model();
 		return $this;
@@ -545,11 +546,11 @@ abstract class Database extends ModelBase
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
 			if ($this->_selected && method_exists($this, '_beforeUpdate')) {
-				$this->event('_beforeUpdate')->trigger();
+				$this->event('_beforeUpdate')->fire();
 			}
 		} else {
 			if (method_exists($this, '_beforeCreate')) {
-				$this->event('_beforeCreate')->trigger();
+				$this->event('_beforeCreate')->fire();
 			}
 		}
 
@@ -569,7 +570,7 @@ abstract class Database extends ModelBase
 			if (!$debug){
 				$this->_relateSave();
 				if($this->_selected && method_exists($this, '_afterUpdate')) {
-					$this->event('_afterUpdate')->trigger();
+					$this->event('_afterUpdate')->fire();
 				}
 			}
 		} else {
@@ -579,7 +580,7 @@ abstract class Database extends ModelBase
 				$this->_selectInsertRow($data);
 				$this->_relateSave();
 				if (method_exists($this, '_afterCreate')) {
-					$this->event('_afterCreate')->trigger();
+					$this->event('_afterCreate')->fire();
 				}
 			}
 		}
@@ -717,7 +718,7 @@ abstract class Database extends ModelBase
 		Ocara::services()->transaction->push($this->_plugin);
 
 		if (!$debug && $this->_selected && method_exists($this, '_beforeDelete')) {
-			$this->event('_beforeDelete')->trigger();
+			$this->event('_beforeDelete')->fire();
 		}
 
 		$result = $this->_plugin->delete($this->_tableName, $condition, $debug);
@@ -726,7 +727,7 @@ abstract class Database extends ModelBase
 			&& $this->_selected
 			&& method_exists($this, '_afterDelete')
 		) {
-			$this->event('_afterDelete')->trigger();
+			$this->event('_afterDelete')->fire();
 		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {

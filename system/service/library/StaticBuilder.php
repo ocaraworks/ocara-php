@@ -126,7 +126,8 @@ class StaticBuilder extends ServiceBase
 	/**
 	 * 单页面生成
 	 * @param string $file
-	 * @param array  $url
+	 * @param string $url
+	 * @return bool|int|void
 	 */
 	private function _createHtml($file, $url)
 	{
