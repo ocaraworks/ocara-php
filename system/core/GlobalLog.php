@@ -103,6 +103,7 @@ class GlobalLog extends Base
     /**
      * 获取Trace字符串
      * @param array $traceInfo
+     * @return string
      */
     public static function getTraceString(array $traceInfo)
     {
@@ -127,6 +128,7 @@ class GlobalLog extends Base
      * @param integer $index
      * @param string $format
      * @param array $row
+     * @return string
      */
     private static function _getTraceRow($index, $format, $row)
     {
@@ -153,7 +155,8 @@ class GlobalLog extends Base
 
     /**
      * 获取Trace参数字符串
-     * @param $args
+     * @param array $args
+     * @return string
      */
     private static function _getTraceArgs(array $args)
     {

@@ -10,6 +10,7 @@ namespace Ocara;
 
 class Event extends Basis
 {
+    protected $_name;
     protected $_handlers;
     protected $_running;
     protected $_registry;
@@ -27,6 +28,15 @@ class Event extends Basis
         }
 
         return $this;
+    }
+
+    /**
+     * 设置名称
+     * @param $name
+     */
+    public function setName($name)
+    {
+        $this->_name = $name;
     }
 
     /**

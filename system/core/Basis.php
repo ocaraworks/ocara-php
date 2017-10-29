@@ -86,6 +86,7 @@ abstract class Basis
 	{
 		if (!isset($this->_events[$eventName])) {
 			$event = Ocara::container()->create('event', array($eventName));
+			$event->setName($eventName);
 			$this->_events[$eventName] = $event;
 			if ($this->_event && method_exists($this->_event, $eventName)) {
 				$event->clear();

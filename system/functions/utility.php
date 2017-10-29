@@ -336,13 +336,7 @@ function ocExceptionHandler($exception)
  */
 function ocShutdownHandler()
 {
-	if (function_exists('ocConfig') && class_exists('Config', false)) {
-		$callback = ocConfig('CALLBACK.oc_die', false);
-		if ($callback) {
-			$args = func_get_args();
-			Call::run($callback, $args);
-		}
-	}
+	Ocara::getInstance()->event('die')->fire();
 
 	$error = error_get_last();
 	if ($error) {

@@ -40,7 +40,7 @@ class Common extends ServiceProvider
     public function getValidator()
     {
         $class = ocConfig('VALIDATE_CLASS', 'Ocara\Service\Validate', true);
-        $validator = new Validator(new $class);
+        $validator = new Validator($class);
         return $validator;
     }
 

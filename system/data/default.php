@@ -67,9 +67,16 @@ $OC_CONF['CONTROLLER_FEATURE_CLASS'] = array(
 );
 
 /**
- * 系统服务类
+ * 系统服务类（非单例模式）
  */
 $OC_CONF['SYSTEM_SERVICE_CLASS'] = array(
+	'Event' => 'Ocara\Event',
+);
+
+/**
+ * 系统服务类（单例模式）
+ */
+$OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
 	'Request' 		=> 'Ocara\Request',
 	'Response' 		=> 'Ocara\Response',
 	'Error' 		=> 'Ocara\Error',
@@ -80,7 +87,6 @@ $OC_CONF['SYSTEM_SERVICE_CLASS'] = array(
 	'Cookie' 		=> 'Ocara\Cookie',
 	'Session' 		=> 'Ocara\Session',
 	'Route'			=> 'Ocara\Route',
-	'Event'			=> 'Ocara\Event',
 	'Transaction'	=> 'Ocara\Transaction',
 );
 

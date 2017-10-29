@@ -8,18 +8,22 @@
  ************************************************************************************************/
 namespace Ocara;
 
-use Ocara\ServiceProvider;
-use Ocara\Exception\Exception;
-
 defined('OC_PATH') or exit('Forbidden!');
 
 class FormManager extends ServiceProvider
 {
 	protected $_forms = array();
 
+	/**
+	 * 注册服务
+	 */
 	public function register()
 	{
-		$this->_container->bindSingleton('formToken', '\Ocara\FormToken');
+		$validate = ocConfig('SERVICE.validate', '\Ocara\Service\Validate');
+		$this->_container
+			->bindSingleton('formToken', '\Ocara\FormToken')
+			->bindSingleton('validator', '\Ocara\Validator', array($validate))
+		;
 	}
 
 	/**
@@ -29,16 +33,9 @@ class FormManager extends ServiceProvider
 	 */
 	public function create($name)
 	{
-		if (isset($this->_forms[$name])
-			&& is_object($obj = $this->_forms[$name])
-			&& $obj instanceof Form
-		) {
-			$form = $this->_forms[$name];
-		} else {
-			$form = new Form($name);
-			$form->setRoute($this->getRoute());
-			$this->_forms[$name] = $form;
-		}
+		$form = new Form($name);
+		$form->setRoute($this->getRoute());
+		$this->_forms[$name] = $form;
 
 		return $form;
 	}
@@ -47,10 +44,8 @@ class FormManager extends ServiceProvider
 	 * 获取提交的表单
 	 * @return null
 	 */
-	public function getPostForm()
+	public function getSubmitForm($postToken)
 	{
-		$tokenTag  = $this->formToken->getTokenTag();
-		$postToken = $this->getSubmit($tokenTag);
 		$postForm  = null;
 
 		if (empty($postToken)) {
@@ -74,14 +69,40 @@ class FormManager extends ServiceProvider
 	}
 
 	/**
+	 * 获取表单
+	 * @param string $name
+	 * @return array|bool
+	 */
+	public function getForm($name = null)
+	{
+		if (func_num_args()) {
+			return $this->hasForm($name) ? $this->_forms[$name] : null;
+		}
+
+		return $this->_forms;
+	}
+
+	/**
+	 * 是否存在表单
+	 * @param $name
+	 * @return bool
+	 */
+	public function hasForm($name)
+	{
+		return isset($this->_forms[$name])
+			&& is_object($obj = $this->_forms[$name])
+			&& $obj instanceof Form;
+	}
+
+	/**
 	 * 验证表单
-	 * @param $postForm
+	 * @param $form
 	 * @param $data
 	 */
-	public function validate($postForm, $data)
+	public function validate($form, $data)
 	{
-		if ($postForm->validateForm()) {
-			if (!$postForm->validate($this->validator, $data)) {
+		if ($form->validateForm()) {
+			if (!$form->validate($this->validator, $data)) {
 				$this->_showCheckFormError(
 					'failed_validate_form',
 					array($this->validator->getError()),

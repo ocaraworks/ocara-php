@@ -25,9 +25,8 @@ class Rest extends ServiceProvider
      */
     public function getValidator()
     {
-        ocImport(OC_CORE . 'Validator.php');
         $class = ocConfig('VALIDATE_CLASS', 'Ocara\Service\Validate', true);
-        $validator = new Validator(new $class);
+        $validator = new Validator($class);
         return $validator;
     }
 
@@ -36,7 +35,6 @@ class Rest extends ServiceProvider
      */
     public function getPager()
     {
-        ocImport(OC_SERVICE . 'library/Pager.php');
         $pager = new Pager();
         return $pager;
     }
@@ -46,7 +44,6 @@ class Rest extends ServiceProvider
      */
     public static function getView($route)
     {
-        ocImport(OC_CORE . '/View/Rest.php');
         $view = new RestView();
         $view->setRoute($route);
         $view->init();

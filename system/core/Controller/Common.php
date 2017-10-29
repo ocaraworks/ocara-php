@@ -32,7 +32,6 @@ class Common extends ControllerBase implements ControllerInterface
 	private $_isSubmit = null;
 	private $_submitMethod = 'post';
 	private $_checkForm = true;
-	private $_forms = array();
 
 	/**
 	 * 初始化设置
@@ -196,30 +195,20 @@ class Common extends ControllerBase implements ControllerInterface
 	 */
 	public function form($name = null)
 	{
-		if ($name) {
+		$model = null;
+		if (!$name) {
+			$name = $this->getRoute('controller');
+			$model = $this->model();
+		}
+
+		$form = $this->formManager->getForm($name);
+		if (!$form) {
 			$form = $this->formManager->create($name);
+			if ($model) {
+				$form->model($model, false);
+			}
 			$this->event('afterCreateForm')->fire(array($name, $form));
-			return $form;
 		}
-
-		$name  = $this->getRoute('controller');
-		$model = $this->model();
-
-		if (is_object($model) && $model instanceof ModelBase) {
-			$table = $model->getTable();
-		} else {
-			$table = $name;
-		}
-
-		if (!$this->db->tableExists($table, false)) {
-			Error::show('no_form');
-		}
-
-		$form = $this->formManager
-			->create($name)
-			->model($model, false);
-
-		$this->event('afterCreateForm')->fire(array($name, $form));
 
 		return $form;
 //		if (empty($name)) {
@@ -246,14 +235,6 @@ class Common extends ControllerBase implements ControllerInterface
 //			$this->view->assign($name, $form);
 //		}
 //		return $form;
-	}
-
-	/**
-	 * 获取所有表单对象
-	 */
-	public function getForms()
-	{
-		return $this->_forms;
 	}
 
 	/**
@@ -315,10 +296,13 @@ class Common extends ControllerBase implements ControllerInterface
 	protected function _checkForm()
 	{
 		$this->isSubmit();
-		if (!($this->_isSubmit && $this->_checkForm && $this->_forms))
+		if (!($this->_isSubmit && $this->_checkForm && $this->formManager->getForm()))
 			return true;
 
-		$postForm = $this->formManager->getPostForm();
+		$tokenTag  = $this->formToken->getTokenTag();
+		$postToken = $this->getSubmit($tokenTag);
+		$postForm = $this->formManager->getSubmitForm($postToken);
+
 		if ($postForm) {
 			$data = $this->getSubmit();
 			$this->formManager->validate($postForm, $data);

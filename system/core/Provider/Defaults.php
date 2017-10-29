@@ -14,12 +14,26 @@ class Defaults extends ServiceProvider
 {
     public function register()
     {
-        $classes = ocConfig('SYSTEM_SERVICE_CLASS');
         $container = Ocara::container();
 
+        $classes = ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS');
         foreach ($classes as $class => $namespace) {
             $name = lcfirst($class);
             $container->bindSingleton($name, function() use($namespace) {
+                $file = strtr($namespace, ocConfig('AUTOLOAD_MAP')) . '.php';
+                ocImport($file);
+                if (method_exists($namespace, 'getInstance')) {
+                    return $namespace::getInstance();
+                } else {
+                    return new $namespace();
+                }
+            });
+        }
+
+        $classes = ocConfig('SYSTEM_SERVICE_CLASS');
+        foreach ($classes as $class => $namespace) {
+            $name = lcfirst($class);
+            $container->bind($name, function() use($namespace) {
                 $file = strtr($namespace, ocConfig('AUTOLOAD_MAP')) . '.php';
                 ocImport($file);
                 if (method_exists($namespace, 'getInstance')) {

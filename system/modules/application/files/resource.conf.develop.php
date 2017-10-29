@@ -24,6 +24,13 @@ $CONF['SYS_MODEL'] = 'develop';
 $CONF['DEV_SIGN'] = 'dev';
 
 /*
+ * 服务组件配置
+ */
+$CONF['SERVICE'] = array(
+	'validate' => '\Ocara\Service\Validate'
+);
+
+/*
  * session配置
  */
 $CONF['SESSION'] = array(

@@ -21,8 +21,11 @@ class Validator extends Base
 	/**
 	 * @param object $validate
 	 */
-	public function __construct(&$validate)
+	public function __construct($validate)
 	{
+		if (!is_object($validate)) {
+			$validate = new $validate();
+		}
 		$this->_validate = $validate;
 	}
 
