@@ -172,6 +172,15 @@ $OC_CONF['AUTOLOAD_MAP'] = array(
 	'Ocara\Extension\Service\Functions\\'   => OC_EXT . 'service/functions/',
 );
 
+/*
+ * 服务组件配置
+ */
+$CONF['SERVICE'] = array(
+	'formToken' => '\Ocara\FormToken',
+	'validator' => '\Ocara\Validator',
+	'validate' => '\Ocara\Service\Validate'
+);
+
 /**
  * 应用程序自动加载映射
  */

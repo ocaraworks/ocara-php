@@ -19,10 +19,13 @@ class FormManager extends ServiceProvider
 	 */
 	public function register()
 	{
+		$formToken = ocConfig('SERVICE.formToken', '\Ocara\FormToken');
+		$validator = ocConfig('SERVICE.validator', '\Ocara\Validator');
 		$validate = ocConfig('SERVICE.validate', '\Ocara\Service\Validate');
+
 		$this->_container
-			->bindSingleton('formToken', '\Ocara\FormToken')
-			->bindSingleton('validator', '\Ocara\Validator', array($validate))
+			->bindSingleton('formToken', $formToken)
+			->bindSingleton('validator', $validator, array($validate))
 		;
 	}
 
