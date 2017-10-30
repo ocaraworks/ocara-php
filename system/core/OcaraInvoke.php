@@ -49,6 +49,7 @@ final class OcaraInvoke
 			die('Lost Ocara class!');
 		}
 		
-		Ocara::run();
+		Ocara::getInstance();
+		Ocara::getBootstrap($bootstrap)->run();
 	}
 }

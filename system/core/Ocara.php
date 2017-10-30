@@ -95,7 +95,19 @@ final class Ocara extends Basis
 	public static function run($bootstrap = null)
 	{
 		self::getInstance();
+		$bootstrap = self::getBootstrap($bootstrap);
 
+		self::getRoute();
+		$bootstrap->run(self::$_route);
+	}
+
+	/**
+	 * 获取启动器
+	 * @param $bootstrap
+	 * @return string
+	 */
+	public static function getBootstrap($bootstrap)
+	{
 		$bootstrap = $bootstrap ? $bootstrap : '\Ocara\Bootstrap';
 		$bootstrap = new $bootstrap();
 
@@ -105,10 +117,7 @@ final class Ocara extends Basis
 		$bootstrap->register();
 		$bootstrap->init();
 
-		self::getRoute();
-		define('OC_MODULE_URL', OC_ROOT_URL . ocDir(self::$_route['module']));
-
-		$bootstrap->run(self::$_route);
+		return $bootstrap;
 	}
 
 	/**
