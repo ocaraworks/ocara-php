@@ -17,6 +17,13 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
     {
         date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
 
+        Ocara::getInstance()
+            ->event('die')
+            ->append(ocConfig('EVENT.oc_die', null));
+
+        Ocara::getInstance()
+            ->bindEvents(ocConfig('EVENT.global_log', GlobalLog::getInstance()));
+
         if (!@ini_get('short_open_tag')) {
             Error::show('need_short_open_tag');
         }
@@ -26,7 +33,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
         }
 
         $this->event('authCheck')
-             ->append(ocConfig('CALLBACK.auth.check', null));
+             ->append(ocConfig('EVENT.auth.check', null));
     }
 
     /**

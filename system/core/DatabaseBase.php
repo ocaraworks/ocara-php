@@ -78,6 +78,13 @@ class DatabaseBase extends Sql
 
 		$this->_config = $config;
 		ocDel($this->_config, 'password');
+
+		$this->event('before_execute_sql')
+			 ->append(ocConfig('EVENT.database.before_execute_sql', null));
+
+		$this->event('after_execute_sql')
+			->append(ocConfig('EVENT.database.after_execute_sql', null));
+
 		$this->init($config);
 	}
 
@@ -226,9 +233,7 @@ class DatabaseBase extends Sql
 		}
 
 		list($sql, $params) = $sqlData;
-		if ($callback = ocConfig('CALLBACK.database.execute_sql.before', null)) {
-			Call::run($callback, array($sql, date(ocConfig('DATE_FORMAT.datetime'))));
-		}
+		$this->event('before_execute_sql')->fire(array($sql, date(ocConfig('DATE_FORMAT.datetime'))));
 
 		try {
 			$params = $params ? array($params) : array();
@@ -697,11 +702,8 @@ class DatabaseBase extends Sql
 		$error = $errorExists ? $this->getError() : null;
 
 		if ($sqlData) {
-			$callback = ocConfig('CALLBACK.database.execute_sql.after', false);
-			if ($callback) {
-				$params = array($sqlData, $errorExists, $error,$ret, date(ocConfig('DATE_FORMAT.datetime')));
-				Call::run($callback, $params);
-			}
+			$params = array($sqlData, $errorExists, $error,$ret, date(ocConfig('DATE_FORMAT.datetime')));
+			$this->event('after_execute_sql')->fire($params);
 		}
 
 		if ($required && $errorExists) {

@@ -71,6 +71,7 @@ final class Database extends Base
 	/**
 	 * 获取数据库配置信息
 	 * @param string $server
+	 * @return array|bool|mixed|null
 	 */
 	public static function getConfig($server = null)
 	{

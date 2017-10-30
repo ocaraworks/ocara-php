@@ -104,7 +104,14 @@ abstract class Basis
 	 */
 	public function bindEvents($eventObject)
 	{
-		$this->_event = $eventObject;
+		if (is_string($eventObject) && class_exists($eventObject)) {
+			$eventObject = new $eventObject();
+		}
+
+		if (is_object($eventObject)) {
+			$this->_event = $eventObject;
+		}
+
 		return $this;
 	}
 

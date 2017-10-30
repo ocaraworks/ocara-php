@@ -45,7 +45,7 @@ class Ajax extends Base
 		$result['message'] 	= $message['message'];
 		$result['body']    	= $body;
 
-		if ($callback = ocConfig('CALLBACK.ajax_return', null)) {
+		if ($callback = ocConfig('CALLBACK.ajax.return_result', null)) {
 			$result = Call::run($callback, array($result));
 		}
 

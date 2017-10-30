@@ -27,13 +27,13 @@ class Error extends Base
 	{
 		if (self::$_instance === null) {
 			self::$_instance = new self();
-			if ($callback = ocConfig('CALLBACK.error.write_log', null)) {
+			if ($callback = ocConfig('EVENT.error.write_log', null)) {
 				self::$_instance->event('write_log')->append($callback);
 			}
-			if ($callback = ocConfig('CALLBACK.error.output', null)) {
+			if ($callback = ocConfig('EVENT.error.output', null)) {
 				self::$_instance->event('output')->append($callback);
 			}
-			if ($callback = ocConfig('CALLBACK.error.ajax_output', null)) {
+			if ($callback = ocConfig('EVENT.error.ajax_output', null)) {
 				self::$_instance->event('ajax_output')->append($callback);
 			}
 		}

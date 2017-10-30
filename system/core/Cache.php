@@ -41,7 +41,8 @@ final class Cache extends Base
 
 	/**
 	 * 获取配置信息
-	 * @param string $server
+	 * @param null $server
+	 * @return array|bool|mixed|null
 	 */
 	public static function getConfig($server = null)
 	{

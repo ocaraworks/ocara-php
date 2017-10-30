@@ -36,7 +36,7 @@ class Rest extends ControllerBase
 	{
 		Request::setAjax();
 		$this->setRoute($route);
-		Config::set('CALLBACK.ajax_return', array($this, 'formatAjaxResult'));
+		Config::set('CALLBACK.ajax.return_result', array($this, 'formatAjaxResult'));
 
 		$this->service = new ServiceProvider();
 		$this->service->setRoute($route);

@@ -40,7 +40,7 @@ class Common extends ControllerBase implements ControllerInterface
 	public function init(array $route)
 	{
 		$this->setRoute($route);
-		Config::set('CALLBACK.ajax_return', array($this, 'formatAjaxResult'));
+		Config::set('CALLBACK.ajax.return_result', array($this, 'formatAjaxResult'));
 
 		$this->service = new ServiceProvider();
 		$this->service->setRoute($route);
@@ -207,34 +207,11 @@ class Common extends ControllerBase implements ControllerInterface
 			if ($model) {
 				$form->model($model, false);
 			}
+			$form->setRoute($this->getRoute());
 			$this->event('afterCreateForm')->fire(array($name, $form));
 		}
 
 		return $form;
-//		if (empty($name)) {
-//			$name  = $this->getRoute('controller');
-//			$model = $this->model();
-//			if (is_object($model) && $model instanceof ModelBase) {
-//				$table = $model->getTable();
-//			} else {
-//				$table = $name;
-//			}
-//			if ($this->db->tableExists($table, false)) {
-//				$form = $this->form($name)->model($table, false);
-//			} else {
-//				Error::show('no_form');
-//			}
-//		} elseif (isset($this->_forms[$name])
-//			&& is_object($obj = $this->_forms[$name])
-//			&& $obj instanceof Form
-//		) {
-//			$form = $this->_forms[$name];
-//		} else {
-//			$this->_forms[$name]= $form = new Form($name);
-//			$form->setRoute($this->getRoute());
-//			$this->view->assign($name, $form);
-//		}
-//		return $form;
 	}
 
 	/**
@@ -307,38 +284,6 @@ class Common extends ControllerBase implements ControllerInterface
 			$data = $this->getSubmit();
 			$this->formManager->validate($postForm, $data);
 		}
-//
-//		$tokenTag  = $this->formToken->getTokenTag();
-//		$postToken = $this->getSubmit($tokenTag);
-//		$postForm  = null;
-//
-//		if (empty($postToken)) {
-//			$this->_showCheckFormError('failed_validate_token');
-//		}
-//
-//		foreach ($this->_forms as $formName => $form) {
-//			$this->formToken->setRoute($form->getRoute());
-//			if ($this->formToken->exists($formName, $postToken)) {
-//				$postForm = $form;
-//				$this->formToken->setCurrentForm($formName);
-//				break;
-//			}
-//		}
-//
-//		if ($postForm === null) {
-//			$this->_showCheckFormError('not_exists_form');
-//		}
-//
-//		if ($postForm->validateForm()) {
-//			$data = $this->getSubmit();
-//			if (!$postForm->validate($this->validator, $data)) {
-//				$this->_showCheckFormError(
-//					'failed_validate_form',
-//					array($this->validator->getError()),
-//					$this->validator->getErrorSource()
-//				);
-//			}
-//		}
 
 		return true;
 	}

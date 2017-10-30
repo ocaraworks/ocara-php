@@ -92,12 +92,7 @@ abstract class Base extends Basis
 		}
 
 		$params = array($logName, $time, $content, $traceString, $traceInfo);
-		if ($callback = ocConfig('CALLBACK.global_log', OC_EMPTY)) {
-			array_unshift($params, $type);
-			Call::run($callback, $params);
-		} else {
-			Call::run(array(GlobalLog::getInstance(), $type), $params);
-		}
+		Ocara::getInstance()->event($type)->fire($params);
 	}
 
 	/**
