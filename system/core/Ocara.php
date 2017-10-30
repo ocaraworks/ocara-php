@@ -105,7 +105,7 @@ final class Ocara extends Basis
 		$bootstrap->register();
 		$bootstrap->init();
 
-		self::$_route = self::getRoute();
+		self::getRoute();
 		define('OC_MODULE_URL', OC_ROOT_URL . ocDir(self::$_route['module']));
 
 		$bootstrap->run(self::$_route);

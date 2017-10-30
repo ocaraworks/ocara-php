@@ -25,8 +25,7 @@ class FormManager extends ServiceProvider
 
 		$this->_container
 			->bindSingleton('formToken', $formToken)
-			->bindSingleton('validator', $validator, array($validate))
-		;
+			->bindSingleton('validator', $validator, array($validate));
 
 		$this->event('check_error')
 			 ->append(ocConfig(array('EVENT', 'form', 'check_error'), null));

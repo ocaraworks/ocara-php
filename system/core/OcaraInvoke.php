@@ -49,10 +49,6 @@ final class OcaraInvoke
 			die('Lost Ocara class!');
 		}
 		
-		Ocara::getInstance();
-
-		$bootstrap = $bootstrap ? $bootstrap : '\Ocara\Bootstrap';
-		$bootstrap = new $bootstrap();
-		$bootstrap->init();
+		Ocara::run();
 	}
 }

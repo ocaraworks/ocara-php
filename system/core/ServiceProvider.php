@@ -97,7 +97,6 @@ class ServiceProvider extends Base implements ServiceProviderInterface
             return $instance;
         }
 
-        debug_print_backtrace();
         Error::show('no_service', array($key));
     }
 }
