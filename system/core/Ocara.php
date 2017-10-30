@@ -342,17 +342,6 @@ final class Ocara extends Basis
 	}
 
 	/**
-	 * 获取View视图类
-	 */
-	public function getView($route)
-	{
-		$view = new CommonView();
-		$view->setRoute($route);
-		$view->init();
-		return $view;
-	}
-
-	/**
 	 * 获取框架信息
 	 * @param null $key
 	 * @return array|bool|mixed|null
