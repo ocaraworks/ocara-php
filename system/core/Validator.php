@@ -141,7 +141,7 @@ class Validator extends Base
 	}
 
 	/**
-	 * 动作验证
+	 * 回调函数验证
 	 * @param string $field
 	 * @param string $value
 	 * @param string|array $callback

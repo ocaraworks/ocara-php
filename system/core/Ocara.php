@@ -299,7 +299,7 @@ final class Ocara extends Basis
 
 		$filePath = ocCommPath($filePath);
 		if (ocFileExists($filePath)) {
-			include_once($filePath);
+			include($filePath);
 			if (class_exists($newClass, false)) {
 				if (method_exists($newClass, 'loadLanguage')) {
 					$newClass::loadLanguage($filePath);

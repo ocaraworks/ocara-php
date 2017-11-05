@@ -86,6 +86,7 @@ $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
 	'Lang' 			=> 'Ocara\Lang',
 	'Cookie' 		=> 'Ocara\Cookie',
 	'Session' 		=> 'Ocara\Session',
+	'GlobalLog' 	=> 'Ocara\GlobalLog',
 	'Route'			=> 'Ocara\Route',
 	'Transaction'	=> 'Ocara\Transaction',
 );

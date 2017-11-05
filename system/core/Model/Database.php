@@ -547,13 +547,11 @@ abstract class Database extends ModelBase
 	{
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
-			if ($this->_selected && method_exists($this, '_beforeUpdate')) {
-				$this->event('_beforeUpdate')->fire();
+			if ($this->_selected) {
+				$this->event('beforeUpdate')->fire();
 			}
 		} else {
-			if (method_exists($this, '_beforeCreate')) {
-				$this->event('_beforeCreate')->fire();
-			}
+			$this->event('beforeCreate')->fire();
 		}
 
 		$data = $this->map(array_merge($data, $this->getChanges()));
@@ -571,8 +569,8 @@ abstract class Database extends ModelBase
 			$result = $this->_plugin->update($this->_tableName, $data, $condition, $debug);
 			if (!$debug){
 				$this->_relateSave();
-				if($this->_selected && method_exists($this, '_afterUpdate')) {
-					$this->event('_afterUpdate')->fire();
+				if($this->_selected) {
+					$this->event('afterUpdate')->fire();
 				}
 			}
 		} else {
@@ -581,9 +579,7 @@ abstract class Database extends ModelBase
 				$this->_insertId = $this->_plugin->getInsertId();
 				$this->_selectInsertRow($data);
 				$this->_relateSave();
-				if (method_exists($this, '_afterCreate')) {
-					$this->event('_afterCreate')->fire();
-				}
+				$this->event('afterCreate')->fire();
 			}
 		}
 
@@ -719,17 +715,16 @@ abstract class Database extends ModelBase
 
 		Ocara::services()->transaction->push($this->_plugin);
 
-		if (!$debug && $this->_selected && method_exists($this, '_beforeDelete')) {
-			$this->event('_beforeDelete')->fire();
+		if (!$debug && $this->_selected) {
+			$this->event('beforeDelete')->fire();
 		}
 
 		$result = $this->_plugin->delete($this->_tableName, $condition, $debug);
 		if (!$debug
 			&& !$this->_plugin->errorExists()
 			&& $this->_selected
-			&& method_exists($this, '_afterDelete')
 		) {
-			$this->event('_afterDelete')->fire();
+			$this->event('afterDelete')->fire();
 		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
@@ -965,7 +960,6 @@ abstract class Database extends ModelBase
 		}
 
 		$result = $this->_find(false, false, $debug, $queryRow, true);
-
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
 		}

@@ -46,15 +46,16 @@ class GlobalLog extends Base
     /**
      * 写日志
      * @param string $logName
-     * @param integer $time
      * @param string|array $content
+     * @param integer $time
      * @param string $traceString
      * @param array $traceInfo
      * @param string $type
      */
-    public function write($logName, $time, $content, $traceString = null, $traceInfo = array(), $type = 'info')
+    public function write($logName, $content, $time = null, $traceString = null, $traceInfo = array(), $type = 'info')
     {
         self::getInstance();
+        $time = $time ? $time : time();
         $datetime = date(ocConfig('DATE_FORMAT.datetime'), $time);
 
         if (!self::$_log->exists($logName)) {
@@ -79,25 +80,25 @@ class GlobalLog extends Base
     /**
      * 信息日志
      */
-    public function info($logName, $time, $content, $traceString = null, $traceInfo = array())
+    public function info($logName, $content, $time = null, $traceString = null, $traceInfo = array())
     {
-        $this->write($logName, $time, $content, $traceString, $traceInfo, 'info');
+        $this->write($logName, $content, $time, $traceString, $traceInfo, 'info');
     }
 
     /**
      * 调试日志
      */
-    public function debug($logName, $time, $content, $traceString = null, $traceInfo = array())
+    public function debug($logName, $content, $time = null, $traceString = null, $traceInfo = array())
     {
-        $this->write($logName, $time, $content, $traceString, $traceInfo, 'debug');
+        $this->write($logName, $content, $time, $traceString, $traceInfo, 'debug');
     }
 
     /**
      * 错误日志
      */
-    public function error($logName, $time, $content, $traceString = null, $traceInfo = array())
+    public function error($logName, $content, $time = null, $traceString = null, $traceInfo = array())
     {
-        $this->write($logName, $time, $content, $traceString, $traceInfo, 'error');
+        $this->write($logName, $content, $time, $traceString, $traceInfo, 'error');
     }
 
     /**
