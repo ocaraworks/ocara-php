@@ -16,8 +16,9 @@ defined('OC_PATH') OR define(
 
 require_once (OC_PATH . 'system/functions/utility.php');
 require_once (OC_PATH . 'system/const/basic.php');
-require_once (OC_SYS . 'core/Basis.php');
-require_once (OC_SYS . 'core/Base.php');
+require_once (OC_CORE . 'Basis.php');
+require_once (OC_CORE . 'Base.php');
+require_once (OC_CORE . 'Loader.php');
 require_once (OC_CORE . 'Config.php');
 
 final class Ocara extends Basis
@@ -67,7 +68,7 @@ final class Ocara extends Basis
 			ocConfig('ERROR_HANDLER.exception_error', 'ocExceptionHandler', true)
 		);
 
-		spl_autoload_register(array(__CLASS__, 'autoload'));
+		spl_autoload_register(array('\Ocara\Loader', 'autoload'));
 
 		if (empty($_SERVER['REQUEST_METHOD'])) {
 			$_SERVER['REQUEST_METHOD'] = 'GET';
@@ -272,61 +273,6 @@ final class Ocara extends Basis
 	public static function services()
 	{
 		return self::$_services;
-	}
-
-	/**
-	 * 自动加载类
-	 * @param string $class
-	 * @return bool|mixed
-	 * @throws Exception
-	 */
-	public static function autoload($class)
-	{
-		$newClass = trim($class, OC_NS_SEP);
-
-		if (strstr($newClass, OC_NS_SEP)) {
-			$filePath = strtr($newClass, ocConfig('AUTOLOAD_MAP'));
-			if ($filePath == $class) {
-				$filePath = strtr($newClass, ocConfig('APP_AUTOLOAD_MAP'));
-			}
-			if ($filePath == $newClass) {
-				$filePath = OC_ROOT . 'service/library/' . $newClass;
-			}
-			$filePath .= '.php';
-		} else {
-			$filePath = OC_ROOT . 'service/library/' . $newClass . '.php';
-		}
-
-		$filePath = ocCommPath($filePath);
-		if (ocFileExists($filePath)) {
-			include($filePath);
-			if (class_exists($newClass, false)) {
-				if (method_exists($newClass, 'loadLanguage')) {
-					$newClass::loadLanguage($filePath);
-				}
-				return true;
-			}
-			if (interface_exists($newClass, false)) {
-				return true;
-			}
-		}
-
-		$autoloads = spl_autoload_functions();
-		foreach ($autoloads as $func) {
-			if (is_string($func)) {
-				call_user_func_array($func, array($class));
-			} elseif (is_array($func)) {
-				if (reset($func) === __CLASS__) continue;
-				call_user_func_array($func, array($class));
-			} else {
-				continue;
-			}
-			if (class_exists($class, false) || interface_exists($newClass, false)) {
-				return true;
-			}
-		}
-
-		Error::show('not_exists_class', array($class));
 	}
 
 	/**
