@@ -265,6 +265,8 @@ abstract class Database extends ModelBase
 	/**
 	 * 获取当前数据库对象
 	 * @param bool $slave
+	 * @return mixed
+	 * @throws \Ocara\Exception\Exception
 	 */
 	public function db($slave = false)
 	{
