@@ -35,8 +35,9 @@ class Cookie extends Base
 	/**
 	 * 获取cookie变量值
 	 * @param string|array $key
+	 * @return array|bool|mixed|null
 	 */
-	public static function get($key = false)
+	public static function get($key = null)
 	{
 		if (func_num_args()) {
 			return ocGet($key, $_COOKIE);
@@ -69,6 +70,7 @@ class Cookie extends Base
 	/**
 	 * 检测cookie是否设置
 	 * @param string|array $key
+	 * @return array|bool|mixed|null
 	 */
 	public static function exists($key)
 	{
@@ -77,7 +79,9 @@ class Cookie extends Base
 
 	/**
 	 * 新建cookie变量
-	 * @param integer $saveTime
+	 * @param string $name
+	 * @param string $value
+	 * @param integer $expire
 	 * @param string $path
 	 * @param string $domain
 	 * @param bool $secure
