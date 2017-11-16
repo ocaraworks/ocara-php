@@ -365,7 +365,7 @@ class Container extends Basis
                     $class = $params[$key];
                 } elseif ($this->has($name)) {
                     $class = $this->create($name);
-                } elseif (self::$_default && self::$_default->has($name)) {
+                } elseif ($this !== self::$_default && self::$_default && self::$_default->has($name)) {
                     $class = self::$_default->create($name);
                 }
             }
