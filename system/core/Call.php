@@ -68,7 +68,7 @@ final class Call extends Base
 	{
 		if (preg_match('/^\/?\w+(\/\w+)+$/', $route, $mt)) {
 			$route = Ocara::parseRoute($route);
-			return Ocara::boot($route, $return, $params);
+			return Bootstrap::run($route, $return, $params);
 		}
 
 		return call_user_func_array($route, $params);

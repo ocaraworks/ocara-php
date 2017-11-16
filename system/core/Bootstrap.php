@@ -38,8 +38,10 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
 
     /**
      * 运行访问控制器
+     * @param array|string $route
+     * @throws Exception\Exception
      */
-    public function run($route)
+    public function start($route)
     {
         if ($route['module'] == OC_DEV_SIGN) {
             if (OC_SYS_MODEL == 'develop') {
@@ -50,7 +52,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
         }
 
         $this->event('authCheck')->fire(array($route));
-        Ocara::boot($route);
+        self::run($route);
     }
 
     /**
@@ -60,7 +62,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
      */
     public static function createHtaccess($moreContent = false)
     {
-        $htaccessFile = OC_ROOT . '.htaccess';
+        $file = OC_ROOT . '.htaccess';
         $htaccess = ocImport(OC_SYS . 'data/rewrite/apache.php');
 
         if (empty($htaccess)) {
@@ -69,7 +71,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
 
         if (is_writeable(OC_ROOT)) {
             $htaccess = sprintf($htaccess, $moreContent);
-            ocWrite($htaccessFile, $htaccess);
+            ocWrite($file, $htaccess);
         } else {
             Error::show('not_writeable_htaccess');
         }

@@ -58,7 +58,8 @@ class Common extends ServiceProvider
      */
     public function getFormToken()
     {
-        $formToken = new FormToken($this->getRoute());
+        $formToken = new FormToken();
+        $formToken->setRoute($this->getRoute());
         return $formToken;
     }
 

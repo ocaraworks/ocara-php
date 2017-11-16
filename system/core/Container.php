@@ -17,10 +17,13 @@ class Container extends Basis
      * @var array $_singletons 单例绑定类
      * @var array $_instances 已实例化实例
      * @var array $_replaces 要替换的依赖类
+     * @var object $_default 默认容器
      */
     private $_binds = array();
     private $_singletons = array();
     private $_instances = array();
+
+    protected static $_default;
 
     /**
      * 魔术方法（设置未定义属性）
@@ -64,6 +67,24 @@ class Container extends Basis
     }
 
     /**
+     * 设置默认容器
+     * @param Container $container
+     */
+    public static function setDefault(Container $container)
+    {
+        self::$_default = $container;
+    }
+
+    /**
+     * 获取默认容器
+     * @return mixed
+     */
+    public static function getDefault()
+    {
+        return self::$_default;
+    }
+
+    /**
      * 绑定实例
      * @param string $name
      * @param mixed $source
@@ -71,10 +92,14 @@ class Container extends Basis
      * @param array $deps
      * @return $this
      */
-    public function bind($name, $source, array $params = array(), array $deps = array())
+    public function bind($name, $source = null, array $params = array(), array $deps = array())
     {
         if (strstr($name, OC_NS_SEP)) {
             $name = OC_NS_SEP . ltrim($name, OC_NS_SEP);
+        }
+
+        if (!$source) {
+            $source = $name;
         }
 
         $matter = $this->_getMatter($name, $source, $params, $deps);
@@ -93,10 +118,14 @@ class Container extends Basis
      * @param array $deps
      * @return $this
      */
-    public function bindSingleton($name, $source, array $params = array(), array $deps = array())
+    public function bindSingleton($name, $source = null, array $params = array(), array $deps = array())
     {
         if (strstr($name, OC_NS_SEP)) {
             $name = OC_NS_SEP . ltrim($name, OC_NS_SEP);
+        }
+
+        if (!$source) {
+            $source = $name;
         }
 
         $matter = $this->_getMatter($name, $source, $params, $deps, true);
@@ -112,7 +141,7 @@ class Container extends Basis
      * @param string $name
      * @return null
      */
-    public function getBound($name)
+    public function getBind($name)
     {
         if (array_key_exists($name, $this->_binds)) {
             return $this->_binds[$name][0];
@@ -129,7 +158,7 @@ class Container extends Basis
      * 获取所有绑定数扰
      * @return array
      */
-    public function getAllBounds()
+    public function getAllBind()
     {
         return $this->_binds;
     }
@@ -139,7 +168,7 @@ class Container extends Basis
      * @param string $name
      * @return null
      */
-    public function getBoundParams($name)
+    public function getBindParams($name)
     {
         if (array_key_exists($name, $this->_binds)) {
             return $this->_binds[$name][1];
@@ -171,9 +200,11 @@ class Container extends Basis
             return array();
         }
 
-        $matter[] = $source;
-        $matter[] = $params ? (array)$params : array();
-        $matter[] = $deps ? (array)$deps : array();
+        $matter = array(
+            $source,
+            $params ? (array)$params : array(),
+            $deps ? (array)$deps : array()
+        );
 
         return $matter;
     }
@@ -198,7 +229,7 @@ class Container extends Basis
      * @param string $name
      * @return bool
      */
-    public function isInstance($name)
+    public function hasInstance($name)
     {
         return array_key_exists($name, $this->_instances);
     }
@@ -306,20 +337,21 @@ class Container extends Basis
 
     /**
      * 获取依赖
+     * @param array $args
      * @param array $params
-     * @param array $data
      * @return array
      * @throws Exception
      */
-    public function getDependencies($params, $data)
+    public function getDependencies($args, $params)
     {
         $dependencies = array();
 
-        foreach ($params as $key => $object) {
+        foreach ($args as $key => $object) {
+            $class = null;
             $dependency = $object->getClass();
             if ($dependency === null) {
-                if (isset($data[$key])) {
-                    $class = $data[$key];
+                if (isset($params[$key])) {
+                    $class = $params[$key];
                 } else {
                     if ($object->isDefaultValueAvailable()) {
                         $class = $object->getDefaultValue();
@@ -329,13 +361,17 @@ class Container extends Basis
                 }
             } else {
                 $name = OC_NS_SEP . $dependency->name;
-                if (isset($data[$key]) && is_object($data[$key])) {
-                    $class = $data[$key];
+                if (isset($params[$key]) && is_object($params[$key])) {
+                    $class = $params[$key];
                 } elseif ($this->has($name)) {
-                    $class = $this->get($name);
+                    $class = $this->create($name);
+                } elseif (self::$_default && self::$_default->has($name)) {
+                    $class = self::$_default->create($name);
                 }
             }
-            $dependencies[] = $class;
+            if ($class) {
+                $dependencies[] = $class;
+            }
         }
 
         return $dependencies;

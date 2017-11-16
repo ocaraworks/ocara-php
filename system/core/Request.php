@@ -12,14 +12,10 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Request extends Base
 {
-
 	/**
 	 * 单例模式
 	 */
 	private static $_instance = null;
-
-	private function __clone(){}
-	private function __construct(){}
 
 	public static function getInstance()
 	{
@@ -62,7 +58,8 @@ class Request extends Base
 
 	/**
 	 * 去除Ocara标签
-	 * @param string $content
+	 * @param string|number $content
+	 * @return mixed
 	 */
 	public static function stripOcaraTag($content)
 	{
@@ -72,10 +69,11 @@ class Request extends Base
 		
 		return $content;
 	}
-	
+
 	/**
 	 * 去除Ocara标签和转义
 	 * @param string $content
+	 * @return mixed
 	 */
 	public static function cleanData($content)
 	{
@@ -202,7 +200,8 @@ class Request extends Base
 	/**
 	 * 获取GET参数值
 	 * @param string $key
-	 * @param string $default
+	 * @param string|array $default
+	 * @return array|null|string
 	 */
 	public static function getGet($key = null, $default = null)
 	{
@@ -213,6 +212,7 @@ class Request extends Base
 	 * 获取POST参数值
 	 * @param string $key
 	 * @param string $default
+	 * @return array|null|string
 	 */
 	public static function getPost($key = null, $default = null)
 	{
@@ -222,7 +222,8 @@ class Request extends Base
 	/**
 	 * 获取COOKIE参数值
 	 * @param string $key
-	 * @param string $default
+	 * @param string|array $default
+	 * @return array|null|string
 	 */
 	public static function getCookie($key = null, $default = null)
 	{
@@ -232,7 +233,8 @@ class Request extends Base
 	/**
 	 * 获取REQUEST参数值
 	 * @param string $key
-	 * @param string $default
+	 * @param string|array $default
+	 * @return array|null|string
 	 */
 	public static function getRequest($key = null, $default = null)
 	{		
@@ -241,11 +243,12 @@ class Request extends Base
 
 	/**
 	 * 获取值
-	 * @param array $data
+	 * @param $data
 	 * @param string $key
-	 * @param string $default
+	 * @param string|array $default
+	 * @return array|null|string
 	 */
-	public static function getRequestValue($data, $key = null, $default = null)
+	public static function getRequestValue(array $data, $key = null, $default = null)
 	{
 		if ($key === null) {
 			$data = ocArrayMap('trim', $data);
@@ -268,6 +271,7 @@ class Request extends Base
 	 * 获取Server参数值
 	 * @param string $key
 	 * @param string $default
+	 * @return null|string
 	 */
 	public static function getServer($key = null, $default = null)
 	{
@@ -281,10 +285,11 @@ class Request extends Base
 		
 		return $default === null ? OC_EMPTY : $default;
 	}
-	
+
 	/**
 	 * 解析Json参数
 	 * @param string $param
+	 * @return array|bool|\mix|mixed|\stdClass|string
 	 */
 	public static function decodeJson($param)
 	{

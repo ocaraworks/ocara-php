@@ -76,7 +76,7 @@ final class Ocara extends Basis
 
 		ocImport(array(
 			OC_SYS . 'const/config.php',
-			OC_SYS . 'functions/common.php',
+			OC_SYS . 'functions/common.php'
 		));
 	}
 
@@ -99,7 +99,7 @@ final class Ocara extends Basis
 		$bootstrap = self::getBootstrap($bootstrap);
 
 		self::getRoute();
-		$bootstrap->run(self::$_route);
+		$bootstrap->start(self::$_route);
 	}
 
 	/**
@@ -111,70 +111,17 @@ final class Ocara extends Basis
 	{
 		$bootstrap = $bootstrap ? $bootstrap : '\Ocara\Bootstrap';
 		$bootstrap = new $bootstrap();
+		$container = $bootstrap->getContainer();
 
-		self::$_container = $bootstrap->getContainer();
+		Container::setDefault($container);
+
+		self::$_container = Container::getDefault();
 		self::$_services = $bootstrap->getServiceProvider();
 
 		$bootstrap->register();
 		$bootstrap->init();
 
 		return $bootstrap;
-	}
-
-	/**
-	 * 启动控制器
-	 * @param array|string $route
-	 * @param bool $return
-	 * @param array $params
-	 */
-	public static function boot($route, $return = false, array $params = array())
-	{
-		extract($route);
-
-		if (empty($controller) || empty($action)) {
-			Error::show("MVC Route Error!");
-		}
-
-		list($umodule, $ucontroller, $uaction) = array_values(array_map('ucfirst', $route));
-		$modulePath = OC_APPLICATION_PATH . 'controller/' . $umodule;
-		$controllerPath = $modulePath . "/{$ucontroller}/";
-		$controllerNamespace = ocNamespace(array('Controller', $umodule, $ucontroller));
-		$moduleNamespace = ocNamespace(array('Controller', $umodule));
-
-		if ($umodule && !class_exists($moduleNamespace . $umodule . 'Module', false)) {
-			self::$_container->route->loadRoute($modulePath, $umodule, $moduleNamespace, 'Module');
-		}
-
-		self::$_container->route->loadRoute($controllerPath, $ucontroller, $controllerNamespace, 'Controller');
-		$controlClass = $controllerNamespace . $ucontroller . 'Controller';
-		$method = $action . 'Action';
-
-		if (!method_exists($controlClass, $method)) {
-			$actionPath = $controllerPath . "Action/{$uaction}Action.php";
-			if (ocFileExists($actionPath)) {
-				include_once ($actionPath);
-				$actionClass = $controllerNamespace . 'Action' . OC_NS_SEP . $uaction . 'Action';
-				if (class_exists($actionClass, false)) {
-					$controlClass = $actionClass;
-					$method = '_action';
-				}
-			}
-		}
-
-		Config::loadApplicationConfig('conf', 'control');
-
-		$Control = new $controlClass();
-		if ($method != '_action' && !method_exists($Control, $method)) {
-			Error::show('no_special_class', array('Action', $uaction));
-		}
-
-		$Control->init($route);
-		if ($return) {
-			$Control->checkForm(false);
-			return $Control->doReturnAction($method, $params);
-		} else {
-			$Control->doAction($method);
-		}
 	}
 
 	/**

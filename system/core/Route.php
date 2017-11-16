@@ -84,37 +84,6 @@ class Route extends Base
     }
 
     /**
-     * MVC文件和类检测
-     * @param string $root
-     * @param string $target
-     * @param string $namespace
-     * @param string $type
-     * @param bool $required
-     * @return bool
-     * @throws Exception\Exception
-     */
-    public static function loadRoute($root, $target, $namespace, $type = null, $required = true)
-    {
-        $path = ocDir($root) . $target . $type . '.php';
-        if (!ocFileExists($path)) {
-            if ($required) {
-                Error::show('no_special_file', array($type, $target . '.php'));
-            }
-            return false;
-        }
-
-        include_once ($path);
-        if (!class_exists($namespace . $target . $type,  false)) {
-            if ($required) {
-                Error::show('no_special_class', array($type, $target));
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * 格式化GET参数
      * @param array $data
      * @return array

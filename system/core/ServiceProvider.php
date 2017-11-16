@@ -32,6 +32,14 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     {}
 
     /**
+     * 获取容器
+     */
+    public function container()
+    {
+        return $this->_container;
+    }
+
+    /**
      * 检测组件是否存在
      * @param $key
      * @return bool

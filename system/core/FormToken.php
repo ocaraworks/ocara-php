@@ -36,7 +36,8 @@ class FormToken extends Base
 
 	/**
 	 * 设置当前表单令牌
-	 * @param string $formName
+	 * @param $formName
+	 * @return bool|mixed|null|string
 	 */
 	public function setToken($formName)
 	{
@@ -72,6 +73,9 @@ class FormToken extends Base
 
 	/**
 	 * 是否存在表单
+	 * @param string $formName
+	 * @param string $token
+	 * @return bool
 	 */
 	public function exists($formName = null, $token = null)
 	{
@@ -108,6 +112,7 @@ class FormToken extends Base
 	/**
 	 * 新建表单令牌名称
 	 * @param string $formName
+	 * @return string
 	 */
 	public function genName($formName)
 	{
@@ -120,6 +125,7 @@ class FormToken extends Base
 	/**
 	 * 生成表单令牌
 	 * @param string $formName
+	 * @return bool|mixed|null|string
 	 */
 	public function genToken($formName)
 	{

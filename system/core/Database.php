@@ -23,6 +23,8 @@ final class Database extends Base
 	 * @param string $server
 	 * @param bool $master
 	 * @param bool $required
+	 * @return null
+	 * @throws Exception\Exception
 	 */
 	public static function create($server = null, $master = true, $required = true)
 	{
@@ -46,6 +48,7 @@ final class Database extends Base
 	 * 获取数据库对象
 	 * @param string $server
 	 * @param bool $master
+	 * @return null
 	 */
 	private static function _getDatabase($server, $master = true)
 	{
@@ -95,6 +98,7 @@ final class Database extends Base
 	/**
 	 * 获取数据库对象类名
 	 * @param array $config
+	 * @return string
 	 */
 	public static function getDatabaseType(array $config)
 	{

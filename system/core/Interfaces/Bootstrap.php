@@ -18,11 +18,11 @@ interface Bootstrap
 	public function init();
 
 	/**
-	 * 运行访问控制器
-	 * @param string|array $route
-	 * @return mixed
+	 * 动作开始
+	 * @param array|string $route
+	 * @throws Exception\Exception
 	 */
-	public function run($route);
+	public function start($route);
 
 	/**
 	 * 获取默认服务容器
