@@ -220,7 +220,7 @@ class Event extends Basis
                     if (is_object($callback)) {
                         $callback = array($callback, 'handler');
                     }
-                    Call::run($callback, $params);
+                    return Call::run($callback, $params);
                 }
             }
         }
