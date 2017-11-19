@@ -16,7 +16,7 @@ class Rest extends ServiceProvider
         $this->_container
             ->bindSingleton('view', array(&$this, 'getView'), array($this->getRoute()))
             ->bindSingleton('validator', array(&$this, 'getValidator'))
-            ->bindSingleton('db', function(){Database::create('default');})
+            ->bindSingleton('db', function(){Database::create();})
             ->bindSingleton('pager', array(&$this, 'getPager'));
     }
 

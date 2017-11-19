@@ -29,7 +29,7 @@ class Common extends ServiceProvider
             ->bindSingleton('view', array(&$this, 'getView'))
             ->bindSingleton('formToken', array(&$this, 'getFormToken'))
             ->bindSingleton('validator', array(&$this, 'getValidator'))
-            ->bindSingleton('db', function(){Database::create('default');})
+            ->bindSingleton('db', function(){Database::create();})
             ->bindSingleton('pager', array(&$this, 'getPager'))
             ->bindSingleton('formManager', array(&$this, 'getFormManager'));
     }

@@ -65,7 +65,7 @@ abstract class Base extends Basis
 			}
 		}
 		
-		Error::show('no_method', array($name));
+		parent::_call($name, $params);
 	}
 
 	/**

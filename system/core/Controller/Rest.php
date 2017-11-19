@@ -47,8 +47,8 @@ class Rest extends ControllerBase
 		$this->bindEvents($this);
 
 		method_exists($this, '_start')   && $this->_start();
-		method_exists($this, '_module')  && $this->_module();
-		method_exists($this, '_control') && $this->_control();
+		method_exists($this, '_module')   && $this->_module();
+		method_exists($this, '_control')   && $this->_control();
 	}
 
 	/**

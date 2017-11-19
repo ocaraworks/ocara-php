@@ -13,12 +13,12 @@
 
 <div>
 <span class="left-span">服务器名称：</span>
-<input type="text" name="server" id="server" value="default">
+<input type="text" name="server" id="server" value="main">
 </div>
 
 <div>
     <span class="left-span">数据库名：</span>
-    <input type="text" name="database" id="database" value="default">
+    <input type="text" name="database" id="database" value="">
 </div>
 
 <div>

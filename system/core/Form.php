@@ -295,6 +295,6 @@ class Form extends Base
 			return $html;
 		}
 
-		Error::show('no_method', array($name));
+		parent::_call($name, $params);
 	}
 }

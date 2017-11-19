@@ -32,7 +32,8 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
             self::createHtaccess();
         }
 
-        $this->event('authCheck')
+        $this->event('beforeRun')
+             ->append(ocConfig('EVENT.action.before_run', null))
              ->append(ocConfig('EVENT.auth.check', null));
     }
 
@@ -51,7 +52,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
             }
         }
 
-        $this->event('authCheck')->fire(array($route));
+        $this->event('beforeRun')->fire(array($route));
         self::run($route);
     }
 

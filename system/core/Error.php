@@ -28,13 +28,13 @@ class Error extends Base
 		if (self::$_instance === null) {
 			self::$_instance = new self();
 			if ($callback = ocConfig('EVENT.error.write_log', null)) {
-				self::$_instance->event('write_log')->append($callback);
+				self::$_instance->event('writeLog')->append($callback);
 			}
 			if ($callback = ocConfig('EVENT.error.output', null)) {
 				self::$_instance->event('output')->append($callback);
 			}
 			if ($callback = ocConfig('EVENT.error.ajax_output', null)) {
-				self::$_instance->event('ajax_output')->append($callback);
+				self::$_instance->event('ajaxOutput')->append($callback);
 			}
 		}
 		return self::$_instance;
@@ -65,7 +65,7 @@ class Error extends Base
 			$error = Lang::get($error, $params);
 			throw new Exception($error['message'], $error['code']);
 		} catch(Exception $exception) {
-			self::$_instance->event('write_log')->fire(array(ocGetExceptionData($exception)));
+			self::$_instance->event('writeLog')->fire(array(ocGetExceptionData($exception)));
 		}
 	}
 
@@ -130,7 +130,7 @@ class Error extends Base
 	public function handler($exception)
 	{
 		$params = ocGetExceptionData($exception);
-		self::$_instance->event('write_log')->fire(array($params));
+		self::$_instance->event('writeLog')->fire(array($params));
 
 		if (self::$_instance->event('output')->get()) {
 			self::$_instance->event('output')->fire(array($params));
@@ -213,8 +213,8 @@ class Error extends Base
 	 */
 	private static function _ajaxOutput($error)
 	{
-		if (self::$_instance->event('ajax_output')->get()) {
-			self::$_instance->event('ajax_output')->fire(array($error));
+		if (self::$_instance->event('ajaxOutput')->get()) {
+			self::$_instance->event('ajaxOutput')->fire(array($error));
 		} else {
 			$message = array();
 			$message['code'] = $error['code'];

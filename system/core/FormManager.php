@@ -27,7 +27,7 @@ class FormManager extends ServiceProvider
 			->bindSingleton('formToken', $formToken)
 			->bindSingleton('validator', $validator, array($validate));
 
-		$this->event('check_error')
+		$this->event('checkError')
 			 ->append(ocConfig(array('EVENT', 'form', 'check_error'), null));
 	}
 
@@ -153,8 +153,8 @@ class FormManager extends ServiceProvider
 		$error['errorInfo'] = Lang::get($errorType, $params);;
 		$error['errorData'] = $data;
 
-		if ($this->event('check_error')->get()) {
-			$this->event('check_error')->fire(array($error, $this->getRoute()));
+		if ($this->event('checkError')->get()) {
+			$this->event('checkError')->fire(array($error, $this->getRoute()));
 		} else {
 			Error::show($error['errorInfo']);
 		}

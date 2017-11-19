@@ -16,9 +16,10 @@ abstract class Basis
 	 * @var $_properties 自定义属性
 	 */
 	private $_properties = array();
-	protected $_event;
 
+	protected $_event;
 	protected $_events = array();
+	protected $_traits = array();
 
 	/**
 	 * 实例化
@@ -116,6 +117,23 @@ abstract class Basis
 	}
 
 	/**
+	 * 动态行为扩展
+	 * @param string|object $name
+	 * @param $function
+	 */
+	public function traits($name, $function)
+	{
+		if (is_string($name)) {
+			$this->_traits[$name] = $function;
+		} elseif (is_object($name)) {
+			$methods = get_class_methods($name);
+			foreach ($methods as $method) {
+				$this->traits($method, array($name, $method));
+			}
+		}
+	}
+
+	/**
 	 * 返回当前类名（去除命名空间）
 	 * @return string
 	 */
@@ -143,6 +161,10 @@ abstract class Basis
 	 */
 	public function __call($name, $params)
 	{
+		if (isset($this->_traits[$name])) {
+			call_user_func_array($this->_traits[$name], $params);
+		}
+
 		Error::show('no_method', array($name));
 	}
 

@@ -1,0 +1,12 @@
+<?php
+/**
+ * Main数据库模型基类
+ */
+namespace Model;
+use Ocara\Model\Database;
+
+abstract class MainBase extends Database
+{
+    public function _start()
+    {}
+}

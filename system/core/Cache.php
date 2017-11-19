@@ -22,11 +22,12 @@ final class Cache extends Base
 	 * 新建缓存实例
 	 * @param string $server
 	 * @param bool $required
+	 * @return null
 	 */
-	public static function create($server = 'default', $required = true)
+	public static function create($server = 'main', $required = true)
 	{
 		if (empty($server)) {
-			$server = 'default';
+			$server = 'main';
 		}
 
 		$object = self::_connect($server, $required);
@@ -47,7 +48,7 @@ final class Cache extends Base
 	public static function getConfig($server = null)
 	{
 		if (empty($server)) {
-			$server = 'default';
+			$server = 'main';
 		}
 
 		$config = array();
@@ -71,7 +72,7 @@ final class Cache extends Base
 	private static function _connect($server, $required = true)
 	{
 		$config = self::getConfig($server);
-		$type 	= ucfirst(ocConfig('CACHE.' . $server . '.type'));
+		$type = ucfirst(ocConfig('CACHE.' . $server . '.type'));
 
 		$classInfo = ServiceBase::classFileExists("Cache/{$type}.php");
 		if ($classInfo) {

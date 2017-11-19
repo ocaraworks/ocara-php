@@ -38,7 +38,9 @@ abstract class Cache extends ModelBase
         $this->_tag = self::getClass();
         $this->connect();
 
+        if (method_exists($this, '_start')) $this->_start();
         if (method_exists($this, '_model')) $this->_model();
+
         return $this;
     }
 

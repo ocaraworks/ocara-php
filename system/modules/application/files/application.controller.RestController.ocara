@@ -3,12 +3,12 @@
  * Restful控制器基类
  */
 namespace Controller;
-use Ocara\Controller\Rest as RestControllerBase;
+use Ocara\Controller\Rest;
 use Ocara\Request;
 use Ocara\Response;
 use Ocara\Error;
 
-class RestController extends RestControllerBase
+abstract class RestController extends Rest
 {
 	public function _start()
 	{

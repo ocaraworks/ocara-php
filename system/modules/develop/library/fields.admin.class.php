@@ -38,7 +38,7 @@ class fields_admin
 		$server = $model->getServer();
 		$database = $model->getDatabase();
 
-		$serverPath = $server ? $server . OC_DIR_SEP : OC_EMPTY;
+		$serverPath = $server . OC_DIR_SEP;
 		$dbPath = $database ? $database . OC_DIR_SEP : OC_EMPTY;
 		$modelFile = implode(OC_DIR_SEP, array_map('lcfirst', explode(OC_NS_SEP, $modelSubPath)));
 

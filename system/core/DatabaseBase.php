@@ -44,13 +44,13 @@ class DatabaseBase extends Sql
 	{
 		$options = array(
 			'host', 'port', 'type', 'class', 'pconnect',
-			'default', 'username', 'prefix', 'charset',
+			'name', 'username', 'prefix', 'charset',
 			'timeout', 'socket', 'options', 'keywords',
 		);
 
 		$values = array_fill(0, count($options), OC_EMPTY);
 		$config = array_merge(array_combine($options, $values), $config);
-		$config['name'] = ocDel($config, 'default');
+		$config['name'] = ocDel($config, 'name');
 
 		if (empty($config['charset'])) {
 			$config['charset'] = 'utf8';
@@ -79,10 +79,10 @@ class DatabaseBase extends Sql
 		$this->_config = $config;
 		ocDel($this->_config, 'password');
 
-		$this->event('before_execute_sql')
+		$this->event('beforeExecuteSql')
 			 ->append(ocConfig('EVENT.database.before_execute_sql', null));
 
-		$this->event('after_execute_sql')
+		$this->event('afterExecuteSql')
 			->append(ocConfig('EVENT.database.after_execute_sql', null));
 
 		$this->init($config);
@@ -233,7 +233,7 @@ class DatabaseBase extends Sql
 		}
 
 		list($sql, $params) = $sqlData;
-		$this->event('before_execute_sql')->fire(array($sql, date(ocConfig('DATE_FORMAT.datetime'))));
+		$this->event('beforeExecuteSql')->fire(array($sql, date(ocConfig('DATE_FORMAT.datetime'))));
 
 		try {
 			$params = $params ? array($params) : array();
@@ -703,7 +703,7 @@ class DatabaseBase extends Sql
 
 		if ($sqlData) {
 			$params = array($sqlData, $errorExists, $error,$ret, date(ocConfig('DATE_FORMAT.datetime')));
-			$this->event('after_execute_sql')->fire($params);
+			$this->event('afterExecuteSql')->fire($params);
 		}
 
 		if ($required && $errorExists) {

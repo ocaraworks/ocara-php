@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Interfaces\Middleware;
+
 class Event extends Basis
 {
     protected $_name;
@@ -46,6 +48,17 @@ class Event extends Basis
      */
     protected function _create($callback, $args = 0)
     {
+        if (is_string($callback)
+            && preg_match('/^[\w\\\\]+$/', $callback)
+            && class_exists($callback)
+        ) {
+            $callback = new $callback();
+        }
+
+        if (is_object($callback) && !($callback instanceof Middleware)) {
+            Error::show('invalid_middleware');
+        }
+
         $params = func_get_args();
         $name = null;
         $priority = 0;
@@ -71,7 +84,6 @@ class Event extends Basis
         if ($name) {
             $this->_registry[$name] = $count;
         }
-
     }
 
     /**
@@ -188,7 +200,7 @@ class Event extends Basis
      * @param $params
      * @return mixed
      */
-    public function fire(array $params = array(), $name = null)
+    public function fire(array $params = array())
     {
         $handlers = $this->_handlers;
 
@@ -205,6 +217,9 @@ class Event extends Basis
             foreach ($this->_handlers as $row) {
                 $callback = $row['callback'];
                 if ($this->_running) {
+                    if (is_object($callback)) {
+                        $callback = array($callback, 'handler');
+                    }
                     Call::run($callback, $params);
                 }
             }

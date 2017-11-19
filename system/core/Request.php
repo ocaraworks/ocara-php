@@ -254,16 +254,18 @@ class Request extends Base
 			$data = ocArrayMap('trim', $data);
 			return Filter::request($data);
 		}
-
 		if(array_key_exists($key, $data)) {
 			if (is_array($data[$key])) {
 				$value = ocArrayMap('trim', $data[$key]);
 			} else {
 				$value = trim($data[$key]);
 			}
+			if (ocEmpty($value) && $default !== null) {
+				return $default;
+			}
 			return Filter::request($value);
 		}
-		
+
 		return $default === null ? OC_EMPTY : $default;
 	}
 

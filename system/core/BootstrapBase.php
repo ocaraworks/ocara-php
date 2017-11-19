@@ -16,7 +16,7 @@ abstract class BootstrapBase extends ServiceProvider implements ServiceProviderI
      */
     public function getServiceProvider()
     {
-        $provider = new \Ocara\Provider\Defaults();
+        $provider = new \Ocara\Provider\Main();
         return $provider;
     }
 

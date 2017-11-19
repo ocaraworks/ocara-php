@@ -65,18 +65,7 @@ final class Application
 				$filePath = self::$root . "/{$key}/{$v}";
 				$source   = OC_SYS . 'modules/application/files/';
 				$source  = $source . str_replace(OC_DIR_SEP, '.', "{$key}/{$v}");
-
-				if (!ocFileExists($source)) {
-					die("Lost ocara file : {$source}");
-				}
-
-				if (!$fo = @fopen($filePath, 'wb')) {
-					self::error($filePath);
-				}
-
-				if (!@copy($source, $filePath)) {
-					self::error($filePath);
-				}
+				self::write($filePath, self::read($source));
 			}
 		}
 	}
@@ -104,11 +93,16 @@ final class Application
 	 */
 	private static function read($filePath)
 	{
+		if (!ocFileExists($filePath)) {
+			die("Lost ocara file : {$filePath}");
+		}
+
 		if (!$fo = @fopen($filePath, 'rb')) {
 			if (!is_readable($filePath)) {
 				if (!@chmod($filePath, 0755)) self::error($filePath, 'readable');
 			}
 		}
+
 		$result = fread($fo);
 		@fclose($fo);
 
@@ -127,6 +121,7 @@ final class Application
 				if (!@chmod($filePath, 0777)) self::error($filePath, 'writable');
 			}
 		}
+
 		$result = fwrite($fo, $content);
 		@fclose($fo);
 	}

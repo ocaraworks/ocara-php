@@ -29,7 +29,7 @@ final class Database extends Base
 	public static function create($server = null, $master = true, $required = true)
 	{
 		if (empty($server)) {
-			$server = 'default';
+			$server = 'main';
 		}
 
 		$database = self::_getDatabase($server, $master);
@@ -79,7 +79,7 @@ final class Database extends Base
 	public static function getConfig($server = null)
 	{
 		if (empty($server)) {
-			$server = 'default';
+			$server = 'main';
 		}
 
 		$config = array();

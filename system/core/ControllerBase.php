@@ -133,6 +133,6 @@ class ControllerBase extends Base implements ControllerInterface
 		if (is_object($this->view) && method_exists($this->view, $name)) {
 			return call_user_func_array(array(&$this->view, $name), $params);
 		}
-		Error::show('no_method', array($name));
+		parent::_call($name, $params);
 	}
 }

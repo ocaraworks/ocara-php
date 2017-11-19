@@ -89,10 +89,12 @@ abstract class Database extends ModelBase
 		}
 
 		$this->bindEvents($this);
-		$this->event('query_save_cache_data')
+		$this->event('querySaveCacheData')
 			 ->append(ocConfig('EVENT.model.query.save_cache_data', null));
 
+		if (method_exists($this, '_start')) $this->_start();
 		if (method_exists($this, '_model')) $this->_model();
+
 		return $this;
 	}
 
@@ -170,7 +172,7 @@ abstract class Database extends ModelBase
 		$modelConfig['LANG'] = array();
 
 		$filePath = self::getConfigPath($class);
-		$path = ocPath('conf', "model/{$filePath}");
+		$path = ocPath('conf', "database/{$filePath}");
 
 		if (ocFileExists($path)) {
 			include($path);
@@ -493,7 +495,7 @@ abstract class Database extends ModelBase
 	 */
 	public function cache($server = null, $required = false)
 	{
-		$server = $server ? $server : 'default';
+		$server = $server ? $server : 'main';
 		$this->_sql['cache'] = array($server, $required);
 		return $this;
 	}
@@ -1117,9 +1119,9 @@ abstract class Database extends ModelBase
 	 */
 	public function _saveCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired, $result)
 	{
-		if ($this->event('query_save_cache_data')->get()) {
+		if ($this->event('querySaveCacheData')->get()) {
 			$params = array($cacheObj, $sql, $result, $cacheRequired);
-			$this->event('query_save_cache_data')->fire($params);
+			$this->event('querySaveCacheData')->fire($params);
 		} else {
 			$cacheObj->set($sqlEncode, json_encode($result));
 		}
@@ -1870,6 +1872,7 @@ abstract class Database extends ModelBase
 	/**
 	 * 获取关联模型
 	 * @param string $key
+	 * @return mixed
 	 */
 	public function &__get($key)
 	{

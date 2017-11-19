@@ -1,0 +1,12 @@
+<?php
+/**
+ * 缓存模型基类
+ */
+namespace Model;
+use Ocara\Model\Cache;
+
+abstract class MemcacheBase extends Cache
+{
+    public function _start()
+    {}
+}

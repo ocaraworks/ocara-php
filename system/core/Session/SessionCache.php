@@ -53,6 +53,7 @@ final class SessionCache extends Base
     /**
      * 读取session信息
      * @param string $id
+     * @return bool
      */
     public function read($id)
     {
@@ -61,10 +62,11 @@ final class SessionCache extends Base
     }
 
     /**
-	 * 保存session
-	 * @param string $id
-	 * @param string $data
-	 */
+     * 保存session
+     * @param string $id
+     * @param string $data
+     * @return bool
+     */
     public function write($id, $data)
     {
         try {
@@ -77,9 +79,10 @@ final class SessionCache extends Base
     }
 
     /**
-	 * 销毁session
-	 * @param string $id
-	 */
+     * 销毁session
+     * @param string $id
+     * @return bool
+     */
     public function destroy($id)
     {
         $this->_plugin->delete($this->_prefix . $id);
@@ -87,9 +90,10 @@ final class SessionCache extends Base
     }
 
     /**
-	 * Session垃圾回收
-	 * @param integer $maxLifeTime
-	 */
+     * Session垃圾回收
+     * @param integer $maxlifetime
+     * @return bool
+     */
     public function gc($maxlifetime)
     {
         return true;

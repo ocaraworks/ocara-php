@@ -396,7 +396,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 		if ($this->_instance && method_exists($this->_instance, $name)) {
 			return call_user_func_array(array($this->_instance, $name), $params);
 		}
-		Error::show('no_method', array($name));
+		parent::_call($name, $params);
 	}
 }
 

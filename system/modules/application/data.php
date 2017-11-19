@@ -2,7 +2,7 @@
 $dirs = array(
 	'application' => array(
 		'controller', 
-		'model', 
+		'model/Main',
 		'view/default/helper', 
 		'view/default/part', 
 		'view/default/layout', 
@@ -17,10 +17,11 @@ $dirs = array(
 	), 
 	'resource' => array(
 		'conf/control', 
-		'conf/model', 
+		'conf/model/main',
+		'conf/fields/main',
 		'data', 
 		'lang/zh_cn/control', 
-		'lang/zh_cn/model', 
+		'lang/zh_cn/model/main',
 	),
 	'service' => array(
 		'functions', 
@@ -31,7 +32,11 @@ $dirs = array(
 
 $files = array(
 	'application' => array(
-		'controller/Controller.php',
+		'controller/CommonController.php',
+		'controller/RedisController.php',
+		'model/MainBase.php',
+		'model/MemcacheBase.php',
+		'model/RedisBase.php',
 		'view/default/layout/layout.php'
 	),
 	'resource' 	  => array(
@@ -39,6 +44,7 @@ $files = array(
 		'conf/develop.php', 
 		'conf/database.php',
 		'conf/cache.php',
+		'conf/event.php',
 		'conf/callback.php',
 		'conf/static.php',
 	)
