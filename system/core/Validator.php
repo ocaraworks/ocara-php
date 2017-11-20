@@ -32,14 +32,14 @@ class Validator extends Base
 	/**
 	 * 表单验证
 	 * @param array $data
-	 * @param string $class
+	 * @param string $modelClass
 	 * @return bool
 	 */
-	public function validate(array $data, $class)
+	public function validate(array $data, $modelClass)
 	{
-		$data = $class::mapFields($data, $class);
-		$validate = $class::getConfig('VALIDATE');
-		$lang = $class::getConfig('LANG');
+		$data = $modelClass::mapFields($data, $modelClass);
+		$validate = $modelClass::getConfig('VALIDATE');
+		$lang = $modelClass::getConfig('LANG');
 		$result = true;
 
 		if ($validate) foreach ($validate as $field => $rule) {

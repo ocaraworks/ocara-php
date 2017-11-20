@@ -1887,9 +1887,7 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 获取关联模型
-	 * @param string $key
-	 * @param \Ocara\mxied $value
+	 * 设置未定义的属性
 	 */
 	public function __set($key, $value)
 	{

@@ -256,15 +256,15 @@ class Common extends ControllerBase implements ControllerInterface
 
 	/**
 	 * 数据模型字段验证
-	 * @param $data
-	 * @param $class
+	 * @param array $data
+	 * @param string $modelClass
 	 * @param Validator|null $validator
 	 * @return mixed
 	 */
-	public function validate($data, $class, Validator &$validator = null)
+	public function validate($data, $modelClass, Validator &$validator = null)
 	{
 		$validator = $validator ? $validator : $this->validator;
-		return $validator->validate($data, $class);
+		return $validator->validate($data, $modelClass);
 	}
 
 	/**
