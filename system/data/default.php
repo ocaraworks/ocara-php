@@ -1,7 +1,7 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   默认配置 《请勿修改》
+ * Ocara开源框架   默认配置 《请勿直接修改本文件》
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
@@ -341,6 +341,11 @@ $OC_CONF['HTTP_STATUS'] = array (
 	501 => "HTTP/1.1 501 Not Implemented",
 	502 => "HTTP/1.1 502 Bad Gateway",
 	503 => "HTTP/1.1 503 Service Unavailable",
+<<<<<<< HEAD
 	504 => "HTTP/1.1 504 Gateway Time-out",
 	505 => "HTTP/1.1 505 HTTP Version not supported",
 );
+=======
+	504 => "HTTP/1.1 504 Gateway Time-out"
+);
+>>>>>>> e1d9fc3564f5cf3394d2c178891004e39759010a
