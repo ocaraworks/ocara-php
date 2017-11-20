@@ -341,11 +341,6 @@ $OC_CONF['HTTP_STATUS'] = array (
 	501 => "HTTP/1.1 501 Not Implemented",
 	502 => "HTTP/1.1 502 Bad Gateway",
 	503 => "HTTP/1.1 503 Service Unavailable",
-<<<<<<< HEAD
 	504 => "HTTP/1.1 504 Gateway Time-out",
 	505 => "HTTP/1.1 505 HTTP Version not supported",
 );
-=======
-	504 => "HTTP/1.1 504 Gateway Time-out"
-);
->>>>>>> e1d9fc3564f5cf3394d2c178891004e39759010a
