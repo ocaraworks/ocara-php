@@ -97,12 +97,12 @@ class Lang extends Base
 
 	/**
 	 * 加载语言配置
-	 * @param string $path
+	 * @param string $paths
 	 */
-	public static function loadControlConfig($path)
+	public static function loadControlConfig($paths)
 	{
 		$LANG = &self::$_data;
-		$path = ocForceArray($path);
+		$path = ocForceArray($paths);
 
 		foreach ($path as $value) {
 			if ($files = scandir($value)) {
