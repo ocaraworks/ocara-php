@@ -27,7 +27,8 @@ class Mail extends ServiceBase
 	public $subject;
 	public $content;
 	public $header;
-	
+	public $replyTo;
+
 	public $text;
 	public $html;
 	public $related;
@@ -59,7 +60,7 @@ class Mail extends ServiceBase
 	 * @param string $username
 	 * @param string $password
 	 */
-	public function setServer($host, $port, $username = false, $password = false)
+	public function setServer($host, $port, $username = null, $password = null)
 	{
 		$this->host 	= $host;
 		$this->port 	= $port;
@@ -110,7 +111,6 @@ class Mail extends ServiceBase
 		if ($this->port) @ini_set('smtp_port', $this->port);
 		
 		$this->params = $params;
-		
 		$contentType = 'multipart/alternative';
 		
 		if ($this->related || $this->attachments) {
@@ -148,6 +148,7 @@ class Mail extends ServiceBase
 	/**
 	 * 新建boundary边界符
 	 * @param integer $num
+	 * @return string
 	 */
 	protected function newBoundary($num)
 	{
@@ -158,6 +159,7 @@ class Mail extends ServiceBase
 	/**
 	 * 生成邮件头
 	 * @param string $contentType
+	 * @return string
 	 */
 	protected function getHeader($contentType)
 	{
@@ -206,6 +208,7 @@ class Mail extends ServiceBase
 	/**
 	 * 生成纯文本和HTML段
 	 * @param string $subBoundary
+	 * @return string
 	 */
 	protected function getText($subBoundary)
 	{
@@ -223,12 +226,13 @@ class Mail extends ServiceBase
 		
 		return PHP_EOL . $content  . PHP_EOL;
 	}
-	
+
 	/**
 	 * 组合抄送人
-	 * @param array $cc
+	 * @param string $cc
+	 * @return bool|string
 	 */
-	protected function packCc($cc = false)
+	protected function packCc($cc = null)
 	{
 		if ($cc) {
 			$this->cc = implode(',', $cc);
@@ -238,10 +242,11 @@ class Mail extends ServiceBase
 	}
 
 	/**
-	 * 组合秘密抄送人 
+	 * 组合秘密抄送人
 	 * @param array $bcc
+	 * @return bool|string
 	 */
-	protected function packBcc($bcc = false)
+	protected function packBcc(array $bcc = array())
 	{
 		if ($bcc) {
 			$this->bcc = implode(',', $bcc);
@@ -249,12 +254,12 @@ class Mail extends ServiceBase
 		
 		return $this->bcc ? "Bcc: {$this->bcc}" . PHP_EOL: false;
 	}
-	
+
 	/**
 	 * 设置回复地址
 	 * @param string $replyTo
 	 */
-	public function setReplyTo($replyTo = false)
+	public function setReplyTo($replyTo = null)
 	{
 		$this->replyTo = $replyTo ? $replyTo : $this->sender;
 	}
@@ -308,8 +313,9 @@ class Mail extends ServiceBase
 	/**
 	 * 设置附件
 	 * @param array $attachments
+	 * @return bool
 	 */
-	public function setAttachment($attachments = false)
+	public function setAttachment($attachments = null)
 	{
 		$content = false;
 		$attachments = ocForceArray($attachments);
@@ -336,28 +342,10 @@ class Mail extends ServiceBase
 	/**
 	 * 获取附件MIME类型
 	 * @param string $extName
+	 * @return string
 	 */
 	public function getMimeType($extName)
 	{
-		switch ($extName) {
-			case ".gif":
-				return "image/gif";
-			case ".jpg":
-				return "image/jpeg";
-			case ".gz":
-				return "application/x-gzip";
-			case ".htm":
-				return "text/html";
-			case ".html":
-				return "text/html";
-			case ".tar":
-				return "application/x-tar";
-			case ".txt":
-				return "text/plain";
-			case ".zip":
-				return "application/zip";
-			default:
-				return "application/octet-stream";
-		}
+		return ocConfig(array('MINE_TYPES', trim($extName, '.')));
 	}
 }

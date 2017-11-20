@@ -17,8 +17,7 @@ class Main extends ServiceProvider
         $container = Ocara::container();
 
         $classes = ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS');
-        foreach ($classes as $class => $namespace) {
-            $name = lcfirst($class);
+        foreach ($classes as $name => $namespace) {
             $container->bindSingleton($name, function() use($namespace) {
                 $file = strtr($namespace, ocConfig('AUTOLOAD_MAP')) . '.php';
                 ocImport($file);
@@ -31,8 +30,7 @@ class Main extends ServiceProvider
         }
 
         $classes = ocConfig('SYSTEM_SERVICE_CLASS');
-        foreach ($classes as $class => $namespace) {
-            $name = lcfirst($class);
+        foreach ($classes as $name => $namespace) {
             $container->bind($name, function() use($namespace) {
                 $file = strtr($namespace, ocConfig('AUTOLOAD_MAP')) . '.php';
                 ocImport($file);

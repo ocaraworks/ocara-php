@@ -70,25 +70,25 @@ $OC_CONF['CONTROLLER_FEATURE_CLASS'] = array(
  * 系统服务类（非单例模式）
  */
 $OC_CONF['SYSTEM_SERVICE_CLASS'] = array(
-	'Event' => 'Ocara\Event',
+	'event' => 'Ocara\Event',
 );
 
 /**
  * 系统服务类（单例模式）
  */
 $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
-	'Request' 		=> 'Ocara\Request',
-	'Response' 		=> 'Ocara\Response',
-	'Error' 		=> 'Ocara\Error',
-	'Filter' 		=> 'Ocara\Filter',
-	'Path' 			=> 'Ocara\Path',
-	'Url' 			=> 'Ocara\Url',
-	'Lang' 			=> 'Ocara\Lang',
-	'Cookie' 		=> 'Ocara\Cookie',
-	'Session' 		=> 'Ocara\Session',
-	'GlobalLog' 	=> 'Ocara\GlobalLog',
-	'Route'			=> 'Ocara\Route',
-	'Transaction'	=> 'Ocara\Transaction',
+	'request' 		=> 'Ocara\Request',
+	'response' 		=> 'Ocara\Response',
+	'error' 		=> 'Ocara\Error',
+	'filter' 		=> 'Ocara\Filter',
+	'path' 			=> 'Ocara\Path',
+	'url' 			=> 'Ocara\Url',
+	'lang' 			=> 'Ocara\Lang',
+	'cookie' 		=> 'Ocara\Cookie',
+	'session' 		=> 'Ocara\Session',
+	'globalLog' 	=> 'Ocara\GlobalLog',
+	'route'			=> 'Ocara\Route',
+	'transaction'	=> 'Ocara\Transaction',
 );
 
 /**
@@ -296,6 +296,7 @@ $OC_CONF['MINE_TYPES'] = array(
 	'json'      => 'application/json',
 	'plain'     => 'text/plain',
 	'xml'       => 'text/xml',
+	'gz'		=> 'application/x-gzip',
 );
 
 /**
@@ -340,5 +341,6 @@ $OC_CONF['HTTP_STATUS'] = array (
 	501 => "HTTP/1.1 501 Not Implemented",
 	502 => "HTTP/1.1 502 Bad Gateway",
 	503 => "HTTP/1.1 503 Service Unavailable",
-	504 => "HTTP/1.1 504 Gateway Time-out"
+	504 => "HTTP/1.1 504 Gateway Time-out",
+	505 => "HTTP/1.1 505 HTTP Version not supported",
 );
