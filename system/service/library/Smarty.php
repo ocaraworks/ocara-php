@@ -29,8 +29,8 @@ class Smarty extends ServiceBase implements TemplateInterface
 
 		$this->_plugin = new \Smarty();
 		$templateDir  = ocPath('view', $path);
-		$compileDir   = ocPath('static', 'smarty/cmp/');
-		$cacheDir     = ocPath('static', 'smarty/cache/');
+		$compileDir   = ocPath('runtime', 'smarty/cmp/');
+		$cacheDir     = ocPath('runtime', 'smarty/cache/');
 
 		ocCheckPath($templateDir, 0755, true);
 		ocCheckPath($compileDir, 0755, true);

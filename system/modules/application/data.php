@@ -9,11 +9,14 @@ $dirs = array(
 		'view/default/template'
 	), 
 	'public' => array(
+		'attachments',
 		'css/default', 
 		'images/default', 
-		'js', 
-		'attachments',
-		'static'
+		'js',
+		'html',
+		'runtime/cache',
+		'runtime/logs',
+		'runtime/sessions'
 	), 
 	'resource' => array(
 		'conf/control', 

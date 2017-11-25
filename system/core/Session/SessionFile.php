@@ -23,12 +23,12 @@ final class SessionFile extends Base
      */
     public function __construct()
     {
-        $savePath = ocConfig('SESSION.location', 'cache/sessions');
+        $savePath = ocConfig('SESSION.location', 'sessions');
    	 	if (empty($savePath)) {
     		Error::show('invalid_save_path');
     	}
     	
-    	$this->_savePath = ocPath('data', $savePath);
+    	$this->_savePath = ocPath('runtime', $savePath);
 		if (!ocCheckPath($this->_savePath)) {
             if (!ocCheckPath($this->_savePath)) {
                 Error::show('no_session_path');

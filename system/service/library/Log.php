@@ -29,7 +29,7 @@ class Log extends ServiceBase
 		
 		if ($logRoot) {
 			$this->logType = 'mine';
-			$logRoot = ocPath('data', $logRoot);
+			$logRoot = ocPath('runtime', $logRoot);
 		}
 		
 		if (empty($logRoot) && $path = @ini_get('error_log')) {

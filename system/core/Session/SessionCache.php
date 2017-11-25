@@ -26,7 +26,7 @@ final class SessionCache extends Base
     public function __construct()
     {
         $cacheName = ocConfig('SESSION.server', 'default');
-        $prefix = ocConfig('SESSION.location', 'sessions');
+        $prefix = ocConfig('SESSION.location', 'session');
         $this->_prefix = $prefix . '_';
         $this->_plugin = Cache::create($cacheName);
     }

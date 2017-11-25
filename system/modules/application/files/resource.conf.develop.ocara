@@ -36,8 +36,8 @@ $CONF['SERVICE'] = array(
 $CONF['SESSION'] = array(
 	'save_type'	 => 1, //session保存方式，1为自定义文件类型，2为数据库类型，3为缓存类型
 	'save_time'	 => 0, //session的最长存活时间（单位为秒）
-	'server'     => 'default', //服务器名称，数据库服务器名称或Redis服务器名
-	'location'	 => 'cache/sessions', //保存位置，文件目录名、数据库表名或缓存前缀
+	'server'     => '', //服务器名称，数据库服务器名称或Redis服务器名
+	'location'	 => 'session', //保存位置，文件目录名、数据库表名或缓存前缀
 );
 
 /*

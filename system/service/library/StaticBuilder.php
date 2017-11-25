@@ -27,7 +27,7 @@ class StaticBuilder extends ServiceBase
 			$this->showError('not_exists_open_config');
 		}
 
-		$this->_dir = ocPath('static', false);
+		$this->_dir = ocPath('html');
 	}
 
 	/**

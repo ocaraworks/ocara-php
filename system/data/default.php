@@ -130,11 +130,12 @@ $OC_CONF['APP_PATH_INFO'] = array(
 		'model'  	  	=> 'application',
 		'view'  	  	=> 'application',
 
+		'attachments' 	=> 'public',
 		'css'  		  	=> 'public',
 		'images'  	  	=> 'public',
 		'js'  		  	=> 'public',
-		'static'  	  	=> 'public',
-		'attachments' 	=> 'public',
+		'html'  	  	=> 'public',
+		'runtime'  	  	=> 'public',
 
 		'conf'			=> 'resource',
 		'data'			=> 'resource',
