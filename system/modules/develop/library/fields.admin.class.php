@@ -43,7 +43,7 @@ class fields_admin
 		$modelFile = implode(OC_DIR_SEP, array_map('lcfirst', explode(OC_NS_SEP, $modelSubPath)));
 
 		//新建字段信息配置
-		$path = OC_ROOT . 'resource/conf/fields/'
+		$path = OC_ROOT . 'resource/data/fields/'
 			. $serverPath
 			. $dbPath
 			. $modelFile
