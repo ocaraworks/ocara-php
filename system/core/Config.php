@@ -207,8 +207,8 @@ final class Config extends Base
 	 */
 	public static function getConfig($key)
 	{
-		if ($result = ocCheckKey(false, $key, self::$_data, true) ||
-			($result = ocCheckKey(false, $key, self::$_ocaraData, true))
+		if (($result = ocCheckKey(false, $key, self::$_data, true))
+			|| ($result = ocCheckKey(false, $key, self::$_ocaraData, true))
 		) {
 			return $result;
 		}

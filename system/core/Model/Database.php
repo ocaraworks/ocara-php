@@ -406,9 +406,9 @@ abstract class Database extends ModelBase
 		foreach ($data as $key => $value) {
 			$key = strtr($key, self::$_config[$this->_tag]['MAP']);
 			if (!$this->_plugin->hasAlias($key)) {
-				if (!isset($this->_fields[$key])
-					|| $key == FormToken::getTokenTag()
-					|| is_object($value)
+				if (!isset($this->_fields[$key]) ||
+					$key == FormToken::getTokenTag() ||
+					is_object($value)
 				) {
 					continue;
 				}
