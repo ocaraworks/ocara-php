@@ -59,12 +59,12 @@ class Lang extends Base
 			self::loadApplicationConfig('lang', Ocara::language(), 'control');
 		}
 	}
-	
+
 	/**
 	 * 应用级配置
 	 * @param string $dir
 	 * @param string $type
-	 * $param string $sub
+	 * @param string $sub
 	 */
 	public static function loadApplicationConfig($dir, $type, $sub = null)
 	{
@@ -101,28 +101,36 @@ class Lang extends Base
 	 */
 	public static function loadControlConfig($paths)
 	{
-		$LANG = &self::$_data;
 		$path = ocForceArray($paths);
+		$lang = array();
 
 		foreach ($path as $value) {
 			if ($files = scandir($value)) {
-				$config = $LANG;
 				foreach ($files as $file) {
 					if ($file == '.' or $file == '..') continue;
 					$fileType = pathinfo($file, PATHINFO_EXTENSION);
 					if (is_file($file = $value . OC_DIR_SEP . $file) && $fileType == 'php') {
-						include ($file);
+						$row = include ($file);
+						if ($row && is_array($row)) {
+							$lang[] = $row;
+						}
 					}
 				}
-				empty($LANG) && $LANG = $config;
 			}
 		}
+
+		if ($lang) {
+			array_unshift($lang, self::$_data);
+			self::$_data = call_user_func_array('array_merge', $lang);
+		}
 	}
-	
+
 	/**
 	 * 获取语言信息
 	 * @param string $key
 	 * @param array $params
+	 * @return array|null
+	 * @throws Exception
 	 */
 	public static function get($key = null, array $params = array())
 	{
@@ -137,11 +145,13 @@ class Lang extends Base
 		
 		return self::$_data;
 	}
-	
+
 	/**
 	 * 获取默认语言
 	 * @param string $key
 	 * @param array $params
+	 * @return array|null
+	 * @throws Exception
 	 */
 	public static function getDefault($key = null, array $params = array())
 	{
@@ -164,20 +174,24 @@ class Lang extends Base
 		self::init();
 		ocSet(self::$_data, $key, $value);
 	}
-	
+
 	/**
 	 * 检查语言键名是否存在
 	 * @param string|array $key
+	 * @return array|bool|mixed|null
+	 * @throws Exception
 	 */
 	public static function exists($key = null)
 	{
 		self::init();
 		return ocKeyExists($key, self::$_data);
 	}
-	
+
 	/**
 	 * 删除语言配置
 	 * @param string|array $key
+	 * @return array|null
+	 * @throws Exception
 	 */
 	public static function del($key)
 	{

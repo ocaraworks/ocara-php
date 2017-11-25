@@ -172,7 +172,7 @@ abstract class Database extends ModelBase
 		$modelConfig['LANG'] = array();
 
 		$filePath = self::getConfigPath($class);
-		$path = ocPath('conf', "database/{$filePath}");
+		$path = ocPath('conf', "model/{$filePath}");
 
 		if (ocFileExists($path)) {
 			include($path);
@@ -406,7 +406,10 @@ abstract class Database extends ModelBase
 		foreach ($data as $key => $value) {
 			$key = strtr($key, self::$_config[$this->_tag]['MAP']);
 			if (!$this->_plugin->hasAlias($key)) {
-				if (!isset($this->_fields[$key]) OR $key == FormToken::getTokenTag() OR is_object($value)) {
+				if (!isset($this->_fields[$key])
+					|| $key == FormToken::getTokenTag()
+					|| is_object($value)
+				) {
 					continue;
 				}
 			}
@@ -1549,7 +1552,7 @@ abstract class Database extends ModelBase
 			$fields = $this->_plugin->getCountSql($countField, 'total', $isGroup);
 		} else {
 			$aliasFields = $this->_getAliasFields($tables);
-			if (!isset($option['fields']) OR $this->_isDefaultFields($option['fields'])) {
+			if (!isset($option['fields']) || $this->_isDefaultFields($option['fields'])) {
 				$option['fields'][] = array($this->_alias, array_keys($this->getFields()));
 			}
 			$fields = $this->_getFieldsSql($option['fields'], $aliasFields, $unJoined);

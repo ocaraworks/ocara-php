@@ -221,7 +221,7 @@ class Container extends Basis
         }
 
         return array_key_exists($name, $this->_binds)
-            OR array_key_exists($name, $this->_singletons);
+            || array_key_exists($name, $this->_singletons);
     }
 
     /**

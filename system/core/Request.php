@@ -32,7 +32,7 @@ class Request extends Base
 	 */
 	public static function setInputStreams()
 	{
-		if ($_POST OR !$post = ocRemote('php://input')) return;
+		if ($_POST || !$post = ocRemote('php://input')) return;
 
 		if (is_array($post)) {
 			$_POST = $post;
