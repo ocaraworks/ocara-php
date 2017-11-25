@@ -184,6 +184,13 @@ abstract class Database extends ModelBase
 			}
 		}
 
+		$path = ocPath('lang', "model/{$filePath}");
+		if (ocFileExists($path) && $lang = include($path)) {
+			if ($lang && is_array($lang)) {
+				$modelConfig['LANG'] = $lang;
+			}
+		}
+
 		ksort($modelConfig);
 		self::$_config[$class] = $modelConfig;
 	}

@@ -90,7 +90,7 @@ class ControllerBase extends Base implements ControllerInterface
 	public function model($class = null)
 	{
 		if (empty($class)) {
-			$class = '\Model\\' . ucfirst($this->getRoute('controller'));
+			$class = '\Model\Main\\' . ucfirst($this->getRoute('controller'));
 		}
 
 		if (isset($this->_models[$class])) {
