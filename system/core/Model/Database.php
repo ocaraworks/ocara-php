@@ -184,10 +184,11 @@ abstract class Database extends ModelBase
 			}
 		}
 
+		$modelConfig['LANG'] = ocColumn(static::getFieldsConfig($class), 'desc');
 		$path = ocPath('lang', "model/{$filePath}");
 		if (ocFileExists($path) && $lang = include($path)) {
 			if ($lang && is_array($lang)) {
-				$modelConfig['LANG'] = $lang;
+				$modelConfig['LANG'] = array_merge($modelConfig['LANG'], $lang);
 			}
 		}
 
@@ -197,9 +198,10 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 获取配置数据
-	 * @return array
 	 * @param string $key
 	 * @param string $field
+	 * @param string $class
+	 * @return array|bool|mixed|null
 	 */
 	public static function getConfig($key = null, $field = null, $class = null)
 	{

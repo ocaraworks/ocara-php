@@ -51,9 +51,9 @@ class Form extends Base
 	 * 生成表单
 	 * @param string $action
 	 * @param array $attributes
-	 * @param string $method
+	 * @return $this
 	 */
-	public function init($action = false, array $attributes = array())
+	public function init($action = null, array $attributes = array())
 	{
 		$this->_attributes = array(
 			'id'     => $this->_sign,
@@ -136,7 +136,7 @@ class Form extends Base
 	public function loadModel()
 	{
 		foreach ($this->_modelInfo as $key => $class) {
-			$this->_lang = array_merge($this->_lang, ocColumn(DatabaseModel::getFieldsConfig($class), 'desc'));
+			$this->_lang = array_merge($this->_lang, DatabaseModel::getConfig('LANG', null, $class));
 			$this->_map =array_merge($this->_map, DatabaseModel::getConfig('MAP', null, $class));
 		}
 
