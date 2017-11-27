@@ -184,10 +184,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		if (ocConfig('USE_FIELD_DESC_LANG', false)) {
-			$modelConfig['LANG'] = ocColumn(static::getFieldsConfig($class), 'desc');
-		}
-
+		$modelConfig['LANG'] = ocColumn(static::getFieldsConfig($class), 'lang');
 		$path = ocPath('lang', "fields/{$filePath}");
 		if (ocFileExists($path) && $lang = include($path)) {
 			if ($lang && is_array($lang)) {

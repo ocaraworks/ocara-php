@@ -560,7 +560,7 @@ function ocFileExists($filePath, $check = false)
  * @param string $sep
  * @return string
  */
-function ocStandardName($name, $sep = '')
+function ocHump($name, $sep = '')
 {
 	return implode($sep, array_map('ucfirst', explode('_', $name)));
 }

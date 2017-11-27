@@ -21,7 +21,7 @@ $OC_CONF['COOKIE_DOMAIN'] 			= '';
 
 $OC_CONF['MODEL_QUERY_DATA_TYPE'] 	= 'array';
 
-/**
+/*
  * 时间格式设置
  */
 $OC_CONF['DATE_FORMAT'] = array(
@@ -31,7 +31,7 @@ $OC_CONF['DATE_FORMAT'] = array(
 	'time' 	  	=> 'H:i:s', //时间格式
 );
 
-/**
+/*
  * HTTP请求方法
  */
 $OC_CONF['ALLOWED_HTTP_METHODS'] = array(
@@ -59,21 +59,26 @@ $OC_CONF['STATIC'] = array(
 	'file_type'		=> 'html' //静态文件扩展名，html或htm
 );
 
-/**
+/*
+ * 将字段的描述作为字段文本
+ */
+$CONF['USE_FIELD_DESC_LANG'] = 1;
+
+/*
  * 控制器类型
  */
 $OC_CONF['CONTROLLER_FEATURE_CLASS'] = array(
 	'Common', 'Rest'
 );
 
-/**
+/*
  * 系统服务类（非单例模式）
  */
 $OC_CONF['SYSTEM_SERVICE_CLASS'] = array(
 	'event' => 'Ocara\Event',
 );
 
-/**
+/*
  * 系统服务类（单例模式）
  */
 $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
@@ -91,7 +96,7 @@ $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
 	'transaction'	=> 'Ocara\Transaction',
 );
 
-/**
+/*
  * Restful路由规则
  */
 $OC_CONF['CONTROLLERS']['rest'] = array(
@@ -120,7 +125,7 @@ $OC_CONF['CONTROLLERS']['rest'] = array(
 	),
 );
 
-/**
+/*
  * 应用路径信息
  */
 $OC_CONF['APP_PATH_INFO'] = array(
@@ -156,7 +161,7 @@ $OC_CONF['APP_PATH_INFO'] = array(
 	),
 );
 
-/**
+/*
  * 自动加载映射
  */
 $OC_CONF['AUTOLOAD_MAP'] = array(
@@ -183,7 +188,7 @@ $CONF['SERVICE'] = array(
 	'validate' => '\Ocara\Service\Validate'
 );
 
-/**
+/*
  * 应用程序自动加载映射
  */
 $OC_CONF['APP_AUTOLOAD_MAP'] = array(
@@ -193,7 +198,7 @@ $OC_CONF['APP_AUTOLOAD_MAP'] = array(
 	'View\Helper\\' 						=> OC_ROOT . 'application/view/helper/',
 );
 
-/**
+/*
  * 要向模板引擎注册的函数
  */
 $OC_CONF['VIEW_ENGINE_FUNCTIONS'] = array(
@@ -203,7 +208,7 @@ $OC_CONF['VIEW_ENGINE_FUNCTIONS'] = array(
 	'ocPrint', 		'ocDump',
 );
 
-/**
+/*
  * MIME类型配置
  */
 $OC_CONF['MINE_TYPES'] = array(
@@ -300,7 +305,7 @@ $OC_CONF['MINE_TYPES'] = array(
 	'gz'		=> 'application/x-gzip',
 );
 
-/**
+/*
  * HTTP状态码
  */
 $OC_CONF['HTTP_STATUS'] = array (

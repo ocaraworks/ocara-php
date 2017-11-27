@@ -67,15 +67,15 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	 */
 	public function getFields($table)
 	{
-		$table   = $this->getTableFullname($table);
-		$sqlData = $this->getShowFieldsSql($table);
-		$data    = $this->query($sqlData);
-		$fields  = array();
+		$table     = $this->getTableFullname($table);
+		$sqlData   = $this->getShowFieldsSql($table);
+		$data      = $this->query($sqlData);
+		$fields    = array();
+		$isComment = ocConfig('USE_FIELD_DESC_LANG', false);
 
 		foreach ($data as $row) {
 			$fieldRow = array();
 			$fieldRow['name'] = $row['Field'];
-			$fieldRow['desc'] = $row['Comment'];
 			if (strstr($row['Type'], '(')) {
 				$pos = strpos($row['Type'], '(', 0);
 				$endPos = strpos($row['Type'], ')', 0);
@@ -84,6 +84,11 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 			} else {
 				$fieldRow['type'] = $row['Type'];
 				$fieldRow['length'] = 0;
+			}
+			if ($isComment && $row['Comment']) {
+				$fieldRow['lang'] = $row['Comment'];
+			} else {
+				$fieldRow['lang'] = ocHump($fieldRow['name'], OC_SPACE);
 			}
 			$fields[$row['Field']] = $fieldRow;
 		}

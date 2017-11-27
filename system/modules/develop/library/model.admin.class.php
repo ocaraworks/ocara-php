@@ -32,7 +32,7 @@ class model_admin
 
 		if ($this->_modelType == 'Database') {
 			if (empty($this->_model)) {
-				$this->_model = ocStandardName($this->_table);
+				$this->_model = ocHump($this->_table);
 			}
 			$this->_database = Request::getPost('database', ocConfig('DATABASE.main.name'));
 			$this->createDatabaseModel();
@@ -121,7 +121,7 @@ class model_admin
 			if ($row['desc']) {
 				$desc = $row['desc'];
 			} else {
-				$name = ocStandardName($row['name'], OC_SPACE);
+				$name = ocHump($row['name'], OC_SPACE);
 				$desc = $name;
 			}
 			$desc = addslashes($desc);
