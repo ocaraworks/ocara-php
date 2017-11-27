@@ -92,17 +92,22 @@ class Lang extends Base
 			}
 		}
 
-		self::loadControlConfig($paths);
+		$lang = self::loadControlConfig($paths);
+		if ($lang) {
+			array_unshift($lang, self::$_data);
+			self::$_data = call_user_func_array('array_merge', $lang);
+		}
 	}
 
 	/**
 	 * 加载语言配置
-	 * @param string $paths
+	 * @param array $paths
+	 * @return array
 	 */
 	public static function loadControlConfig($paths)
 	{
 		$path = ocForceArray($paths);
-		$lang = array();
+		$data = array();
 
 		foreach ($path as $value) {
 			if ($files = scandir($value)) {
@@ -110,19 +115,20 @@ class Lang extends Base
 					if ($file == '.' or $file == '..') continue;
 					$fileType = pathinfo($file, PATHINFO_EXTENSION);
 					if (is_file($file = $value . OC_DIR_SEP . $file) && $fileType == 'php') {
-						$row = include ($file);
+						$lang = array();
+						$row = @include ($file);
 						if ($row && is_array($row)) {
-							$lang[] = $row;
+							$lang = $row;
+						}
+						if ($lang) {
+							$data[] = $lang;
 						}
 					}
 				}
 			}
 		}
 
-		if ($lang) {
-			array_unshift($lang, self::$_data);
-			self::$_data = call_user_func_array('array_merge', $lang);
-		}
+		return $data;
 	}
 
 	/**

@@ -159,22 +159,32 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 加载配置文件
+	 * @param string $class
+	 * @return bool
 	 */
 	public static function loadConfig($class)
 	{
-		if (!empty(self::$_config[$class])) {
-			return true;
+		if (empty(self::$_config[$class])) {
+			self::$_config[$class] = self::getConfig($class);
 		}
+	}
 
+	/**
+	 * 获取Model的配置
+	 * @param string $class
+	 * @return bool
+	 */
+	public static function getModelConfig($class)
+	{
 		$modelConfig['JOIN'] = array();
 		$modelConfig['MAP'] = array();
 		$modelConfig['VALIDATE'] = array();
 		$modelConfig['LANG'] = array();
 
 		$filePath = self::getConfigPath($class);
-		$path = ocPath('conf', "model/{$filePath}");
+		$fields = ocColumn(static::getFieldsConfig($class), 'lang');
 
-		if (ocFileExists($path)) {
+		if (ocFileExists($path = ocPath('conf', "model/{$filePath}"))) {
 			include($path);
 			if (isset($CONF) && is_array($CONF)) {
 				$modelConfig = array_merge(
@@ -184,16 +194,20 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		$modelConfig['LANG'] = ocColumn(static::getFieldsConfig($class), 'lang');
-		$path = ocPath('lang', "fields/{$filePath}");
-		if (ocFileExists($path) && $lang = include($path)) {
-			if ($lang && is_array($lang)) {
-				$modelConfig['LANG'] = array_merge($modelConfig['LANG'], $lang);
+		if (ocFileExists($path = ocPath('lang', "model/{$filePath}"))) {
+			$lang = array();
+			$result = @include($path);
+			if ($result && is_array($result)) {
+				$lang = $result;
 			}
+			if (isset($lang['fields'])) {
+				$lang['fields'] = array_merge($fields, $lang['fields']);
+			}
+			$modelConfig['LANG'] = $lang;
 		}
 
 		ksort($modelConfig);
-		self::$_config[$class] = $modelConfig;
+		return $modelConfig;
 	}
 
 	/**
