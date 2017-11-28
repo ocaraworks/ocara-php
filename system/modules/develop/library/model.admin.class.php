@@ -116,7 +116,7 @@ class model_admin
 		$fields = $model->getFields();
 
 		$content = "<?php\r\n";
-		$content .= "\$LANG = array(\r\n";
+		$content .= "return array(\r\n";
 		foreach ($fields as $row) {
 			if ($row['desc']) {
 				$desc = $row['desc'];

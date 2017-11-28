@@ -39,8 +39,8 @@ class Validator extends Base
 	{
 		$data = $modelClass::mapFields($data, $modelClass);
 		$validate = $modelClass::getConfig('VALIDATE');
-		$lang = $modelClass::getConfig('LANG');
-		$messages = $modelClass::getConfig('MESSAGE');
+		$lang = $modelClass::getConfig('FIELDS_LANG');
+		$messages = $modelClass::getConfig('VALIDATE_LANG');
 		$result = true;
 
 		if ($validate) foreach ($validate as $field => $rule) {

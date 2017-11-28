@@ -136,7 +136,7 @@ class Form extends Base
 	public function loadModel()
 	{
 		foreach ($this->_modelInfo as $key => $class) {
-			$this->_lang = array_merge($this->_lang, DatabaseModel::getConfig('LANG', null, $class));
+			$this->_lang = array_merge($this->_lang, DatabaseModel::getConfig('FIELDS_LANG', null, $class));
 			$this->_map =array_merge($this->_map, DatabaseModel::getConfig('MAP', null, $class));
 		}
 
