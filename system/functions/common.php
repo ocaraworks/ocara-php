@@ -245,7 +245,7 @@ function ocFile($dir, $path)
  */
 function ocRealUrl($dir, $subPath = false, $root = false)
 {
-	$root = $root ? $root : OC_ROOT_URL;
+	$root = $root ? : OC_ROOT_URL;
 
 	return Path::get($dir, $subPath, $root, false, false);
 }

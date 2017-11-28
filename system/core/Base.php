@@ -84,7 +84,7 @@ abstract class Base extends Basis
 		$time        = microtime(true);
 		$traceString = null;
 		$traceInfo   = array();
-		$type 		 = $type ? $type : 'info';
+		$type 		 = $type ? : 'info';
 
 		if($traceLog) {
 			$traceInfo = debug_backtrace();

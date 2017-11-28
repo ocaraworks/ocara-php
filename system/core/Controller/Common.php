@@ -263,7 +263,7 @@ class Common extends ControllerBase implements ControllerInterface
 	 */
 	public function validate($data, $modelClass, Validator &$validator = null)
 	{
-		$validator = $validator ? $validator : $this->validator;
+		$validator = $validator ? : $this->validator;
 		return $validator->validate($data, $modelClass);
 	}
 

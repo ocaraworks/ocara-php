@@ -55,7 +55,7 @@ class GlobalLog extends Base
     public function write($logName, $content, $time = null, $traceString = null, $traceInfo = array(), $type = 'info')
     {
         self::getInstance();
-        $time = $time ? $time : time();
+        $time = $time ? : time();
         $datetime = date(ocConfig('DATE_FORMAT.datetime'), $time);
 
         if (!self::$_log->exists($logName)) {

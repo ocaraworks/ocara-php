@@ -25,7 +25,7 @@ class Ftp extends ServiceBase
 	 */
 	public function connect($ftpserver, $username, $password, $port = false, $timeOut = false)
 	{
-		$port = $port ? $port : 21;
+		$port = $port ? : 21;
 		
 		if (!$ftpserver) {
 			$this->showError('no_address');
@@ -65,7 +65,7 @@ class Ftp extends ServiceBase
 			return @ftp_put($this->_conn, $remoteFile, $localFile, $mode);
 		}
 		
-		$location = $location ? $location : 0;
+		$location = $location ? : 0;
 
 		$result = @ftp_nb_put($this->_conn, $remoteFile, $localFile, $mode, $location);
 		
@@ -98,7 +98,7 @@ class Ftp extends ServiceBase
 			return @ftp_get($this->_conn, $localFile, $remoteFile, $mode);
 		}
 		
-		$location = $location ? $location : 0;
+		$location = $location ? : 0;
 
 		$result = @ftp_nb_get($this->_conn, $localFile, $remoteFile, $mode, $location);
 		

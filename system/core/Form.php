@@ -58,7 +58,7 @@ class Form extends Base
 		$this->_attributes = array(
 			'id'     => $this->_sign,
 			'name'   => $this->_sign,
-			'action' => $action ? $action : '#',
+			'action' => $action ? : '#',
 		);
 
 		$this->method('POST');
@@ -159,7 +159,7 @@ class Form extends Base
 	 */
 	public function model($class, $alias = null)
 	{
-		$alias = $alias ? $alias : $class;
+		$alias = $alias ? : $class;
 		$this->_modelInfo[$alias] = $class;
 		return $this;
 	}

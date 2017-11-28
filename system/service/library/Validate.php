@@ -19,7 +19,7 @@ class Validate extends ServiceBase
 	public static function unempty($value)
 	{
 		$result = !ocEmpty($value);
-		$result = self::validate($result, 'not_empty');
+		$result = self::validate($result, 'unempty');
 		return $result;
 	}
 
@@ -192,7 +192,8 @@ class Validate extends ServiceBase
 	 */
 	public static function validate($expression, $error, array $params = array())
 	{
-		return $expression ? false : self::getMessage($error, $params);
+		$error = $expression ? null : $error;
+		return array($error, self::getMessage($error, $params));
 	}
 
 	/**

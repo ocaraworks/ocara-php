@@ -94,7 +94,7 @@ class Url extends Base
 				$key = $array[0];
 				$value = isset($array[1]) ? $array[1] : false;
 				if ($key == 'm' && $module === null) {
-					$module = $value ? $value : false;
+					$module = $value ? : false;
 				} elseif ($key == 'c' && $get[0] === null) {
 					$get[0] = $value;
 				} elseif ($key == 'a' && $get[1] === null) {
@@ -164,7 +164,7 @@ class Url extends Base
 		if (empty($route)) return false;
 
 		extract($route);
-		$urlType = $urlType ? $urlType : OC_URL_ROUTE_TYPE;
+		$urlType = $urlType ? : OC_URL_ROUTE_TYPE;
 
 		if (is_numeric($params) || is_string($params)) {
 			$array = array_chunk(explode(OC_DIR_SEP, $params), 2);
@@ -244,7 +244,7 @@ class Url extends Base
 	 */
 	public static function addQuery(array $params, $url = false, $urlType = false)
 	{
-		$urlType = $urlType ? $urlType : OC_URL_ROUTE_TYPE;
+		$urlType = $urlType ? : OC_URL_ROUTE_TYPE;
 		$data    = self::parseUrl($url);
 		
 		if ($url) {

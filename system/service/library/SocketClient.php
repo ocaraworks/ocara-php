@@ -71,7 +71,7 @@ class SocketClient extends SocketBase
 			$this->showError('no_connect');
 		}
 		
-		$length = $length ? $length : strlen($content);
+		$length = $length ? : strlen($content);
 		$result = @socket_write($this->socket, $content, $length);
 		
 		if ($result === false) {

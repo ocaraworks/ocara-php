@@ -49,7 +49,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	 */
 	public function getPdoParams($config)
 	{
-		$config['port'] = $config['port'] ? $config['port'] : $this->_defaultPort;
+		$config['port'] = $config['port'] ? : $this->_defaultPort;
 		$params = array(
 			'dsn'      => "mysql:dbname={$config['name']};host={$config['host']};port={$config['port']}",
 			'username' => $config['username'],

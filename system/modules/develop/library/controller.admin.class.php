@@ -24,7 +24,7 @@ class controller_admin
 
 	public function add(array $data = array())
 	{
-		$data  = $data ? $data : Request::getPost();
+		$data  = $data ? : Request::getPost();
 		$cname = explode(OC_DIR_SEP, trim($data['cname'], OC_DIR_SEP));
 		
 		if (count($cname) >= 2) {

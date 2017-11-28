@@ -24,7 +24,7 @@ class action_admin
 
 	public function add(array $data = array())
 	{
-		$data    = $data ? $data : Request::getPost();
+		$data    = $data ? : Request::getPost();
 		$actname = explode(OC_DIR_SEP, trim($data['actname'], OC_DIR_SEP));
 		
 		$this->ttype      = $data['ttype'];

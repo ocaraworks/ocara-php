@@ -137,7 +137,7 @@ class Common extends ViewBase implements ViewInterfaces
 			Error::show('not_exists_template_var', array($name));
 		}
 		
-		return $vars ? $vars : array();
+		return $vars ? : array();
 	}
 
 	/**
@@ -216,7 +216,7 @@ class Common extends ViewBase implements ViewInterfaces
 	 */
 	public function _readPart($part, $template = false, $show = true)
 	{
-		$template = $template ? $template : $this->_template;
+		$template = $template ? : $this->_template;
 		$part     = ocForceArray($part);
 		$html     = array();
 
@@ -365,7 +365,7 @@ class Common extends ViewBase implements ViewInterfaces
 	 */
 	public function render($file = false, array $vars = array(), $required = true)
 	{
-		$file = $file ? $file : $this->_tpl;
+		$file = $file ? : $this->_tpl;
 
 		if ($vars && is_array($vars)) {
 			$this->assign($vars);

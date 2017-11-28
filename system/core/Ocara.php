@@ -109,7 +109,7 @@ final class Ocara extends Basis
 	 */
 	public static function getBootstrap($bootstrap)
 	{
-		$bootstrap = $bootstrap ? $bootstrap : '\Ocara\Bootstrap';
+		$bootstrap = $bootstrap ? : '\Ocara\Bootstrap';
 		$bootstrap = new $bootstrap();
 		$container = $bootstrap->getContainer();
 
@@ -131,7 +131,7 @@ final class Ocara extends Basis
 	 */
 	public static function errorReporting($error = null)
 	{
-		$error = $error ? $error : (OC_SYS_MODEL == 'develop' ? E_ALL : 0);
+		$error = $error ? : (OC_SYS_MODEL == 'develop' ? E_ALL : 0);
 
 		set_error_handler(
 			ocConfig('ERROR_HANDLER.program_error', 'ocErrorHandler', true),

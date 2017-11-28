@@ -182,9 +182,9 @@ abstract class Database extends ModelBase
 		$modelConfig['LANG'] = array();
 
 		$filePath = self::getConfigPath($class);
-		$fields = ocColumn(static::getFieldsConfig($class), 'lang');
 
 		if (ocFileExists($path = ocPath('conf', "model/{$filePath}"))) {
+			$CONF = array();
 			include($path);
 			if (isset($CONF) && is_array($CONF)) {
 				$modelConfig = array_merge(
@@ -194,16 +194,12 @@ abstract class Database extends ModelBase
 			}
 		}
 
+		$modelConfig['LANG'] = ocColumn(static::getFieldsConfig($class), 'lang');
 		if (ocFileExists($path = ocPath('lang', "model/{$filePath}"))) {
-			$lang = array();
-			$result = @include($path);
-			if ($result && is_array($result)) {
-				$lang = $result;
+			$lang = @include($path);
+			if ($lang && is_array($lang)) {
+				$modelConfig['LANG'] = array_merge($modelConfig['LANG'], $lang);
 			}
-			if (isset($lang['fields'])) {
-				$lang['fields'] = array_merge($fields, $lang['fields']);
-			}
-			$modelConfig['LANG'] = $lang;
 		}
 
 		ksort($modelConfig);
@@ -219,8 +215,7 @@ abstract class Database extends ModelBase
 	 */
 	public static function getConfig($key = null, $field = null, $class = null)
 	{
-		$class = $class ? $class : self::getClass();
-
+		$class = $class ? : self::getClass();
 		if (!isset(self::$_config[$class])) {
 			self::loadConfig($class);
 		}
@@ -244,7 +239,7 @@ abstract class Database extends ModelBase
 	 */
 	public static function setConfig($key, $field, $value, $class = null)
 	{
-		$class = $class ? $class : self::getClass();
+		$class = $class ? : self::getClass();
 		$config = self::getConfig($key);
 		$config[$key][$field] = $value;
 
@@ -253,6 +248,8 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 获取配置文件路径
+	 * @param string $class
+	 * @return string
 	 */
 	public static function getConfigPath($class)
 	{
@@ -521,7 +518,7 @@ abstract class Database extends ModelBase
 	 */
 	public function cache($server = null, $required = false)
 	{
-		$server = $server ? $server : 'main';
+		$server = $server ? : 'main';
 		$this->_sql['cache'] = array($server, $required);
 		return $this;
 	}
@@ -1360,7 +1357,7 @@ abstract class Database extends ModelBase
 	 */
 	public function mWhere($where, $link = false)
 	{
-		$link = $link ? $link : 'AND';
+		$link = $link ? : 'AND';
 		$this->_sql['option']['mWhere'][] = compact('where', 'link');
 		return $this;
 	}
@@ -1872,14 +1869,14 @@ abstract class Database extends ModelBase
 		} else {
 			$config = $this->_getRelateConfig($class);
 			if ($config) {
-				$alias = $alias ? $alias : $class;
+				$alias = $alias ? : $class;
 				$class = $config['class'];
 				$model = $class::build();
 			} else {
 				$model = $class::build();
 			}
 			$fullname = $model->getTableName();
-			$alias = $alias ? $alias : $fullname;
+			$alias = $alias ? : $fullname;
 			$this->_joins[$alias] = $model;
 		}
 

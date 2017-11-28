@@ -228,7 +228,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
 			$result = $this->_recordSet->fetch_all($resultmode);
 		}
 
-		return $result ? $result : array();
+		return $result ? : array();
 	}
 
 	/**

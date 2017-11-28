@@ -261,7 +261,7 @@ class Mail extends ServiceBase
 	 */
 	public function setReplyTo($replyTo = null)
 	{
-		$this->replyTo = $replyTo ? $replyTo : $this->sender;
+		$this->replyTo = $replyTo ? : $this->sender;
 	}
 	
 	/**

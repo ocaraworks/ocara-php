@@ -40,6 +40,7 @@ class Validator extends Base
 		$data = $modelClass::mapFields($data, $modelClass);
 		$validate = $modelClass::getConfig('VALIDATE');
 		$lang = $modelClass::getConfig('LANG');
+		$messages = $modelClass::getConfig('MESSAGE');
 		$result = true;
 
 		if ($validate) foreach ($validate as $field => $rule) {
@@ -58,7 +59,7 @@ class Validator extends Base
 			}
 
 			if (!$result) {
-				$this->setError($lang);
+				$this->setError($lang, $messages);
 				break;
 			}
 		}
@@ -76,7 +77,7 @@ class Validator extends Base
 	public function common($field, $value, $validates)
 	{
 		if (is_string($validates)) {
-			$validates = $validates ? explode(',', trim($validates)) : array();
+			$validates = $validates ? explode('|', trim($validates)) : array();
 		}
 
 		$validates = array_map('trim', $validates);
@@ -88,7 +89,7 @@ class Validator extends Base
 				$matches = array_map('trim', $matches);
 				$method = $matches[1];
 				if (isset($matches[2])) {
-					$params = array_map('trim', explode('|', $matches[2]));
+					$params = array_map('trim', explode(',', $matches[2]));
 				}
 			} else {
 				$method = $validate;
@@ -99,7 +100,7 @@ class Validator extends Base
 				$args  = array_merge(array($val), $params);
 				$error = call_user_func_array(array(&$this->_validate, $method), $args);
 				if ($error) {
-					$this->prepareError($error, $field, $val, $i);
+					$this->prepareError($error, $field, $val, $i, $params);
 					return false;
 				}
 			}
@@ -131,7 +132,7 @@ class Validator extends Base
 			);
 
 			if ($error) {
-				$error = $newError ? $newError : $error;
+				$error = $newError ? : $error;
 				$this->prepareError($error, $field, $val, $i);
 				return false;
 			}
@@ -193,30 +194,42 @@ class Validator extends Base
 	
 	/**
 	 * 设置验证错误
-	 * @param string $error
+	 * @param string $errorData
 	 * @param string $field
 	 * @param string $value
 	 * @param integer $index
+	 * @param array $params
 	 */
-	public function prepareError($error, $field, $value, $index)
+	public function prepareError($errorData, $field, $value, $index, $params = array())
 	{
-		$this->_errorLocation = array($error, $field, $value, $index);
+		list($error, $message) = $errorData;
+		$params = array_values($params);
+		$this->_errorLocation = array($error, $message, $field, $value, $index, $params);
 	}
 
 	/**
 	 * 绑定错误
-	 * @param $lang
+	 * @param array $lang
+	 * @param array $messages
 	 */
-	public function setError($lang)
+	public function setError($lang, $messages)
 	{
-		list($error, $field, $value, $index) = $this->_errorLocation;
+		list($error, $message, $field, $value, $index, $params) = $this->_errorLocation;
 		$lang = ocGet($field, $lang, $field);
 
 		if (is_array($error)) {
 			$error = ocGet('message', $error);
 		}
 
-		$error = str_ireplace('{field}', $lang, $error);
+		if (isset($messages[$error])) {
+			$message = $messages[$error];
+		}
+
+		$error = str_ireplace('{field}', $lang, $message);
+		foreach ($params as $key => $value) {
+			str_ireplace('{'.($key + 1).'}', $value, $message);
+		}
+
 		$this->_errorExists	= true;
 		$this->_error = $error;
 		$this->_errorSource = array($field, $value, $index);

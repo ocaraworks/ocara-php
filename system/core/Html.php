@@ -203,7 +203,7 @@ class Html extends Base
 		} 
 		
 		$option     = self::options($options, $value, $nullText, $optgroup);
-		$content    = $option ? $option : true;
+		$content    = $option ? : true;
 		$attributes = $attributes && is_array($attributes) ? $attributes : array();
 		$attributes = self::parseAttributes($attributes);
 		$result     = self::_createHtmlTag('select', $name, $attributes, $content);
@@ -302,7 +302,7 @@ class Html extends Base
 			$attributes = array();
 		}
 
-		$content = $value ? $value : true;
+		$content = $value ? : true;
 		$result  = self::_createHtmlTag('textarea', $name, $attributes, $content);
 
 		return $result;

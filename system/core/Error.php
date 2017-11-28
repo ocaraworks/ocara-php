@@ -102,7 +102,7 @@ class Error extends Base
 	 */
 	public static function trigger($error, array $params = array(), $errorType = E_USER_ERROR)
 	{
-		$errorType = $errorType ? $errorType : E_USER_ERROR;
+		$errorType = $errorType ? : E_USER_ERROR;
 		$error = Lang::get($error, $params);
 		trigger_error($error['message'], $errorType);
 	}

@@ -88,7 +88,7 @@ class SocketServer extends SocketBase
 			$this->showError('no_accept_connect');
 		}
 		
-		$length = $length ? $length : strlen($content);
+		$length = $length ? : strlen($content);
 		$result = @socket_write($this->conn, $content, $length);
 		
 		if ($result === false) {

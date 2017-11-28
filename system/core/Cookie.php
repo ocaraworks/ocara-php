@@ -91,8 +91,8 @@ class Cookie extends Base
 	{	
 		$expire   = intval($expire);
 		$expire   = $expire ? time() + $expire : 0;
-		$path 	  = $path ? $path : ocConfig('COOKIE.path', OC_EMPTY);
-		$domain   = $domain ? $domain : ocConfig('COOKIE.domain', OC_EMPTY);
+		$path 	  = $path ? : ocConfig('COOKIE.path', OC_EMPTY);
+		$domain   = $domain ? : ocConfig('COOKIE.domain', OC_EMPTY);
 		$secure   = $secure ? true : ocConfig('COOKIE.secure', false);
 		$httponly = $httponly ? true : ocConfig('COOKIE.httponly', true);
 

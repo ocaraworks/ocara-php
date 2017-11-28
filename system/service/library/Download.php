@@ -40,7 +40,7 @@ class Download extends ServiceBase
 			$this->showError('failed_save_filename');
 		}
 		
-		$saveName = $saveName ? $saveName : ocBasename($filePath);
+		$saveName = $saveName ? : ocBasename($filePath);
 		$saveType = $mt[1];
 
 		if (!array_key_exists($saveType, $mineTypes)) {

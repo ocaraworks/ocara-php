@@ -47,7 +47,7 @@ class Log extends ServiceBase
 		}
 		
 		$this->logRoot 	  = ocDir($logRoot);
-		$this->maxLogSize = $maxLogSize ? $maxLogSize : 2;
+		$this->maxLogSize = $maxLogSize ? : 2;
 	}
 
 	/**

@@ -136,7 +136,7 @@ class Upload extends ServiceBase
 	 */
 	public function clear($path)
 	{
-		$path = $path ? $path : $_FILES;
+		$path = $path ? : $_FILES;
 		
 		if (is_array($path) && $path) foreach ($path as $row) {
 			@unlink($row);

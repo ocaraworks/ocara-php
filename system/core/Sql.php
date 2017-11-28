@@ -423,7 +423,7 @@ class Sql extends Base
 	 */
 	public function getInSql($field, $list, $alias = false, $sign = 'IN')
 	{
-		$sign = $sign ? $sign : 'IN';
+		$sign = $sign ? : 'IN';
 
 		if (is_array($list)) {
 			$list = $this->quoteList($list);
@@ -743,7 +743,7 @@ class Sql extends Base
 			return $data;
 		}
 
-		$link   = $link ? $link : ',';
+		$link   = $link ? : ',';
 		$sign   = $sign ? strtoupper(trim(Filter::replaceSpace($sign))) : '=';
 		$result = array();
 

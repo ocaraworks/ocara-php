@@ -115,13 +115,9 @@ class Lang extends Base
 					if ($file == '.' or $file == '..') continue;
 					$fileType = pathinfo($file, PATHINFO_EXTENSION);
 					if (is_file($file = $value . OC_DIR_SEP . $file) && $fileType == 'php') {
-						$lang = array();
 						$row = @include ($file);
 						if ($row && is_array($row)) {
-							$lang = $row;
-						}
-						if ($lang) {
-							$data[] = $lang;
+							$data[] = $row;
 						}
 					}
 				}
