@@ -34,10 +34,11 @@ class Url extends Base
 		}
 		return self::$_instance;
 	}
-	
+
 	/**
 	 * 是否虚拟URL地址
 	 * @param string $urlType
+	 * @return bool
 	 */
 	public static function isVirtualUrl($urlType)
 	{
@@ -47,8 +48,10 @@ class Url extends Base
 	/**
 	 * URL请求参数解析
 	 * @param string $url
+	 * @return array|bool|string
+	 * @throws Exception\Exception
 	 */
-	public function parseGet($url = false)
+	public function parseGet($url = null)
 	{
 		if (empty($url)) {
 			if (OC_PHP_SAPI == 'cli') {
@@ -113,6 +116,7 @@ class Url extends Base
 	 * 检测URL
 	 * @param string $url
 	 * @param string $urlType
+	 * @return null
 	 */
 	public static function check($url, $urlType)
 	{
@@ -157,8 +161,9 @@ class Url extends Base
 	 * @param bool $relative
 	 * @param integer $urlType
 	 * @param bool $static
+	 * @return bool|string
 	 */
-	public static function create($route, $params = array(), $relative = false, $urlType = false, $static = true)
+	public static function create($route, $params = array(), $relative = false, $urlType = null, $static = true)
 	{
 		$route = Ocara::parseRoute($route);
 		if (empty($route)) return false;
@@ -220,6 +225,7 @@ class Url extends Base
 	/**
 	 * 格式化参数数组
 	 * @param array $params
+	 * @return array
 	 */
 	public static function devideQuery(array $params)
 	{
@@ -240,9 +246,11 @@ class Url extends Base
 	 * 添加查询字符串参数
 	 * @param array $params
 	 * @param string $url
-	 * @param integer $urlType
+	 * @param string $urlType
+	 * @return string
+	 * @throws Exception\Exception
 	 */
-	public static function addQuery(array $params, $url = false, $urlType = false)
+	public static function addQuery(array $params, $url = null, $urlType = null)
 	{
 		$urlType = $urlType ? : OC_URL_ROUTE_TYPE;
 		$data    = self::parseUrl($url);
@@ -271,8 +279,9 @@ class Url extends Base
 	/**
 	 * 解析URL
 	 * @param string $url
+	 * @return array|bool
 	 */
-	public static function parseUrl($url = false)
+	public static function parseUrl($url = null)
 	{
 		$fields = array(
 			'scheme', 	'host', 	'port',
@@ -299,10 +308,11 @@ class Url extends Base
 		
 		return $data;
 	}
-	
+
 	/**
 	 * 生成查询字符串
 	 * @param array $params
+	 * @return string
 	 */
 	public static function buildQuery(array $params)
 	{
@@ -318,6 +328,7 @@ class Url extends Base
 	/**
 	 * 生成URL
 	 * @param array $data
+	 * @return string
 	 */
 	public static function buildUrl(array $data)
 	{
