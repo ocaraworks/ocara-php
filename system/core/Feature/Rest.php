@@ -16,39 +16,22 @@ final class Rest extends FeatureBase implements Feature
 {
     /**
      * 获取路由
-     * @param string $action
-     * @param bool $isModule
-     * @param bool $isStandard
-     * @return bool|null|string
+     * @param array $get
+     * @return null
      */
-    public static function getControllerAction($action, $isModule = false, $isStandard = false)
-    {
-        if ($isStandard) {
-            ocDel($_GET, 0, 1);
-        }
-        return null;
-    }
-
-    /**
-     * 设置最终路由
-     * @param string $module
-     * @param string $controller
-     * @param string $action
-     */
-    public static function getDefaultRoute($module, $controller, $action)
+    public function getAction(array $get)
     {
         $id = null;
         $idParam = ocConfig('CONTROLLERS.rest.id_param', 'id');
 
         if (Url::isVirtualUrl(OC_URL_ROUTE_TYPE)) {
-            $count = count($_GET);
-            $end = end($_GET);
+            $count = count($get);
+            $end = end($get);
             if ($count == 1 && !is_array($end) || $count == 2 && is_array($end)) {
-                $id = array_shift($_GET);
+                $id = array_shift($get);
             }
-            $_GET = Ocara::services()->route->formatGet($_GET);
         } else {
-            if (array_key_exists($idParam, $_GET)) {
+            if (array_key_exists($idParam, $get)) {
                 $id = Request::getGet($idParam);
             }
         }
@@ -64,6 +47,8 @@ final class Rest extends FeatureBase implements Feature
             Error::show('fault_url');
         }
 
-        return array($module, $controller, $action);
+        $_GET = array_values($get);
+
+        return null;
     }
 }

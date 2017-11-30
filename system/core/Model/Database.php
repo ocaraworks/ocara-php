@@ -165,7 +165,7 @@ abstract class Database extends ModelBase
 	public static function loadConfig($class)
 	{
 		if (empty(self::$_config[$class])) {
-			self::$_config[$class] = self::getConfig($class);
+			self::$_config[$class] = self::getModelConfig($class);
 		}
 	}
 

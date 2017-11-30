@@ -15,8 +15,10 @@ defined('OC_PATH') or exit('Forbidden!');
 $OC_CONF['LANGUAGE'] 				= 'zh_cn';
 $OC_CONF['SYS_MODEL'] 				= '';
 $OC_CONF['DEV_SIGN'] 				= '';
+$OC_CONF['ROUTE_PARAM_NAME']	    = 'r'; //路由参数名称
 
 $OC_CONF['DEFAULT_CONTROLLER'] 		= 'home'; //默认控制器
+$OC_CONF['DEFAULT_ACTION'] 			= 'index'; //默认动作
 $OC_CONF['COOKIE_DOMAIN'] 			= '';
 
 $OC_CONF['MODEL_QUERY_DATA_TYPE'] 	= 'array';
@@ -63,13 +65,6 @@ $OC_CONF['STATIC'] = array(
  * 将字段的描述作为字段文本
  */
 $CONF['USE_FIELD_DESC_LANG'] = 1;
-
-/*
- * 控制器类型
- */
-$OC_CONF['CONTROLLER_FEATURE_CLASS'] = array(
-	'Common', 'Rest'
-);
 
 /*
  * 系统服务类（非单例模式）

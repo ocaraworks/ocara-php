@@ -17,49 +17,22 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Common extends FeatureBase implements Feature
 {
-     /**
-     * 获取路由
-     * @param string $action
-     * @param bool $isModule
-     * @param bool $isStandard
-     * @return bool|null|string
-     */
-    public static function getControllerAction($action, $isModule = false, $isStandard = false)
-    {
-        if ($isStandard) {
-            ocDel($_GET, 0, 1, 2);
-        }
-
-        if ($isModule) {
-            $a = Request::getGet(3);
-            if (is_array($a)) {
-                $action = false;
-            } else {
-                $action = strtolower($a);
-                ocDel($_GET, 3);
-            }
-        }
-
-        return $action;
-    }
-
     /**
-     * 设置最终路由
-     * @param string $module
-     * @param string $controller
-     * @param string $action
-     * @return array
+     * 获取路由
+     * @param array $get
+     * @return array|bool|mixed|null
      */
-    public static function getDefaultRoute($module, $controller, $action)
+    public function getAction(array $get)
     {
-        if (Url::isVirtualUrl(OC_URL_ROUTE_TYPE)) {
-            $_GET = Ocara::services()->route->formatGet($_GET);
+        $action = ocGet(0, $get);
+
+        if ($action) {
+            ocDel($get, 0);
+        } else {
+            $action = ocConfig('DEFAULT_ACTION');
         }
 
-        if (empty($action)) {
-            $action = ocConfig('DEFAULT_ACTION', 'index');
-        }
-
-        return array($module, $controller, $action);
+        $_GET = array_values($get);
+        return $action;
     }
 }

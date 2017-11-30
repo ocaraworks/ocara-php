@@ -67,7 +67,6 @@ class Url extends Base
 
 		if (empty($url)) return array();
 
-		$module = null;
 		$result = Url::check($url, OC_URL_ROUTE_TYPE);
 		if ($result === null) {
 			Error::show('fault_url');
@@ -75,12 +74,8 @@ class Url extends Base
 
 		if (Url::isVirtualUrl(OC_URL_ROUTE_TYPE)) {
 			$get = trim($result[3]);
-
 			if ($get) {
 				$get = explode(OC_DIR_SEP, trim($result[3], OC_DIR_SEP));
-				if($get[0] == OC_DEV_SIGN){
-					$module = array_shift($get);
-				}
 			} else {
 				$get[0] = null;
 			}
@@ -89,26 +84,24 @@ class Url extends Base
 				$get[] = $extends;
 			}
 		} else {
-			$get[1] = $get[0] = null;
-			$params = explode('&', $result[6]);
+			$params = explode('&', $result);
+			$get = array();
+			foreach ($params as $param) {
+				$row = explode('=', $param);
+				$key = ocGet(0, $row);
+				$value = ocGet(1, $row);
+				$get[$key] = $value;
+			}
 
-			foreach ($params as $row) {
-				$array = explode('=', $row);
-				$key = $array[0];
-				$value = isset($array[1]) ? $array[1] : false;
-				if ($key == 'm' && $module === null) {
-					$module = $value ? : false;
-				} elseif ($key == 'c' && $get[0] === null) {
-					$get[0] = $value;
-				} elseif ($key == 'a' && $get[1] === null) {
-					$get[1] = $value;
-				} else {
-					$get[$key] = $value;
-				}
+			$routeParamName = ocConfig('ROUTE_PARAM_NAME', 'r');
+			if (isset($get[$routeParamName])) {
+				$route = explode('/', ocDel($get, $routeParamName));
+				$route[1] = isset($route[1]) ? $route[1] : null;
+				$route[2] = isset($route[2]) ? $route[2] : null;
+				$get = array_merge($route, $get);
 			}
 		}
 
-		array_unshift($get, $module);
 		return $get;
 	}
 
@@ -122,6 +115,7 @@ class Url extends Base
 	{
 		$url = str_replace('\\', OC_DIR_SEP, $url);
 		$el  = '[^\/\&\?]';
+		$get = null;
 
 		if (self::isVirtualUrl($urlType)) {
 			$str  = $urlType == self::PATH_TYPE ? 'index\.php[\/]?' : false;
@@ -138,20 +132,14 @@ class Url extends Base
 			$tail = "(\/\w+\.\w+)?";
 			$tail = $file . "({$tail}\?(\w+={$el}*(&\w+={$el}*)*)?(#.*)?)?";
 			$exp  = "/^(\w+:\/\/\w+(\.\w)*)?{$str}(({$mvc})|({$mvcs}{$mvc})|({$mvcs}{$mvcs}{$mvc}(\/({$el}*\/?)+)*))?{$tail}$/i";
+			if (preg_match($exp, $url, $mt)){
+				$get = $mt;
+			}
 		} else {
-			$p = '[a-zA-Z_][\w]*';
-			$v = '[\w]*';
-			$m = "(m={$v})";
-
-			$cap = "(c={$v}(\&a={$v}(\&{$p}={$el}*)*)?)";
-			$exp = "/^(\w+:\/\/\w+(\.\w*)*)?(\/?(\w*\/)*)?index\.php(\?({$m}|{$cap}|({$m}\&{$cap}))?)?$/";
+			$get = parse_url($url, PHP_URL_QUERY);
 		}
 
-		if (preg_match($exp, $url, $mt)){
-			return $mt;
-		}
-
-		return  null;
+		return $get;
 	}
 
 	/**
@@ -250,7 +238,7 @@ class Url extends Base
 	 * @return string
 	 * @throws Exception\Exception
 	 */
-	public static function addQuery(array $params, $url = null, $urlType = null)
+	public static function addQuery(array $params, $url = null, $urlType = false)
 	{
 		$urlType = $urlType ? : OC_URL_ROUTE_TYPE;
 		$data    = self::parseUrl($url);
@@ -279,9 +267,8 @@ class Url extends Base
 	/**
 	 * 解析URL
 	 * @param string $url
-	 * @return array|bool
 	 */
-	public static function parseUrl($url = null)
+	public static function parseUrl($url = false)
 	{
 		$fields = array(
 			'scheme', 	'host', 	'port',
@@ -312,7 +299,6 @@ class Url extends Base
 	/**
 	 * 生成查询字符串
 	 * @param array $params
-	 * @return string
 	 */
 	public static function buildQuery(array $params)
 	{
@@ -328,7 +314,6 @@ class Url extends Base
 	/**
 	 * 生成URL
 	 * @param array $data
-	 * @return string
 	 */
 	public static function buildUrl(array $data)
 	{

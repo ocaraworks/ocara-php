@@ -14,12 +14,10 @@ interface Feature
 {
 	/**
 	 * 获取路由
-	 * @param string $action
-	 * @param bool $isModule
-	 * @param bool $isStandard
-	 * @return bool|null|string
+	 * @param array $get
+	 * @return array|bool|mixed|null
 	 */
-	public static function getControllerAction($action, $isModule = false, $isStandard = false);
+	public function getAction(array $get);
 
 	/**
 	 * 设置最终路由
@@ -28,5 +26,5 @@ interface Feature
 	 * @param string $action
 	 * @return array
 	 */
-	public static function getDefaultRoute($module, $controller, $action);
+	public function getLastRoute($module, $controller, $action);
 }
