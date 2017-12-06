@@ -21,6 +21,10 @@ class Route extends Base
         $module = array_shift($get);
         $uModule = ucfirst($module);
 
+        if ($module == OC_DEV_SIGN) {
+            return $this->getDevelopRoute($get);
+        }
+
         if ($uModule) {
             $moduleClass = ocNamespace('Controller', $uModule) . $uModule . 'Module';
             if (class_exists($moduleClass)) {
@@ -44,16 +48,24 @@ class Route extends Base
             $controllerType = 'Common';
         }
 
-        if ($module == OC_DEV_SIGN) {
-            $action = null;
-            $route = array($module, $controller, $action);;
-        } else {
-            $featureClass = "\\Ocara\\Feature\\{$controllerType}";
-            $feature = new $featureClass();
-            $action = $feature->getAction($get);
-            $route = $feature->getLastRoute($module, $controller, $action);
-        }
+        $featureClass = "\\Ocara\\Feature\\{$controllerType}";
+        $feature = new $featureClass();
+        $action = $feature->getAction($get);
+        $route = $feature->getLastRoute($module, $controller, $action);
 
+        return $route;
+    }
+
+    /**
+     * 获取开发者中心路由
+     * @param $get
+     * @return array
+     */
+    public function getDevelopRoute($get)
+    {
+        $controller = array_shift($get);
+        $action = array_shift($get);
+        $route = array(OC_DEV_SIGN, $controller, $action);
         return $route;
     }
 

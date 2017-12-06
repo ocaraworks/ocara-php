@@ -44,10 +44,10 @@ class FileCache extends ServiceBase
 	{
 		$this->_format = $format ? true : false;
 	}
-	
+
 	/**
 	 * 保存数据
-	 * @param string $filePath
+	 * @param $filePath
 	 * @param bool $append
 	 * @param integer $perm
 	 */

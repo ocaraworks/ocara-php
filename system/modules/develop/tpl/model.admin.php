@@ -12,13 +12,8 @@
 </div>
 
 <div>
-<span class="left-span">服务器名称：</span>
-<input type="text" name="server" id="server" value="main">
-</div>
-
-<div>
-    <span class="left-span">数据库名：</span>
-    <input type="text" name="database" id="database" value="">
+<span class="left-span">数据库连接名：</span>
+<input type="text" name="connect" id="connect" value="main">
 </div>
 
 <div>
@@ -33,7 +28,7 @@
 
 <div>
 <span class="left-span">主键字段</span>
-<input type="text" value="" name="primarys" id="primarys">
+<input type="text" value="" name="primaries" id="primaries">
 </div>
 	
 <div>
