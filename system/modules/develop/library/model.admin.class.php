@@ -71,9 +71,7 @@ class model_admin
 		$content .= "\tprotected function _model()\r\n\t{}\r\n";
 		$content .= "}";
 
-		$appDir = 'application';
-
-		if (!is_dir($modelPath = OC_ROOT . "{$appDir}/model/")) {
+		if (!is_dir($modelPath = OC_APPLICATION_PATH . "model/")) {
 			@mkdir($modelPath);
 		}
 
@@ -124,7 +122,7 @@ class model_admin
 		//新建语言文件
 		$path = OC_ROOT . "resource/lang/"
 			. Ocara::language()
-			. '/fields/'
+			. '/model/'
 			. $connectPath
 			. $modelFile
 			. '.php';
@@ -172,9 +170,7 @@ class model_admin
 		$content .= "\tprotected function _model()\r\n\t{}\r\n";
 		$content .= "}";
 
-		$appDir = 'application';
-
-		if (!is_dir($modelPath = OC_ROOT . "{$appDir}/model/{$cacheType}/")) {
+		if (!is_dir($modelPath = OC_APPLICATION_PATH . "model/{$cacheType}/")) {
 			@mkdir($modelPath);
 		}
 

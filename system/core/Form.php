@@ -242,8 +242,13 @@ class Form extends Base
 	public function validate(Validator &$validator, array $data)
 	{
 		$this->loadModel();
+
 		foreach ($this->_modelInfo as $alias => $class) {
-			if (!$validator->validate($data, $class)) {
+			$data = DatabaseModel::mapFields($data, $class);
+			$rules = DatabaseModel::getConfig('VALIDATE', null, $class);
+			$lang = DatabaseModel::getConfig('LANG', null, $class);
+			$result = $validator->setRules($rules)->setLang($lang)->validate($data);
+			if (!$result) {
 				return false;
 			}
 		}

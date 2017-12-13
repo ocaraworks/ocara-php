@@ -127,6 +127,7 @@ $OC_CONF['APP_PATH_INFO'] = array(
 	/*所属目录*/
 	'belong' => array(
 		'controller'  	=> 'application',
+		'logic'  	  	=> 'application',
 		'model'  	  	=> 'application',
 		'view'  	  	=> 'application',
 

@@ -44,9 +44,7 @@ class module_admin
 		$content .= "\tprotected function _module()\r\n\t{}\r\n";
 		$content .= "}";
 		
-		$appDir = 'application';
-		
-		if (!is_dir($modulePath = OC_ROOT . "{$appDir}/controller/{$mdlname}")) {
+		if (!is_dir($modulePath = OC_APPLICATION_PATH . "controller/{$mdlname}")) {
 			@mkdir($modulePath);
 		}
 		

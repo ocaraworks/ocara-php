@@ -65,13 +65,12 @@ class controller_admin
 
 		$className = $cname . 'Controller';
 		$moduleClassName = $mdlname . 'Module';
-		$appDir = 'application';
-		
+
 		if (empty($this->cname) || empty($this->ttype)) {
 			Develop::error(Develop::back('控制器名称和模板类型为必填信息！'));
 		}
 		
-		if (!is_dir($controlPath = OC_ROOT . "{$appDir}/controller/{$mdlname}")) {
+		if (!is_dir($controlPath = OC_APPLICATION_PATH . "/controller/{$mdlname}")) {
 			Develop::error(Develop::back("{$this->mdlname}模块不存在.请先添加该模块。"));
 		}
 

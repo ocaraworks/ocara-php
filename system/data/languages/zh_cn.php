@@ -98,6 +98,7 @@ return array(
 	'fault_session_table'			=> array(2316, 'Session表名配置有误'),
 	'fault_relate_config'			=> array(2317, '关联配置有误'),
 	'fault_method_param'			=> array(2318, '函数或方法参数缺失或格式错误'),
+	'fault_model_object' 			=> array(2319, '错误的模型对象，请检查该模型类的父类是否正确！'),
 
 	//不存在或找不到
 	'not_exists_part' 				=> array(2400, '指定的part文件不存在：{file}.php。'),

@@ -179,8 +179,7 @@ abstract class Database extends ModelBase
 		$modelConfig['JOIN'] = array();
 		$modelConfig['MAP'] = array();
 		$modelConfig['VALIDATE'] = array();
-		$modelConfig['FIELDS_LANG'] = array();
-		$modelConfig['VALIDATE_LANG'] = array();
+		$modelConfig['LANG'] = array();
 
 		$filePath = self::getConfigPath($class);
 
@@ -195,18 +194,10 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		$modelConfig['FIELDS_LANG'] = ocColumn(static::getFieldsConfig($class), 'lang');
-		if (ocFileExists($path = ocPath('lang', "fields/{$filePath}"))) {
+		if (ocFileExists($path = ocPath('lang', "model/{$filePath}"))) {
 			$lang = @include($path);
 			if ($lang && is_array($lang)) {
-				$modelConfig['FIELDS_LANG'] = array_merge($modelConfig['FIELDS_LANG'], $lang);
-			}
-		}
-
-		if (ocFileExists($path = ocPath('lang', "validate/{$filePath}"))) {
-			$lang = @include($path);
-			if ($lang && is_array($lang)) {
-				$modelConfig['VALIDATE_LANG'] = $lang;
+				$modelConfig['LANG'] = array_merge($modelConfig['LANG'], $lang);
 			}
 		}
 

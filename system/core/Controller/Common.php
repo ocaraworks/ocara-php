@@ -20,6 +20,7 @@ use Ocara\Lang;
 use Ocara\Database;
 use Ocara\ControllerBase;
 use Ocara\ModelBase;
+use Ocara\Model\Database as DatabaseModel;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -258,14 +259,30 @@ class Common extends ControllerBase implements ControllerInterface
 	/**
 	 * 数据模型字段验证
 	 * @param array $data
-	 * @param string $modelClass
+	 * @param string|object $model
 	 * @param Validator|null $validator
 	 * @return mixed
 	 */
-	public function validate($data, $modelClass, Validator &$validator = null)
+	public function validate($data, $model, Validator &$validator = null)
 	{
 		$validator = $validator ? : $this->validator;
-		return $validator->validate($data, $modelClass);
+
+		if (is_object($model)) {
+			if ($model instanceof DatabaseModel) {
+				$class = $model->getClass();
+			} else {
+				Error::show('fault_model_object');
+			}
+		} else {
+			$class = $model;
+		}
+
+		$data = DatabaseModel::mapFields($data, $class);
+		$rules = DatabaseModel::getConfig('VALIDATE', null, $class);
+		$lang = DatabaseModel::getConfig('LANG', null, $class);
+		$result = $validator->setRules($rules)->setLang($lang)->validate($data);
+
+		return $result;
 	}
 
 	/**

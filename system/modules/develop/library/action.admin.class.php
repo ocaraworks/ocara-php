@@ -78,10 +78,8 @@ class action_admin
 		$moduleClassName = $mdlname . 'Module';
 		$controlClassName = $cname . 'Controller';
 		$className = $actionName . 'Action';
-
-		$appDir = 'application';
 		
-		if (!is_dir($controlPath = OC_ROOT . "{$appDir}/controller/{$mdlname}")) {
+		if (!is_dir($controlPath = OC_APPLICATION_PATH . "{$appDir}/controller/{$mdlname}")) {
 			Develop::error(Develop::back("{$this->mdlname}模块不存在.请先添加该模块。"));
 		}
 		
@@ -163,14 +161,14 @@ class action_admin
 	
 	public function createView()
 	{
-		$path = OC_ROOT . "application/view/{$this->ttype}/template/";
+		$path = OC_APPLICATION_PATH . "view/{$this->ttype}/template/";
 		$path = $path . ($this->mdlname ? $this->mdlname . OC_DIR_SEP : false);
 		$path = $path . "{$this->cname}";
 
 		ocCheckPath($path);
-		ocCheckPath(OC_ROOT . "application/view/{$this->ttype}/helper");
-		ocCheckPath(OC_ROOT . "application/view/{$this->ttype}/part");
-		ocCheckPath(OC_ROOT . "application/view/{$this->ttype}/layout");
+		ocCheckPath(OC_APPLICATION_PATH . "view/{$this->ttype}/helper");
+		ocCheckPath(OC_APPLICATION_PATH . "view/{$this->ttype}/part");
+		ocCheckPath(OC_APPLICATION_PATH . "view/{$this->ttype}/layout");
 		ocCheckPath(OC_ROOT . "public/css/{$this->ttype}");
 		ocCheckPath(OC_ROOT . "public/images/{$this->ttype}");
 

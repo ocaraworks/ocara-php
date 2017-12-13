@@ -17,13 +17,11 @@ class Route extends Base
      */
     public function parseRouteInfo()
     {
-        $get = $_GET;
-        $module = array_shift($get);
+        $get     = $_GET;
+        $module  = array_shift($get);
         $uModule = ucfirst($module);
 
-        if ($module == OC_DEV_SIGN) {
-            return $this->getDevelopRoute($get);
-        }
+        if ($module == OC_DEV_SIGN) return $this->getDevelopRoute($get);
 
         if ($uModule) {
             $moduleClass = ocNamespace('Controller', $uModule) . $uModule . 'Module';
@@ -49,9 +47,9 @@ class Route extends Base
         }
 
         $featureClass = "\\Ocara\\Feature\\{$controllerType}";
-        $feature = new $featureClass();
-        $action = $feature->getAction($get);
-        $route = $feature->getLastRoute($module, $controller, $action);
+        $feature      = new $featureClass();
+        $action       = $feature->getAction($get);
+        $route        = $feature->getLastRoute($module, $controller, $action);
 
         return $route;
     }

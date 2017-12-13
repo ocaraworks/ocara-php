@@ -18,6 +18,9 @@ class Validator extends Base
 	private $_errorLocation;
 	private $_validate;
 
+	protected $_rules = array();
+	protected $_lang = array();
+
 	/**
 	 * @param object $validate
 	 */
@@ -32,18 +35,15 @@ class Validator extends Base
 	/**
 	 * 表单验证
 	 * @param array $data
-	 * @param string $modelClass
 	 * @return bool
 	 */
-	public function validate(array $data, $modelClass)
+	public function validate(array $data)
 	{
-		$data = $modelClass::mapFields($data, $modelClass);
-		$validate = $modelClass::getConfig('VALIDATE');
-		$lang = $modelClass::getConfig('FIELDS_LANG');
-		$messages = $modelClass::getConfig('VALIDATE_LANG');
 		$result = true;
+		$rules = $this->_rules;
+		$lang = array_merge(Lang::get(), $this->_lang);
 
-		if ($validate) foreach ($validate as $field => $rule) {
+		if ($rules) foreach ($rules as $field => $rule) {
 			if (empty($rule)) continue;
 			if(is_string($rule)) $rule = array('common' => $rule);
 			$value = ocGet($field, $data);
@@ -59,12 +59,58 @@ class Validator extends Base
 			}
 
 			if (!$result) {
-				$this->setError($lang, $messages);
+				$this->setError($lang);
 				break;
 			}
 		}
 
 		return $result;
+	}
+
+	/**
+	 * 设置规则
+	 * @param array $rules
+	 * @return $this
+	 */
+	public function setRules(array $rules)
+	{
+		$this->_rules = $rules;
+		return $this;
+	}
+
+	/**
+	 * 设置语言文本
+	 * @param array $lang
+	 * @return $this
+	 */
+	public function setLang(array $lang)
+	{
+		$this->_lang = $lang;
+		return $this;
+	}
+
+	/**
+	 * 增加验证规则
+	 * @param $field
+	 * @param null $rule
+	 * @return $this
+	 */
+	public function addRule($field, $rule = null)
+	{
+		$this->_rules[$field] = $rule;
+		return $this;
+	}
+
+	/**
+	 * 增加语言文本
+	 * @param $key
+	 * @param null $value
+	 * @return $this
+	 */
+	public function addLang($key, $value = null)
+	{
+		$this->_lang[$key] = $value;
+		return $this;
 	}
 
 	/**
@@ -210,22 +256,21 @@ class Validator extends Base
 	/**
 	 * 绑定错误
 	 * @param array $lang
-	 * @param array $messages
 	 */
-	public function setError($lang, $messages)
+	public function setError($lang)
 	{
 		list($error, $message, $field, $value, $index, $params) = $this->_errorLocation;
-		$lang = ocGet($field, $lang, $field);
+		$desc = ocGet($field, $lang, $field);
 
 		if (is_array($error)) {
 			$error = ocGet('message', $error);
 		}
 
-		if (isset($messages[$error])) {
-			$message = $messages[$error];
+		if (isset($lang[$error])) {
+			$message = $lang[$error];
 		}
 
-		$error = str_ireplace('{field}', $lang, $message);
+		$error = str_ireplace('{field}', $desc, $message);
 		foreach ($params as $key => $value) {
 			str_ireplace('{'.($key + 1).'}', $value, $message);
 		}
