@@ -238,7 +238,7 @@ class Url extends Base
 	 * @return string
 	 * @throws Exception\Exception
 	 */
-	public static function addQuery(array $params, $url = null, $urlType = false)
+	public static function addQuery(array $params, $url = null, $urlType = null)
 	{
 		$urlType = $urlType ? : OC_URL_ROUTE_TYPE;
 		$data    = self::parseUrl($url);
