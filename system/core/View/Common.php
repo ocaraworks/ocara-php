@@ -40,7 +40,7 @@ class Common extends ViewBase implements ViewInterfaces
 	/**
 	 * 初始化
 	 */
-	public function init()
+	public function __construct()
 	{
 		$this->_fileType  = ocConfig('TEMPLATE.file_type', 'html');
 		$this->_template = ocConfig('TEMPLATE.default', 'default');

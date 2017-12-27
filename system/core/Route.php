@@ -25,11 +25,11 @@ class Route extends Base
 
         if ($uModule) {
             $moduleClass = ocNamespace('Controller', $uModule) . $uModule . 'Module';
-            if (class_exists($moduleClass)) {
+            if (ocClassExists($moduleClass)) {
                 $controller = $get ? array_shift($get) : null;
             } else {
-                $module = null;
                 $controller = $module;
+                $module = null;
             }
         }
 
@@ -37,6 +37,23 @@ class Route extends Base
             $controller = ocConfig('DEFAULT_CONTROLLER');
         }
 
+        $controllerType = self::getControllerType($module, $controller);
+        $routeClass = "\\Ocara\\Controller\\Feature\\{$controllerType}";
+        $routeFeature = new $routeClass();
+        $action       = $routeFeature->getAction($get);
+        $route        = $routeFeature->getLastRoute($module, $controller, $action);
+
+        return $route;
+    }
+
+    /**
+     * 获取控制器类型
+     * @param $module
+     * @param $controller
+     * @return string
+     */
+    public static function getControllerType($module, $controller)
+    {
         $route = ltrim(implode('/', array($module, $controller)), '/');
         $isRestful = in_array($route, ocConfig(array('ROUTE', 'resource')));
 
@@ -46,12 +63,7 @@ class Route extends Base
             $controllerType = 'Common';
         }
 
-        $featureClass = "\\Ocara\\Feature\\{$controllerType}";
-        $feature      = new $featureClass();
-        $action       = $feature->getAction($get);
-        $route        = $feature->getLastRoute($module, $controller, $action);
-
-        return $route;
+        return $controllerType;
     }
 
     /**

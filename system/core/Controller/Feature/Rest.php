@@ -1,5 +1,5 @@
 <?php
-namespace Ocara\Feature;
+namespace Ocara\Controller\Feature;
 use Ocara\Interfaces\Feature;
 use Ocara\Ocara;
 use Ocara\Container;
@@ -12,7 +12,7 @@ use Ocara\View\Rest as RestView;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Rest extends FeatureBase implements Feature
+final class Rest extends Base implements Feature
 {
     /**
      * 获取路由

@@ -257,7 +257,7 @@ class Validator extends Base
 	 * 绑定错误
 	 * @param array $lang
 	 */
-	public function setError($lang)
+	public function setError(array $lang)
 	{
 		list($error, $message, $field, $value, $index, $params) = $this->_errorLocation;
 		$desc = ocGet($field, $lang, $field);

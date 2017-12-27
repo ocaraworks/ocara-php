@@ -192,8 +192,10 @@ class Validate extends ServiceBase
 	 */
 	public static function validate($expression, $error, array $params = array())
 	{
-		$error = $expression ? null : $error;
-		return array($error, self::getMessage($error, $params));
+		if ($expression !== true) {
+			return array($error, self::getMessage($error, $params));
+		}
+		return array();
 	}
 
 	/**

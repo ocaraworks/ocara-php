@@ -6,15 +6,15 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Feature;
+namespace Ocara\Controller\Feature;
 
-use Ocara\Base;
+use Ocara\Base as ClassBase;
 use Ocara\Url;
 use Ocara\Route;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class FeatureBase extends Base
+class Base extends ClassBase
 {
     /**
      * 设置最终路由

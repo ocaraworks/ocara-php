@@ -16,14 +16,6 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Rest extends ViewBase implements ViewInterfaces
 {
-    /**
-     * 初始化
-     */
-    public function init()
-    {
-        return $this;
-    }
-
     public function output($data)
     {
         Ocara::services()->response->setContentType($data['contentType']);

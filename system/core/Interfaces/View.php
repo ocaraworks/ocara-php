@@ -12,12 +12,6 @@ defined('OC_PATH') or exit('Forbidden!');
 
 interface View
 {
-
-	/**
-	 * 初始化设置
-	 */
-	public function init();
-
 	/**
 	 * 输出内容
 	 * @param array $data

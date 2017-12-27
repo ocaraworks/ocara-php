@@ -146,6 +146,22 @@ function ocClass($name, array $params = array())
 }
 
 /**
+ * 检测类是否存在
+ * @param $class
+ * @return bool
+ */
+function ocClassExists($class)
+{
+	try {
+		$result = class_exists($class);
+	} catch (\Exception $e) {
+		return false;
+	}
+
+	return $result;
+}
+
+/**
  * 加载函数库文件
  * @param string $filePath
  * @throws \Ocara\Exception\Exception

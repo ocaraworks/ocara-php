@@ -121,11 +121,17 @@ abstract class Basis
 	 * @param string|object $name
 	 * @param $function
 	 */
-	public function traits($name, $function)
+	public function traits($name, $function = null)
 	{
 		if (is_string($name)) {
 			$this->_traits[$name] = $function;
 		} elseif (is_object($name)) {
+			if (is_array($function)) {
+				foreach ($function as $name => $value) {
+					$setMethod = 'set' . ucfirst($name);
+					$name->$setMethod($value);
+				}
+			}
 			$methods = get_class_methods($name);
 			foreach ($methods as $method) {
 				$this->traits($method, array($name, $method));

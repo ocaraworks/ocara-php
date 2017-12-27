@@ -125,8 +125,9 @@ function ocConfig($key, $default = null, $unempty = false)
 	if ($result = Config::getConfig($key)) {
 		return $unempty && ocEmpty($result[0]) ? $default : $result[0];
 	}
-	
+
 	if (func_num_args() >= 2) return $default;
+
 	Error::show('no_config', array($key));
 }
 

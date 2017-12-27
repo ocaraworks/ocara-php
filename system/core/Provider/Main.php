@@ -12,7 +12,7 @@ use Ocara\ServiceProvider;
 
 class Main extends ServiceProvider
 {
-    public function register()
+    public function register($data = array())
     {
         $container = Ocara::container();
 

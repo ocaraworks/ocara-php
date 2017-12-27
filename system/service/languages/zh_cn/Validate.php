@@ -8,10 +8,8 @@
  ************************************************************************************************/
 
 return array(
-	'not_empty' 					=> array(4600,'{field}必须填选。'), 
-	'is_not_standard_name' 			=> array(4601,
-										  '{field}只能由字母、数字或下划线组成，并且只能以字母或下划线开头.'
-									   ), 
+	'unempty' 						=> array(4600,'{field}必须填选。'),
+	'is_not_standard_name' 			=> array(4601,'{field}只能由字母、数字或下划线组成，并且只能以字母或下划线开头.'),
 	'over_max_string_length' 		=> array(4602,'{field}最长%s个字符.'), 
 	'less_than_min_string_length' 	=> array(4603,'{field}至少%s个字符.'), 
 	'not_in_pointed_length' 		=> array(4604,'{field}必须是%s到%s个字符.'),

@@ -50,7 +50,7 @@ class Ajax extends Base
 		}
 
 		$response = Ocara::services()->response;
-		if (!ocConfig('AJAX.return_header_error_code', 0)) {
+		if (!ocConfig('AJAX.response_error_code', 0)) {
 			$response->setStatusCode(Response::STATUS_OK);
 			$result['statusCode'] 	= $response->getOption('statusCode');
 		}

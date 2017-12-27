@@ -18,17 +18,19 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     /**
      * 初始化
      * ServiceProvider constructor.
+     * @param array $data
      */
-    public function __construct()
+    public function __construct($data = array())
     {
         $this->_container = new Container();
-        $this->register();
+        $this->register($data);
     }
 
     /**
      * 注册服务组件
+     * @param array $data
      */
-    public function register()
+    public function register($data = array())
     {}
 
     /**

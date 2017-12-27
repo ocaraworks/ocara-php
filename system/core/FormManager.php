@@ -16,8 +16,9 @@ class FormManager extends ServiceProvider
 
 	/**
 	 * 注册服务
+	 * @param array $data
 	 */
-	public function register()
+	public function register($data = array())
 	{
 		$formToken = ocConfig('SERVICE.formToken', '\Ocara\FormToken');
 		$validator = ocConfig('SERVICE.validator', '\Ocara\Validator');

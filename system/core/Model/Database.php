@@ -223,7 +223,7 @@ abstract class Database extends ModelBase
 			if ($field) {
 				return ocGet(array($key, $field), self::$_config[$class]);
 			}
-			return ocGet($key, self::$_config[$class]);
+			return ocGet($key, self::$_config[$class], array());
 		}
 
 		return self::$_config[$class];

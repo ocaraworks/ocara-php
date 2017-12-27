@@ -6,7 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Feature;
+namespace Ocara\Controller\Feature;
 use Ocara\Interfaces\Feature;
 use Ocara\Ocara;
 use Ocara\Request;
@@ -15,7 +15,7 @@ use Ocara\Url;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class Common extends FeatureBase implements Feature
+class Common extends Base implements Feature
 {
     /**
      * 获取路由
