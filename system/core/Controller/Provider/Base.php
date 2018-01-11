@@ -54,7 +54,7 @@ class Base extends ServiceProvider
         }
 
         $contentType = $this->_ajaxContentType;
-        if ($this->_ajaxContentType) {
+        if (!$contentType) {
             $contentType = ocConfig('DEFAULT_AJAX_CONTENT_TYPE', 'json');
         }
 

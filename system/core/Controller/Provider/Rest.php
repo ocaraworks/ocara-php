@@ -9,6 +9,7 @@
 namespace Ocara\Controller\Provider;
 
 use Ocara\Request;
+use Ocara\Response;
 use Ocara\Error;
 use Ocara\Lang;
 

@@ -14,11 +14,9 @@ defined('OC_PATH') or exit('Forbidden!');
 class Controller extends Base implements ControllerInterface
 {
 	/**
-	 * @var $_controllerType 控制器类型
-	 * @var $_ajaxContentType AJAX返回文档类型
-	 * @var $provider 控制器提供者
+	 * @var $_provider 控制器提供者
 	 */
-	public $provider;
+	protected $_provider;
 
 	/**
 	 * 初始化设置
@@ -26,17 +24,26 @@ class Controller extends Base implements ControllerInterface
 	 */
 	public function init(array $route)
 	{
-		Config::set('CALLBACK.ajax.return_result', array($this, 'formatAjaxResult'));
-
 		$controllerType = Route::getControllerType($route['module'], $route['controller']);
 		$provider = 'Ocara\Controller\Provider\\' . $controllerType;
-		$this->provider = new $provider(compact('route'));
-		$this->provider->init();
-		$this->provider->bindEvents($this);
+		$this->_provider = new $provider(compact('route'));
+		$this->_provider->init();
+		$this->_provider->bindEvents($this);
+
+		Config::set('CALLBACK.ajax.return_result', array($this->_provider, 'formatAjaxResult'));
 
 		method_exists($this, '_start') && $this->_start();
 		method_exists($this, '_module') && $this->_module();
 		method_exists($this, '_control') && $this->_control();
+	}
+
+	/**
+	 * 获取当前的提供者
+	 * @return 控制器提供者
+	 */
+	public function provider()
+	{
+		return $this->_provider;
 	}
 
 	/**
@@ -45,13 +52,13 @@ class Controller extends Base implements ControllerInterface
 	 */
 	public function doAction($actionMethod)
 	{
-		$doWay = $this->provider->getDoWay();
+		$doWay = $this->_provider->getDoWay();
 
-		if (!$this->provider->isSubmit()) {
+		if (!$this->_provider->isSubmit()) {
 			if (method_exists($this, '_isSubmit')) {
-				$this->provider->isSubmit($this->_isSubmit());
+				$this->_provider->isSubmit($this->_isSubmit());
 			} elseif ($this->submitMethod() == 'post') {
-				$this->provider->isSubmit(Request::isPost());
+				$this->_provider->isSubmit(Request::isPost());
 			}
 		}
 
@@ -76,13 +83,13 @@ class Controller extends Base implements ControllerInterface
 			if (method_exists($this, '_ajax')) {
 				$data = $this->_ajax();
 			}
-			$this->provider->ajaxReturn($data);
-		} elseif ($this->provider->isSubmit() && method_exists($this, '_submit')) {
+			$this->_provider->ajaxReturn($data);
+		} elseif ($this->_provider->isSubmit() && method_exists($this, '_submit')) {
 			$this->_submit();
-			$this->provider->formManager->clearToken();
+			$this->_provider->formManager->clearToken();
 		} else{
 			method_exists($this, '_display') && $this->_display();
-			$this->provider->display();
+			$this->_provider->display();
 		}
 	}
 
@@ -98,7 +105,7 @@ class Controller extends Base implements ControllerInterface
 			$result = $this->$actionMethod();
 		}
 
-		$this->provider->display($result);
+		$this->_provider->display($result);
 	}
 
 	/**
@@ -128,7 +135,7 @@ class Controller extends Base implements ControllerInterface
 			$value = &$this->getProperty($key);
 			return $value;
 		}
-		if ($instance = $this->provider->getService($key)) {
+		if ($instance = $this->_provider->getService($key)) {
 			return $instance;
 		}
 		Error::show('no_property', array($key));
@@ -143,8 +150,11 @@ class Controller extends Base implements ControllerInterface
 	 */
 	public function __call($name, $params)
 	{
-		if (is_object($this->provider) && method_exists($this->provider, $name)) {
-			return call_user_func_array(array(&$this->provider, $name), $params);
+		if (is_object($this->_provider) && method_exists($this->_provider, $name)) {
+			return call_user_func_array(array(&$this->_provider, $name), $params);
+		}
+		if (is_object($this->view) && method_exists($this->view, $name)) {
+			return call_user_func_array(array(&$this->view, $name), $params);
 		}
 		parent::_call($name, $params);
 	}

@@ -89,7 +89,7 @@ $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
 	'globalLog' 	=> 'Ocara\GlobalLog',
 	'route'			=> 'Ocara\Route',
 	'transaction'	=> 'Ocara\Transaction',
-	'pager' 		=> 'Ocara\Pager',
+	'pager' 		=> 'Ocara\Service\Pager',
 	'validator' 	=> 'Ocara\Service\Validator',
 );
 
