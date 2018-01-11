@@ -189,7 +189,7 @@ function ocFunc($filePath)
 function ocSql($sql)
 {
 	if (is_string($sql) || is_numeric($sql)) {
-		$sql = Request::stripOcaraTag($sql);
+		$sql = Request::stripSqlTag($sql);
 		return OC_SQL_TAG . $sql;
 	}
 	
@@ -254,10 +254,10 @@ function ocFile($dir, $path)
 
 /**
  * 获取绝对URL
- * @param string $dir
+ * @param $dir
  * @param string $subPath
  * @param string $root
- * @return bool|mixed|string
+ * @return string
  */
 function ocRealUrl($dir, $subPath = false, $root = false)
 {

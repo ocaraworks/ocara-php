@@ -50,18 +50,18 @@ class Request extends Base
 	 */
 	public static function stripslashes()
 	{
-		$func  	 = get_magic_quotes_gpc() ? 'cleanData' : 'stripOcaraTag';
+		$func  	 = get_magic_quotes_gpc() ? 'cleanSqlTag' : 'stripSqlTag';
 		$_GET  	 = ocArrayMap(array(__CLASS__, $func), $_GET);
 		$_POST   = ocArrayMap(array(__CLASS__, $func), $_POST);
-		$_COOKIE = ocArrayMap(array(__CLASS__, 'stripOcaraTag'), $_COOKIE);
+		$_COOKIE = ocArrayMap(array(__CLASS__, 'stripSqlTag'), $_COOKIE);
 	}
 
 	/**
-	 * 去除Ocara标签
+	 * 去除SQL标签
 	 * @param string|number $content
 	 * @return mixed
 	 */
-	public static function stripOcaraTag($content)
+	public static function stripSqlTag($content)
 	{
 		if (is_numeric($content) || is_string($content)) {
 			$content = str_ireplace(OC_SQL_TAG, OC_EMPTY, $content);
@@ -71,14 +71,14 @@ class Request extends Base
 	}
 
 	/**
-	 * 去除Ocara标签和转义
+	 * 去除SQL标签和转义
 	 * @param string $content
 	 * @return mixed
 	 */
-	public static function cleanData($content)
+	public static function cleanSqlTag($content)
 	{
 		if (is_numeric($content) || is_string($content)) {
-			$content = str_ireplace('{oc_sql}', OC_EMPTY, stripslashes($content));
+			$content = str_ireplace(OC_SQL_TAG, OC_EMPTY, stripslashes($content));
 		}
 		
 		return $content;
