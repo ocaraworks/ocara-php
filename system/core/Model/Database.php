@@ -260,27 +260,27 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 字段映射
-	 * @param array $fields
+	 * @param array $data
 	 * @param string $class
 	 * @return array
 	 */
-	public static function mapFields(array $fields, $class)
+	public static function mapData(array $data, $class)
 	{
 		$config = self::getConfig('MAP', null, $class);
 		if (!$config) {
-			return $fields;
+			return $data;
 		}
 
-		$data = array();
-		foreach ($fields as $key => $value) {
+		$result = array();
+		foreach ($data as $key => $value) {
 			if (isset($config[$key])) {
-				$data[$config[$key]] = $value;
+				$result[$config[$key]] = $value;
 			} else {
-				$data[$key] = $value;
+				$result[$key] = $value;
 			}
 		}
 
-		return $data;
+		return $result;
 	}
 
 	/**

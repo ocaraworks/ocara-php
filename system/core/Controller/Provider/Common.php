@@ -206,7 +206,7 @@ class Common extends Base
             $class = $model;
         }
 
-        $data = DatabaseModel::mapFields($data, $class);
+        $data = DatabaseModel::mapData($data, $class);
         $rules = DatabaseModel::getConfig('VALIDATE', null, $class);
         $lang = DatabaseModel::getConfig('LANG', null, $class);
         $result = $validator->setRules($rules)->setLang($lang)->validate($data);

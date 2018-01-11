@@ -166,17 +166,17 @@ class Sql extends Base
 	/**
 	 * 字段转换
 	 * @param string $sql
-	 * @param array $mapFields
+	 * @param array $mapData
 	 * @param string $currentAlias
 	 * @param bool $field2Alias
 	 * @return bool|string
 	 */
-	public function transformFields($sql, $mapFields, $currentAlias, $field2Alias = false)
+	public function transformFields($sql, $mapData, $currentAlias, $field2Alias = false)
 	{
 		$exp = '/([^\w\.]+)+((\w+)\.)?(%s)([^\w\.]+)+/i';
 		$newSql = chr(32) . $sql . chr(32);
 
-		foreach ($mapFields as $alias => $row) {
+		foreach ($mapData as $alias => $row) {
 			if ($field2Alias) {
 				$row = array_flip($row);
 			}
