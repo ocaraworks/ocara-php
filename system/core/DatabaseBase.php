@@ -26,6 +26,7 @@ class DatabaseBase extends Sql
 	protected $_pdoName;
 	protected $_dataType;
 	protected $_connectName;
+	protected $_wakeUpTimes = 0;
 
 	private $_error = array();
 	private static $_connects = array();
@@ -278,11 +279,17 @@ class DatabaseBase extends Sql
 				}
 			}
 		} catch (\Exception $exception) {
+			if (!$this->_wakeUpTimes) {
+				if ($this->_plugin->is_not_Active()) {
+					$this->_plugin->wake_up();
+				}
+				$this->_wakeUpTimes++;
+				return call_user_func_array(array($this, __METHOD__), func_get_arg());
+			}
 			Error::show($exception->getMessage());
 		}
 
 		$ret = $this->checkError($result, $sqlData, $required);
-
 		return $ret;
 	}
 

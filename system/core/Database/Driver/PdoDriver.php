@@ -41,18 +41,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function connect()
 	{
-		$limitConnect = ocConfig('DATABASE_LIMIT_CONNECT_TIMES', 3);
-
-		for ($i = 1; $i <= $limitConnect; $i++) {
-			$error = $this->_connect();
-			if ($error) {
-				if ($i < $limitConnect) continue;
-				Error::show('failed_db_connect', $error);
-			} else {
-				break;
-			}
-		}
-
+		$this->_connect();
 		return $this->_connection = $this->_instance;
 	}
 
@@ -61,27 +50,52 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	protected function _connect()
 	{
-		$error = array();
-		$options = $this->_config['options'];
+		$limitConnect = ocConfig('DATABASE_LIMIT_CONNECT_TIMES', 3);
 
-		if ($this->_pconnect) {
-			$options[PDO::ATTR_PERSISTENT] = true;
+		for ($i = 1; $i <= $limitConnect; $i++) {
+			$error = array();
+			$options = $this->_config['options'];
+
+			if ($this->_pconnect) {
+				$options[PDO::ATTR_PERSISTENT] = true;
+			}
+
+			try {
+				$this->_instance = new PDO(
+					$this->_config['dsn'], $this->_config['username'],
+					$this->_config['password'], $options
+				);
+			} catch (\PDOException $e) {
+				$this->_errno = $e->getCode();
+				$this->_error = $e->getMessage();
+				$error = array(
+					$this->_config['name'], $this->_errno, $this->_error
+				);
+			}
+			if ($error) {
+				if ($i < $limitConnect) continue;
+				Error::show('failed_db_connect', $error);
+			} else {
+				break;
+			}
 		}
+	}
 
-		try {
-			$this->_instance = new PDO(
-				$this->_config['dsn'], $this->_config['username'],
-				$this->_config['password'], $options
-			);
-		} catch (\PDOException $e) {
-			$this->_errno = $e->getCode();
-			$this->_error = $e->getMessage();
-			$error = array(
-				$this->_config['name'], $this->_errno, $this->_error
-			);
-		}
+	/**
+	 * 服务器是否断开连接
+	 * @return bool
+	 */
+	public function is_not_Active()
+	{
+		return $this->error_no() == '2006';
+	}
 
-		return $error;
+	/**
+	 * 唤醒连接
+	 */
+	public function wake_up()
+	{
+		$this->_connect();
 	}
 
 	/**

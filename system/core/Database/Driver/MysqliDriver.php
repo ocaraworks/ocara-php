@@ -42,32 +42,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
 	 */
 	public function connect()
 	{
-		$host = ($this->_pconnect ? 'p:' : OC_EMPTY) . $this->_config['host'];
-		$args = array(
-			$host, $this->_config['username'],
-			$this->_config['password'], $this->_config['name'],
-			$this->_config['port'],     $this->_config['socket'],
-		);
-
-		if (!class_exists('mysqli', false)) {
-			Error::show('not_exists_class', array('mysqli'));
-		}
-
-		$limitConnect = ocConfig('DATABASE_LIMIT_CONNECT_TIMES', 3);
-		for($i = 1; $i <= $limitConnect; $i++) {
-			try {
-				$this->_connect($args);
-			} catch (Exception $exception) {
-				if ($i < $limitConnect) continue;
-				$this->_errno = $exception->getCode();
-				$this->_error = $exception->getMessage();
-				$error = array(
-					$this->_config['name'], $this->_errno, $this->_error
-				);
-				Error::show('failed_db_connect', $error);
-			}
-			break;
-		}
+		$this->_connect();
 
 		if (empty($this->_connection)) {
 			$this->_errno = $this->_instance->connect_errno;
@@ -83,29 +58,72 @@ class MysqliDriver extends DriverBase implements DriverInterface
 
 	/**
 	 * 使用mysqli类连接
-	 * @param array $args
+	 * @throws Exception
 	 */
-	protected function _connect($args)
+	protected function _connect()
 	{
-		$this->_instance = new mysqli();
-		if (empty($this->_instance)) {
-			Error::show('failed_db_init');
+		$host = ($this->_pconnect ? 'p:' : OC_EMPTY) . $this->_config['host'];
+		$args = array(
+			$host, $this->_config['username'],
+			$this->_config['password'], $this->_config['name'],
+			$this->_config['port'],     $this->_config['socket'],
+		);
+
+		if (!class_exists('mysqli', false)) {
+			Error::show('not_exists_class', array('mysqli'));
 		}
 
-		$timeout = $this->_config['timeout'];
-		if ($timeout){
-			$result = $this->_instance->options(MYSQLI_OPT_CONNECT_TIMEOUT, $timeout);
-			if (!$result) {
-				Error::show('failed_db_set_timeout');
+		$limitConnect = ocConfig('DATABASE_LIMIT_CONNECT_TIMES', 3);
+
+		for($i = 1; $i <= $limitConnect; $i++) {
+			try {
+				$this->_instance = new mysqli();
+				if (empty($this->_instance)) {
+					Error::show('failed_db_init');
+				}
+
+				$timeout = $this->_config['timeout'];
+				if ($timeout){
+					$result = $this->_instance->options(MYSQLI_OPT_CONNECT_TIMEOUT, $timeout);
+					if (!$result) {
+						Error::show('failed_db_set_timeout');
+					}
+				}
+
+				error_reporting(0);
+				$connect = call_user_func_array(array($this->_instance, 'real_connect'), $args);
+				if ($connect) {
+					$this->_connection = $this->_instance;
+					$this->_stmt = $this->_instance->stmt_init();
+				}
+			} catch (Exception $exception) {
+				if ($i < $limitConnect) continue;
+				$this->_errno = $exception->getCode();
+				$this->_error = $exception->getMessage();
+				$error = array(
+					$this->_config['name'], $this->_errno, $this->_error
+				);
+				Error::show('failed_db_connect', $error);
 			}
+			break;
 		}
+	}
 
-		error_reporting(0);
-		$connect = call_user_func_array(array($this->_instance, 'real_connect'), $args);
-		if ($connect) {
-			$this->_connection = $this->_instance;
-			$this->_stmt = $this->_instance->stmt_init();
-		}
+	/**
+	 * 服务器是否断开连接
+	 * @return bool
+	 */
+	public function is_not_Active()
+	{
+		return $this->error_no() == '2006';
+	}
+
+	/**
+	 * 唤醒连接
+	 */
+	public function wake_up()
+	{
+		$this->_connect();
 	}
 
 	/**
