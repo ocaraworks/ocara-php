@@ -10,16 +10,17 @@ namespace Ocara\Iterator\Database;
 
 class ObjectRecords implements \Iterator
 {
-    private $_position;
-    private $_times;
-    private $_offset;
-    private $_rows;
-    private $_result;
-
     private $_model;
     private $_condition;
     private $_options;
     private $_debug;
+
+    private $_position = 0;
+    private $_times = 0;
+    private $_isBatch = false;
+    private $_offset = 0;
+    private $_data = array();
+    private $_rows = 0;
 
     /**
      * 初始化
@@ -35,20 +36,6 @@ class ObjectRecords implements \Iterator
         $this->_condition = $condition;
         $this->_options = $options;
         $this->_debug = $debug;
-        $this->_position = 0;
-    }
-
-    /**
-     * 设置分页
-     * @param $times
-     * @param int $start
-     * @param int $rows
-     */
-    public function setLimit($times, $start = 0, $rows = 1)
-    {
-        $this->_times = $times;
-        $this->_offset = $start;
-        $this->_rows = $rows;
     }
 
     /**
@@ -56,7 +43,27 @@ class ObjectRecords implements \Iterator
      */
     function rewind()
     {
+        $this->getResult();
+
+        if (!($this->_rows || $this->_isBatch)) {
+            $this->_rows = count($this->_data);
+        }
+
         $this->_position = 0;
+    }
+
+    /**
+     * 批量查询
+     * @param int $rows
+     * @param int $start
+     * @return $this
+     */
+    public function batch($rows, $start = 0)
+    {
+        $this->_isBatch = true;
+        $this->_offset = $start;
+        $this->_rows = $rows;
+        return $this;
     }
 
     /**
@@ -65,11 +72,11 @@ class ObjectRecords implements \Iterator
      */
     function current()
     {
-        if ($this->_times) {
-            $result = $this->_getCurrentResult($this->_offset);
-        } else {
-            $result = $this->_result;
-        }
+        $data = $this->_data[$this->key()];
+        $class = $this->_model;
+
+        $model = new $class();
+        $result = $model->data($data);
 
         return $result;
     }
@@ -89,8 +96,11 @@ class ObjectRecords implements \Iterator
     function next()
     {
         $this->_position++;
-        if ($this->_times) {
-            $this->_offset += $this->_rows;
+        if ($this->_position == $this->_rows) {
+            if ($this->_isBatch) {
+                $this->_times++;
+                $this->rewind();
+            }
         }
     }
 
@@ -100,51 +110,28 @@ class ObjectRecords implements \Iterator
      */
     function valid()
     {
-        if ($this->_times) {
-            return $this->_position <= $this->_times;
-        }
-
-        $this->_result = $this->_getCurrentResult();
-        $isValid = $this->_result ? true : false;
-        $this->_offset += $this->_rows;
-
+        $isValid = $this->_position < $this->_rows && array_key_exists($this->key(), $this->_data);
         return $isValid;
     }
 
     /**
-     * 查询当前结果
-     * @return array|mixed
-     */
-    protected function _getCurrentResult()
-    {
-        if ($this->_rows > 1) {
-            $result = array();
-            for($start = $this->_offset; $start < $this->_rows; $start++) {
-                $result[] = $this->_getRow($start);
-            }
-        } else {
-           $result = $this->_getRow($this->_offset);
-        }
-
-        return $result;
-    }
-
-    /**
-     * 查询当前一行
-     * @param $start
+     * 获取记录结果
      * @return mixed
      */
-    protected function _getRow($start)
+    public function getResult()
     {
         $model = new $this->_model();
-        $model->limit($start, 1);
+
+        if ($this->_rows) {
+            $model->limit($this->_offset, $this->_rows);
+        }
 
         foreach ($this->_condition as $condition) {
             $model->where($condition);
         }
 
-        $result = $model->findRow(false, $this->_options);
-
-        return $result;
+        $this->_data = $model->getAll(false, $this->_options);
+        $this->_offset += $this->_rows;
+        $this->_times++;
     }
 }

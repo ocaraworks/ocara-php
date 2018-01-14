@@ -885,13 +885,6 @@ abstract class Database extends ModelBase
 	public static function find($condition, $options = null, $debug = false)
 	{
 		$records = new ObjectRecords(self::getClass(), array($condition), $options, $debug);
-
-		$times = isset($options['times']) ? $options['times'] : 0;
-		$start = isset($options['start']) ? $options['start'] : 0;
-		$rows = isset($options['rows']) ? $options['rows'] : 1;
-
-		$records->setLimit($times, $start, $rows);
-
 		return $records;
 	}
 
