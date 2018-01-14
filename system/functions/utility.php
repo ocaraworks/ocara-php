@@ -385,21 +385,34 @@ function ocGetLanguage(array $languages, $message, array $params = array())
 			$errorCode = $content[0];
 			$content   = $content[1];
 		}
-		if ($params) {
-			if (strstr($content, '%s')) {
-				$content = vsprintf($content, $params);
-			}
-			foreach ($params as $key => $value) {
-				if (is_string($key)) {
-					$content = str_ireplace("{{$key}}", $value, $content);
-				}
-			}
-		}
+		$content = ocSprintf($content, $params);
 		$content = str_ireplace('%s', OC_EMPTY, $content);
 		$result = array('code' => $errorCode, 'message' => (string)$content);
 	}
 	
 	return $result;
+}
+
+/**
+ * 替换参数
+ * @param $content
+ * @param $params
+ * @return mixed|string
+ */
+function ocSprintf($content, $params)
+{
+	if ($params) {
+		if (strstr($content, '%s')) {
+			$content = vsprintf($content, $params);
+		}
+		foreach ($params as $key => $value) {
+			if (is_string($key)) {
+				$content = str_ireplace("{{$key}}", $value, $content);
+			}
+		}
+	}
+
+	return $content;
 }
 
 /**

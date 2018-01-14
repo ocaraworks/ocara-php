@@ -58,7 +58,11 @@ $CONF['SQL_FILTER_KEYWORDS'] = 0; //是否过滤SQL关键词
 /*
  * 日志配置
  */
-$CONF['LOG_PATH'] = 'logs'; //日志保存路径，会放在resource/data目录下面
+$CONF['LOG'] = array(
+	'engine' => '\Ocara\Service\FileLog', //日志插件
+	'root' => 'logs', //日志保存根路径，文件日志会放在resource/data目录下面
+	'format' => '[{type}]|{time}|{message}', //日志格式
+);
 
 /*
  * AJAX配置

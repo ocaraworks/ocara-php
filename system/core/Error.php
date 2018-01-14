@@ -27,7 +27,7 @@ class Error extends Base
 	{
 		if (self::$_instance === null) {
 			self::$_instance = new self();
-			if ($callback = ocConfig('EVENT.error.write_log', null)) {
+			if ($callback = ocConfig('EVENT.error.write_log', array(Ocara::services()->log, 'error'), true)) {
 				self::$_instance->event('writeLog')->append($callback);
 			}
 			if ($callback = ocConfig('EVENT.error.output', null)) {
@@ -59,13 +59,15 @@ class Error extends Base
 	 * @param string $error
 	 * @param array $params
 	 */
-	public static function log($error, array $params = array())
+	public static function writeLog($error, array $params = array())
 	{
 		try {
 			$error = Lang::get($error, $params);
 			throw new Exception($error['message'], $error['code']);
 		} catch(Exception $exception) {
-			self::$_instance->event('writeLog')->fire(array(ocGetExceptionData($exception)));
+			self::$_instance->event('writeLog')->fire(
+				$exception->getMessage(), $exception->getTrace()
+			);
 		}
 	}
 
@@ -129,9 +131,10 @@ class Error extends Base
 	 */
 	public function handler($exception)
 	{
-		$params = ocGetExceptionData($exception);
-		self::$_instance->event('writeLog')->fire(array($params));
+		$params = array($exception->getMessage(), $exception->getTrace());
+		self::$_instance->event('writeLog')->fire($params);
 
+		$params = ocGetExceptionData($exception);
 		if (self::$_instance->event('output')->get()) {
 			self::$_instance->event('output')->fire(array($params));
 		}

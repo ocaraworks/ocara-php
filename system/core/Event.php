@@ -8,9 +8,10 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Interfaces\Event as EventInterface;
 use Ocara\Interfaces\Middleware;
 
-class Event extends Basis
+class Event extends Basis implements EventInterface
 {
     protected $_name;
     protected $_handlers;
@@ -211,7 +212,7 @@ class Event extends Basis
                 $handlers
             );
 
-            array_unshift($params, $this);
+            $params[] = $this;
             $this->_running = true;
 
             foreach ($this->_handlers as $row) {

@@ -69,30 +69,12 @@ abstract class Base extends Basis
 	}
 
 	/**
-	 * 写全局日志
-	 * @param string $content
+	 * 获取日志对象
 	 * @param string $logName
-	 * @param string $type
-	 * @param bool $traceLog
 	 */
-	public static function globalLog($content, $logName = null, $type = 'info', $traceLog = false)
+	public static function log($logName)
 	{
-		if (empty($logName)) {
-			$logName = 'common';
-		}
-
-		$time        = microtime(true);
-		$traceString = null;
-		$traceInfo   = array();
-		$type 		 = $type ? : 'info';
-
-		if($traceLog) {
-			$traceInfo = debug_backtrace();
-			$traceString = GlobalLog::getTraceString($traceInfo);
-		}
-
-		$params = array($logName, $time, $content, $traceString, $traceInfo);
-		Ocara::getInstance()->event($type)->fire($params);
+		return Ocara::container()->create('log', array($logName));
 	}
 
 	/**

@@ -34,10 +34,11 @@ class Main extends ServiceProvider
             $container->bind($name, function() use($namespace) {
                 $file = strtr($namespace, ocConfig('AUTOLOAD_MAP')) . '.php';
                 ocImport($file);
+                $args = func_get_args();
                 if (method_exists($namespace, 'getInstance')) {
-                    return $namespace::getInstance();
+                    return call_user_func_array(array($namespace, 'getInstance'), $args);
                 } else {
-                    return new $namespace();
+                    return ocClass($namespace, $args);
                 }
             });
         }

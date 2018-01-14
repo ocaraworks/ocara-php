@@ -71,6 +71,7 @@ $CONF['USE_FIELD_DESC_LANG'] = 1;
  */
 $OC_CONF['SYSTEM_SERVICE_CLASS'] = array(
 	'event' => 'Ocara\Event',
+	'log'	=> 'Ocara\Log',
 );
 
 /*
@@ -86,7 +87,6 @@ $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
 	'lang' 			=> 'Ocara\Lang',
 	'cookie' 		=> 'Ocara\Cookie',
 	'session' 		=> 'Ocara\Session',
-	'globalLog' 	=> 'Ocara\GlobalLog',
 	'route'			=> 'Ocara\Route',
 	'transaction'	=> 'Ocara\Transaction',
 	'pager' 		=> 'Ocara\Service\Pager',

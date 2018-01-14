@@ -1,104 +1,103 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   全局日志处理类GlobalLog
+ * Ocara开源框架   全局日志处理类Log
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara;
-use Ocara\Service\Log;
+use Ocara\Ocara;
+use \ReflectionClass;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class GlobalLog extends Base
+class Log extends Base
 {
-    protected static $_logRoot;
-    protected static $_log;
-
-    /**
-     * 单例模式
-     */
-    private static $_instance = null;
-
-    private function __clone(){}
-    private function __construct(){}
-
-    public static function getInstance()
-    {
-        if (self::$_instance === null) {
-            self::$_instance = new self();
-            self::initialze();
-        }
-        return self::$_instance;
-    }
+    protected $_name;
 
     /**
      * 初始化
+     * Log constructor.
+     * @param string $logName
      */
-    public static function initialze()
+    public function __construct($logName = null)
     {
-        self::$_logRoot = 'logs/global';
-        self::$_log = new Log();
-        self::$_log->setOption(self::$_logRoot);
+        $this->_name = $logName ? : 'common';
+        $class = ocConfig('Log.engine', '\Ocara\Service\FileLog');
+        $this->_plugin = new $class();
+        $this->_plugin->setOption(ocConfig('Log.root', 'logs'));
     }
 
     /**
-     * 写日志
-     * @param string $logName
-     * @param string|array $content
-     * @param integer $time
-     * @param string $traceString
-     * @param array $traceInfo
+     *
+     * @param $message
+     * @param $traceInfo
      * @param string $type
      */
-    public function write($logName, $content, $time = null, $traceString = null, $traceInfo = array(), $type = 'info')
+    public function write($message, array $traceInfo = array(), $type = 'info')
     {
-        self::getInstance();
-        $time = $time ? : time();
-        $datetime = date(ocConfig('DATE_FORMAT.datetime'), $time);
+        $time = date(ocConfig('DATE_FORMAT.datetime'), time());
 
-        if (!self::$_log->exists($logName)) {
-            self::$_log->create($logName);
+        if (!$this->_plugin->exists($this->_name)) {
+            $this->_plugin->create($this->_name);
         }
 
-        if (!ocScalar($content)) {
-            $content = $content . ocJsonEncode($content);
+        if (!ocScalar($message)) {
+            $message .= ocJsonEncode($message);
         }
 
-        $content  = '['.$datetime.']['.$type.']' . $content;
-        if ($traceString) {
-            $content = $content . PHP_EOL . $traceString;
+        $format = ocConfig('LOG.format', '[{type}]|{time}|{message}', true);
+        $content = ocSprintf($format, compact('type', 'time', 'message'));
+
+        if ($traceInfo) {
+            $content .= PHP_EOL . self::getTraceString($traceInfo);
         }
 
         try {
-            self::$_log->write($logName, $content);
+            $this->_plugin->write($this->_name, $content);
         } catch (\Exception $e)
         {}
     }
 
     /**
      * 信息日志
+     * @param $content
+     * @param array $traceInfo
      */
-    public function info($logName, $content, $time = null, $traceString = null, $traceInfo = array())
+    public function info($content, array $traceInfo = array())
     {
-        $this->write($logName, $content, $time, $traceString, $traceInfo, 'info');
+        $this->write($content, $traceInfo, 'info');
     }
 
     /**
      * 调试日志
+     * @param $content
+     * @param array $traceInfo
      */
-    public function debug($logName, $content, $time = null, $traceString = null, $traceInfo = array())
+    public function debug($content, array $traceInfo = array())
     {
-        $this->write($logName, $content, $time, $traceString, $traceInfo, 'debug');
+        $this->write($content, $traceInfo, 'debug');
     }
 
     /**
      * 错误日志
+     * @param $content
+     * @param array $traceInfo
      */
-    public function error($logName, $content, $time = null, $traceString = null, $traceInfo = array())
+    public function error($content, array $traceInfo = array())
     {
-        $this->write($logName, $content, $time, $traceString, $traceInfo, 'error');
+        $this->write($content, $traceInfo, 'error');
+    }
+
+    /**
+     * 警告日志
+     * @param $content
+     * @param array $traceData
+     */
+    public function warning($content, array $traceData = array())
+    {
+        $this->write($content, $traceData, 'warning');
     }
 
     /**

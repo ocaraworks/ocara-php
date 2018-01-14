@@ -22,7 +22,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
             ->append(ocConfig('EVENT.oc_die', null));
 
         Ocara::getInstance()
-            ->bindEvents(ocConfig('EVENT.global_log', GlobalLog::getInstance()));
+            ->bindEvents(ocConfig('EVENT.log', Ocara::services()->log));
 
         if (!@ini_get('short_open_tag')) {
             Error::show('need_short_open_tag');

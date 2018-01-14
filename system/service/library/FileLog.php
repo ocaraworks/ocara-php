@@ -8,8 +8,9 @@
  ************************************************************************************************/
 namespace Ocara\Service;
 use Ocara\ServiceBase;
+use Ocara\Service\Interfaces\Log as LogInterface;
 
-class Log extends ServiceBase
+class FileLog extends ServiceBase implements LogInterface
 {
 	public $logType;
 	public $sysLogPath;
@@ -18,17 +19,18 @@ class Log extends ServiceBase
 
 	/**
 	 * 选项设置函数
-	 * @param string $logRoot
-	 * @param integer $maxLogSize
+	 * @param null $logRoot
+	 * @param null $maxLogSize
+	 * @throws \Ocara\Exception\Exception
 	 */
-	public function setOption($logRoot = false, $maxLogSize = false)
+	public function setOption($logRoot = null, $maxLogSize = null)
 	{
 		if (empty($logRoot)) {
-			$logRoot = ocConfig('LOG_PATH', false);
+			$logRoot = ocConfig('LOG.root', false);
 		}
 		
 		if ($logRoot) {
-			$this->logType = 'mine';
+			$this->logType = 'custom';
 			$logRoot = ocPath('runtime', $logRoot);
 		}
 		
@@ -53,6 +55,7 @@ class Log extends ServiceBase
 	/**
 	 * 新建日志（目录）
 	 * @param string $logName
+	 * @return bool
 	 */
 	public function create($logName)
 	{
@@ -62,6 +65,7 @@ class Log extends ServiceBase
 	/**
 	 * 检测日志是否存在
 	 * @param $logName
+	 * @return bool
 	 */
 	public function exists($logName)
 	{
@@ -72,6 +76,7 @@ class Log extends ServiceBase
 	 * 向最近日志文件写入一行
 	 * @param string $logName
 	 * @param string $content
+	 * @return bool|int|void
 	 */
 	public function write($logName, $content)
 	{
@@ -101,6 +106,7 @@ class Log extends ServiceBase
 	/**
 	 * 读取日志内容
 	 * @param string $logName
+	 * @return bool|\mix|null|string
 	 */
 	public function read($logName)
 	{
@@ -116,6 +122,7 @@ class Log extends ServiceBase
 	/**
 	 * 清理日志文件
 	 * @param string $logName
+	 * @return bool
 	 */
 	public function clear($logName)
 	{
@@ -126,6 +133,7 @@ class Log extends ServiceBase
 	/**
 	 * 删除日志（目录）
 	 * @param string $logName
+	 * @return bool
 	 */
 	public function del($logName)
 	{
@@ -136,6 +144,7 @@ class Log extends ServiceBase
 	/**
 	 * 清空最近日志文件内容
 	 * @param string $logName
+	 * @return bool|int|void
 	 */
 	public function flush($logName)
 	{
@@ -155,8 +164,9 @@ class Log extends ServiceBase
 
 	/**
 	 * 获取最近日志文件
-	 * @param string  $logName
+	 * @param $logName
 	 * @param bool $create
+	 * @return bool|mixed|string
 	 */
 	protected function _getLastLogFile($logName, $create = true)
 	{
@@ -189,7 +199,8 @@ class Log extends ServiceBase
 
 	/**
 	 * 新建日志文件
-	 * @param string $logName
+	 * @param $logName
+	 * @return bool|mixed|string
 	 */
 	protected function _createLogFile($logName)
 	{

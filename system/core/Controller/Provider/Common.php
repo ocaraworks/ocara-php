@@ -11,6 +11,7 @@ namespace Ocara\Controller\Provider;
 use Ocara\Request;
 use Ocara\Response;
 use Ocara\Error;
+use Ocara\Interfaces\Event;
 use Ocara\Model\Database as DatabaseModel;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -149,8 +150,9 @@ class Common extends Base
      * 新建表单后处理
      * @param $name
      * @param $form
+     * @param Event $event
      */
-    public function afterCreateForm($event, $name, $form)
+    public function afterCreateForm($name, $form, Event $event = null)
     {
         $this->view->assign($name, $form);
     }

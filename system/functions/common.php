@@ -15,7 +15,7 @@ use Ocara\Request;
 defined('OC_PATH') or exit('Forbidden!');
 
 /**
- * 使用CURL扩展获取远程内容
+ * 替换空白字符
  * @param string $string
  * @param string $replace
  * @return mixed
