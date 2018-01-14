@@ -46,7 +46,7 @@ class DatabaseBase extends Sql
 		$options = array(
 			'host', 'port', 'type', 'class', 'pconnect',
 			'name', 'username', 'prefix', 'charset',
-			'timeout', 'socket', 'options', 'keywords',
+			'timeout', 'socket', 'options', 'keywords', 'isPdo'
 		);
 
 		$values = array_fill(0, count($options), OC_EMPTY);
@@ -62,11 +62,14 @@ class DatabaseBase extends Sql
 		if (empty($config['options'])) {
 			$config['options'] = array();
 		}
-		if (empty($config['prepare'])) {
+		if (!isset($config['prepare'])) {
 			$config['prepare'] = true;
 		}
-		if (empty($config['pconnect'])) {
+		if (!isset($config['pconnect'])) {
 			$config['pconnect'] = false;
+		}
+		if (!isset($config['isPdo'])) {
+			$config['isPdo'] = true;
 		}
 		if (empty($config['keywords'])) {
 			$config['keywords'] = array();
@@ -143,7 +146,7 @@ class DatabaseBase extends Sql
 	 */
 	public function getDriver(array $data)
 	{
-		if (ocCheckExtension($this->_pdoName, false)) {
+		if ($this->_config['isPdo'] && ocCheckExtension($this->_pdoName, false)) {
 			$object = $this->loadDatabase('Pdo');
 			$object->init($this->getPdoParams($data));
 		} else {
@@ -599,7 +602,7 @@ class DatabaseBase extends Sql
 	 */
 	protected function _bindParams(array $params)
 	{
-		$types = false;
+		$types = OC_EMPTY;
 		$data = array();
 		$paramData = array();
 		$bindValues = array();
@@ -626,7 +629,7 @@ class DatabaseBase extends Sql
 			}
 		}
 
-		if (!$this->_isPdo) {
+		if (!$this->_isPdo && $types) {
 			array_unshift($data, $types);
 			call_user_func_array(array($this->_plugin, 'bind_param'), $data);
 		}
