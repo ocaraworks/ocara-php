@@ -379,28 +379,6 @@ class MysqliDriver extends DriverBase implements DriverInterface
 	}
 
 	/**
-	 * 设置绑参查询的结果集
-	 * @param $resultObj
-	 */
-	private function _set_record_set($resultObj)
-	{
-		while ($field = $resultObj->fetch_field()) {
-			$params[] = &$row[$field->name];
-		}
-
-		call_user_func_array(array($this->_stmt, 'bind_result'), $params);
-		$this->_recordSet = array();
-
-		while ($this->_stmt->fetch()) {
-			$data = array();
-			foreach ($row as $key => $value) {
-				$data[$key] = $value;
-			}
-			$this->_recordSet[] = $data;
-		}
-	}
-
-	/**
 	 * 未知方法调用的处理
 	 * @param string $name
 	 * @param array $params

@@ -198,6 +198,14 @@ class PdoDriver extends DriverBase implements DriverInterface
 	/**
 	 * @return mixed
 	 */
+	public function fetch_object()
+	{
+		return $this->_stmt->fetchObject();
+	}
+
+	/**
+	 * @return mixed
+	 */
 	public function fetch_assoc()
 	{
 		return $this->_stmt->fetchAll();;
@@ -209,14 +217,6 @@ class PdoDriver extends DriverBase implements DriverInterface
 	public function fetch_row()
 	{
 		return $this->_stmt->fetch();
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function fetch_object()
-	{
-		return $this->_stmt->fetchObject();
 	}
 
 	public function free_result()
