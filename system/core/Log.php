@@ -48,6 +48,7 @@ class Log extends Base
         }
 
         $format = ocConfig('LOG.format', '[{type}]|{time}|{message}', true);
+        $message = trim($message);
         $content = ocSprintf($format, compact('type', 'time', 'message'));
 
         if ($traceInfo) {
