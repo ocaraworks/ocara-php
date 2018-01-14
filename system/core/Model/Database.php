@@ -176,11 +176,7 @@ abstract class Database extends ModelBase
 	 */
 	public static function getModelConfig($class)
 	{
-		$modelConfig['JOIN'] = array();
-		$modelConfig['MAP'] = array();
-		$modelConfig['VALIDATE'] = array();
-		$modelConfig['LANG'] = array();
-
+		$modelConfig = array_fill_keys(array('JOIN', 'MAP', 'VALIDATE', 'LANG'), array());
 		$filePath = self::getConfigPath($class);
 
 		if (ocFileExists($path = ocPath('conf', "model/{$filePath}"))) {

@@ -23,11 +23,12 @@ abstract class Basis
 
 	/**
 	 * 实例化
+	 * @param mixed $params
 	 * @return static
 	 */
-	public static function build()
+	public static function build($params = null)
 	{
-		return new static();
+		return call_user_func_array('ocClass', array(self::getClass(), func_get_args()));
 	}
 
 	/**

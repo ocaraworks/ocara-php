@@ -277,8 +277,7 @@ class Url extends Base
 		);
 
 		if ($url) {
-			$values = array_fill(0, 7, null);
-			$data  = array_combine($fields, $values);
+			$data  = array_fill_keys($fields, null);
 			$data  = array_merge($data, parse_url($url));
 		} else {
 			$values = array(

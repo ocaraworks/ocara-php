@@ -12,6 +12,7 @@ use Ocara\Request;
 use Ocara\Develop;
 use Ocara\Service\File;
 use Ocara\Service\FileCache;
+use Ocara\Database;
 
 class model_admin
 {
@@ -53,6 +54,27 @@ class model_admin
 		$namespace = OC_NS_SEP . $connect;
 		$modelName = ucfirst($this->_model);
 
+		if (empty($this->_table)) {
+			Develop::error(Develop::back('请填写表名！'));
+		}
+
+		if (empty($this->_primaries)) {
+			$connect = Database::create($this->_connect);
+			$fields = $connect->getFields($this->_table);
+			$primaryFields = array();
+			foreach ($fields as $fieldName => $fieldInfo) {
+				if ($fieldInfo['isPrimary']) {
+					$primaryFields[] = $fieldName;
+				}
+			}
+			if ($primaryFields) {
+				$this->_primaries = implode(',', $primaryFields);
+			}
+			if (empty($this->_primaries)) {
+				Develop::error(Develop::back('系统找不到该数据表的主键，请填写主键字段！'));
+			}
+		}
+
 		$content = "<?php\r\n";
 		$content .= "namespace Model{$namespace};\r\n";
 		$content .= "use Model\\{$connectBase};\r\n";
@@ -73,10 +95,6 @@ class model_admin
 
 		if (!is_dir($modelPath = OC_APPLICATION_PATH . "model/")) {
 			@mkdir($modelPath);
-		}
-
-		if (empty($this->_table) || empty($this->_primaries)) {
-			Develop::error(Develop::back('请填满信息！'));
 		}
 
 		$modelPath = $modelPath . $connectPath;

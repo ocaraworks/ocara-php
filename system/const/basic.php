@@ -30,6 +30,12 @@ define('OC_QUOTE', "'");
 //Ocara SQL标记
 define('OC_SQL_TAG', '{oc_sql_tag}');
 
+//TRUE整型值
+define('OC_TRUE', 1);
+
+//FALSE整型值
+define('OC_FALSE', 0);
+
 /*
  * 服务器信息常量
  */

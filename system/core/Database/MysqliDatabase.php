@@ -90,6 +90,9 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 			} else {
 				$fieldRow['lang'] = ocHump($fieldRow['name'], OC_SPACE);
 			}
+			$fieldRow['isNull'] = $row['Null'] == 'NO' ? OC_FALSE : OC_TRUE;
+			$fieldRow['isPrimary'] = $row['Key'] == 'PRI' ? OC_TRUE : OC_FALSE;
+			$fieldRow['defaultValue'] = (string)$row['Default'];
 			$fields[$row['Field']] = $fieldRow;
 		}
 
