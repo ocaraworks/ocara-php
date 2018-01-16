@@ -35,10 +35,10 @@ class fields_admin
 		}
 
 		$model = new $modelClass();
-		$server = $model->getServer();
+		$connectName = $model->getConnectName();
 		$database = $model->getDatabase();
 
-		$serverPath = $server . OC_DIR_SEP;
+		$serverPath = $connectName . OC_DIR_SEP;
 		$dbPath = $database ? $database . OC_DIR_SEP : OC_EMPTY;
 		$modelFile = implode(OC_DIR_SEP, array_map('lcfirst', explode(OC_NS_SEP, $modelSubPath)));
 

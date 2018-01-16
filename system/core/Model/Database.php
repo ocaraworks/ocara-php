@@ -30,7 +30,7 @@ abstract class Database extends ModelBase
 	protected $_plugin;
 	protected $_primary;
 	protected $_table;
-	protected $_server;
+	protected $_connectName;
 	protected $_dataType;
 	protected $_fields;
 	protected $_alias;
@@ -129,9 +129,9 @@ abstract class Database extends ModelBase
 	 * 获取当前服务器
 	 * @return mixed
 	 */
-	public function getServer()
+	public function getConnectName()
 	{
-		return $this->_server;
+		return $this->_connectName;
 	}
 
 	/**
@@ -1073,14 +1073,14 @@ abstract class Database extends ModelBase
 
 		if (!($master || ocGet('option.master', $this->_sql))) {
 			if (!is_object($this->_slave)) {
-				$this->_slave = DatabaseFactory::create($this->_server, false, false);
+				$this->_slave = DatabaseFactory::create($this->_connectName, false, false);
 			}
 			$this->_plugin = $this->_slave;
 		}
 
 		if (!is_object($this->_plugin)) {
 			if (!is_object($this->_master)) {
-				$this->_master = DatabaseFactory::create($this->_server);
+				$this->_master = DatabaseFactory::create($this->_connectName);
 			}
 			$this->_plugin = $this->_master;
 		}

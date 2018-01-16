@@ -20,25 +20,25 @@ final class Database extends Base
 
 	/**
 	 * 获取数据库实例
-	 * @param string $server
+	 * @param string $connectName
 	 * @param bool $master
 	 * @param bool $required
 	 * @return null
 	 * @throws Exception\Exception
 	 */
-	public static function create($server = null, $master = true, $required = true)
+	public static function create($connectName = null, $master = true, $required = true)
 	{
-		if (empty($server)) {
-			$server = 'main';
+		if (empty($connectName)) {
+			$connectName = 'main';
 		}
 
-		$database = self::_getDatabase($server, $master);
+		$database = self::_getDatabase($connectName, $master);
 		if (is_object($database) && $database instanceof DatabaseBase) {
 			return $database;
 		}
 
 		if ($required) {
-			Error::show('not_exists_database', array($server));
+			Error::show('not_exists_database', array($connectName));
 		}
 
 		return $database;
@@ -46,17 +46,17 @@ final class Database extends Base
 
 	/**
 	 * 获取数据库对象
-	 * @param string $server
+	 * @param string $connectName
 	 * @param bool $master
 	 * @return null
 	 */
-	private static function _getDatabase($server, $master = true)
+	private static function _getDatabase($connectName, $master = true)
 	{
 		$object = null;
-		$config = self::getConfig($server);
+		$config = self::getConfig($connectName);
 		$index = $master ? 0 : 1;
 		$hosts = ocForceArray(ocDel($config, 'host'));
-		$connectName = $server . '_' . $index;
+		$connectName = $connectName . '_' . $index;
 
 		if (isset($hosts[$index]) && $hosts[$index]) {
 			$address = array_map('trim', explode(':', $hosts[$index]));
@@ -73,23 +73,23 @@ final class Database extends Base
 
 	/**
 	 * 获取数据库配置信息
-	 * @param string $server
+	 * @param string $connectName
 	 * @return array|bool|mixed|null
 	 */
-	public static function getConfig($server = null)
+	public static function getConfig($connectName = null)
 	{
-		if (empty($server)) {
-			$server = 'main';
+		if (empty($connectName)) {
+			$connectName = 'main';
 		}
 
 		$config = array();
 
 		if ($callback = ocConfig('CALLBACK.database.get_config', null)) {
-			$config = Call::run($callback, array($server));
+			$config = Call::run($callback, array($connectName));
 		}
 
 		if (empty($config)) {
-			$config = ocForceArray(ocConfig("DATABASE.{$server}"));
+			$config = ocForceArray(ocConfig("DATABASE.{$connectName}"));
 		}
 
 		return $config;

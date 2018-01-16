@@ -20,7 +20,7 @@ abstract class Cache extends ModelBase
     protected $_tag;
     protected $_master;
     protected $_slave;
-    protected $_server;
+    protected $_connectName;
 
     /**
      * Model constructor.
@@ -57,9 +57,9 @@ abstract class Cache extends ModelBase
      * 获取当前服务器
      * @return mixed
      */
-    public function getServer()
+    public function getConnectName()
     {
-        return $this->_server;
+        return $this->_connectName;
     }
 
     /**
@@ -73,14 +73,14 @@ abstract class Cache extends ModelBase
 
         if (!$master) {
             if (!is_object($this->_slave)) {
-                $this->_slave = CacheFactory::create($this->_server, false, false);
+                $this->_slave = CacheFactory::create($this->_connectName, false, false);
             }
             $this->_plugin = $this->_slave;
         }
 
         if (!is_object($this->_plugin)) {
             if (!is_object($this->_master)) {
-                $this->_master = CacheFactory::create($this->_server);
+                $this->_master = CacheFactory::create($this->_connectName);
             }
             $this->_plugin = $this->_master;
         }
@@ -90,7 +90,6 @@ abstract class Cache extends ModelBase
         }
 
         $this->_plugin->setDataType($this->_dataType);
-
         return $this->_plugin;
     }
 }

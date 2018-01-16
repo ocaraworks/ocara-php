@@ -20,45 +20,45 @@ final class Cache extends Base
 
 	/**
 	 * 新建缓存实例
-	 * @param string $server
+	 * @param string $connectName
 	 * @param bool $required
 	 * @return null
 	 */
-	public static function create($server = 'main', $required = true)
+	public static function create($connectName = 'main', $required = true)
 	{
-		if (empty($server)) {
-			$server = 'main';
+		if (empty($connectName)) {
+			$connectName = 'main';
 		}
 
-		$object = self::_connect($server, $required);
+		$object = self::_connect($connectName, $required);
 		if (is_object($object) && $object instanceof CacheBase) {
 			return $object;
 		}
 
 		return Error::check(
-			'not_exists_cache', array($server), $required
+			'not_exists_cache', array($connectName), $required
 		);
 	}
 
 	/**
 	 * 获取配置信息
-	 * @param null $server
+	 * @param null $connectName
 	 * @return array|bool|mixed|null
 	 */
-	public static function getConfig($server = null)
+	public static function getConfig($connectName = null)
 	{
-		if (empty($server)) {
-			$server = 'main';
+		if (empty($connectName)) {
+			$connectName = 'main';
 		}
 
 		$config = array();
 
 		if ($callback = ocConfig('CALLBACK.cache.get_config', null)) {
-			$config = Call::run($callback, array($server));
+			$config = Call::run($callback, array($connectName));
 		}
 
 		if (empty($config)) {
-			$config = ocForceArray(ocConfig("CACHE.{$server}"));
+			$config = ocForceArray(ocConfig("CACHE.{$connectName}"));
 		}
 
 		return $config;
@@ -66,13 +66,13 @@ final class Cache extends Base
 	
 	/**
 	 * 连接缓存
-	 * @param string $server
+	 * @param string $connectName
 	 * @param bool $required
 	 */
-	private static function _connect($server, $required = true)
+	private static function _connect($connectName, $required = true)
 	{
-		$config = self::getConfig($server);
-		$type = ucfirst(ocConfig('CACHE.' . $server . '.type'));
+		$config = self::getConfig($connectName);
+		$type = ucfirst(ocConfig('CACHE.' . $connectName . '.type'));
 
 		$classInfo = ServiceBase::classFileExists("Cache/{$type}.php");
 		if ($classInfo) {
@@ -80,7 +80,7 @@ final class Cache extends Base
 			include_once($path);
 			$class  = $namespace . 'Cache' . OC_NS_SEP . $type;
 			if (class_exists($class, false)) {
-				$config['connect_name'] = $server;
+				$config['connect_name'] = $connectName;
 				$object = new $class($config, $required);
 				return $object;
 			}

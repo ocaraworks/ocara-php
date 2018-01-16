@@ -17,7 +17,7 @@ use Ocara\Database;
 class model_admin
 {
 	private $_modelType;
-	private $_connect;
+	private $_connectName;
 	private $_table;
 	private $_model;
 	private $_database;
@@ -26,7 +26,7 @@ class model_admin
 	public function add()
 	{
 		$this->_modelType = Request::getPost('modelType');
-		$this->_connect = Request::getPost('connect', 'main');
+		$this->_connectName = Request::getPost('connect', 'main');
 		$this->_table = Request::getPost('table');
 		$this->_model = Request::getPost('model');
 		$this->_primaries = Request::getPost('primaries');
@@ -39,7 +39,7 @@ class model_admin
 			$this->createDatabaseModel();
 		} elseif ($this->_modelType == 'Cache') {
 			if (empty($this->_model)) {
-				$this->_model = $this->_connect;
+				$this->_model = $this->_connectName;
 			}
 			$this->createCacheModel();
 		}
@@ -47,7 +47,7 @@ class model_admin
 
 	public function createDatabaseModel()
 	{
-		$connect = ucfirst($this->_connect);
+		$connect = ucfirst($this->_connectName);
 		$connectBase = $connect . 'Base';
 		$connectPath = $connect . OC_DIR_SEP;
 
@@ -59,7 +59,7 @@ class model_admin
 		}
 
 		if (empty($this->_primaries)) {
-			$connect = Database::create($this->_connect);
+			$connect = Database::create($this->_connectName);
 			$fields = $connect->getFields($this->_table);
 			$primaryFields = array();
 			foreach ($fields as $fieldName => $fieldInfo) {
@@ -82,7 +82,7 @@ class model_admin
 		$content .= "class {$modelName} extends {$connectBase}\r\n";
 		$content .= "{\r\n";
 
-		$content .= "\tprotected \$_connect = '{$this->_connect}';\r\n";
+		$content .= "\tprotected \$_connectName = '{$this->_connectName}';\r\n";
 		$content .= "\tprotected \$_database = '{$this->_database}';\r\n";
 		$content .= "\tprotected \$_table = '{$this->_table}';\r\n";
 		$content .= "\tprotected \$_primary = '{$this->_primaries}';\r\n";
@@ -154,7 +154,7 @@ class model_admin
 
 	public function createCacheModel()
 	{
-		$cacheType = ucfirst(strtolower(ocConfig(array('CACHE', $this->_connect, 'type'))));
+		$cacheType = ucfirst(strtolower(ocConfig(array('CACHE', $this->_connectName, 'type'))));
 
 		if (!in_array($cacheType, array('Redis', 'Memcache'))) {
 			Develop::error(Develop::back('缓存配置类型非法！'));
@@ -175,7 +175,7 @@ class model_admin
 		$content .= "\r\n";
 		$content .= "class {$modelName} extends {$baseModel}\r\n";
 		$content .= "{\r\n";
-		$content .= "\tprotected \$_connect = '{$this->_connect}';\r\n";
+		$content .= "\tprotected \$_connectName = '{$this->_connectName}';\r\n";
 
 		if ($cacheType != 'Memcache') {
 			$content .= "\tprotected \$_database = '{$this->_database}';\r\n";

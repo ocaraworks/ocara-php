@@ -12,7 +12,7 @@
 </div>
 
 <div>
-<span class="left-span">数据库连接名：</span>
+<span class="left-span">数据库连接配置名：</span>
 <input type="text" name="connect" id="connect" value="main">
 </div>
 
