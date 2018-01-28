@@ -110,12 +110,14 @@ class StaticPath extends Base
 	}
 
 	/**
-	 * 获取参数数据路径 
+	 * 获取参数数据路径
 	 * @param array $params
 	 * @param string $module
 	 * @param string $controller
 	 * @param string $action
 	 * @param array $data
+	 * @return array
+	 * @throws Exception\Exception\
 	 */
 	public function getParamsPathMap($params, $module, $controller, $action, $data)
 	{
@@ -145,6 +147,8 @@ class StaticPath extends Base
 	 * @param string $module
 	 * @param string $controller
 	 * @param string $action
+	 * @return string
+	 * @throws Exception\Exception
 	 */
 	public function getMvcPathMap($module, $controller, $action)
 	{

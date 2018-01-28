@@ -12,22 +12,22 @@ class Font extends Base
 {
     /**
      * 获取字体路径
-     * @param null|string $font
+     * @param null|string $name
      * @return bool|mixed|string
      * @throws Exception\Exception
      */
-    public function get($font)
+    public function get($name)
     {
-        if ($font) {
-            if (!preg_match('/^.*\.\w{2,5}$/i', $font)) {
-                $font = $font . '.ttf';
+        if ($name) {
+            if (!preg_match('/^.*\.\w{2,5}$/i', $name)) {
+                $name = $name . '.ttf';
             }
         } else {
-            $font = ocConfig('DEFAULT_FONT', 'simhei.ttf');
+            $name = ocConfig('DEFAULT_FONT', 'simhei.ttf');
         }
 
-        if (($path = ocFileExists(OC_SYS . 'data/fonts/' . $font, true)) or
-            ($path = ocFileExists(OC_EXT . 'data/fonts/' . $font, true))
+        if (($path = ocFileExists(OC_SYS . 'data/fonts/' . $name, true)) or
+            ($path = ocFileExists(OC_EXT . 'data/fonts/' . $name, true))
         ) return $path;
 
         Error::show('not_exists_font');
