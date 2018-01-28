@@ -131,7 +131,7 @@ class FormToken extends Base
 		$route = $this->getRoute();
 		$routeStr = implode(OC_EMPTY, $route);
 
-		if ($config = ocConfig('EVENT.form.generate_token', null)) {
+		if ($config = ocConfig('SOURCE.form.generate_token', null)) {
 			$token = Ocara::services()->call->run($config, array($tag, $formName, $route));
 		} else {
 			$token = md5($routeStr . $formName . md5(Code::getRand(5)) . uniqid(mt_rand()));

@@ -30,7 +30,7 @@ class Controller extends serviceProvider implements ControllerInterface
 		$this->_provider->init();
 		$this->_provider->bindEvents($this);
 
-		$this->config->set('EVENT.ajax.return_result', array($this->_provider, 'formatAjaxResult'));
+		$this->config->set('SOURCE.ajax.return_result', array($this->_provider, 'formatAjaxResult'));
 
 		method_exists($this, '_start') && $this->_start();
 		method_exists($this, '_module') && $this->_module();

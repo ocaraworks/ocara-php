@@ -17,5 +17,5 @@ interface Middleware
 	 * @param array $params
 	 * @return mixed
 	 */
-	public function handler(array $params);
+	public function handler(array $params = array());
 }

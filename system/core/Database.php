@@ -84,7 +84,7 @@ final class Database extends Base
 
 		$config = array();
 
-		if ($callback = ocConfig('EVENT.database.get_config', null)) {
+		if ($callback = ocConfig('SOURCE.database.get_config', null)) {
 			$config = Ocara::services()->call->run($callback, array($connectName));
 		}
 

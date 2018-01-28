@@ -45,7 +45,7 @@ class Ajax extends Base
 		$result['message'] 	= $message['message'];
 		$result['body']    	= $body;
 
-		if ($callback = ocConfig('EVENT.ajax.return_result', null)) {
+		if ($callback = ocConfig('SOURCE.ajax.return_result', null)) {
 			$result = Ocara::services()->call->run($callback, array($result));
 		}
 

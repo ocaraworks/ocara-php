@@ -8,6 +8,15 @@
  ************************************************************************************************/
 namespace Ocara;
 
-class Resource extends Base
+use Ocara\Interfaces\Middleware;
+
+class Resource implements Middleware
 {
+    /**
+     * 处理函数
+     * @param array $params
+     * @return mixed
+     */
+    public function handler(array $params = array())
+    {}
 }
