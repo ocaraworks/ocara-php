@@ -8,10 +8,9 @@
  ************************************************************************************************/
 namespace Ocara\Controller\Provider;
 
-use Ocara\Request;
+use Ocara\Ocara;
 use Ocara\Response;
 use Ocara\Error;
-use Ocara\Lang;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -28,7 +27,7 @@ class Rest extends Base
      */
     public function init()
     {
-        Request::setAjax();
+        Ocara::services()->request->setAjax();
 
         $this->response->setContentType(ocConfig('CONTROLLERS.rest.content_type','json'));
         $this->session->init();
@@ -72,9 +71,9 @@ class Rest extends Base
 
         if (is_array($message)) {
             list($text, $params) = $message;
-            $message = Lang::get($text, $params);
+            $message = Ocara::services()->lang->get($text, $params);
         } else {
-            $message = Lang::get($message);
+            $message = Ocara::services()->lang->get($message);
         }
 
         $this->view->output(compact('contentType', 'message', 'data'));
@@ -88,7 +87,7 @@ class Rest extends Base
      */
     public function getRequestId()
     {
-        return Request::getGet(ocConfig('CONTROLLERS.rest.id_param', 'id'));
+        return Ocara::services()->request->getGet(ocConfig('CONTROLLERS.rest.id_param', 'id'));
     }
 
     /**

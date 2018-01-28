@@ -12,23 +12,15 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Filter extends Base
 {
+	protected $_jsEvents;
+
 	/**
-	 * 单例模式
+	 * 初始化
+	 * Filter constructor.
 	 */
-	private static $_instance = null;
-
-	public static $_jsEvents;
-	
-	private function __clone(){}
-	private function __construct(){}
-
-	public static function getInstance()
+	public function __construct()
 	{
-		if (self::$_instance === null) {
-			self::$_instance = new self();
-			self::_getEvents();
-		}
-		return self::$_instance;
+		$this->_jsEvents = implode('|', ocConfig('JS_EVENTS', array()));
 	}
 
 	/**
@@ -37,8 +29,9 @@ class Filter extends Base
 	 * @param bool $addSlashes
 	 * @param array $keywords
 	 * @param bool $equal
+	 * @return array|bool|mixed|string
 	 */
-	public static function sql($content, $addSlashes = true, array $keywords = array(), $equal = false)
+	public function sql($content, $addSlashes = true, array $keywords = array(), $equal = false)
 	{
 		if (is_array($content)) {
 			return array_map(__METHOD__, $content);
@@ -50,24 +43,26 @@ class Filter extends Base
 					$content = str_ireplace($keywords, OC_EMPTY, (string)$content);
 				}
 			}
-			return $addSlashes ? self::addSlashes($content) : $content;
+			return $addSlashes ? $this->addSlashes($content) : $content;
 		}
 	}
 
 	/**
 	 * 过滤内容
 	 * @param string|array $content
+	 * @return array|mixed|string
 	 */
-	public static function content($content)
+	public function content($content)
 	{
-		return self::html(self::script($content));
+		return $this->html($this->script($content));
 	}
-	
+
 	/**
 	 * 过滤HTML
 	 * @param string|array $content
+	 * @return array|mixed|string
 	 */
-	public static function html($content)
+	public function html($content)
 	{
 		if (is_array($content)) {
 			return array_map(__METHOD__, $content);
@@ -85,8 +80,9 @@ class Filter extends Base
 	/**
 	 * 过滤PHP标签
 	 * @param string|array $content
+	 * @return array|mixed
 	 */
-	public static function php($content)
+	public function php($content)
 	{
 		if (is_array($content)) {
 			return array_map(__METHOD__, $content);
@@ -102,8 +98,9 @@ class Filter extends Base
 	/**
 	 * 过滤脚本
 	 * @param string|array $content
+	 * @return array|mixed
 	 */
-	public static function script($content)
+	public function script($content)
 	{
 		if (is_array($content)) {
 			return array_map(__METHOD__, $content);
@@ -113,9 +110,9 @@ class Filter extends Base
 			$content = preg_replace('/<noframes[^>]*>.*<\/norame>/i', OC_EMPTY, $content);
 			$content = preg_replace('/<object[^>]*>.*<\/object>/i', OC_EMPTY, $content);
 			$content = preg_replace('/javascript:/i', OC_EMPTY, $content);
-			self::_getEvents();
+			$this->_getEvents();
 
-			$expression = '/(on('.self::$_jsEvents.'))|(('.self::$_jsEvents.')\((\s*function\()?)/i';
+			$expression = '/(on('.$this->_jsEvents.'))|(('.$this->_jsEvents.')\((\s*function\()?)/i';
 			$content = preg_replace($expression, OC_EMPTY, $content);
 			
 			return $content;
@@ -125,8 +122,9 @@ class Filter extends Base
 	/**
 	 * 过滤路径
 	 * @param string|array $path
+	 * @return array|mixed
 	 */
-	public static function path($path)
+	public function path($path)
 	{
 		if (is_array($path)) {
 			return array_map(__METHOD__, $path);
@@ -142,21 +140,23 @@ class Filter extends Base
 	/**
 	 * 过滤Request来的数据
 	 * @param string|array $content
+	 * @return array|string
 	 */
-	public static function request($content)
+	public function request($content)
 	{
 		if (is_array($content)) {
 			return array_map(__METHOD__, $content);
 		} else {
-			return addslashes(self::content($content));
+			return addslashes($this->content($content));
 		}
 	}
 
 	/**
 	 * 过滤掉空白字符
 	 * @param string|array $content
+	 * @return array|mixed
 	 */
-	public static function space($content)
+	public function space($content)
 	{
 		if (is_array($content)) {
 			return array_map(__METHOD__, $content);
@@ -168,9 +168,10 @@ class Filter extends Base
 	/**
 	 * 将空白字符全替换掉
 	 * @param string $str
-	 * @param bool $replace
+	 * @param string $replace
+	 * @return mixed
 	 */
-	public static function replaceSpace($str, $replace = OC_SPACE)
+	public function replaceSpace($str, $replace = OC_SPACE)
 	{
 		return preg_replace('/\s+/', $replace, $str);
 	}
@@ -178,8 +179,9 @@ class Filter extends Base
 	/**
 	 * 清除UTF-8下字符串的BOM字符
 	 * @param string $content
+	 * @return array|string
 	 */
-	public static function bom($content)
+	public function bom($content)
 	{
 		if (is_array($content)) {
 			return array_map(__METHOD__, $content);
@@ -190,12 +192,13 @@ class Filter extends Base
 			return $content;
 		}
 	}
-	
+
 	/**
 	 * 转义
 	 * @param string|array $content
+	 * @return array|string
 	 */
-	public static function addSlashes($content)
+	public function addSlashes($content)
 	{
 		if (is_array($content)) {
 			return array_map(__METHOD__, $content);
@@ -207,8 +210,9 @@ class Filter extends Base
 	/**
 	 * 去除转义
 	 * @param string|array $content
+	 * @return array|string
 	 */
-	public static function stripSlashes($content)
+	public function stripSlashes($content)
 	{
 		if (is_array($content)) {
 			return array_map(__METHOD__, $content);
@@ -216,32 +220,18 @@ class Filter extends Base
 			return stripslashes($content);
 		}
 	}
-	
+
 	/**
 	 * 去除换行符
 	 * @param string|array $content
+	 * @return array|mixed
 	 */
-	public static function rn($content) 
+	public function rn($content) 
 	{
 		if (is_array($content)) {
 			return array_map(__METHOD__, $content);
 		} else {
 			return str_replace(array("\r\n", "\r", "\n"), OC_EMPTY, $content);
 		}
-	}
-
-	/**
-	 * 获取JS事件关键字
-	 */
-	private static function _getEvents()
-	{
-		$events = array(
-			'click', 	'dbclick',    'change', 	'load', 	 'focus', 	 
-			'mouseout', 'mouseover',  'mousedown', 	'mousemove', 'mouseup', 
-			'submit',	'keyup', 	  'keypress',   'keydown',  'error',
-			'abort', 	'resize', 	  'reset', 	  	'select', 	 'unload'
-		);
-		
-		self::$_jsEvents = implode('|', $events);
 	}
 }

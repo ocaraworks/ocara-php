@@ -12,23 +12,8 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Transaction extends Base
 {
-	/**
-	 * 单例模式
-	 */
-	private static $_instance = null;
 	private $_count = 0;
 	private $_list = array();
-
-	private function __clone(){}
-	private function __construct(){}
-
-	public static function getInstance()
-	{
-		if (self::$_instance === null) {
-			self::$_instance = new static();
-		}
-		return self::$_instance;
-	}
 
 	/**
 	 * 推入数据库

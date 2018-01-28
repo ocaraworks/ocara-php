@@ -12,25 +12,8 @@ use Ocara\Exception\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Call extends Base
+class Call extends Base
 {
-
-	/**
-	 * 单例模式
-	 */
-	private static $_instance = null;
-
-	private function __clone(){}
-	private function __construct(){}
-
-	public static function getInstance()
-	{
-		if (self::$_instance === null) {
-			self::$_instance = new self();
-		}
-		return self::$_instance;
-	}
-
 	/**
 	 * 运行函数、类方法或路由，返回值
 	 * @param mixed $route
@@ -40,18 +23,18 @@ final class Call extends Base
 	 * @return bool|mixed|null
 	 * @throws Exception
 	 */
-	public static function run($route, array $params = array(), $return = true,$required = false)
+	public function run($route, array $params = array(), $return = true,$required = false)
 	{
 		if (empty($route)) return true;
 
 		if (is_string($route)) {
-			return self::_runByString($route, $params, $return);
+			return $this->_runByString($route, $params, $return);
 		} elseif (is_array($route)) {
-			return self::_runByArray($route, $params, $return);
+			return $this->_runByArray($route, $params, $return);
 		}
 
 		if ($required) {
-			self::_throwError('invalid_call_func');
+			$this->_throwError('invalid_call_func');
 		}
 
 		return null;
@@ -64,7 +47,7 @@ final class Call extends Base
 	 * @param bool $return
 	 * @return mixed
 	 */
-	private static function _runByString($route, array $params = array(), $return = true)
+	protected function _runByString($route, array $params = array(), $return = true)
 	{
 		if (preg_match('/^\/?\w+(\/\w+)+$/', $route, $mt)) {
 			$route = Ocara::parseRoute($route);
@@ -81,18 +64,18 @@ final class Call extends Base
 	 * @return mixed
 	 * @throws Exception
 	 */
-	private static function _runByArray(array $route, array $params)
+	protected function _runByArray(array $route, array $params)
 	{
 		$route = array_values($route);
 
 		if (count($route) < 2) {
-			self::_throwError('invalid_call_func');
+			$this->_throwError('invalid_call_func');
 		} else {
 			if (is_object($route[0])) {
 				if (method_exists($route[0], $route[1])) {
 					return call_user_func_array($route, $params);
 				}
-				self::_throwError('not_exists_method', array($route[1]));
+				$this->_throwError('not_exists_method', array($route[1]));
 			} else {
 				return call_user_func_array($route, $params);
 			}
@@ -105,9 +88,9 @@ final class Call extends Base
 	 * @param array $params
 	 * @throws Exception
 	 */
-	private static function _throwError($error, array $params = array())
+	protected function _throwError($error, array $params = array())
 	{
-		$error = Lang::get($error, $params);
+		$error = Ocara::services()->lang->get($error, $params);
 		throw new Exception($error['message'], $error['code']);
 	}
 }

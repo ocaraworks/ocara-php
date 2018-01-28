@@ -15,10 +15,10 @@ abstract class Basis
 	/**
 	 * @var $_properties 自定义属性
 	 */
-	private $_properties = array();
-
 	protected $_event;
+
 	protected $_events = array();
+	protected $_properties = array();
 	protected $_traits = array();
 
 	/**
@@ -36,10 +36,10 @@ abstract class Basis
 	 * @param string $name
 	 * @return array
 	 */
-	public function &getProperty($name = null)
+	public function &get($name = null)
 	{
 		if (func_num_args()) {
-			if ($this->hasProperty($name)) {
+			if ($this->has($name)) {
 				return $this->_properties[$name];
 			}
 			return $this->$name;
@@ -52,7 +52,7 @@ abstract class Basis
 	 * @param string $name
 	 * @param mixed $value
 	 */
-	public function setProperty($name, $value = null)
+	public function set($name, $value = null)
 	{
 		if (is_array($name)) {
 			$this->_properties = array_merge($this->_properties, $name);
@@ -66,7 +66,7 @@ abstract class Basis
 	 * @param string $name
 	 * @return bool
 	 */
-	public function hasProperty($name)
+	public function has($name)
 	{
 		return array_key_exists($name, $this->_properties);
 	}
@@ -74,7 +74,7 @@ abstract class Basis
 	/**
 	 * 清理自定义属性
 	 */
-	public function clearProperty()
+	public function clear()
 	{
 		$this->_properties = array();
 	}
@@ -209,7 +209,11 @@ abstract class Basis
 			return $this->_properties[$key];
 		}
 
-		Error::show('no_property', array($key));
+		if (method_exists($this, '__none')) {
+			$this->__none($key);
+		} else {
+			Error::show('no_property', array($key));
+		}
 	}
 
 	/**

@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Ocara;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 class Session extends Base
@@ -17,38 +19,18 @@ class Session extends Base
 	const SAVE_TYPE_CACHE    = 3;
 
 	/**
-	 * 单例模式
-	 */
-	private static $_instance;
-
-	private function __clone(){}
-	private function __construct(){}
-
-	/**
-	 * 获取类对象
-	 * @return Session
-	 */
-	public static function getInstance()
-	{
-		if (self::$_instance === null) {
-			self::$_instance = new self();
-		}
-		return self::$_instance;
-	}
-
-	/**
 	 * Session初始化处理
 	 * @param $start
 	 */
-	public static function init($start = true)
+	public function init($start = true)
 	{
-		$saveType = ocConfig('SESSION.save_type', Session::SAVE_TYPE_FILE);
+		$saveType = ocConfig('SESSION.save_type', self::SAVE_TYPE_FILE);
 
-		if ($saveType == Session::SAVE_TYPE_FILE) {
+		if ($saveType == self::SAVE_TYPE_FILE) {
 			$class = 'Ocara\Session\SessionFile';
-		} elseif ($saveType == Session::SAVE_TYPE_DATABASE) {
+		} elseif ($saveType == self::SAVE_TYPE_DATABASE) {
 			$class  = 'Ocara\Session\SessionDB';
-		} elseif ($saveType == Session::SAVE_TYPE_CACHE) {
+		} elseif ($saveType == self::SAVE_TYPE_CACHE) {
 			$class  = 'Ocara\Session\SessionCache';
 		} else {
 			$class = ocConfig('SESSION.handler', false);
@@ -67,19 +49,19 @@ class Session extends Base
 			register_shutdown_function('session_write_close');
 		}
 
-		self::boot($start);
+		$this->boot($start);
 	}
 
 	/**
 	 * 启动Session
 	 * @param bool $start
 	 */
-	private static function boot($start)
+	private function boot($start)
 	{
 		$saveTime = intval(ocConfig('SESSION.save_time', false));
 
 		if ($saveTime) {
-			self::setSaveTime($saveTime);
+			$this->setSaveTime($saveTime);
 		}
 
 		if ($start && !isset($_SESSION)) {
@@ -89,7 +71,7 @@ class Session extends Base
 		}
 		
 		if ($saveTime) {
-			self::setCookie($saveTime);
+			$this->setCookie($saveTime);
 		}
 	}
 
@@ -98,7 +80,7 @@ class Session extends Base
 	 * @param bool $key
 	 * @return array|bool|mixed|null
 	 */
-	public static function get($key = false)
+	public function get($key = false)
 	{
 		if (func_num_args()) {
 			return ocGet($key, $_SESSION);
@@ -112,7 +94,7 @@ class Session extends Base
 	 * @param string|array $key
 	 * @param mixed $value
 	 */
-	public static function set($key, $value = false)
+	public function set($key, $value = false)
 	{
 		ocSet($_SESSION, $key, $value);
 	}
@@ -121,7 +103,7 @@ class Session extends Base
 	 * 删除session变量
 	 * @param string|array $key
 	 */
-	public static function delete($key)
+	public function delete($key)
 	{
 		ocDel($_SESSION, $key);
 	}
@@ -129,7 +111,7 @@ class Session extends Base
 	/**
 	 * 获取session ID
 	 */
-	public static function getId()
+	public function getId()
 	{
 		return session_id();
 	}
@@ -137,7 +119,7 @@ class Session extends Base
 	/**
 	 * 获取session Name
 	 */
-	public static function getName()
+	public function getName()
 	{
 		return session_name();
 	}
@@ -145,7 +127,7 @@ class Session extends Base
 	/**
 	 * 清空session数组
 	 */
-	public static function clear()
+	public function clear()
 	{
 		session_unset();
 	}
@@ -153,7 +135,7 @@ class Session extends Base
 	/**
 	 * > PHP7 回收session
 	 */
-	public static function gc()
+	public function gc()
 	{
 		session_gc();
 	}
@@ -163,7 +145,7 @@ class Session extends Base
 	 * @param $key
 	 * @return array|bool|mixed|null
 	 */
-	public static function exists($key)
+	public function exists($key)
 	{
 		return ocKeyExists($key, $_SESSION);
 	}
@@ -171,7 +153,7 @@ class Session extends Base
 	/**
 	 * 释放session，删除session文件
 	 */
-	public static function destroy()
+	public function destroy()
 	{
 		if (session_id()) {
 			return session_destroy();
@@ -186,10 +168,10 @@ class Session extends Base
 	 * @param bool $secure
 	 * @param bool $httponly
 	 */
-	public static function setCookie($saveTime, $path = false, $domain = false, $secure = false, $httponly = true)
+	public function setCookie($saveTime, $path = false, $domain = false, $secure = false, $httponly = true)
 	{	
 		if (session_id()) {
-			Cookie::create(session_name(), session_id(), $saveTime, $path, $domain, $secure, $httponly);
+			Ocara::services()->cookie->create(session_name(), session_id(), $saveTime, $path, $domain, $secure, $httponly);
 		}
 	}
 
@@ -198,7 +180,7 @@ class Session extends Base
 	 * @param integer $saveTime
 	 * @return string
 	 */
-	public static function setSaveTime($saveTime)
+	public function setSaveTime($saveTime)
 	{
 		return @ini_set('session.gc_maxlifetime', $saveTime);
 	}
@@ -206,7 +188,7 @@ class Session extends Base
 	/**
 	 * 序列化session数组
 	 */
-	public static function serialize()
+	public function serialize()
 	{
 		return session_encode();
 	}
@@ -216,7 +198,7 @@ class Session extends Base
 	 * @param string $data
 	 * @return bool
 	 */
-	public static function unserialize($data)
+	public function unserialize($data)
 	{
 		return session_decode($data);
 	}

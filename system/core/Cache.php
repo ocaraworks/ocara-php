@@ -53,8 +53,8 @@ final class Cache extends Base
 
 		$config = array();
 
-		if ($callback = ocConfig('CALLBACK.cache.get_config', null)) {
-			$config = Call::run($callback, array($connectName));
+		if ($callback = ocConfig('EVENT.cache.get_config', null)) {
+			$config = Ocara::services()->call->run($callback, array($connectName));
 		}
 
 		if (empty($config)) {

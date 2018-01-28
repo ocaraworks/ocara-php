@@ -7,7 +7,8 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Develop;
-use Ocara\Request;
+
+use Ocara\Ocara;
 use Ocara\Develop;
 use Ocara\Service\File;
 
@@ -17,7 +18,7 @@ class module_admin
 
 	public function add()
 	{
-		$this->_mdlname = Request::getPost('mdlname');
+		$this->_mdlname = Ocara::services()->request->getPost('mdlname');
 		$this->createModel();
 	}
 
@@ -25,7 +26,7 @@ class module_admin
 	{
 		$mdlname   = ucfirst($this->_mdlname);
 		$className = $mdlname . 'Module';
-		$baseController = Request::getPost('controllerType');
+		$baseController = Ocara::services()->request->getPost('controllerType');
 
 		$content = "<?php\r\n";
 		$content .= "namespace Controller\\{$mdlname};\r\n";

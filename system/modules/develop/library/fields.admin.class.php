@@ -7,7 +7,8 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Develop;
-use Ocara\Request;
+
+use Ocara\Ocara;
 use Ocara\Develop;
 use Ocara\Service\FileCache;
 
@@ -17,7 +18,7 @@ class fields_admin
 
 	public function add()
 	{
-		$this->_model = Request::getPost('model');
+		$this->_model = Ocara::services()->request->getPost('model');
 		$this->updateModel();
 	}
 

@@ -9,7 +9,7 @@
 namespace Ocara\Controller\Provider;
 
 use Ocara\ServiceProvider;
-use Ocara\Config;
+use Ocara\Ocara;
 use Ocara\Lang;
 use Ocara\Database;
 
@@ -36,7 +36,7 @@ class Base extends ServiceProvider
     public function setAjaxResponseErrorCode($value)
     {
         $value = $value ? 1 : 0;
-        Config::set('AJAX.response_error_code', $value);
+        Ocara::services()->config->set('AJAX.response_error_code', $value);
     }
 
 	/**
@@ -48,9 +48,9 @@ class Base extends ServiceProvider
     {
         if (is_array($message)) {
             list($text, $params) = $message;
-            $message = Lang::get($text, $params);
+            $message = Ocara::services()->lang->get($text, $params);
         } else {
-            $message = Lang::get($message);
+            $message = Ocara::services()->lang->get($message);
         }
 
         $contentType = $this->_ajaxContentType;

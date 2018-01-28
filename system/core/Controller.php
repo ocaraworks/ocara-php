@@ -11,7 +11,7 @@ use Ocara\Interfaces\Controller as ControllerInterface;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class Controller extends Base implements ControllerInterface
+class Controller extends serviceProvider implements ControllerInterface
 {
 	/**
 	 * @var $_provider 控制器提供者
@@ -30,7 +30,7 @@ class Controller extends Base implements ControllerInterface
 		$this->_provider->init();
 		$this->_provider->bindEvents($this);
 
-		Config::set('CALLBACK.ajax.return_result', array($this->_provider, 'formatAjaxResult'));
+		$this->config->set('EVENT.ajax.return_result', array($this->_provider, 'formatAjaxResult'));
 
 		method_exists($this, '_start') && $this->_start();
 		method_exists($this, '_module') && $this->_module();
@@ -58,7 +58,7 @@ class Controller extends Base implements ControllerInterface
 			if (method_exists($this, '_isSubmit')) {
 				$this->_provider->isSubmit($this->_isSubmit());
 			} elseif ($this->submitMethod() == 'post') {
-				$this->_provider->isSubmit(Request::isPost());
+				$this->_provider->isSubmit($this->request->isPost());
 			}
 		}
 
@@ -78,7 +78,7 @@ class Controller extends Base implements ControllerInterface
 		method_exists($this, '_form') && $this->_form();
 		$this->checkForm();
 
-		if (Request::isAjax()) {
+		if ($this->request->isAjax()) {
 			$data = OC_EMPTY;
 			if (method_exists($this, '_ajax')) {
 				$data = $this->_ajax();
@@ -131,13 +131,15 @@ class Controller extends Base implements ControllerInterface
 	 */
 	public function &__get($key)
 	{
-		if ($this->hasProperty($key)) {
-			$value = &$this->getProperty($key);
+		if ($this->has($key)) {
+			$value = &$this->get($key);
 			return $value;
 		}
-		if ($instance = $this->_provider->getService($key)) {
+
+		if ($instance = $this->_provider->get($key)) {
 			return $instance;
 		}
+
 		Error::show('no_property', array($key));
 	}
 
@@ -152,9 +154,6 @@ class Controller extends Base implements ControllerInterface
 	{
 		if (is_object($this->_provider) && method_exists($this->_provider, $name)) {
 			return call_user_func_array(array(&$this->_provider, $name), $params);
-		}
-		if (is_object($this->view) && method_exists($this->view, $name)) {
-			return call_user_func_array(array(&$this->view, $name), $params);
 		}
 		parent::_call($name, $params);
 	}

@@ -160,7 +160,7 @@ class Sql extends Base
 	 */
 	public function filterSql($content, $addSlashes = true, $equal = false)
 	{
-		return Filter::sql($content, $addSlashes, $this->_config['keywords'], $equal);
+		return Ocara::services()->filter->sql($content, $addSlashes, $this->_config['keywords'], $equal);
 	}
 
 	/**
@@ -465,10 +465,10 @@ class Sql extends Base
 		$fieldName = $this->filterName($fieldName);
 
 		if ($countFiled) {
-			$sql = Filter::addSlashes("COUNT({$countFiled}) AS {$fieldName}");
+			$sql = Ocara::services()->filter->addSlashes("COUNT({$countFiled}) AS {$fieldName}");
 		} else {
 			$countFiled = $isGroup ? 1 : 'COUNT(1)';
-			$sql = Filter::addSlashes("{$countFiled} AS {$fieldName}");
+			$sql = Ocara::services()->filter->addSlashes("{$countFiled} AS {$fieldName}");
 		}
 
 		return $sql;
@@ -744,7 +744,7 @@ class Sql extends Base
 		}
 
 		$link   = $link ? : ',';
-		$sign   = $sign ? strtoupper(trim(Filter::replaceSpace($sign))) : '=';
+		$sign   = $sign ? strtoupper(trim(Ocara::services()->filter->replaceSpace($sign))) : '=';
 		$result = array();
 
 		if (in_array($sign, array('IN', 'NOT IN'))) {

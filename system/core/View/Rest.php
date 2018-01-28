@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\View;
 
+use Ocara\Ocara;
 use Ocara\Ajax;
 use Ocara\ViewBase;
 use Ocara\Interfaces\View as ViewInterfaces;

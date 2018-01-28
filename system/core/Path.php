@@ -13,34 +13,13 @@ defined('OC_PATH') or exit('Forbidden!');
 class Path extends Base
 {
 	/**
-	 * 单例模式
-	 */
-	private static $_instance = null;
-
-	/**
-	 * 路径信息
-	 */
-	private static $_data;
-	
-	private function __clone(){}
-	private function __construct(){}
-
-	public static function getInstance()
-	{
-		if (self::$_instance === null) {
-			self::$_instance = new self();
-			self::init();
-		}
-		return self::$_instance;
-	}
-
-	/**
 	 * 初始化
 	 */
-	public static function init()
+	public function __construct()
 	{
-		self::$_data = ocConfig('APP_PATH_INFO');
-		self::$_data['replace']['lang'] = 'lang/' . Ocara::language();
+		$paths = ocConfig('APP_PATH_INFO', array(), true);
+		$paths['replace']['lang'] = 'lang/' . Ocara::language();
+		$this->set($paths);
 	}
 
 	/**
@@ -53,22 +32,21 @@ class Path extends Base
 	 * @return bool|mixed|string
 	 * @throws Exception\Exception
 	 */
-	public static function get($dir, $path, $root = null, $local = true, $isFile = true)
+	public function get($dir, $path, $root = null, $local = true, $isFile = true)
 	{
-		Path::getInstance();
 		$mapDir = $dir;
 
-		if (isset(self::$_data['map'][$dir])) {
-			$mapDir = self::$_data['map'][$dir];
+		if (isset($this->_properties['map'][$dir])) {
+			$mapDir = $this->_properties['map'][$dir];
 		}
 
-		if (isset(self::$_data['belong'][$mapDir])) {
-			if (isset(self::$_data['replace'][$mapDir])) {
-				$replace = self::$_data['replace'][$mapDir];
+		if (isset($this->_properties['belong'][$mapDir])) {
+			if (isset($this->_properties['replace'][$mapDir])) {
+				$replace = $this->_properties['replace'][$mapDir];
 			} else {
 				$replace = $mapDir;
 			}
-			$mapDir = self::$_data['belong'][$mapDir] . OC_DIR_SEP . $replace;
+			$mapDir = $this->_properties['belong'][$mapDir] . OC_DIR_SEP . $replace;
 		}
 
 		$result = ocDir($root, $mapDir) . $path;

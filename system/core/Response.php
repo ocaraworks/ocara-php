@@ -121,7 +121,7 @@ class Response extends Base
 	 * @param array $params
 	 * @param bool $die
 	 */
-	public static function jump($route, array $params = array(), $die = true)
+	public function jump($route, array $params = array(), $die = true)
 	{
 		if ($route) {
 			if (!headers_sent()) {
@@ -139,7 +139,7 @@ class Response extends Base
 	 * @param string $url
 	 * @param bool $die
 	 */
-	public static function redirect($url, $die = true)
+	public function redirect($url, $die = true)
 	{
 		if ($url) {
 			if (!headers_sent()) {
@@ -164,7 +164,7 @@ class Response extends Base
 		}
 
 		if (empty($this->_headers['contentType'])) {
-			if (Request::isAjax()) {
+			if (Ocara::services()->request->isAjax()) {
 				$this->_headers['contentType'] = ocConfig('DEFAULT_AJAX_CONTENT_TYPE', 'json');
 			} else {
 				$this->_headers['contentType'] = ocConfig('DEFAULT_CONTENT_TYPE', 'html');

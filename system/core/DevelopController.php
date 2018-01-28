@@ -131,7 +131,7 @@ class DevelopController extends Base
             header("location:" . ocUrl(array(OC_DEV_DIR, 'home', 'index')));
         }
 
-        if (Request::isPost()) {
+        if (Ocara::services()->request->isPost()) {
             $action = Ocara::getRoute('action');
             if ($action != 'login' && $type == 'login') {
                 header("location:" . ocUrl(array(OC_DEV_DIR, 'home', 'index'), array('action' => 'login')));

@@ -19,28 +19,11 @@ class Url extends Base
 	const STATIC_TYPE 	= 4; //伪静态类型
 	
 	/**
-	 * 单例模式
-	 */
-	private static $_instance = null;
-
-	private function __clone(){}
-
-	private function __construct(){}
-
-	public static function getInstance()
-	{
-		if (self::$_instance === null) {
-			self::$_instance = new self();
-		}
-		return self::$_instance;
-	}
-
-	/**
 	 * 是否虚拟URL地址
 	 * @param string $urlType
 	 * @return bool
 	 */
-	public static function isVirtualUrl($urlType)
+	public function isVirtualUrl($urlType)
 	{
 		return in_array($urlType, array(self::DIR_TYPE, self::PATH_TYPE, self::STATIC_TYPE));
 	}
@@ -67,12 +50,12 @@ class Url extends Base
 
 		if (empty($url)) return array();
 
-		$result = Url::check($url, OC_URL_ROUTE_TYPE);
+		$result = $this->check($url, OC_URL_ROUTE_TYPE);
 		if ($result === null) {
 			Error::show('fault_url');
 		}
 
-		if (Url::isVirtualUrl(OC_URL_ROUTE_TYPE)) {
+		if ($this->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
 			$get = trim($result[3]);
 			if ($get) {
 				$get = explode(OC_DIR_SEP, trim($result[3], OC_DIR_SEP));
@@ -111,13 +94,13 @@ class Url extends Base
 	 * @param string $urlType
 	 * @return null
 	 */
-	public static function check($url, $urlType)
+	public function check($url, $urlType)
 	{
 		$url = str_replace('\\', OC_DIR_SEP, $url);
 		$el  = '[^\/\&\?]';
 		$get = null;
 
-		if (self::isVirtualUrl($urlType)) {
+		if ($this->isVirtualUrl($urlType)) {
 			$str  = $urlType == self::PATH_TYPE ? 'index\.php[\/]?' : false;
 			$el   = '[^\/\&\?]';
 			$mvc  = '\w*';
@@ -151,7 +134,7 @@ class Url extends Base
 	 * @param bool $static
 	 * @return bool|string
 	 */
-	public static function create($route, $params = array(), $relative = false, $urlType = null, $static = true)
+	public function create($route, $params = array(), $relative = false, $urlType = null, $static = true)
 	{
 		$route = Ocara::parseRoute($route);
 		if (empty($route)) return false;
@@ -169,14 +152,14 @@ class Url extends Base
 			$params = array();
 		}
 
-		if ($static && StaticPath::$open) {
-			list($file, $args) = StaticPath::getStaticFile($module, $controller, $action, $params);
+		if ($static && Ocara::services()->staticPath->open) {
+			list($file, $args) = Ocara::services()->staticPath->getStaticFile($module, $controller, $action, $params);
 			if ($file && is_file(ocPath('static', $file))) {
 				return $relative ? OC_DIR_SEP . $file : OC_ROOT_URL . $file;
 			}
 		}
 		
-		if (self::isVirtualUrl($urlType)) {
+		if ($this->isVirtualUrl($urlType)) {
 			if ($module) {
 				$query = array($module, $controller, $action);
 			} else {
@@ -184,7 +167,7 @@ class Url extends Base
 			}
 			
 			$route     = implode(OC_DIR_SEP, $query);
-			$query     = $params ? OC_DIR_SEP . implode(OC_DIR_SEP, self::devideQuery($params)) : false;
+			$query     = $params ? OC_DIR_SEP . implode(OC_DIR_SEP, $this->devideQuery($params)) : false;
 			$paramPath = $urlType == self::PATH_TYPE ? OC_INDEX_FILE . OC_DIR_SEP : false;
 			$paramPath = $paramPath . $route . $query;
 			$paramPath = $urlType == self::STATIC_TYPE ? $paramPath . '.html' : $paramPath;
@@ -215,7 +198,7 @@ class Url extends Base
 	 * @param array $params
 	 * @return array
 	 */
-	public static function devideQuery(array $params)
+	public function devideQuery(array $params)
 	{
 		$result = array();
 		
@@ -238,10 +221,10 @@ class Url extends Base
 	 * @return string
 	 * @throws Exception\Exception
 	 */
-	public static function addQuery(array $params, $url = null, $urlType = null)
+	public function addQuery(array $params, $url = null, $urlType = null)
 	{
 		$urlType = $urlType ? : OC_URL_ROUTE_TYPE;
-		$data    = self::parseUrl($url);
+		$data    = $this->parseUrl($url);
 		
 		if ($url) {
 			$uri = $data['path'] . ($data['query'] ? '?' . $data['query'] : false);
@@ -249,26 +232,26 @@ class Url extends Base
 			$uri = OC_REQ_URI;
 		}
 
-		$result = self::check($uri, $urlType);
+		$result = $this->check($uri, $urlType);
 		if ($result === null) {
 			Error::show('fault_url');
 		}
 
-		if (self::isVirtualUrl($urlType)) {
-			$data['path'] = $result[3] . OC_DIR_SEP . implode(OC_DIR_SEP, self::devideQuery($params));
+		if ($this->isVirtualUrl($urlType)) {
+			$data['path'] = $result[3] . OC_DIR_SEP . implode(OC_DIR_SEP, $this->devideQuery($params));
 		} else {
 			parse_str($data['query'], $query);
-			$data['query'] = self::buildQuery($query, $params);
+			$data['query'] = $this->buildQuery($query, $params);
 		}
 		
-		return self::buildUrl($data);
+		return $this->buildUrl($data);
 	}
 
 	/**
 	 * 解析URL
 	 * @param string $url
 	 */
-	public static function parseUrl($url = false)
+	public function parseUrl($url = false)
 	{
 		$fields = array(
 			'scheme', 	'host', 	'port',
@@ -282,12 +265,12 @@ class Url extends Base
 		} else {
 			$values = array(
 				OC_PROTOCOL, 
-				Request::getServer('HTTP_HOST'),
-				Request::getServer('SERVER_PORT'),
-				Request::getServer('PHP_AUTH_USER'),
-				Request::getServer('PHP_AUTH_PW'),
-				Request::getServer('REDIRECT_URL'),
-				Request::getServer('QUERY_STRING'),
+				Ocara::services()->request->getServer('HTTP_HOST'),
+				Ocara::services()->request->getServer('SERVER_PORT'),
+				Ocara::services()->request->getServer('PHP_AUTH_USER'),
+				Ocara::services()->request->getServer('PHP_AUTH_PW'),
+				Ocara::services()->request->getServer('REDIRECT_URL'),
+				Ocara::services()->request->getServer('QUERY_STRING'),
 			);
 			$data = array_combine($fields, $values);
 		}
@@ -299,7 +282,7 @@ class Url extends Base
 	 * 生成查询字符串
 	 * @param array $params
 	 */
-	public static function buildQuery(array $params)
+	public function buildQuery(array $params)
 	{
 		$array = array();
 		
@@ -314,7 +297,7 @@ class Url extends Base
 	 * 生成URL
 	 * @param array $data
 	 */
-	public static function buildUrl(array $data)
+	public function buildUrl(array $data)
 	{
 		$url = $data['scheme'] . '://';
 		if ($data['username']) {

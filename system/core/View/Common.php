@@ -492,7 +492,8 @@ class Common extends ViewBase implements ViewInterfaces
 
 		$content = ob_get_contents();
 		ob_end_clean();
-		return Filter::bom($content);
+
+		return Ocara::services()->filter->bom($content);
 	}
 
 	/**

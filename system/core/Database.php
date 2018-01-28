@@ -84,8 +84,8 @@ final class Database extends Base
 
 		$config = array();
 
-		if ($callback = ocConfig('CALLBACK.database.get_config', null)) {
-			$config = Call::run($callback, array($connectName));
+		if ($callback = ocConfig('EVENT.database.get_config', null)) {
+			$config = Ocara::services()->call->run($callback, array($connectName));
 		}
 
 		if (empty($config)) {
@@ -103,12 +103,8 @@ final class Database extends Base
 	public static function getDatabaseType(array $config)
 	{
 		$type = isset($config['type']) ? ucfirst($config['type']) : OC_EMPTY;
-
-		if ($type == 'Mysql') {
-			$type = 'Mysqli';
-		}
-
-		return $type;
+		$types = ocConfig('DATABASE_TYPE_MAP', array());
+		return isset($types[$type]) ? $types[$type] : $type;
 	}
 
 	/**

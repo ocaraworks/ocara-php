@@ -12,28 +12,27 @@ use Ocara\ServiceProvider;
 
 class Main extends ServiceProvider
 {
+    /**
+     * 注册服务组件
+     * @param array $data
+     */
     public function register($data = array())
+    {
+        $this->_createService(ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS'), 'bindSingleton');
+        $this->_createService(ocConfig('SYSTEM_SERVICE_CLASS'), 'bind');
+    }
+
+    /**
+     * 新建服务组件
+     * @param $services
+     * @param $method
+     */
+    protected function _createService($services, $method)
     {
         $container = Ocara::container();
 
-        $classes = ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS');
-        foreach ($classes as $name => $namespace) {
-            $container->bindSingleton($name, function() use($namespace) {
-                $file = strtr($namespace, ocConfig('AUTOLOAD_MAP')) . '.php';
-                ocImport($file);
-                if (method_exists($namespace, 'getInstance')) {
-                    return $namespace::getInstance();
-                } else {
-                    return new $namespace();
-                }
-            });
-        }
-
-        $classes = ocConfig('SYSTEM_SERVICE_CLASS');
-        foreach ($classes as $name => $namespace) {
-            $container->bind($name, function() use($namespace) {
-                $file = strtr($namespace, ocConfig('AUTOLOAD_MAP')) . '.php';
-                ocImport($file);
+        foreach ($services as $name => $namespace) {
+            $container->$method($name, function() use($namespace) {
                 $args = func_get_args();
                 if (method_exists($namespace, 'getInstance')) {
                     return call_user_func_array(array($namespace, 'getInstance'), $args);

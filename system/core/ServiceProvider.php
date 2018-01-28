@@ -12,7 +12,6 @@ use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
 
 class ServiceProvider extends Base implements ServiceProviderInterface
 {
-    protected $_services;
     protected $_container;
 
     /**
@@ -46,7 +45,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      * @param $key
      * @return bool
      */
-    public function hasService($key)
+    public function has($key)
     {
         return $this->_container->has($key);
     }
@@ -56,57 +55,49 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      * @param $key
      * @return mixed
      */
-    public function getService($key)
+    public function get($key)
     {
-        if (!empty($this->_services[$key])) {
-            return $this->_services[$key];
+        if ($this->has($key)) {
+            return $this->get($key);
         }
 
-        if ($this->_container && $this->_container->has($key)) {
-            $instance = $this->_container->create($key);
-            if ($instance) {
-                $this->setService($key, $instance);
-                return $instance;
-            }
-        }
-
-        $container = Ocara::container();
-        if ($container->has($key)) {
-            $instance = $container->create($key);
-            if ($instance) {
-                $this->setService($key, $instance);
-                return $instance;
-            }
+        $instance = $this->create($key);
+        if ($instance) {
+            return $this->set($key, $instance);
         }
 
         return null;
     }
 
     /**
-     * 设置服务组件
-     * @param $key
-     * @param $service
+     * 新建服务组件
+     * @param mixed $key
+     * @param array $params
+     * @param array $deps
+     * @return mixed|null
      */
-    public function setService($key, $service)
+    public function create($key, $params = array(), $deps = array())
     {
-        $this->_services[$key] = $service;
+        $instance = null;
+        if ($this->_container && $this->_container->has($key)) {
+            $instance = $this->_container->create($key, $params, $deps);
+        }
+
+        $container = Ocara::container();
+        if ($container->has($key)) {
+            $instance = $container->create($key, $params, $deps);
+        }
+
+        return $instance;
     }
 
     /**
-     * 获取不存在的属性时
+     * 属性不存在时的处理
      * @param string $key
-     * @return array|null
+     * @throws Exception\Exception
      */
-    public function &__get($key)
+    public function __none($key)
     {
-        if ($this->hasProperty($key)) {
-            return $this->getProperty($key);
-        }
-
-        if ($instance = $this->getService($key)) {
-            return $instance;
-        }
-
         Error::show('no_service', array($key));
     }
 }

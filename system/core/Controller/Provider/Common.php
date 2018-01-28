@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Controller\Provider;
 
-use Ocara\Request;
+use Ocara\Ocara;
 use Ocara\Response;
 use Ocara\Error;
 use Ocara\Interfaces\Event;
@@ -81,7 +81,7 @@ class Common extends Base
     public function getSubmit($key = null, $default = null)
     {
         $data = $this->_submitMethod == 'post' ? $_POST : $_GET;
-        $data = Request::getRequestValue($data, $key, $default);
+        $data = Ocara::services()->request->getRequestValue($data, $key, $default);
         return $data;
     }
 
@@ -133,7 +133,7 @@ class Common extends Base
             $model = $this->model();
         }
 
-        $form = $this->formManager->getForm($name);
+        $form = $this->formManager->get($name);
         if (!$form) {
             $form = $this->formManager->create($name);
             if ($model) {
@@ -222,7 +222,7 @@ class Common extends Base
     public function checkForm()
     {
         $this->isSubmit();
-        if (!($this->_isSubmit && $this->_checkForm && $this->formManager->getForm()))
+        if (!($this->_isSubmit && $this->_checkForm && $this->formManager->get()))
             return true;
 
         $tokenTag  = $this->formToken->getTokenTag();

@@ -15,13 +15,13 @@ class Container extends Basis
     /**
      * @var array $_binds 动态绑定类
      * @var array $_singletons 单例绑定类
-     * @var array $_instances 已实例化实例
+     * @var array $_properties 已实例化实例
      * @var array $_replaces 要替换的依赖类
      * @var object $_default 默认容器
      */
-    private $_binds = array();
-    private $_singletons = array();
-    private $_instances = array();
+    protected $_binds = array();
+    protected $_singletons = array();
+    protected $_properties = array();
 
     protected static $_default;
 
@@ -56,11 +56,11 @@ class Container extends Basis
      */
     public function get($name, array $params = array(), array $deps = array())
     {
-        if (!empty($this->_instances[$name])) {
-            $instance = $this->_instances[$name];
+        if (!empty($this->_properties[$name])) {
+            $instance = $this->_properties[$name];
         } else {
             $instance = $this->create($name, $params, $deps);
-            $this->_instances[$name] = $instance;
+            $this->_properties[$name] = $instance;
         }
 
         return $instance;
@@ -231,7 +231,7 @@ class Container extends Basis
      */
     public function hasInstance($name)
     {
-        return array_key_exists($name, $this->_instances);
+        return array_key_exists($name, $this->_properties);
     }
 
     /**
@@ -249,8 +249,8 @@ class Container extends Basis
 
         $matter = array();
         if (!empty($this->_singletons[$name])) {
-            if (!empty($this->_instances[$name])) {
-                return $this->_instances[$name];
+            if (!empty($this->_properties[$name])) {
+                return $this->_properties[$name];
             }
             $matter = (array)$this->_singletons[$name];
             $isSingleton = true;
@@ -279,7 +279,7 @@ class Container extends Basis
 
         $instance = $this->make($source, $params, $deps);
         if ($isSingleton) {
-            $this->_instances[$name] = $instance;
+            $this->_properties[$name] = $instance;
         }
 
         return $instance;

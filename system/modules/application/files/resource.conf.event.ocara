@@ -26,13 +26,14 @@ $CONF['EVENT']['auth'] = array(
  */
 $CONF['EVENT']['form'] = array(
 	'check_error'    => '', //表单检测失败时的事件
-	'generate_token' => '', //表单令牌加密算法的事件
+	'generate_token' => '', //表单令牌加密
 );
 
 /*
  * 数据库相关事件
  */
 $CONF['EVENT']['database'] = array(
+    'get_config' => '', //获取配置
 	'before_execute_sql' => '', //执行SQL语句前的事件，适合于写SQL语句日志
 	'after_execute_sql' => '', //执行SQL语句完成后的事件，适合于写SQL语句结果日志
 );
@@ -46,6 +47,13 @@ $CONF['EVENT']['model'] = array(
 		'save_cache_data' => '', //保存为缓存数据的事件
 		'get_cache_data' => '',  //获取缓存数据的事件
 	)
+);
+
+/*
+ * AJAX事件
+ */
+$CONF['EVENT']['ajax'] = array(
+	'return_result' => '', //AJAX回调结果
 );
 
 /*

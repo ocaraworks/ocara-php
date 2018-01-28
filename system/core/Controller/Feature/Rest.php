@@ -24,7 +24,7 @@ final class Rest extends Base implements Feature
         $id = null;
         $idParam = ocConfig('CONTROLLERS.rest.id_param', 'id');
 
-        if (Url::isVirtualUrl(OC_URL_ROUTE_TYPE)) {
+        if (Ocara::services()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
             $count = count($get);
             $end = end($get);
             if ($count == 1 && !is_array($end) || $count == 2 && is_array($end)) {
@@ -32,11 +32,11 @@ final class Rest extends Base implements Feature
             }
         } else {
             if (array_key_exists($idParam, $get)) {
-                $id = Request::getGet($idParam);
+                $id = Ocara::services()->request->getGet($idParam);
             }
         }
 
-        $method = Request::getMethod();
+        $method = Ocara::services()->request->getMethod();
         if (!ocEmpty($id)) {
             $method = $method . '/id';
             $_GET[$idParam] = $id;

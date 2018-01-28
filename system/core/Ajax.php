@@ -37,7 +37,7 @@ class Ajax extends Base
 	public static function show($status, array $message = array(), $body = OC_EMPTY)
 	{
 		if (is_string($message)) {
-			$message = Lang::get($message);
+			$message = Ocara::services()->lang->get($message);
 		}
 
 		$result['status'] 	= $status;
@@ -45,8 +45,8 @@ class Ajax extends Base
 		$result['message'] 	= $message['message'];
 		$result['body']    	= $body;
 
-		if ($callback = ocConfig('CALLBACK.ajax.return_result', null)) {
-			$result = Call::run($callback, array($result));
+		if ($callback = ocConfig('EVENT.ajax.return_result', null)) {
+			$result = Ocara::services()->call->run($callback, array($result));
 		}
 
 		$response = Ocara::services()->response;

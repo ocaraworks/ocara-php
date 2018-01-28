@@ -7,6 +7,7 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara;
+
 use Ocara\Service\Code;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -45,26 +46,26 @@ class FormToken extends Base
 		$token = $this->genToken($formName);
 
 		list($tokenName, $tokenRoute) = $this->_tokenKey;
-		$sessData = Session::get($tokenName);
+		$sessData = Ocara::services()->session->get($tokenName);
 
 		if (is_array($sessData)) {
-			Session::set($this->_tokenKey, $token);
+			Ocara::services()->session->set($this->_tokenKey, $token);
 		} else {
-			Session::set($tokenName, array($tokenRoute => $token));
+			Ocara::services()->session->set($tokenName, array($tokenRoute => $token));
 		}
 
 		return $token;
 	}
 
 	/**
-	 * 删除表单
+	 * 清除TOKEN
 	 */
 	public function clear()
 	{
 		$checkRepeatSubmit = ocConfig('FORM.check_repeat_submit', true);
 
 		if ($checkRepeatSubmit && $this->exists()) {
-			Session::delete($this->_tokenKey);
+			Ocara::services()->session->delete($this->_tokenKey);
 			$this->_formName = null;
 			$this->_tokenName = null;
 			$this->_tokenKey = array();
@@ -89,10 +90,7 @@ class FormToken extends Base
 			return false;
 		}
 
-		$exists = isset($_SESSION[$tokenName])
-			&& $_SESSION[$tokenName]
-			&& is_array($_SESSION[$tokenName]);
-
+		$exists = isset($_SESSION[$tokenName]) && $_SESSION[$tokenName] && is_array($_SESSION[$tokenName]);
 		if ($token === null) {
 			return $exists;
 		}
@@ -133,8 +131,8 @@ class FormToken extends Base
 		$route = $this->getRoute();
 		$routeStr = implode(OC_EMPTY, $route);
 
-		if ($config = ocConfig('CALLBACK.form.generate_token', null)) {
-			$token = Call::run($config, array($tag, $formName, $route));
+		if ($config = ocConfig('EVENT.form.generate_token', null)) {
+			$token = Ocara::services()->call->run($config, array($tag, $formName, $route));
 		} else {
 			$token = md5($routeStr . $formName . md5(Code::getRand(5)) . uniqid(mt_rand()));
 		}

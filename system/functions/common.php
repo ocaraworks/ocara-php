@@ -6,11 +6,9 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
+use Ocara\Ocara;
 use Ocara\Error;
-use Ocara\Lang;
-use Ocara\Path;
-use Ocara\GlobalVar;
-use Ocara\Request;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -52,10 +50,12 @@ function ocCheckExtension($extension, $required = true)
  */
 function ocGlobal($name, $value = null)
 {
+	$globalVar = Ocara::services()->globalVar;
+
 	if (func_num_args()>=2) {
-		GlobalVar::set($name, $value);
+		$globalVar->set($name, $value);
 	} else {
-		return GlobalVar::get($name);
+		return $globalVar->get($name);
 	}
 }
 
@@ -189,7 +189,7 @@ function ocFunc($filePath)
 function ocSql($sql)
 {
 	if (is_string($sql) || is_numeric($sql)) {
-		$sql = Request::stripSqlTag($sql);
+		$sql = Ocara::services()->request->stripSqlTag($sql);
 		return OC_SQL_TAG . $sql;
 	}
 	
@@ -215,7 +215,7 @@ function ocIsStandardName($name)
  */
 function ocLang($name, array $params = array(), $default = null)
 {
-	$result = Lang::get($name, $params);
+	$result = ocService('lang')->get($name, $params);
 
 	if ($result['message']) {
 		return $result['message'];
@@ -238,7 +238,7 @@ function ocLang($name, array $params = array(), $default = null)
  */
 function ocPath($dir, $path = false)
 {
-	return Path::get($dir, $path, OC_ROOT, true, false);
+	return Ocara::services()->path->get($dir, $path, OC_ROOT, true, false);
 }
 
 /**
@@ -249,7 +249,7 @@ function ocPath($dir, $path = false)
  */
 function ocFile($dir, $path)
 {
-	return Path::get($dir, $path, OC_ROOT, true, true);
+	return Ocara::services()->path->get($dir, $path, OC_ROOT, true, true);
 }
 
 /**
@@ -263,7 +263,7 @@ function ocRealUrl($dir, $subPath = false, $root = false)
 {
 	$root = $root ? : OC_ROOT_URL;
 
-	return Path::get($dir, $subPath, $root, false, false);
+	return Ocara::services()->path->get($dir, $subPath, $root, false, false);
 }
 
 /**
@@ -274,7 +274,7 @@ function ocRealUrl($dir, $subPath = false, $root = false)
  */
 function ocSimpleUrl($dir, $subPath)
 {
-	return Path::get($dir, $subPath, OC_DIR_SEP, false, false);
+	return Ocara::services()->path->get($dir, $subPath, OC_DIR_SEP, false, false);
 }
 
 /*************************************************************************************************

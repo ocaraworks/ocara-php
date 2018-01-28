@@ -7,8 +7,9 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Service;
+
+use Ocara\Ocara;
 use Ocara\ServiceBase;
-use Ocara\Font;
 
 class Image extends ServiceBase
 {
@@ -365,7 +366,7 @@ class Image extends ServiceBase
 			}
 		}
 		
-		$this->font = Font::get(isset($font) ? $font : false);
+		$this->font = Ocara::service()->font->get(isset($font) ? $font : false);
 		
 		$contentInfo = imagettfbbox($size, 0, $this->font, $content);
 		$contentW 	= $contentInfo[4] - $contentInfo[6];

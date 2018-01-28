@@ -12,13 +12,14 @@ use Ocara\Filter;
 
 class File extends ServiceBase
 {
-
 	/**
 	 * 新建空文件
 	 * @param string $filePath
 	 * @param integer $perm
+	 * @param null $mode
+	 * @return bool|mixed|string
 	 */
-	public static function createFile($filePath, $perm = false, $mode = null)
+	public static function createFile($filePath, $perm = null, $mode = null)
 	{
 		if (ocFileExists($filePath, true)) return $filePath;
 
@@ -42,13 +43,13 @@ class File extends ServiceBase
 	}
 
 	/**
-	 * 打开文件
 	 * @param string $filePath
 	 * @param string $openMode
 	 * @param integer $perm
 	 * @param bool $createDir
+	 * @return bool|resource
 	 */
-	public static function openFile($filePath, $openMode, $perm = false, $createDir = true)
+	public static function openFile($filePath, $openMode, $perm = null, $createDir = true)
 	{
 		if (!ocFileExists($filePath, true)) {
 			if (!$createDir || !self::createFile($filePath, $perm)) {
@@ -62,6 +63,7 @@ class File extends ServiceBase
 	/**
 	 * 关闭文件
 	 * @param source $source
+	 * @return bool
 	 */
 	public static function closeFile($source)
 	{
@@ -76,6 +78,7 @@ class File extends ServiceBase
 	 * 重命名文件
 	 * @param string $file
 	 * @param string $newName
+	 * @return bool
 	 */
 	public static function rename($file, $newName)
 	{
@@ -90,6 +93,7 @@ class File extends ServiceBase
 	/**
 	 * 删除文件
 	 * @param string $filePath
+	 * @return bool
 	 */
 	public static function delFile($filePath)
 	{
@@ -103,6 +107,7 @@ class File extends ServiceBase
 	/**
 	 * 读文件的所有内容
 	 * @param string $filePath
+	 * @return bool|\mix|string
 	 */
 	public static function readFile($filePath)
 	{
@@ -115,29 +120,31 @@ class File extends ServiceBase
 	 * @param string $content
 	 * @param integer $perm
 	 * @param bool $trim
+	 * @return bool|int|void
 	 */
-	public static function writeFile($path, $content, $perm = false, $trim = false)
+	public static function writeFile($path, $content, $perm = null, $trim = false)
 	{
 		return ocWrite($path, self::_getContent($content, $trim), false, $perm);
 	}
 
 	/**
-	 * 向文件写入一行
+	向文件写入一行
 	 * @param string $path
 	 * @param string $content
 	 * @param integer $perm
 	 * @param bool $trim
+	 * @return bool|int|void
 	 */
-	public static function appendFile($path, $content, $perm = false, $trim = false)
+	public static function appendFile($path, $content, $perm = null, $trim = false)
 	{
 		return ocWrite($path, self::_getContent($content, $trim), true, $perm);
 	}
 
 	/**
 	 * 复制文件
-	 * 
 	 * @param string $source
 	 * @param string $destination
+	 * @return bool
 	 */
 	public static function copyFile($source, $destination)
 	{
@@ -156,9 +163,9 @@ class File extends ServiceBase
 
 	/**
 	 * 移动文件
-	 * 
 	 * @param string $source
 	 * @param string $destination
+	 * @return bool
 	 */
 	public static function moveFile($source, $destination)
 	{
@@ -178,6 +185,7 @@ class File extends ServiceBase
 	/**
 	 * 获取文件信息
 	 * @param string $filePath
+	 * @return array
 	 */
 	public static function fileInfo($filePath)
 	{
@@ -199,8 +207,9 @@ class File extends ServiceBase
 	 * 检查并新建目录
 	 * @param string $path
 	 * @param integer $perm
+	 * @return bool
 	 */
-	public static function createDir($path, $perm = false)
+	public static function createDir($path, $perm = null)
 	{
 		return ocCheckPath($path, $perm);
 	}
@@ -209,6 +218,7 @@ class File extends ServiceBase
 	 * 删除目录，支持递归删除
 	 * @param string $path
 	 * @param bool $recursive
+	 * @return bool
 	 */
 	public static function delDir($path, $recursive = false)
 	{
@@ -217,8 +227,9 @@ class File extends ServiceBase
 
 	/**
 	 * 清空目录，支持递归
-	 * @param string  $path
+	 * @param string $path
 	 * @param bool $recursive
+	 * @return bool
 	 */
 	public static function clearDir($path, $recursive = false)
 	{
@@ -227,10 +238,10 @@ class File extends ServiceBase
 
 	/**
 	 * 类内部函数,删除或清空目录
-	 * 
 	 * @param string $path
 	 * @param bool $recursive
 	 * @param string $delType
+	 * @return bool
 	 */
 	private static function _delDir($path, $recursive = false, $delType = 'del')
 	{
@@ -264,6 +275,7 @@ class File extends ServiceBase
 	 * 获取内容
 	 * @param string|array $content
 	 * @param bool $trim
+	 * @return mixed
 	 */
 	private static function _getContent($content, $trim)
 	{
@@ -277,6 +289,6 @@ class File extends ServiceBase
 			}
 		}
 
-		return Filter::bom($content);
+		return Ocara::services()->filter->bom($content);
 	}
 }

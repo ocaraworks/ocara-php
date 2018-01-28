@@ -7,8 +7,8 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Develop;
+
 use Ocara\Ocara;
-use Ocara\Request;
 use Ocara\Develop;
 use Ocara\Service\File;
 use Ocara\Service\FileCache;
@@ -25,17 +25,18 @@ class model_admin
 
 	public function add()
 	{
-		$this->_modelType = Request::getPost('modelType');
-		$this->_connectName = Request::getPost('connect', 'main');
-		$this->_table = Request::getPost('table');
-		$this->_model = Request::getPost('model');
-		$this->_primaries = Request::getPost('primaries');
+		$request = Ocara::services()->request;
+		$this->_modelType = $request->getPost('modelType');
+		$this->_connectName = $request->getPost('connect', 'main');
+		$this->_table = $request->getPost('table');
+		$this->_model = $request->getPost('model');
+		$this->_primaries = $request->getPost('primaries');
 
 		if ($this->_modelType == 'Database') {
 			if (empty($this->_model)) {
 				$this->_model = ocHump($this->_table);
 			}
-			$this->_database = Request::getPost('database', ocConfig('DATABASE.main.name'));
+			$this->_database = Ocara::services()->request->getPost('database', ocConfig('DATABASE.main.name'));
 			$this->createDatabaseModel();
 		} elseif ($this->_modelType == 'Cache') {
 			if (empty($this->_model)) {
@@ -161,7 +162,7 @@ class model_admin
 		}
 
 		if ($cacheType == 'Redis') {
-			$this->_database = Request::getPost('database', 0);
+			$this->_database = Ocara::services()->request->getPost('database', 0);
 		}
 
 		$namespace = OC_NS_SEP . $cacheType;

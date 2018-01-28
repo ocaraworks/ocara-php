@@ -135,7 +135,7 @@ class FileLog extends ServiceBase implements LogInterface
 	 * @param string $logName
 	 * @return bool
 	 */
-	public function del($logName)
+	public function delete($logName)
 	{
 		$path = $this->logRoot . $logName;
 		return is_dir($path) ? File::delDir($path, true) : false;

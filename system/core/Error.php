@@ -62,7 +62,7 @@ class Error extends Base
 	public static function writeLog($error, array $params = array())
 	{
 		try {
-			$error = Lang::get($error, $params);
+			$error = Ocara::services()->lang->get($error, $params);
 			throw new Exception($error['message'], $error['code']);
 		} catch(Exception $exception) {
 			self::$_instance->event('writeLog')->fire(
@@ -82,10 +82,10 @@ class Error extends Base
 		Ocara::services()->transaction->rollback();
 
 		if (!is_array($error)) {
-			$error = Lang::get($error, $params);
+			$error = Ocara::services()->lang->get($error, $params);
 		}
 
-		if (Request::isAjax()) {
+		if (Ocara::services()->request->isAjax()) {
 			try {
 				throw new Exception($error['message'], $error['code']);
 			} catch(Exception $exception) {
@@ -105,7 +105,7 @@ class Error extends Base
 	public static function trigger($error, array $params = array(), $errorType = E_USER_ERROR)
 	{
 		$errorType = $errorType ? : E_USER_ERROR;
-		$error = Lang::get($error, $params);
+		$error = Ocara::services()->lang->get($error, $params);
 		trigger_error($error['message'], $errorType);
 	}
 
@@ -152,7 +152,7 @@ class Error extends Base
 			Ocara::services()->response->setStatusCode(Response::STATUS_SERVER_ERROR);
 		}
 
-		if (Request::isAjax()) {
+		if (Ocara::services()->request->isAjax()) {
 			self::_ajaxOutput($error);
 		}
 

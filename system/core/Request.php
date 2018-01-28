@@ -12,25 +12,16 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Request extends Base
 {
-	/**
-	 * 单例模式
-	 */
-	private static $_instance = null;
-
-	public static function getInstance()
+	public function __construct()
 	{
-		if (self::$_instance === null) {
-			self::$_instance = new self();
-			self::setInputStreams();
-			self::stripslashes();
-		}
-		return self::$_instance;
+		$this->setInputStreams();
+		$this->stripslashes();
 	}
 
 	/**
 	 * 处理输入流
 	 */
-	public static function setInputStreams()
+	public function setInputStreams()
 	{
 		if ($_POST || !($post = ocRemote('php://input'))) return;
 
@@ -48,12 +39,12 @@ class Request extends Base
 	/**
 	 * 初始化去除转义或Ocara标签
 	 */
-	public static function stripslashes()
+	public function stripslashes()
 	{
 		$func  	 = get_magic_quotes_gpc() ? 'cleanSqlTag' : 'stripSqlTag';
-		$_GET  	 = ocArrayMap(array(__CLASS__, $func), $_GET);
-		$_POST   = ocArrayMap(array(__CLASS__, $func), $_POST);
-		$_COOKIE = ocArrayMap(array(__CLASS__, 'stripSqlTag'), $_COOKIE);
+		$_GET  	 = ocArrayMap(array($this, $func), $_GET);
+		$_POST   = ocArrayMap(array($this, $func), $_POST);
+		$_COOKIE = ocArrayMap(array($this, 'stripSqlTag'), $_COOKIE);
 	}
 
 	/**
@@ -61,7 +52,7 @@ class Request extends Base
 	 * @param string|number $content
 	 * @return mixed
 	 */
-	public static function stripSqlTag($content)
+	public function stripSqlTag($content)
 	{
 		if (is_numeric($content) || is_string($content)) {
 			$content = str_ireplace(OC_SQL_TAG, OC_EMPTY, $content);
@@ -75,7 +66,7 @@ class Request extends Base
 	 * @param string $content
 	 * @return mixed
 	 */
-	public static function cleanSqlTag($content)
+	public function cleanSqlTag($content)
 	{
 		if (is_numeric($content) || is_string($content)) {
 			$content = str_ireplace(OC_SQL_TAG, OC_EMPTY, stripslashes($content));
@@ -87,79 +78,79 @@ class Request extends Base
 	/**
 	 * 判断是否是GET请求
 	 */
-	public static function isGet()
+	public function isGet()
 	{
-		return self::getMethod() == 'GET';
+		return $this->getMethod() == 'GET';
 	}
 
 	/**
 	 * 判断是否是POST请求
 	 */
-	public static function isPost()
+	public function isPost()
 	{
-		return self::getMethod() == 'POST';
+		return $this->getMethod() == 'POST';
 	}
 
 	/**
 	 * 判断是否是PUT请求
 	 */
-	public static function isPut()
+	public function isPut()
 	{
-		return self::getMethod() == 'PUT';
+		return $this->getMethod() == 'PUT';
 	}
 
 	/**
 	 * 判断是否是PUT请求
 	 */
-	public static function isPatch()
+	public function isPatch()
 	{
-		return self::getMethod() == 'PATCH';
+		return $this->getMethod() == 'PATCH';
 	}
 
 	/**
 	 * 判断是否是DELETE请求
 	 */
-	public static function isDelete()
+	public function isDelete()
 	{
-		return self::getMethod() == 'DELETE';
+		return $this->getMethod() == 'DELETE';
 	}
 
 	/**
 	 * 判断是否是PUT请求
 	 */
-	public static function isHead()
+	public function isHead()
 	{
-		return self::getMethod() == 'HEAD';
+		return $this->getMethod() == 'HEAD';
 	}
 
 	/**
 	 * 判断是否是OPTIONS请求
 	 */
-	public static function isOptions()
+	public function isOptions()
 	{
-		return self::getMethod() == 'OPTIONS';
+		return $this->getMethod() == 'OPTIONS';
 	}
 
 	/**
 	 * 判断是否是TRACE请求
 	 */
-	public static function isTrace()
+	public function isTrace()
 	{
-		return self::getMethod() == 'TRACE';
+		return $this->getMethod() == 'TRACE';
 	}
 
 	/**
 	 * 判断是否是CONNECT请求
 	 */
-	public static function isConnect()
+	public function isConnect()
 	{
-		return self::getMethod() == 'CONNECT';
+		return $this->getMethod() == 'CONNECT';
 	}
 
 	/**
 	 * 判断是否是AJAX请求
 	 */
-	public static function isAjax()
+	public function isAjax()
 	{
 		return isset($_SERVER['HTTP_X_REQUESTED_WITH'])
 				&& strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
@@ -169,7 +160,7 @@ class Request extends Base
 	/**
 	 * 手动设置为AJAX请求
 	 */
-	public static function setAjax()
+	public function setAjax()
 	{
 		$_SERVER['HTTP_X_REQUESTED_WITH'] = 'xmlhttprequest';
 		if (isset($_GET['oc_ajax'])) {
@@ -181,7 +172,7 @@ class Request extends Base
 	 * 获取请求方式
 	 * @return null
 	 */
-	public static function getMethod()
+	public function getMethod()
 	{
 		if (OC_PHP_SAPI == 'cli') {
 			$method = strtoupper(ocGet('argv.2', $_SERVER));
@@ -203,9 +194,9 @@ class Request extends Base
 	 * @param string|array $default
 	 * @return array|null|string
 	 */
-	public static function getGet($key = null, $default = null)
+	public function getGet($key = null, $default = null)
 	{
-		return self::getRequestValue($_GET, $key, $default);
+		return $this->getRequestValue($_GET, $key, $default);
 	}
 
 	/**
@@ -214,9 +205,9 @@ class Request extends Base
 	 * @param string $default
 	 * @return array|null|string
 	 */
-	public static function getPost($key = null, $default = null)
+	public function getPost($key = null, $default = null)
 	{
-		return self::getRequestValue($_POST, $key, $default);
+		return $this->getRequestValue($_POST, $key, $default);
 	}
 
 	/**
@@ -225,9 +216,9 @@ class Request extends Base
 	 * @param string|array $default
 	 * @return array|null|string
 	 */
-	public static function getCookie($key = null, $default = null)
+	public function getCookie($key = null, $default = null)
 	{
-		return self::getRequestValue($_COOKIE, $key, $default);
+		return $this->getRequestValue($_COOKIE, $key, $default);
 	}
 
 	/**
@@ -236,9 +227,9 @@ class Request extends Base
 	 * @param string|array $default
 	 * @return array|null|string
 	 */
-	public static function getRequest($key = null, $default = null)
+	public function getRequest($key = null, $default = null)
 	{		
-		return self::getRequestValue($_REQUEST, $key, $default);
+		return $this->getRequestValue($_REQUEST, $key, $default);
 	}
 
 	/**
@@ -248,11 +239,11 @@ class Request extends Base
 	 * @param string|array $default
 	 * @return array|null|string
 	 */
-	public static function getRequestValue(array $data, $key = null, $default = null)
+	public function getRequestValue(array $data, $key = null, $default = null)
 	{
 		if ($key === null) {
 			$data = ocArrayMap('trim', $data);
-			return Filter::request($data);
+			return Ocara::services()->filter->request($data);
 		}
 		if(array_key_exists($key, $data)) {
 			if (is_array($data[$key])) {
@@ -263,7 +254,7 @@ class Request extends Base
 			if (ocEmpty($value) && $default !== null) {
 				return $default;
 			}
-			return Filter::request($value);
+			return Ocara::services()->filter->request($value);
 		}
 
 		return $default === null ? OC_EMPTY : $default;
@@ -275,7 +266,7 @@ class Request extends Base
 	 * @param string $default
 	 * @return null|string
 	 */
-	public static function getServer($key = null, $default = null)
+	public function getServer($key = null, $default = null)
 	{
 		if ($key === null) {
 			return $_SERVER;
@@ -293,7 +284,7 @@ class Request extends Base
 	 * @param string $param
 	 * @return array|bool|\mix|mixed|\stdClass|string
 	 */
-	public static function decodeJson($param)
+	public function decodeJson($param)
 	{
 		return json_decode(json_decode(html_entity_decode(stripslashes($param))));
 	}

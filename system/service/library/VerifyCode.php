@@ -7,8 +7,9 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Service;
+
+use Ocara\Ocara;
 use Ocara\ServiceBase;
-use Ocara\Font;
 
 class VerifyCode extends ServiceBase
 {
@@ -180,7 +181,7 @@ class VerifyCode extends ServiceBase
 	{
 		$size 	 = ocGet('size', $fontInfo, 12);
 		$color 	 = ocGet('color', $fontInfo, '#FFFFFF');
-		$font 	 = Font::get(ocGet('font', $fontInfo));
+		$font 	 = Ocara::services()->font->get(ocGet('font', $fontInfo));
 
 		$contentInfo = imagettfbbox($size, 0, $font, $content);
 		$contentW 	 = $contentInfo[4] - $contentInfo[6];

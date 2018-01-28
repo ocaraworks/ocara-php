@@ -21,30 +21,22 @@ final class Config extends Base
 	/**
 	 * 数据变量
 	 */
-	private static $_data = array();
-	private static $_ocaraData = array();
-	
-	/**
-	 * 单例模式
-	 */
-	private static $_instance = null;
-	
-	private function __clone(){}
-	private function __construct(){}
+	protected $_ocData = array();
 
+	/**
+	 * 获取实例
+	 * @return mixed
+	 */
 	public static function getInstance()
 	{
-		if (self::$_instance === null) {
-			self::$_instance = new self();
-			self::init();
-		}
-		return self::$_instance;
+		$instance = new static();
+		return $instance->init();
 	}
-	
+
 	/**
 	 * 初始化
 	 */
-	public static function init()
+	public function init()
 	{
 		if (!file_exists($path = OC_SYS . 'data/default.php')) {
 			Error::show('Lost ocara config file: default.php.');
@@ -52,15 +44,15 @@ final class Config extends Base
 		
 		include ($path);
 
-		if (!(isset($OC_CONF) && self::$_ocaraData = $OC_CONF)) {
+		if (!(isset($OC_CONF) && $this->_ocData = $OC_CONF)) {
 			die('Lost config : $OC_CONF.');
 		}
 
 		if (is_dir($path = OC_ROOT . 'resource/conf')) {
-			self::loadControlConfig($path);
+			$this->loadControlConfig($path);
 		}
 
-		self::$_data or die('Lost config : $CONF.');
+		$this->_properties or die('Lost config : $CONF.');
 	}
 
 	/**
@@ -70,7 +62,7 @@ final class Config extends Base
 	 * @param string $sub
 	 * @param string $module
 	 */
-	public static function loadModuleConfig($dir, $type, $sub, $module)
+	public function loadModuleConfig($dir, $type, $sub, $module)
 	{
 		$path  = OC_ROOT . 'resource/' . $dir;
 		$paths = array();
@@ -87,14 +79,14 @@ final class Config extends Base
 			}
 		}
 
-		self::loadControlConfig($paths);
+		$this->loadControlConfig($paths);
 	}
 
 	/**
 	 * 加载控制器动作的配置
 	 * @param string $path
 	 */
-	public static function loadActionConfig($path)
+	public function loadActionConfig($path)
 	{
 		$path = OC_ROOT . 'resource/' . rtrim($path, OC_DIR_SEP);
 		$paths = array();
@@ -112,7 +104,7 @@ final class Config extends Base
 			}
 		}
 
-		self::loadControlConfig($paths);
+		$this->loadControlConfig($paths);
 	}
 
 	/**
@@ -122,19 +114,19 @@ final class Config extends Base
 	 * $param string $sub
 	 * @param string $module
 	 */
-	public static function loadApplicationConfig($dir, $type, $sub = null, $module = null)
+	public function loadApplicationConfig($dir, $type, $sub = null, $module = null)
 	{
-		self::loadModuleConfig($dir, $type, $sub, $module);
-		self::loadActionConfig(ocDir(array($dir, $type, $sub)));
+		$this->loadModuleConfig($dir, $type, $sub, $module);
+		$this->loadActionConfig(ocDir(array($dir, $type, $sub)));
 	}
 
 	/**
 	 * 加载配置
 	 * @param string $path
 	 */
-	public static function loadControlConfig($path)
+	public function loadControlConfig($path)
 	{
-		$CONF = &self::$_data;
+		$CONF = &$this->_properties;
 		$path = ocForceArray($path);
 
 		foreach ($path as $value) {
@@ -158,70 +150,75 @@ final class Config extends Base
 	 * @param string $key
 	 * @param mixed $value
 	 */
-	public static function set($key, $value)
+	public function set($key, $value)
 	{
-		ocSet(self::$_data, $key, $value);
+		ocSet($this->_properties, $key, $value);
 	}
-	
+
 	/**
 	 * 获取配置
 	 * @param string $key
+	 * @return array|bool|mixed|null
 	 */
-	public static function get($key = null)
+	public function get($key = null)
 	{
 		if (func_num_args()) {
-			if (ocKeyExists($key, self::$_data)) {
-				return ocGet($key, self::$_data);
+			if (ocKeyExists($key, $this->_properties)) {
+				return ocGet($key, $this->_properties);
 			}
-			return self::getDefault($key);
+			return $this->getDefault($key);
 		}
 		
-		return self::$_data;
+		return $this->_properties;
 	}
-	
+
 	/**
 	 * 获取默认配置
 	 * @param string $key
+	 * @return array|bool|mixed|null
 	 */
-	public static function getDefault($key = null)
+	public function getDefault($key = null)
 	{
 		if (func_num_args()) {
-			return ocGet($key, self::$_ocaraData);
+			return ocGet($key, $this->_ocData);
 		}
 
-		return self::$_ocaraData;
+		return $this->_ocData;
 	}
-	
+
 	/**
 	 * 检查配置键名是否存在
 	 * @param string $key
+	 * @return array|bool|mixed|null
 	 */
-	public static function exists($key = null)
+	public function exists($key = null)
 	{
-		return ocKeyExists($key, self::$_data);
+		return ocKeyExists($key, $this->_properties);
 	}
-	
+
 	/**
 	 * 获取配置
 	 * @param string $key
+	 * @return array|bool|null
 	 */
-	public static function getConfig($key)
+	public function getConfig($key)
 	{
-		if (($result = ocCheckKey(false, $key, self::$_data, true))
-			|| ($result = ocCheckKey(false, $key, self::$_ocaraData, true))
+		if (($result = ocCheckKey(false, $key, $this->_properties, true))
+			|| ($result = ocCheckKey(false, $key, $this->_ocData, true))
 		) {
 			return $result;
 		}
 		
 		return array();
 	}
-	
+
 	/**
 	 * 删除配置
 	 * @param string $key
+	 * @return array|null
 	 */
-	public static function del($key)
+	public function delete($key)
 	{
-		return ocDel(self::$_data, $key);
+		return ocDel($this->_properties, $key);
 	}
 }

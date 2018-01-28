@@ -7,9 +7,9 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Develop;
-use Ocara\Request;
+
 use Ocara\Develop;
-use Ocara\Config;
+use Ocara\Ocara;
 use Ocara\Service\File;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -24,7 +24,8 @@ class controller_admin
 
 	public function add(array $data = array())
 	{
-		$data  = $data ? : Request::getPost();
+		$request = Ocara::services()->request;
+		$data  = $data ? : $request->getPost();
 		$cname = explode(OC_DIR_SEP, trim($data['cname'], OC_DIR_SEP));
 		
 		if (count($cname) >= 2) {
@@ -37,21 +38,21 @@ class controller_admin
 
 		$this->vtype      = $data['vtype'];
 		$this->ttype      = $data['ttype'];
-		$this->createview = Request::getPost('createview');
-		$this->controllerType = Request::getPost('controllerType');
+		$this->createview = $request->getPost('createview');
+		$this->controllerType = $request->getPost('controllerType');
 		$path = OC_ROOT . 'resource/conf/control';
 	
 		if ($this->mdlname) {
 			if (is_dir($path = $path . OC_DIR_SEP . $this->mdlname)) {
-				Config::loadControlConfig($path);
+				Ocara::services()->config->loadControlConfig($path);
 			}
 		}
 		
 		if (is_dir($path = $path . OC_DIR_SEP . $this->cname)) {
-			Config::loadControlConfig($path);
+			Ocara::services()->config->loadControlConfig($path);
 		}
 
-		$CONF = Config::get();
+		$CONF = Ocara::services()->config->get();
 		$this->tplType = ocGet('TEMPLATE.file_type', $CONF, 'html');
 		
 		$this->createController();

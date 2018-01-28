@@ -91,6 +91,10 @@ $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
 	'transaction'	=> 'Ocara\Transaction',
 	'pager' 		=> 'Ocara\Service\Pager',
 	'validator' 	=> 'Ocara\Service\Validator',
+	'file'			=> 'Ocara\Service\File',
+	'Font'			=> 'Ocara\Font',
+	'staticPath'	=> 'Ocara\StaticPath',
+	'Call'			=> 'Ocara\Call',
 );
 
 $OC_CONF['CONTROLLER_SERVICE_CLASS'] = array(
@@ -102,6 +106,13 @@ $OC_CONF['CONTROLLER_SERVICE_CLASS'] = array(
 	'Rest' => array(
 		'view' => 'Ocara\View\Rest',
 	),
+);
+
+/*
+ * 数据库类型映射
+ */
+$OC_CONF['DATABASE_TYPE_MAP'] = array(
+	'Mysql' => 'Mysqli',
 );
 
 /*
@@ -215,6 +226,16 @@ $OC_CONF['VIEW_ENGINE_FUNCTIONS'] = array(
 	'ocSimpleUrl', 	'ocUrl', 	'ocConfig',  	'ocGet',
 	'ocSet', 		'ocDel',	'ocKeyExists',	'ocFileExists',
 	'ocPrint', 		'ocDump',
+);
+
+/*
+ * JS事件
+ */
+$OC_CONF['JS_EVENTS'] = array(
+	'click', 	'dbclick',    'change', 	'load', 	 'focus',
+	'mouseout', 'mouseover',  'mousedown', 	'mousemove', 'mouseup',
+	'submit',	'keyup', 	  'keypress',   'keydown',  'error',
+	'abort', 	'resize', 	  'reset', 	  	'select', 	 'unload'
 );
 
 /*

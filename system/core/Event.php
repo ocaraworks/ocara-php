@@ -14,7 +14,6 @@ use Ocara\Interfaces\Middleware;
 class Event extends Basis implements EventInterface
 {
     protected $_name;
-    protected $_handlers;
     protected $_running;
     protected $_registry;
 
@@ -75,8 +74,8 @@ class Event extends Basis implements EventInterface
             }
         }
 
-        $count = count($this->_handlers);
-        $this->_handlers[$count] = array(
+        $count = count($this->_properties);
+        $this->_properties[$count] = array(
             'callback' => $callback,
             'index' => $count,
             'priority' => $priority,
@@ -97,7 +96,7 @@ class Event extends Basis implements EventInterface
     {
         $key = $this->_getKey($name);
         if (is_integer($key)) {
-            $this->_handlers[$name] = $callback;
+            $this->_properties[$name] = $callback;
         }
 
         return $this;
@@ -118,7 +117,7 @@ class Event extends Basis implements EventInterface
             }
         } elseif(is_integer($name)) {
             $name = $name - 1;
-            if (isset($this->_handlers[$name])) {
+            if (isset($this->_properties[$name])) {
                 $key = $name;
             }
         }
@@ -136,7 +135,7 @@ class Event extends Basis implements EventInterface
     {
         $key = $this->_getKey($name);
         if (is_integer($key)) {
-            $this->_handlers[$key]['priority'] = $priority;
+            $this->_properties[$key]['priority'] = $priority;
         }
 
         return $this;
@@ -151,7 +150,7 @@ class Event extends Basis implements EventInterface
     {
         $key = $this->_getKey($name);
         if (is_integer($key)) {
-            ocDel($this->_handlers, $key);
+            ocDel($this->_properties, $key);
         }
 
         return $this;
@@ -165,12 +164,12 @@ class Event extends Basis implements EventInterface
     public function get($name = null)
     {
         if (!isset($name)) {
-            return $this->_handlers;
+            return $this->_properties;
         }
 
         $key = $this->_getKey($name);
         if (is_integer($key)) {
-            return $this->_handlers[$name];
+            return $this->_properties[$name];
         }
 
         return null;
@@ -192,7 +191,7 @@ class Event extends Basis implements EventInterface
      */
     public function clear()
     {
-        $this->_handlers = array();
+        $this->_properties = array();
         return $this;
     }
 
@@ -203,7 +202,7 @@ class Event extends Basis implements EventInterface
      */
     public function fire(array $params = array())
     {
-        $handlers = $this->_handlers;
+        $handlers = $this->_properties;
 
         if ($handlers) {
             array_multisort(array_column(
@@ -215,13 +214,13 @@ class Event extends Basis implements EventInterface
             $params[] = $this;
             $this->_running = true;
 
-            foreach ($this->_handlers as $row) {
+            foreach ($this->_properties as $row) {
                 $callback = $row['callback'];
                 if ($this->_running) {
                     if (is_object($callback)) {
                         $callback = array($callback, 'handler');
                     }
-                    return Call::run($callback, $params);
+                    return Ocara::services()->call->run($callback, $params);
                 }
             }
         }

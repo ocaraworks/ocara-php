@@ -14,49 +14,33 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Lang extends Base
 {
-	private static $_data = null;
-	private static $_ocData = null;
-
-	/**
-	 * 单例模式
-	 */
-	private static $_instance = null;
-	
-	private function __clone(){}
-	private function __construct(){}
-
-	public static function getInstance()
-	{
-		if (self::$_instance === null) {
-			self::$_instance = new self();
-		}
-		return self::$_instance;
-	}
+	protected $_properties = null;
+	protected $_ocData = null;
 
 	/**
 	 * 初始化
 	 * @throws Exception
 	 */
-	public static function init()
+	public function __construct()
 	{
-		if  (self::$_ocData === null){
-			self::$_ocData = array();
+		if  ($this->_ocData === null){
+			$this->_ocData = array();
 			$file = Ocara::language() . '.php';
 			$path = OC_SYS . 'data/languages/' . $file;
 
 			if (file_exists($path)) {
 				$lang = include ($path);
 				if ($lang) {
-					self::$_ocData = ocForceArray($lang);
+					$this->_ocData = ocForceArray($lang);
 				}
 			} else {
 				throw new Exception("Lost ocara language file: {$file}.");
 			}
 		}
 
-		if (self::$_data === null) {
-			self::$_data = array();
-			self::loadApplicationConfig('lang', Ocara::language(), 'control');
+		if ($this->_properties === null) {
+			$this->_properties = array();
+			$this->loadApplicationConfig('lang', Ocara::language(), 'control');
 		}
 	}
 
@@ -66,7 +50,7 @@ class Lang extends Base
 	 * @param string $type
 	 * @param string $sub
 	 */
-	public static function loadApplicationConfig($dir, $type, $sub = null)
+	public function loadApplicationConfig($dir, $type, $sub = null)
 	{
 		$path  = OC_ROOT . 'resource/' . $dir;
 		extract(Ocara::getRoute());
@@ -92,10 +76,10 @@ class Lang extends Base
 			}
 		}
 
-		$lang = self::loadControlConfig($paths);
+		$lang = $this->loadControlConfig($paths);
 		if ($lang) {
-			array_unshift($lang, self::$_data);
-			self::$_data = call_user_func_array('array_merge', $lang);
+			array_unshift($lang, $this->_properties);
+			$this->_properties = call_user_func_array('array_merge', $lang);
 		}
 	}
 
@@ -104,7 +88,7 @@ class Lang extends Base
 	 * @param array $paths
 	 * @return array
 	 */
-	public static function loadControlConfig($paths)
+	public function loadControlConfig($paths)
 	{
 		$path = ocForceArray($paths);
 		$data = array();
@@ -134,18 +118,16 @@ class Lang extends Base
 	 * @return array|null
 	 * @throws Exception
 	 */
-	public static function get($key = null, array $params = array())
+	public function get($key = null, array $params = array())
 	{
-		self::init();
-
 		if (func_num_args()) {
-			if (ocKeyExists($key, self::$_data)) {
-				return ocGetLanguage(self::$_data, $key, $params);
+			if (ocKeyExists($key, $this->_properties)) {
+				return ocGetLanguage($this->_properties, $key, $params);
 			}
-			return self::getDefault($key, $params);
+			return $this->getDefault($key, $params);
 		}
-		
-		return self::$_data;
+
+		return $this->_properties;
 	}
 
 	/**
@@ -155,26 +137,23 @@ class Lang extends Base
 	 * @return array|null
 	 * @throws Exception
 	 */
-	public static function getDefault($key = null, array $params = array())
+	public function getDefault($key = null, array $params = array())
 	{
-		self::init();
-
 		if (func_num_args()) {
-			return ocGetLanguage(self::$_ocData, $key, $params);
+			return ocGetLanguage($this->_ocData, $key, $params);
 		}
-		
-		return self::$_ocData;
+
+		return $this->_ocData;
 	}
-	
+
 	/**
 	 * 设置语言
 	 * @param string|array $key
 	 * @param mixed $value
 	 */
-	public static function set($key, $value)
+	public function set($key, $value)
 	{
-		self::init();
-		ocSet(self::$_data, $key, $value);
+		ocSet($this->_properties, $key, $value);
 	}
 
 	/**
@@ -183,10 +162,9 @@ class Lang extends Base
 	 * @return array|bool|mixed|null
 	 * @throws Exception
 	 */
-	public static function exists($key = null)
+	public function exists($key = null)
 	{
-		self::init();
-		return ocKeyExists($key, self::$_data);
+		return ocKeyExists($key, $this->_properties);
 	}
 
 	/**
@@ -195,9 +173,8 @@ class Lang extends Base
 	 * @return array|null
 	 * @throws Exception
 	 */
-	public static function del($key)
+	public function delete($key)
 	{
-		self::init();
-		return ocDel(self::$_data, $key);
+		return ocDel($this->_properties, $key);
 	}
 }

@@ -7,7 +7,8 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Develop;
-use Ocara\Request;
+
+use Ocara\Ocara;
 use Ocara\Develop;
 use Ocara\Service\File;
 
@@ -18,8 +19,8 @@ class users_admin
 
 	public function add()
 	{
-		$this->_username = Request::getPost('username');
-		$this->_password = Request::getPost('password');
+		$this->_username = Ocara::services()->request->getPost('username');
+		$this->_password = Ocara::services()->request->getPost('password');
 		$this->edit();
 	}
 

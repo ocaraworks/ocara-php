@@ -12,9 +12,11 @@ class Font extends Base
 {
     /**
      * 获取字体路径
-     * @param string $font
+     * @param null|string $font
+     * @return bool|mixed|string
+     * @throws Exception\Exception
      */
-    public static function get($font)
+    public function get($font)
     {
         if ($font) {
             if (!preg_match('/^.*\.\w{2,5}$/i', $font)) {

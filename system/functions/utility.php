@@ -6,13 +6,12 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-use Ocara\Config;
-use Ocara\Url;
+
+use Ocara\Ocara;
 use Ocara\Error;
 use Ocara\Exception\Exception;
 use Ocara\Exception\ErrorException;
 use Ocara\Response;
-use Ocara\Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -122,7 +121,7 @@ function ocCheckKey($exists, $key, array $data, $return = false, $default = null
  */
 function ocConfig($key, $default = null, $unempty = false)
 {
-	if ($result = Config::getConfig($key)) {
+	if ($result = Ocara::services()->config->getConfig($key)) {
 		return $unempty && ocEmpty($result[0]) ? $default : $result[0];
 	}
 
@@ -330,6 +329,16 @@ function ocErrorHandler($level, $message, $file, $line, $context = '')
 function ocExceptionHandler($exception)
 {
 	Error::getInstance()->handler($exception);
+}
+
+/**
+ * 获取系统服务
+ * @param $name
+ * @return mixed
+ */
+function ocService($name)
+{
+	return Ocara::services()->get($name);
 }
 
 /**
@@ -541,7 +550,7 @@ function ocBasename($filePath)
  */
 function ocUrl($route, $params = array(), $relative = false, $urlType = false, $static = true)
 {
-	return Url::create($route, $params, $relative, $urlType, $static);
+	return Ocara::services()->url->create($route, $params, $relative, $urlType, $static);
 }
 
 /**

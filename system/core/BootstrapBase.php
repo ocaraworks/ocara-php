@@ -70,10 +70,10 @@ abstract class BootstrapBase extends ServiceProvider implements ServiceProviderI
             }
         }
 
-        Config::loadApplicationConfig('conf', 'control');
+        Ocara::services()->config->loadApplicationConfig('conf', 'control');
         Ocara::container()->bindSingleton($controlClass);
 
-        $Control = Ocara::container()->create($controlClass);
+        $Control = Ocara::container()->create($controlClass, array($route));
         if ($method != '_action' && !method_exists($Control, $method)) {
             Error::show('no_special_class', array('Action', $uaction));
         }

@@ -12,8 +12,6 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class FormManager extends ServiceProvider
 {
-	protected $_forms = array();
-
 	/**
 	 * 注册服务
 	 * @param array $data
@@ -41,7 +39,7 @@ class FormManager extends ServiceProvider
 	{
 		$form = new Form($name);
 		$form->setRoute($this->getRoute());
-		$this->_forms[$name] = $form;
+		$this->set($name, $form);
 
 		return $form;
 	}
@@ -58,7 +56,8 @@ class FormManager extends ServiceProvider
 			$this->_showCheckFormError('failed_validate_token');
 		}
 
-		foreach ($this->_forms as $formName => $form) {
+		$properties = $this->get();
+		foreach ($properties as $formName => $form) {
 			$this->formToken->setRoute($form->getRoute());
 			if ($this->formToken->exists($formName, $postToken)) {
 				$postForm = $form;
@@ -75,29 +74,13 @@ class FormManager extends ServiceProvider
 	}
 
 	/**
-	 * 获取表单
-	 * @param string $name
-	 * @return array|bool
-	 */
-	public function getForm($name = null)
-	{
-		if (func_num_args()) {
-			return $this->hasForm($name) ? $this->_forms[$name] : null;
-		}
-
-		return $this->_forms;
-	}
-
-	/**
 	 * 是否存在表单
 	 * @param $name
 	 * @return bool
 	 */
-	public function hasForm($name)
+	public function has($name)
 	{
-		return isset($this->_forms[$name])
-			&& is_object($obj = $this->_forms[$name])
-			&& $obj instanceof Form;
+		return $this->has($name) && is_object($obj = $this->get($name)) && $obj instanceof Form;
 	}
 
 	/**
@@ -151,7 +134,7 @@ class FormManager extends ServiceProvider
 	private function _showCheckFormError($errorType, $params = array(), $data = array())
 	{
 		$error['errorType'] = $errorType;
-		$error['errorInfo'] = Lang::get($errorType, $params);;
+		$error['errorInfo'] = Ocara::services()->lang->get($errorType, $params);;
 		$error['errorData'] = $data;
 
 		if ($this->event('checkError')->get()) {

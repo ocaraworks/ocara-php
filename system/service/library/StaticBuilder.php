@@ -21,9 +21,7 @@ class StaticBuilder extends ServiceBase
 	 */
 	public function __construct()
 	{
-		StaticPath::getInstance();
-
-		if (empty(StaticPath::$open)) {
+		if (empty(Ocara::services()->staticPath->open)) {
 			$this->showError('not_exists_open_config');
 		}
 
@@ -36,7 +34,7 @@ class StaticBuilder extends ServiceBase
 	 */
 	public function genAll($callback)
 	{
-		$params = StaticPath::$params;
+		$params = Ocara::services()->staticPath->params;
 
 		if (empty($params)) return;
 
@@ -64,7 +62,7 @@ class StaticBuilder extends ServiceBase
 		extract(Ocara::parseRoute($route));
 		
 		foreach ($data as $row) {
-			list($file, $param) = StaticPath::getStaticFile($module, $controller, $action, $row);
+			list($file, $param) = Ocara::services()->staticPath->getStaticFile($module, $controller, $action, $row);
 			$url = ocUrl(array($module, $controller, $action), $param, false, false, false);
 			$this->_createHtml($file, $url);
 		}
@@ -83,8 +81,8 @@ class StaticBuilder extends ServiceBase
 		$args = preg_match_all('/{(\w+)}/i', $params, $mt) ? $mt[1] : array();
 		$args = array($module, $controller, $action, $args);
 
-		$data    = $callback ? Call::run($callback, $args) : null;
-		$pathMap = StaticPath::getMvcPathMap($module, $controller, $action);
+		$data    = $callback ? Ocara::services()->call->run($callback, $args) : null;
+		$pathMap = Ocara::services()->staticPath->getMvcPathMap($module, $controller, $action);
 
 		$this->_genRow($pathMap, $params, $module, $controller, $action, $data);
 	}
@@ -105,7 +103,7 @@ class StaticBuilder extends ServiceBase
 		if ($data) {
 			foreach ($data as $row) {
 				if (is_array($row) && $row) {
-					$paramsPathMap = StaticPath::getParamsPathMap(
+					$paramsPathMap = Ocara::services()->staticPath->getParamsPathMap(
 						$params, $module, $controller, $action, $row
 					);
 					list($file, $param) = $paramsPathMap;
@@ -118,7 +116,7 @@ class StaticBuilder extends ServiceBase
 		} else {
 			$url  = ocUrl($route, array(), false, false, false);
 			$file = trim(str_ireplace('{p}', OC_EMPTY, $mvcPathMap), OC_DIR_SEP);
-			$file = $file. '.' . StaticPath::$fileType;
+			$file = $file. '.' . Ocara::services()->staticPath->fileType;
 			$this->_createHtml($file, $url);
 		}
 	}

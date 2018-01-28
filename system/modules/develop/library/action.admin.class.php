@@ -7,10 +7,9 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Develop;
-use Ocara\Request;
+
+use Ocara\Ocara;
 use Ocara\Develop;
-use Ocara\Config;
-use Ocara\Service\File;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -24,11 +23,12 @@ class action_admin
 
 	public function add(array $data = array())
 	{
-		$data    = $data ? : Request::getPost();
+		$request = Ocara::services()->request;
+		$data    = $data ? : $request->getPost();
 		$actname = explode(OC_DIR_SEP, trim($data['actname'], OC_DIR_SEP));
 		
 		$this->ttype      = $data['ttype'];
-		$this->createview = Request::getPost('createview');
+		$this->createview = $request->getPost('createview');
 		$this->controllerType = 'Controller';
 
 		if (empty($actname) || empty($this->ttype)) {
@@ -53,19 +53,19 @@ class action_admin
 	
 		if ($this->mdlname) {
 			if (is_dir($path = $path . OC_DIR_SEP . $this->mdlname)) {
-				Config::loadControlConfig($path);
+				Ocara::services()->config->loadControlConfig($path);
 			}
 		}
 
 		if (is_dir($path = $path . OC_DIR_SEP . $this->cname)) {
-			Config::loadControlConfig($path);
+			Ocara::services()->config->loadControlConfig($path);
 		}
 
 		if (is_dir($path = $path . OC_DIR_SEP . $this->actionName)) {
-			Config::loadControlConfig($path);
+			Ocara::services()->config->loadControlConfig($path);
 		}
 
-		$CONF = Config::get();
+		$CONF = Ocara::services()->config->get();
 		$this->tplType = ocGet('TEMPLATE.file_type', $CONF, 'html');
 		$this->createAction();
 	}
@@ -150,8 +150,8 @@ class action_admin
 
 		$content  .= "}";
 
-		File::createFile($controlPath . OC_DIR_SEP . $actionFile , 'wb');
-		File::writeFile($controlPath . OC_DIR_SEP . $actionFile, $content);
+		Ocara::services()->file->createFile($controlPath . OC_DIR_SEP . $actionFile , 'wb');
+		Ocara::services()->file->writeFile($controlPath . OC_DIR_SEP . $actionFile, $content);
 		
 		$this->createview && $this->createView();
 		

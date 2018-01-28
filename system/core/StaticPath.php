@@ -12,39 +12,22 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class StaticPath extends Base
 {
-	/**
-	 * 单例模式
-	 */
-	private static $_instance = null;
-
-	public static $open;
-	public static $fileType;
-	public static $route;
-	public static $params;
-	public static $delimiter;
-
-	private function __clone(){}
-	private function __construct(){}
-
-	public static function getInstance()
-	{
-		if (self::$_instance === null) {
-			self::$_instance = new self();
-			self::init();
-		}
-		return self::$_instance;
-	}
+	public $open;
+	public $fileType;
+	public $route;
+	public $params;
+	public $delimiter;
 
 	/**
 	 * 初始化函数
 	 */
-	private function init()
+	public function __construct()
 	{
-		self::$open      = ocConfig('STATIC.open', 0);
-		self::$fileType  = ocConfig('STATIC.file_type', 'html');
-		self::$route     = ocConfig('STATIC.route', null);
-		self::$params    = ocConfig('STATIC.params', array());
-		self::$delimiter = ocConfig('STATIC.delimiter', '-');
+		$this->open      = ocConfig('STATIC.open', 0);
+		$this->fileType  = ocConfig('STATIC.file_type', 'html');
+		$this->route     = ocConfig('STATIC.route', null);
+		$this->params    = ocConfig('STATIC.params', array());
+		$this->delimiter = ocConfig('STATIC.delimiter', '-');
 	}
 
 	/**
@@ -55,11 +38,11 @@ class StaticPath extends Base
 	 * @param string $data
 	 * @return array|bool
 	 */
-	public static function getStaticFile($module, $controller, $action, $data = null)
+	public function getStaticFile($module, $controller, $action, $data = null)
 	{
 		if (empty($controller) || empty($action)) return false;
 
-		$params = self::$params;
+		$params = $this->params;
 
 		if ($module) {
 			if (!array_key_exists($module, $params)) {
@@ -79,7 +62,7 @@ class StaticPath extends Base
 		
 		$params = $params[$action];
 		$mvcPathMap = self::getMvcPathMap($module, $controller, $action);
-		list($file, $param) = self::getParamsPathMap($params, $module, $controller, $action, $data);
+		list($file, $param) = $this->getParamsPathMap($params, $module, $controller, $action, $data);
 		$file = str_ireplace('{p}', $file, $mvcPathMap);
 
 		return array($file, $param);
@@ -94,7 +77,7 @@ class StaticPath extends Base
 	 * @return array
 	 * @throws Exception\Exception
 	 */
-	private static function getParams($offset, $params, $data, $paramsStr)
+	private function getParams($offset, $params, $data, $paramsStr)
 	{
 		$paramData = array();
 
@@ -115,9 +98,9 @@ class StaticPath extends Base
 					}
 				} else {
 					$getKey = (integer)$key + $offset;
-					$value  = ($value = Request::getGet($getKey)) ? urlencode($value) : false;
+					$value  = ($value = Ocara::services()->request->getGet($getKey)) ? urlencode($value) : false;
 				}
-				$paramsStr = trim(str_ireplace($mt[1], $value, $paramsStr), self::$delimiter);
+				$paramsStr = trim(str_ireplace($mt[1], $value, $paramsStr), $this->delimiter);
 				$paramData[$name] = $value;
 			} else
 				Error::show('fault_static_field');
@@ -134,9 +117,9 @@ class StaticPath extends Base
 	 * @param string $action
 	 * @param array $data
 	 */
-	public static function getParamsPathMap($params, $module, $controller, $action, $data)
+	public function getParamsPathMap($params, $module, $controller, $action, $data)
 	{
-		$extensionName = '.' . self::$fileType;
+		$extensionName = '.' . $this->fileType;
 
 		$offset     = $module ? 3 : 2;
 		$index 		= strrpos($params, OC_DIR_SEP);
@@ -150,8 +133,8 @@ class StaticPath extends Base
 		$pathParams = $pathStr ? explode(OC_DIR_SEP, trim($pathStr, OC_DIR_SEP)) : array();
 		$fileParams = $fileStr ? explode(self::$delimiter, trim($fileStr, self::$delimiter)) : array();
 
-		list($pathStr, $paramData) = self::getParams($offset, $pathParams, $data, $pathStr, true);
-		list($fileStr, $paramData) = self::getParams($offset + count($pathParams), $fileParams, $data, $fileStr);
+		list($pathStr, $paramData) = $this->getParams($offset, $pathParams, $data, $pathStr, true);
+		list($fileStr, $paramData) = $this->getParams($offset + count($pathParams), $fileParams, $data, $fileStr);
 
 		$path = ($fileStr ? $fileStr : $action) . $extensionName;
 		return array($path, $paramData);
@@ -163,9 +146,9 @@ class StaticPath extends Base
 	 * @param string $controller
 	 * @param string $action
 	 */
-	public static function getMvcPathMap($module, $controller, $action)
+	public function getMvcPathMap($module, $controller, $action)
 	{
-		if (self::$route && preg_match('/^{c}[\/-]{a}[\/-]{p}$/i', self::$route)) {
+		if ($this->route && preg_match('/^{c}[\/-]{a}[\/-]{p}$/i', self::$route)) {
 			$search  = array('{c}', '{a}');
 			$replace = array($controller, $action);
 			$module  = $module ? $module . OC_DIR_SEP : false;

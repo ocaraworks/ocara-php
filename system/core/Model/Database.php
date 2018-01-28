@@ -7,8 +7,8 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Model;
+
 use Ocara\Ocara;
-use Ocara\Request;
 use Ocara\Error;
 use Ocara\Call;
 use Ocara\Cache;
@@ -334,7 +334,7 @@ abstract class Database extends ModelBase
 		$data = $this->_getSubmitData($data);
 		if ($data) {
 			ocDel($data, FormToken::getTokenTag());
-			$this->setProperty($data);
+			$this->set($data);
 		}
 
 		$this->_isOrm = true;
@@ -393,7 +393,7 @@ abstract class Database extends ModelBase
 	 */
 	public function toArray()
 	{
-		return $this->getProperty();
+		return $this->get();
 	}
 
 	/**
@@ -401,7 +401,7 @@ abstract class Database extends ModelBase
 	 */
 	public function toObject()
 	{
-		$properties = $this->getProperty();
+		$properties = $this->get();
 		return (object)$properties;
 	}
 
@@ -490,7 +490,7 @@ abstract class Database extends ModelBase
 	{
 		$this->_selected = array();
 		$this->_isOrm = false;
-		$this->clearProperty();
+		$this->clear();
 		return $this;
 	}
 
@@ -541,7 +541,7 @@ abstract class Database extends ModelBase
 	public function getChanges()
 	{
 		$changes = array_fill_keys($this->_changes, null);
-		return array_intersect_key($this->getProperty(), $changes);
+		return array_intersect_key($this->get(), $changes);
 	}
 
 	/**
@@ -658,12 +658,12 @@ abstract class Database extends ModelBase
 	 */
 	public function save($debug = false)
 	{
-		$data = $this->getProperty();
+		$data = $this->get();
 
 		$condition = array();
 		foreach ($this->_primaries as $field) {
-			if ($this->hasProperty($field)) {
-				$condition[$field] = $this->getProperty($field);
+			if ($this->has($field)) {
+				$condition[$field] = $this->get($field);
 			}
 		}
 
@@ -713,7 +713,7 @@ abstract class Database extends ModelBase
 	protected function _getSubmitData($data)
 	{
 		if (empty($data)) {
-			$data = Request::getPost();
+			$data = Ocara::services()->request->getPost();
 			if ($data) {
 				$this->loadFields();
 			}
@@ -1105,9 +1105,9 @@ abstract class Database extends ModelBase
 	public function _getCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired)
 	{
 		if (is_object($cacheObj)) {
-			if ($callback = ocConfig('CALLBACK.model.query.get_cache_data', null)) {
+			if ($callback = ocConfig('EVENT.model.query.get_cache_data', null)) {
 				$params = array($cacheObj, $sql, $cacheRequired);
-				if ($result = Call::run($callback, $params)) {
+				if ($result = Ocara::services()->call->run($callback, $params)) {
 					return $result;
 				}
 			} else {
@@ -1892,9 +1892,9 @@ abstract class Database extends ModelBase
 				$this->_relations[$key] = $this->_relateFind($key);
 			}
 			return $this->_relations[$key];
-		} else {
-			return parent::__get($key);
 		}
+
+		return parent::__get($key);
 	}
 
 	/**
@@ -1948,7 +1948,7 @@ abstract class Database extends ModelBase
 
 		foreach ($this->_relations as $key => $object) {
 			$config = $this->_getRelateConfig($key);
-			if ($config && $this->hasProperty($config['primaryKey'])) {
+			if ($config && $this->has($config['primaryKey'])) {
 				$data = array();
 				if (in_array($config['joinType'], array('one','manyOne')) && is_object($object)) {
 					$data = array($object);

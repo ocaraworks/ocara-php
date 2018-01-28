@@ -52,7 +52,7 @@ interface Log
 	 * 删除日志（目录）
 	 * @param string $logName
 	 */
-	public function del($logName);
+	public function delete($logName);
 
 	/**
 	 * 清空最近日志文件内容
