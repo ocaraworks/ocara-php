@@ -21,20 +21,8 @@ class Container extends Basis
      */
     protected $_binds = array();
     protected $_singletons = array();
-    protected $_properties = array();
 
     protected static $_default;
-
-    /**
-     * 魔术方法（设置未定义属性）
-     * @param string $key
-     * @param string $value
-     * @return Container
-     */
-    public function __set($key, $value)
-    {
-        return $this->bind($key, $value);
-    }
 
     /**
      * 魔术方法（获取未定义属性）
@@ -43,8 +31,7 @@ class Container extends Basis
      */
     public function &__get($key)
     {
-        $instance = $this->get($key);
-        return $instance;
+        return $this->get($key);
     }
 
     /**
@@ -222,16 +209,6 @@ class Container extends Basis
 
         return array_key_exists($name, $this->_binds)
             || array_key_exists($name, $this->_singletons);
-    }
-
-    /**
-     * 是否存在实例
-     * @param string $name
-     * @return bool
-     */
-    public function hasInstance($name)
-    {
-        return array_key_exists($name, $this->_properties);
     }
 
     /**
