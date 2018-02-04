@@ -35,14 +35,17 @@ class Container extends Basis
     }
 
     /**
-     * 获取实例
+     * 获取实例（方法重写）
      * @param string $name
-     * @param array $params
-     * @param array $deps
+     * @param null $args
      * @return mixed
      */
-    public function get($name, array $params = array(), array $deps = array())
+    public function &get($name = null, $args = null)
     {
+        $args = func_get_args();
+        $params = array_key_exists(1, $args) ? (array)$args[1] : array();
+        $deps = array_key_exists(2, $args) ? (array)$args[2] : array();
+
         if (!empty($this->_properties[$name])) {
             $instance = $this->_properties[$name];
         } else {

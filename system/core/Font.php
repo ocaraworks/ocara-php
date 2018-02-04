@@ -11,12 +11,12 @@ namespace Ocara;
 class Font extends Base
 {
     /**
-     * 获取字体路径
-     * @param null|string $name
+     * 获取自定义属性
+     * @param string $name
+     * @param null $args
      * @return bool|mixed|string
-     * @throws Exception\Exception
      */
-    public function get($name)
+    public function &get($name = null, $args = null)
     {
         if ($name) {
             if (!preg_match('/^.*\.\w{2,5}$/i', $name)) {

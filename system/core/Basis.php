@@ -31,12 +31,13 @@ abstract class Basis
 		return call_user_func_array('ocClass', array(self::getClass(), func_get_args()));
 	}
 
-	/**
-	 * 获取自定义属性
-	 * @param string $name
-	 * @return array
-	 */
-	public function &get($name = null)
+    /**
+     * 获取自定义属性
+     * @param string $name
+     * @param mixed $args
+     * @return array|mixed
+     */
+	public function &get($name = null, $args = null)
 	{
 		if (func_num_args()) {
 			if ($this->has($name)) {

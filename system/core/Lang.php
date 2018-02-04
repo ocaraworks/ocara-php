@@ -111,20 +111,22 @@ class Lang extends Base
 		return $data;
 	}
 
-	/**
-	 * 获取语言信息
-	 * @param string $key
-	 * @param array $params
-	 * @return array|null
-	 * @throws Exception
-	 */
-	public function get($key = null, array $params = array())
-	{
+    /**
+     * 获取语言配置（方法重写）
+     * @param string $name
+     * @param mixed $args
+     * @return array|null
+     */
+    public function &get($name = null, $args = null)
+    {
+        $args = func_get_args();
+        $params = array_key_exists(1, $args) ? (array)$args[1] : array();
+
 		if (func_num_args()) {
-			if (ocKeyExists($key, $this->_properties)) {
-				return ocGetLanguage($this->_properties, $key, $params);
+			if (ocKeyExists($name, $this->_properties)) {
+				return ocGetLanguage($this->_properties, $name, $params);
 			}
-			return $this->getDefault($key, $params);
+			return $this->getDefault($name, $params);
 		}
 
 		return $this->_properties;

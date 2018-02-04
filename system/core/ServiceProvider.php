@@ -47,26 +47,30 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function has($key)
     {
-        return $this->_container->has($key);
+        return array_key_exists($key, $this->_properties) || $this->_container->has($key);
     }
 
     /**
-     * 获取服务组件
-     * @param $key
+     * 获取服务组件（方法重写）
+     * @param string $name
+     * @param null $args
      * @return mixed
      */
-    public function get($key)
+    public function &get($name = null, $args = null)
     {
-        if ($this->has($key)) {
-            return $this->get($key);
+        $instance = null;
+
+        if (array_key_exists($name, $this->_properties)) {
+            $instance = $this->get($name);
+        } elseif ($this->_container->has($name)) {
+            $args = func_get_args();
+            $params = array_key_exists(1, $args) ? (array)$args[1] : array();
+            $deps = array_key_exists(2, $args) ? (array)$args[2] : array();
+            $instance = $this->create($name, $params, $deps);
+            $this->set($name, $instance);
         }
 
-        $instance = $this->create($key);
-        if ($instance) {
-            return $this->set($key, $instance);
-        }
-
-        return null;
+        return $instance;
     }
 
     /**

@@ -22,22 +22,26 @@ class Path extends Base
 		$this->set($paths);
 	}
 
-	/**
-	 * 生成文件或目录的路径
-	 * @param string $dir
-	 * @param string $path
-	 * @param string $root
-	 * @param bool $local
-	 * @param bool $isFile
-	 * @return bool|mixed|string
-	 * @throws Exception\Exception
-	 */
-	public function get($dir, $path, $root = null, $local = true, $isFile = true)
-	{
-		$mapDir = $dir;
+    /**
+     * 生成文件或目录的路径
+     * @param string $name
+     * @param string $path
+     * @param string $root
+     * @param bool $local
+     * @param bool $isFile
+     * @return array|mixed
+     */
+    public function &get($name = null, $args = null)
+    {
+        $args = func_get_args();
+        $path = array_key_exists(1, $args) ? $args[1] : OC_EMPTY;
+        $root = array_key_exists(2, $args) ? $args[2] : OC_EMPTY;
+        $local = array_key_exists(3, $args) ? (bool)$args[3] : true;
+        $isFile = array_key_exists(4, $args) ? (bool)$args[4] : true;
+		$mapDir = $name;
 
-		if (isset($this->_properties['map'][$dir])) {
-			$mapDir = $this->_properties['map'][$dir];
+		if (isset($this->_properties['map'][$name])) {
+			$mapDir = $this->_properties['map'][$name];
 		}
 
 		if (isset($this->_properties['belong'][$mapDir])) {

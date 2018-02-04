@@ -75,15 +75,16 @@ class Session extends Base
 		}
 	}
 
-	/**
-	 * 获取session变量值
-	 * @param bool $key
-	 * @return array|bool|mixed|null
-	 */
-	public function get($key = false)
-	{
+    /**
+     * 获取session变量值（方法重写）
+     * @param string $name
+     * @param null $args
+     * @return mixed
+     */
+    public function &get($name = null, $args = null)
+    {
 		if (func_num_args()) {
-			return ocGet($key, $_SESSION);
+			return ocGet($name, $_SESSION);
 		}
 		
 		return $_SESSION;
