@@ -64,8 +64,8 @@ abstract class Base extends Basis
 				$obj = $obj->_plugin;
 			}
 		}
-		
-		parent::_call($name, $params);
+
+		return parent::__call($name, $params);
 	}
 
 	/**

@@ -11,6 +11,7 @@ namespace Ocara\Controller\Provider;
 use Ocara\Ocara;
 use Ocara\Response;
 use Ocara\Error;
+use Ocara\Controller\Provider\Base;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -27,11 +28,11 @@ class Rest extends Base
      */
     public function init()
     {
-        Ocara::services()->request->setAjax();
-
+        $this->request->setAjax();
         $this->response->setContentType(ocConfig('CONTROLLERS.rest.content_type','json'));
         $this->session->init();
         $this->setAjaxResponseErrorCode(true);
+        $this->_plugin = $this->view;
     }
 
     /**

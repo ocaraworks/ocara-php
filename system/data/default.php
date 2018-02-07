@@ -67,14 +67,6 @@ $OC_CONF['STATIC'] = array(
 $CONF['USE_FIELD_DESC_LANG'] = 1;
 
 /*
- * 系统服务类（非单例模式）
- */
-$OC_CONF['SYSTEM_SERVICE_CLASS'] = array(
-	'event' => 'Ocara\Event',
-	'log'	=> 'Ocara\Log',
-);
-
-/*
  * 系统服务类（单例模式）
  */
 $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
@@ -92,16 +84,28 @@ $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
 	'pager' 		=> 'Ocara\Service\Pager',
 	'validator' 	=> 'Ocara\Service\Validator',
 	'file'			=> 'Ocara\Service\File',
-	'Font'			=> 'Ocara\Font',
+	'font'			=> 'Ocara\Font',
 	'staticPath'	=> 'Ocara\StaticPath',
-	'Call'			=> 'Ocara\Call',
+	'call'			=> 'Ocara\Call',
+    'globalVar'     => 'Ocara\GlobalVar',
+    'formToken'     => 'Ocara\FormToken',
+    'formManager'   => 'Ocara\FormManager',
 );
 
+/*
+ * 系统服务类（非单例模式）
+ */
+$OC_CONF['SYSTEM_SERVICE_CLASS'] = array(
+    'event' => 'Ocara\Event',
+    'log'	=> 'Ocara\Log',
+);
+
+/**
+ * 控制器服务类
+ */
 $OC_CONF['CONTROLLER_SERVICE_CLASS'] = array(
 	'Common' => array(
 		'view' => 'Ocara\View\Common',
-		'formToken' => 'Ocara\FormToken',
-		'formManager' => 'Ocara\FormManager',
 	),
 	'Rest' => array(
 		'view' => 'Ocara\View\Rest',

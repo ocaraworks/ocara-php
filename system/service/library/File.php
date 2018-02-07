@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Service;
 use Ocara\ServiceBase;
-use Ocara\Filter;
+use Ocara\Ocara;
 
 class File extends ServiceBase
 {

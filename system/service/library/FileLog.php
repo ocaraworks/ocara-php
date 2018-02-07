@@ -121,12 +121,12 @@ class FileLog extends ServiceBase implements LogInterface
 
 	/**
 	 * 清理日志文件
-	 * @param string $logName
+	 * @param string $args
 	 * @return bool
 	 */
-	public function clear($logName)
+	public function clear($args = null)
 	{
-		$path = $this->logRoot . $logName;
+		$path = $this->logRoot . $args;
 		return is_dir($path) ? File::clearDir($path, true) : false;
 	}
 

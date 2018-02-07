@@ -84,7 +84,8 @@ class Session extends Base
     public function &get($name = null, $args = null)
     {
 		if (func_num_args()) {
-			return ocGet($name, $_SESSION);
+			$value = ocGet($name, $_SESSION);
+			return $value;
 		}
 		
 		return $_SESSION;
@@ -125,10 +126,11 @@ class Session extends Base
 		return session_name();
 	}
 
-	/**
-	 * 清空session数组
-	 */
-	public function clear()
+    /**
+     * 清空session数组
+     * @param null $args
+     */
+	public function clear($args = null)
 	{
 		session_unset();
 	}

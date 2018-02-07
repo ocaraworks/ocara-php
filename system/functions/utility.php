@@ -121,7 +121,7 @@ function ocCheckKey($exists, $key, array $data, $return = false, $default = null
  */
 function ocConfig($key, $default = null, $unempty = false)
 {
-	if ($result = Ocara::services()->config->getConfig($key)) {
+	if ($result = Ocara::container()->config->getConfig($key)) {
 		return $unempty && ocEmpty($result[0]) ? $default : $result[0];
 	}
 

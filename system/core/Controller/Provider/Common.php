@@ -13,6 +13,7 @@ use Ocara\Response;
 use Ocara\Error;
 use Ocara\Interfaces\Event;
 use Ocara\Model\Database as DatabaseModel;
+use Ocara\Controller\Provider\Base;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -34,6 +35,7 @@ class Common extends Base
         $this->session->init();
         $this->setAjaxResponseErrorCode(false);
         $this->event('afterCreateForm')->append(array($this, 'afterCreateForm'));
+        $this->_plugin = $this->view;
     }
 
     /**

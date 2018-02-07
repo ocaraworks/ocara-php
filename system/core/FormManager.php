@@ -74,16 +74,6 @@ class FormManager extends ServiceProvider
 	}
 
 	/**
-	 * 是否存在表单
-	 * @param $name
-	 * @return bool
-	 */
-	public function has($name)
-	{
-		return $this->has($name) && is_object($obj = $this->get($name)) && $obj instanceof Form;
-	}
-
-	/**
 	 * 验证表单
 	 * @param $form
 	 * @param $data
@@ -107,8 +97,9 @@ class FormManager extends ServiceProvider
 	public function setToken()
 	{
 		$tokenTag = $this->formToken->getTokenTag();
+        $forms = $this->get();
 
-		foreach ($this->_forms as $formName => $form) {
+		foreach ($forms as $formName => $form) {
 			if (is_object($form) && $form instanceof Form) {
 				$this->formToken->setRoute($form->getRoute());
 				$token = $this->formToken->setToken($formName);
@@ -122,7 +113,7 @@ class FormManager extends ServiceProvider
 	 */
 	public function clearToken()
 	{
-		$this->formToken->clear();
+		$this->formToken->clearToken();
 	}
 
 	/**

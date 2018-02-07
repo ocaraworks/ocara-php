@@ -41,26 +41,29 @@ class Redis extends CacheBase implements CacheInterface
 		}
 	}
 
-	/**
-	 * @param string $name
-	 * @param boolean $value
-	 * @param integer $expireTime
-	 * @param mixed $args
-	 * @return bool
-	 */
-	public function set($name, $value, $expireTime = 0, $args = null)
-	{
+    /**
+     * 设置变量值
+     * @param string $name
+     * @param mixed $value
+     */
+    public function set($name, $value)
+    {
+        $args = func_get_args();
+        $expireTime = array_key_exists(2, $args) ? $args[2] : 0;
+
 		$result = $this->_plugin->set($name, serialize($value));
 		$this->_plugin->setTimeout($name, $expireTime);
 		return $result;
 	}
 
-	/**
-	 * @param string $name
-	 * @return mixed
-	 */
-	public function get($name)
-	{
+    /**
+     * 获取变量值
+     * @param string $name
+     * @param mixed $args
+     * @return null
+     */
+    public function get($name, $args = null)
+    {
 		if (is_object($this->_plugin) && method_exists($this->_plugin, 'get')) {
 			return unserialize($this->_plugin->get($name));
 		}

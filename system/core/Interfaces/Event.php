@@ -45,14 +45,15 @@ interface Event
      * @param $name
      * @return array|bool
      */
-    public function remove($name);
+    public function delete($name);
 
     /**
      * 获取事件处理器
-     * @param $name
-     * @return mixed
+     * @param string $name
+     * @param mixed $args
+     * @return array|mixed
      */
-    public function get($name = null);
+    public function get($name = null, $args = null);
 
     /**
      * 检测是否存在事件处理器

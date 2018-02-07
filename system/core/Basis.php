@@ -40,11 +40,16 @@ abstract class Basis
 	public function &get($name = null, $args = null)
 	{
 		if (func_num_args()) {
-			if ($this->has($name)) {
+			if (array_key_exists($name, $this->_properties)) {
 				return $this->_properties[$name];
 			}
-			return $this->$name;
+            if (method_exists($this, '__none')) {
+                $this->__none($name);
+            } else {
+                Error::show('no_property', array($name));
+            }
 		}
+
 		return $this->_properties;
 	}
 
@@ -72,10 +77,11 @@ abstract class Basis
 		return array_key_exists($name, $this->_properties);
 	}
 
-	/**
-	 * 清理自定义属性
-	 */
-	public function clear()
+    /**
+     * 清理自定义属性
+     * @param null $args
+     */
+	public function clear($args = null)
 	{
 		$this->_properties = array();
 	}
@@ -206,8 +212,8 @@ abstract class Basis
 	 */
 	public function &__get($key)
 	{
-		if (array_key_exists($key, $this->_properties)) {
-			return $this->_properties[$key];
+		if ($this->has($key)) {
+			return $this->get($key);
 		}
 
 		if (method_exists($this, '__none')) {

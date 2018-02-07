@@ -494,10 +494,12 @@ abstract class Database extends ModelBase
 		return $this;
 	}
 
-	/**
-	 * 清理Model的SQL和ORM数据
-	 */
-	public function clear()
+    /**
+     * 清理Model的SQL和ORM数据
+     * @param null $args
+     * @return $this
+     */
+	public function clearAll()
 	{
 		$this->clearSql();
 		$this->clearData();

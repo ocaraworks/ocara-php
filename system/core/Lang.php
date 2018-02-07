@@ -119,14 +119,15 @@ class Lang extends Base
      */
     public function &get($name = null, $args = null)
     {
-        $args = func_get_args();
-        $params = array_key_exists(1, $args) ? (array)$args[1] : array();
-
 		if (func_num_args()) {
+            $args = func_get_args();
+            $params = array_key_exists(1, $args) ? (array)$args[1] : array();
 			if (ocKeyExists($name, $this->_properties)) {
-				return ocGetLanguage($this->_properties, $name, $params);
-			}
-			return $this->getDefault($name, $params);
+                $value =  ocGetLanguage($this->_properties, $name, $params);
+			} else {
+                $value = $this->getDefault($name, $params);
+            }
+			return $value;
 		}
 
 		return $this->_properties;
@@ -150,12 +151,12 @@ class Lang extends Base
 
 	/**
 	 * 设置语言
-	 * @param string|array $key
+	 * @param string|array $name
 	 * @param mixed $value
 	 */
-	public function set($key, $value)
+	public function set($name, $value = null)
 	{
-		ocSet($this->_properties, $key, $value);
+		ocSet($this->_properties, $name, $value);
 	}
 
 	/**

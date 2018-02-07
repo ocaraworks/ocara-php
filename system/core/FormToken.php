@@ -57,10 +57,11 @@ class FormToken extends Base
 		return $token;
 	}
 
-	/**
-	 * 清除TOKEN
-	 */
-	public function clear()
+    /**
+     * 清除TOKEN
+     * @param null $args
+     */
+	public function clearToken()
 	{
 		$checkRepeatSubmit = ocConfig('FORM.check_repeat_submit', true);
 

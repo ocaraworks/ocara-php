@@ -62,27 +62,31 @@ class Memcache extends CacheBase implements CacheInterface
 		}
 	}
 
-	/**
-	 * @param string $name
-	 * @param boolean $value
-	 * @param integer $expireTime
-	 * @param mixed $args
-	 * @return bool
-	 */
-	public function set($name, $value, $expireTime = 0, $args = null)
-	{
-		if (is_object($this->_plugin)) {
-			return $this->_plugin->set($name, $value, $args, $expireTime);
+    /**
+     * 设置变量值
+     * @param string $name
+     * @param mixed $value
+     */
+    public function set($name, $value)
+    {
+        $args = func_get_args();
+        $expireTime = array_key_exists(2, $args) ? $args[2] : 0;
+        $params = array_key_exists(3, $args) ? $args[3] : array();
+
+		if (i_object($this->_plugin)) {
+			return $this->_plugin->set($name, $value, $params, $expireTime);
 		}
 
 		return false;
 	}
 
-	/**
-	 * @param $name
-	 * @return null
-	 */
-	public function get($name)
+    /**
+     * 获取变量值
+     * @param string $name
+     * @param mixed $args
+     * @return null
+     */
+	public function get($name, $args = null)
 	{
 		if (is_object($this->_plugin) && method_exists($this->_plugin, 'get')) {
 			return $this->_plugin->get($name);

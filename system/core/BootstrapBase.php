@@ -21,16 +21,6 @@ abstract class BootstrapBase extends ServiceProvider implements ServiceProviderI
     }
 
     /**
-     * 获取默认服务提供器
-     * @return string
-     */
-    public function getContainer()
-    {
-        $container = new \Ocara\Container();
-        return $container;
-    }
-
-    /**
      * 启动控制器
      * @param array|string $route
      * @param bool $return

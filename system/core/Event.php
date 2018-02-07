@@ -146,7 +146,7 @@ class Event extends Basis implements EventInterface
      * @param $name
      * @return array|bool
      */
-    public function remove($name)
+    public function delete($name)
     {
         $key = $this->_getKey($name);
         if (is_integer($key)) {
@@ -158,21 +158,21 @@ class Event extends Basis implements EventInterface
 
     /**
      * 获取事件处理器
-     * @param $name
-     * @return mixed
+     * @param string $name
+     * @param mixed $args
+     * @return array|mixed
      */
-    public function get($name = null)
+    public function &get($name = null, $args = null)
     {
-        if (!isset($name)) {
-            return $this->_properties;
+        if (func_num_args()) {
+            $key = $this->_getKey($name);
+            if (is_integer($key)) {
+                return $this->_properties[$name];
+            }
+            return null;
         }
 
-        $key = $this->_getKey($name);
-        if (is_integer($key)) {
-            return $this->_properties[$name];
-        }
-
-        return null;
+        return $this->_properties;
     }
 
     /**
@@ -188,8 +188,10 @@ class Event extends Basis implements EventInterface
 
     /**
      * 清空事件处理器
+     * @param null $args
+     * @return $this
      */
-    public function clear()
+    public function clear($args = null)
     {
         $this->_properties = array();
         return $this;

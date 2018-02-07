@@ -154,7 +154,7 @@ return array(
 	'no_dir_write_perm'				=> array(2525, '目录没有写权限！'),
 	'no_file_write_perm'		    => array(2526, '文件没有写权限！'),
 	'no_file_read_perm'		    	=> array(2527, '文件没有读权限！'),
-	'no_service'					=> array(2528, '服务组件不存在'),
+	'no_service'					=> array(2528, '服务组件不存在：%s'),
 
 	//已存在
 	'exists_dir'		    		=> array(2601, '已存在同名的目录！'),

@@ -18,8 +18,11 @@ require_once (OC_PATH . 'system/functions/utility.php');
 require_once (OC_PATH . 'system/const/basic.php');
 require_once (OC_CORE . 'Basis.php');
 require_once (OC_CORE . 'Base.php');
+require_once (OC_CORE . 'Container.php');
 require_once (OC_CORE . 'Loader.php');
 require_once (OC_CORE . 'Config.php');
+
+use Ocara\Container;
 
 final class Ocara extends Basis
 {
@@ -56,28 +59,27 @@ final class Ocara extends Basis
 	 */
 	public static function init()
 	{
-		@ini_set('register_globals', 'Off');
-		register_shutdown_function("ocShutdownHandler");
+        @ini_set('register_globals', 'Off');
+        register_shutdown_function("ocShutdownHandler");
 
-		Config::getInstance();
-		define('OC_SYS_MODEL', ocConfig('SYS_MODEL', 'application'));
-		self::$_language = ocConfig('LANGUAGE', 'zh_cn');
+        define('OC_SYS_MODEL', ocConfig('SYS_MODEL', 'application'));
+        self::$_language = ocConfig('LANGUAGE', 'zh_cn');
 
-		error_reporting(self::errorReporting());
-		set_exception_handler(
-			ocConfig('ERROR_HANDLER.exception_error', 'ocExceptionHandler', true)
-		);
+        error_reporting(self::errorReporting());
+        set_exception_handler(
+            ocConfig('ERROR_HANDLER.exception_error', 'ocExceptionHandler', true)
+        );
 
-		spl_autoload_register(array('\Ocara\Loader', 'autoload'));
+        spl_autoload_register(array('\Ocara\Loader', 'autoload'));
 
-		if (empty($_SERVER['REQUEST_METHOD'])) {
-			$_SERVER['REQUEST_METHOD'] = 'GET';
-		}
+        if (empty($_SERVER['REQUEST_METHOD'])) {
+            $_SERVER['REQUEST_METHOD'] = 'GET';
+        }
 
-		ocImport(array(
-			OC_SYS . 'const/config.php',
-			OC_SYS . 'functions/common.php'
-		));
+        ocImport(array(
+            OC_SYS . 'const/config.php',
+            OC_SYS . 'functions/common.php'
+        ));
 	}
 
 	/**
@@ -111,12 +113,8 @@ final class Ocara extends Basis
 	{
 		$bootstrap = $bootstrap ? : '\Ocara\Bootstrap';
 		$bootstrap = new $bootstrap();
-		$container = $bootstrap->getContainer();
-
-		Container::setDefault($container);
-
-		self::$_container = Container::getDefault();
 		self::$_services = $bootstrap->getServiceProvider();
+        self::$_services->setContainer(self::container());
 
 		$bootstrap->register();
 		$bootstrap->init();
@@ -211,6 +209,12 @@ final class Ocara extends Basis
 	 */
 	public static function container()
 	{
+	    if (empty(self::$_container)) {
+            Container::setDefault(new Container());
+            self::$_container = Container::getDefault();
+            self::$_container->bindSingleton('config', '\Ocara\Config');
+        }
+
 		return self::$_container;
 	}
 

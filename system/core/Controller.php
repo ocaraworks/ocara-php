@@ -152,9 +152,14 @@ class Controller extends serviceProvider implements ControllerInterface
 	 */
 	public function __call($name, $params)
 	{
-		if (is_object($this->_provider) && method_exists($this->_provider, $name)) {
-			return call_user_func_array(array(&$this->_provider, $name), $params);
-		}
-		parent::_call($name, $params);
+        if (isset($this->_traits[$name])) {
+            return call_user_func_array($this->_traits[$name], $params);
+        }
+
+        if (is_object($this->_provider)) {
+            return call_user_func_array(array(&$this->_provider, $name), $params);
+        }
+
+        Error::show('no_method', array($name));
 	}
 }

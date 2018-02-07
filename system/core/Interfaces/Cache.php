@@ -20,20 +20,20 @@ interface Cache
 	public function connect($config, $required = true);
 
 	/**
-	 * 设置KEY
+	 * 设置变量值
 	 * @param string $name
 	 * @param boolean $value
-	 * @param integer $expireTime
-	 * @param mixed $args
 	 * @return bool
 	 */
-	public function set($name, $value, $expireTime = 0, $args = null);
-	
-	/**
-	 * 获取KEY
-	 * @param string $name
-	 */
-	public function get($name);
+	public function set($name, $value);
+
+    /**
+     * 获取变量值
+     * @param string $name
+     * @param mixed $args
+     * @return null
+     */
+    public function get($name, $args = null);
 
 	/**
 	 * 删除KEY

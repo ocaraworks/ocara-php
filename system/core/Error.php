@@ -148,8 +148,9 @@ class Error extends Base
 	 */
     public static function output($error)
 	{
-		if (!Ocara::services()->response->getOption('statusCode')) {
-			Ocara::services()->response->setStatusCode(Response::STATUS_SERVER_ERROR);
+        $response = Ocara::services()->response;
+		if (!$response->getOption('statusCode')) {
+            $response->setStatusCode(Response::STATUS_SERVER_ERROR);
 		}
 
 		if (Ocara::services()->request->isAjax()) {
@@ -170,8 +171,8 @@ class Error extends Base
 		$error['code']  = $error['code'] ? "[{$error['code']}]" : null;
 		$error['class'] = $error['type'] == 'program_error' ? 'oc-error' : 'oc-exception';
 
-		if (isset($traceInfo[0])) {
-			$lastTrace = $traceInfo[0];
+		if (isset($error['traceInfo'][0])) {
+			$lastTrace = $error['traceInfo'][0];
 			$error['file'] = isset($lastTrace['file']) ? $lastTrace['file'] : $error['file'];
 			$error['line'] = isset($lastTrace['line']) ? $lastTrace['line'] : $error['line'];
 		}
@@ -185,7 +186,6 @@ class Error extends Base
 			$content = ocBr2nl(ocJsonEncode($error) . PHP_EOL . $trace);
 		} else {
 			$filePath = OC_SYS . 'modules/exception/index.php';
-			Ocara::services()->response->sendHeaders();
 			if (ocFileExists($filePath)) {
 				ob_start();
 				include($filePath);
@@ -196,6 +196,7 @@ class Error extends Base
 			}
 		}
 
+        $response->sendHeaders();
 		echo $content;
 		die();
 	}

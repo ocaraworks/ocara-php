@@ -25,12 +25,6 @@ interface Bootstrap
 	public function start($route);
 
 	/**
-	 * 获取默认服务容器
-	 * @return string
-	 */
-	public function getContainer();
-
-	/**
 	 * 获取默认服务提供器
 	 * @return string
 	 */

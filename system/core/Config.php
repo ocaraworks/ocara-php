@@ -24,19 +24,9 @@ final class Config extends Base
 	protected $_ocData = array();
 
 	/**
-	 * 获取实例
-	 * @return mixed
-	 */
-	public static function getInstance()
-	{
-		$instance = new static();
-		return $instance->init();
-	}
-
-	/**
 	 * 初始化
 	 */
-	public function init()
+	public function __construct()
 	{
 		if (!file_exists($path = OC_SYS . 'data/default.php')) {
 			Error::show('Lost ocara config file: default.php.');
@@ -155,18 +145,19 @@ final class Config extends Base
 		ocSet($this->_properties, $key, $value);
 	}
 
-	/**
-	 * 获取配置
-	 * @param string $key
-	 * @return array|bool|mixed|null
-	 */
-	public function get($key = null)
-	{
+    /**
+     * 获取配置（方法重写）
+     * @param string $name
+     * @param mixed $args
+     * @return array|bool|mixed|null
+     */
+    public function &get($name = null, $args = null)
+    {
 		if (func_num_args()) {
-			if (ocKeyExists($key, $this->_properties)) {
-				return ocGet($key, $this->_properties);
+			if (ocKeyExists($name, $this->_properties)) {
+				return ocGet($name, $this->_properties);
 			}
-			return $this->getDefault($key);
+			return $this->getDefault($name);
 		}
 		
 		return $this->_properties;

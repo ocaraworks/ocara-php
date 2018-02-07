@@ -110,7 +110,6 @@ class Filter extends Base
 			$content = preg_replace('/<noframes[^>]*>.*<\/norame>/i', OC_EMPTY, $content);
 			$content = preg_replace('/<object[^>]*>.*<\/object>/i', OC_EMPTY, $content);
 			$content = preg_replace('/javascript:/i', OC_EMPTY, $content);
-			$this->_getEvents();
 
 			$expression = '/(on('.$this->_jsEvents.'))|(('.$this->_jsEvents.')\((\s*function\()?)/i';
 			$content = preg_replace($expression, OC_EMPTY, $content);

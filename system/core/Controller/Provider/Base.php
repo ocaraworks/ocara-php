@@ -36,7 +36,7 @@ class Base extends ServiceProvider
     public function setAjaxResponseErrorCode($value)
     {
         $value = $value ? 1 : 0;
-        Ocara::services()->config->set('AJAX.response_error_code', $value);
+        $this->config->set('AJAX.response_error_code', $value);
     }
 
 	/**
@@ -48,9 +48,9 @@ class Base extends ServiceProvider
     {
         if (is_array($message)) {
             list($text, $params) = $message;
-            $message = Ocara::services()->lang->get($text, $params);
+            $message = $this->lang->get($text, $params);
         } else {
-            $message = Ocara::services()->lang->get($message);
+            $message = $this->lang->get($message);
         }
 
         $contentType = $this->_ajaxContentType;

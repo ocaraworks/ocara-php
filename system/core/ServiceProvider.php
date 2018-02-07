@@ -41,13 +41,24 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     }
 
     /**
+     * 设置容器
+     * @param $container
+     */
+    public function setContainer($container)
+    {
+        $this->_container = $container;
+    }
+
+    /**
      * 检测组件是否存在
      * @param $key
      * @return bool
      */
     public function has($key)
     {
-        return array_key_exists($key, $this->_properties) || $this->_container->has($key);
+        return array_key_exists($key, $this->_properties)
+            || $this->_container->has($key)
+            || Ocara::container()->has($key);
     }
 
     /**
@@ -58,19 +69,23 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function &get($name = null, $args = null)
     {
-        $instance = null;
-
-        if (array_key_exists($name, $this->_properties)) {
-            $instance = $this->get($name);
-        } elseif ($this->_container->has($name)) {
-            $args = func_get_args();
-            $params = array_key_exists(1, $args) ? (array)$args[1] : array();
-            $deps = array_key_exists(2, $args) ? (array)$args[2] : array();
-            $instance = $this->create($name, $params, $deps);
-            $this->set($name, $instance);
+        if (func_num_args()) {
+            $instance = null;
+            if (array_key_exists($name, $this->_properties)) {
+                $instance = $this->_properties[$name];
+            } elseif ($this->has($name)) {
+                $args = func_get_args();
+                $params = array_key_exists(1, $args) ? (array)$args[1] : array();
+                $deps = array_key_exists(2, $args) ? (array)$args[2] : array();
+                $instance = $this->createService($name, $params, $deps);
+                if ($instance) {
+                    $this->set($name, $instance);
+                }
+            }
+            return $instance;
         }
 
-        return $instance;
+        return $this->_properties;
     }
 
     /**
@@ -80,16 +95,14 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      * @param array $deps
      * @return mixed|null
      */
-    public function create($key, $params = array(), $deps = array())
+    public function createService($key, $params = array(), $deps = array())
     {
         $instance = null;
+
         if ($this->_container && $this->_container->has($key)) {
             $instance = $this->_container->create($key, $params, $deps);
-        }
-
-        $container = Ocara::container();
-        if ($container->has($key)) {
-            $instance = $container->create($key, $params, $deps);
+        } elseif (Ocara::container()->has($key)) {
+            $instance = Ocara::container()->create($key, $params, $deps);
         }
 
         return $instance;

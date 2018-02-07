@@ -19,20 +19,10 @@ class Container extends Basis
      * @var array $_replaces 要替换的依赖类
      * @var object $_default 默认容器
      */
-    protected $_binds = array();
-    protected $_singletons = array();
+    public $_binds = array();
+    public $_singletons = array();
 
     protected static $_default;
-
-    /**
-     * 魔术方法（获取未定义属性）
-     * @param string $key
-     * @return mixed
-     */
-    public function &__get($key)
-    {
-        return $this->get($key);
-    }
 
     /**
      * 获取实例（方法重写）
@@ -42,18 +32,22 @@ class Container extends Basis
      */
     public function &get($name = null, $args = null)
     {
-        $args = func_get_args();
-        $params = array_key_exists(1, $args) ? (array)$args[1] : array();
-        $deps = array_key_exists(2, $args) ? (array)$args[2] : array();
+        if (func_num_args()) {
+            $args = func_get_args();
+            $params = array_key_exists(1, $args) ? (array)$args[1] : array();
+            $deps = array_key_exists(2, $args) ? (array)$args[2] : array();
 
-        if (!empty($this->_properties[$name])) {
-            $instance = $this->_properties[$name];
-        } else {
-            $instance = $this->create($name, $params, $deps);
-            $this->_properties[$name] = $instance;
+            if (!empty($this->_properties[$name])) {
+                $instance = $this->_properties[$name];
+            } else {
+                $instance = $this->create($name, $params, $deps);
+                $this->_properties[$name] = $instance;
+            }
+
+            return $instance;
         }
 
-        return $instance;
+        return $this->_properties;
     }
 
     /**
