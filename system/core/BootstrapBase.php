@@ -6,9 +6,8 @@
  * Time: 下午 1:50
  */
 namespace Ocara;
-use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
 
-abstract class BootstrapBase extends ServiceProvider implements ServiceProviderInterface
+abstract class BootstrapBase extends Basis
 {
     /**
      * 获取默认服务提供器

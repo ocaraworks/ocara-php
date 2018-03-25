@@ -9,6 +9,7 @@
 namespace Ocara;
 
 use Ocara\Exception\Exception;
+use Ocara\Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -79,13 +80,14 @@ class Error extends Base
 	 */
 	public static function show($error, array $params = array())
 	{
-		Ocara::services()->transaction->rollback();
+	    $services = Ocara::services();
+        $services->transaction->rollback();
 
 		if (!is_array($error)) {
-			$error = Ocara::services()->lang->get($error, $params);
+			$error = $services->lang->get($error, $params);
 		}
 
-		if (Ocara::services()->request->isAjax()) {
+		if ($services->request->isAjax()) {
 			try {
 				throw new Exception($error['message'], $error['code']);
 			} catch(Exception $exception) {
@@ -148,104 +150,25 @@ class Error extends Base
 	 */
     public static function output($error)
 	{
-        $response = Ocara::services()->response;
+        $services = Ocara::services();
+        $response = $services->response;
 		if (!$response->getOption('statusCode')) {
             $response->setStatusCode(Response::STATUS_SERVER_ERROR);
 		}
 
-		if (Ocara::services()->request->isAjax()) {
-			self::_ajaxOutput($error);
-		}
-
-		if ($error['type'] == 'program_error') {
-			$displayError = @ini_get('display_errors');
-			if (empty($displayError)) die();
-		}
-
-		if (function_exists('ocLang')) {
-			$error['desc'] 	= ocLang($error['type']);
+		if ($services->request->isAjax()) {
+            if (self::$_instance->event('ajaxOutput')->get()) {
+                self::$_instance->event('ajaxOutput')->fire(array($error));
+            } else {
+                $message = array();
+                $message['code'] = $error['code'];
+                $message['message'] = $error['message'];
+                $services->ajax->show('error', $message);
+            }
 		} else {
-			$error['desc'] 	= ucfirst($error['type']) . ': ';
-		}
+            $services->errorOutput->display($error);
+        }
 
-		$error['code']  = $error['code'] ? "[{$error['code']}]" : null;
-		$error['class'] = $error['type'] == 'program_error' ? 'oc-error' : 'oc-exception';
-
-		if (isset($error['traceInfo'][0])) {
-			$lastTrace = $error['traceInfo'][0];
-			$error['file'] = isset($lastTrace['file']) ? $lastTrace['file'] : $error['file'];
-			$error['line'] = isset($lastTrace['line']) ? $lastTrace['line'] : $error['line'];
-		}
-
-		$error['file']  = trim(ocCommPath(self::_stripRootPath($error['file'])), OC_DIR_SEP);
-		$error['trace'] = nl2br(ocCommPath($error['trace']));
-
-		if (OC_PHP_SAPI == 'cli') {
-			list ($trace, $traceInfo) = ocDel($error, 'trace', 'traceInfo');
-			$error = array_merge(array('time' => date('Y-m-d H:i:s')), $error);
-			$content = ocBr2nl(ocJsonEncode($error) . PHP_EOL . $trace);
-		} else {
-			$filePath = OC_SYS . 'modules/exception/index.php';
-			if (ocFileExists($filePath)) {
-				ob_start();
-				include($filePath);
-				$content = ob_get_contents();
-				ob_end_clean();
-			} else {
-				$content = self::getSimpleTrace($error);
-			}
-		}
-
-        $response->sendHeaders();
-		echo $content;
-		die();
-	}
-
-	/**
-	 * 获取简洁的Trace内容
-	 * @param $error
-	 * @return string
-	 */
-	public static function getSimpleTrace($error)
-	{
-		return 'Lost exception template file.';
-	}
-
-	/**
-	 * Ajax输出错误
-	 * @param $error
-	 */
-	private static function _ajaxOutput($error)
-	{
-		if (self::$_instance->event('ajaxOutput')->get()) {
-			self::$_instance->event('ajaxOutput')->fire(array($error));
-		} else {
-			$message = array();
-			$message['code'] = $error['code'];
-			$message['message'] = $error['message'];
-			Ajax::show('error', $message);
-		}
-
-		die();
-	}
-
-	/**
-	 * 去除当前出错文件路径的根目录
-	 * @param string $errorFile
-	 * @return mixed
-	 */
-	private static function _stripRootPath($errorFile)
-	{
-		$filePath = ocCommPath(realpath($errorFile));
-		$rootPath = ocCommPath(realpath(OC_ROOT));
-		$ocPath   = ocCommPath(realpath(OC_PATH)) . OC_DIR_SEP;
-
-		if (strpos($filePath, $ocPath) === 0) {
-			$filePath = str_ireplace($ocPath, OC_EMPTY, $filePath);
-		} elseif (strpos($filePath, $rootPath) === 0) {
-			$filePath = str_ireplace(OC_ROOT, OC_EMPTY, $filePath);
-		}
-
-		return $filePath;
+        die();
 	}
 }

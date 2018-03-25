@@ -13,31 +13,16 @@ defined('OC_PATH') or exit('Forbidden!');
 class Ajax extends Base
 {
 	/**
-	 * 单例模式
-	 */
-	private static $_instance;
-
-	private function __clone(){}
-	private function __construct(){}
-
-	public static function getInstance()
-	{
-		if (self::$_instance === null) {
-			self::$_instance = new self();
-		}
-		return self::$_instance;
-	}
-
-	/**
 	 * 输出结果
 	 * @param string $status
 	 * @param array $message
 	 * @param string $body
 	 */
-	public static function show($status, array $message = array(), $body = OC_EMPTY)
+	public function show($status, array $message = array(), $body = OC_EMPTY)
 	{
+	    $services = Ocara::services();
 		if (is_string($message)) {
-			$message = Ocara::services()->lang->get($message);
+			$message = $services->lang->get($message);
 		}
 
 		$result['status'] 	= $status;
@@ -46,10 +31,10 @@ class Ajax extends Base
 		$result['body']    	= $body;
 
 		if ($callback = ocConfig('SOURCE.ajax.return_result', null)) {
-			$result = Ocara::services()->call->run($callback, array($result));
+			$result = $services->call->run($callback, array($result));
 		}
 
-		$response = Ocara::services()->response;
+		$response = $services->response;
 		$statusCode = $response->getOption('statusCode');
 
 		if (!$statusCode && !ocConfig('AJAX.response_error_code', 0)) {
@@ -64,7 +49,7 @@ class Ajax extends Base
 				$content = json_encode($result);
 				break;
 			case 'xml':
-				$content = self::getXmlResult($result);
+				$content = $this->getXmlResult($result);
 				break;
 		}
 
@@ -75,7 +60,7 @@ class Ajax extends Base
 	/**
 	 * 获取XML结果
 	 */
-	private static function getXmlResult($result)
+	private function getXmlResult($result)
 	{
 		$xmlObj = new Xml();
 		$xmlObj->setData('array', array('root', $result));

@@ -263,14 +263,15 @@ class Url extends Base
 			$data  = array_fill_keys($fields, null);
 			$data  = array_merge($data, parse_url($url));
 		} else {
+		    $request = Ocara::services()->request;
 			$values = array(
-				OC_PROTOCOL, 
-				Ocara::services()->request->getServer('HTTP_HOST'),
-				Ocara::services()->request->getServer('SERVER_PORT'),
-				Ocara::services()->request->getServer('PHP_AUTH_USER'),
-				Ocara::services()->request->getServer('PHP_AUTH_PW'),
-				Ocara::services()->request->getServer('REDIRECT_URL'),
-				Ocara::services()->request->getServer('QUERY_STRING'),
+				OC_PROTOCOL,
+                $request->getServer('HTTP_HOST'),
+                $request->getServer('SERVER_PORT'),
+                $request->getServer('PHP_AUTH_USER'),
+                $request->getServer('PHP_AUTH_PW'),
+                $request->getServer('REDIRECT_URL'),
+                $request->getServer('QUERY_STRING'),
 			);
 			$data = array_combine($fields, $values);
 		}

@@ -113,12 +113,12 @@ final class Ocara extends Basis
 	{
 		$bootstrap = $bootstrap ? : '\Ocara\Bootstrap';
 		$bootstrap = new $bootstrap();
+
 		self::$_services = $bootstrap->getServiceProvider();
         self::$_services->setContainer(self::container());
+        self::$_services->register();
 
-		$bootstrap->register();
 		$bootstrap->init();
-
 		return $bootstrap;
 	}
 

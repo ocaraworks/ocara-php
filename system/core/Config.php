@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Exception\Exception;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 final class Config extends Base
@@ -29,20 +31,22 @@ final class Config extends Base
 	public function __construct()
 	{
 		if (!file_exists($path = OC_SYS . 'data/default.php')) {
-			Error::show('Lost ocara config file: default.php.');
+			throw new Exception('Lost ocara config file: default.php.');
 		}
 		
 		include ($path);
 
 		if (!(isset($OC_CONF) && $this->_ocData = $OC_CONF)) {
-			die('Lost config : $OC_CONF.');
+            throw new Exception('Lost config : $OC_CONF.');
 		}
 
 		if (is_dir($path = OC_ROOT . 'resource/conf')) {
 			$this->loadControlConfig($path);
 		}
 
-		$this->_properties or die('Lost config : $CONF.');
+		if (!$this->_properties) {
+            throw new Exception('Lost config : $CONF.');
+        }
 	}
 
 	/**

@@ -72,6 +72,7 @@ $CONF['USE_FIELD_DESC_LANG'] = 1;
 $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
 	'request' 		=> 'Ocara\Request',
 	'response' 		=> 'Ocara\Response',
+	'ajax'          => 'Ocara\Ajax',
 	'error' 		=> 'Ocara\Error',
 	'filter' 		=> 'Ocara\Filter',
 	'path' 			=> 'Ocara\Path',
@@ -90,6 +91,7 @@ $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
     'globalVar'     => 'Ocara\GlobalVar',
     'formToken'     => 'Ocara\FormToken',
     'formManager'   => 'Ocara\FormManager',
+    'errorOutput' 	=> 'Ocara\Service\ErrorOutput',
 );
 
 /*

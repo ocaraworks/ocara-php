@@ -413,7 +413,7 @@ class Common extends ViewBase implements ViewInterfaces
 	 */
 	public function ajaxOutput($data, $message)
 	{
-		Ajax::show('success', $message, $data);
+        Ocara::services()->ajax->show('success', $message, $data);
 	}
 
 	/**
