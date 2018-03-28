@@ -7,6 +7,7 @@
  */
 namespace Ocara;
 use Ocara\Interfaces\Bootstrap as BootstrapInterface;
+use \Ocara\ExceptionHandler;
 
 class Bootstrap extends BootstrapBase implements BootstrapInterface
 {
@@ -16,6 +17,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
     public function init()
     {
         date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
+        set_exception_handler(array(Ocara::services()->exceptionHandler, 'run'));
 
         Ocara::getInstance()
             ->event('die')

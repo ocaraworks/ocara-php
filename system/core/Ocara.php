@@ -19,9 +19,11 @@ require_once (OC_PATH . 'system/const/basic.php');
 require_once (OC_CORE . 'Basis.php');
 require_once (OC_CORE . 'Base.php');
 require_once (OC_CORE . 'Container.php');
+require_once (OC_CORE . 'ExceptionHandler.php');
 require_once (OC_CORE . 'Loader.php');
 require_once (OC_CORE . 'Config.php');
 
+use Ocara\ExceptionHandler;
 use Ocara\Container;
 
 final class Ocara extends Basis
@@ -66,10 +68,7 @@ final class Ocara extends Basis
         self::$_language = ocConfig('LANGUAGE', 'zh_cn');
 
         error_reporting(self::errorReporting());
-        set_exception_handler(
-            ocConfig('ERROR_HANDLER.exception_error', 'ocExceptionHandler', true)
-        );
-
+        set_exception_handler(array(new ExceptionHandler(), 'run'));
         spl_autoload_register(array('\Ocara\Loader', 'autoload'));
 
         if (empty($_SERVER['REQUEST_METHOD'])) {

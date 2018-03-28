@@ -7,11 +7,13 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
+use Ocara\ExceptionHandler;
 use Ocara\Ocara;
 use Ocara\Error;
 use Ocara\Exception\Exception;
 use Ocara\Exception\ErrorException;
 use Ocara\Response;
+use Ocara\Lang;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -109,6 +111,25 @@ function ocCheckKey($exists, $key, array $data, $return = false, $default = null
 	}
 	
 	return $exists ? false : $default;
+}
+
+/**
+ * 获取语言文本
+ * @param string|array $name
+ * @param array $params
+ * @param null $default
+ * @return array|null
+ */
+function ocLang($name, array $params = array(), $default = null)
+{
+    $result = ocService('lang', true)->get($name, $params);
+
+    if ($result['message']) {
+        return $result['message'];
+    }
+
+    $result = func_num_args() >= 3 ? $default : $name;
+    return $result;
 }
 
 /**
@@ -310,12 +331,10 @@ function ocErrorHandler($level, $message, $file, $line, $context = '')
 	try {
 		throw new ErrorException($message, $level, $level, $file, $line);
 	} catch (ErrorException $exception) {
-		Error::getInstance()
-			->event('write_log')
-			->fire(array(ocGetExceptionData($exception)));
 		$exceptErrors = ocForceArray(ocConfig('ERROR_HANDLER.except_error_list', array()));
 		if (!in_array($level, $exceptErrors)) {
-			ocExceptionHandler($exception);
+			$handler = new ExceptionHandler();
+			$handler->run($exception);
 		}
 	}
 
@@ -332,12 +351,17 @@ function ocExceptionHandler($exception)
 }
 
 /**
- * 获取系统服务
+ * 获取服务
  * @param $name
- * @return mixed
+ * @param bool $getDefault
+ * @return string
  */
-function ocService($name)
+function ocService($name, $getDefault = false)
 {
+    if (!Ocara::services() && $getDefault) {
+        return '\Ocara\\' . ucfirst($name);
+    }
+
 	return Ocara::services()->get($name);
 }
 

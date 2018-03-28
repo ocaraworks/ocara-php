@@ -15,7 +15,6 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Error extends Base
 {
-
 	/**
 	 * 单例模式
 	 */
@@ -28,15 +27,6 @@ class Error extends Base
 	{
 		if (self::$_instance === null) {
 			self::$_instance = new self();
-			if ($callback = ocConfig('EVENT.error.write_log', array(Ocara::services()->log, 'error'), true)) {
-				self::$_instance->event('writeLog')->append($callback);
-			}
-			if ($callback = ocConfig('EVENT.error.output', null)) {
-				self::$_instance->event('output')->append($callback);
-			}
-			if ($callback = ocConfig('EVENT.error.ajax_output', null)) {
-				self::$_instance->event('ajaxOutput')->append($callback);
-			}
 		}
 		return self::$_instance;
 	}
@@ -80,22 +70,13 @@ class Error extends Base
 	 */
 	public static function show($error, array $params = array())
 	{
-	    $services = Ocara::services();
-        $services->transaction->rollback();
+        ocService('transaction', true)->rollback();
 
 		if (!is_array($error)) {
-			$error = $services->lang->get($error, $params);
+			$error = Ocara::services()->lang->->get($error, $params);
 		}
 
-		if ($services->request->isAjax()) {
-			try {
-				throw new Exception($error['message'], $error['code']);
-			} catch(Exception $exception) {
-				ocExceptionHandler($exception);
-			}
-		} else {
-			throw new Exception($error['message'], $error['code']);
-		}
+        throw new Exception($error['message'], $error['code']);
 	}
 
 	/**
@@ -125,50 +106,5 @@ class Error extends Base
 		if (function_exists($function)) {
 			call_user_func($function, $exception);
 		}
-	}
-
-	/**
-	 * 错误处理
-	 * @param $exception
-	 */
-	public function handler($exception)
-	{
-		$params = array($exception->getMessage(), $exception->getTrace());
-		self::$_instance->event('writeLog')->fire($params);
-
-		$params = ocGetExceptionData($exception);
-		if (self::$_instance->event('output')->get()) {
-			self::$_instance->event('output')->fire(array($params));
-		}
-
-		self::output($params);
-	}
-
-	/**
-	 * 输出错误信息
-	 * @param array $error
-	 */
-    public static function output($error)
-	{
-        $services = Ocara::services();
-        $response = $services->response;
-		if (!$response->getOption('statusCode')) {
-            $response->setStatusCode(Response::STATUS_SERVER_ERROR);
-		}
-
-		if ($services->request->isAjax()) {
-            if (self::$_instance->event('ajaxOutput')->get()) {
-                self::$_instance->event('ajaxOutput')->fire(array($error));
-            } else {
-                $message = array();
-                $message['code'] = $error['code'];
-                $message['message'] = $error['message'];
-                $services->ajax->show('error', $message);
-            }
-		} else {
-            $services->errorOutput->display($error);
-        }
-
-        die();
 	}
 }

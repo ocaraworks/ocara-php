@@ -33,8 +33,6 @@ class Lang extends Base
 				if ($lang) {
 					$this->_ocData = ocForceArray($lang);
 				}
-			} else {
-				throw new Exception("Lost ocara language file: {$file}.");
 			}
 		}
 

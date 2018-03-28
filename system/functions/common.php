@@ -206,25 +206,6 @@ function ocIsStandardName($name)
 	return preg_match('/^[^\d]\w*$/', $name);
 }
 
-/**
- * 获取语言
- * @param string|array $name
- * @param array $params
- * @param null $default
- * @return array|null
- */
-function ocLang($name, array $params = array(), $default = null)
-{
-	$result = ocService('lang')->get($name, $params);
-
-	if ($result['message']) {
-		return $result['message'];
-	}
-	
-	$result = func_num_args() >= 3 ? $default : $name;
-	return $result;
-}
-
 
 /*************************************************************************************************
  * 路径获取函数

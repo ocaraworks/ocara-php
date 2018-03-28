@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Exception\Exception;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 class Container extends Basis
@@ -179,7 +181,7 @@ class Container extends Basis
     {
         if (!empty($this->_singletons[$name])) {
             if (!$singleton) {
-                Error::show('exists_container_singleton');
+                throw new Exception('exists_container_singleton');
             }
             return array();
         }
@@ -233,7 +235,7 @@ class Container extends Basis
         }
 
         if (empty($matter)) {
-            Error::show("not_exists_dependence_set");
+            throw new Exception("not_exists_dependence_set");
         }
 
         list($source, $inputParams, $inputDeps) = $matter;
@@ -246,7 +248,7 @@ class Container extends Basis
             if (is_string($sourceClass)) {
                 $methodReflection = new \ReflectionMethod($sourceClass, $sourceMethod);
                 if (!$methodReflection->isStatic()) {
-                    Error::show("invalid_class_static_method", $source);
+                    throw new Exception("invalid_class_static_method", $source);
                 }
             }
         }
@@ -284,7 +286,7 @@ class Container extends Basis
             } else {
                 $reflection = new \ReflectionClass($source);
                 if (!$reflection->isInstantiable()) {
-                    Error::show("cannot_instance.");
+                    throw new Exception("cannot_instance.");
                 }
                 $constructor = $reflection->getConstructor();
                 if ($constructor === null) {
@@ -306,7 +308,7 @@ class Container extends Basis
             return $instance;
         }
 
-        Error::show("invalid_source.");
+        throw new Exception("invalid_source.");
     }
 
     /**
@@ -330,7 +332,7 @@ class Container extends Basis
                     if ($object->isDefaultValueAvailable()) {
                         $class = $object->getDefaultValue();
                     } else {
-                        Error::show('fault_method_param');
+                        throw new Exception('fault_method_param');
                     }
                 }
             } else {
