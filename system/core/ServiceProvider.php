@@ -10,7 +10,7 @@ namespace Ocara;
 
 use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
 
-class ServiceProvider extends Base implements ServiceProviderInterface
+class ServiceProvider extends DataSource implements ServiceProviderInterface
 {
     protected $_container;
 
@@ -52,14 +52,14 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 检测组件是否存在
-     * @param $key
+     * @param $name
      * @return bool
      */
-    public function has($key)
+    public function has($name)
     {
-        return array_key_exists($key, $this->_properties)
-            || $this->_container->has($key)
-            || Ocara::container()->has($key);
+        return array_key_exists($name, $this->_properties)
+            || $this->_container->has($name)
+            || Ocara::container()->has($name);
     }
 
     /**
@@ -68,7 +68,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      * @param null $args
      * @return mixed
      */
-    public function &get($name = null, $args = null)
+    public function get($name = null, $args = null)
     {
         if (func_num_args()) {
             $instance = null;

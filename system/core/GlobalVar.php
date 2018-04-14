@@ -10,6 +10,6 @@ namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class GlobalVar extends Base
+class GlobalVar extends DataSource
 {
 }

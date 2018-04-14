@@ -37,7 +37,7 @@ abstract class Basis
      * @param mixed $args
      * @return array|mixed
      */
-	public function &get($name = null, $args = null)
+	public function &getProperty($name = null, $args = null)
 	{
 		if (func_num_args()) {
 			if (array_key_exists($name, $this->_properties)) {
@@ -55,10 +55,10 @@ abstract class Basis
 
 	/**
 	 * 设置自定义属性
-	 * @param string $name
+	 * @param mixed $name
 	 * @param mixed $value
 	 */
-	public function set($name, $value = null)
+	public function setProperty($name, $value = null)
 	{
 		if (is_array($name)) {
 			$this->_properties = array_merge($this->_properties, $name);
@@ -72,16 +72,30 @@ abstract class Basis
 	 * @param string $name
 	 * @return bool
 	 */
-	public function has($name)
+	public function hasProperty($name)
 	{
 		return array_key_exists($name, $this->_properties);
 	}
 
     /**
+     * 删除自定义属性
+     * @param mixed $name
+     */
+    public function delProperty($name)
+    {
+        if (is_array($name)) {
+            array_unshift($this->_properties, $name);
+            call_user_func_array('ocDel', $name);
+        } else {
+            ocDel($this->_properties, $name);
+        }
+    }
+
+    /**
      * 清理自定义属性
      * @param null $args
      */
-	public function clear($args = null)
+	public function clearProperties($args = null)
 	{
 		$this->_properties = array();
 	}
