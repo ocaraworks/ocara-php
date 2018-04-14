@@ -14,9 +14,8 @@ class Main extends ServiceProvider
 {
     /**
      * 注册服务组件
-     * @param array $data
      */
-    public function register($data = array())
+    public function register()
     {
         $this->_createService(ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS'), 'bindSingleton');
         $this->_createService(ocConfig('SYSTEM_SERVICE_CLASS'), 'bind');

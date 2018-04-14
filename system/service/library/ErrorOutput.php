@@ -14,7 +14,7 @@ use Ocara\Ocara;
 class ErrorOutput extends ServiceBase
 {
     /**
-     * 错误打印
+     * 打印错误
      * @param $error
      * @return bool
      */

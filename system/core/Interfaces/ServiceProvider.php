@@ -14,7 +14,6 @@ interface ServiceProvider
 {
 	/**
 	 * 注册服务组件
-	 * @param array $data
 	 */
-	public function register($data = array());
+	public function register();
 }

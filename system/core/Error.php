@@ -13,24 +13,8 @@ use Ocara\Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class Error extends Base
+class Error extends ServiceProvider
 {
-	/**
-	 * 单例模式
-	 */
-	private static $_instance = null;
-
-	private function __clone(){}
-	private function __construct(){}
-
-	public static function getInstance()
-	{
-		if (self::$_instance === null) {
-			self::$_instance = new self();
-		}
-		return self::$_instance;
-	}
-
 	/**
 	 * 处理出错结果
 	 * @param string $error
@@ -73,7 +57,7 @@ class Error extends Base
         ocService('transaction', true)->rollback();
 
 		if (!is_array($error)) {
-			$error = Ocara::services()->lang->->get($error, $params);
+			$error = Ocara::services()->lang->get($error, $params);
 		}
 
         throw new Exception($error['message'], $error['code']);
@@ -107,4 +91,23 @@ class Error extends Base
 			call_user_func($function, $exception);
 		}
 	}
+
+    /**
+     * 魔术方法-调用未定义的方法时
+     * @param string $name
+     * @param array $params
+     * @return mixed
+     * @throws Exception
+     */
+    public function __call($name, $params)
+    {
+        if ($this->has($name)) {
+            if ($params && !is_array($params[0])) {
+                $params[0] = Ocara::services()->lang->get($params[0], $params);
+            }
+            return $this->get($name, $params);
+        }
+
+        return parent::__call($name, $params);
+    }
 }

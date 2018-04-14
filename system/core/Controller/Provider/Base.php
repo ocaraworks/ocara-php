@@ -88,17 +88,16 @@ class Base extends ServiceProvider
 
     /**
      * 注册基本组件
-     * @param array $data
      */
-    public function register($data = array())
+    public function register()
     {
         $this->_container->bindSingleton('db', function(){
             Database::create();
         });
 
         $route = array();
-        if (!empty($data['route'])) {
-            $this->setRoute($data['route']);
+        if (!empty($this->route)) {
+            $this->setRoute($this->route);
             $route = array('route' => $this->getRoute());
         }
 
