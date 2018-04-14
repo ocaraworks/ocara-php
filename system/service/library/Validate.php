@@ -7,8 +7,11 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Service;
+
+defined('OC_PATH') or exit('Forbidden!');
+
 use Ocara\ServiceBase;
-use Ocara\Error;
+use Ocara\Ocara;
 
 class Validate extends ServiceBase
 {
@@ -205,7 +208,7 @@ class Validate extends ServiceBase
 	protected static function _checkArgsNum($need, $num)
 	{
 		if ($need > $num) {
-			Error::show('invalid_args_num');
+            Ocara::services()->error->show('invalid_args_num');
 		}
 	}
 }

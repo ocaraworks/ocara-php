@@ -52,7 +52,7 @@ class Url extends Base
 
 		$result = $this->check($url, OC_URL_ROUTE_TYPE);
 		if ($result === null) {
-			Error::show('fault_url');
+			Ocara::services()->error->show('fault_url');
 		}
 
 		if ($this->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
@@ -234,7 +234,7 @@ class Url extends Base
 
 		$result = $this->check($uri, $urlType);
 		if ($result === null) {
-			Error::show('fault_url');
+			Ocara::services()->error->show('fault_url');
 		}
 
 		if ($this->isVirtualUrl($urlType)) {

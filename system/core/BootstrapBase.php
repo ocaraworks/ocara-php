@@ -30,7 +30,7 @@ abstract class BootstrapBase extends Basis
         extract($route);
 
         if (empty($controller) || empty($action)) {
-            Error::show("MVC Route Error!");
+            Ocara::services()->error->show("MVC Route Error!");
         }
 
         list($umodule, $ucontroller, $uaction) = array_values(array_map('ucfirst', $route));
@@ -64,7 +64,7 @@ abstract class BootstrapBase extends Basis
 
         $Control = Ocara::container()->create($controlClass, array($route));
         if ($method != '_action' && !method_exists($Control, $method)) {
-            Error::show('no_special_class', array('Action', $uaction));
+            Ocara::services()->error->show('no_special_class', array('Action', $uaction));
         }
 
         $Control->init($route);
@@ -92,7 +92,7 @@ abstract class BootstrapBase extends Basis
 
         if (!ocFileExists($path)) {
             if ($required) {
-                Error::show('no_special_file', array($type, $target . '.php'));
+                Ocara::services()->error->show('no_special_file', array($type, $target . '.php'));
             }
             return false;
         }
@@ -100,7 +100,7 @@ abstract class BootstrapBase extends Basis
         include_once ($path);
         if (!class_exists($namespace . $target . $type,  false)) {
             if ($required) {
-                Error::show('no_special_class', array($type, $target));
+                Ocara::services()->error->show('no_special_class', array($type, $target));
             }
             return false;
         }

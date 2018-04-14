@@ -86,6 +86,6 @@ abstract class Base extends Basis
 			return $this->_plugin;
 		}
 
-		Error::show('no_plugin');
+        Ocara::services()->error->show('no_plugin');
 	}
 }

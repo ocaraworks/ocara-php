@@ -44,7 +44,7 @@ final class Rest extends Base implements Feature
 
         $action = ocConfig('CONTROLLERS.rest.action_map.' . $method, null);
         if (empty($action)) {
-            Error::show('fault_url');
+            Ocara::services()->error->show('fault_url');
         }
 
         $_GET = array_values($get);

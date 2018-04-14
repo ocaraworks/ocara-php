@@ -9,7 +9,7 @@
 namespace Ocara\Database\Driver;
 use \PDO;
 use Ocara\DriverBase;
-use Ocara\Error;
+use Ocara\Ocara;
 use Ocara\Interfaces\Driver as DriverInterface;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -74,7 +74,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 			}
 			if ($error) {
 				if ($i < $limitConnect) continue;
-				Error::show('failed_db_connect', $error);
+				Ocara::services()->error->show('failed_db_connect', $error);
 			} else {
 				break;
 			}

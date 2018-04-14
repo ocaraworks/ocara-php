@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Session;
 use Ocara\Base;
-use Ocara\Error;
+use Ocara\Ocara;
 use Ocara\ModelBase;
 use \Exception;
 
@@ -27,7 +27,7 @@ class SessionDB extends Base
 		$this->_plugin = new $location();
 
 		if (!(is_object($this->_plugin) && $this->_plugin instanceof ModelBase)) {
-			Error::show('failed_db_connect');
+			Ocara::services()->error->show('failed_db_connect');
 		}
 	}
 

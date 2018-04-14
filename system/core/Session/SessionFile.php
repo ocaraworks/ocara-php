@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Session;
 use Ocara\Base;
-use Ocara\Error;
+use Ocara\Ocara;
 use \Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -25,13 +25,13 @@ final class SessionFile extends Base
     {
         $savePath = ocConfig('SESSION.location', 'sessions');
    	 	if (empty($savePath)) {
-    		Error::show('invalid_save_path');
+    		Ocara::services()->error->show('invalid_save_path');
     	}
     	
     	$this->_savePath = ocPath('runtime', $savePath);
 		if (!ocCheckPath($this->_savePath)) {
             if (!ocCheckPath($this->_savePath)) {
-                Error::show('no_session_path');
+                Ocara::services()->error->show('no_session_path');
             }
 		}
     }
@@ -86,7 +86,7 @@ final class SessionFile extends Base
         try {
             ocWrite("{$this->_savePath}/sess_$id", stripslashes($data));
         } catch(Exception $exception) {
-            Error::exceptionHandler($exception);
+            Ocara::services()->error->exceptionHandler($exception);
         }
 
         return true;

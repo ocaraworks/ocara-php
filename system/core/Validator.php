@@ -198,7 +198,7 @@ class Validator extends Base
 	public function callback($field, $value, $callback)
 	{
 		if(empty($callback)) {
-			Error::show('fault_callback_validate');
+			Ocara::services()->error->show('fault_callback_validate');
 		}
 
 		$count = count($value);

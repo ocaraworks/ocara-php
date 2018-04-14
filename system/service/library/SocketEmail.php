@@ -7,9 +7,11 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Service;
-use Ocara\ServiceBase;
 
 defined('OC_PATH') or exit('Forbidden!');
+
+use Ocara\ServiceBase;
+use Ocara\Ocara;
 
 final class SocketEmail extends ServiceBase
 {
@@ -35,7 +37,7 @@ final class SocketEmail extends ServiceBase
 		
 		if (empty($this->fo)) {
 			$errmsg = iconv('gbk', 'utf-8', $errmsg);
-			Error::show('failed_email_socket_connect', array($errno, $errmsg));
+            Ocara::services()->error->show('failed_email_socket_connect', array($errno, $errmsg));
 		}
 		
 		if ($timeout) {

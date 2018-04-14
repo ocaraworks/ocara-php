@@ -124,7 +124,7 @@ class Sql extends Base
 			}
 		}
 
-		Error::show('need_string_field');
+		Ocara::services()->error->show('need_string_field');
 	}
 
 	/**
@@ -137,7 +137,7 @@ class Sql extends Base
 	public function parseField($field, $alias = false)
 	{
 		if (!is_string($field)) {
-			Error::show('invalid_field_name');
+			Ocara::services()->error->show('invalid_field_name');
 		}
 
 		if ($mt = self::checkOcaraSqlTag($field)) {
@@ -231,7 +231,7 @@ class Sql extends Base
 		if (ocScalar($condition)) {
 			return true;
 		}
-		Error::show('need_string_condition');
+		Ocara::services()->error->show('need_string_condition');
 	}
 
 	/**

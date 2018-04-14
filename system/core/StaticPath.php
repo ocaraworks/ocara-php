@@ -103,7 +103,7 @@ class StaticPath extends Base
 				$paramsStr = trim(str_ireplace($mt[1], $value, $paramsStr), $this->delimiter);
 				$paramData[$name] = $value;
 			} else
-				Error::show('fault_static_field');
+				Ocara::services()->error->show('fault_static_field');
 		}
 
 		return array($paramsStr, $paramData);
@@ -129,7 +129,7 @@ class StaticPath extends Base
 		$fileStr 	= substr($params, $index ? $index + 1 : 0);
 
 		if (!preg_match('/^{[\w:]+}(' . self::$delimiter . '{[\w:]+})*$/', $fileStr)) {
-			Error::show('fault_static_field');
+			Ocara::services()->error->show('fault_static_field');
 		}
 
 		$pathParams = $pathStr ? explode(OC_DIR_SEP, trim($pathStr, OC_DIR_SEP)) : array();
@@ -159,6 +159,6 @@ class StaticPath extends Base
 			return $module . str_ireplace($search, $replace, self::$route);
 		}
 
-		Error::show('fault_static_route');
+		Ocara::services()->error->show('fault_static_route');
 	}
 }

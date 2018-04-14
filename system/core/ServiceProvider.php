@@ -22,7 +22,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     public function __construct(array $data = array())
     {
         $this->_container = new Container();
-        $this->set($data);
+        $this->setProperty($data);
         $this->register();
     }
 
@@ -55,7 +55,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      * @param $name
      * @return bool
      */
-    public function has($name)
+    public function hasService($name)
     {
         return array_key_exists($name, $this->_properties)
             || $this->_container->has($name)
@@ -67,14 +67,14 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      * @param $key
      * @return array|mixed|null
      */
-    public function get($name, $params = array(), $deps = array())
+    public function getService($name, $params = array(), $deps = array())
     {
         $instance = null;
 
         if ($this->hasProperty($name)) {
             return $this->getProperty($name);
         } else {
-            $instance = $this->create($name, $params, $deps);
+            $instance = $this->createService($name, $params, $deps);
             if ($instance) {
                 $this->setProperty($name, $instance);
             }
@@ -90,7 +90,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      * @param array $deps
      * @return mixed|null
      */
-    public function create($key, $params = array(), $deps = array())
+    public function createService($key, $params = array(), $deps = array())
     {
         $instance = null;
 
@@ -110,6 +110,11 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function __none($key)
     {
-        Error::show('no_service', array($key));
+        $instance = $this->getService($key);
+        if ($instance) {
+            return $instance;
+        }
+
+        Ocara::services()->error->show('no_service', array($key));
     }
 }

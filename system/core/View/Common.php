@@ -9,7 +9,6 @@
 namespace Ocara\View;
 
 use Ocara\Ocara;
-use Ocara\Error;
 use Ocara\Filter;
 use Ocara\Html;
 use Ocara\Ajax;
@@ -134,7 +133,7 @@ class Common extends ViewBase implements ViewInterfaces
 			if (func_num_args() >= 2) {
 				return $default;
 			}
-			Error::show('not_exists_template_var', array($name));
+			Ocara::services()->error->show('not_exists_template_var', array($name));
 		}
 		
 		return $vars ? : array();
@@ -182,7 +181,7 @@ class Common extends ViewBase implements ViewInterfaces
 	public function setTemplate($dir)
 	{
 		if (!is_dir(ocPath('view', 'template/' . $dir))) {
-			Error::show('not_exists_template', array($dir));
+			Ocara::services()->error->show('not_exists_template', array($dir));
 		}
 		$this->_template = $dir;
 	}
@@ -231,7 +230,7 @@ class Common extends ViewBase implements ViewInterfaces
 					$html[] = $this->readFile($path, true);
 				}
 			} else {
-				Error::show('not_exists_part', array('file' => ltrim($value,OC_DIR_SEP)));
+				Ocara::services()->error->show('not_exists_part', array('file' => ltrim($value,OC_DIR_SEP)));
 			}
 		}
 		
@@ -428,7 +427,7 @@ class Common extends ViewBase implements ViewInterfaces
 		if (ocFileExists($path)) {
 			$this->_content = $this->readFile($path);
 		} else {
-			Error::show('not_exists_layout', array($this->_layout));
+			Ocara::services()->error->show('not_exists_layout', array($this->_layout));
 		}
 
 		$parentLayout = $this->_parentLayout;
@@ -464,7 +463,7 @@ class Common extends ViewBase implements ViewInterfaces
 
 		if (ocFileExists($realPath) == false) {
 			if ($required) {
-				Error::show('not_exists_template_file', array($file));
+				Ocara::services()->error->show('not_exists_template_file', array($file));
 			} else {
 				return null;
 			}

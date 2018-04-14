@@ -19,7 +19,7 @@ class Path extends Base
 	{
 		$paths = ocConfig('APP_PATH_INFO', array(), true);
 		$paths['replace']['lang'] = 'lang/' . Ocara::language();
-		$this->set($paths);
+		$this->setProperty($paths);
 	}
 
     /**
@@ -52,7 +52,7 @@ class Path extends Base
         $result = ocDir($root, $mapDir) . $path;
         if (isset($result)) {
             if ($local && $isFile && ($result = ocFileExists($result)) == false) {
-                Error::show('not_exists_file', array($path));
+                Ocara::services()->error->show('not_exists_file', array($path));
             }
             $path = $result;
         }

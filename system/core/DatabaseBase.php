@@ -289,7 +289,7 @@ class DatabaseBase extends Sql
 				$this->_wakeUpTimes++;
 				return call_user_func_array(array($this, __METHOD__), func_get_arg());
 			}
-			Error::show($exception->getMessage());
+			Ocara::services()->error->show($exception->getMessage());
 		}
 
 		$ret = $this->checkError($result, $sqlData, $required);
@@ -695,7 +695,7 @@ class DatabaseBase extends Sql
 		if ($this->errorExists()) {
 			$error = $this->_error;
 			$this->_error = $error;
-			Error::show($this->getError());
+			Ocara::services()->error->show($this->getError());
 		}
 	}
 

@@ -300,6 +300,6 @@ class Form extends Base
 			return $html;
 		}
 
-		parent::_call($name, $params);
+		return parent::_call($name, $params);
 	}
 }

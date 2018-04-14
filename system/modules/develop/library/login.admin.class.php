@@ -10,7 +10,6 @@ namespace Ocara\Develop;
 
 use Ocara\Ocara;
 use Ocara\Develop;
-use Ocara\Error;
 
 class login_admin
 {
@@ -23,7 +22,7 @@ class login_admin
 		$path = OC_DEV_DIR . 'data/users.data.php';
 		
 		if(!ocFileExists($path)){
-			Error::show('not_exists_file', array('users.data.php'));
+            Ocara::services()->error->show('not_exists_file', array('users.data.php'));
 		}
 
 		$users = include(OC_DEV_DIR . 'data/users.data.php');

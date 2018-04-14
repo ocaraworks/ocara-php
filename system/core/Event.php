@@ -56,7 +56,7 @@ class Event extends Basis implements EventInterface
         }
 
         if (is_object($callback) && !($callback instanceof Middleware)) {
-            Error::show('invalid_middleware');
+            Ocara::services()->error->show('invalid_middleware');
         }
 
         $params = func_get_args();
@@ -163,16 +163,20 @@ class Event extends Basis implements EventInterface
      */
     public function get($name = null)
     {
-        if (!isset($name)) {
-            return $this->_properties;
+        if (isset($name)) {
+            if (!isset($name)) {
+                return $this->_properties;
+            }
+
+            $key = $this->_getKey($name);
+            if (is_integer($key)) {
+                return $this->_properties[$name];
+            }
+
+            return null;
         }
 
-        $key = $this->_getKey($name);
-        if (is_integer($key)) {
-            return $this->_properties[$name];
-        }
-
-        return null;
+        return $this->_properties;
     }
 
     /**

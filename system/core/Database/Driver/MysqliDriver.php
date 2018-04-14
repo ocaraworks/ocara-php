@@ -10,7 +10,7 @@ namespace Ocara\Database\Driver;
 use \mysqli;
 use Ocara\Exception\Exception;
 use Ocara\DriverBase;
-use Ocara\Error;
+use Ocara\Ocara;
 use Ocara\Interfaces\Driver as DriverInterface;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -50,7 +50,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
 			$error = array(
 				$this->_config['name'], $this->_errno, $this->_error
 			);
-			Error::show('failed_db_connect', $error);
+			Ocara::services()->error->show('failed_db_connect', $error);
 		}
 
 		return $this->_connection;
@@ -70,7 +70,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
 		);
 
 		if (!class_exists('mysqli', false)) {
-			Error::show('not_exists_class', array('mysqli'));
+			Ocara::services()->error->show('not_exists_class', array('mysqli'));
 		}
 
 		$limitConnect = ocConfig('DATABASE_LIMIT_CONNECT_TIMES', 3);
@@ -79,14 +79,14 @@ class MysqliDriver extends DriverBase implements DriverInterface
 			try {
 				$this->_instance = new mysqli();
 				if (empty($this->_instance)) {
-					Error::show('failed_db_init');
+					Ocara::services()->error->show('failed_db_init');
 				}
 
 				$timeout = $this->_config['timeout'];
 				if ($timeout){
 					$result = $this->_instance->options(MYSQLI_OPT_CONNECT_TIMEOUT, $timeout);
 					if (!$result) {
-						Error::show('failed_db_set_timeout');
+						Ocara::services()->error->show('failed_db_set_timeout');
 					}
 				}
 
@@ -103,7 +103,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
 				$error = array(
 					$this->_config['name'], $this->_errno, $this->_error
 				);
-				Error::show('failed_db_connect', $error);
+				Ocara::services()->error->show('failed_db_connect', $error);
 			}
 			break;
 		}

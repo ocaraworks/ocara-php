@@ -7,9 +7,12 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Service;
+
+defined('OC_PATH') or exit('Forbidden!');
+
 use Ocara\ServiceBase;
 use Ocara\Service\Interfaces\Template as TemplateInterface;
-use Ocara\Error;
+use Ocara\Ocara;
 
 class Smarty extends ServiceBase implements TemplateInterface
 {
@@ -24,7 +27,7 @@ class Smarty extends ServiceBase implements TemplateInterface
 		ocImport(OC_SYS . 'modules/smarty/Smarty.class.php');
 
 		if (!class_exists('smarty', false)) {
-			Error::show('no_the_special_class', array('smarty'));
+            Ocara::services()->error->show('no_the_special_class', array('smarty'));
 		}
 
 		$this->_plugin = new \Smarty();

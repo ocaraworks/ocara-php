@@ -46,7 +46,7 @@ abstract class Basis
             if (method_exists($this, '__none')) {
                 $this->__none($name);
             } else {
-                Error::show('no_property', array($name));
+                ocService('error', true)->show('no_property', array($name));
             }
 		}
 
@@ -193,7 +193,7 @@ abstract class Basis
 			call_user_func_array($this->_traits[$name], $params);
 		}
 
-		Error::show('no_method', array($name));
+        ocService('error', true)->show('no_method', array($name));
 	}
 
 	/**
@@ -205,7 +205,7 @@ abstract class Basis
 	 */
 	public static function __callStatic($name, $params)
 	{
-		Error::show('no_method', array($name));
+        ocService('error', true)->show('no_method', array($name));
 	}
 
 	/**
@@ -226,14 +226,15 @@ abstract class Basis
 	 */
 	public function &__get($key)
 	{
-		if ($this->has($key)) {
-			return $this->get($key);
+		if ($this->hasProperty($key)) {
+			return $this->getProperty($key);
 		}
 
 		if (method_exists($this, '__none')) {
-			$this->__none($key);
+			$value = $this->__none($key);
+			return $value;
 		} else {
-			Error::show('no_property', array($key));
+            ocService('error', true)->show('no_property', array($key));
 		}
 	}
 

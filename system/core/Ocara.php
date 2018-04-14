@@ -61,6 +61,7 @@ final class Ocara extends Basis
 	 */
 	public static function init()
 	{
+
         @ini_set('register_globals', 'Off');
         register_shutdown_function("ocShutdownHandler");
 
@@ -112,9 +113,10 @@ final class Ocara extends Basis
 	{
 		$bootstrap = $bootstrap ? : '\Ocara\Bootstrap';
 		$bootstrap = new $bootstrap();
+        $container = self::container();
 
 		self::$_services = $bootstrap->getServiceProvider();
-        self::$_services->setContainer(self::container());
+        self::$_services->setContainer($container);
         self::$_services->register();
 
 		$bootstrap->init();

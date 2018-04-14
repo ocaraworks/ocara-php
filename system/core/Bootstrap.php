@@ -27,7 +27,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
             ->bindEvents(ocConfig('EVENT.log', Ocara::services()->log));
 
         if (!@ini_get('short_open_tag')) {
-            Error::show('need_short_open_tag');
+            Ocara::services()->error->show('need_short_open_tag');
         }
 
         if (!ocFileExists(OC_ROOT . '.htaccess')) {
@@ -50,7 +50,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
             if (OC_SYS_MODEL == 'develop') {
                 Develop::run();
             } else {
-                Error::show('unallowed_develop');
+                Ocara::services()->error->show('unallowed_develop');
             }
         }
 
@@ -69,14 +69,14 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
         $htaccess = ocImport(OC_SYS . 'data/rewrite/apache.php');
 
         if (empty($htaccess)) {
-            Error::show('no_rewrite_default_file');
+            Ocara::services()->error->show('no_rewrite_default_file');
         }
 
         if (is_writeable(OC_ROOT)) {
             $htaccess = sprintf($htaccess, $moreContent);
             ocWrite($file, $htaccess);
         } else {
-            Error::show('not_writeable_htaccess');
+            Ocara::services()->error->show('not_writeable_htaccess');
         }
     }
 }

@@ -130,7 +130,7 @@ class Response extends Base
 			}
 			$die && die();
 		} else {
-			Error::show('not_null', array('route'));
+			Ocara::services()->error->show('not_null', array('route'));
 		}
 	}
 
@@ -148,7 +148,7 @@ class Response extends Base
 			}
 			$die && die();
 		} else {
-			Error::show('not_null', array('url'));
+			Ocara::services()->error->show('not_null', array('url'));
 		}
 	}
 

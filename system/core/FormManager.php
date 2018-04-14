@@ -10,6 +10,9 @@ namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
+use Ocara\Exception\Exception;
+use \Ocara\Form;
+
 class FormManager extends ServiceProvider
 {
 	/**
@@ -43,6 +46,27 @@ class FormManager extends ServiceProvider
 
 		return $form;
 	}
+
+    /**
+     * 获取表单
+     * @param $name
+     * @return array|mixed
+     */
+	public function get($name = null)
+    {
+        if (func_get_args()) {
+            if ($this->hasProperty($name)) {
+                $form = $this->getProperty($name);
+                if (is_object($form) && $form instanceof Form) {
+                    return $form;
+                }
+            }
+
+            return null;
+        }
+
+        return $this->_properties;
+    }
 
 	/**
 	 * 获取提交的表单
@@ -131,7 +155,7 @@ class FormManager extends ServiceProvider
 		if ($this->event('checkError')->get()) {
 			$this->event('checkError')->fire(array($error, $this->getRoute()));
 		} else {
-			Error::show($error['errorInfo']);
+			Ocara::services()->error->show($error['errorInfo']);
 		}
 
 		die();

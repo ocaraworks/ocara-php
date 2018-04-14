@@ -7,15 +7,12 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
+defined('OC_PATH') or exit('Forbidden!');
+
 use Ocara\ExceptionHandler;
-use Ocara\Ocara;
-use Ocara\Error;
 use Ocara\Exception\Exception;
 use Ocara\Exception\ErrorException;
-use Ocara\Response;
-use Ocara\Lang;
-
-defined('OC_PATH') or exit('Forbidden!');
+use Ocara\Ocara;
 
 /**
  * 统一路径，将反斜杠换成正斜杠
@@ -42,7 +39,7 @@ function ocGet($key, array $data, $default = null, $required = false)
 		if ($result = ocCheckKey(false, $key, $data, true, $default)) {
 			return $result[0];
 		}
-		Error::show('not_exists_key', array($key));
+		Ocara::services()->error->show('not_exists_key', array($key));
 	}
 	
 	return ocCheckKey(false, $key, $data, false, $default);
@@ -142,13 +139,13 @@ function ocLang($name, array $params = array(), $default = null)
  */
 function ocConfig($key, $default = null, $unempty = false)
 {
-	if ($result = Ocara::container()->config->getConfig($key)) {
+	if ($result = ocService('config', true)->getConfig($key)) {
 		return $unempty && ocEmpty($result[0]) ? $default : $result[0];
 	}
 
 	if (func_num_args() >= 2) return $default;
 
-	Error::show('no_config', array($key));
+	Ocara::services()->error->show('no_config', array($key));
 }
 
 /**
@@ -191,7 +188,7 @@ function ocSet(array &$data, $key, $value)
 
 	for ($i = 0;$i <= $max;$i++) {
 		if (!is_array($pointer)) {
-			Error::show('need_array_to_set');
+			Ocara::services()->error->show('need_array_to_set');
 		}
 		$k = $key[$i];
 		if ($i == $max) {
@@ -298,7 +295,7 @@ function ocDel(array &$data, $key)
 function ocGetExceptionData($exception)
 {
 	if (!(is_object($exception) && $exception instanceof \Exception)) {
-		Error::show('invalid_exception');
+		Ocara::services()->error->show('invalid_exception');
 	}
 
 	$errorType = 'exception_error';
@@ -347,7 +344,7 @@ function ocErrorHandler($level, $message, $file, $line, $context = '')
  */
 function ocExceptionHandler($exception)
 {
-	Error::getInstance()->handler($exception);
+    Ocara::services()->error->handler($exception);
 }
 
 /**
@@ -359,10 +356,11 @@ function ocExceptionHandler($exception)
 function ocService($name, $getDefault = false)
 {
     if (!Ocara::services() && $getDefault) {
-        return '\Ocara\\' . ucfirst($name);
+        $class = '\Ocara\\' . ucfirst($name);
+        return new $class();
     }
 
-	return Ocara::services()->get($name);
+	return Ocara::services()->getService($name);
 }
 
 /**
@@ -370,8 +368,6 @@ function ocService($name, $getDefault = false)
  */
 function ocShutdownHandler()
 {
-	Ocara::getInstance()->event('die')->fire();
-
 	$error = error_get_last();
 	if ($error) {
 		if (@ini_get('display_errors')) {
@@ -467,7 +463,7 @@ function ocImport($path, $required = true, $once = true, array $vars = array())
 		} else {
 			if ($required) {
 				$files = explode(OC_DIR_SEP, trim($path, OC_DIR_SEP));
-				Error::show('not_exists_file', array(end($files)));
+				Ocara::services()->error->show('not_exists_file', array(end($files)));
 			}
 		}
 	} elseif (is_array($path)) {

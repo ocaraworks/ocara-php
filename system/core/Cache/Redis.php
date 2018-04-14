@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Cache;
 use Ocara\CacheBase;
-use Ocara\Error;
+use Ocara\Ocara;
 use Ocara\Interfaces\Cache as CacheInterface;
 
 class Redis extends CacheBase implements CacheInterface
@@ -16,11 +16,11 @@ class Redis extends CacheBase implements CacheInterface
 	public function connect($config, $required = true)
 	{
 		if (!ocGet('open', $config, false)) {
-			return Error::check('no_open_service_config', array('Redis'), $required);
+			return Ocara::services()->error->check('no_open_service_config', array('Redis'), $required);
 		}
 
 		if (!class_exists('Redis', false)) {
-			return Error::check('no_extension', array('Redis'), $required);
+			return Ocara::services()->error->check('no_extension', array('Redis'), $required);
 		}
 
 		ocCheckExtension('redis');
@@ -36,7 +36,7 @@ class Redis extends CacheBase implements CacheInterface
 		if ($password) {
 			$auth = $this->_plugin->auth($password);
 			if (empty($auth)) {
-				return Error::check('fault_redis_password', array(), $required);
+				return Ocara::services()->error->check('fault_redis_password', array(), $required);
 			}
 		}
 	}

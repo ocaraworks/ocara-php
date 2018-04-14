@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Cache;
 use Ocara\CacheBase;
-use Ocara\Error;
+use Ocara\Ocara;
 use Ocara\Interfaces\Cache as CacheInterface;
 
 class Memcache extends CacheBase implements CacheInterface
@@ -22,7 +22,7 @@ class Memcache extends CacheBase implements CacheInterface
 	public function connect($config, $required = true)
 	{
 		if (!ocGet('open', $config, false)) {
-			return Error::check('no_open_service_config', array('Memcache'), $required);
+			return Ocara::services()->error->check('no_open_service_config', array('Memcache'), $required);
 		}
 
 		if (class_exists($class = 'Memcache', false)) {
@@ -30,7 +30,7 @@ class Memcache extends CacheBase implements CacheInterface
 		} elseif (class_exists($class = 'Memcached', false)) {
 			ocCheckExtension('memcached');
 		} else {
-			return Error::check('no_extension', array('Memcache'), $required);
+			return Ocara::services()->error->check('no_extension', array('Memcache'), $required);
 		}
 
 		$this->_plugin = new $class();

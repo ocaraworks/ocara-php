@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Session;
 use Ocara\Base;
-use Ocara\Error;
+use Ocara\Ocara;
 use Ocara\Cache;
 use \Exception;
 
@@ -72,7 +72,7 @@ final class SessionCache extends Base
         try {
             $this->_plugin->set($this->_prefix . $id, $data);
         } catch(Exception $e) {
-            Error::exceptionHandler($e);
+            Ocara::services()->error->exceptionHandler($e);
         }
 
         return true;

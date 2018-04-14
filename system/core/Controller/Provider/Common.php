@@ -204,7 +204,7 @@ class Common extends Base
             if ($model instanceof DatabaseModel) {
                 $class = $model->getClass();
             } else {
-                Error::show('fault_model_object');
+                Ocara::services()->error->show('fault_model_object');
             }
         } else {
             $class = $model;

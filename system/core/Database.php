@@ -38,7 +38,7 @@ final class Database extends Base
 		}
 
 		if ($required) {
-			Error::show('not_exists_database', array($connectName));
+			Ocara::services()->error->show('not_exists_database', array($connectName));
 		}
 
 		return $database;
@@ -128,6 +128,6 @@ final class Database extends Base
 			}
 		}
 
-		Error::show('not_exists_database');
+		Ocara::services()->error->show('not_exists_database');
 	}
 }

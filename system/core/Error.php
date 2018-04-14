@@ -101,11 +101,12 @@ class Error extends ServiceProvider
      */
     public function __call($name, $params)
     {
-        if ($this->has($name)) {
+        if ($this->hasProperty($name)) {
             if ($params && !is_array($params[0])) {
                 $params[0] = Ocara::services()->lang->get($params[0], $params);
             }
-            return $this->get($name, $params);
+            $exceptionClass = $this->getProperty($name);
+            throw ocClass($exceptionClass, $params);
         }
 
         return parent::__call($name, $params);

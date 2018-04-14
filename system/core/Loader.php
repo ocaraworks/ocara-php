@@ -65,6 +65,6 @@ class Loader extends Base
             }
         }
 
-        Error::show('not_exists_class', array($class));
+        Ocara::services()->error->show('not_exists_class', array($class));
     }
 }

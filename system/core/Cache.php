@@ -35,9 +35,8 @@ final class Cache extends Base
 			return $object;
 		}
 
-		return Error::check(
-			'not_exists_cache', array($connectName), $required
-		);
+		return Ocara::services()->error
+                    ->check('not_exists_cache', array($connectName), $required);
 	}
 
 	/**
@@ -86,6 +85,6 @@ final class Cache extends Base
 			}
 		}
 
-		Error::show('not_exists_cache');
+        Ocara::services()->error->show('not_exists_cache');
 	}
 }
