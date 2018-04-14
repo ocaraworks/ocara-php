@@ -11,12 +11,12 @@ namespace Ocara;
 class Font extends Base
 {
     /**
-     * 获取自定义属性
+     * 获取字体
      * @param string $name
      * @param null $args
      * @return bool|mixed|string
      */
-    public function &get($name = null, $args = null)
+    public function get($name = null, $args = null)
     {
         if ($name) {
             if (!preg_match('/^.*\.\w{2,5}$/i', $name)) {
@@ -30,6 +30,6 @@ class Font extends Base
             ($path = ocFileExists(OC_EXT . 'data/fonts/' . $name, true))
         ) return $path;
 
-        Error::show('not_exists_font');
+        Ocara::services()->error->show('not_exists_font');
     }
 }

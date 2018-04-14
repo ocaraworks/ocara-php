@@ -31,7 +31,7 @@ class Cookie extends Base
 	 * @param string|array $key
 	 * @param mixed $value
 	 */
-	public function set($key, $value = false)
+	public function set($key, $value = null)
 	{
 		if (ocKeyExists($key, $_COOKIE)) {
 			ocSet($_COOKIE, $key, $value);
@@ -52,7 +52,7 @@ class Cookie extends Base
 	 * @param string|array $key
 	 * @return array|bool|mixed|null
 	 */
-	public function exists($key)
+	public function has($key)
 	{
 		return ocKeyExists($key, $_COOKIE);
 	}

@@ -65,7 +65,7 @@ class FormToken extends Base
 	{
 		$checkRepeatSubmit = ocConfig('FORM.check_repeat_submit', true);
 
-		if ($checkRepeatSubmit && $this->exists()) {
+		if ($checkRepeatSubmit && $this->has()) {
 			Ocara::services()->session->delete($this->_tokenKey);
 			$this->_formName = null;
 			$this->_tokenName = null;
@@ -79,7 +79,7 @@ class FormToken extends Base
 	 * @param string $token
 	 * @return bool
 	 */
-	public function exists($formName = null, $token = null)
+	public function has($formName = null, $token = null)
 	{
 		if ($formName === null) {
 			$tokenName = $this->_tokenName;

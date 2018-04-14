@@ -39,7 +39,7 @@ class Log extends Base
     {
         $time = date(ocConfig('DATE_FORMAT.datetime'), time());
 
-        if (!$this->_plugin->exists($this->_name)) {
+        if (!$this->_plugin->has($this->_name)) {
             $this->_plugin->create($this->_name);
         }
 

@@ -131,10 +131,10 @@ class Controller extends serviceProvider implements ControllerInterface
 	 */
 	public function &__get($key)
 	{
-		$value = &$this->get($key);
-		if ($value) {
-			return $value;
-		}
+        if ($this->hasProperty($key)) {
+            $value = &$this->getProperty($key);
+            return $value;
+        }
 
 		if ($instance = $this->_provider->get($key)) {
 			return $instance;

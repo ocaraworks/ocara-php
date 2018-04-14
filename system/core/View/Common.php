@@ -372,8 +372,9 @@ class Common extends ViewBase implements ViewInterfaces
 		}
 
 		if ($this->engine()) {
-			$func = ocConfig('VIEW_ENGINE_FUNCTIONS');
-			foreach ($func as $name) {
+			$functions = ocConfig('DEFAULT_VIEW_ENGINE_FUNCTIONS');
+            $functions = array_merge($functions, ocConfig('VIEW_ENGINE_FUNCTIONS', array()));
+			foreach ($functions as $name) {
 				$this->_plugin->registerPlugin(array('function', $name, $name));
 			}
 			$this->_plugin->setVar('View', $this);

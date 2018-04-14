@@ -141,31 +141,40 @@ final class Config extends Base
 	
 	/**
 	 * 设置配置
-	 * @param string $key
+	 * @param mxied $name
 	 * @param mixed $value
 	 */
-	public function set($key, $value)
+	public function set($name, $value)
 	{
-		ocSet($this->_properties, $key, $value);
+		ocSet($this->_properties, $name, $value);
 	}
 
     /**
-     * 获取配置（方法重写）
-     * @param string $name
-     * @param mixed $args
+     * 获取配置
+     * @param string $key
      * @return array|bool|mixed|null
      */
-    public function &get($name = null, $args = null)
+    public function get($key = null)
     {
-		if (func_num_args()) {
-			if (ocKeyExists($name, $this->_properties)) {
-				return ocGet($name, $this->_properties);
-			}
-			return $this->getDefault($name);
-		}
-		
-		return $this->_properties;
-	}
+        if (func_num_args()) {
+            if (ocKeyExists($key, $this->_properties)) {
+                return ocGet($key, $this->_properties);
+            }
+            return $this->getDefault($key);
+        }
+
+        return $this->_properties;
+    }
+
+    /**
+     * 删除配置
+     * @param string $key
+     * @param mixed $value
+     */
+    public function delete($key)
+    {
+        ocDel($this->_properties, $key);
+    }
 
 	/**
 	 * 获取默认配置
@@ -183,10 +192,10 @@ final class Config extends Base
 
 	/**
 	 * 检查配置键名是否存在
-	 * @param string $key
+	 * @param string $name
 	 * @return array|bool|mixed|null
 	 */
-	public function exists($key = null)
+	public function has($key = null)
 	{
 		return ocKeyExists($key, $this->_properties);
 	}
@@ -205,15 +214,5 @@ final class Config extends Base
 		}
 		
 		return array();
-	}
-
-	/**
-	 * 删除配置
-	 * @param string $key
-	 * @return array|null
-	 */
-	public function delete($key)
-	{
-		return ocDel($this->_properties, $key);
 	}
 }

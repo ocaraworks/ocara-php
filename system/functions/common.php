@@ -50,12 +50,12 @@ function ocCheckExtension($extension, $required = true)
  */
 function ocGlobal($name, $value = null)
 {
-	$globalVar = Ocara::services()->globalVar;
+	$globals = Ocara::services()->globals;
 
 	if (func_num_args()>=2) {
-		$globalVar->set($name, $value);
+        $globals->set($name, $value);
 	} else {
-		return $globalVar->get($name);
+		return $globals->get($name);
 	}
 }
 

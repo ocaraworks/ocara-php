@@ -159,20 +159,20 @@ class Event extends Basis implements EventInterface
     /**
      * 获取事件处理器
      * @param string $name
-     * @param mixed $args
      * @return array|mixed
      */
-    public function &get($name = null, $args = null)
+    public function get($name = null)
     {
-        if (func_num_args()) {
-            $key = $this->_getKey($name);
-            if (is_integer($key)) {
-                return $this->_properties[$name];
-            }
-            return null;
+        if (!isset($name)) {
+            return $this->_properties;
         }
 
-        return $this->_properties;
+        $key = $this->_getKey($name);
+        if (is_integer($key)) {
+            return $this->_properties[$name];
+        }
+
+        return null;
     }
 
     /**
@@ -188,10 +188,9 @@ class Event extends Basis implements EventInterface
 
     /**
      * 清空事件处理器
-     * @param null $args
      * @return $this
      */
-    public function clear($args = null)
+    public function clear()
     {
         $this->_properties = array();
         return $this;

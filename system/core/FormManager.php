@@ -39,7 +39,7 @@ class FormManager extends ServiceProvider
 	{
 		$form = new Form($name);
 		$form->setRoute($this->getRoute());
-		$this->set($name, $form);
+		$this->setProperty($name, $form);
 
 		return $form;
 	}
@@ -56,10 +56,10 @@ class FormManager extends ServiceProvider
 			$this->_showCheckFormError('failed_validate_token');
 		}
 
-		$properties = $this->get();
-		foreach ($properties as $formName => $form) {
+		$forms = $this->getProperty();
+		foreach ($forms as $formName => $form) {
 			$this->formToken->setRoute($form->getRoute());
-			if ($this->formToken->exists($formName, $postToken)) {
+			if ($this->formToken->has($formName, $postToken)) {
 				$postForm = $form;
 				$this->formToken->setCurrentForm($formName);
 				break;
@@ -97,7 +97,7 @@ class FormManager extends ServiceProvider
 	public function setToken()
 	{
 		$tokenTag = $this->formToken->getTokenTag();
-        $forms = $this->get();
+        $forms = $this->getProperty();
 
 		foreach ($forms as $formName => $form) {
 			if (is_object($form) && $form instanceof Form) {

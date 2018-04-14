@@ -76,27 +76,25 @@ class Session extends Base
 	}
 
     /**
-     * 获取session变量值（方法重写）
-     * @param string $name
-     * @param null $args
-     * @return mixed
+     * 获取session变量值
+     * @param bool $key
+     * @return array|bool|mixed|null
      */
-    public function &get($name = null, $args = null)
+    public function get($key = false)
     {
-		if (func_num_args()) {
-			$value = ocGet($name, $_SESSION);
-			return $value;
-		}
-		
-		return $_SESSION;
-	}
+        if (func_num_args()) {
+            return ocGet($key, $_SESSION);
+        }
+
+        return $_SESSION;
+    }
 
 	/**
 	 * 设置session变量
 	 * @param string|array $key
 	 * @param mixed $value
 	 */
-	public function set($key, $value = false)
+	public function set($key, $value)
 	{
 		ocSet($_SESSION, $key, $value);
 	}
@@ -148,7 +146,7 @@ class Session extends Base
 	 * @param $key
 	 * @return array|bool|mixed|null
 	 */
-	public function exists($key)
+	public function has($key)
 	{
 		return ocKeyExists($key, $_SESSION);
 	}

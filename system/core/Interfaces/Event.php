@@ -50,10 +50,9 @@ interface Event
     /**
      * 获取事件处理器
      * @param string $name
-     * @param mixed $args
      * @return array|mixed
      */
-    public function get($name = null, $args = null);
+    public function get($name = null);
 
     /**
      * 检测是否存在事件处理器

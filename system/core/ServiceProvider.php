@@ -10,7 +10,7 @@ namespace Ocara;
 
 use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
 
-class ServiceProvider extends DataSource implements ServiceProviderInterface
+class ServiceProvider extends Base implements ServiceProviderInterface
 {
     protected $_container;
 
@@ -63,30 +63,24 @@ class ServiceProvider extends DataSource implements ServiceProviderInterface
     }
 
     /**
-     * 获取服务组件（方法重写）
-     * @param string $name
-     * @param null $args
-     * @return mixed
+     * 获取服务组件
+     * @param $key
+     * @return array|mixed|null
      */
-    public function get($name = null, $args = null)
+    public function get($name, $params = array(), $deps = array())
     {
-        if (func_num_args()) {
-            $instance = null;
-            if (array_key_exists($name, $this->_properties)) {
-                $instance = $this->_properties[$name];
-            } elseif ($this->has($name)) {
-                $args = func_get_args();
-                $params = array_key_exists(1, $args) ? (array)$args[1] : array();
-                $deps = array_key_exists(2, $args) ? (array)$args[2] : array();
-                $instance = $this->createService($name, $params, $deps);
-                if ($instance) {
-                    $this->set($name, $instance);
-                }
+        $instance = null;
+
+        if ($this->hasProperty($name)) {
+            return $this->getProperty($name);
+        } else {
+            $instance = $this->create($name, $params, $deps);
+            if ($instance) {
+                $this->setProperty($name, $instance);
             }
-            return $instance;
         }
 
-        return $this->_properties;
+        return $instance;
     }
 
     /**
@@ -96,7 +90,7 @@ class ServiceProvider extends DataSource implements ServiceProviderInterface
      * @param array $deps
      * @return mixed|null
      */
-    public function createService($key, $params = array(), $deps = array())
+    public function create($key, $params = array(), $deps = array())
     {
         $instance = null;
 

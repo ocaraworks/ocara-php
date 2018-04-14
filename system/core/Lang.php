@@ -111,19 +111,17 @@ class Lang extends Base
 
     /**
      * 获取语言配置（方法重写）
-     * @param string $name
+     * @param string $key
      * @param mixed $args
      * @return array|null
      */
-    public function &get($name = null, $args = null)
+    public function get($key = null, array $params = array())
     {
 		if (func_num_args()) {
-            $args = func_get_args();
-            $params = array_key_exists(1, $args) ? (array)$args[1] : array();
-			if (ocKeyExists($name, $this->_properties)) {
-                $value =  ocGetLanguage($this->_properties, $name, $params);
+			if (ocKeyExists($key, $this->_properties)) {
+                $value =  ocGetLanguage($this->_properties, $key, $params);
 			} else {
-                $value = $this->getDefault($name, $params);
+                $value = $this->getDefault($key, $params);
             }
 			return $value;
 		}
@@ -163,7 +161,7 @@ class Lang extends Base
 	 * @return array|bool|mixed|null
 	 * @throws Exception
 	 */
-	public function exists($key = null)
+	public function has($key = null)
 	{
 		return ocKeyExists($key, $this->_properties);
 	}

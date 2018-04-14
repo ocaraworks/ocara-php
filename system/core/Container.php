@@ -27,32 +27,6 @@ class Container extends Basis
     protected static $_default;
 
     /**
-     * 获取实例（方法重写）
-     * @param string $name
-     * @param null $args
-     * @return mixed
-     */
-    public function &get($name = null, $args = null)
-    {
-        if (func_num_args()) {
-            $args = func_get_args();
-            $params = array_key_exists(1, $args) ? (array)$args[1] : array();
-            $deps = array_key_exists(2, $args) ? (array)$args[2] : array();
-
-            if (!empty($this->_properties[$name])) {
-                $instance = $this->_properties[$name];
-            } else {
-                $instance = $this->create($name, $params, $deps);
-                $this->_properties[$name] = $instance;
-            }
-
-            return $instance;
-        }
-
-        return $this->_properties;
-    }
-
-    /**
      * 设置默认容器
      * @param Container $container
      */
@@ -193,6 +167,29 @@ class Container extends Basis
         );
 
         return $matter;
+    }
+
+    /**
+     * 获取实例
+     * @param $name
+     * @param array $params
+     * @param array $deps
+     * @return array|mixed
+     */
+    public function get($name = null, array $params = array(), array $deps = array())
+    {
+        if (func_num_args()) {
+            if (!empty($this->_properties[$name])) {
+                $instance = $this->_properties[$name];
+            } elseif ($this->has($name)) {
+                $instance = $this->create($name, $params, $deps);
+                $this->_properties[$name] = $instance;
+            }
+
+            return $instance;
+        }
+
+        return $this->_properties;
     }
 
     /**

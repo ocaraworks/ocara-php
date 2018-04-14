@@ -67,7 +67,7 @@ class FileLog extends ServiceBase implements LogInterface
 	 * @param $logName
 	 * @return bool
 	 */
-	public function exists($logName)
+	public function has($logName)
 	{
 		return is_dir($this->logRoot . $logName);
 	}
@@ -121,12 +121,12 @@ class FileLog extends ServiceBase implements LogInterface
 
 	/**
 	 * 清理日志文件
-	 * @param string $args
+	 * @param string logName
 	 * @return bool
 	 */
-	public function clear($args = null)
+	public function clear($logName = null)
 	{
-		$path = $this->logRoot . $args;
+		$path = $this->logRoot . $logName;
 		return is_dir($path) ? File::clearDir($path, true) : false;
 	}
 

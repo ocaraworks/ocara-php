@@ -88,7 +88,7 @@ $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
 	'font'			    => 'Ocara\Font',
 	'staticPath'	    => 'Ocara\StaticPath',
 	'call'			    => 'Ocara\Call',
-    'globalVar'         => 'Ocara\GlobalVar',
+    'globals'           => 'Ocara\Globals',
     'formToken'         => 'Ocara\FormToken',
     'formManager'       => 'Ocara\FormManager',
     'exceptionHandler'  => 'Ocara\ExceptionHandler',
@@ -228,12 +228,17 @@ $OC_CONF['APP_AUTOLOAD_MAP'] = array(
 /*
  * 要向模板引擎注册的函数
  */
-$OC_CONF['VIEW_ENGINE_FUNCTIONS'] = array(
+$OC_CONF['DEFAULT_VIEW_ENGINE_FUNCTIONS'] = array(
 	'ocGlobal', 	'ocPath', 	'ocFile', 		'ocRealUrl',
 	'ocSimpleUrl', 	'ocUrl', 	'ocConfig',  	'ocGet',
 	'ocSet', 		'ocDel',	'ocKeyExists',	'ocFileExists',
 	'ocPrint', 		'ocDump',
 );
+
+/*
+ * 要向模板引擎注册的自定义函数
+ */
+$OC_CONF['VIEW_ENGINE_FUNCTIONS'] = array();
 
 /*
  * JS事件

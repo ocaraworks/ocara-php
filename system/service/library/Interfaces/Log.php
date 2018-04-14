@@ -27,7 +27,7 @@ interface Log
 	 * 检测日志是否存在
 	 * @param $logName
 	 */
-	public function exists($logName);
+	public function has($logName);
 
 	/**
 	 * 向最近日志文件写入一行
