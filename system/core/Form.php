@@ -263,7 +263,7 @@ class Form extends Base
 	 */
 	public function element($name = null)
 	{
-		if (func_num_args()) {
+		if (isset($name)) {
 			$element = null;
 			if (isset($this->_map[$name])) {
 				$name = $this->_map[$name];

@@ -39,7 +39,7 @@ abstract class Basis
      */
 	public function &getProperty($name = null, $args = null)
 	{
-		if (func_num_args()) {
+		if (isset($name)) {
 			if (array_key_exists($name, $this->_properties)) {
 				return $this->_properties[$name];
 			}

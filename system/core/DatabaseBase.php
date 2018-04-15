@@ -186,7 +186,7 @@ class DatabaseBase extends Sql
 	 */
 	public function getConfig($name = null)
 	{
-		if (func_num_args()) {
+		if (isset($name)) {
 			if (ocEmpty($name)) {
 				return null;
 			}
@@ -320,9 +320,9 @@ class DatabaseBase extends Sql
 	 * @param bool $pconnect
 	 * @return bool
 	 */
-	public function isPconnect($pconnect = true)
+	public function isPconnect($pconnect = null)
 	{
-		if (func_num_args()) {
+		if (isset($pconnect)) {
 			$this->_pconnect = $pconnect ? true : false;
 			$this->_plugin->is_pconnect($pconnect);
 		}
@@ -334,9 +334,9 @@ class DatabaseBase extends Sql
 	 * @param bool $prepare
 	 * @return bool
 	 */
-	public function isPrepare($prepare = true)
+	public function isPrepare($prepare = null)
 	{
-		if (func_num_args()) {
+		if (isset($prepare)) {
 			$this->_prepared = $prepare ? true : false;
 			$this->_plugin->is_prepare($prepare);
 		}

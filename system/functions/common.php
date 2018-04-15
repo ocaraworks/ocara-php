@@ -51,7 +51,7 @@ function ocGlobal($name, $value = null)
 {
 	$globals = Ocara::services()->globals;
 
-	if (func_num_args()>=2) {
+	if (func_num_args() >= 2) {
         $globals->set($name, $value);
 	} else {
 		return $globals->get($name);

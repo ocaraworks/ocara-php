@@ -44,9 +44,6 @@ class Validate extends ServiceBase
 	 */
 	public static function maxLength($value, $length = 0)
 	{
-		$num = func_num_args();
-		self::_checkArgsNum(3, $num);
-
 		$result = strlen($value) <= $length;
 		$result = self::validate($result, 'over_max_string_length', array($length));
 		return $result;
@@ -59,9 +56,6 @@ class Validate extends ServiceBase
 	 */
 	public static function minLength($value, $length = 0)
 	{
-		$num = func_num_args();
-		self::_checkArgsNum(3, $num);
-
 		$result = strlen($value) >= $length;
 		$result = self::validate($result, 'less_than_min_string_length', array($length));
 		return $result;
@@ -75,9 +69,6 @@ class Validate extends ServiceBase
 	 */
 	public static function betweenLength($value, $min = 0, $max = 1)
 	{
-		$num = func_num_args();
-		self::_checkArgsNum(4, $num);
-
 		$len    = strlen($value);
 		$result = $len >= $min && $len <= $max;
 		$result = self::validate($result, 'not_in_pointed_length',  array($min, $max));
@@ -124,9 +115,6 @@ class Validate extends ServiceBase
 	 */
 	public static function regExp($value, $expression = '')
 	{
-		$num = func_num_args();
-		self::_checkArgsNum(3, $num);
-
 		$result = preg_match($expression, $value);
 		$result = self::validate($result, 'unvalid_express_format', array($expression));
 		return $result;
@@ -199,16 +187,5 @@ class Validate extends ServiceBase
 			return array($error, self::getMessage($error, $params));
 		}
 		return array();
-	}
-
-	/**
-	 * @param integer $need
-	 * @param integer $num
-	 */
-	protected static function _checkArgsNum($need, $num)
-	{
-		if ($need > $num) {
-            Ocara::services()->error->show('invalid_args_num');
-		}
 	}
 }

@@ -1438,12 +1438,14 @@ abstract class Database extends ModelBase
 	 * @param int $rows
 	 * @return $this
 	 */
-	public function limit($offset, $rows = 1)
+	public function limit($offset, $rows = null)
 	{
-		if (func_num_args() < 2) {
-			$rows = $offset;
-			$offset = 0;
-		}
+		if (isset($rows)) {
+		    $rows = $rows ? : 1;
+		} else {
+            $rows = $offset;
+            $offset = 0;
+        }
 
 		$this->_sql['option']['limit'] = array($offset, $rows);
 		return $this;

@@ -19,7 +19,7 @@ class Cookie extends Base
 	 */
 	public function get($key = null)
 	{
-		if (func_num_args()) {
+		if (isset($key)) {
 			return ocGet($key, $_COOKIE);
 		}
 		

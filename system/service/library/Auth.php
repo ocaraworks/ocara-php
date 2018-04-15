@@ -98,7 +98,7 @@ final class Auth extends ServiceBase
 	 */
 	public function getAuth($roleList = null, $routeList = null)
 	{
-		if (!func_num_args()) {
+		if (!isset($roleList)) {
 			return $this->_data;
 		}
 

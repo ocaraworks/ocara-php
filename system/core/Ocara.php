@@ -153,7 +153,7 @@ final class Ocara extends Basis
 			self::$_route = compact('module', 'controller', 'action');
 		}
 
-		if (func_num_args()) {
+		if (isset($name)) {
 			return isset(self::$_route[$name]) ? self::$_route[$name] : null;
 		}
 
@@ -258,7 +258,7 @@ final class Ocara extends Basis
 			}
 		}
 
-		if (func_num_args()) {
+		if (isset($key)) {
 			return ocGet($key, self::$_info);
 		}
 

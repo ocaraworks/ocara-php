@@ -178,7 +178,7 @@ class Container extends Basis
      */
     public function get($name = null, array $params = array(), array $deps = array())
     {
-        if (func_num_args()) {
+        if (isset($name)) {
             if (!empty($this->_properties[$name])) {
                 $instance = $this->_properties[$name];
             } elseif ($this->has($name)) {

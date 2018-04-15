@@ -53,7 +53,7 @@ class Common extends Base
      */
     public function submitMethod($method = null)
     {
-        if (func_num_args()) {
+        if (isset($method)) {
             $method = $method == 'get' ? 'get' : 'post';
             $this->_submitMethod = $method;
         }
@@ -67,7 +67,7 @@ class Common extends Base
      */
     public function isSubmit($isSubmit = null)
     {
-        if (func_num_args()) {
+        if (isset($isSubmit)) {
             $this->_isSubmit = $isSubmit ? true : false;
         } else {
             return $this->_isSubmit;

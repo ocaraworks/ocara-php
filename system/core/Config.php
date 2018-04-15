@@ -156,7 +156,7 @@ final class Config extends Base
      */
     public function get($key = null)
     {
-        if (func_num_args()) {
+        if (isset($key)) {
             if (ocKeyExists($key, $this->_properties)) {
                 return ocGet($key, $this->_properties);
             }
@@ -183,7 +183,7 @@ final class Config extends Base
 	 */
 	public function getDefault($key = null)
 	{
-		if (func_num_args()) {
+		if (isset($key)) {
 			return ocGet($key, $this->_ocData);
 		}
 

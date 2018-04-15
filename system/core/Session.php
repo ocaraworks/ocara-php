@@ -80,9 +80,9 @@ class Session extends Base
      * @param bool $key
      * @return array|bool|mixed|null
      */
-    public function get($key = false)
+    public function get($key = null)
     {
-        if (func_num_args()) {
+        if (isset($key)) {
             return ocGet($key, $_SESSION);
         }
 
