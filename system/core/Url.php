@@ -251,7 +251,7 @@ class Url extends Base
 	 * 解析URL
 	 * @param string $url
 	 */
-	public function parseUrl($url = false)
+	public function parseUrl($url = null)
 	{
 		$fields = array(
 			'scheme', 	'host', 	'port',
@@ -260,8 +260,7 @@ class Url extends Base
 		);
 
 		if ($url) {
-			$data  = array_fill_keys($fields, null);
-			$data  = array_merge($data, parse_url($url));
+			$data  = array_merge(array_fill_keys($fields, null), parse_url($url));
 		} else {
 		    $request = Ocara::services()->request;
 			$values = array(

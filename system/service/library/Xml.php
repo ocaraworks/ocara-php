@@ -66,7 +66,7 @@ class Xml extends ServiceBase
 	 * @param string $filePath
 	 * @param integer $perm
 	 */
-	public function save($filePath, $perm = false)
+	public function save($filePath, $perm = null)
 	{
 		return ocWrite($filePath, $this->xmlData, false, $perm);
 	}
@@ -197,7 +197,7 @@ class Xml extends ServiceBase
 		}
 		
 		xml_parser_free($xmlParser);
-		return true;
+		return $result;
 	}
 
 	/**
@@ -206,7 +206,7 @@ class Xml extends ServiceBase
 	 */
 	protected function _makeXml(array $xmlArray)
 	{
-		$xmlStr = false;
+		$xmlStr = null;
 		
 		foreach ($xmlArray as $xmlKey => $xmlVal) {
 			$xmlStr .= "<{$xmlKey}>";
@@ -217,6 +217,7 @@ class Xml extends ServiceBase
 			}
 			$xmlStr .= "</{$xmlKey}>\r\n";
 		}
+
 		return $xmlStr;
 	}
 }

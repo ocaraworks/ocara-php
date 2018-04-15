@@ -17,7 +17,7 @@ class Code extends ServiceBase
 	 */
 	public static function getRand($length)
 	{
-		$rand = false;
+		$rand = null;
 		
 		for ($i = 0;$i < $length;$i++) {
 			$rand = $rand . chr(mt_rand(33, 126));
@@ -75,7 +75,7 @@ class Code extends ServiceBase
 		if ($length > 10) {
 			$count = intval($length / 10);
 			$remainder = $length % 10;
-			$result = false;
+			$result = null;
 			for ($i = 1; $i <= $count; $i++) {
 				$result = $result . self::getCaptcha($type, 10);
 			}

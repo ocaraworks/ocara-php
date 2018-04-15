@@ -81,10 +81,10 @@ class Mail extends ServiceBase
 	/**
 	 * 设置收件人和抄送人
 	 * @param string $receiver
-	 * @param array $cc
-	 * @param array $bcc
+	 * @param string|array $cc
+	 * @param string|array $bcc
 	 */
-	public function setReceiver($receiver, $cc = false, $bcc = false)
+	public function setReceiver($receiver, $cc = null, $bcc = null)
 	{
 		$this->cc 		= $this->packCc(ocForceArray($cc));
 		$this->bcc 		= $this->packBcc(ocForceArray($bcc));
@@ -105,7 +105,7 @@ class Mail extends ServiceBase
 	 * @param string $header
 	 * @param array $params
 	 */
-	public function localSend($header = false, $params = false)
+	public function localSend($header = null, $params = false)
 	{
 		if ($this->host) @ini_set('SMTP', $this->host);
 		if ($this->port) @ini_set('smtp_port', $this->port);
@@ -179,7 +179,7 @@ class Mail extends ServiceBase
 	 */
 	protected function getContent()
 	{
-		$content = false;
+		$content = null;
 		
 		if ($this->related || $this->attachments) {
 			$subBoundary 	  = $this->newBoundary(2);
@@ -212,7 +212,7 @@ class Mail extends ServiceBase
 	 */
 	protected function getText($subBoundary)
 	{
-		$content = false;
+		$content = null;
 		
 		if ($this->text) {
 			$content .= "--{$subBoundary}" . PHP_EOL;
@@ -317,7 +317,7 @@ class Mail extends ServiceBase
 	 */
 	public function setAttachment($attachments = null)
 	{
-		$content = false;
+		$content = null;
 		$attachments = ocForceArray($attachments);
 		
 		if (empty($attachments)) return false;

@@ -125,7 +125,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 
 	/**
 	 * @param string $sql
-	 * @param bool|int $resultmode
+	 * @param int $resultmode
 	 * @return mixed
 	 */
 	public function query($sql, $resultmode = PDO::FETCH_ASSOC)

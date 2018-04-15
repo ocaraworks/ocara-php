@@ -21,9 +21,9 @@ class FileCache extends ServiceBase
 	 * @param string $name
 	 * @param string $decription
 	 */
-	public function setData($data, $name = false, $decription = false)
+	public function setData($data, $name = null, $decription = false)
 	{
-		$content = false;
+		$content = null;
 		
 		if ($decription) {
 			$content .= "/**\r\n * {$decription}\r\n */\r\n";
@@ -51,9 +51,9 @@ class FileCache extends ServiceBase
 	 * @param bool $append
 	 * @param integer $perm
 	 */
-	public function save($filePath, $append = false, $perm = false)
+	public function save($filePath, $append = false, $perm = null)
 	{
-		$content = false;
+		$content = null;
 		
 		if (is_string($this->_data)) {
 			$content = '"' . $this->_data . '"';
@@ -78,7 +78,7 @@ class FileCache extends ServiceBase
 	 * @param string $filePath
 	 * @param string $name
 	 */
-	public function read($filePath, $name = false)
+	public function read($filePath, $name = null)
 	{
 		if ($filePath = ocFileExists($filePath, true)) {
 			$result = include ($filePath);

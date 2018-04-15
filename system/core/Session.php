@@ -169,7 +169,7 @@ class Session extends Base
 	 * @param bool $secure
 	 * @param bool $httponly
 	 */
-	public function setCookie($saveTime, $path = false, $domain = false, $secure = false, $httponly = true)
+	public function setCookie($saveTime, $path = null, $domain = false, $secure = false, $httponly = true)
 	{	
 		if (session_id()) {
 			Ocara::services()->cookie->create(session_name(), session_id(), $saveTime, $path, $domain, $secure, $httponly);

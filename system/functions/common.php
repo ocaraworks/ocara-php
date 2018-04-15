@@ -103,18 +103,18 @@ function ocObject($data)
 /**
  * 检查路径是否存在，如果不存在则新建
  * @param string $path
- * @param integer $mode
+ * @param integer $perm
  * @param bool $required
  * @return bool
  * @throws \Ocara\Exception\Exception
  */
-function ocCheckPath($path, $mode = null, $required = false)
+function ocCheckPath($path, $perm = null, $required = false)
 {
 	if (empty($path)) return false;
 
 	if (!is_dir($path)) {
-		if (!$mode) $mode = 0755;
-		if (!@mkdir($path, $mode, true)) {
+		$perm = $perm ? : 0755;
+		if (!@mkdir($path, $perm, true)) {
 			if ($required) {
 				Ocara::services()->error->show('failed_make_dir');
 			} else {
@@ -216,7 +216,7 @@ function ocIsStandardName($name)
  * @param string $path
  * @return bool|mixed|string
  */
-function ocPath($dir, $path = false)
+function ocPath($dir, $path = null)
 {
 	return ocService('path', true)->get($dir, $path, OC_ROOT, true, false);
 }
@@ -239,7 +239,7 @@ function ocFile($dir, $path)
  * @param string $root
  * @return string
  */
-function ocRealUrl($dir, $subPath = false, $root = false)
+function ocRealUrl($dir, $subPath = null, $root = false)
 {
 	$root = $root ? : OC_ROOT_URL;
 
@@ -270,12 +270,13 @@ function ocSimpleUrl($dir, $subPath)
  * @return bool|int|void
  * @throws \Ocara\Exception\Exception
  */
-function ocWrite($filePath, $content, $append = false, $perm = 0755)
+function ocWrite($filePath, $content, $append = false, $perm = null)
 {
 	if (is_dir($filePath)) {
 		Ocara::services()->error->show('exists_dir');
 	}
 
+    $perm = $perm ? : 0755;
 	$dirPath  = dirname($filePath);
 	$filePath = ocCheckFilePath($dirPath
 				. OC_DIR_SEP

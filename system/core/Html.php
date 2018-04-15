@@ -19,7 +19,7 @@ class Html extends Base
 	 * @param array|string $attributes
 	 * @param bool $checked
 	 */
-	public static function input($type, $name, $attributes = false, $checked = false)
+	public static function input($type, $name, $attributes = null, $checked = false)
 	{
 		$attributes = self::parseAttributes($attributes);
 		$attributes['type'] = $type;
@@ -50,7 +50,7 @@ class Html extends Base
 	 * @param string $name
 	 * @param array|string $attributes
 	 */
-	public static function text($name, $attributes = false)
+	public static function text($name, $attributes = null)
 	{
 		return self::input('text', $name, $attributes);
 	}
@@ -60,7 +60,7 @@ class Html extends Base
 	 * @param string $name
 	 * @param array|string $attributes
 	 */
-	public static function password($name, $attributes = false)
+	public static function password($name, $attributes = null)
 	{
 		return self::input('password', $name, $attributes);
 	}
@@ -70,7 +70,7 @@ class Html extends Base
 	 * @param string $name
 	 * @param array|string $attributes
 	 */
-	public static function file($name, $attributes = false)
+	public static function file($name, $attributes = null)
 	{
 		return self::input('file', $name, $attributes);
 	}
@@ -80,7 +80,7 @@ class Html extends Base
 	 * @param string $name
 	 * @param array|string $attributes
 	 */
-	public static function hidden($name, $attributes = false)
+	public static function hidden($name, $attributes = null)
 	{
 		return self::input('hidden', $name, $attributes);
 	}
@@ -90,8 +90,9 @@ class Html extends Base
 	 * @param string $name
 	 * @param array|string $attributes
 	 */
-	public static function button($name, $attributes = false)
+	public static function button($name, array $attributes = null)
 	{
+        $attributes = self::parseAttributes($attributes);
 		return self::_createHtmlTag('button', $name, $attributes, false);
 	}
 
@@ -102,7 +103,7 @@ class Html extends Base
 	 * @param array|string $attributes
 	 * @param bool $checked
 	 */
-	public static function radio($name, $desc, $attributes = false, $checked = false)
+	public static function radio($name, $desc, $attributes = null, $checked = false)
 	{
 		return self::input('radio', $name, $attributes, $checked) . $desc;
 	}
@@ -126,7 +127,7 @@ class Html extends Base
 	 * @param string|numric|array $attributes
 	 * @param bool $checked
 	 */
-	public static function checkbox($name, $desc, $attributes = false, $checked = false)
+	public static function checkbox($name, $desc, $attributes = null, $checked = false)
 	{
 		return self::input('checkbox', $name, $attributes, $checked) . $desc;
 	}
@@ -189,7 +190,7 @@ class Html extends Base
 	 * @param string $nullText
 	 * @param bool $optgroup
 	 */
-	public static function select($name, $options = array(), $attributes = false, $nullText = false, $optgroup = false)
+	public static function select($name, $options = array(), $attributes = null, $nullText = false, $optgroup = false)
 	{
 		$value = false;
 		
@@ -218,7 +219,7 @@ class Html extends Base
 	 * @param string|numric|array $attributes
 	 * @param string $nullText
 	 */
-	public static function selectGroup($name, $options, $attributes = false, $nullText = false) 
+	public static function selectGroup($name, $options, $attributes = null, $nullText = false)
 	{
 		return self::select($name, $options, $attributes, $nullText, true);
 	}
@@ -286,7 +287,7 @@ class Html extends Base
 	 * @param string $name
 	 * @param string|numric|array $attributes
 	 */
-	public static function textarea($name, $attributes = false)
+	public static function textarea($name, $attributes = null)
 	{
 		if (is_array($attributes)) {
 			if (array_key_exists('value', $attributes)) {

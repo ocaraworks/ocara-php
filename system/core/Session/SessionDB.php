@@ -98,7 +98,7 @@ class SessionDB extends Base
 	 * Session垃圾回收
 	 * @param integer $saveTime
 	 */
-	public function gc($saveTime = false)
+	public function gc($saveTime = null)
 	{
 		$this->_plugin->clear();
 		$result = $this->_plugin->errorExists();

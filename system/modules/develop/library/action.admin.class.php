@@ -36,7 +36,7 @@ class action_admin
 		}
 		
 		$count = count($actname);
-		$this->mdlname = false;
+		$this->mdlname = null;
 		
 		if ($count >= 3) {
 			$this->mdlname    = strtolower(ocGet(0, $actname));

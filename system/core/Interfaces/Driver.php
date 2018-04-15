@@ -26,7 +26,7 @@ interface Driver
 	 * @param string $sql
 	 * @param integer $resultmode
 	 */
-	public function query($sql, $resultmode = false);
+	public function query($sql, $resultmode = null);
 
 	/**
 	 * 关闭数据库

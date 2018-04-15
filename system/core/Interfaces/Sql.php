@@ -58,10 +58,10 @@ interface Sql
 	 * 生成DELETE语句
 	 * @param string $table
 	 * @param array $where
-	 * @param bool $delete
+	 * @param string $option
 	 * @return mixed
 	 */
-	public function getDeleteSql($table, $where, $delete = false);
+	public function getDeleteSql($table, $where, $option = null);
 
 	/**
 	 * 获取表的字段信息
@@ -93,11 +93,11 @@ interface Sql
 	 * 生成In语句
 	 * @param string $field
 	 * @param array $list
-	 * @param bool $alias
+	 * @param string $alias
 	 * @param string $sign
 	 * @return mixed
 	 */
-	public function getInSql($field, $list, $alias = false, $sign = 'IN');
+	public function getInSql($field, $list, $alias = null, $sign = 'IN');
 	
 	/**
 	 * 获取Between语句
@@ -119,10 +119,10 @@ interface Sql
 	 * @param array $data
 	 * @param string $link
 	 * @param string $sign
-	 * @param bool $alias
+	 * @param string $alias
 	 * @return mixed
 	 */
-	public function getFieldCondition($data, $link = 'AND', $sign = '=', $alias = false);
+	public function getFieldCondition($data, $link = 'AND', $sign = '=', $alias = null);
 
 	/**
 	 * 生成选项语句
@@ -142,9 +142,9 @@ interface Sql
 	 * @param $condition
 	 * @param string $link
 	 * @param string $sign
-	 * @param bool $alias
+	 * @param string $alias
 	 */
-	public function parseCondition($condition, $link = 'AND', $sign = '=', $alias = false);
+	public function parseCondition($condition, $link = 'AND', $sign = '=', $alias = null);
 
 	/**
 	 * 获取别名SQL
@@ -156,11 +156,11 @@ interface Sql
 	 * 获取字段列表SQL
 	 * @param array $fields
 	 * @param array $aliasFields
-	 * @param $currentAlias
-	 * @param bool $alias
+	 * @param string $currentAlias
+	 * @param string $alias
 	 * @return mixed
 	 */
-	public function getFieldsSql(array $fields, array $aliasFields, $currentAlias, $alias = false);
+	public function getFieldsSql(array $fields, array $aliasFields, $currentAlias, $alias = null);
 
 	/**
 	 * 字段组合
@@ -176,18 +176,18 @@ interface Sql
 	/**
 	 * 获取字段名称SQL
 	 * @param $field
-	 * @param bool $alias
+	 * @param string $alias
 	 * @return string
 	 */
-	public function getFieldNameSql($field, $alias = false);
+	public function getFieldNameSql($field, $alias = null);
 
 	/**
 	 * [别名.]字段解析
 	 * @param string $field
-	 * @param bool $alias
+	 * @param string $alias
 	 * @return mixed
 	 */
-	public function parseField($field, $alias = false);
+	public function parseField($field, $alias = null);
 
 	/**
 	 * 值格式解析

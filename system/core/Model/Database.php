@@ -1212,10 +1212,10 @@ abstract class Database extends ModelBase
 	/**
 	 * 附加字段
 	 * @param string|array $fields
-	 * @param bool $alias
+	 * @param string $alias
 	 * @return $this
 	 */
-	public function fields($fields, $alias = false)
+	public function fields($fields, $alias = null)
 	{
 		if ($fields) {
 			$fields = array($alias, $fields);
@@ -1228,10 +1228,10 @@ abstract class Database extends ModelBase
 	/**
 	 * 附加联接关系
 	 * @param string $on
-	 * @param bool $alias
+	 * @param string $alias
 	 * @return $this
 	 */
-	private function _addOn($on, $alias = false)
+	private function _addOn($on, $alias = null)
 	{
 		$this->_sql['tables'][$alias]['on'] = $on;
 		return $this;
@@ -1242,11 +1242,11 @@ abstract class Database extends ModelBase
 	 * @param string $field
 	 * @param string $value1
 	 * @param string $value2
-	 * @param bool $alias
+	 * @param string $alias
 	 * @param string $linkSign
 	 * @return $this
 	 */
-	public function between($field, $value1, $value2, $alias = false, $linkSign = 'AND')
+	public function between($field, $value1, $value2, $alias = null, $linkSign = 'AND')
 	{
 		$where = array($alias, 'between', array($field, $value1, $value2), $linkSign);
 		$this->_sql['option']['where'][] = $where;
@@ -1259,10 +1259,10 @@ abstract class Database extends ModelBase
 	 * @param string $field
 	 * @param string $value1
 	 * @param string $value2
-	 * @param bool $alias
+	 * @param string $alias
 	 * @return $this
 	 */
-	public function orBetween($field, $value1, $value2, $alias = false)
+	public function orBetween($field, $value1, $value2, $alias = null)
 	{
 		$this->between($field, $value1, $value2, $alias, 'OR');
 		return $this;
@@ -1271,11 +1271,11 @@ abstract class Database extends ModelBase
 	/**
 	 * 添加条件
 	 * @param array $where
-	 * @param bool $alias
+	 * @param string $alias
 	 * @param string $linkSign
 	 * @return $this
 	 */
-	public function where($where, $alias = false, $linkSign = 'AND')
+	public function where($where, $alias = null, $linkSign = 'AND')
 	{
 		if (!ocEmpty($where)) {
 			$where = array($alias, 'where', $where, $linkSign);
@@ -1288,10 +1288,10 @@ abstract class Database extends ModelBase
 	/**
 	 * 添加OR条件
 	 * @param array|string|number $where
-	 * @param bool $alias
+	 * @param string $alias
 	 * @return $this
 	 */
-	public function orWhere($where, $alias = false)
+	public function orWhere($where, $alias = null)
 	{
 		$this->where($where, $alias, 'OR');
 		return $this;
@@ -1341,10 +1341,10 @@ abstract class Database extends ModelBase
 	/**
 	 * 更多条件
 	 * @param string $where
-	 * @param bool $link
+	 * @param string $link
 	 * @return $this
 	 */
-	public function mWhere($where, $link = false)
+	public function mWhere($where, $link = null)
 	{
 		$link = $link ? : 'AND';
 		$this->_sql['option']['mWhere'][] = compact('where', 'link');
@@ -1704,7 +1704,7 @@ abstract class Database extends ModelBase
 			extract($param);
 
 			if (empty($fullname)) continue;
-			if ($unJoined) $alias = false;
+			if ($unJoined) $alias = null;
 			if ($config) {
 				$on = $this->getJoinOnSql($alias, $config);
 			}
@@ -1721,11 +1721,11 @@ abstract class Database extends ModelBase
 	 * 获取关联链接条件
 	 * @param string $alias
 	 * @param array $config
-	 * @return bool
+	 * @return string
 	 */
 	public function getJoinOnSql($alias, $config)
 	{
-		$joinOn = false;
+		$joinOn = null;
 
 		if ($config) {
 			$foreignField = $this->_plugin->getFieldNameSql($config['foreignKey'], $alias);
@@ -1874,8 +1874,7 @@ abstract class Database extends ModelBase
 		$this->_sql['tables'][$alias] = compact('type', 'fullname', 'class', 'config');
 
 		if ($config) {
-			$on = false;
-			$this->_addOn($on, $alias);
+			$this->_addOn(null, $alias);
 		} elseif ($on) {
 			$this->_addOn($on, $alias);
 		}

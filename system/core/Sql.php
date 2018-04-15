@@ -130,11 +130,11 @@ class Sql extends Base
 	/**
 	 * [别名.]字段解析
 	 * @param string $field
-	 * @param bool $alias
+	 * @param string $alias
 	 * @return bool|string
 	 * @throws Exception
 	 */
-	public function parseField($field, $alias = false)
+	public function parseField($field, $alias = null)
 	{
 		if (!is_string($field)) {
 			Ocara::services()->error->show('invalid_field_name');
@@ -256,8 +256,8 @@ class Sql extends Base
 
 	/**
 	 * INSERT语句
-	 * @param $table
-	 * @param $data
+	 * @param string $table
+	 * @param array $data
 	 * @return string
 	 */
 	public function getInsertSql($table, $data)
@@ -268,9 +268,9 @@ class Sql extends Base
 
 	/**
 	 * INSERT基本语句
-	 * @param $type
-	 * @param $table
-	 * @param $data
+	 * @param string $type
+	 * @param string $table
+	 * @param array $data
 	 * @return string
 	 */
 	public function getInsertSqlBase($type, $table, $data)
@@ -291,9 +291,9 @@ class Sql extends Base
 
 	/**
 	 * UPDATE语句
-	 * @param $table
-	 * @param $data
-	 * @param $where
+	 * @param string $table
+	 * @param string|array $data
+	 * @param string|array $where
 	 * @return string
 	 */
 	public function getUpdateSql($table, $data, $where)
@@ -333,17 +333,17 @@ class Sql extends Base
 	 * DELETE语句
 	 * @param $table
 	 * @param $where
-	 * @param bool $delete
+	 * @param string $option
 	 * @return string
 	 */
-	public function getDeleteSql($table, $where, $delete = false)
+	public function getDeleteSql($table, $where, $option = null)
 	{
 		$this->checkStringCondition($where);
 
 		$table = $this->filterName($table);
-		$delete = $this->filterName($delete);
+        $option = $this->filterName($option);
 
-		$sql = "DELETE {$delete} FROM {$table}" . ($where ? " WHERE {$where} " : OC_EMPTY);
+		$sql = "DELETE {$option} FROM {$table}" . ($where ? " WHERE {$where} " : OC_EMPTY);
 		return $this->getSqlData($sql);
 	}
 
@@ -417,11 +417,11 @@ class Sql extends Base
 	 * 获取In语句
 	 * @param $field
 	 * @param $list
-	 * @param bool $alias
+	 * @param string $alias
 	 * @param string $sign
 	 * @return string
 	 */
-	public function getInSql($field, $list, $alias = false, $sign = 'IN')
+	public function getInSql($field, $list, $alias = null, $sign = 'IN')
 	{
 		$sign = $sign ? : 'IN';
 
@@ -521,10 +521,10 @@ class Sql extends Base
 	 * @param $condition
 	 * @param string $link
 	 * @param string $sign
-	 * @param bool $alias
+	 * @param string $alias
 	 * @return array|bool|mixed|string
 	 */
-	public function parseCondition($condition, $link = 'AND', $sign = '=', $alias = false)
+	public function parseCondition($condition, $link = 'AND', $sign = '=', $alias = null)
 	{
 		if (ocEmpty($condition)) return false;
 
@@ -568,11 +568,11 @@ class Sql extends Base
 	 * 获取字段列表SQL
 	 * @param array $fields
 	 * @param array $aliasFields
-	 * @param $currentAlias
-	 * @param bool $alias
+	 * @param string $currentAlias
+	 * @param string $alias
 	 * @return string
 	 */
-	public function getFieldsSql(array $fields, array $aliasFields, $currentAlias, $alias = false)
+	public function getFieldsSql(array $fields, array $aliasFields, $currentAlias, $alias = null)
 	{
 		foreach ($fields as $key => $value) {
 			if (!self::isOptionFieldSql($value)) {
@@ -639,10 +639,10 @@ class Sql extends Base
 	/**
 	 * 获取字段名称SQL
 	 * @param string $field
-	 * @param bool $alias
+	 * @param string $alias
 	 * @return string
 	 */
-	public function getFieldNameSql($field, $alias = false)
+	public function getFieldNameSql($field, $alias = null)
 	{
 		if ($this->hasAlias($field) || $field == '*') {
 			return $field;
@@ -734,10 +734,10 @@ class Sql extends Base
 	 * @param mixed $data
 	 * @param string $link
 	 * @param string $sign
-	 * @param bool $alias
+	 * @param string $alias
 	 * @return string
 	 */
-	public function getFieldCondition($data, $link = ',', $sign = '=', $alias = false)
+	public function getFieldCondition($data, $link = ',', $sign = '=', $alias = null)
 	{
 		if (!is_array($data) || empty($data)) {
 			return $data;

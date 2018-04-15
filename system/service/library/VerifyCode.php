@@ -39,7 +39,7 @@ class VerifyCode extends ServiceBase
 	 * 析构函数
 	 * @param string $name
 	 */
-	public function __construct($name = false)
+	public function __construct($name = null)
 	{
 		ocCheckExtension('gd');
 
@@ -52,35 +52,37 @@ class VerifyCode extends ServiceBase
 
 	/**
 	 * 画背景
-	 * @param @figure $width
-	 * @param @figure $height
+	 * @param numric $width
+	 * @param numric $height
 	 * @param string $source
 	 */
-	public function drawBack($width, $height, $source = false)
+	public function drawBack($width, $height, $source = null)
 	{
 		$this->_width = $width;
 		$this->_height = $height;
-		
 		$this->_imgObj = imagecreatetruecolor($width, $height);
 		
-		if ($path = ocFileExists($source, true)) 
-		{
+		if ($path = ocFileExists($source, true)) {
 			$fileInfo = explode('.', ocBasename($path));
 			$this->_extName = $fileInfo[1];
+
 			if (!key_exists($this->_extName, $this->mimes)) {
 				$this->showError('invalid_image_extname');
 			}
+
 			$createFunc = 'imagecreatefrom' . ($this->_extName == 'jpg' ? 'jpeg' : $this->_extName);
 			$this->srcObj = $createFunc($path);
+
 			imagecopy($this->_imgObj, $this->srcObj, 0, 0, 0, 0, $this->_width, $this->_height);
-		} 
-		else {
+		}  else {
 			if (!preg_match('/^#[0-9A-Fa-f]{6}$/i', $source, $mt)) {
 				$source = '#000000';
 			}
+
 			$this->_extName = 'jpg';
 			$color = $this->_parseColor($source);
 			$color = @imagecolorallocate($this->_imgObj, $color[0], $color[1], $color[2]);
+
 			imagefilledrectangle($this->_imgObj, 0, 0, $width, $height, $color);
 		}
 	}
@@ -88,12 +90,12 @@ class VerifyCode extends ServiceBase
 	/**
 	 * 画线条
 	 * @param string $color
-	 * @param @figure $startX
-	 * @param @figure $startY
-	 * @param @figure $endX
-	 * @param @figure $endY
+	 * @param numric $startX
+	 * @param numric $startY
+	 * @param numric $endX
+	 * @param numric $endY
 	 */
-	public function drawLine($color, $startX, $startY, $endX = false, $endY = false)
+	public function drawLine($color, $startX, $startY, $endX = null, $endY = null)
 	{
 		if (!is_resource($this->_imgObj)) return false;
 		$color = $this->_parseColor($color);
@@ -112,7 +114,7 @@ class VerifyCode extends ServiceBase
 	
 	/**
 	 * 画文字
-	 * @param @figure $length
+	 * @param numric $length
 	 * @param array $format
 	 * @param array $left
 	 */

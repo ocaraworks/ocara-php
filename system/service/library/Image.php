@@ -140,7 +140,7 @@ class Image extends ServiceBase
 	 * @param integer $proportion
 	 * @param string $dstPath
 	 */
-	public function zoomImage($proportion, $dstPath = false)
+	public function zoomImage($proportion, $dstPath = null)
 	{
 		if (!(is_array($proportion) && !empty($proportion))) return false;
 		
@@ -200,7 +200,7 @@ class Image extends ServiceBase
 	 * @param string $dstPath
 	 * @param Ox integer $perm
 	 */
-	public function setDstImage($dstPath, $perm = false)
+	public function setDstImage($dstPath, $perm = null)
 	{
 		$this->_checkImage($dstPath, 'dst');
 		$this->_checkPath(dirname($dstPath), $perm);
@@ -217,7 +217,7 @@ class Image extends ServiceBase
 	 * text key:content,location,font,size,color,
 	 * @param string $suffix
 	 */
-	public function addMark($dstImage, $markInfo, $suffix = false)
+	public function addMark($dstImage, $markInfo, $suffix = null)
 	{
 		if (!(is_array($markInfo) && !empty($markInfo))) return false;
 		
@@ -502,7 +502,7 @@ class Image extends ServiceBase
 	 * @param string $image
 	 * @param string $suffix
 	 */
-	public function flipH($image = 'src', $suffix = false)
+	public function flipH($image = 'src', $suffix = null)
 	{
 		$this->_flip('h', $image, $suffix);
 	}
@@ -512,7 +512,7 @@ class Image extends ServiceBase
 	 * @param string $image
 	 * @param string $suffix
 	 */
-	public function flipV($image = 'src', $suffix = false)
+	public function flipV($image = 'src', $suffix = null)
 	{
 		$this->_flip('v', $image, $suffix);
 	}
@@ -589,9 +589,9 @@ class Image extends ServiceBase
 
 	/**
 	 * 输出图片
-	 * @param bool $ifDestroy
+	 * @param bool $isDestroy
 	 */
-	protected function _print($ifDestroy = false)
+	protected function _print($isDestroy = false)
 	{
 		$contentType = ocGet(0, self::$imageTypes[$this->srcExtName]);
 		
@@ -609,7 +609,7 @@ class Image extends ServiceBase
 		
 		if (function_exists($contentType)) {
 			$result = call_user_func($contentType, $this->dstObj, $this->srcTemp);
-			if ($ifDestroy) {
+			if ($isDestroy) {
 				imagedestroy($this->dstObj);
 			}
 			return $result;
@@ -642,7 +642,7 @@ class Image extends ServiceBase
 	 * @param string $image
 	 * @param string $suffix
 	 */
-	protected function _flip($type, $image, $suffix = false)
+	protected function _flip($type, $image, $suffix = null)
 	{
 		$type = strtoupper($type);
 		$imagePath = $this->_getImagePath($image);

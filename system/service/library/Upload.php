@@ -27,7 +27,7 @@ class Upload extends ServiceBase
 	 * @param string $savePath
 	 * @param array $rules
 	 */
-	public function __construct($savePath = false, array $rules = array())
+	public function __construct($savePath = null, array $rules = array())
 	{
 		$this->maxSize = floatval(@ini_get('upload_max_filesize'));
 		$this->setSavePath($savePath);
@@ -40,7 +40,7 @@ class Upload extends ServiceBase
 	 * @param string $prefix
 	 * @param integer $perm
 	 */
-	public function setSavePath($savePath, $prefix = false, $perm = 0777)
+	public function setSavePath($savePath, $prefix = null, $perm = 0777)
 	{
 		if (empty($savePath)) {
 			$savePath = ocPath('attachments', 'upload');

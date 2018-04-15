@@ -564,11 +564,11 @@ function ocBasename($filePath)
  * @param $route
  * @param array $params
  * @param bool $relative
- * @param bool $urlType
+ * @param inter $urlType
  * @param bool $static
  * @return string
  */
-function ocUrl($route, $params = array(), $relative = false, $urlType = false, $static = true)
+function ocUrl($route, $params = array(), $relative = false, $urlType = null, $static = true)
 {
 	return Ocara::services()->url->create($route, $params, $relative, $urlType, $static);
 }

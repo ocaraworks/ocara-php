@@ -213,7 +213,7 @@ class Common extends ViewBase implements ViewInterfaces
 	 * @param string $template
 	 * @param bool $show
 	 */
-	public function _readPart($part, $template = false, $show = true)
+	public function _readPart($part, $template = null, $show = true)
 	{
 		$template = $template ? : $this->_template;
 		$part     = ocForceArray($part);
@@ -244,7 +244,7 @@ class Common extends ViewBase implements ViewInterfaces
 	 * @param string $part
 	 * @param string $template
 	 */
-	public function showPart($part, $template = false)
+	public function showPart($part, $template = null)
 	{
 		$this->_readPart($part, $template);
 	}
@@ -254,7 +254,7 @@ class Common extends ViewBase implements ViewInterfaces
 	 * @param string $part
 	 * @param string $template
 	 */
-	public function getPart($part, $template = false)
+	public function getPart($part, $template = null)
 	{
 		return $this->_readPart($part, $template, false);
 	}
@@ -265,7 +265,7 @@ class Common extends ViewBase implements ViewInterfaces
 	 * @param string $template
 	 * @param bool $cache
 	 */
-	public function load($path, $template = false, $cache = true)
+	public function load($path, $template = null, $cache = true)
 	{
 		if ($path) {
 			$path = (array)$path;
@@ -280,7 +280,7 @@ class Common extends ViewBase implements ViewInterfaces
 	 * @param string $path
 	 * @param string $template
 	 */
-	public function getImageUrl($path, $template = false)
+	public function getImageUrl($path, $template = null)
 	{
 		return $this->getUrl('images', $path, $template);
 	}
@@ -291,7 +291,7 @@ class Common extends ViewBase implements ViewInterfaces
 	 * @param string $template
 	 * @param bool $cache
 	 */
-	public function wrap($path, $template = false, $cache = true)
+	public function wrap($path, $template = null, $cache = true)
 	{
 		$array = explode('.', $path);
 		
@@ -312,7 +312,7 @@ class Common extends ViewBase implements ViewInterfaces
 	 * @param string $path
 	 * @param string $template
 	 */
-	public function getUrl($type, $path, $template = false)
+	public function getUrl($type, $path, $template = null)
 	{
 		if (empty($template) && $type != 'js') {
 			$template = $this->_template;
@@ -326,7 +326,7 @@ class Common extends ViewBase implements ViewInterfaces
 	 * 显示其他模板文件
 	 * @param string $file
 	 */
-	public function showTpl($file = false)
+	public function showTpl($file = null)
 	{
 		if (empty($file)) {
 			echo $this->_content;
@@ -343,7 +343,7 @@ class Common extends ViewBase implements ViewInterfaces
 	* 设置当前模板
 	* @param string $tpl
 	*/
-	public function setTpl($tpl = false)
+	public function setTpl($tpl = null)
 	{
 		$this->_tpl = $tpl;
 	}
@@ -362,7 +362,7 @@ class Common extends ViewBase implements ViewInterfaces
 	 * @param array $vars
 	 * @param bool $required
 	 */
-	public function render($file = false, array $vars = array(), $required = true)
+	public function render($file = null, array $vars = array(), $required = true)
 	{
 		$file = $file ? : $this->_tpl;
 

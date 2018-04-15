@@ -23,7 +23,7 @@ class Ftp extends ServiceBase
 	 * @param integer $port
 	 * @param integer $timeOut
 	 */
-	public function connect($ftpserver, $username, $password, $port = false, $timeOut = false)
+	public function connect($ftpserver, $username, $password, $port = null, $timeOut = null)
 	{
 		$port = $port ? : 21;
 		
@@ -124,7 +124,7 @@ class Ftp extends ServiceBase
 	 * @param bool $recursive
 	 * @param string $path
 	 */
-	public function delDir($dirName, $recursive = false, $path = false)
+	public function delDir($dirName, $recursive = false, $path = null)
 	{
 		$pwd 	 = ocDir($this->getPwd());
 		$path 	 = !$path ? $pwd : $pwd . ltrim(ocDir($path), OC_DIR_SEP);
@@ -165,14 +165,14 @@ class Ftp extends ServiceBase
 	 * @param string $dirName
 	 * @param Ox integer $perm
 	 */
-	public function createDir($dirName, $perm = false)
+	public function createDir($dirName, $perm = null)
 	{
 		$path = ocDir($this->getPwd());
 		$result = @ftp_mkdir($this->_conn, $path . $dirName);
 		
 		if ($perm) {
 			if (!chmod($path, $perm)) {
-				$this->showError('no_modify_mode_acess', array($dirName, $perm));
+				$this->showError('no_modify_mode_access', array($dirName));
 			}
 		}
 		

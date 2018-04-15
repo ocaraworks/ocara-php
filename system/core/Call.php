@@ -23,7 +23,7 @@ class Call extends Base
 	 * @return bool|mixed|null
 	 * @throws Exception
 	 */
-	public function run($route, array $params = array(), $return = true,$required = false)
+	public function run($route, array $params = array(), $return = true, $required = false)
 	{
 		if (empty($route)) return true;
 

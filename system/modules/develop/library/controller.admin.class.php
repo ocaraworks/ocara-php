@@ -32,7 +32,7 @@ class controller_admin
 			$this->mdlname = strtolower(ocGet(0, $cname));
 			$this->cname   = strtolower(ocGet(1, $cname));
 		} else {
-			$this->mdlname = false;
+			$this->mdlname = null;
 			$this->cname   = strtolower(ocGet(0, $cname));
 		}
 

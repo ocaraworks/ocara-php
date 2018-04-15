@@ -60,10 +60,10 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
 
     /**
      * 生成伪静态文件
-     * @param bool $moreContent
+     * @param string $moreContent
      * @throws Exception
      */
-    public static function createHtaccess($moreContent = false)
+    public static function createHtaccess($moreContent = OC_EMPTY)
     {
         $file = OC_ROOT . '.htaccess';
         $htaccess = ocImport(OC_SYS . 'data/rewrite/apache.php');

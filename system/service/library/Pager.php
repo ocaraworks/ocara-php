@@ -43,9 +43,11 @@ class Pager extends ServiceBase
 	 */
 	public function __construct()
 	{
-		$this->pageParam = ocConfig('PAGE.page_param', null);
-		$this->perPage 	 = ocConfig('PAGE.per_page', null);
-		$this->perShow 	 = ocConfig('PAGE.per_show', null);
+		$pageParam = ocConfig('PAGE.page_param', null);
+		$perPage = ocConfig('PAGE.per_page', null);
+		$perShow = ocConfig('PAGE.per_show', null);
+
+		$this->config($pageParam, $perPage, $perShow);
 	}
 
 	/**
@@ -54,18 +56,18 @@ class Pager extends ServiceBase
 	 * @param integer $perPage
 	 * @param integer $perShow
 	 */
-	public function config($pageParam = false, $perPage = false, $perShow = false)
+	public function config($pageParam = null, $perPage = false, $perShow = false)
 	{
 		if ($pageParam) {
-			$this->pageParam = $pageParam;
+			$this->setPageParam($pageParam);
 		}
 		
 		if ($perPage) {
-			$this->perPage = $perPage;
+            $this->setPerPage($perPage);
 		}
 		
 		if ($perShow) {
-			$this->perShow = $perShow;
+            $this->setPerShow($perShow);
 		}
 		
 		return $this;
@@ -81,23 +83,23 @@ class Pager extends ServiceBase
 		return $this;
 	}
 
+    /**
+     * 设置分页传递参数名称
+     * @param string $pageParam
+     */
+    public function setPageParam($pageParam)
+    {
+        $this->pageParam = $pageParam ? : 'page';
+        return $this;
+    }
+
 	/**
 	 * 设置每页显示多少条记录
 	 * @param integer $perPage
 	 */
 	public function setPerPage($perPage)
 	{
-		$this->perPage = $perPage;
-		return $this;
-	}
-
-	/**
-	 * 设置分页传递参数名称
-	 * @param string $pageParam
-	 */
-	public function setPageParam($pageParam)
-	{
-		$this->pageParam = $pageParam;
+        $this->perPage = $perPage ? : 10;
 		return $this;
 	}
 
@@ -107,7 +109,7 @@ class Pager extends ServiceBase
 	 */
 	public function setPerShow($perShow)
 	{
-		$this->perShow = $perShow;
+        $this->perShow = $perShow ? : 10;
 		return $this;
 	}
 
@@ -203,7 +205,7 @@ class Pager extends ServiceBase
 	 */
 	protected function setPageHtml()
 	{
-		$html = false;
+		$html = null;
 		
 		if ($this->page > 1) {
 			if ($this->startPage > 1) {
@@ -232,7 +234,7 @@ class Pager extends ServiceBase
 	 */
 	protected function getPages()
 	{
-		$str = false;
+		$str = null;
 		
 		for ($i = $this->startPage;$i <= $this->endPage;$i++) {
 			$str .= $this->getLink($i, $i, $i == $this->page ? $this->actClass : false);
@@ -247,7 +249,7 @@ class Pager extends ServiceBase
 	 * @param string $text
 	 * @param string $class
 	 */
-	public function getLink($page, $text, $class = false)
+	public function getLink($page, $text, $class = null)
 	{
 		$attr = $this->attr;
 		
@@ -258,7 +260,7 @@ class Pager extends ServiceBase
 		$attr['href'] = $this->getUrl($page);
 		$attr['pid'] = $page;
 		
-		$str = false;
+		$str = null;
 		foreach ($attr as $key => $value) {
 			$str = $str . OC_SPACE . $key . '="' . $value . '"';
 		}

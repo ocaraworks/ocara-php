@@ -89,10 +89,10 @@ class Common extends Base
 
     /**
      * 打印模板
-     * @param bool $file
+     * @param string $file
      * @param array $vars
      */
-    public function display($file = false, array $vars = array())
+    public function display($file = null, array $vars = array())
     {
         $content = $this->render($file, $vars);
         $this->view->output(array('content' => $content));
@@ -103,11 +103,11 @@ class Common extends Base
 
     /**
      * 渲染模板
-     * @param bool $file
+     * @param string $file
      * @param array $vars
      * @return mixed
      */
-    public function render($file = false, array $vars = array())
+    public function render($file = null, array $vars = array())
     {
         $this->formManager->setToken();
 

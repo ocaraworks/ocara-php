@@ -22,7 +22,7 @@ class Date extends ServiceBase
 
 	/**
 	 * 获取日期信息
-	 * @param string|@figure $time
+	 * @param string|numric $time
 	 */
 	public static function getDateInfo($time)
 	{
@@ -42,7 +42,7 @@ class Date extends ServiceBase
 
 	/**
 	 * 设置时间参数
-	 * @param string|@figure $time
+	 * @param string|numric $time
 	 * @param integer $number
 	 * @param string $type
 	 */
@@ -63,7 +63,7 @@ class Date extends ServiceBase
 
 	/**
 	 * 获取时间参数
-	 * @param string|@figure|array $time
+	 * @param string|numric|array $time
 	 * @param string $type
 	 */
 	public static function get($time, $type)
@@ -79,12 +79,12 @@ class Date extends ServiceBase
 
 	/**
 	 * 增加时间
-	 * @param string|@figure|array $time
+	 * @param string|numric|array $time
 	 * @param integer $number
 	 * @param string $type
 	 * @param string $format
 	 */
-	public static function add($time, $number, $type, $format = false)
+	public static function add($time, $number, $type, $format = null)
 	{
 		$time = self::getDate($time, $format);
 		
@@ -101,10 +101,10 @@ class Date extends ServiceBase
 
 	/**
 	 * 获取时间字符串
-	 * @param string|@figure|array $time
+	 * @param string|numric|array $time
 	 * @param string $format
 	 */
-	public static function getDate($time, $format = false)
+	public static function getDate($time, $format = null)
 	{
 		$timestamp = self::getTimestamp($time);
 		$format = $format == 'mdy' ? 'm-d-Y' : 'Y-m-d';
@@ -114,11 +114,11 @@ class Date extends ServiceBase
 
 	/**
 	 * 获取时间间隔
-	 * @param string|@figure $startTime
-	 * @param string|@figure $endTime
+	 * @param string|numric $startTime
+	 * @param string|numric $endTime
 	 * @param string $type
 	 */
-	public static function getInterval($startTime, $endTime, $type = false)
+	public static function getInterval($startTime, $endTime, $type = null)
 	{
 		$start = self::getTimestamp($startTime);
 		$end   = self::getTimestamp($endTime);
@@ -145,7 +145,7 @@ class Date extends ServiceBase
 
 	/**
 	 * 生成时间戳
-	 * @param string|@figure|array $time
+	 * @param string|numric|array $time
 	 */
 	public static function getTimestamp($time)
 	{
@@ -177,7 +177,7 @@ class Date extends ServiceBase
 	 * @param string $string
 	 * @param string $format
 	 */
-	protected static function _getDateInfo($string, $format = false)
+	protected static function _getDateInfo($string, $format = null)
 	{
 		if (!is_string($string)) return $string;
 		

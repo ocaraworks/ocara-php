@@ -382,9 +382,9 @@ class DatabaseBase extends Sql
 	 * @param bool $debug
 	 * @return bool
 	 */
-	public function insert($table, $data = null, $debug = false)
+	public function insert($table, array $data = array(), $debug = false)
 	{
-		if (empty($data) || !is_array($data)) {
+		if (empty($data)) {
 			$this->showError('fault_save_data');
 		}
 

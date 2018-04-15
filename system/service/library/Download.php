@@ -18,7 +18,7 @@ class Download extends ServiceBase
 	 * @param string $saveName
 	 * @param string $encode
 	 */
-	public function download($filePath, $saveName = false, $encode = 'utf-8')
+	public function download($filePath, $saveName = null, $encode = 'utf-8')
 	{
 		$expression = '/^.+\.(\w{2,4})$/';
 		$mineTypes = ocConfig('MINE_TYPES');

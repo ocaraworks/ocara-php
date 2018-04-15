@@ -39,7 +39,7 @@ class Excel extends ServiceBase
 	 * @param string $charset
 	 * @param integer $perm
 	 */
-	public function save($filePath, $content, $charset = 'gbk', $perm = false)
+	public function save($filePath, $content, $charset = 'gbk', $perm = null)
 	{
 		$charset  = strtolower($charset);
 		$charset  = $charset == 'utf-8' ? 'gbk' : $charset;
@@ -55,7 +55,7 @@ class Excel extends ServiceBase
 	 */
 	public function printContent($content, $charset)
 	{
-		$result  = false;
+		$result  = null;
 		
 		if (is_array($content)) {
 			foreach ($content as $row) {
