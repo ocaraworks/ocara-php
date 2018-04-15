@@ -42,7 +42,7 @@ class FormManager extends ServiceProvider
 	{
 		$form = new Form($name);
 		$form->setRoute($this->getRoute());
-		$this->setProperty($name, $form);
+		$this->setService($name, $form);
 
 		return $form;
 	}
@@ -54,7 +54,7 @@ class FormManager extends ServiceProvider
      */
 	public function get($name = null)
     {
-        return $this->getProperty($name);
+        return $this->getService($name);
     }
 
 	/**

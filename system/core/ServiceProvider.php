@@ -13,7 +13,7 @@ use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
 class ServiceProvider extends Base implements ServiceProviderInterface
 {
     protected $_container;
-    protected $_services;
+    protected $_services = array();
 
     /**
      * 初始化
