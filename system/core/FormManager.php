@@ -54,18 +54,7 @@ class FormManager extends ServiceProvider
      */
 	public function get($name = null)
     {
-        if (func_get_args()) {
-            if ($this->hasProperty($name)) {
-                $form = $this->getProperty($name);
-                if (is_object($form) && $form instanceof Form) {
-                    return $form;
-                }
-            }
-
-            return null;
-        }
-
-        return $this->_properties;
+        return $this->getProperty($name);
     }
 
 	/**

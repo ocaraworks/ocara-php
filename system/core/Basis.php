@@ -37,7 +37,7 @@ abstract class Basis
      * @param mixed $args
      * @return array|mixed
      */
-	public function &getProperty($name = null, $args = null)
+	public function &getProperty($name = null)
 	{
 		if (isset($name)) {
 			if (array_key_exists($name, $this->_properties)) {
@@ -84,7 +84,7 @@ abstract class Basis
     public function delProperty($name)
     {
         if (is_array($name)) {
-            array_unshift($this->_properties, $name);
+            array_unshift($name, $this->_properties);
             call_user_func_array('ocDel', $name);
         } else {
             ocDel($this->_properties, $name);
@@ -93,9 +93,8 @@ abstract class Basis
 
     /**
      * 清理自定义属性
-     * @param null $args
      */
-	public function clearProperties($args = null)
+	public function clearProperties()
 	{
 		$this->_properties = array();
 	}

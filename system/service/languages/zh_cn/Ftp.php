@@ -12,5 +12,5 @@ return array(
 	'failed_ftp_connect' 	=> array(4201, 'FTP连接失败！'), 
 	'failed_ftp_login' 		=> array(4202, 'FTP登录失败！'), 
 	'no_write_access' 		=> array(4203, 'FTP下载保存出错，没有可写权限！'), 
-	'no_modify_mode_acess' 	=> array(4204, '无法修改%s的读写权限：%s.')
+	'no_modify_mode_access' => array(4204, '无法修改%s的权限！')
 );

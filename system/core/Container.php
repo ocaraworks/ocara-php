@@ -18,7 +18,6 @@ class Container extends Basis
      * @var array $_binds 动态绑定类
      * @var array $_singletons 单例绑定类
      * @var array $_properties 已实例化实例
-     * @var array $_replaces 要替换的依赖类
      * @var object $_default 默认容器
      */
     public $_binds = array();
@@ -171,7 +170,7 @@ class Container extends Basis
 
     /**
      * 获取实例
-     * @param $name
+     * @param string $name
      * @param array $params
      * @param array $deps
      * @return array|mixed
@@ -179,13 +178,13 @@ class Container extends Basis
     public function get($name = null, array $params = array(), array $deps = array())
     {
         if (isset($name)) {
-            if (!empty($this->_properties[$name])) {
+            $instance = null;
+            if (array_key_exists($name, $this->_properties)) {
                 $instance = $this->_properties[$name];
             } elseif ($this->has($name)) {
-                $instance = $this->create($name, $params, $deps);
-                $this->_properties[$name] = $instance;
+                $this->_properties[$name] = $this->create($name, $params, $deps);
+                $instance = $this->_properties[$name];
             }
-
             return $instance;
         }
 
@@ -203,8 +202,7 @@ class Container extends Basis
             $name = OC_NS_SEP . ltrim($name, OC_NS_SEP);
         }
 
-        return array_key_exists($name, $this->_binds)
-            || array_key_exists($name, $this->_singletons);
+        return array_key_exists($name, $this->_binds) || array_key_exists($name, $this->_singletons);
     }
 
     /**

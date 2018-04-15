@@ -164,15 +164,10 @@ class Event extends Basis implements EventInterface
     public function get($name = null)
     {
         if (isset($name)) {
-            if (!isset($name)) {
-                return $this->_properties;
-            }
-
             $key = $this->_getKey($name);
             if (is_integer($key)) {
                 return $this->_properties[$name];
             }
-
             return null;
         }
 

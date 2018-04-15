@@ -147,12 +147,12 @@ class Lang extends Base
 
 	/**
 	 * 设置语言
-	 * @param string|array $name
+	 * @param string|array $key
 	 * @param mixed $value
 	 */
-	public function set($name, $value = null)
+	public function set($key, $value = null)
 	{
-		ocSet($this->_properties, $name, $value);
+		ocSet($this->_properties, $key, $value);
 	}
 
 	/**

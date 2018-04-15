@@ -13,6 +13,7 @@ use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
 class ServiceProvider extends Base implements ServiceProviderInterface
 {
     protected $_container;
+    protected $_services;
 
     /**
      * 初始化
@@ -21,7 +22,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function __construct(array $data = array())
     {
-        $this->_container = new Container();
+        $this->setContainer(new Container());
         $this->setProperty($data);
         $this->register();
     }
@@ -57,26 +58,24 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function hasService($name)
     {
-        return array_key_exists($name, $this->_properties)
+        return array_key_exists($name, $this->_services)
             || $this->_container->has($name)
             || Ocara::container()->has($name);
     }
 
     /**
      * 获取服务组件
-     * @param $key
+     * @param string $name
      * @return array|mixed|null
      */
     public function getService($name, $params = array(), $deps = array())
     {
-        $instance = null;
-
-        if ($this->hasProperty($name)) {
-            return $this->getProperty($name);
+        if (array_key_exists($name, $this->_services)) {
+            $instance = $this->_services[$name];
         } else {
             $instance = $this->createService($name, $params, $deps);
             if ($instance) {
-                $this->setProperty($name, $instance);
+                $this->setService($name, $instance);
             }
         }
 
@@ -101,6 +100,16 @@ class ServiceProvider extends Base implements ServiceProviderInterface
         }
 
         return $instance;
+    }
+
+    /**
+     * 动态设置实例
+     * @param $name
+     * @param $service
+     */
+    public function setService($name, $service)
+    {
+        $this->_services[$name] = $service;
     }
 
     /**

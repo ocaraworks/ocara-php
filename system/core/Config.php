@@ -141,17 +141,17 @@ final class Config extends Base
 	
 	/**
 	 * 设置配置
-	 * @param mxied $name
+	 * @param string|array $key
 	 * @param mixed $value
 	 */
-	public function set($name, $value)
+	public function set($key, $value)
 	{
-		ocSet($this->_properties, $name, $value);
+		ocSet($this->_properties, $key, $value);
 	}
 
     /**
      * 获取配置
-     * @param string $key
+     * @param string|array $key
      * @return array|bool|mixed|null
      */
     public function get($key = null)
@@ -168,7 +168,7 @@ final class Config extends Base
 
     /**
      * 删除配置
-     * @param string $key
+     * @param string|array $key
      * @param mixed $value
      */
     public function delete($key)
@@ -178,7 +178,7 @@ final class Config extends Base
 
 	/**
 	 * 获取默认配置
-	 * @param string $key
+	 * @param string|array $key
 	 * @return array|bool|mixed|null
 	 */
 	public function getDefault($key = null)
@@ -192,7 +192,7 @@ final class Config extends Base
 
 	/**
 	 * 检查配置键名是否存在
-	 * @param string $name
+	 * @param string|array $key
 	 * @return array|bool|mixed|null
 	 */
 	public function has($key = null)
