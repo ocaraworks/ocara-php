@@ -682,8 +682,15 @@ abstract class Database extends ModelBase
 	{
 		$this->connect();
 
-		$data = $this->_getSubmitData($data);
-		$result = $this->_save($data, false, $debug);
+		if ($data && is_array(reset($data))) {
+		    foreach($data as $row) {
+                call_user_func_array(array(__CLASS__, __METHOD__), array($row, $debug));
+            }
+        } else {
+            $data = $this->_getSubmitData($data);
+            $result = $this->_save($data, false, $debug);
+        }
+
 		return $result;
 	}
 
@@ -1924,12 +1931,12 @@ abstract class Database extends ModelBase
 
 		if ($config) {
 			$where = array($config['foreignKey'] => $this->$config['primaryKey']);
-			if (in_array($config['joinType'], array('one','manyOne'))) {
+			if (in_array($config['joinType'], array('hasOne','belongsTo'))) {
 				$result = $config['class']::build()
 					->where($where)
 					->where($config['condition'])
 					->findRow();
-			} elseif (in_array($config['joinType'], array('oneMany','many'))) {
+			} elseif ($config['joinType'] == 'hasMany') {
 				$result = new ObjectRecords($config['class'], array($where, $config['condition']));
 				$result->setLimit(0, 0, 1);
 			}
@@ -1952,9 +1959,9 @@ abstract class Database extends ModelBase
 			$config = $this->_getRelateConfig($key);
 			if ($config && $this->hasProperty($config['primaryKey'])) {
 				$data = array();
-				if (in_array($config['joinType'], array('one','manyOne')) && is_object($object)) {
+				if ($config['joinType'] == 'hasOne' && is_object($object)) {
 					$data = array($object);
-				} elseif (in_array($config['joinType'], array('oneMany','many'))) {
+				} elseif ($config['joinType'] == 'hasMany') {
 					if (is_object($object)) {
 						$data = array($object);
 					} elseif (is_array($object)) {
