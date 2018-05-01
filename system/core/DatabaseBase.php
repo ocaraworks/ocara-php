@@ -24,7 +24,6 @@ class DatabaseBase extends Sql
 	 * 连接属性
 	 */
 	protected $_pdoName;
-	protected $_dataType;
 	protected $_connectName;
 	protected $_wakeUpTimes = 0;
 
@@ -196,21 +195,6 @@ class DatabaseBase extends Sql
 		return $this->_config;
 	}
 
-	/**
-	 * 设置结果集返回数据类型
-	 * @param string $dataType
-	 */
-	public function setDataType($dataType)
-	{
-		$dataType = strtolower($dataType);
-
-		if (empty($dataType)) {
-			$dataType = ocConfig('MODEL_QUERY_DATA_TYPE', false);
-		}
-
-		$this->_dataType = $dataType == 'object' ? 'object' : 'array';
-	}
-
     /**
      * 执行SQL语句
      * @param array $sqlData
@@ -253,12 +237,15 @@ class DatabaseBase extends Sql
      * @param bool $queryRow
      * @param bool $count
      * @param array $unions
+     * @param string $dataType
      * @return array|mixed
      */
-	public function getResult($queryRow = false, $count = false, $unions = array())
+	public function getResult($queryRow = false, $count = false, $unions = array(), $dataType = null)
     {
+        $dataType = $dataType ? : 'array';
+
         if ($count) {
-            $result = $this->_plugin->get_result($this->_dataType, $queryRow);
+            $result = $this->_plugin->get_result($dataType, $queryRow);
             $total = 0;
             if ($unions) {
                 foreach ($result as $row) {
@@ -272,7 +259,7 @@ class DatabaseBase extends Sql
             }
             $result = array(array('total' => $total));
         } else {
-            $result = $this->_plugin->get_result($this->_dataType, $queryRow);
+            $result = $this->_plugin->get_result($dataType, $queryRow);
         }
 
         if ($queryRow && $result && empty($debug)) {
@@ -291,14 +278,14 @@ class DatabaseBase extends Sql
      * @param bool $queryRow
      * @return array|bool
      */
-    public function query($sqlData, $debug = false, $count = false, $unions = array(), $queryRow = false)
+    public function query($sqlData, $debug = false, $count = false, $unions = array(), $dataType = null)
     {
         $sqlData = $this->_formatSqlData($sqlData);
         $result = $this->_checkDebug($debug, $sqlData);
 
         if (!$result) {
             $this->executeQuery($sqlData, $count, $unions);
-            $result = $this->getResult(false, $count, $unions);
+            $result = $this->getResult(false, $count, $unions, $dataType);
         }
 
         return $result;
@@ -312,14 +299,14 @@ class DatabaseBase extends Sql
      * @param array $unions
      * @return array|bool
      */
-    public function queryRow($sqlData, $debug = false, $count = false, $unions = array())
+    public function queryRow($sqlData, $debug = false, $count = false, $unions = array(), $dataType = null)
     {
         $sqlData = $this->_formatSqlData($sqlData);
         $result = $this->_checkDebug($debug, $sqlData);
 
         if (!$result) {
             $this->executeQuery($sqlData, $count, $unions);
-            $result = $this->getResult(true, $count, $unions);
+            $result = $this->getResult(true, $count, $unions, $dataType);
         }
 
         return $result;

@@ -89,7 +89,6 @@ abstract class Cache extends ModelBase
             $this->_plugin->selectDatabase($this->_database);
         }
 
-        $this->_plugin->setDataType($this->_dataType);
         return $this->_plugin;
     }
 }

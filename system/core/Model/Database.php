@@ -31,7 +31,6 @@ abstract class Database extends ModelBase
 	protected $_primary;
 	protected $_table;
 	protected $_connectName;
-	protected $_dataType;
 	protected $_fields;
 	protected $_alias;
 
@@ -57,9 +56,12 @@ abstract class Database extends ModelBase
 	/**
 	 * Model constructor.
 	 */
-	public function __construct()
+	public function __construct(array $data = array())
 	{
 		$this->init();
+		if ($data) {
+            $this->data($data);
+        }
 	}
 
 	/**
@@ -81,7 +83,6 @@ abstract class Database extends ModelBase
 		$this->_tableName = empty($this->_table) ? lcfirst(self::getClassName()) : $this->_table;
 
 		$this->_join(false, $this->_tag, $this->_alias);
-		$this->setDataType($this->_dataType);
 		self::loadConfig($this->_tag);
 
 		if ($this->_primary) {
@@ -459,17 +460,6 @@ abstract class Database extends ModelBase
 		}
 
 		return $return ? $field : null;
-	}
-
-	/**
-	 * 设置结果集返回数据类型
-	 * @param string $dataType
-	 * @return $this
-	 */
-	public function setDataType($dataType)
-	{
-		$this->_dataType = strtolower($dataType);
-		return $this;
 	}
 
 	/**
@@ -891,17 +881,22 @@ abstract class Database extends ModelBase
 	 */
 	public function find($condition = null, $options = null, $debug = false)
 	{
-	    $isPage = $this->isPage();
-        $list = $this->_find($condition, $options, $debug, false);
-        if ($isPage) {
-            $data = $list['data'];
-        } else {
-            $data = $list;
-        }
+	    $dataType = ocGet('option.dataType', $this->_sql, null) ? : self::getClass();
+        $records = $this->_find($condition, $options, $debug, false, false, $dataType);
 
-        $list['data'] = new ObjectRecords(self::getClass(), $data, $debug);
-		return $list;
+		return $records;
 	}
+
+    /**
+     * 设置返回类型为简单对象
+     */
+	public function simple($simpleObject = true)
+    {
+        $dataType = $simpleObject ? 'object' : null;
+        $this->_sql['option']['dataType'] = $dataType;
+
+        return $this;
+    }
 
     /**
      * 选择多条记录
@@ -977,7 +972,7 @@ abstract class Database extends ModelBase
 	 */
 	public function getAll($condition = null, $option = null, $debug = false)
 	{
-		return $this->_find($condition, $option, $debug, false, false, true);
+		return $this->_find($condition, $option, $debug, false, false);
 	}
 
 	/**
@@ -1026,6 +1021,7 @@ abstract class Database extends ModelBase
 		}
 
 		$result = $this->_find(false, false, $debug, $queryRow, true);
+
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
 		}
@@ -1071,20 +1067,22 @@ abstract class Database extends ModelBase
         }
     }
 
-	/**
-	 * 查询数据
-	 * @param string|array $condition
-	 * @param string|array$option
-	 * @param bool $debug
-	 * @param bool $queryRow
-	 * @param bool $count
-	 * @return array
-	 */
-	private function _find($condition, $option, $debug, $queryRow, $count = false)
+    /**
+     * 查询数据
+     * @param $condition
+     * @param $option
+     * @param $debug
+     * @param $queryRow
+     * @param bool $count
+     * @param string $dataType
+     * @return array
+     */
+	private function _find($condition, $option, $debug, $queryRow, $count = false, $dataType = null)
 	{
 	    $this->pushSql($condition, $option, $queryRow);
         $sql = $this->_genSelectSql($count);
 		$cacheInfo = null;
+
 		if (isset($this->_sql['cache']) && is_array($this->_sql['cache'])) {
 			$cacheInfo = $this->_sql['cache'];
 		}
@@ -1100,9 +1098,9 @@ abstract class Database extends ModelBase
 		}
 
 		if ($queryRow) {
-            $result = $this->_plugin->queryRow($sql, $debug, $count, $this->_unions);
+            $result = $this->_plugin->queryRow($sql, $debug, $count, $this->_unions, $dataType);
 		} else {
-            $result = $this->_plugin->query($sql, $debug, $count, $this->_unions);
+            $result = $this->_plugin->query($sql, $debug, $count, $this->_unions, $dataType);
 		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
@@ -1157,8 +1155,6 @@ abstract class Database extends ModelBase
 		if ($this->_database) {
 			$this->_plugin->selectDatabase($this->_database);
 		}
-
-		$this->_plugin->setDataType($this->_dataType);
 
 		return $this->_plugin;
 	}

@@ -57,21 +57,28 @@ class DriverBase extends Base
 	 */
 	public function get_result($dataType, $queryRow = false)
 	{
-		$isObject = $dataType == 'object';
 		$result = array();
 
 		if (is_object($this->_recordSet)) {
-			if ($isObject) {
+			if ($dataType == 'object') {
 				while ($row = $this->fetch_assoc()) {
 					$result[] = (object)$row;
 					if ($queryRow) break;
 				}
-			} else {
+			} elseif ($dataType == 'array') {
 				while ($row = $this->fetch_assoc()) {
 					$result[] = $row;
 					if ($queryRow) break;
 				}
-			}
+			} else {
+                if (class_exists($dataType)) {
+                    while ($row = $this->fetch_assoc()) {
+                        $row = new $dataType($row);
+                        $result[] = $row;
+                        if ($queryRow) break;
+                    }
+                }
+            }
 		} else {
 			$result = $this->_recordSet;
 		}

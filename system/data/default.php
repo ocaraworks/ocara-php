@@ -21,8 +21,6 @@ $OC_CONF['DEFAULT_CONTROLLER'] 		= 'home'; //默认控制器
 $OC_CONF['DEFAULT_ACTION'] 			= 'index'; //默认动作
 $OC_CONF['COOKIE_DOMAIN'] 			= '';
 
-$OC_CONF['MODEL_QUERY_DATA_TYPE'] 	= 'array';
-
 /*
  * 时间格式设置
  */

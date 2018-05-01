@@ -372,20 +372,28 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function get_result($dataType = 'array', $queryRow = false)
 	{
-		$isObject = $dataType == 'object';
-		$result = $isObject ? null : array();
+		$result = array();
 
 		if (is_object($this->_stmt)) {
-			while (true) {
-				if ($isObject) {
-					$row = $this->_stmt->fetchObject();
-				} else {
-					$row = $this->_stmt->fetch(PDO::FETCH_ASSOC);
-				}
-				if (empty($row)) break;
-				$result[] = $row;
-				if ($queryRow) break;
-			}
+            if ($dataType == 'object') {
+                while ($row = $this->_stmt->fetchObject()) {
+                    $result[] = $row;
+                    if ($queryRow) break;
+                }
+            } elseif ($dataType == 'array') {
+                while ($row = $this->_stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $result[] = $row;
+                    if ($queryRow) break;
+                }
+            } else {
+                if (class_exists($dataType)) {
+                    while ($row = $this->_stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $row = new $dataType($row);
+                        $result[] = $row;
+                        if ($queryRow) break;
+                    }
+                }
+            }
 		}
 
 		return $result;
