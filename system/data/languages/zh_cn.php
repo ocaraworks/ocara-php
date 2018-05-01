@@ -59,9 +59,10 @@ return array(
 	'need_array_to_set'				=> array(2105, '指定的数组值不是数组类型，无法新增或设置它的数组元素！'),
 	'need_array_value'				=> array(2106, '参数值必须是数组。'),
 	'need_string_field'				=> array(2107, '字段值必须是字符串或数字。'),
-	'need_string_condition'			=> array(2108, '必须指定为字符串或数字条件。'),
+	'need_scalar_condition'			=> array(2108, '查询条件值必须为字符串或数字。'),
 	'need_string_table_name'		=> array(2109, '联接表名必须是字符串。'),
 	'need_primary_value'			=> array(2110, '主键数据不能为空。'),
+    'need_find_value'               => array(2111, '查询字段值不能为空！'),
 
 	//失败
 	'failed_db_init'				=> array(2200, '数据库初始化失败。'),
@@ -98,6 +99,7 @@ return array(
 	'fault_relate_config'			=> array(2317, '关联配置有误'),
 	'fault_method_param'			=> array(2318, '函数或方法参数缺失或格式错误'),
 	'fault_model_object' 			=> array(2319, '错误的模型对象，请检查该模型类的父类是否正确！'),
+    'fault_find_value'              => array(2320, '查询字段值格式不正确！'),
 
 	//不存在或找不到
 	'not_exists_part' 				=> array(2400, '指定的part文件不存在：{file}.php。'),
@@ -124,6 +126,7 @@ return array(
 	'not_exists_http_status'		=> array(2421, 'HTTP状态码不正确。'),
 	'no_exists_const'				=> array(2422, '缺少常量'),
 	'not_exists_dependence_set' 	=> array(2423, '依赖不存在'),
+    'not_exists_find_field'         => array(2424, '查询字段不存在！'),
 
 	//没有
 	'no_config'						=> array(2501, '找不到该配置：%s。'),

@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Model;
 
+use Ocara\Exception\Exception;
 use Ocara\Ocara;
 use Ocara\Call;
 use Ocara\Cache;
@@ -886,11 +887,51 @@ abstract class Database extends ModelBase
 	 * @param bool $debug
 	 * @return array|ObjectRecords
 	 */
-	public static function find($condition, $options = null, $debug = false)
+	public function find($condition = null, $options = null, $debug = false)
 	{
-		$records = new ObjectRecords(self::getClass(), array($condition), $options, $debug);
-		return $records;
+	    $isPage = $this->isPage();
+        $list = $this->_find($condition, $options, $debug, false);
+        if ($isPage) {
+            $data = $list['data'];
+        } else {
+            $data = $list;
+        }
+
+        $list['data'] = new ObjectRecords(self::getClass(), $data, $debug);
+		return $list;
 	}
+
+    /**
+     * 选择多条记录
+     * @param $condition
+     * @param null $options
+     * @param bool $debug
+     * @return array|ObjectRecords
+     */
+    public function batch($condition = null, $options = null, $debug = false)
+    {
+        $sql = $this->_sql ? : array();
+        $options = array($condition, $options, false);
+        $records = new BatchObjectRecords(self::getClass(), $options, $sql, $debug);
+
+        return $records;
+    }
+
+    /**
+     * 选择多条记录
+     * @param $condition
+     * @param null $options
+     * @param bool $debug
+     * @return array|ObjectRecords
+     */
+    public function each($condition = null, $options = null, $debug = false)
+    {
+        $sql = $this->_sql ? : array();
+        $options = array($condition, $options, false);
+        $records = new EachObjectRecords(self::getClass(), $options, $sql, $debug);
+
+        return $records;
+    }
 
 	/**
 	 * 获取主键条件
@@ -934,7 +975,7 @@ abstract class Database extends ModelBase
 	 */
 	public function getAll($condition = null, $option = null, $debug = false)
 	{
-		return $this->_find($condition, $option, $debug, false);
+		return $this->_find($condition, $option, $debug, false, false, true);
 	}
 
 	/**
@@ -997,6 +1038,37 @@ abstract class Database extends ModelBase
 		return 0;
 	}
 
+    /**
+     * 推入SQL选项
+     * @param $condition
+     * @param $option
+     * @param $queryRow
+     */
+	public function pushSql($condition, $option, $queryRow)
+    {
+        if ($condition) $this->where($condition);
+        if ($queryRow) {
+            if (!empty($this->_sql['option']['limit'])) {
+                $this->_sql['option']['limit'][1] = 1;
+            } else {
+                $this->limit(1);
+            }
+        }
+
+        if ($option) {
+            if (ocScalar($option)) {
+                $this->fields($option);
+            } else {
+                foreach ($option as $key => $value) {
+                    if (method_exists($this, $key)) {
+                        $value = (array)$value;
+                        call_user_func_array(array($this, $key), $value);
+                    }
+                }
+            }
+        }
+    }
+
 	/**
 	 * 查询数据
 	 * @param string|array $condition
@@ -1006,32 +1078,10 @@ abstract class Database extends ModelBase
 	 * @param bool $count
 	 * @return array
 	 */
-	private function _find($condition, $option, $debug, $queryRow, $count = false)
+	private function _find($condition, $option, $debug, $queryRow, $count = false, $d = false)
 	{
-		if ($condition) $this->where($condition);
-		if ($queryRow) {
-			if (!empty($this->_sql['option']['limit'])) {
-				$this->_sql['option']['limit'][1] = 1;
-			} else {
-				$this->limit(1);
-			}
-		}
-
-		if ($option) {
-			if (ocScalar($option)) {
-				$this->fields($option);
-			} else {
-				foreach ($option as $key => $value) {
-					if (method_exists($this, $key)) {
-						$value = (array)$value;
-						call_user_func_array(array($this, $key), $value);
-					}
-				}
-			}
-		}
-
-		$sql = $this->_genSelectSql($count);
-
+	    $this->pushSql($condition, $option, $queryRow);
+        $sql = $this->_genSelectSql($count);
 		$cacheInfo = null;
 		if (isset($this->_sql['cache']) && is_array($this->_sql['cache'])) {
 			$cacheInfo = $this->_sql['cache'];
@@ -1048,16 +1098,16 @@ abstract class Database extends ModelBase
 		}
 
 		if ($queryRow) {
-			$result = $this->_plugin->queryRow($sql, $debug, $count, $this->_unions);
+            $result = $this->_plugin->queryRow($sql, $debug, $count, $this->_unions);
 		} else {
-			$result = $this->_plugin->query($sql, $debug, true, true, false, $count, $this->_unions);
+            $result = $this->_plugin->query($sql, $debug, $count, $this->_unions);
 		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
 		}
 
-		if (!$count && ocGet('option.page', $this->_sql)) {
+		if (!$count && $this->isPage()) {
 			$result = array('total' => $this->getTotal($debug), 'data'	=> $result);
 		}
 
@@ -1069,6 +1119,15 @@ abstract class Database extends ModelBase
 
 		return $result;
 	}
+
+    /**
+     * 是否分页
+     * @return bool
+     */
+	public function isPage()
+    {
+        return ocGet('option.page', $this->_sql) ? true : false;
+    }
 
 	/**
 	 * 连接数据库
@@ -1823,7 +1882,7 @@ abstract class Database extends ModelBase
 	 * @param $model
 	 * @param bool $unionAll
 	 */
-	public function _Union($model, $unionAll = false)
+	public function _union($model, $unionAll = false)
 	{
 		$this->_unions[] = compact('model', 'unionAll');
 	}
@@ -1887,36 +1946,6 @@ abstract class Database extends ModelBase
 		}
 
 		return $this;
-	}
-
-	/**
-	 * 获取关联模型
-	 * @param string $key
-	 * @return mixed
-	 */
-	public function &__get($key)
-	{
-		if (isset(self::$_config[$this->_tag]['JOIN'][$key])) {
-			if (!isset($this->_relations[$key])) {
-				$this->_relations[$key] = $this->_relateFind($key);
-			}
-			return $this->_relations[$key];
-		}
-
-		return parent::__get($key);
-	}
-
-	/**
-	 * 设置未定义的属性
-	 */
-	public function __set($key, $value)
-	{
-		if (isset(self::$_config[$this->_tag]['JOIN'][$key])) {
-			$this->_relations[$key] = $value;
-		} else {
-			parent::__set($key, $value);
-			$this->_changes[] = $key;
-		}
 	}
 
 	/**
@@ -2019,4 +2048,77 @@ abstract class Database extends ModelBase
 
 		return $config;
 	}
+
+    /**
+     * 获取关联模型
+     * @param string $key
+     * @return mixed
+     */
+    public function &__get($key)
+    {
+        if (isset(self::$_config[$this->_tag]['JOIN'][$key])) {
+            if (!isset($this->_relations[$key])) {
+                $this->_relations[$key] = $this->_relateFind($key);
+            }
+            return $this->_relations[$key];
+        }
+
+        return parent::__get($key);
+    }
+
+    /**
+     * 设置未定义的属性
+     */
+    public function __set($key, $value)
+    {
+        if (isset(self::$_config[$this->_tag]['JOIN'][$key])) {
+            $this->_relations[$key] = $value;
+        } else {
+            parent::__set($key, $value);
+            $this->_changes[] = $key;
+        }
+    }
+
+    /**
+     * 魔术方法-调用未定义的静态方法时
+     * >= php 5.3
+     * @param string $name
+     * @param array $params
+     * @throws Exception
+     */
+    public static function __callStatic($name, $params)
+    {
+        $remainName = OC_EMPTY;
+        $isRow = false;
+
+        if (substr($name, 0, 9) == 'findRowBy') {
+            $remainName = substr($name, 9);
+            $isRow = true;
+        } elseif (substr($name, 0, 6) == 'findBy') {
+            $remainName = substr($name, 6);
+        }
+
+        if ($remainName) {
+            $remainName = lcfirst($remainName);
+            $model = new static();
+            $fields = $model->getFields();
+            if (array_key_exists($remainName, $fields)
+                || array_key_exists($remainName = ocHumpToLine($remainName), $fields)
+            ) {
+                if (empty($params)) {
+                    ocError('need_find_value');
+                }
+                $value = reset($params);
+                if (!ocSimple($value)) {
+                    ocError('fault_find_value');
+                }
+                $model->where(array($remainName => $value));
+                return $isRow ? $model->findRow() : $model->find();
+            } else {
+                ocError('not_exists_find_field');
+            }
+        }
+
+        return parent::__callStatic($name, $params);
+    }
 }

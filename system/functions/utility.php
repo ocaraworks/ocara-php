@@ -56,6 +56,16 @@ function ocScalar($data)
 }
 
 /**
+ * 是否标量或null
+ * @param mixed $data
+ * @return bool
+ */
+function ocSimple($data)
+{
+    return is_string($data) || is_numeric($data);
+}
+
+/**
  * 检测键名是否存在
  * @param mixed $key
  * @param array $data
@@ -397,6 +407,24 @@ function ocDump($content)
 }
 
 /**
+ * 输出错误或返回错误处理类
+ * @param null $error
+ * @param array $params
+ * @return mixed|null
+ */
+function ocError($error = null, array $params = array())
+{
+    $error = Ocara::services()->error;
+    $args = func_get_args();
+
+    if ($args) {
+        return call_user_func_array(array(&$error, 'show'), $args);
+    }
+
+    return $error;
+}
+
+/**
  * 获取提示内容
  * @param array $languages
  * @param $message
@@ -598,14 +626,29 @@ function ocFileExists($filePath, $check = false)
 }
 
 /**
- * 获取驼峰式名称
+ * 下划线转驼峰式
  * @param string $name
  * @param string $sep
  * @return string
  */
-function ocHump($name, $sep = '')
+function ocHump($name, $sep = OC_EMPTY)
 {
 	return implode($sep, array_map('ucfirst', explode('_', $name)));
+}
+
+/**
+ * 驼峰式转下划线
+ * @param string $str
+ * @param null $sep
+ * @return mixed
+ */
+function ocHumpToLine($str, $sep = '_')
+{
+    $str = preg_replace_callback('/([A-Z]{1})/',function($matches) use ($sep) {
+        return $sep . strtolower($matches[0]);
+    }, $str);
+
+    return $str;
 }
 
 /**

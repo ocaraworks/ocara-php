@@ -231,7 +231,7 @@ class Sql extends Base
 		if (ocScalar($condition)) {
 			return true;
 		}
-		Ocara::services()->error->show('need_string_condition');
+		Ocara::services()->error->show('need_scalar_condition');
 	}
 
 	/**
@@ -853,7 +853,7 @@ class Sql extends Base
 	 */
 	public function getSqlData($sql)
 	{
-		$params = $this->_params ? $this->_params : array();
+        $params = $this->_params ? array($this->_params) : array();
 		$this->_params = array();
 		$sql = trim($sql);
 		$data = array($sql, $params);

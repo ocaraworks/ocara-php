@@ -211,75 +211,25 @@ class DatabaseBase extends Sql
 		$this->_dataType = $dataType == 'object' ? 'object' : 'array';
 	}
 
-	/**
-	 * 执行SQL语句
-	 * @param array|string $sql
-	 * @param bool $debug
-	 * @param bool $query
-	 * @param bool $required
-	 * @param bool $queryRow
-	 * @param bool $count
-	 * @param array $unions
-	 * @return array|bool|object|void
-	 * @throws Exception\Exception
-	 */
-	public function query($sql, $debug = false, $query = true, $required = true, $queryRow = false, $count = false, $unions = array())
+    /**
+     * 执行SQL语句
+     * @param array $sqlData
+     * @param bool $debug
+     * @param bool $required
+     * @return array|bool|mixed|void
+     */
+	public function executeQuery(array $sqlData, $required = true)
 	{
-		if (is_string($sql)) {
-			$sqlData = array($sql, array());
-		} elseif (is_array($sql)) {
-			$sqlData = $sql;
-		}
-
-		$ret = $this->_checkDebug($debug, $sqlData);
-		if ($ret) {
-			return $ret;
-		}
-
-		list($sql, $params) = $sqlData;
+	    list($sql, $params) = $sqlData;
 		$this->event('beforeExecuteSql')->fire(array($sql, date(ocConfig('DATE_FORMAT.datetime'))));
 
 		try {
-			$params = $params ? array($params) : array();
-			if ($query) {
-				foreach ($unions as $union) {
-					if ($count) {
-						$unionData = $union['model']->getTotal(self::DEBUG_RETURN);
-					} else {
-						$unionData = $union['model']->getAll(false, false, self::DEBUG_RETURN);
-					}
-					list($unionSql, $unionParams) = $unionData;
-					$sql .= $this->getUnionSql($unionSql, $union['unionAll']);
-					$params[] = $unionParams;
-				}
-			}
-
 			if ($this->_prepared && $params) {
 				$this->_plugin->prepare($sql);
 				$this->_bindParams($params);
 				$result = $this->_plugin->execute();
 			} else {
 				$result = $this->_plugin->query($sql);
-			}
-
-			if ($query) {
-				if ($count) {
-					$result = $this->_plugin->get_result($this->_dataType, $queryRow);
-					$total = 0;
-					if ($unions) {
-						foreach ($result as $row) {
-							$num = reset($row);
-							$total += (integer)$num;
-						}
-					} elseif ($queryRow) {
-						$total = $result[0]['total'];
-					} else {
-						$total = count($result);
-					}
-					$result = array(array('total' => $total));
-				} else {
-					$result = $this->_plugin->get_result($this->_dataType, $queryRow);
-				}
 			}
 		} catch (\Exception $exception) {
 			if (!$this->_wakeUpTimes) {
@@ -289,31 +239,94 @@ class DatabaseBase extends Sql
 				$this->_wakeUpTimes++;
 				return call_user_func_array(array($this, __METHOD__), func_get_arg());
 			}
-			Ocara::services()->error->show($exception->getMessage());
+			ocError($exception->getMessage());
 		}
 
-		$ret = $this->checkError($result, $sqlData, $required);
+		$ret = $this->checkError($result, array($sql, $params), $required);
 		return $ret;
 	}
 
-	/**
-	 * 查询一条记录
-	 * @param $sql
-	 * @param bool $debug
-	 * @param bool $count
-	 * @param array $unions
-	 * @return array|bool|mixed|object|void
-	 */
-	public function queryRow($sql, $debug = false, $count = false, $unions = array())
-	{
-		$result = $this->query($sql, $debug, true, true, true, $count, $unions);
+    /**
+     * 获取查询结果
+     * @param bool $queryRow
+     * @param bool $count
+     * @param array $unions
+     * @return array|mixed
+     */
+	public function getResult($queryRow = false, $count = false, $unions = array())
+    {
+        if ($count) {
+            $result = $this->_plugin->get_result($this->_dataType, $queryRow);
+            $total = 0;
+            if ($unions) {
+                foreach ($result as $row) {
+                    $num = reset($row);
+                    $total += (integer)$num;
+                }
+            } elseif ($queryRow) {
+                $total = $result[0]['total'];
+            } else {
+                $total = count($result);
+            }
+            $result = array(array('total' => $total));
+        } else {
+            $result = $this->_plugin->get_result($this->_dataType, $queryRow);
+        }
 
-		if ($result && empty($debug)) {
-			$result = reset($result);
-		}
+        if ($queryRow && $result && empty($debug)) {
+            $result = reset($result);
+        }
 
-		return $result;
-	}
+        return $result;
+    }
+
+    /**
+     * 查询多行记录
+     * @param $sqlData
+     * @param bool $debug
+     * @param bool $count
+     * @param array $unions
+     * @param bool $queryRow
+     * @return array|bool
+     */
+    public function query($sqlData, $debug = false, $count = false, $unions = array(), $queryRow = false)
+    {
+        if (is_string($sqlData)) {
+            $sqlData = array($sqlData, array());
+        }
+
+        $result = $this->_checkDebug($debug, $sqlData);
+        if ($result) return $result;
+
+        list($sql, $params) = $sqlData;
+
+        foreach ($unions as $union) {
+            if ($count) {
+                $unionData = $union['model']->getTotal(self::DEBUG_RETURN);
+            } else {
+                $unionData = $union['model']->getAll(false, false, self::DEBUG_RETURN);
+            }
+            list($unionSql, $unionParams) = $unionData;
+            $sql .= $this->getUnionSql($unionSql, $union['unionAll']);
+            $params = array_merge($params, $unionParams);
+        }
+
+        $this->executeQuery(array($sql, $params));
+        return $this->getResult($queryRow, $count, $unions);
+    }
+
+    /**
+     * 查询一行
+     * @param $sqlData
+     * @param bool $debug
+     * @param bool $count
+     * @param array $unions
+     * @return array|bool
+     */
+    public function queryRow($sqlData, $debug = false, $count = false, $unions = array())
+    {
+        return $this->query($sqlData, $debug, $count, $unions, true);
+    }
 
 	/**
 	 * 是否预处理
@@ -366,12 +379,12 @@ class DatabaseBase extends Sql
 	{
 		$table = $this->getTableFullname($table);
 		$sqlData = $this->getSelectSql(1, $table, array('limit' => 1));
-		$ret = $this->query($sqlData, false, false, false);
+        $result = $this->executeQuery($sqlData);
 
 		if ($required) {
-			return $ret;
+			return $result;
 		} else {
-			return $this->errorExists() == false;
+			return $this->errorExists() === false;
 		}
 	}
 
@@ -391,12 +404,13 @@ class DatabaseBase extends Sql
 		$table = $this->getTableFullname($table);
 		$sqlData = $this->getInsertSql($table, $data);
 
-		$ret = $this->_checkDebug($debug, $sqlData);
-		if ($ret) return $ret;
+        $result = $this->_checkDebug($debug, $sqlData);
+        if (!$result) {
+            $result = $data ? $this->executeQuery($sqlData) : false;
+            $result = $result ? $this->getInsertId() : false;
+        }
 
-		$insertResult = $data ? $this->query($sqlData, false, false) : false;
-
-		return $insertResult ? $this->getInsertId() : false;
+		return $result;
 	}
 
 	/**
@@ -417,12 +431,12 @@ class DatabaseBase extends Sql
 		$condition = $this->parseCondition($condition);
 		$sqlData = $this->getUpdateSql($table, $data, $condition);
 
-		$ret = $this->_checkDebug($debug, $sqlData);
-		if ($ret) return $ret;
+        $result = $this->_checkDebug($debug, $sqlData);
+        if (!$result) {
+            $result = $data ? $this->executeQuery($sqlData) : false;
+        }
 
-		$ret = $data ? $this->query($sqlData, $debug, false) : false;
-
-		return $ret;
+		return $result;
 	}
 
 	/**
@@ -438,9 +452,12 @@ class DatabaseBase extends Sql
 		$condition = $this->parseCondition($condition);
 		$sqlData = $this->getDeleteSql($table, $condition);
 
-		$ret = $this->query($sqlData, $debug, false);
+        $result = $this->_checkDebug($debug, $sqlData);
+        if (!$result) {
+            $result = $this->executeQuery($sqlData);
+        }
 
-		return $ret;
+		return $result;
 	}
 
 	/**

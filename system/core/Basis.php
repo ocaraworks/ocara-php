@@ -189,7 +189,7 @@ abstract class Basis
 	public function __call($name, $params)
 	{
 		if (isset($this->_traits[$name])) {
-			call_user_func_array($this->_traits[$name], $params);
+			return call_user_func_array($this->_traits[$name], $params);
 		}
 
         ocService('error', true)->show('no_method', array($name));
@@ -204,7 +204,7 @@ abstract class Basis
 	 */
 	public static function __callStatic($name, $params)
 	{
-        ocService('error', true)->show('no_method', array($name));
+        return ocService('error', true)->show('no_method', array($name));
 	}
 
 	/**
