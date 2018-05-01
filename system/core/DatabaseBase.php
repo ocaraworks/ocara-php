@@ -221,7 +221,8 @@ class DatabaseBase extends Sql
 	public function executeQuery(array $sqlData, $required = true)
 	{
 	    list($sql, $params) = $sqlData;
-		$this->event('beforeExecuteSql')->fire(array($sql, date(ocConfig('DATE_FORMAT.datetime'))));
+		$this->event('beforeExecuteSql')
+             ->fire(array($sql, date(ocConfig('DATE_FORMAT.datetime'))));
 
 		try {
 			if ($this->_prepared && $params) {
@@ -237,13 +238,14 @@ class DatabaseBase extends Sql
 					$this->_plugin->wake_up();
 				}
 				$this->_wakeUpTimes++;
-				return call_user_func_array(array($this, __METHOD__), func_get_arg());
+				$result = call_user_func_array(array($this, __METHOD__), func_get_arg());
+				return $result;
 			}
 			ocError($exception->getMessage());
 		}
 
-		$ret = $this->checkError($result, array($sql, $params), $required);
-		return $ret;
+        $result = $this->checkError($result, array($sql, $params), $required);
+		return $result;
 	}
 
     /**
