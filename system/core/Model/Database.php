@@ -806,7 +806,9 @@ abstract class Database extends ModelBase
 	{
 		if ($sql) {
 			$sqlData = $this->_plugin->getSqlData($sql);
-			return $this->connect(false)->queryRow($sqlData, $debug);
+			return $this
+                ->connect(false)
+                ->query($sqlData, $debug);
 		}
 
 		return false;
@@ -1078,7 +1080,7 @@ abstract class Database extends ModelBase
 	 * @param bool $count
 	 * @return array
 	 */
-	private function _find($condition, $option, $debug, $queryRow, $count = false, $d = false)
+	private function _find($condition, $option, $debug, $queryRow, $count = false)
 	{
 	    $this->pushSql($condition, $option, $queryRow);
         $sql = $this->_genSelectSql($count);

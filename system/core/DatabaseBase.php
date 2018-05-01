@@ -218,7 +218,7 @@ class DatabaseBase extends Sql
      * @param bool $required
      * @return array|bool|mixed|void
      */
-	public function executeQuery(array $sqlData, $required = true)
+	public function execute(array $sqlData, $required = true)
 	{
 	    list($sql, $params) = $sqlData;
 		$this->event('beforeExecuteSql')
@@ -293,13 +293,47 @@ class DatabaseBase extends Sql
      */
     public function query($sqlData, $debug = false, $count = false, $unions = array(), $queryRow = false)
     {
-        if (is_string($sqlData)) {
-            $sqlData = array($sqlData, array());
+        $sqlData = $this->_formatSqlData($sqlData);
+        $result = $this->_checkDebug($debug, $sqlData);
+
+        if (!$result) {
+            $this->executeQuery($sqlData, $count, $unions);
+            $result = $this->getResult(false, $count, $unions);
         }
 
-        $result = $this->_checkDebug($debug, $sqlData);
-        if ($result) return $result;
+        return $result;
+    }
 
+    /**
+     * 查询一行
+     * @param $sqlData
+     * @param bool $debug
+     * @param bool $count
+     * @param array $unions
+     * @return array|bool
+     */
+    public function queryRow($sqlData, $debug = false, $count = false, $unions = array())
+    {
+        $sqlData = $this->_formatSqlData($sqlData);
+        $result = $this->_checkDebug($debug, $sqlData);
+
+        if (!$result) {
+            $this->executeQuery($sqlData, $count, $unions);
+            $result = $this->getResult(true, $count, $unions);
+        }
+
+        return $result;
+    }
+
+    /**
+     * 查询数据结果
+     * @param $sqlData
+     * @param bool $count
+     * @param array $unions
+     * @return array|bool|mixed|void
+     */
+    protected function executeQuery($sqlData, $count = false, $unions = array())
+    {
         list($sql, $params) = $sqlData;
 
         foreach ($unions as $union) {
@@ -313,21 +347,22 @@ class DatabaseBase extends Sql
             $params = array_merge($params, $unionParams);
         }
 
-        $this->executeQuery(array($sql, $params));
-        return $this->getResult($queryRow, $count, $unions);
+        $result = $this->execute(array($sql, $params));
+        return $result;
     }
 
     /**
-     * 查询一行
+     * 格式化SQL
      * @param $sqlData
-     * @param bool $debug
-     * @param bool $count
-     * @param array $unions
-     * @return array|bool
+     * @return array|string
      */
-    public function queryRow($sqlData, $debug = false, $count = false, $unions = array())
+    protected function _formatSqlData($sqlData)
     {
-        return $this->query($sqlData, $debug, $count, $unions, true);
+        if (is_string($sqlData)) {
+            $sqlData = array($sqlData, array());
+        }
+
+        return $sqlData;
     }
 
 	/**
@@ -381,7 +416,7 @@ class DatabaseBase extends Sql
 	{
 		$table = $this->getTableFullname($table);
 		$sqlData = $this->getSelectSql(1, $table, array('limit' => 1));
-        $result = $this->executeQuery($sqlData);
+        $result = $this->execute($sqlData);
 
 		if ($required) {
 			return $result;
@@ -408,7 +443,7 @@ class DatabaseBase extends Sql
 
         $result = $this->_checkDebug($debug, $sqlData);
         if (!$result) {
-            $result = $data ? $this->executeQuery($sqlData) : false;
+            $result = $data ? $this->execute($sqlData) : false;
             $result = $result ? $this->getInsertId() : false;
         }
 
@@ -435,7 +470,7 @@ class DatabaseBase extends Sql
 
         $result = $this->_checkDebug($debug, $sqlData);
         if (!$result) {
-            $result = $data ? $this->executeQuery($sqlData) : false;
+            $result = $data ? $this->execute($sqlData) : false;
         }
 
 		return $result;
@@ -456,7 +491,7 @@ class DatabaseBase extends Sql
 
         $result = $this->_checkDebug($debug, $sqlData);
         if (!$result) {
-            $result = $this->executeQuery($sqlData);
+            $result = $this->execute($sqlData);
         }
 
 		return $result;
