@@ -253,7 +253,8 @@ class DatabaseBase extends Sql
                     $total += (integer)$num;
                 }
             } elseif ($queryRow) {
-                $total = $result[0]['total'];
+                $row = reset($result);
+                $total = is_array($row) ? $row['total'] : $row->total;
             } else {
                 $total = count($result);
             }

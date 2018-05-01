@@ -17,6 +17,8 @@ use Ocara\Database as DatabaseFactory;
 use Ocara\DatabaseBase;
 use Ocara\ModelBase;
 use Ocara\Iterator\Database\ObjectRecords;
+use Ocara\Iterator\Database\BatchObjectRecords;
+use Ocara\Iterator\Database\EachObjectRecords;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -841,11 +843,11 @@ abstract class Database extends ModelBase
 	/**
 	 * 按条件选择首行
 	 * @param bool $condition
-	 * @param null $option
+	 * @param null $options
 	 * @param bool $debug
 	 * @return $this|array|null
 	 */
-	public function findRow($condition = false, $option = null, $debug = false)
+	public function findRow($condition = false, $options = null, $debug = false)
 	{
 		$this->clearData();
 
@@ -861,7 +863,7 @@ abstract class Database extends ModelBase
 			$this->_selected['mWhere'] = $this->_sql['option']['mWhere'];
 		}
 
-		$data = $this->getRow(false, $option, $debug);
+		$data = $this->getRow(null, $options, $debug);
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $data;
 
 		if ($data) {
@@ -881,9 +883,7 @@ abstract class Database extends ModelBase
 	 */
 	public function find($condition = null, $options = null, $debug = false)
 	{
-	    $dataType = ocGet('option.dataType', $this->_sql, null) ? : self::getClass();
-        $records = $this->_find($condition, $options, $debug, false, false, $dataType);
-
+        $records = $this->_find($condition, $options, $debug, false, false, self::getClass());
 		return $records;
 	}
 
@@ -900,32 +900,34 @@ abstract class Database extends ModelBase
 
     /**
      * 选择多条记录
-     * @param $condition
-     * @param null $options
+     * @param integer $offset
+     * @param integer $rows
      * @param bool $debug
-     * @return array|ObjectRecords
+     * @return BatchObjectRecords
      */
-    public function batch($condition = null, $options = null, $debug = false)
+    public function batch($offset, $rows = null, $debug = false)
     {
+        if (!isset($limit)) {
+            $rows = $offset;
+            $offset = 0;
+        }
+
         $sql = $this->_sql ? : array();
-        $options = array($condition, $options, false);
-        $records = new BatchObjectRecords(self::getClass(), $options, $sql, $debug);
+        $records = new BatchObjectRecords(self::getClass(), $offset, $rows, $sql, $debug);
 
         return $records;
     }
 
     /**
      * 选择多条记录
-     * @param $condition
-     * @param null $options
+     * @param int $offset
      * @param bool $debug
-     * @return array|ObjectRecords
+     * @return EachObjectRecords
      */
-    public function each($condition = null, $options = null, $debug = false)
+    public function each($offset = 0, $debug = false)
     {
         $sql = $this->_sql ? : array();
-        $options = array($condition, $options, false);
-        $records = new EachObjectRecords(self::getClass(), $options, $sql, $debug);
+        $records = new EachObjectRecords(self::getClass(), $offset, $sql, $debug);
 
         return $records;
     }
@@ -972,7 +974,7 @@ abstract class Database extends ModelBase
 	 */
 	public function getAll($condition = null, $option = null, $debug = false)
 	{
-		return $this->_find($condition, $option, $debug, false, false);
+		return $this->_find($condition, $option, $debug, false, false, null, 'array');
 	}
 
 	/**
@@ -984,7 +986,7 @@ abstract class Database extends ModelBase
 	 */
 	public function getRow($condition = null, $option = null, $debug = false)
 	{
-		return $this->_find($condition, $option, $debug, true);
+		return $this->_find($condition, $option, $debug, true, false, 'array');
 	}
 
 	/**
@@ -1020,7 +1022,7 @@ abstract class Database extends ModelBase
 			$queryRow = false;
 		}
 
-		$result = $this->_find(false, false, $debug, $queryRow, true);
+		$result = $this->_find(false, false, $debug, $queryRow, true, 'array');
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
@@ -1097,6 +1099,7 @@ abstract class Database extends ModelBase
 			if ($cacheData) return $cacheData;
 		}
 
+        $dataType = ocGet('option.dataType', $this->_sql, $dataType ? : 'array');
 		if ($queryRow) {
             $result = $this->_plugin->queryRow($sql, $debug, $count, $this->_unions, $dataType);
 		} else {
@@ -1107,7 +1110,7 @@ abstract class Database extends ModelBase
 			return $result;
 		}
 
-		if (!$count && $this->isPage()) {
+		if (!$count && !$queryRow && $this->isPage()) {
 			$result = array('total' => $this->getTotal($debug), 'data'	=> $result);
 		}
 
