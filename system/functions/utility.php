@@ -614,12 +614,14 @@ function ocFileExists($filePath, $check = false)
 		if ($check) {
 			$filePath = ocCheckFilePath($filePath);
 		}
-		if (OC_IS_WIN
-			&& ocBasename(ocCommPath(realpath($filePath))) == ocBasename($filePath)
-			&& is_file($filePath)
-		) {
-			return $filePath;
-		}
+		if (is_file($filePath)) {
+		    if (OC_IS_WIN && ocBasename(ocCommPath(realpath($filePath))) != ocBasename($filePath)) {
+                $exists = false;
+            } else {
+                $exists = true;
+            }
+            return $exists ? $filePath : false;
+        }
 	}
 	
 	return false;
