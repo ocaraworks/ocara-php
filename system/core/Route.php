@@ -55,7 +55,7 @@ class Route extends Base
     public static function getControllerType($module, $controller)
     {
         $route = ltrim(implode('/', array($module, $controller)), '/');
-        $isRestful = in_array($route, ocConfig(array('ROUTE', 'resource')));
+        $isRestful = in_array($route, ocConfig(array('ROUTE', 'resource'), array()));
 
         if ($isRestful) {
             $controllerType = 'Rest';
