@@ -827,17 +827,16 @@ abstract class Database extends ModelBase
 	/**
 	 * 按主键选择一行记录
 	 * @param string|array|number $primaryValues
-	 * @param null $option
+	 * @param null $options
 	 * @param bool $debug
 	 * @return static
 	 */
-	public static function select($primaryValues, $option = null, $debug = false)
+	public static function select($primaryValues, $options = null, $debug = false)
 	{
 		$model = new static();
 		$condition = $model->_getPrimaryCondition($primaryValues);
-		$model->findRow($condition, $option, $debug);
 
-		return $model;
+		return $model->findRow($condition, $options, $debug);
 	}
 
 	/**
