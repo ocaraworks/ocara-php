@@ -71,8 +71,8 @@ final class SessionCache extends Base
     {
         try {
             $this->_plugin->set($this->_prefix . $id, $data);
-        } catch(Exception $e) {
-            Ocara::services()->error->exceptionHandler($e);
+        } catch(Exception $exception) {
+            Ocara::services()->error->show($exception->getMessage());
         }
 
         return true;

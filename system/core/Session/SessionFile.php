@@ -86,7 +86,7 @@ final class SessionFile extends Base
         try {
             ocWrite("{$this->_savePath}/sess_$id", stripslashes($data));
         } catch(Exception $exception) {
-            Ocara::services()->error->exceptionHandler($exception);
+            Ocara::services()->error->show($exception->getMessage());
         }
 
         return true;
