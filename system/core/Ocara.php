@@ -151,7 +151,9 @@ final class Ocara extends Basis
 	public static function getRoute($name = null)
 	{
 		if (!self::$_route) {
-			$_GET = self::$_services->url->parseGet();
+		    if (!OC_INVOKE) {
+                $_GET = self::$_services->url->parseGet();
+            }
 			list($module, $controller, $action) = self::$_services->route->parseRouteInfo();
             self::$_route = compact('module', 'controller', 'action');
 		}
