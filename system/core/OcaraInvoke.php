@@ -52,7 +52,7 @@ final class OcaraInvoke
 		}
 
 		Ocara::getInstance();
-		Ocara::getBootstrap($bootstrap);
+		Ocara::bootstrap($bootstrap);
 	}
 
     /**
@@ -64,6 +64,6 @@ final class OcaraInvoke
     {
         $_GET = $params ? : $_GET;
         $route = Ocara::parseRoute($route);
-        Ocara::getBootstrap()->start($route);
+        Ocara::bootstrap()->start($route);
     }
 }
