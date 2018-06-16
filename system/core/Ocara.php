@@ -33,6 +33,7 @@ final class Ocara extends Basis
 	 * @var $CONF 		公共配置 
 	 * @var $OC_LANG    框架语言数据
 	 */
+    private static $_bootstrap;
 	private static $_container;
 	private static $_services;
 	private static $_instance;
@@ -98,10 +99,10 @@ final class Ocara extends Basis
 	public static function run($bootstrap = null)
 	{
 		self::getInstance();
-		$bootstrap = self::getBootstrap($bootstrap);
+		self::getBootstrap($bootstrap);
 
 		self::getRoute();
-		$bootstrap->start(self::$_route);
+		self::$_bootstrap->start(self::$_route);
 	}
 
 	/**
@@ -109,18 +110,20 @@ final class Ocara extends Basis
 	 * @param $bootstrap
 	 * @return string
 	 */
-	public static function getBootstrap($bootstrap)
+	public static function getBootstrap($bootstrap = null)
 	{
-		$bootstrap = $bootstrap ? : '\Ocara\Bootstrap';
-		$bootstrap = new $bootstrap();
-        $container = self::container();
+	    if (func_num_args()) {
+            $bootstrap = $bootstrap ? : '\Ocara\Bootstrap';
+            self::$_bootstrap = new $bootstrap();
+            $container = self::container();
 
-		self::$_services = $bootstrap->getServiceProvider();
-        self::$_services->setContainer($container);
-        self::$_services->register();
+            self::$_services = self::$_bootstrap->getServiceProvider();
+            self::$_services->setContainer($container);
+            self::$_services->register();
+            self::$_bootstrap->init();
+        }
 
-		$bootstrap->init();
-		return $bootstrap;
+		return self::$_bootstrap;
 	}
 
 	/**

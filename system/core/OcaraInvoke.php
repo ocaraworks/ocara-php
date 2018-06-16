@@ -8,6 +8,9 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Ocara;
+use Ocara\Url;
+
 final class OcaraInvoke
 {
 	/**
@@ -33,14 +36,13 @@ final class OcaraInvoke
 		define('OC_PATH', self::getCommPath(realpath(dirname(dirname(__DIR__)))) . '/');
 
 		define('OC_PHP_SAPI', 'cli');
-		define('OC_URL_ROUTE_TYPE', Url::DIR_TYPE);
 		define('OC_ROOT_URL', '/');
 
 		define('OC_PHP_SELF',
 			ltrim(str_replace(OC_ROOT, '', self::getCommPath(realpath($fileSelf))), '/')
 		);
 
-		if (!is_file($path = OC_PATH . '/system/library/Ocara.php')) {
+		if (!is_file($path = OC_PATH . '/system/core/Ocara.php')) {
 			die('Lost ocara file!');
 		}
 
@@ -48,8 +50,20 @@ final class OcaraInvoke
 		if (!class_exists('\Ocara\Ocara', false)) {
 			die('Lost Ocara class!');
 		}
-		
+
 		Ocara::getInstance();
-		Ocara::getBootstrap($bootstrap)->run();
+		Ocara::getBootstrap($bootstrap);
 	}
+
+    /**
+     * 运行
+     * @param $route
+     * @param array $params
+     */
+	public static function run($route, $params = array())
+    {
+        $_GET = $params ? : $_GET;
+        $route = Ocara::parseRoute($route);
+        Ocara::getBootstrap()->start($route);
+    }
 }
