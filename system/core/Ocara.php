@@ -153,7 +153,7 @@ final class Ocara extends Basis
 		if (!self::$_route) {
 			$_GET = self::$_services->url->parseGet();
 			list($module, $controller, $action) = self::$_services->route->parseRouteInfo();
-			self::$_route = compact('module', 'controller', 'action');
+            self::$_route = compact('module', 'controller', 'action');
 		}
 
 		if (isset($name)) {
@@ -162,6 +162,17 @@ final class Ocara extends Basis
 
 		return self::$_route;
 	}
+
+    /**
+     * 设置路由
+     * @param $route
+     */
+	public static function setRoute($route)
+    {
+        if (!self::$_route) {
+            self::$_route = $route;
+        }
+    }
 
 	/**
 	 * 解析路由字符串

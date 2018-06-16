@@ -71,6 +71,9 @@ define('OC_CORE', OC_SYS . 'core/');
 //框架系统服务目录
 define('OC_SERVICE', OC_SYS . 'service/');
 
+//是否外部引入
+defined('OC_INVOKE') OR define('OC_INVOKE', false);
+
 /*
  * 应用程序常量
  */

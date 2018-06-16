@@ -11,7 +11,7 @@ namespace Ocara;
 use Ocara\Ocara;
 use Ocara\Url;
 
-final class OcaraInvoke
+final class Invoke
 {
 	/**
 	 * 目录分隔符替换
@@ -34,9 +34,8 @@ final class OcaraInvoke
 
 		define('OC_ROOT', self::getCommPath(realpath($rootPath)) . '/');
 		define('OC_PATH', self::getCommPath(realpath(dirname(dirname(__DIR__)))) . '/');
-
-		define('OC_PHP_SAPI', 'cli');
 		define('OC_ROOT_URL', '/');
+        define('OC_INVOKE', true);
 
 		define('OC_PHP_SELF',
 			ltrim(str_replace(OC_ROOT, '', self::getCommPath(realpath($fileSelf))), '/')
@@ -64,6 +63,7 @@ final class OcaraInvoke
     {
         $_GET = $params ? : $_GET;
         $route = Ocara::parseRoute($route);
+        Ocara::setRoute($route);
         Ocara::bootstrap()->start($route);
     }
 }
