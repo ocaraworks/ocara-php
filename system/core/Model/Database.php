@@ -193,7 +193,8 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		if (ocFileExists($path = ocPath('lang', "model/{$filePath}"))) {
+        $path = ocPath('lang', Ocara::language() . "/model/{$filePath}");
+		if (ocFileExists($path)) {
 			$lang = @include($path);
 			if ($lang && is_array($lang)) {
 				$modelConfig['LANG'] = array_merge($modelConfig['LANG'], $lang);

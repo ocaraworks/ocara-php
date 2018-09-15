@@ -38,65 +38,51 @@ class Lang extends Base
 
 		if ($this->_properties === null) {
 			$this->_properties = array();
-			$this->loadApplicationConfig('lang', Ocara::language(), 'control');
+			$this->load(OC_ROOT . 'resource/lang/' . Ocara::language());
 		}
 	}
 
-	/**
-	 * 应用级配置
-	 * @param string $dir
-	 * @param string $type
-	 * @param string $sub
-	 */
-	public function loadApplicationConfig($dir, $type, $sub = null)
-	{
-		$path  = OC_ROOT . 'resource/' . $dir;
-		extract(Ocara::getRoute());
-		$paths = array();
+    /**
+     * 加载控制层语言
+     * @param string $path
+     */
+    public function loadControlLang($route)
+    {
+        $path = OC_ROOT . 'resource/lang/' . Ocara::language();
+        $paths = array();
+        extract($route);
 
-		if (is_dir($path)) {
-			$paths[] = $path;
-		}
+        if (isset($module) && $module && is_dir($path . OC_DIR_SEP . $module)) {
+            $path = $path . OC_DIR_SEP . $module;
+            $paths[] = $path;
+        }
 
-		if (is_dir($path = $path . OC_DIR_SEP . $type)) {
-			$paths[] = $path;
-			if ($sub && is_dir($path = $path . OC_DIR_SEP . $sub)) {
-				$paths[] = $path;
-			}
-			if (isset($module) && $module && is_dir($path = $path . OC_DIR_SEP . $module)) {
-				$paths[] = $path;
-				if ($controller && is_dir($path = $path . OC_DIR_SEP . $controller)) {
-					$paths[] = $path;
-					if ($action && is_dir($path = $path . OC_DIR_SEP . $action)) {
-						$paths[] = $path;
-					}
-				}
-			}
-		}
+        if ($controller && is_dir($path = $path . OC_DIR_SEP . $controller)) {
+            $paths[] = $path;
+            if ($action && is_dir($path = $path . OC_DIR_SEP . $action)) {
+                $paths[] = $path;
+            }
+        }
 
-		$lang = $this->loadControlConfig($paths);
-		if ($lang) {
-			array_unshift($lang, $this->_properties);
-			$this->_properties = call_user_func_array('array_merge', $lang);
-		}
-	}
+        $this->load($paths);
+    }
 
 	/**
 	 * 加载语言配置
 	 * @param array $paths
 	 * @return array
 	 */
-	public function loadControlConfig($paths)
+	public function load($paths)
 	{
 		$path = ocForceArray($paths);
 		$data = array();
 
-		foreach ($path as $value) {
-			if ($files = scandir($value)) {
+		foreach ($path as $path) {
+			if ($files = scandir($path)) {
 				foreach ($files as $file) {
-					if ($file == '.' or $file == '..') continue;
+					if ($file == '.' || $file == '..') continue;
 					$fileType = pathinfo($file, PATHINFO_EXTENSION);
-					if (is_file($file = $value . OC_DIR_SEP . $file) && $fileType == 'php') {
+					if (is_file($file = $path . OC_DIR_SEP . $file) && $fileType == 'php') {
 						$row = @include ($file);
 						if ($row && is_array($row)) {
 							$data[] = $row;

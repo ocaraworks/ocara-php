@@ -41,7 +41,7 @@ final class Config extends Base
 		}
 
 		if (is_dir($path = OC_ROOT . 'resource/conf')) {
-			$this->loadControlConfig($path);
+			$this->load($path);
 		}
 
 		if (!$this->_properties) {
@@ -50,86 +50,46 @@ final class Config extends Base
 	}
 
 	/**
-	 * 获取基本配置和模块配置
+	 * 加载控制层配置
 	 * @param string $dir
-	 * @param string $type
-	 * @param string $sub
-	 * @param string $module
 	 */
-	public function loadModuleConfig($dir, $type, $sub, $module)
+	public function loadControlConfig($route = array())
 	{
-		$path  = OC_ROOT . 'resource/' . $dir;
-		$paths = array();
-		if (is_dir($path)) {
-			$paths[] = $path;
-			if (is_dir($path = $path . OC_DIR_SEP . $type)) {
-				$paths[] = $path;
-				if ($sub && is_dir($path = $path . OC_DIR_SEP . $sub)) {
-					$paths[] = $path;
-				}
-				if ($module && is_dir($path = $path . OC_DIR_SEP . $module)) {
-					$paths[] = $path;
-				}
-			}
-		}
+        $path = OC_ROOT . 'resource/conf/control';
+        $paths = array();
+        extract($route);
 
-		$this->loadControlConfig($paths);
-	}
+        if (isset($module) && $module && is_dir($path . OC_DIR_SEP . $module)) {
+            $path = $path . OC_DIR_SEP . $module;
+            $paths[] = $path;
+        }
 
-	/**
-	 * 加载控制器动作的配置
-	 * @param string $path
-	 */
-	public function loadActionConfig($path)
-	{
-		$path = OC_ROOT . 'resource/' . rtrim($path, OC_DIR_SEP);
-		$paths = array();
-		extract(Ocara::getRoute());
+        if ($controller && is_dir($path = $path . OC_DIR_SEP . $controller)) {
+            $paths[] = $path;
+            if ($action && is_dir($path = $path . OC_DIR_SEP . $action)) {
+                $paths[] = $path;
+            }
+        }
 
-		if (isset($module) && $module && is_dir($path . OC_DIR_SEP . $module)) {
-			$path = $path . OC_DIR_SEP . $module;
-			$paths[] = $path;
-		}
-
-		if ($controller && is_dir($path = $path . OC_DIR_SEP . $controller)) {
-			$paths[] = $path;
-			if ($action && is_dir($path = $path . OC_DIR_SEP . $action)) {
-				$paths[] = $path;
-			}
-		}
-
-		$this->loadControlConfig($paths);
-	}
-
-	/**
-	 * 应用级配置
-	 * @param string $dir
-	 * @param string $type
-	 * $param string $sub
-	 * @param string $module
-	 */
-	public function loadApplicationConfig($dir, $type, $sub = null, $module = null)
-	{
-		$this->loadModuleConfig($dir, $type, $sub, $module);
-		$this->loadActionConfig(ocDir(array($dir, $type, $sub)));
+        $this->load($paths);
 	}
 
 	/**
 	 * 加载配置
-	 * @param string $path
+	 * @param string|array $paths
 	 */
-	public function loadControlConfig($path)
+	public function load($paths)
 	{
 		$CONF = &$this->_properties;
-		$path = ocForceArray($path);
+        $paths = ocForceArray($paths);
 
-		foreach ($path as $value) {
-			if ($files = scandir($value)) {
+		foreach ($paths as $path) {
+			if ($files = scandir($path)) {
 				$config = $CONF;
 				foreach ($files as $file) {
-					if ($file == '.' or $file == '..') continue;
+					if ($file == '.' || $file == '..') continue;
 					$fileType = pathinfo($file, PATHINFO_EXTENSION);
-					$file = $value . OC_DIR_SEP . $file;
+					$file = $path . OC_DIR_SEP . $file;
 					if (is_file($file) && $fileType == 'php') {
 						include ($file);
 					}

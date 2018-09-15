@@ -44,12 +44,12 @@ class controller_admin
 	
 		if ($this->mdlname) {
 			if (is_dir($path = $path . OC_DIR_SEP . $this->mdlname)) {
-				Ocara::services()->config->loadControlConfig($path);
+				Ocara::services()->config->load($path);
 			}
 		}
 		
 		if (is_dir($path = $path . OC_DIR_SEP . $this->cname)) {
-			Ocara::services()->config->loadControlConfig($path);
+			Ocara::services()->config->load($path);
 		}
 
 		$CONF = Ocara::services()->config->get();

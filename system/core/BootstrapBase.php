@@ -59,7 +59,8 @@ abstract class BootstrapBase extends Basis
             }
         }
 
-        Ocara::services()->config->loadApplicationConfig('conf', 'control');
+        Ocara::services()->config->loadControlConfig($route);
+        Ocara::services()->lang->loadControlLang($route);
         Ocara::container()->bindSingleton($controlClass);
 
         $Control = Ocara::container()->create($controlClass, array($route));
