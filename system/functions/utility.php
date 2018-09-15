@@ -13,6 +13,7 @@ use Ocara\ExceptionHandler;
 use Ocara\Exception\Exception;
 use Ocara\Exception\ErrorException;
 use Ocara\Ocara;
+use Ocara\Container;
 
 /**
  * 统一路径，将反斜杠换成正斜杠
@@ -78,30 +79,30 @@ function ocKeyExists($key, array $data)
 
 /**
  * 检测键名
- * @param $exists
+ * @param $onlyCheck
  * @param mixed $key
  * @param array $data
- * @param bool $return
+ * @param bool $arrayGet
  * @param null $default
  * @return array|bool|null
  */
-function ocCheckKey($exists, $key, array $data, $return = false, $default = null)
+function ocCheckKey($onlyCheck, $key, array $data, $arrayGet = false, $default = null)
 {
 	if (is_integer($key)) {
 		if (array_key_exists($key, $data)) {
-			return $exists ? true : ($return ? array($data[$key]) : $data[$key]);
+			return $onlyCheck ? true : ($arrayGet ? array($data[$key]) : $data[$key]);
 		} else {
-			return $exists ? false : $default;
+			return $onlyCheck ? false : $default;
 		}
 	}
 
 	if (is_string($key)) {
 		if (array_key_exists($key, $data)) {
-			return $exists ? true : ($return ? array($data[$key]) : $data[$key]);
+			return $onlyCheck ? true : ($arrayGet ? array($data[$key]) : $data[$key]);
 		}
 		$key = trim($key, '.');
 		if (false === strstr($key, '.') || $key === '') {
-			return $exists ? false : $default;
+			return $onlyCheck ? false : $default;
 		}
 		$key = explode('.', $key);
 	}
@@ -111,13 +112,13 @@ function ocCheckKey($exists, $key, array $data, $return = false, $default = null
 			if (is_array($data) && array_key_exists($value, $data)) {
 				$data = $data[$value];
 			} else {
-				return $exists ? false : $default;
+				return $onlyCheck ? false : $default;
 			}
 		}
-		return $exists ? true : ($return ? array($data) : $data);
+		return $onlyCheck ? true : ($arrayGet ? array($data) : $data);
 	}
 	
-	return $exists ? false : $default;
+	return $onlyCheck ? false : $default;
 }
 
 /**
@@ -143,19 +144,19 @@ function ocLang($name, array $params = array(), $default = null)
  * 获取配置
  * @param $key
  * @param null $default
- * @param bool $unempty
+ * @param bool $unEmpty
  * @return null
  * @throws Exception
  */
-function ocConfig($key, $default = null, $unempty = false)
+function ocConfig($key, $default = null, $unEmpty = false)
 {
-	if ($result = ocService('config', true)->getConfig($key)) {
-		return $unempty && ocEmpty($result[0]) ? $default : $result[0];
+	if ($result = Container::getDefault()->config->arrayGet($key)) {
+		return $unEmpty && ocEmpty($result[0]) ? $default : $result[0];
 	}
 
 	if (func_num_args() >= 2) return $default;
 
-	Ocara::services()->error->show('no_config', array($key));
+	throw new Exception('No config for key ' . $key . '.');
 }
 
 /**
@@ -693,4 +694,54 @@ function ocExecTime()
 {
 	$runtime = microtime(true) - OC_EXECUTE_START_TIME;
 	return $runtime * 1000;
+}
+
+/*************************************************************************************************
+ * 路径获取函数
+ ************************************************************************************************/
+
+/**
+ * 获取完整路径
+ * @param string $dir
+ * @param string $path
+ * @return bool|mixed|string
+ */
+function ocPath($dir, $path = null)
+{
+    return Container::getDefault()->path->get($dir, $path, OC_ROOT, true, false);
+}
+
+/**
+ * 获取完整文件路径，检查文件是否存在
+ * @param string $dir
+ * @param string $path
+ * @return bool|mixed|string
+ */
+function ocFile($dir, $path)
+{
+    return Container::getDefault()->path->get($dir, $path, OC_ROOT, true, true);
+}
+
+/**
+ * 获取绝对URL
+ * @param $dir
+ * @param string $subPath
+ * @param string $root
+ * @return string
+ */
+function ocRealUrl($dir, $subPath = null, $root = false)
+{
+    $root = $root ? : OC_ROOT_URL;
+    return Container::getDefault()->path->get($dir, $subPath, $root, false, false);
+}
+
+/**
+ * 获取相对URL
+ * @param string $dir
+ * @param string $subPath
+ * @return bool|mixed|string
+ */
+function ocSimpleUrl($dir, $subPath)
+{
+    return Container::getDefault()->path->get($dir, $subPath, OC_DIR_SEP, false, false);
 }

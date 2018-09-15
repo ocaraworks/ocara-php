@@ -10,15 +10,15 @@ namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class Path extends Base
+class Path extends Basis
 {
 	/**
 	 * 初始化
 	 */
 	public function __construct()
 	{
-		$paths = ocConfig('APP_PATH_INFO', array(), true);
-		$paths['replace']['lang'] = 'lang/' . Ocara::language();
+	    $config = Container::getDefault()->config;
+		$paths = $config->get('APP_PATH_INFO', array());
 		$this->setProperty($paths);
 	}
 
@@ -45,6 +45,9 @@ class Path extends Base
                 $replace = $this->_properties['replace'][$mapDir];
             } else {
                 $replace = $mapDir;
+            }
+            if ($dir == 'lang') {
+                $replace['lang'] = 'lang/' . OC_LANGUAGE;
             }
             $mapDir = $this->_properties['belong'][$mapDir] . OC_DIR_SEP . $replace;
         }

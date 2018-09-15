@@ -13,6 +13,7 @@ use Ocara\Develop;
 use Ocara\Service\File;
 use Ocara\Service\FileCache;
 use Ocara\Database;
+use Ocara\Container;
 
 class model_admin
 {
@@ -140,7 +141,7 @@ class model_admin
 
 		//新建语言文件
 		$path = OC_ROOT . "resource/lang/"
-			. Ocara::language()
+			. Container::getDefault()->config->language()
 			. '/model/'
 			. $connectPath
 			. $modelFile

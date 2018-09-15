@@ -73,7 +73,6 @@ $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
 	'ajax'              => 'Ocara\Ajax',
 	'error' 		    => 'Ocara\Error',
 	'filter' 		    => 'Ocara\Filter',
-	'path' 			    => 'Ocara\Path',
 	'url' 			    => 'Ocara\Url',
 	'lang' 			    => 'Ocara\Lang',
 	'cookie' 		    => 'Ocara\Cookie',
@@ -153,36 +152,33 @@ $OC_CONF['CONTROLLERS']['rest'] = array(
  * 应用路径信息
  */
 $OC_CONF['APP_PATH_INFO'] = array(
+
+    /*目录映射*/
+    'map' => array(),
+
 	/*所属目录*/
 	'belong' => array(
-		'controller'  	=> 'application',
-		'logic'  	  	=> 'application',
-		'model'  	  	=> 'application',
+        'console'		=> 'application',
+		'modules'  	    => 'application',
+		'models'  	  	=> 'application',
 		'view'  	  	=> 'application',
 
+        'config'		=> 'application',
+        'lang'			=> 'application',
+        'functions'		=> 'application',
+        'library'		=> 'application',
+
+        'pass'			=> '',
+
 		'attachments' 	=> 'public',
-		'css'  		  	=> 'public',
-		'images'  	  	=> 'public',
-		'js'  		  	=> 'public',
+		'css'  		  	=> 'public/resource',
+		'images'  	  	=> 'public/resource',
+		'js'  		  	=> 'public/resource',
 		'html'  	  	=> 'public',
-		'runtime'  	  	=> 'public',
 
-		'conf'			=> 'resource',
-		'data'			=> 'resource',
-		'lang'			=> 'resource',
-
-		'functions'		=> 'service',
-		'library'		=> 'service',
-		'support'		=> 'service',
-		'pass'			=> '',
-	),
-
-	/*目录映射*/
-	'map' => array(
-		'action' 	  => 'controller',
-		'function'	  => 'functions',
-		'image'		  => 'images',
-		'attachment'  => 'attachments',
+		'cache'         => 'runtime',
+        'logs'          => 'runtime',
+        'sessions'      => 'runtime',
 	),
 );
 
@@ -205,6 +201,16 @@ $OC_CONF['AUTOLOAD_MAP'] = array(
 );
 
 /*
+ * 应用自动加载映射
+ */
+$OC_CONF['APP_AUTOLOAD_MAP'] = array(
+    'console\\' 							=> OC_ROOT . 'application/console/',
+    'modules\\' 							=> OC_ROOT . 'application/modules/',
+    'models\\' 								=> OC_ROOT . 'application/models/',
+    'view\\' 								=> OC_ROOT . 'application/view/',
+);
+
+/*
  * 服务组件配置
  */
 $CONF['SERVICE'] = array(
@@ -213,15 +219,6 @@ $CONF['SERVICE'] = array(
 	'validate' => '\Ocara\Service\Validate'
 );
 
-/*
- * 应用程序自动加载映射
- */
-$OC_CONF['APP_AUTOLOAD_MAP'] = array(
-	'Controller\\' 							=> OC_ROOT . 'application/controller/',
-	'Model\\' 								=> OC_ROOT . 'application/model/',
-	'View\\' 								=> OC_ROOT . 'application/view/',
-	'View\Helper\\' 						=> OC_ROOT . 'application/view/helper/',
-);
 
 /*
  * 要向模板引擎注册的函数

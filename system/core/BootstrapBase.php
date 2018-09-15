@@ -7,7 +7,9 @@
  */
 namespace Ocara;
 
-abstract class BootstrapBase extends Basis
+use Ocara\Container;
+
+abstract class BootstrapBase extends Base
 {
     /**
      * 获取默认服务提供器
@@ -61,9 +63,9 @@ abstract class BootstrapBase extends Basis
 
         Ocara::services()->config->loadControlConfig($route);
         Ocara::services()->lang->loadControlLang($route);
-        Ocara::container()->bindSingleton($controlClass);
+        Container::getDefault()->bindSingleton($controlClass);
 
-        $Control = Ocara::container()->create($controlClass, array($route));
+        $Control = Container::getDefault()->create($controlClass, array($route));
         if ($method != '_action' && !method_exists($Control, $method)) {
             Ocara::services()->error->show('no_special_class', array('Action', $uaction));
         }

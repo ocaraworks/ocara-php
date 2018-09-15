@@ -10,6 +10,7 @@ namespace Ocara\Model;
 
 use Ocara\Exception\Exception;
 use Ocara\Ocara;
+use Ocara\Config;
 use Ocara\Call;
 use Ocara\Cache;
 use Ocara\FormToken;
@@ -193,7 +194,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-        $path = ocPath('lang', Ocara::language() . "/model/{$filePath}");
+        $path = ocPath('lang', Container::getDefault()->config->language() . "/model/{$filePath}");
 		if (ocFileExists($path)) {
 			$lang = @include($path);
 			if ($lang && is_array($lang)) {

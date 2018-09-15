@@ -19,12 +19,10 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
         date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
         set_exception_handler(array(Ocara::services()->exceptionHandler, 'run'));
 
-        Ocara::getInstance()
-            ->event('die')
+        $this->event('die')
             ->append(ocConfig('EVENT.oc_die', null));
 
-        Ocara::getInstance()
-            ->bindEvents(ocConfig('EVENT.log', Ocara::services()->log));
+        $this->bindEvents(ocConfig('EVENT.log', Ocara::services()->log));
 
         if (!@ini_get('short_open_tag')) {
             Ocara::services()->error->show('need_short_open_tag');

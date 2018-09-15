@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Exception;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 abstract class Basis
@@ -15,21 +17,7 @@ abstract class Basis
 	/**
 	 * @var $_properties 自定义属性
 	 */
-	protected $_event;
-
-	protected $_events = array();
 	protected $_properties = array();
-	protected $_traits = array();
-
-	/**
-	 * 实例化
-	 * @param mixed $params
-	 * @return static
-	 */
-	public static function build($params = null)
-	{
-		return call_user_func_array('ocClass', array(self::getClass(), func_get_args()));
-	}
 
     /**
      * 获取自定义属性
@@ -43,14 +31,9 @@ abstract class Basis
 			if (array_key_exists($name, $this->_properties)) {
 				return $this->_properties[$name];
 			}
-            if (method_exists($this, '__none')) {
-                $this->__none($name);
-            } else {
-                ocService('error', true)->show('no_property', array($name));
-            }
-		}
-
-		return $this->_properties;
+		} else {
+            return $this->_properties;
+        }
 	}
 
 	/**
@@ -84,10 +67,11 @@ abstract class Basis
     public function delProperty($name)
     {
         if (is_array($name)) {
-            array_unshift($name, $this->_properties);
-            call_user_func_array('ocDel', $name);
+            foreach ($name as $key){
+                $this->__unset($key);
+            }
         } else {
-            ocDel($this->_properties, $name);
+            $this->__unset($key);
         }
     }
 
@@ -100,74 +84,13 @@ abstract class Basis
 	}
 
 	/**
-	 * 设置或获取事件
-	 * @param $eventName
-	 * @return mixed
-	 */
-	public function event($eventName)
-	{
-		if (!isset($this->_events[$eventName])) {
-			$event = Ocara::container()->create('event');
-			$event->setName($eventName);
-			$this->_events[$eventName] = $event;
-			if ($this->_event && method_exists($this->_event, $eventName)) {
-				$event->clear();
-				$event->append(array(&$this->_event, $eventName), $eventName);
-			}
-		}
-
-		return $this->_events[$eventName];
-	}
-
-	/**
-	 * 绑定事件资源包
-	 * @param $eventObject
-	 * @return $this
-	 */
-	public function bindEvents($eventObject)
-	{
-		if (is_string($eventObject) && class_exists($eventObject)) {
-			$eventObject = new $eventObject();
-		}
-
-		if (is_object($eventObject)) {
-			$this->_event = $eventObject;
-		}
-
-		return $this;
-	}
-
-	/**
-	 * 动态行为扩展
-	 * @param string|object $name
-	 * @param $function
-	 */
-	public function traits($name, $function = null)
-	{
-		if (is_string($name)) {
-			$this->_traits[$name] = $function;
-		} elseif (is_object($name)) {
-			if (is_array($function)) {
-				foreach ($function as $name => $value) {
-					$setMethod = 'set' . ucfirst($name);
-					$name->$setMethod($value);
-				}
-			}
-			$methods = get_class_methods($name);
-			foreach ($methods as $method) {
-				$this->traits($method, array($name, $method));
-			}
-		}
-	}
-
-	/**
 	 * 返回当前类名（去除命名空间）
 	 * @return string
 	 */
 	public static function getClassName()
 	{
 		$class = get_called_class();
-		return substr($class, strrpos($class, OC_NS_SEP) + 1);
+		return substr($class, strrpos($class, "\\") + 1);
 	}
 
 	/**
@@ -176,35 +99,7 @@ abstract class Basis
 	 */
 	public static function getClass()
 	{
-		return OC_NS_SEP . get_called_class();
-	}
-
-	/**
-	 * 魔术方法-调用未定义的方法时
-	 * @param string $name
-	 * @param array $params
-	 * @return mixed
-	 * @throws Exception
-	 */
-	public function __call($name, $params)
-	{
-		if (isset($this->_traits[$name])) {
-			return call_user_func_array($this->_traits[$name], $params);
-		}
-
-        ocService('error', true)->show('no_method', array($name));
-	}
-
-	/**
-	 * 魔术方法-调用未定义的静态方法时
-	 * >= php 5.3
-	 * @param string $name
-	 * @param array $params
-	 * @throws Exception
-	 */
-	public static function __callStatic($name, $params)
-	{
-        return ocService('error', true)->show('no_method', array($name));
+		return "\\" . get_called_class();
 	}
 
 	/**
@@ -214,38 +109,32 @@ abstract class Basis
 	 */
 	public function __isset($property)
 	{
-		return array_key_exists($property, $this->_properties);
+		return $this->hasProperty($property);
 	}
 
 	/**
 	 * 魔术方法-获取自定义属性
-	 * @param string $key
+	 * @param string $property
 	 * @return mixed
 	 * @throws Exception
 	 */
-	public function &__get($key)
+	public function __get($property)
 	{
-		if ($this->hasProperty($key)) {
-			return $this->getProperty($key);
-		}
-
-		if (method_exists($this, '__none')) {
-			$value = $this->__none($key);
+		if ($this->hasProperty($property)) {
+			$value = $this->getProperty($property);
 			return $value;
-		} else {
-            ocService('error', true)->show('no_property', array($key));
 		}
 	}
 
 	/**
 	 * 魔术方法-设置自定义属性
-	 * @param string $key
+	 * @param string $property
 	 * @param mxied $value
 	 * @return mixed
 	 */
-	public function __set($key, $value)
+	public function __set($property, $value)
 	{
-		return $this->_properties[$key] = $value;
+		return $this->_properties[$property] = $value;
 	}
 
 	/**
@@ -254,7 +143,7 @@ abstract class Basis
 	 */
 	public function __unset($property)
 	{
-		$this->_properties[$property] = null;
-		unset($this->_properties[$property]);
+        $this->_properties[$property] = null;
+        unset($this->_properties[$property]);
 	}
 }

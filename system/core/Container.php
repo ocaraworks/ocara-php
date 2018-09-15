@@ -17,13 +17,12 @@ class Container extends Basis
     /**
      * @var array $_binds 动态绑定类
      * @var array $_singletons 单例绑定类
-     * @var array $_properties 已实例化实例
      * @var object $_default 默认容器
      */
     public $_binds = array();
     public $_singletons = array();
 
-    protected static $_default;
+    private static $_default;
 
     /**
      * 设置默认容器
@@ -31,7 +30,9 @@ class Container extends Basis
      */
     public static function setDefault(Container $container)
     {
-        self::$_default = $container;
+        if (self::$_default === null) {
+            self::$_default = $container;
+        }
     }
 
     /**
@@ -40,6 +41,9 @@ class Container extends Basis
      */
     public static function getDefault()
     {
+        if (self::$_default === null) {
+            self::$_default = new static();
+        }
         return self::$_default;
     }
 
@@ -179,9 +183,9 @@ class Container extends Basis
     {
         if (isset($name)) {
             $instance = null;
-            if (array_key_exists($name, $this->_properties)) {
+            if ($this->hasProperty($name)) {
                 $instance = $this->_properties[$name];
-            } elseif ($this->has($name)) {
+            } elseif ($this->hasBind($name)) {
                 $this->_properties[$name] = $this->create($name, $params, $deps);
                 $instance = $this->_properties[$name];
             }
@@ -196,13 +200,23 @@ class Container extends Basis
      * @param string $name
      * @return bool
      */
-    public function has($name)
+    public function hasBind($name)
     {
         if (strstr($name, OC_NS_SEP)) {
             $name = OC_NS_SEP . ltrim($name, OC_NS_SEP);
         }
 
         return array_key_exists($name, $this->_binds) || array_key_exists($name, $this->_singletons);
+    }
+
+    /**
+     * 是否有绑定或对象
+     * @param string $name
+     * @return bool
+     */
+    public function has($name)
+    {
+        return $this->hasBind($name) || $this->has($name);
     }
 
     /**
@@ -346,5 +360,19 @@ class Container extends Basis
         }
 
         return $dependencies;
+    }
+
+    /**
+     * 魔术方法-获取自定义属性
+     * @param string $property
+     * @return mixed
+     * @throws Exception
+     */
+    public function __get($property)
+    {
+        if ($this->hasBind($property)) {
+            $value = $this->get($property);
+            return $value;
+        }
     }
 }

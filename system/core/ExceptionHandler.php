@@ -10,7 +10,7 @@ namespace Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class ExceptionHandler extends Base
+class ExceptionHandler extends Basis
 {
     protected $_error;
 

@@ -8,10 +8,24 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Container;
+
 defined('OC_PATH') or exit('Forbidden!');
 
-class Loader extends Base
+class Loader extends Basis
 {
+    private $_defaultPath;
+    private $_autoloadMap;
+
+    public function __construct()
+    {
+        $config = Container::getDefault()->config;
+        $autoMap = $config->get('AUTOLOAD_MAP', array());
+        $appAutoMap = $config->get('AUTOLOAD_MAP', array());
+
+        $this->_defaultPath = OC_ROOT . 'application/library/';
+        $this->_autoloadMap = array_merge($autoMap, $appAutoMap);
+    }
 
     /**
      * 自动加载类
@@ -19,21 +33,18 @@ class Loader extends Base
      * @return bool|mixed
      * @throws Exception
      */
-    public static function autoload($class)
+    public function autoload($class)
     {
         $newClass = trim($class, OC_NS_SEP);
 
         if (strstr($newClass, OC_NS_SEP)) {
-            $filePath = strtr($newClass, ocConfig('AUTOLOAD_MAP'));
-            if ($filePath == $class) {
-                $filePath = strtr($newClass, ocConfig('APP_AUTOLOAD_MAP'));
-            }
+            $filePath = strtr($newClass, $this->_autoloadMap);
             if ($filePath == $newClass) {
-                $filePath = OC_ROOT . 'service/library/' . $newClass;
+                $filePath = $this->_defaultPath . $newClass;
             }
             $filePath .= '.php';
-        } else {
-            $filePath = OC_ROOT . 'service/library/' . $newClass . '.php';
+        }  else {
+            $filePath = $this->_defaultPath . $newClass . '.php';
         }
 
         $filePath = ocCommPath($filePath);

@@ -12,7 +12,7 @@ use Ocara\Exception\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Config extends Base
+class Config extends Basis
 {
 	/**
 	 * 开关配置
@@ -23,31 +23,59 @@ final class Config extends Base
 	/**
 	 * 数据变量
 	 */
-	protected $_ocData = array();
+	protected $_frameworkConfig = array();
+    private static $_language;
 
 	/**
 	 * 初始化
+     *
 	 */
 	public function __construct()
 	{
-		if (!file_exists($path = OC_SYS . 'data/default.php')) {
+        $path = OC_SYS . 'data/default.php';
+		if (!file_exists($path)) {
 			throw new Exception('Lost ocara config file: default.php.');
 		}
 		
 		include ($path);
 
-		if (!(isset($OC_CONF) && $this->_ocData = $OC_CONF)) {
+		if (isset($OC_CONF)) {
+            $this->_frameworkConfig = $OC_CONF;
+        } else {
             throw new Exception('Lost config : $OC_CONF.');
-		}
-
-		if (is_dir($path = OC_ROOT . 'resource/conf')) {
-			$this->load($path);
-		}
-
-		if (!$this->_properties) {
-            throw new Exception('Lost config : $CONF.');
         }
 	}
+
+    /**
+     * 加载全局配置
+     * @throws Exception
+     */
+	public function loadGlobalConfig()
+    {
+        $path = ocPath('config');
+        if (is_dir($path)) {
+            $this->load($path);
+        }
+
+        if (empty($this->_properties)) {
+            throw new Exception('Lost config : $CONF.');
+        }
+
+        self::$_language = $this->get('LANGUAGE', 'zh_cn');
+    }
+
+    /**
+     * 获取语言
+     * @param bool $getUpdated
+     * @return mixed
+     */
+    public function language($getUpdated = false)
+    {
+        if ($getUpdated) {
+            return $this->get('LANGUAGE', self::$_language);
+        }
+        return self::$_language;
+    }
 
 	/**
 	 * 加载控制层配置
@@ -111,19 +139,38 @@ final class Config extends Base
 
     /**
      * 获取配置
-     * @param string|array $key
-     * @return array|bool|mixed|null
+     * @param null $key
+     * @param null $default
+     * @return array|bool|mixed|null|自定义属性
+     * @throws Exception
      */
-    public function get($key = null)
+    public function get($key = null, $default = null, $existsWrap = false)
     {
         if (isset($key)) {
+            $result = null;
             if (ocKeyExists($key, $this->_properties)) {
-                return ocGet($key, $this->_properties);
+                $result = ocGet($key, $this->_properties);
+            } elseif (ocKeyExists($key, $this->_frameworkConfig)) {
+                $result = $this->getDefault($key);
             }
-            return $this->getDefault($key);
+            $result = $result ? : (func_num_args() >= 2 ? $default: $result);
+            return $result;
         }
 
         return $this->_properties;
+    }
+
+    /**
+     * 存在配置时返回值数组
+     * @return array|bool|null
+     */
+    public function arrayGet($key){
+        if (($result = ocCheckKey(false, $key, $this->_properties, true))
+            || ($result = ocCheckKey(false, $key, $this->_frameworkConfig, true))
+        ) {
+            return $result;
+        }
+        return array();
     }
 
     /**
@@ -144,10 +191,10 @@ final class Config extends Base
 	public function getDefault($key = null)
 	{
 		if (isset($key)) {
-			return ocGet($key, $this->_ocData);
+			return ocGet($key, $this->_frameworkConfig);
 		}
 
-		return $this->_ocData;
+		return $this->_frameworkConfig;
 	}
 
 	/**
@@ -155,24 +202,8 @@ final class Config extends Base
 	 * @param string|array $key
 	 * @return array|bool|mixed|null
 	 */
-	public function has($key = null)
+	public function has($key)
 	{
-		return ocKeyExists($key, $this->_properties);
-	}
-
-	/**
-	 * 获取配置
-	 * @param string $key
-	 * @return array|bool|null
-	 */
-	public function getConfig($key)
-	{
-		if (($result = ocCheckKey(false, $key, $this->_properties, true))
-			|| ($result = ocCheckKey(false, $key, $this->_ocData, true))
-		) {
-			return $result;
-		}
-		
-		return array();
+		return ocKeyExists($key, $this->_properties) || ocKeyExists($key, $this->_frameworkConfig);
 	}
 }

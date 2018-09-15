@@ -10,21 +10,24 @@ namespace Ocara;
 
 defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(true));
 
+//根目录
 defined('OC_PATH') OR define(
-	'OC_PATH', str_replace(DIRECTORY_SEPARATOR, '/', realpath(dirname(dirname(__DIR__)))) . '/'
+    'OC_PATH', str_replace(DIRECTORY_SEPARATOR, '/', realpath(dirname(dirname(__DIR__)))) . '/'
 );
 
 require_once (OC_PATH . 'system/functions/utility.php');
 require_once (OC_PATH . 'system/const/basic.php');
 require_once (OC_CORE . 'Basis.php');
-require_once (OC_CORE . 'Base.php');
 require_once (OC_CORE . 'Container.php');
-require_once (OC_CORE . 'ExceptionHandler.php');
-require_once (OC_CORE . 'Loader.php');
 require_once (OC_CORE . 'Config.php');
+require_once (OC_CORE . 'Loader.php');
+require_once (OC_CORE . 'ExceptionHandler.php');
 
-use Ocara\ExceptionHandler;
+use Ocara\Basis;
 use Ocara\Container;
+use Ocara\Config;
+use Ocara\Loader;
+use Ocara\ExceptionHandler;
 
 final class Ocara extends Basis
 {
@@ -34,13 +37,12 @@ final class Ocara extends Basis
 	 * @var $OC_LANG    框架语言数据
 	 */
     private static $_bootstrap;
-	private static $_container;
 	private static $_services;
 	private static $_instance;
 	private static $_info;
+	private static $_language;
 
-	private static $_language = array();
-	private static $_route    = array();
+	private static $_route = array();
 
 	private function __clone(){}
 	private function __construct(){}
@@ -57,21 +59,40 @@ final class Ocara extends Basis
 		return self::$_instance;
 	}
 
+    /**
+     * 获取全局默认容器
+     * @return mixed
+     */
+	public static function container()
+    {
+        return Container::getDefault();
+    }
+
 	/**
 	 * 初始化设置
 	 */
 	public static function init()
 	{
+        $container = self::container()
+            ->bindSingleton('config', '\Ocara\Config')
+            ->bindSingleton('loader', '\Ocara\Loader')
+            ->bindSingleton('exceptionHandler', '\Ocara\ExceptionHandler')
+            ->bindSingleton('path', '\Ocara\Path');
+
+        $config = $container->config;
+        $loader = $container->loader;
+        $exceptionHandler = $container->exceptionHandler;
+
+        spl_autoload_register(array($loader, 'autoload'));
+        $config->loadGlobalConfig();
+
+        define('OC_SYS_MODEL', $config->get('SYS_MODEL', 'application'));
+        define('OC_LANGUAGE', $config->language());
 
         @ini_set('register_globals', 'Off');
         register_shutdown_function("ocShutdownHandler");
-
-        define('OC_SYS_MODEL', ocConfig('SYS_MODEL', 'application'));
-        self::$_language = ocConfig('LANGUAGE', 'zh_cn');
-
         error_reporting(self::errorReporting());
-        set_exception_handler(array(new ExceptionHandler(), 'run'));
-        spl_autoload_register(array('\Ocara\Loader', 'autoload'));
+        set_exception_handler(array($exceptionHandler, 'run'));
 
         if (empty($_SERVER['REQUEST_METHOD'])) {
             $_SERVER['REQUEST_METHOD'] = 'GET';
@@ -115,10 +136,9 @@ final class Ocara extends Basis
 	    if (func_num_args()) {
             $bootstrap = $bootstrap ? : '\Ocara\Bootstrap';
             self::$_bootstrap = new $bootstrap();
-            $container = self::container();
 
             self::$_services = self::$_bootstrap->getServiceProvider();
-            self::$_services->setContainer($container);
+            self::$_services->setContainer(Container::getDefault());
             self::$_services->register();
             self::$_bootstrap->init();
         }
@@ -136,7 +156,7 @@ final class Ocara extends Basis
 		$error = $error ? : (OC_SYS_MODEL == 'develop' ? E_ALL : 0);
 
 		set_error_handler(
-			ocConfig('ERROR_HANDLER.program_error', 'ocErrorHandler', true),
+            Container::getDefault()->config->get('ERROR_HANDLER.program_error', 'ocErrorHandler'),
 			$error
 		);
 
@@ -211,28 +231,6 @@ final class Ocara extends Basis
 		}
 
 		return compact('module', 'controller', 'action');
-	}
-
-	/**
-	 * 获取当前语言
-	 */
-	public static function language()
-	{
-		return self::$_language;
-	}
-
-	/**
-	 * 获取默认服务容器
-	 */
-	public static function container()
-	{
-	    if (empty(self::$_container)) {
-            Container::setDefault(new Container());
-            self::$_container = Container::getDefault();
-            self::$_container->bindSingleton('config', '\Ocara\Config');
-        }
-
-		return self::$_container;
 	}
 
 	/**

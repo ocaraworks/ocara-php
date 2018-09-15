@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Container;
 use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
 
 class ServiceProvider extends Base implements ServiceProviderInterface
@@ -60,7 +61,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     {
         return array_key_exists($name, $this->_services)
             || $this->_container->has($name)
-            || Ocara::container()->has($name);
+            || Container::getDefault()->has($name);
     }
 
     /**
@@ -95,8 +96,8 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
         if ($this->_container && $this->_container->has($key)) {
             $instance = $this->_container->create($key, $params, $deps);
-        } elseif (Ocara::container()->has($key)) {
-            $instance = Ocara::container()->create($key, $params, $deps);
+        } elseif (Container::getDefault()->has($key)) {
+            $instance = Container::getDefault()->create($key, $params, $deps);
         }
 
         return $instance;

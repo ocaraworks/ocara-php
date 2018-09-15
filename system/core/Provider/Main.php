@@ -28,10 +28,8 @@ class Main extends ServiceProvider
      */
     protected function _createService($services, $method)
     {
-        $container = Ocara::container();
-
         foreach ($services as $name => $namespace) {
-            $container->$method($name, function() use($namespace) {
+            $this->_container->$method($name, function() use($namespace) {
                 $args = func_get_args();
                 if (method_exists($namespace, 'getInstance')) {
                     return call_user_func_array(array($namespace, 'getInstance'), $args);

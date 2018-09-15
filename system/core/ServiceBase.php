@@ -25,7 +25,7 @@ class ServiceBase extends Base
 	{
 		$lang = array();
 		$shortPath = '/languages/'
-			. Ocara::language()
+			. Container::getDefault()->config->language()
 			. OC_DIR_SEP
 			. str_replace(OC_SYS . 'service/library/', '', ocCommPath($filePath));
 

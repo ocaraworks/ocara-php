@@ -60,6 +60,7 @@ defined('OC_REQ_URI') or define('OC_REQ_URI', ocCommPath(ocGet('REQUEST_URI', $_
 /*
  * 框架常量
  */
+//框架系统目录
 define('OC_SYS', OC_PATH . 'system/');
 
 //框架扩展目录
@@ -77,9 +78,12 @@ defined('OC_INVOKE') OR define('OC_INVOKE', false);
 /*
  * 应用程序常量
  */
-//应用程序根目录
-defined('OC_ROOT') or define('OC_ROOT', ocCommPath(dirname(realpath($_SERVER['SCRIPT_FILENAME']))) . OC_DIR_SEP);
+//WEB根目录
+defined('OC_WEB_ROOT') or define('OC_WEB_ROOT', ocCommPath(dirname(realpath($_SERVER['SCRIPT_FILENAME']))) . OC_DIR_SEP);
 
 //应用根目录
+defined('OC_ROOT') or define('OC_ROOT', dirname(OC_WEB_ROOT) . OC_DIR_SEP);
+
+//程序根目录
 define('OC_APPLICATION_PATH', OC_ROOT . 'application/');
 

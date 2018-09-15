@@ -207,57 +207,6 @@ function ocIsStandardName($name)
 
 
 /*************************************************************************************************
- * 路径获取函数
- ************************************************************************************************/
-
-/**
- * 获取完整路径
- * @param string $dir
- * @param string $path
- * @return bool|mixed|string
- */
-function ocPath($dir, $path = null)
-{
-	return ocService('path', true)->get($dir, $path, OC_ROOT, true, false);
-}
-
-/**
- * 获取完整文件路径，检查文件是否存在
- * @param string $dir
- * @param string $path
- * @return bool|mixed|string
- */
-function ocFile($dir, $path)
-{
-	return Ocara::services()->path->get($dir, $path, OC_ROOT, true, true);
-}
-
-/**
- * 获取绝对URL
- * @param $dir
- * @param string $subPath
- * @param string $root
- * @return string
- */
-function ocRealUrl($dir, $subPath = null, $root = false)
-{
-	$root = $root ? : OC_ROOT_URL;
-
-	return Ocara::services()->path->get($dir, $subPath, $root, false, false);
-}
-
-/**
- * 获取相对URL
- * @param string $dir
- * @param string $subPath
- * @return bool|mixed|string
- */
-function ocSimpleUrl($dir, $subPath)
-{
-	return Ocara::services()->path->get($dir, $subPath, OC_DIR_SEP, false, false);
-}
-
-/*************************************************************************************************
  * 内容处理函数
  ************************************************************************************************/
 

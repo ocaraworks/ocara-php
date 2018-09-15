@@ -25,7 +25,7 @@ class Lang extends Base
 	{
 		if  ($this->_ocData === null){
 			$this->_ocData = array();
-			$file = Ocara::language() . '.php';
+			$file = Container::getDefault()->config->language() . '.php';
 			$path = OC_SYS . 'data/languages/' . $file;
 
 			if (file_exists($path)) {
@@ -38,7 +38,7 @@ class Lang extends Base
 
 		if ($this->_properties === null) {
 			$this->_properties = array();
-			$this->load(OC_ROOT . 'resource/lang/' . Ocara::language());
+			$this->load(OC_ROOT . 'resource/lang/' . Container::getDefault()->config->language());
 		}
 	}
 
@@ -48,7 +48,7 @@ class Lang extends Base
      */
     public function loadControlLang($route)
     {
-        $path = OC_ROOT . 'resource/lang/' . Ocara::language();
+        $path = OC_ROOT . 'resource/lang/' . Container::getDefault()->config->language();
         $paths = array();
         extract($route);
 
@@ -74,11 +74,12 @@ class Lang extends Base
 	 */
 	public function load($paths)
 	{
-		$path = ocForceArray($paths);
+        $paths = ocForceArray($paths);
 		$data = array();
 
-		foreach ($path as $path) {
-			if ($files = scandir($path)) {
+		foreach ($paths as $path) {
+			if (is_dir($path)) {
+                $files = scandir($path);
 				foreach ($files as $file) {
 					if ($file == '.' || $file == '..') continue;
 					$fileType = pathinfo($file, PATHINFO_EXTENSION);
