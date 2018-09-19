@@ -132,7 +132,7 @@ class DatabaseBase extends Sql
 			$this->isPrepare($config['prepare']);
 		}
 
-		if ($this->_plugin instanceof \Ocara\Databases\Drivers\PdoDriver) {
+		if ($this->_plugin instanceof \Ocara\Databases\Driver\PdoDriver) {
 			$this->_isPdo = true;
 		}
 

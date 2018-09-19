@@ -6,7 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Databases\Drivers;
+namespace Ocara\Databases\Driver;
 
 use \mysqli;
 use Ocara\Ocara;
