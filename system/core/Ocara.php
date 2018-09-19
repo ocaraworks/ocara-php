@@ -136,7 +136,6 @@ final class Ocara extends Basis
 	    if (func_num_args()) {
             $bootstrap = $bootstrap ? : '\Ocara\Bootstrap';
             self::$_bootstrap = new $bootstrap();
-
             self::$_services = self::$_bootstrap->getServiceProvider();
             self::$_services->setContainer(Container::getDefault());
             self::$_services->register();

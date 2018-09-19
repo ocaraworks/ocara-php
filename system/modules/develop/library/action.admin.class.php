@@ -101,7 +101,7 @@ class action_admin
 		$controlLongClass = 'Controller\\' . $moduleNamespace . $cname . '\\' . $controlClass;
 
 		foreach (Develop::$config['controller_actions'] as $controllerType => $controllerActions) {
-			$controllerNamespace = 'Ocara\Controllers\\Providers\\' . $controllerType;
+			$controllerNamespace = 'Ocara\Controllers\\Provider\\' . $controllerType;
 			$reflection = new \ReflectionClass($controlLongClass);
 			if ($reflection->isSubclassOf($controllerNamespace)) {
 				$this->controllerType = $controllerType;

@@ -9,11 +9,11 @@
 
 defined('OC_PATH') or exit('Forbidden!');
 
+use Ocara\Ocara;
+use Ocara\Container;
 use Ocara\ExceptionHandler;
 use Ocara\Exceptions\Exception;
 use Ocara\Exceptions\ErrorException;
-use Ocara\Ocara;
-use Ocara\Container;
 
 /**
  * 统一路径，将反斜杠换成正斜杠

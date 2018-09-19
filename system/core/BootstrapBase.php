@@ -9,6 +9,7 @@ namespace Ocara;
 
 use Ocara\Base;
 use Ocara\Container;
+use Ocara\Providers\Main;
 
 abstract class BootstrapBase extends Base
 {
@@ -18,7 +19,7 @@ abstract class BootstrapBase extends Base
      */
     public function getServiceProvider()
     {
-        $provider = new \Ocara\Providers\Main();
+        $provider = new Main();
         return $provider;
     }
 

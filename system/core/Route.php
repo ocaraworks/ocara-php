@@ -40,7 +40,7 @@ class Route extends Base
         }
 
         $controllerType = self::getControllerType($module, $controller);
-        $routeClass = "\\Ocara\\Controllers\\Features\\{$controllerType}";
+        $routeClass = "\\Ocara\\Controllers\\Feature\\{$controllerType}";
         $routeFeature = new $routeClass();
         $action       = $routeFeature->getAction($get);
         $route        = $routeFeature->getLastRoute($module, $controller, $action);

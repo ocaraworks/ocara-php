@@ -85,7 +85,7 @@ class controller_admin
 			include_once($moduleClassPath);
 			$moduleClass = 'Controller\\' . $moduleNamespace . $extends;
 			foreach (Develop::$config['controller_actions'] as $controllerType => $controllerActions) {
-				$controllerNamespace = '\Ocara\Controllers\\Providers\\' . $controllerType;
+				$controllerNamespace = '\Ocara\Controllers\\Provider\\' . $controllerType;
 				$reflection = new \ReflectionClass($moduleClass);
 				if ($reflection->isSubclassOf($controllerNamespace)) {
 					$this->controllerType = $controllerType;
