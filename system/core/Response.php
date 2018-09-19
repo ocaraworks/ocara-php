@@ -130,7 +130,7 @@ class Response extends Base
 			}
 			$die && die();
 		} else {
-			Ocara::services()->error->show('not_null', array('route'));
+			ocService('error', true)->show('not_null', array('route'));
 		}
 	}
 
@@ -148,7 +148,7 @@ class Response extends Base
 			}
 			$die && die();
 		} else {
-			Ocara::services()->error->show('not_null', array('url'));
+            ocService('error', true)->show('not_null', array('url'));
 		}
 	}
 
@@ -164,7 +164,7 @@ class Response extends Base
 		}
 
 		if (empty($this->_headers['contentType'])) {
-			if (Ocara::services()->request->isAjax()) {
+			if (ocService('request', true)->isAjax()) {
 				$this->_headers['contentType'] = ocConfig('DEFAULT_AJAX_CONTENT_TYPE', 'json');
 			} else {
 				$this->_headers['contentType'] = ocConfig('DEFAULT_CONTENT_TYPE', 'html');

@@ -58,7 +58,7 @@ class Error extends ServiceProvider
         ocService('transaction', true)->rollback();
 
 		if (!is_array($error)) {
-			$error = Ocara::services()->lang->get($error, $params);
+			$error = ocService('lang', true)->get($error, $params);
 		}
 
         throw new Exception($error['message'], $error['code']);

@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use \ReflectionClass;
 use Ocara\Basis;
 use Ocara\Container;
 
@@ -49,6 +50,7 @@ class Loader extends Basis
         }
 
         $filePath = ocCommPath($filePath);
+
         if (ocFileExists($filePath)) {
             include($filePath);
             if (class_exists($newClass, false)) {
@@ -67,7 +69,12 @@ class Loader extends Basis
             if (is_string($func)) {
                 call_user_func_array($func, array($class));
             } elseif (is_array($func)) {
-                if (reset($func) === __CLASS__) continue;
+                $obj = reset($func);
+                if (is_object($obj)) {
+                    $reflection = new ReflectionClass($obj);
+                    $obj = $reflection->getName();
+                }
+                if ($obj === __CLASS__) continue;
                 call_user_func_array($func, array($class));
             } else {
                 continue;
@@ -77,6 +84,6 @@ class Loader extends Basis
             }
         }
 
-        Ocara::services()->error->show('not_exists_class', array($class));
+        ocService('error', true)->show('not_exists_class', array($class));
     }
 }

@@ -290,6 +290,6 @@ class File extends ServiceBase
 			}
 		}
 
-		return Ocara::services()->filter->bom($content);
+		return ocService('filter', true)->bom($content);
 	}
 }

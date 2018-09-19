@@ -59,7 +59,7 @@ class ErrorOutput extends ServiceBase
             }
         }
 
-        Ocara::services()->response->sendHeaders();
+        ocService('response', true)->sendHeaders();
         echo $content;
     }
 

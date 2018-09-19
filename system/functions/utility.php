@@ -361,13 +361,17 @@ function ocExceptionHandler($exception)
 /**
  * 获取服务
  * @param $name
- * @param bool $getDefault
+ * @param bool|string $getDefault
  * @return string
  */
 function ocService($name, $getDefault = false)
 {
     if (!Ocara::services() && $getDefault) {
-        $class = '\Ocara\\' . ucfirst($name);
+        if (is_string($getDefault)) {
+            $class = $getDefault;
+        } else {
+            $class = '\Ocara\\' . ucfirst($name);
+        }
         return new $class();
     }
 

@@ -42,7 +42,8 @@ class ExceptionHandler extends Basis
         if (ocService('request', true)->isAjax()) {
             $this->_defaultAjaxHandler();
         } else {
-            ocService('errorOutput', true)->display($this->_error);
+            $defaultErrorOutput = ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS.errorOutput');
+            ocService('errorOutput', $defaultErrorOutput)->display($this->_error);
         }
 
         die();
