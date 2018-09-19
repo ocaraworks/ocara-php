@@ -7,6 +7,7 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Service;
+
 use Ocara\ServiceBase;
 
 final class Auth extends ServiceBase

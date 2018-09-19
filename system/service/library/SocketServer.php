@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara\Service;
 
+use Ocara\Service\SocketBase;
+
 class SocketServer extends SocketBase
 {
 

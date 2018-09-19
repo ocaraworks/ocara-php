@@ -8,8 +8,8 @@
  ************************************************************************************************/
 namespace Ocara\Service;
 
-use Ocara\ServiceBase;
 use Ocara\Ocara;
+use Ocara\ServiceBase;
 
 class ErrorOutput extends ServiceBase
 {

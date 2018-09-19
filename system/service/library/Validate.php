@@ -10,8 +10,8 @@ namespace Ocara\Service;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-use Ocara\ServiceBase;
 use Ocara\Ocara;
+use Ocara\ServiceBase;
 
 class Validate extends ServiceBase
 {

@@ -8,11 +8,11 @@
  ************************************************************************************************/
 namespace Ocara\Service;
 
-defined('OC_PATH') or exit('Forbidden!');
-
+use Ocara\Ocara;
 use Ocara\ServiceBase;
 use Ocara\Service\Interfaces\Template as TemplateInterface;
-use Ocara\Ocara;
+
+defined('OC_PATH') or exit('Forbidden!');
 
 class Smarty extends ServiceBase implements TemplateInterface
 {

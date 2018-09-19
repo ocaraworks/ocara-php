@@ -7,10 +7,9 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Service;
+
 use Ocara\Ocara;
 use Ocara\ServiceBase;
-use Ocara\StaticPath;
-use Ocara\Call;
 
 class StaticBuilder extends ServiceBase
 {

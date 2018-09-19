@@ -7,9 +7,10 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Service;
+
 use Ocara\ServiceBase;
 
-/*
+/**
  * 可进行操作：生成、导入、保存和导出（下载）XML
  * 支持的XML来源：file（XML文件）,string（XML字符串）,array（XML结点数组）
  * array来源，只支持最简单的不包含任何关联样式信息的XML处理

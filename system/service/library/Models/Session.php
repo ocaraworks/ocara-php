@@ -1,5 +1,6 @@
 <?php
-namespace Ocara\Service\Model;
+namespace Ocara\Service\Models;
+
 use Ocara\Models\Database;
 use Ocara\Service\Interfaces\Model\Session as SessionInerface;
 

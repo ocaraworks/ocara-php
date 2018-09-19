@@ -7,8 +7,8 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Service;
+
 use Ocara\ServiceBase;
-use Ocara\Config;
 
 class Upload extends ServiceBase
 {

@@ -7,8 +7,9 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Service;
-use Ocara\ServiceBase;
+
 use Ocara\Ocara;
+use Ocara\ServiceBase;
 
 class File extends ServiceBase
 {
