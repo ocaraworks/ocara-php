@@ -80,7 +80,7 @@ class Image extends ServiceBase
 	 * @param integer $dstLx
 	 * @param integer $dstLy
 	 * @return bool|int|void
-	 * @throws \Ocara\Exception\Exception
+	 * @throws \Ocara\Exceptions\Exception
 	 */
 	public function clipImage
 	(

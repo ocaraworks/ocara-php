@@ -3,7 +3,7 @@
  * Main数据库模型基类
  */
 namespace Model;
-use Ocara\Model\Database;
+use Ocara\Models\Database;
 
 abstract class MainBase extends Database
 {

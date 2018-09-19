@@ -8,7 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
-use Ocara\Model\Database as DatabaseModel;
+use Ocara\Base;
+use Ocara\Models\Database as DatabaseModel;
 
 defined('OC_PATH') or exit('Forbidden!');
 

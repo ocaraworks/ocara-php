@@ -6,8 +6,8 @@
  * Time: 下午 1:50
  */
 namespace Ocara;
+
 use Ocara\Interfaces\Bootstrap as BootstrapInterface;
-use \Ocara\ExceptionHandler;
 
 class Bootstrap extends BootstrapBase implements BootstrapInterface
 {

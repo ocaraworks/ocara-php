@@ -8,8 +8,6 @@
  ************************************************************************************************/
 namespace Ocara;
 
-use Ocara\Exception;
-
 defined('OC_PATH') or exit('Forbidden!');
 
 abstract class Basis

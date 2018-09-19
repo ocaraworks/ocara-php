@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Base;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 class DriverBase extends Base

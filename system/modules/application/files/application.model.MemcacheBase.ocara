@@ -3,7 +3,7 @@
  * 缓存模型基类
  */
 namespace Model;
-use Ocara\Model\Cache;
+use Ocara\Models\Cache;
 
 abstract class MemcacheBase extends Cache
 {

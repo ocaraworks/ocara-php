@@ -105,10 +105,10 @@ $OC_CONF['SYSTEM_SERVICE_CLASS'] = array(
  */
 $OC_CONF['CONTROLLER_SERVICE_CLASS'] = array(
 	'Common' => array(
-		'view' => 'Ocara\View\Common',
+		'view' => 'Ocara\Views\Common',
 	),
 	'Rest' => array(
-		'view' => 'Ocara\View\Rest',
+		'view' => 'Ocara\Views\Rest',
 	),
 );
 

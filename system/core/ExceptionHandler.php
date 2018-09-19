@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Basis;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 class ExceptionHandler extends Basis

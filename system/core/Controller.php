@@ -7,6 +7,8 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara;
+
+use Ocara\ServiceProvider;
 use Ocara\Interfaces\Controller as ControllerInterface;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -25,7 +27,7 @@ class Controller extends serviceProvider implements ControllerInterface
 	public function init(array $route)
 	{
 		$controllerType = Route::getControllerType($route['module'], $route['controller']);
-		$provider = 'Ocara\Controller\Provider\\' . $controllerType;
+		$provider = 'Ocara\Controllers\Provider\\' . $controllerType;
 		$this->_provider = new $provider(compact('route'));
 		$this->_provider->init();
 		$this->_provider->bindEvents($this);

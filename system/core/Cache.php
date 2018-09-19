@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Base;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 final class Cache extends Base
@@ -73,11 +75,11 @@ final class Cache extends Base
 		$config = self::getConfig($connectName);
 		$type = ucfirst(ocConfig('CACHE.' . $connectName . '.type'));
 
-		$classInfo = ServiceBase::classFileExists("Cache/{$type}.php");
+		$classInfo = ServiceBase::classFileExists("Caches/{$type}.php");
 		if ($classInfo) {
 			list($path, $namespace) = $classInfo;
 			include_once($path);
-			$class  = $namespace . 'Cache' . OC_NS_SEP . $type;
+			$class  = $namespace . 'Caches' . OC_NS_SEP . $type;
 			if (class_exists($class, false)) {
 				$config['connect_name'] = $connectName;
 				$object = new $class($config, $required);

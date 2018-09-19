@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Base;
 use Ocara\Container;
 use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
 

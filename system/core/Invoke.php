@@ -9,7 +9,6 @@
 namespace Ocara;
 
 use Ocara\Ocara;
-use Ocara\Url;
 
 final class Invoke
 {

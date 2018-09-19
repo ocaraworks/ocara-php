@@ -10,8 +10,8 @@
 defined('OC_PATH') or exit('Forbidden!');
 
 use Ocara\ExceptionHandler;
-use Ocara\Exception\Exception;
-use Ocara\Exception\ErrorException;
+use Ocara\Exceptions\Exception;
+use Ocara\Exceptions\ErrorException;
 use Ocara\Ocara;
 use Ocara\Container;
 

@@ -7,6 +7,8 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara;
+
+use Ocara\Base;
 use Ocara\Html;
 
 defined('OC_PATH') or exit('Forbidden!');

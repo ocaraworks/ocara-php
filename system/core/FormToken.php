@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Base;
 use Ocara\Service\Code;
 
 defined('OC_PATH') or exit('Forbidden!');

@@ -6,7 +6,8 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Provider;
+namespace Ocara\Providers;
+
 use Ocara\Ocara;
 use Ocara\ServiceProvider;
 

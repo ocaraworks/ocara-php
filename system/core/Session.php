@@ -9,6 +9,7 @@
 namespace Ocara;
 
 use Ocara\Ocara;
+use Ocara\Base;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -27,11 +28,11 @@ class Session extends Base
 		$saveType = ocConfig('SESSION.save_type', self::SAVE_TYPE_FILE);
 
 		if ($saveType == self::SAVE_TYPE_FILE) {
-			$class = 'Ocara\Session\SessionFile';
+			$class = 'Ocara\Sessions\SessionFile';
 		} elseif ($saveType == self::SAVE_TYPE_DATABASE) {
-			$class  = 'Ocara\Session\SessionDB';
+			$class  = 'Ocara\Sessions\SessionDB';
 		} elseif ($saveType == self::SAVE_TYPE_CACHE) {
-			$class  = 'Ocara\Session\SessionCache';
+			$class  = 'Ocara\Sessions\SessionCache';
 		} else {
 			$class = ocConfig('SESSION.handler', false);
 		}

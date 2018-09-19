@@ -15,10 +15,10 @@ return array(
         '_ajax'     => 'Ajax处理'
     ),
     'controller_actions' => array(
-        'CommonController' => array(
+        'Common' => array(
             '_form',    '_display',
             '_submit',  '_ajax'
         ),
-        'RestController' => array()
+        'Rest' => array()
     )
 );

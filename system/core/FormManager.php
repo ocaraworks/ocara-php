@@ -8,10 +8,10 @@
  ************************************************************************************************/
 namespace Ocara;
 
-defined('OC_PATH') or exit('Forbidden!');
-
-use Ocara\Exception\Exception;
+use Ocara\Exceptions\Exception;
 use \Ocara\Form;
+
+defined('OC_PATH') or exit('Forbidden!');
 
 class FormManager extends ServiceProvider
 {

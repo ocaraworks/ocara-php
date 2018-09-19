@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Sql;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 class DatabaseBase extends Sql
@@ -130,7 +132,7 @@ class DatabaseBase extends Sql
 			$this->isPrepare($config['prepare']);
 		}
 
-		if ($this->_plugin instanceof \Ocara\Database\Driver\PdoDriver) {
+		if ($this->_plugin instanceof \Ocara\Databases\Drivers\PdoDriver) {
 			$this->_isPdo = true;
 		}
 

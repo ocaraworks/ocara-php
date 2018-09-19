@@ -27,7 +27,7 @@ function ocReplaceSpace($string, $replace = '')
  * @param string $extension
  * @param bool $required
  * @return bool
- * @throws \Ocara\Exception\Exception
+ * @throws \Ocara\Exceptions\Exception
  */
 function ocCheckExtension($extension, $required = true)
 {
@@ -106,7 +106,7 @@ function ocObject($data)
  * @param integer $perm
  * @param bool $required
  * @return bool
- * @throws \Ocara\Exception\Exception
+ * @throws \Ocara\Exceptions\Exception
  */
 function ocCheckPath($path, $perm = null, $required = false)
 {
@@ -163,7 +163,7 @@ function ocClassExists($class)
 /**
  * 加载函数库文件
  * @param string $filePath
- * @throws \Ocara\Exception\Exception
+ * @throws \Ocara\Exceptions\Exception
  */
 function ocFunc($filePath)
 {
@@ -217,7 +217,7 @@ function ocIsStandardName($name)
  * @param bool $append
  * @param int $perm
  * @return bool|int|void
- * @throws \Ocara\Exception\Exception
+ * @throws \Ocara\Exceptions\Exception
  */
 function ocWrite($filePath, $content, $append = false, $perm = null)
 {
@@ -273,7 +273,7 @@ function ocWrite($filePath, $content, $append = false, $perm = null)
  * @param string $filePath
  * @param bool $checkPath
  * @return bool|mix|string
- * @throws \Ocara\Exception\Exception
+ * @throws \Ocara\Exceptions\Exception
  */
 function ocRead($filePath, $checkPath = true)
 {
@@ -357,7 +357,7 @@ function ocRemote($url, $data = null, array $headers = array())
  * @param array $headers
  * @param bool $showError
  * @return mixed|null
- * @throws \Ocara\Exception\Exception
+ * @throws \Ocara\Exceptions\Exception
  */
 function ocCurl($url, $data = null, array $headers = array(), $showError = false)
 {

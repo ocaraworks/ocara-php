@@ -8,6 +8,12 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Basis;
+use Ocara\Container;
+use Ocara\Config;
+use Ocara\Loader;
+use Ocara\ExceptionHandler;
+
 defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(true));
 
 //根目录
@@ -22,12 +28,6 @@ require_once (OC_CORE . 'Container.php');
 require_once (OC_CORE . 'Config.php');
 require_once (OC_CORE . 'Loader.php');
 require_once (OC_CORE . 'ExceptionHandler.php');
-
-use Ocara\Basis;
-use Ocara\Container;
-use Ocara\Config;
-use Ocara\Loader;
-use Ocara\ExceptionHandler;
 
 final class Ocara extends Basis
 {
@@ -76,8 +76,8 @@ final class Ocara extends Basis
         $container = self::container()
             ->bindSingleton('config', '\Ocara\Config')
             ->bindSingleton('loader', '\Ocara\Loader')
-            ->bindSingleton('exceptionHandler', '\Ocara\ExceptionHandler')
-            ->bindSingleton('path', '\Ocara\Path');
+            ->bindSingleton('path', '\Ocara\Path')
+            ->bindSingleton('exceptionHandler', '\Ocara\ExceptionHandler');
 
         $config = $container->config;
         $loader = $container->loader;

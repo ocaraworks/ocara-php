@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Basis;
 use Ocara\Interfaces\Event as EventInterface;
 use Ocara\Interfaces\Middleware;
 

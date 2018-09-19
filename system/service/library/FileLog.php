@@ -21,7 +21,7 @@ class FileLog extends ServiceBase implements LogInterface
 	 * 选项设置函数
 	 * @param null $logRoot
 	 * @param null $maxLogSize
-	 * @throws \Ocara\Exception\Exception
+	 * @throws \Ocara\Exceptions\Exception
 	 */
 	public function setOption($logRoot = null, $maxLogSize = null)
 	{

@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Base;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 class Route extends Base
@@ -38,7 +40,7 @@ class Route extends Base
         }
 
         $controllerType = self::getControllerType($module, $controller);
-        $routeClass = "\\Ocara\\Controller\\Feature\\{$controllerType}";
+        $routeClass = "\\Ocara\\Controllers\\Features\\{$controllerType}";
         $routeFeature = new $routeClass();
         $action       = $routeFeature->getAction($get);
         $route        = $routeFeature->getLastRoute($module, $controller, $action);

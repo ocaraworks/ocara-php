@@ -8,8 +8,9 @@
  ************************************************************************************************/
 namespace Ocara;
 
-use Ocara\Exception\Exception;
 use Ocara\Ocara;
+use Ocara\Exceptions\Exception;
+use Ocara\ServiceProvider;
 
 defined('OC_PATH') or exit('Forbidden!');
 
