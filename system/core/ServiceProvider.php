@@ -12,7 +12,6 @@ use Ocara\Base;
 use Ocara\Container;
 use Ocara\Exceptions\Exception;
 use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
-use Phinx\Db\Adapter\AdapterInterface;
 
 class ServiceProvider extends Base implements ServiceProviderInterface
 {
@@ -29,6 +28,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
         $this->setContainer(new Container());
         $this->setProperty($data);
         $this->register();
+        $this->boot();
     }
 
     /**

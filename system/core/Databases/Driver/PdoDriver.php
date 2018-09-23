@@ -9,7 +9,9 @@
 namespace Ocara\Databases\Driver;
 
 use \PDO;
+use \PDOException;
 use Ocara\Ocara;
+use Ocara\Exceptions\Exception;
 use Ocara\DriverBase;
 use Ocara\Interfaces\Driver as DriverInterface;
 
@@ -66,7 +68,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 					$this->_config['dsn'], $this->_config['username'],
 					$this->_config['password'], $options
 				);
-			} catch (\PDOException $e) {
+			} catch (PDOException $e) {
 				$this->_errno = $e->getCode();
 				$this->_error = $e->getMessage();
 				$error = array(

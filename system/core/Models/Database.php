@@ -10,9 +10,9 @@ namespace Ocara\Models;
 
 use Ocara\Ocara;
 use Ocara\Exceptions\Exception;
-use Ocara\Cache;
+use Ocara\CacheFactory;
 use Ocara\FormToken;
-use Ocara\Database as DatabaseFactory;
+use Ocara\DatabaseFactory;
 use Ocara\DatabaseBase;
 use Ocara\ModelBase;
 use Ocara\Iterators\Database\ObjectRecords;
@@ -60,9 +60,7 @@ abstract class Database extends ModelBase
 	public function __construct(array $data = array())
 	{
 		$this->init();
-		if ($data) {
-            $this->data($data);
-        }
+		if ($data) $this->data($data);
 	}
 
 	/**
@@ -1093,7 +1091,7 @@ abstract class Database extends ModelBase
 
 		if ($ifCache) {
 			$encodeSql = md5($sql);
-			$cacheObj  = Cache::connect($cacheConnect, $cacheRequired);
+			$cacheObj  = CacheFactory::connect($cacheConnect, $cacheRequired);
 			$cacheData = $this->_getCacheData($cacheObj, $encodeSql, $cacheObj, $cacheRequired);
 			if ($cacheData) return $cacheData;
 		}

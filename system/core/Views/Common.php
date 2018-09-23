@@ -9,7 +9,6 @@
 namespace Ocara\Views;
 
 use Ocara\Ocara;
-use Ocara\Html;
 use Ocara\ViewBase;
 use Ocara\Interfaces\View as ViewInterfaces;
 use Ocara\Service\Interfaces\Template as TemplateInterface;
@@ -514,14 +513,14 @@ class Common extends ViewBase implements ViewInterfaces
 					'type' => 'text/javascript',
 					'language' => 'javascript'
 				);
-				$value = Html::createElement('script', $attr, true);
+				$value = Ocara::services()->html->createElement('script', $attr, true);
 			} else {
 				$attr  = array(
 					'href' => $value,
 					'type' => 'text/css',
 					'rel' => 'stylesheet'
 				);
-				$value = Html::createElement('link', $attr, false);
+				$value = Ocara::services()->html->createElement('link', $attr, false);
 			}
 			return $value . PHP_EOL;
 		}

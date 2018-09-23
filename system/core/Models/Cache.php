@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Models;
 
-use Ocara\Cache as CacheFactory;
+use Ocara\CacheFactory;
 use Ocara\ModelBase;
 
 defined('OC_PATH') or exit('Forbidden!');

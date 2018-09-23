@@ -9,7 +9,7 @@
 namespace Ocara\Controllers\Provider;
 
 use Ocara\Ocara;
-use Ocara\Database;
+use Ocara\DatabaseFactory;
 use Ocara\ServiceProvider;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -91,7 +91,7 @@ class Base extends ServiceProvider
     public function register()
     {
         $this->_container->bindSingleton('db', function(){
-            Database::create();
+            DatabaseFactory::create();
         });
 
         $route = array();

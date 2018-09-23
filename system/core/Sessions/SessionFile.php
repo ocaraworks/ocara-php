@@ -11,10 +11,11 @@ namespace Ocara\Sessions;
 use Ocara\Ocara;
 use Ocara\Base;
 use Ocara\Exceptions\Exception;
+use Ocara\ServiceProvider;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class SessionFile extends Base
+class SessionFile extends ServiceProvider
 {
 	
     private $_savePath;
@@ -22,7 +23,7 @@ final class SessionFile extends Base
     /**
      * 析构函数
      */
-    public function __construct()
+    public function init()
     {
         $savePath = ocConfig('SESSION.location', 'sessions');
    	 	if (empty($savePath)) {

@@ -44,7 +44,7 @@ $OC_CONF['ALLOWED_HTTP_METHODS'] = array(
  * session配置
  */
 $CONF['SESSION'] = array(
-	'save_type'			=> 1, 				 //session保存方式，1为自定义文件类型，2为数据库类型
+	'save_type'			=> 1, 				 //session保存方式，1为文件类型，2为数据库类型, 3为缓存类型
 	'save_time'			=> 0,				//session的最长存活时间（单位为秒）
 	'file_path'			=> 'cache/sessions',//session文件保存路径，上级目录强制在resource/data
 	'db_server' 		=> 'default',		//数据库服务器名称

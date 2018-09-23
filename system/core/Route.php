@@ -39,6 +39,10 @@ class Route extends Base
             $controller = ocConfig('DEFAULT_CONTROLLER');
         }
 
+        if (Ocara::services()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
+            $_GET = $this->formatGet($_GET);
+        }
+
         $controllerType = self::getControllerType($module, $controller);
         $routeClass = "\\Ocara\\Controllers\\Feature\\{$controllerType}";
         $routeFeature = new $routeClass();
@@ -86,7 +90,7 @@ class Route extends Base
      * @param array $data
      * @return array
      */
-    public static function formatGet(array $data)
+    public function formatGet(array $data)
     {
         $last = $get = array();
         if (is_array(end($data))) {

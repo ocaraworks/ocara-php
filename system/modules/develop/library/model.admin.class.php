@@ -12,7 +12,7 @@ use Ocara\Ocara;
 use Ocara\Develop;
 use Ocara\Service\File;
 use Ocara\Service\FileCache;
-use Ocara\Database;
+use Ocara\DatabaseFactory;
 use Ocara\Container;
 
 class model_admin
@@ -61,7 +61,7 @@ class model_admin
 		}
 
 		if (empty($this->_primaries)) {
-			$connect = Database::create($this->_connectName);
+			$connect = DatabaseFactory::create($this->_connectName);
 			$fields = $connect->getFields($this->_table);
 			$primaryFields = array();
 			foreach ($fields as $fieldName => $fieldInfo) {

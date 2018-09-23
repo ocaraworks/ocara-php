@@ -9,7 +9,6 @@
 namespace Ocara\Controllers\Feature;
 
 use Ocara\Ocara;
-use Ocara\Route;
 use Ocara\Base as ClassBase;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -25,10 +24,6 @@ class Base extends ClassBase
      */
     public function getLastRoute($module, $controller, $action)
     {
-        if (Ocara::services()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
-            $_GET = Route::formatGet($_GET);
-        }
-
         if (empty($action)) {
             $action = ocConfig('DEFAULT_ACTION', 'index');
         }

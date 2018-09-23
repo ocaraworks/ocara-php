@@ -264,21 +264,44 @@ class Container extends Basis
                 return $this->_properties[$name] = $this->_singletons[$name];
             }
             $isSingleton = true;
-            $matter = $this->_singletons[$name];
+            $matter = (array)$this->_singletons[$name];
         } elseif (!empty($this->_binds[$name])) {
             if (is_object($this->_binds[$name])) {
                 return $this->_binds[$name];
             }
-            $matter = $this->_binds[$name];
-        }
-
-        if (empty($matter)) {
+            $matter = (array)$this->_binds[$name];
+        } else {
             throw new Exception("not_exists_dependence_set");
         }
 
-        list($source, $inputParams, $inputDeps) = (array)$matter;
+        if (empty($matter)) return null;
+
+        $instance = $this->_getMatterInstance($matter);
+        if ($instance) {
+            foreach ($deps as $name => $object) {
+                $method = 'set' . ucfirst($name);
+                if (method_exists($instance, $method)){
+                    $instance->$method($object);
+                }
+            }
+            return $instance;
+        }
+
+        throw new Exception('invalid_source');
+    }
+
+    /**
+     * 获取对象实例
+     * @param $matter
+     * @throws Exception
+     * @throws \ReflectionException
+     */
+    protected function _getMatterInstance($matter)
+    {
+        list($source, $inputParams, $inputDeps) = $matter;
         $params = array_merge($inputParams, $params);
         $deps = array_merge($inputDeps, $deps);
+        $instance = null;
 
         if (is_array($source)) {
             $source = array_values($source);
@@ -318,17 +341,7 @@ class Container extends Basis
             }
         }
 
-        if ($instance) {
-            foreach ($deps as $name => $object) {
-                $method = 'set' . ucfirst($name);
-                if (method_exists($instance, $method)){
-                    $instance->$method($object);
-                }
-            }
-            return $instance;
-        }
-
-        throw new Exception("invalid_source.");
+        return $instance;
     }
 
     /**

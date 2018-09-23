@@ -12,7 +12,7 @@ use Ocara\Base;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Database extends Base
+final class DatabaseFactory extends Base
 {
 	/**
 	 * 工厂模式
