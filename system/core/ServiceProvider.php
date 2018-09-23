@@ -33,9 +33,14 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 注册服务组件
-     * @param array $data
      */
     public function register()
+    {}
+
+    /**
+     * 启动服务
+     */
+    public function boot()
     {}
 
     /**

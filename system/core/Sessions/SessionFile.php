@@ -20,10 +20,7 @@ class SessionFile extends ServiceProvider
 	
     private $_savePath;
     
-    /**
-     * 析构函数
-     */
-    public function init()
+    public function boot()
     {
         $savePath = ocConfig('SESSION.location', 'sessions');
    	 	if (empty($savePath)) {

@@ -57,14 +57,14 @@ class Session extends ServiceProvider
             register_shutdown_function('session_write_close');
         }
 
-		$this->boot($start);
+		$this->_start($start);
 	}
 
 	/**
 	 * 启动Session
 	 * @param bool $start
 	 */
-	private function boot($start)
+	private function _start($start)
 	{
 		$saveTime = intval(ocConfig('SESSION.save_time', false));
 
