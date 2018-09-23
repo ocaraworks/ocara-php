@@ -15,12 +15,6 @@ defined('OC_PATH') or exit('Forbidden!');
 final class CacheFactory extends Base
 {
 	/**
-	 * 工厂模式
-	 */
-	private function __clone(){}
-	private function __construct(){}
-
-	/**
 	 * 新建缓存实例
 	 * @param string $connectName
 	 * @param bool $required
