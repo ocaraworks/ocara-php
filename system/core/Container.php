@@ -49,32 +49,6 @@ class Container extends Basis
     }
 
     /**
-     * 绑定实例
-     * @param string $name
-     * @param mixed $source
-     * @param array $params
-     * @param array $deps
-     * @return $this
-     */
-    public function bind($name, $source = null, array $params = array(), array $deps = array())
-    {
-        if (strstr($name, OC_NS_SEP)) {
-            $name = OC_NS_SEP . ltrim($name, OC_NS_SEP);
-        }
-
-        if (!$source) {
-            $source = $name;
-        }
-
-        $matter = $this->_getMatter($name, $source, $params, $deps);
-        if ($matter) {
-            $this->_binds[$name] = $matter;
-        }
-
-        return $this;
-    }
-
-    /**
      * 单例模式绑定实例
      * @param string $name
      * @param mixed $source
@@ -84,15 +58,16 @@ class Container extends Basis
      */
     public function bindSingleton($name, $source = null, array $params = array(), array $deps = array())
     {
-        if (strstr($name, OC_NS_SEP)) {
-            $name = OC_NS_SEP . ltrim($name, OC_NS_SEP);
+        $name = ocClassName($name);
+        if ($this->hasBind($name)) {
+            throw new Exception('exists_bind_class');
         }
 
-        if (!$source) {
+        if (empty($source)) {
             $source = $name;
         }
 
-        $matter = $this->_getMatter($name, $source, $params, $deps, true);
+        $matter = $this->_getMatterArray($source, $params, $deps);
         if ($matter) {
             $this->_singletons[$name] = $matter;
         }
@@ -101,69 +76,77 @@ class Container extends Basis
     }
 
     /**
-     * 获取绑定信息
-     * @param string $name
-     * @return null
-     */
-    public function getBind($name)
-    {
-        if (array_key_exists($name, $this->_binds)) {
-            return $this->_binds[$name][0];
-        }
-
-        if (array_key_exists($name, $this->_singletons)) {
-            return $this->_singletons[$name][0];
-        }
-
-        return null;
-    }
-
-    /**
-     * 获取所有绑定数扰
-     * @return array
-     */
-    public function getAllBind()
-    {
-        return $this->_binds;
-    }
-
-    /**
-     * 获取绑定参数
-     * @param string $name
-     * @return null
-     */
-    public function getBindParams($name)
-    {
-        if (array_key_exists($name, $this->_binds)) {
-            return $this->_binds[$name][1];
-        }
-
-        if (array_key_exists($name, $this->_singletons)) {
-            return $this->_singletons[$name][1];
-        }
-
-        return array();
-    }
-
-    /**
-     * 获取绑定信息
+     * 绑定实例
      * @param string $name
      * @param mixed $source
      * @param array $params
      * @param array $deps
-     * @param bool $singleton
-     * @return mixed
-     * @throws Exception
+     * @return $this
      */
-    protected function _getMatter($name, $source, $params, $deps, $singleton = false)
+    public function bind($name, $source = null, array $params = array(), array $deps = array())
     {
-        if (!empty($this->_singletons[$name])) {
-            if (!$singleton) {
-                throw new Exception('exists_container_singleton');
+        $name = ocClassName($name);
+        if ($this->hasBindSingleton($name)) {
+            throw new Exception('exists_singleton_bind_class');
+        }
+
+        if (empty($source)) {
+            $source = $name;
+        }
+
+        $matter = $this->_getMatterArray($source, $params, $deps);
+        if ($matter) {
+            $this->_binds[$name] = $matter;
+        }
+
+        return $this;
+    }
+
+    /**
+     * 获取静态绑定
+     * @param string $name
+     * @return null
+     */
+    public function getBindSingleton($name = null)
+    {
+        if (func_num_args()) {
+            if (array_key_exists($name, $this->_singletons)) {
+                return $this->_singletons[$name];
             }
             return array();
         }
 
+        return $this->_binds;
+    }
+
+    /**
+     * 获取动态绑定
+     * @param string $name
+     * @return null
+     */
+    public function getBind($name = null)
+    {
+        if (func_num_args()) {
+            if (array_key_exists($name, $this->_binds)) {
+                return $this->_binds[$name];
+            }
+            return array();
+        }
+
+        return $this->_binds;
+    }
+
+    /**
+     * 获取绑定数组
+     * @param string $name
+     * @param mixed $source
+     * @param array $params
+     * @param array $deps
+     * @return mixed
+     * @throws Exception
+     */
+    protected function _getMatterArray($name, $source, $params, $deps)
+    {
         $matter = array(
             $source,
             $params ? (array)$params : array(),
@@ -186,9 +169,11 @@ class Container extends Basis
             $instance = null;
             if ($this->hasProperty($name)) {
                 $instance = $this->_properties[$name];
-            } elseif ($this->hasBind($name)) {
-                $this->_properties[$name] = $this->create($name, $params, $deps);
+            } elseif ($this->hasBindSingleton($name)) {
+                $this->_properties[$name] = $this->make($name, $params, $deps);
                 $instance = $this->_properties[$name];
+            } elseif ($this->hasBind($name)){
+                $instance = $this->create($name, $params, $deps);
             }
             return $instance;
         }
@@ -197,17 +182,34 @@ class Container extends Basis
     }
 
     /**
-     * 是否绑定过
+     * 是否动态和静态绑定过
+     * @param string $name
+     * @return bool
+     */
+    public function hasBindAll($name)
+    {
+        $name = ocClassName($name);
+        return array_key_exists($name, $this->_binds) || array_key_exists($name, $this->_singletons);
+    }
+
+    /**
+     * 是否静态绑定过
+     * @param string $name
+     * @return bool
+     */
+    public function hasBindSingleton($name)
+    {
+        return array_key_exists(ocClassName($name), $this->_singletons);
+    }
+
+    /**
+     * 是否动态绑定过
      * @param string $name
      * @return bool
      */
     public function hasBind($name)
     {
-        if (strstr($name, OC_NS_SEP)) {
-            $name = OC_NS_SEP . ltrim($name, OC_NS_SEP);
-        }
-
-        return array_key_exists($name, $this->_binds) || array_key_exists($name, $this->_singletons);
+        return array_key_exists(ocClassName($name), $this->_binds);
     }
 
     /**
@@ -217,7 +219,7 @@ class Container extends Basis
      */
     public function has($name)
     {
-        return $this->hasBind($name) || $this->has($name);
+        return $this->hasBindAll($name) || $this->has($name);
     }
 
     /**
@@ -230,25 +232,51 @@ class Container extends Basis
      */
     public function create($name, array $params = array(), array $deps = array())
     {
+        if ($this->hasBindSingleton($name)) {
+            throw new Exception('exists_singleton_bind_class');
+        }
+        if ($this->hasBind($name)) {
+            return $this->make($name, $params, $deps);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 生产实例
+     * @param mixed $source
+     * @param array $params
+     * @param array $deps
+     * @return mixed
+     * @throws Exception
+     */
+    public function make($source, array $params = array(), array $deps = array())
+    {
         $source = null;
         $isSingleton = false;
 
         $matter = array();
         if (!empty($this->_singletons[$name])) {
             if (!empty($this->_properties[$name])) {
-                return $this->_properties[$name];
+                throw new Exception("exists_singleton_object");
             }
-            $matter = (array)$this->_singletons[$name];
+            if (is_object($this->_singletons[$name])) {
+                return $this->_properties[$name] = $this->_singletons[$name];
+            }
             $isSingleton = true;
+            $matter = $this->_singletons[$name];
         } elseif (!empty($this->_binds[$name])) {
-            $matter = (array)$this->_binds[$name];
+            if (is_object($this->_binds[$name])) {
+                return $this->_binds[$name];
+            }
+            $matter = $this->_binds[$name];
         }
 
         if (empty($matter)) {
             throw new Exception("not_exists_dependence_set");
         }
 
-        list($source, $inputParams, $inputDeps) = $matter;
+        list($source, $inputParams, $inputDeps) = (array)$matter;
         $params = array_merge($inputParams, $params);
         $deps = array_merge($inputDeps, $deps);
 
@@ -263,24 +291,6 @@ class Container extends Basis
             }
         }
 
-        $instance = $this->make($source, $params, $deps);
-        if ($isSingleton) {
-            $this->_properties[$name] = $instance;
-        }
-
-        return $instance;
-    }
-
-    /**
-     * 生产实例
-     * @param mixed $source
-     * @param array $params
-     * @param array $deps
-     * @return mixed
-     * @throws Exception
-     */
-    public function make($source, array $params = array(), array $deps = array())
-    {
         $type = gettype($source);
         if ($type == 'array') {
             $instance = call_user_func_array($source, $params);
@@ -371,7 +381,7 @@ class Container extends Basis
      */
     public function __get($property)
     {
-        if ($this->hasBind($property)) {
+        if ($this->hasBindAll($property)) {
             $value = $this->get($property);
             return $value;
         }

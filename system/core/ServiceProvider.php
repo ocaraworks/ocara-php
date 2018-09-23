@@ -10,7 +10,9 @@ namespace Ocara;
 
 use Ocara\Base;
 use Ocara\Container;
+use Ocara\Exceptions\Exception;
 use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
+use Phinx\Db\Adapter\AdapterInterface;
 
 class ServiceProvider extends Base implements ServiceProviderInterface
 {
@@ -72,13 +74,16 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function getService($name, $params = array(), $deps = array())
     {
+        $instance = null;
+
         if (array_key_exists($name, $this->_services)) {
             $instance = $this->_services[$name];
-        } else {
-            $instance = $this->createService($name, $params, $deps);
-            if ($instance) {
-                $this->setService($name, $instance);
-            }
+        } elseif ($this->_container && $this->_container->hasBindAll($key)) {
+            $instance = $this->_container->get($key, $params, $deps);
+            $this->setService($key, $instance);
+        } elseif (Container::getDefault()->hasBindAll($key)) {
+            $instance = Container::getDefault()->get($key, $params, $deps);
+            $this->setService($key, $instance);
         }
 
         return $instance;
@@ -93,15 +98,17 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function createService($key, $params = array(), $deps = array())
     {
-        $instance = null;
-
-        if ($this->_container && $this->_container->has($key)) {
-            $instance = $this->_container->create($key, $params, $deps);
-        } elseif (Container::getDefault()->has($key)) {
-            $instance = Container::getDefault()->create($key, $params, $deps);
+        if ($this->hasService($key)) {
+            throw new Exception('exists_service', array($key));
         }
 
-        return $instance;
+        if ($this->_container && $this->_container->hasBind($key)) {
+            return $this->_container->create($key, $params, $deps);
+        } elseif (Container::getDefault()->hasBind($key)) {
+            return Container::getDefault()->create($key, $params, $deps);
+        } else {
+            throw new Exception('no_service', array($key));
+        }
     }
 
     /**

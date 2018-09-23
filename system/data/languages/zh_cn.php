@@ -156,9 +156,12 @@ return array(
 	'no_dir_write_perm'				=> array(2525, '目录没有写权限！'),
 	'no_file_write_perm'		    => array(2526, '文件没有写权限！'),
 	'no_file_read_perm'		    	=> array(2527, '文件没有读权限！'),
-	'no_service'					=> array(2528, '服务组件不存在：%s'),
+	'no_service'					=> array(2528, '服务不存在：%s'),
 
 	//已存在
-	'exists_dir'		    		=> array(2601, '已存在同名的目录！'),
-	'exists_container_singleton'	=> array(2602, '容器中已存在单例类'),
+	'exists_dir'		    		=> array(2601, '已存在同名的目录。'),
+    'exists_singleton_object'       => array(2602, '容器中已存在该单例对象。'),
+    'exists_bind_class'             => array(2603, '容器中已存在绑定类。'),
+    'exists_singleton_bind_class'   => array(2604, '容器中已存在绑定的单例类。'),
+    'exists_service'                => array(2605, '服务已存在：%s。')
 );

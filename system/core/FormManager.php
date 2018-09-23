@@ -21,12 +21,10 @@ class FormManager extends ServiceProvider
 	 */
 	public function register()
 	{
-		$formToken = ocConfig('SERVICE.formToken', '\Ocara\FormToken');
 		$validator = ocConfig('SERVICE.validator', '\Ocara\Validator');
 		$validate = ocConfig('SERVICE.validate', '\Ocara\Service\Validate');
 
 		$this->_container
-			->bindSingleton('formToken', $formToken)
 			->bindSingleton('validator', $validator, array($validate));
 
 		$this->event('checkError')
@@ -40,9 +38,8 @@ class FormManager extends ServiceProvider
 	 */
 	public function create($name)
 	{
-		$form = new Form($name);
+		$form = $this->createService('form', array($name));
 		$form->setRoute($this->getRoute());
-		$this->setService($name, $form);
 
 		return $form;
 	}

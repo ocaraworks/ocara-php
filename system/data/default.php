@@ -96,8 +96,10 @@ $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
  * 系统服务类（非单例模式）
  */
 $OC_CONF['SYSTEM_SERVICE_CLASS'] = array(
-    'event' => 'Ocara\Event',
-    'log'	=> 'Ocara\Log',
+    'event'             => 'Ocara\Event',
+    'log'	            => 'Ocara\Log',
+    'form'              => 'Ocara\Form',
+    'html'              => 'Ocara\Html',
 );
 
 /**
@@ -214,7 +216,6 @@ $OC_CONF['APP_AUTOLOAD_MAP'] = array(
  * 服务组件配置
  */
 $CONF['SERVICE'] = array(
-	'formToken' => '\Ocara\FormToken',
 	'validator' => '\Ocara\Validator',
 	'validate' => '\Ocara\Service\Validate'
 );

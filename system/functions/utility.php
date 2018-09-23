@@ -700,6 +700,20 @@ function ocExecTime()
 	return $runtime * 1000;
 }
 
+/**
+ * 获取类的全名
+ * @param $name
+ * @return string
+ */
+function ocClassName($name)
+{
+    if (strstr($name, OC_NS_SEP)) {
+        $name = OC_NS_SEP . ltrim($name, OC_NS_SEP);
+    }
+
+    return $name;
+}
+
 /*************************************************************************************************
  * 路径获取函数
  ************************************************************************************************/

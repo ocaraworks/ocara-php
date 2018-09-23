@@ -8,8 +8,8 @@
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Ocara;
 use Ocara\Base;
-use Ocara\Html;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -78,7 +78,7 @@ final class Develop extends Base
 	 */
 	public static function back($msg)
 	{
-		$back = Html::createElement('a', array(
+		$back = Ocara::services()->html->createElement('a', array(
 			'href' => 'javascript:;',
 			'onclick' => 'setTimeout(function(){history.back();},0)',
 		), '返回');
