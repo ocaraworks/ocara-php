@@ -83,12 +83,12 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
         if (array_key_exists($name, $this->_services)) {
             $instance = $this->_services[$name];
-        } elseif ($this->_container && $this->_container->hasBindAll($key)) {
-            $instance = $this->_container->get($key, $params, $deps);
-            $this->setService($key, $instance);
-        } elseif (Container::getDefault()->hasBindAll($key)) {
-            $instance = Container::getDefault()->get($key, $params, $deps);
-            $this->setService($key, $instance);
+        } elseif ($this->_container && $this->_container->hasBindAll($name)) {
+            $instance = $this->_container->get($name, $params, $deps);
+            $this->setService($name, $instance);
+        } elseif (Container::getDefault()->hasBindAll($name)) {
+            $instance = Container::getDefault()->get($name, $params, $deps);
+            $this->setService($name, $instance);
         }
 
         return $instance;

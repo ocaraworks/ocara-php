@@ -145,7 +145,7 @@ class Container extends Basis
      * @return mixed
      * @throws Exception
      */
-    protected function _getMatterArray($name, $source, $params, $deps)
+    protected function _getMatterArray($source, $params, $deps)
     {
         $matter = array(
             $source,
@@ -244,13 +244,13 @@ class Container extends Basis
 
     /**
      * 生产实例
-     * @param mixed $source
+     * @param string $name
      * @param array $params
      * @param array $deps
      * @return mixed
      * @throws Exception
      */
-    public function make($source, array $params = array(), array $deps = array())
+    public function make($name, array $params = array(), array $deps = array())
     {
         $source = null;
         $isSingleton = false;
@@ -276,7 +276,7 @@ class Container extends Basis
 
         if (empty($matter)) return null;
 
-        $instance = $this->_getMatterInstance($matter);
+        $instance = $this->_getMatterInstance($matter, $params, $deps);
         if ($instance) {
             foreach ($deps as $name => $object) {
                 $method = 'set' . ucfirst($name);
@@ -296,7 +296,7 @@ class Container extends Basis
      * @throws Exception
      * @throws \ReflectionException
      */
-    protected function _getMatterInstance($matter)
+    protected function _getMatterInstance($matter, $params, $deps)
     {
         list($source, $inputParams, $inputDeps) = $matter;
         $params = array_merge($inputParams, $params);
