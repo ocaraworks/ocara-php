@@ -214,8 +214,10 @@ $OC_CONF['AUTOLOAD_MAP'] = array(
  */
 $OC_CONF['APP_AUTOLOAD_MAP'] = array(
     'console\\' 							=> OC_ROOT . 'application/console/',
+    'entities\\' 							=> OC_ROOT . 'application/entities/',
     'modules\\' 							=> OC_ROOT . 'application/modules/',
     'models\\' 								=> OC_ROOT . 'application/models/',
+    'values\\' 								=> OC_ROOT . 'application/values/',
     'view\\' 								=> OC_ROOT . 'application/view/',
 );
 

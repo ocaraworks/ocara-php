@@ -23,9 +23,9 @@ class Loader extends Basis
     {
         $config = ocContainer()->config;
         $autoMap = $config->get('AUTOLOAD_MAP', array());
-        $appAutoMap = $config->get('AUTOLOAD_MAP', array());
+        $appAutoMap = $config->get('APP_AUTOLOAD_MAP', array());
 
-        $this->_defaultPath = OC_ROOT . 'application/library/';
+        $this->_defaultPath = OC_ROOT . 'service/library/';
         $this->_autoloadMap = array_merge($autoMap, $appAutoMap);
     }
 

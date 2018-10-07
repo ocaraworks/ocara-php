@@ -35,6 +35,10 @@ class Route extends Base
             }
         }
 
+        if (empty($module)) {
+            $module = 'index';
+        }
+
         if (empty($controller)) {
             $controller = ocConfig('DEFAULT_CONTROLLER');
         }

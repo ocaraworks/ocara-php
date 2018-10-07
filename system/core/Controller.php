@@ -22,15 +22,15 @@ class Controller extends serviceProvider implements ControllerInterface
 
 	/**
 	 * 初始化设置
-	 * @param array $route
 	 */
-	public function init(array $route)
+	public function init()
 	{
+	    $route = ocService()->app->getRoute();
 		$controllerType = Route::getControllerType($route['module'], $route['controller']);
 		$provider = 'Ocara\Controllers\Provider\\' . $controllerType;
 		$this->_provider = new $provider(compact('route'));
-		$this->_provider->init();
-		$this->_provider->bindEvents($this);
+        $this->_provider->bindEvents($this);
+        $this->_provider->boot();
 
 		$this->config->set('SOURCE.ajax.return_result', array($this->_provider, 'formatAjaxResult'));
 
@@ -108,22 +108,6 @@ class Controller extends serviceProvider implements ControllerInterface
 		}
 
 		$this->_provider->display($result);
-	}
-
-	/**
-	 * 执行动作（返回值）
-	 * @param string $method
-	 * @param array $params
-	 * @return mixed
-	 * @throws \Ocara\Exception
-	 */
-	public function doReturnAction($method, array $params = array())
-	{
-		if (method_exists($this, $method)) {
-			return call_user_func_array(array($this, $method), $params);
-		} else {
-            ocService()->error->show('no_action_return');
-		}
 	}
 
 	/**

@@ -15,20 +15,12 @@ interface Controller
 
 	/**
 	 * 初始化设置
-	 * @param array $route
 	 */
-	public function init(array $route);
+	public function init();
 
 	/**
 	 * 执行动作
 	 * @param string $actionMethod
 	 */
 	public function doAction($actionMethod);
-
-	/**
-	 * 执行动作（返回值）
-	 * @param string $method
-	 * @param array $params
-	 */
-	public function doReturnAction($method, array $params = array());
 }

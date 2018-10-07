@@ -37,25 +37,26 @@ abstract class BootstrapBase extends Base
             ocService()->error->show("MVC Route Error!");
         }
 
-        list($umodule, $ucontroller, $uaction) = array_values(array_map('ucfirst', $route));
-        $modulePath = OC_APPLICATION_PATH . 'controller/' . $umodule;
-        $controlPath = $modulePath . "/{$ucontroller}/";
-        $controlNamespace = OC_NS_SEP . ocNamespace(array('Controller', $umodule, $ucontroller));
-        $moduleNamespace = OC_NS_SEP . ocNamespace(array('Controller', $umodule));
+        list($uModule, $uController, $uAction) = array_values(array_map('ucfirst', $route));
 
-        if ($umodule && !class_exists($moduleNamespace . $umodule . 'Module', false)) {
-            self::loadRoute($modulePath, $umodule, $moduleNamespace, 'Module');
+        $modulePath = ocPath('modules', $module);
+        $controlPath = $modulePath . "/controllers/{$controller}/";
+        $moduleNamespace = OC_NS_SEP . ocNamespace(array('modules', $module));
+        $controlNamespace = OC_NS_SEP . ocNamespace(array('modules', $module, $controller));
+
+        if (!class_exists($moduleNamespace . $uModule . '\Module', false)) {
+            self::loadRoute($modulePath, $uModule, $moduleNamespace, 'Module');
         }
 
-        self::loadRoute($controlPath, $ucontroller, $controlNamespace, 'Controller');
-        $controlClass = $controlNamespace . $ucontroller . 'Controller';
+        self::loadRoute($controlPath, $uController, $controlNamespace, 'Controller');
+        $controlClass = $controlNamespace . 'Controller';
         $method = $action . 'Action';
 
         if (!method_exists($controlClass, $method)) {
-            $actionPath = $controlPath . "Action/{$uaction}Action.php";
+            $actionPath = $controlPath . "{$uAction}Action.php";
             if (ocFileExists($actionPath)) {
                 include_once ($actionPath);
-                $actionClass = $controlNamespace . 'Action' . OC_NS_SEP . $uaction . 'Action';
+                $actionClass = $controlNamespace . $uAction . 'Action';
                 if (class_exists($actionClass, false)) {
                     $controlClass = $actionClass;
                     $method = '_action';
@@ -63,22 +64,19 @@ abstract class BootstrapBase extends Base
             }
         }
 
-        ocService()->config->loadModuleConfig($route);
-        ocService()->lang->loadModuleConfig($route);
-        ocContainer()->bindSingleton($controlClass);
+        ocContainer()->bindSingleton('action', $controlClass);
 
-        $Control = ocContainer()->create($controlClass, array($route));
+        $service = ocService();
+        $service->config->loadModuleConfig($route);
+        $service->lang->loadModuleConfig($route);
+        $Control = ocContainer()->action;
+
         if ($method != '_action' && !method_exists($Control, $method)) {
-            ocService()->error->show('no_special_class', array('Action', $uaction));
+            $service->error->show('no_special_class', array('Action', $uaction));
         }
 
-        $Control->boot($route);
-        if ($return) {
-            $Control->checkForm(false);
-            return $Control->doReturnAction($method, $params);
-        } else {
-            $Control->doAction($method);
-        }
+        $Control->boot();
+        $Control->doAction($method);
     }
 
     /**
@@ -93,7 +91,7 @@ abstract class BootstrapBase extends Base
      */
     public static function loadRoute($root, $target, $namespace, $type = null, $required = true)
     {
-        $path = ocDir($root) . $target . $type . '.php';
+        $path = ocDir($root) . $type . '.php';
 
         if (!ocFileExists($path)) {
             if ($required) {
@@ -103,7 +101,7 @@ abstract class BootstrapBase extends Base
         }
 
         include_once ($path);
-        if (!class_exists($namespace . $target . $type,  false)) {
+        if (!class_exists($namespace . $type,  false)) {
             if ($required) {
                 ocService()->error->show('no_special_class', array($type, $target));
             }
