@@ -79,28 +79,25 @@ class Config extends Basis
     }
 
 	/**
-	 * 加载控制层配置
+	 * 加载模块配置
 	 * @param string $dir
 	 */
-	public function loadControlConfig($route = array())
+	public function loadModuleConfig($route = array())
 	{
-        $path = OC_ROOT . 'resource/conf/control';
-        $paths = array();
         extract($route);
+        $path = ocPath('modules', $module . '/private/config/');
+        $paths = array();
 
-        if (isset($module) && $module && is_dir($path . OC_DIR_SEP . $module)) {
-            $path = $path . OC_DIR_SEP . $module;
+        if (is_dir($path)) {
             $paths[] = $path;
-        }
-
-        if ($controller && is_dir($path = $path . OC_DIR_SEP . $controller)) {
-            $paths[] = $path;
-            if ($action && is_dir($path = $path . OC_DIR_SEP . $action)) {
+            if ($controller && is_dir($path = $path . OC_DIR_SEP . $controller)) {
                 $paths[] = $path;
+                if ($action && is_dir($path = $path . OC_DIR_SEP . $action)) {
+                    $paths[] = $path;
+                }
             }
+            $this->load($paths);
         }
-
-        $this->load($paths);
 	}
 
 	/**

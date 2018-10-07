@@ -183,7 +183,7 @@ class VerifyCode extends ServiceBase
 	{
 		$size 	 = ocGet('size', $fontInfo, 12);
 		$color 	 = ocGet('color', $fontInfo, '#FFFFFF');
-		$font 	 = Ocara::services()->font->get(ocGet('font', $fontInfo));
+		$font 	 = ocService()->font->get(ocGet('font', $fontInfo));
 
 		$contentInfo = imagettfbbox($size, 0, $font, $content);
 		$contentW 	 = $contentInfo[4] - $contentInfo[6];

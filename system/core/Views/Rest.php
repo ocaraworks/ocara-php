@@ -18,7 +18,7 @@ class Rest extends ViewBase implements ViewInterfaces
 {
     public function output($data)
     {
-        Ocara::services()->response->setContentType($data['contentType']);
-        Ocara::services()->ajax->show('success', $data['message'], $data['data']);
+        ocService()->response->setContentType($data['contentType']);
+        ocService()->ajax->show('success', $data['message'], $data['data']);
     }
 }

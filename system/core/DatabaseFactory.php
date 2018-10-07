@@ -34,7 +34,7 @@ final class DatabaseFactory extends Base
 		}
 
 		if ($required) {
-			Ocara::services()->error->show('not_exists_database', array($connectName));
+			ocService()->error->show('not_exists_database', array($connectName));
 		}
 
 		return $database;
@@ -81,7 +81,7 @@ final class DatabaseFactory extends Base
 		$config = array();
 
 		if ($callback = ocConfig('SOURCE.database.get_config', null)) {
-			$config = Ocara::services()->call->run($callback, array($connectName));
+			$config = ocService()->call->run($callback, array($connectName));
 		}
 
 		if (empty($config)) {
@@ -124,6 +124,6 @@ final class DatabaseFactory extends Base
 			}
 		}
 
-		Ocara::services()->error->show('not_exists_database');
+		ocService()->error->show('not_exists_database');
 	}
 }

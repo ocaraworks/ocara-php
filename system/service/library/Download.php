@@ -32,7 +32,7 @@ class Download extends ServiceBase
 		}
 	
 		if(!$saveName){
-			$options = Ocara::services()->filter->path($filePath);
+			$options = ocService()->filter->path($filePath);
 			$saveName = end($options);	
 		}
 

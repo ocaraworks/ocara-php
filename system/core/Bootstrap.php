@@ -17,15 +17,15 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
     public function init()
     {
         date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
-        set_exception_handler(array(Ocara::services()->exceptionHandler, 'run'));
+        set_exception_handler(array(ocService()->exceptionHandler, 'run'));
 
         $this->event('die')
             ->append(ocConfig('EVENT.oc_die', null));
 
-        $this->bindEvents(ocConfig('EVENT.log', Ocara::services()->log));
+        $this->bindEvents(ocConfig('EVENT.log', ocService()->log));
 
         if (!@ini_get('short_open_tag')) {
-            Ocara::services()->error->show('need_short_open_tag');
+            ocService()->error->show('need_short_open_tag');
         }
 
         if (!ocFileExists(OC_ROOT . '.htaccess')) {
@@ -48,7 +48,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
             if (OC_SYS_MODEL == 'develop') {
                 Develop::run();
             } else {
-                Ocara::services()->error->show('unallowed_develop');
+                ocService()->error->show('unallowed_develop');
             }
         }
 
@@ -67,14 +67,14 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
         $htaccess = ocImport(OC_SYS . 'data/rewrite/apache.php');
 
         if (empty($htaccess)) {
-            Ocara::services()->error->show('no_rewrite_default_file');
+            ocService()->error->show('no_rewrite_default_file');
         }
 
         if (is_writeable(OC_ROOT)) {
             $htaccess = sprintf($htaccess, $moreContent);
             ocWrite($file, $htaccess);
         } else {
-            Ocara::services()->error->show('not_writeable_htaccess');
+            ocService()->error->show('not_writeable_htaccess');
         }
     }
 }

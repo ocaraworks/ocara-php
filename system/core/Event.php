@@ -57,7 +57,7 @@ class Event extends Basis implements EventInterface
         }
 
         if (is_object($callback) && !($callback instanceof Middleware)) {
-            Ocara::services()->error->show('invalid_middleware');
+            ocService()->error->show('invalid_middleware');
         }
 
         $params = func_get_args();
@@ -221,7 +221,7 @@ class Event extends Basis implements EventInterface
                     if (is_object($callback)) {
                         $callback = array($callback, 'handler');
                     }
-                    return Ocara::services()->call->run($callback, $params);
+                    return ocService()->call->run($callback, $params);
                 }
             }
         }

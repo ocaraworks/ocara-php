@@ -122,7 +122,7 @@ class Controller extends serviceProvider implements ControllerInterface
 		if (method_exists($this, $method)) {
 			return call_user_func_array(array($this, $method), $params);
 		} else {
-            Ocara::services()->error->show('no_action_return');
+            ocService()->error->show('no_action_return');
 		}
 	}
 
@@ -142,7 +142,7 @@ class Controller extends serviceProvider implements ControllerInterface
 			return $instance;
 		}
 
-        Ocara::services()->error->show('no_property', array($key));
+        ocService()->error->show('no_property', array($key));
 	}
 
 	/**
@@ -162,6 +162,6 @@ class Controller extends serviceProvider implements ControllerInterface
             return call_user_func_array(array(&$this->_provider, $name), $params);
         }
 
-        Ocara::services()->error->show('no_method', array($name));
+        ocService()->error->show('no_method', array($name));
 	}
 }

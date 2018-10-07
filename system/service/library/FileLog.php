@@ -60,7 +60,7 @@ class FileLog extends ServiceBase implements LogInterface
 	 */
 	public function create($logName)
 	{
-		return File::createDir($this->logRoot . $logName, 0777);
+		return ocService()->file->createDir($this->logRoot . $logName, 0777);
 	}
 
 	/**
@@ -86,7 +86,7 @@ class FileLog extends ServiceBase implements LogInterface
 		}
 
 		if ($this->logType == 'sys') {
-			return File::appendFile($this->sysLogPath, "$content\n");
+			return ocService()->file->appendFile($this->sysLogPath, "$content\n");
 		}
 		
 		$logPath = $this->logRoot . $logName;
@@ -95,13 +95,13 @@ class FileLog extends ServiceBase implements LogInterface
 		}
 		
 		$lastLogFile = ocDir($logPath) . $this->_getLastLogFile($logName);
-		$fileInfo 	 = File::fileInfo($lastLogFile);
+		$fileInfo 	 = ocService()->file->fileInfo($lastLogFile);
 
 		if ($fileInfo && $fileInfo['size'] > $this->maxLogSize * 1024 * 1024) {
 			$lastLogFile = $this->_createLogFile($logName);
 		}
 
-		return File::appendFile($lastLogFile, "{$content}" . PHP_EOL);
+		return ocService()->file->appendFile($lastLogFile, "{$content}" . PHP_EOL);
 	}
 
 	/**
@@ -128,7 +128,7 @@ class FileLog extends ServiceBase implements LogInterface
 	public function clear($logName = null)
 	{
 		$path = $this->logRoot . $logName;
-		return is_dir($path) ? File::clearDir($path, true) : false;
+		return is_dir($path) ? ocService()->file->clearDir($path, true) : false;
 	}
 
 	/**
@@ -139,7 +139,7 @@ class FileLog extends ServiceBase implements LogInterface
 	public function delete($logName)
 	{
 		$path = $this->logRoot . $logName;
-		return is_dir($path) ? File::delDir($path, true) : false;
+		return is_dir($path) ? ocService()->file->delDir($path, true) : false;
 	}
 
 	/**
@@ -206,6 +206,6 @@ class FileLog extends ServiceBase implements LogInterface
 	protected function _createLogFile($logName)
 	{
 		$path = $this->logRoot . ocDir($logName);
-		return File::createFile($path . $logName . '_' . time() . '.txt');
+		return ocService()->file->createFile($path . $logName . '_' . time() . '.txt');
 	}
 }

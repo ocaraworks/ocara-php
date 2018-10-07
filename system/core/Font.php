@@ -32,6 +32,6 @@ class Font extends Base
             ($path = ocFileExists(OC_EXT . 'data/fonts/' . $name, true))
         ) return $path;
 
-        Ocara::services()->error->show('not_exists_font');
+        ocService()->error->show('not_exists_font');
     }
 }

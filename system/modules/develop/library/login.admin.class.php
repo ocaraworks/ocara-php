@@ -22,11 +22,11 @@ class login_admin
 		$path = OC_DEV_DIR . 'data/users.data.php';
 		
 		if(!ocFileExists($path)){
-            Ocara::services()->error->show('not_exists_file', array('users.data.php'));
+            ocService()->error->show('not_exists_file', array('users.data.php'));
 		}
 
 		$users = include(OC_DEV_DIR . 'data/users.data.php');
-		$request = Ocara::services()->request;
+		$request = ocService()->request;
 		$username = $request->getPost('username');
 		$password = $request->getPost('password');
 		
@@ -41,7 +41,7 @@ class login_admin
 		} else {
 			$_SESSION['OC_DEV_LOGIN'] = true;
 			$_SESSION['OC_DEV_USERNAME'] = $username;
-			Ocara::services()->cookie->create(session_name(), session_id());
+			ocService()->cookie->create(session_name(), session_id());
 			header("location:" . ocUrl(array(OC_DEV_SIGN, 'home', 'index')));
 		}
 	}

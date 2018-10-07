@@ -74,7 +74,7 @@ abstract class Database extends ModelBase
 		}
 
 		if (self::$_requirePrimary && empty($this->_primary)) {
-			Ocara::services()->error->show('no_primaries');
+			ocService()->error->show('no_primaries');
 		}
 
 		$this->_tag = self::getClass();
@@ -179,7 +179,7 @@ abstract class Database extends ModelBase
 		$modelConfig = array_fill_keys(array('JOIN', 'MAP', 'VALIDATE', 'LANG'), array());
 		$filePath = self::getConfigPath($class);
 
-		if (ocFileExists($path = ocPath('conf', "model/{$filePath}"))) {
+		if (ocFileExists($path = ocPath('config', "model/{$filePath}"))) {
 			$CONF = array();
 			include($path);
 			if (isset($CONF) && is_array($CONF)) {
@@ -293,7 +293,7 @@ abstract class Database extends ModelBase
 			return $this->$name;
 		}
 
-		Ocara::services()->error->show('null_database');
+		ocService()->error->show('null_database');
 	}
 
 	/**
@@ -368,7 +368,7 @@ abstract class Database extends ModelBase
 	public static function getFieldsConfig($class)
 	{
 		$filePath = self::getConfigPath($class);
-		$path = ocPath('data', "fields/{$filePath}");
+		$path = ocPath('table', "fields/{$filePath}");
 
 		if (ocFileExists($path)) {
 			return @include($path);
@@ -570,14 +570,14 @@ abstract class Database extends ModelBase
 
 		$data = $this->map(array_merge($data, $this->getChanges()));
 		if (empty($data)) {
-			Ocara::services()->error->show('fault_save_data');
+			ocService()->error->show('fault_save_data');
 		}
 
 		if (!$debug && $this->_relations) {
-			Ocara::services()->transaction->begin();
+			ocService()->transaction->begin();
 		}
 
-		Ocara::services()->transaction->push($this->_plugin);
+		ocService()->transaction->push($this->_plugin);
 
 		if ($condition) {
 			$result = $this->_plugin->update($this->_tableName, $data, $condition, $debug);
@@ -696,7 +696,7 @@ abstract class Database extends ModelBase
 	{
 		$condition = $this->_getCondition();
 		if (empty($condition)) {
-			Ocara::services()->error->show('need_condition');
+			ocService()->error->show('need_condition');
 		}
 
 		$data = $this->_getSubmitData($data);
@@ -712,7 +712,7 @@ abstract class Database extends ModelBase
 	protected function _getSubmitData($data)
 	{
 		if (empty($data)) {
-			$data = Ocara::services()->request->getPost();
+			$data = ocService()->request->getPost();
 			if ($data) {
 				$this->loadFields();
 			}
@@ -731,10 +731,10 @@ abstract class Database extends ModelBase
 	{
 		$condition = $this->_getCondition();
 		if (empty($condition)) {
-			Ocara::services()->error->show('need_condition');
+			ocService()->error->show('need_condition');
 		}
 
-		Ocara::services()->transaction->push($this->_plugin);
+		ocService()->transaction->push($this->_plugin);
 
 		if (!$debug && $this->_selected) {
 			$this->event('beforeDelete')->fire();
@@ -938,11 +938,11 @@ abstract class Database extends ModelBase
 	private function _getPrimaryCondition($condition)
 	{
 		if (empty($this->_primaries)) {
-			Ocara::services()->error->show('no_primary');
+			ocService()->error->show('no_primary');
 		}
 
 		if (ocEmpty($condition)) {
-			Ocara::services()->error->show('need_primary_value');
+			ocService()->error->show('need_primary_value');
 		}
 
 		if (is_string($condition) || is_numeric($condition)) {
@@ -950,13 +950,13 @@ abstract class Database extends ModelBase
 		} elseif (is_array($condition)) {
 			$values = $condition;
 		} else {
-			Ocara::services()->error->show('fault_primary_value_format');
+			ocService()->error->show('fault_primary_value_format');
 		}
 
 		if (count($this->_primaries) == count($values)) {
 			$where = $this->map(array_combine($this->_primaries, $values));
 		} else {
-			Ocara::services()->error->show('fault_primary_num');
+			ocService()->error->show('fault_primary_num');
 		}
 
 		return $where;
@@ -1172,7 +1172,7 @@ abstract class Database extends ModelBase
 		if (is_object($cacheObj)) {
 			if ($callback = ocConfig('EVENT.model.query.get_cache_data', null)) {
 				$params = array($cacheObj, $sql, $cacheRequired);
-				if ($result = Ocara::services()->call->run($callback, $params)) {
+				if ($result = ocService()->call->run($callback, $params)) {
 					return $result;
 				}
 			} else {
@@ -1827,7 +1827,7 @@ abstract class Database extends ModelBase
 
 		$sign = array_map('trim', explode(OC_DIR_SEP, $sign));
 		if (!$sign) {
-			Ocara::services()->error->show('fault_cond_sign');
+			ocService()->error->show('fault_cond_sign');
 		}
 
 		if (isset($sign[1])) {
@@ -2009,7 +2009,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		Ocara::services()->transaction->commit();
+		ocService()->transaction->commit();
 
 		return true;
 	}
@@ -2029,7 +2029,7 @@ abstract class Database extends ModelBase
 		$config = self::$_config[$this->_tag]['JOIN'][$key];
 
 		if (count($config) < 3) {
-			Ocara::services()->error->show('fault_relate_config');
+			ocService()->error->show('fault_relate_config');
 		}
 
 		list($joinType, $class, $joinOn) = $config;

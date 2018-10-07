@@ -138,6 +138,6 @@ class ServiceProvider extends Base implements ServiceProviderInterface
             return $instance;
         }
 
-        Ocara::services()->error->show('no_service', array($key));
+        ocService()->error->show('no_service', array($key));
     }
 }

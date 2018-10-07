@@ -26,7 +26,7 @@ class model_admin
 
 	public function add()
 	{
-		$request = Ocara::services()->request;
+		$request = ocService()->request;
 		$this->_modelType = $request->getPost('modelType');
 		$this->_connectName = $request->getPost('connect', 'main');
 		$this->_table = $request->getPost('table');
@@ -37,7 +37,7 @@ class model_admin
 			if (empty($this->_model)) {
 				$this->_model = ocHump($this->_table);
 			}
-			$this->_database = Ocara::services()->request->getPost('database', ocConfig('DATABASE.main.name'));
+			$this->_database = ocService()->request->getPost('database', ocConfig('DATABASE.main.name'));
 			$this->createDatabaseModel();
 		} elseif ($this->_modelType == 'Cache') {
 			if (empty($this->_model)) {
@@ -104,13 +104,13 @@ class model_admin
 			Develop::error(Develop::back('Model文件已存在，如果需要覆盖，请先手动删除！'));
 		}
 
-		File::createFile($path, 'wb');
-		File::writeFile($path, $content);
+        ocService()->file->createFile($path, 'wb');
+        ocService()->file->writeFile($path, $content);
 
 		//新建字段配置
 		$fileCache = new FileCache();
 		$modelFile = lcfirst($modelName);
-		$path = OC_ROOT . 'resource/conf/model/' . $connectPath . $modelFile . '.php';
+		$path = OC_ROOT . 'config/model/' . $connectPath . $modelFile . '.php';
 		$fileCache->setData(array(), "CONF['MAP']", '字段别名映射');
 		$fileCache->format();
 		$fileCache->save($path);
@@ -140,7 +140,7 @@ class model_admin
 		$fileCache->save($path);
 
 		//新建语言文件
-		$path = OC_ROOT . "resource/lang/"
+		$path = OC_ROOT . "lang/"
 			. Container::getDefault()->config->language()
 			. '/model/'
 			. $connectPath
@@ -163,7 +163,7 @@ class model_admin
 		}
 
 		if ($cacheType == 'Redis') {
-			$this->_database = Ocara::services()->request->getPost('database', 0);
+			$this->_database = ocService()->request->getPost('database', 0);
 		}
 
 		$namespace = OC_NS_SEP . $cacheType;
@@ -199,8 +199,8 @@ class model_admin
 			Develop::error(Develop::back('Model文件已存在，如果需要覆盖，请先手动删除！'));
 		}
 
-		File::createFile($path, 'wb');
-		File::writeFile($path, $content);
+        ocService()->file->createFile($path, 'wb');
+        ocService()->file->writeFile($path, $content);
 
 		die("添加成功！");
 	}

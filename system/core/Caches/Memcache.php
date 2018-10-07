@@ -23,7 +23,7 @@ class Memcache extends CacheBase implements CacheInterface
 	public function connect($config, $required = true)
 	{
 		if (!ocGet('open', $config, false)) {
-			return Ocara::services()->error->check('no_open_service_config', array('Memcache'), $required);
+			return ocService()->error->check('no_open_service_config', array('Memcache'), $required);
 		}
 
 		if (class_exists($class = 'Memcache', false)) {
@@ -31,7 +31,7 @@ class Memcache extends CacheBase implements CacheInterface
 		} elseif (class_exists($class = 'Memcached', false)) {
 			ocCheckExtension('memcached');
 		} else {
-			return Ocara::services()->error->check('no_extension', array('Memcache'), $required);
+			return ocService()->error->check('no_extension', array('Memcache'), $required);
 		}
 
 		$this->_plugin = new $class();

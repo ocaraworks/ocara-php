@@ -52,7 +52,7 @@ abstract class Base extends Basis
             if (method_exists($this, '__none')) {
                 $this->__none($name);
             } else {
-                Ocara::services()->error->show('no_property', array($name));
+                ocService()->error->show('no_property', array($name));
             }
         }
 
@@ -107,7 +107,7 @@ abstract class Base extends Basis
             return call_user_func_array($this->_traits[$name], $params);
         }
 
-        Ocara::services()->error->show('no_method', array($name));
+        ocService()->error->show('no_method', array($name));
 	}
 
     /**
@@ -119,7 +119,7 @@ abstract class Base extends Basis
      */
     public static function __callStatic($name, $params)
     {
-        return Ocara::services()->error->show('no_method', array($name));
+        return ocService()->error->show('no_method', array($name));
     }
 
     /**
@@ -140,7 +140,7 @@ abstract class Base extends Basis
             return $value;
         }
 
-        Ocara::services()->error->show('no_property', array($key));
+        ocService()->error->show('no_property', array($key));
     }
 
 	/**
@@ -161,7 +161,7 @@ abstract class Base extends Basis
 			return $this->_plugin;
 		}
 
-        Ocara::services()->error->show('no_plugin');
+        ocService()->error->show('no_plugin');
 	}
 
     /**

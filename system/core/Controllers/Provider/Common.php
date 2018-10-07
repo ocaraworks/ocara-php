@@ -81,7 +81,7 @@ class Common extends Base
     public function getSubmit($key = null, $default = null)
     {
         $data = $this->_submitMethod == 'post' ? $_POST : $_GET;
-        $data = Ocara::services()->request->getRequestValue($data, $key, $default);
+        $data = ocService()->request->getRequestValue($data, $key, $default);
         return $data;
     }
 
@@ -202,7 +202,7 @@ class Common extends Base
             if ($model instanceof DatabaseModel) {
                 $class = $model->getClass();
             } else {
-                Ocara::services()->error->show('fault_model_object');
+                ocService()->error->show('fault_model_object');
             }
         } else {
             $class = $model;

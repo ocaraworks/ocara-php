@@ -53,12 +53,11 @@ class Common extends ViewBase implements ViewInterfaces
 	{
 		if ($pluginClass = ocConfig('TEMPLATE.engine', false)) {
 			$route = $this->getRoute();
-			$path  = ocDir(array(
-				$this->_template,
+			$path  = $this->getViewPath(ocDir(array(
 				'template',
 				$route['module'],
 				$route['controller']
-			));
+			)));
 			$this->_plugin = new $pluginClass($path);
 		}
 	}
@@ -130,7 +129,7 @@ class Common extends ViewBase implements ViewInterfaces
 			if (func_num_args() >= 2) {
 				return $default;
 			}
-			Ocara::services()->error->show('not_exists_template_var', array($name));
+			ocService()->error->show('not_exists_template_var', array($name));
 		}
 		
 		return $vars ? : array();
@@ -171,14 +170,29 @@ class Common extends ViewBase implements ViewInterfaces
 		$this->_parentLayout = $layout;
 	}
 
+    /**
+     * 获取模块视图路径
+     * @param $subPath
+     */
+	public function getViewPath($subPath = null, $template = null)
+    {
+        $template = $template ? : $this->_template;
+        $path = $this->getRoute('module')
+            . '/view/'
+            . $template
+            . OC_DIR_SEP
+            . $subPath;
+	    return ocPath('modules', $path);
+    }
+
 	/**
 	 * 设置模板风格
 	 * @param $dir
 	 */
 	public function setTemplate($dir)
 	{
-		if (!is_dir(ocPath('view', 'template/' . $dir))) {
-			Ocara::services()->error->show('not_exists_template', array($dir));
+		if (!is_dir($this->getViewPath('template/' . $dir))) {
+			ocService()->error->show('not_exists_template', array($dir));
 		}
 		$this->_template = $dir;
 	}
@@ -212,12 +226,11 @@ class Common extends ViewBase implements ViewInterfaces
 	 */
 	public function _readPart($part, $template = null, $show = true)
 	{
-		$template = $template ? : $this->_template;
-		$part     = ocForceArray($part);
-		$html     = array();
+		$part = ocForceArray($part);
+		$html = array();
 
 		foreach ($part as $value) {
-			$path = ocPath('view', ocDir($template, 'part') . $value . '.php');
+			$path = $this->getViewPath('part/' . $value . '.php', $template);
 
 			if (ocFileExists($path)) {
 				if ($show) {
@@ -227,7 +240,7 @@ class Common extends ViewBase implements ViewInterfaces
 					$html[] = $this->readFile($path, true);
 				}
 			} else {
-				Ocara::services()->error->show('not_exists_part', array('file' => ltrim($value,OC_DIR_SEP)));
+				ocService()->error->show('not_exists_part', array('file' => ltrim($value,OC_DIR_SEP)));
 			}
 		}
 		
@@ -393,13 +406,13 @@ class Common extends ViewBase implements ViewInterfaces
 	public function output($data)
 	{
 		if (ocConfig('FORM.data_cahce', 1)) {
-			Ocara::services()->response->setOption(
+			ocService()->response->setOption(
 				'Cache-control',
 				'private, must-revalidate'
 			);
 		}
 
-		Ocara::services()->response->sendHeaders();
+		ocService()->response->sendHeaders();
 		echo $data['content'];
 	}
 
@@ -410,7 +423,7 @@ class Common extends ViewBase implements ViewInterfaces
 	 */
 	public function ajaxOutput($data, $message)
 	{
-        Ocara::services()->ajax->show('success', $message, $data);
+        ocService()->ajax->show('success', $message, $data);
 	}
 
 	/**
@@ -420,11 +433,11 @@ class Common extends ViewBase implements ViewInterfaces
 	 */
 	public function renderLayout($layout)
 	{
-		$path = ocPath('view', ocDir($this->_template, 'layout') . $layout . '.php');
+		$path = $this->getViewPath('layout/' . $layout . '.php');
 		if (ocFileExists($path)) {
 			$this->_content = $this->readFile($path);
 		} else {
-			Ocara::services()->error->show('not_exists_layout', array($this->_layout));
+			ocService()->error->show('not_exists_layout', array($this->_layout));
 		}
 
 		$parentLayout = $this->_parentLayout;
@@ -444,7 +457,7 @@ class Common extends ViewBase implements ViewInterfaces
 	{
 		if (empty($file)) return null;
 		
-		$path = ocDir($this->_template, 'template');
+		$path = 'template/';
 		$rootTmpl = false;
 		
 		if (preg_match('/^\/(.*)$/', $file, $mt)) {
@@ -456,11 +469,11 @@ class Common extends ViewBase implements ViewInterfaces
 		}
 		
 		$file = $file . '.' . $this->_fileType;
-		$realPath = ocPath('view', $path . $file);
+		$realPath = $this->getViewPath($path . $file);
 
 		if (ocFileExists($realPath) == false) {
 			if ($required) {
-				Ocara::services()->error->show('not_exists_template_file', array($file));
+				ocService()->error->show('not_exists_template_file', array($file));
 			} else {
 				return null;
 			}
@@ -490,7 +503,7 @@ class Common extends ViewBase implements ViewInterfaces
 		$content = ob_get_contents();
 		ob_end_clean();
 
-		return Ocara::services()->filter->bom($content);
+		return ocService()->filter->bom($content);
 	}
 
 	/**
@@ -513,14 +526,14 @@ class Common extends ViewBase implements ViewInterfaces
 					'type' => 'text/javascript',
 					'language' => 'javascript'
 				);
-				$value = Ocara::services()->html->createElement('script', $attr, true);
+				$value = ocService()->html->createElement('script', $attr, true);
 			} else {
 				$attr  = array(
 					'href' => $value,
 					'type' => 'text/css',
 					'rel' => 'stylesheet'
 				);
-				$value = Ocara::services()->html->createElement('link', $attr, false);
+				$value = ocService()->html->createElement('link', $attr, false);
 			}
 			return $value . PHP_EOL;
 		}

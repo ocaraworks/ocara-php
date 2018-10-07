@@ -20,24 +20,24 @@ class Smarty extends ServiceBase implements TemplateInterface
 
 	/**
 	 * 析构函数
-	 * @param string $path
+	 * @param string $templateDir
 	 */
-	public function __construct($path)
+	public function __construct($templateDir, $perm = null)
 	{
 		ocImport(OC_SYS . 'modules/smarty/Smarty.class.php');
 
 		if (!class_exists('smarty', false)) {
-            Ocara::services()->error->show('no_the_special_class', array('smarty'));
+            ocService()->error->show('no_the_special_class', array('smarty'));
 		}
 
 		$this->_plugin = new \Smarty();
-		$templateDir  = ocPath('view', $path);
 		$compileDir   = ocPath('runtime', 'smarty/cmp/');
 		$cacheDir     = ocPath('runtime', 'smarty/cache/');
 
-		ocCheckPath($templateDir, 0755, true);
-		ocCheckPath($compileDir, 0755, true);
-		ocCheckPath($cacheDir, 0755, true);
+        $perm = $perm ? : 0755;
+		ocCheckPath($templateDir, $perm, true);
+		ocCheckPath($compileDir, $perm, true);
+		ocCheckPath($cacheDir, $perm, true);
 
 		$this->_plugin->setTemplateDir($templateDir);
 		$this->_plugin->setCompileDir($compileDir);

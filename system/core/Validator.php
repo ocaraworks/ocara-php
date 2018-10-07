@@ -43,7 +43,7 @@ class Validator extends Base
 	{
 		$result = true;
 		$rules = $this->_rules;
-		$lang = array_merge(Ocara::services()->lang->get(), $this->_lang);
+		$lang = array_merge(ocService()->lang->get(), $this->_lang);
 
 		if ($rules) foreach ($rules as $field => $rule) {
 			if (empty($rule)) continue;
@@ -200,13 +200,13 @@ class Validator extends Base
 	public function callback($field, $value, $callback)
 	{
 		if(empty($callback)) {
-			Ocara::services()->error->show('fault_callback_validate');
+			ocService()->error->show('fault_callback_validate');
 		}
 
 		$count = count($value);
 		for ($i = 0; $i < $count; $i++) {
 			$val   = $value[$i];
-			$error = Ocara::services()->call->run($callback, array($field, $val, $i));
+			$error = ocService()->call->run($callback, array($field, $val, $i));
 			if ($error) {
 				$this->prepareError($error, $field, $val, $i);
 				return false;

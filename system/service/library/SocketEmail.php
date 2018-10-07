@@ -37,7 +37,7 @@ final class SocketEmail extends ServiceBase
 		
 		if (empty($this->fo)) {
 			$errmsg = iconv('gbk', 'utf-8', $errmsg);
-            Ocara::services()->error->show('failed_email_socket_connect', array($errno, $errmsg));
+            ocService()->error->show('failed_email_socket_connect', array($errno, $errmsg));
 		}
 		
 		if ($timeout) {

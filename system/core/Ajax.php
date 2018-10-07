@@ -22,7 +22,7 @@ class Ajax extends Base
 	 */
 	public function show($status, array $message = array(), $body = OC_EMPTY)
 	{
-	    $services = Ocara::services();
+	    $services = ocService();
 		if (is_string($message)) {
 			$message = $services->lang->get($message);
 		}

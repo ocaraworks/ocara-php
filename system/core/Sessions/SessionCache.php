@@ -86,7 +86,7 @@ class SessionCache extends ServiceProvider
         try {
             $this->_plugin->set($this->_prefix . $id, $data);
         } catch(Exception $exception) {
-            Ocara::services()->error->show($exception->getMessage());
+            ocService()->error->show($exception->getMessage());
         }
 
         return true;

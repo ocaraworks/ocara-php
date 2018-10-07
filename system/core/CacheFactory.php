@@ -31,7 +31,7 @@ final class CacheFactory extends Base
 			return $object;
 		}
 
-		return Ocara::services()->error
+		return ocService()->error
                     ->check('not_exists_cache', array($connectName), $required);
 	}
 
@@ -49,7 +49,7 @@ final class CacheFactory extends Base
 		$config = array();
 
 		if ($callback = ocConfig('SOURCE.cache.get_config', null)) {
-			$config = Ocara::services()->call->run($callback, array($connectName));
+			$config = ocService()->call->run($callback, array($connectName));
 		}
 
 		if (empty($config)) {
@@ -81,6 +81,6 @@ final class CacheFactory extends Base
 			}
 		}
 
-        Ocara::services()->error->show('not_exists_cache');
+        ocService()->error->show('not_exists_cache');
 	}
 }

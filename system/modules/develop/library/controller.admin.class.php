@@ -24,7 +24,7 @@ class controller_admin
 
 	public function add(array $data = array())
 	{
-		$request = Ocara::services()->request;
+		$request = ocService()->request;
 		$data  = $data ? : $request->getPost();
 		$cname = explode(OC_DIR_SEP, trim($data['cname'], OC_DIR_SEP));
 		
@@ -40,19 +40,19 @@ class controller_admin
 		$this->ttype      = $data['ttype'];
 		$this->createview = $request->getPost('createview');
 		$this->controllerType = $request->getPost('controllerType');
-		$path = OC_ROOT . 'resource/conf/control';
+		$path = OC_ROOT . 'config/control';
 	
 		if ($this->mdlname) {
 			if (is_dir($path = $path . OC_DIR_SEP . $this->mdlname)) {
-				Ocara::services()->config->load($path);
+				ocService()->config->load($path);
 			}
 		}
 		
 		if (is_dir($path = $path . OC_DIR_SEP . $this->cname)) {
-			Ocara::services()->config->load($path);
+			ocService()->config->load($path);
 		}
 
-		$CONF = Ocara::services()->config->get();
+		$CONF = ocService()->config->get();
 		$this->tplType = ocGet('TEMPLATE.file_type', $CONF, 'html');
 		
 		$this->createController();
@@ -118,8 +118,8 @@ class controller_admin
 		$content  .= "\tprotected function _control()\r\n\t{}\r\n";
 		$content  .= "}";
 
-		File::createFile($path, 'wb');
-		File::writeFile($path, $content, true);
+        ocService()->file->createFile($path, 'wb');
+        ocService()->file->writeFile($path, $content, true);
 		
 		$this->createAction($controlPath, $cname, $extends);
 		$this->createview && $this->createView();
@@ -183,25 +183,37 @@ class controller_admin
 
 		$content .= "}";
 
-		File::createFile($path . $className . '.php', 'wb');
-		File::writeFile($path . $className . '.php', $content);
+        ocService()->file->createFile($path . $className . '.php', 'wb');
+        ocService()->file->writeFile($path . $className . '.php', $content);
 	}
+
+    /**
+     * 获取模块视图路径
+     * @param $subPath
+     */
+    public function getViewPath($subPath = null)
+    {
+        $path = $this->mdlname
+            . '/view/'
+            . $this->ttype
+            . OC_DIR_SEP
+            . $subPath;
+        return ocPath('modules', $path);
+    }
 
 	public function createView()
 	{
-		$path = ocPath('view', $this->ttype . '/template/');
-		$path = $path . ($this->mdlname ? $this->mdlname . OC_DIR_SEP : false);
+		$path = $this->getViewPath('template/');
 		$path = $path . "{$this->cname}";
-
-		ocCheckPath($path);
 		$ttypePath = ocDir($this->ttype);
-		
 		$cssPath = ocPath('css', $ttypePath);
 		$imagesPath = ocPath('images', $ttypePath);
 
-		ocCheckPath(ocPath('view', $ttypePath . 'helper'));
-		ocCheckPath(ocPath('view', $ttypePath . 'part'));
-		ocCheckPath(ocPath('view', $ttypePath . 'layout'));
+        ocCheckPath($path);
+		ocCheckPath($this->getViewPath('helper'));
+		ocCheckPath($this->getViewPath('part'));
+		ocCheckPath($this->getViewPath('layout'));
+
 		ocCheckPath($cssPath);
 		ocCheckPath($imagesPath);
 
@@ -222,8 +234,8 @@ class controller_admin
 	{
 		$path = ocDir($path) . $tpl . '.' . $this->tplType;
 		$content = "Hello, I'm %s.{$this->tplType}.";
-		
-		File::openFile($path, 'wb');
-		File::writeFile($path, sprintf($content, $tpl));
+
+        ocService()->file->openFile($path, 'wb');
+        ocService()->file->writeFile($path, sprintf($content, $tpl));
 	}
 }

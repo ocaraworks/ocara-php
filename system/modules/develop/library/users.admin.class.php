@@ -19,8 +19,8 @@ class users_admin
 
 	public function add()
 	{
-		$this->_username = Ocara::services()->request->getPost('username');
-		$this->_password = Ocara::services()->request->getPost('password');
+		$this->_username = ocService()->request->getPost('username');
+		$this->_password = ocService()->request->getPost('password');
 		$this->edit();
 	}
 
@@ -48,9 +48,9 @@ class users_admin
 			$content .= "\t'password' => '{$value['password']}'\r\n";
 			$content .= ");";
 		}
-	
-		File::createFile($path, 'wb');
-		File::writeFile($path, $content);
+
+        ocService()->file->createFile($path, 'wb');
+        ocService()->file->writeFile($path, $content);
 		die("操作成功！");
 	}
 }

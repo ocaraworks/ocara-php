@@ -100,12 +100,12 @@ class StaticPath extends Base
 					}
 				} else {
 					$getKey = (integer)$key + $offset;
-					$value  = ($value = Ocara::services()->request->getGet($getKey)) ? urlencode($value) : false;
+					$value  = ($value = ocService()->request->getGet($getKey)) ? urlencode($value) : false;
 				}
 				$paramsStr = trim(str_ireplace($mt[1], $value, $paramsStr), $this->delimiter);
 				$paramData[$name] = $value;
 			} else
-				Ocara::services()->error->show('fault_static_field');
+				ocService()->error->show('fault_static_field');
 		}
 
 		return array($paramsStr, $paramData);
@@ -131,7 +131,7 @@ class StaticPath extends Base
 		$fileStr 	= substr($params, $index ? $index + 1 : 0);
 
 		if (!preg_match('/^{[\w:]+}(' . self::$delimiter . '{[\w:]+})*$/', $fileStr)) {
-			Ocara::services()->error->show('fault_static_field');
+			ocService()->error->show('fault_static_field');
 		}
 
 		$pathParams = $pathStr ? explode(OC_DIR_SEP, trim($pathStr, OC_DIR_SEP)) : array();
@@ -161,6 +161,6 @@ class StaticPath extends Base
 			return $module . str_ireplace($search, $replace, self::$route);
 		}
 
-		Ocara::services()->error->show('fault_static_route');
+		ocService()->error->show('fault_static_route');
 	}
 }

@@ -18,7 +18,7 @@ class module_admin
 
 	public function add()
 	{
-		$this->_mdlname = Ocara::services()->request->getPost('mdlname');
+		$this->_mdlname = ocService()->request->getPost('mdlname');
 		$this->createModel();
 	}
 
@@ -26,7 +26,7 @@ class module_admin
 	{
 		$mdlname   = ucfirst($this->_mdlname);
 		$className = $mdlname . 'Module';
-		$baseController = Ocara::services()->request->getPost('controllerType');
+		$baseController = ocService()->request->getPost('controllerType');
 
 		$content = "<?php\r\n";
 		$content .= "namespace Controller\\{$mdlname};\r\n";
@@ -56,9 +56,9 @@ class module_admin
 		if (ocFileExists($path = $modulePath . "/{$className}.php")) {
 			Develop::error(Develop::back('模块(Module)文件已存在，如果需要覆盖，请先手动删除！'));
 		}
-		
-		File::createFile($path, 'wb');
-		File::writeFile($path, $content);
+
+        ocService()->file->createFile($path, 'wb');
+        ocService()->file->writeFile($path, $content);
 		die("添加成功！");
 	}
 }

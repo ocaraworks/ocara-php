@@ -77,7 +77,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 			}
 			if ($error) {
 				if ($i < $limitConnect) continue;
-				Ocara::services()->error->show('failed_db_connect', $error);
+				ocService()->error->show('failed_db_connect', $error);
 			} else {
 				break;
 			}

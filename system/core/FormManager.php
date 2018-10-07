@@ -135,13 +135,13 @@ class FormManager extends ServiceProvider
 	private function _showCheckFormError($errorType, $params = array(), $data = array())
 	{
 		$error['errorType'] = $errorType;
-		$error['errorInfo'] = Ocara::services()->lang->get($errorType, $params);;
+		$error['errorInfo'] = ocService()->lang->get($errorType, $params);;
 		$error['errorData'] = $data;
 
 		if ($this->event('checkError')->get()) {
 			$this->event('checkError')->fire(array($error, $this->getRoute()));
 		} else {
-			Ocara::services()->error->show($error['errorInfo']);
+			ocService()->error->show($error['errorInfo']);
 		}
 
 		die();

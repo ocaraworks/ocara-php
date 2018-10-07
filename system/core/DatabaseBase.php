@@ -739,7 +739,7 @@ class DatabaseBase extends Sql
 		if ($this->errorExists()) {
 			$error = $this->_error;
 			$this->_error = $error;
-			Ocara::services()->error->show($this->getError());
+			ocService()->error->show($this->getError());
 		}
 	}
 

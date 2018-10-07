@@ -126,7 +126,7 @@ class Sql extends Base
 			}
 		}
 
-		Ocara::services()->error->show('need_string_field');
+		ocService()->error->show('need_string_field');
 	}
 
 	/**
@@ -139,7 +139,7 @@ class Sql extends Base
 	public function parseField($field, $alias = null)
 	{
 		if (!is_string($field)) {
-			Ocara::services()->error->show('invalid_field_name');
+			ocService()->error->show('invalid_field_name');
 		}
 
 		if ($mt = self::checkOcaraSqlTag($field)) {
@@ -162,7 +162,7 @@ class Sql extends Base
 	 */
 	public function filterSql($content, $addSlashes = true, $equal = false)
 	{
-		return Ocara::services()->filter->sql($content, $addSlashes, $this->_config['keywords'], $equal);
+		return ocService()->filter->sql($content, $addSlashes, $this->_config['keywords'], $equal);
 	}
 
 	/**
@@ -233,7 +233,7 @@ class Sql extends Base
 		if (ocScalar($condition)) {
 			return true;
 		}
-		Ocara::services()->error->show('need_scalar_condition');
+		ocService()->error->show('need_scalar_condition');
 	}
 
 	/**
@@ -467,10 +467,10 @@ class Sql extends Base
 		$fieldName = $this->filterName($fieldName);
 
 		if ($countFiled) {
-			$sql = Ocara::services()->filter->addSlashes("COUNT({$countFiled}) AS {$fieldName}");
+			$sql = ocService()->filter->addSlashes("COUNT({$countFiled}) AS {$fieldName}");
 		} else {
 			$countFiled = $isGroup ? 1 : 'COUNT(1)';
-			$sql = Ocara::services()->filter->addSlashes("{$countFiled} AS {$fieldName}");
+			$sql = ocService()->filter->addSlashes("{$countFiled} AS {$fieldName}");
 		}
 
 		return $sql;
@@ -746,7 +746,7 @@ class Sql extends Base
 		}
 
 		$link   = $link ? : ',';
-		$sign   = $sign ? strtoupper(trim(Ocara::services()->filter->replaceSpace($sign))) : '=';
+		$sign   = $sign ? strtoupper(trim(ocService()->filter->replaceSpace($sign))) : '=';
 		$result = array();
 
 		if (in_array($sign, array('IN', 'NOT IN'))) {

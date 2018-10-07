@@ -38,7 +38,7 @@ class Error extends ServiceProvider
 	public static function writeLog($error, array $params = array())
 	{
 		try {
-			$error = Ocara::services()->lang->get($error, $params);
+			$error = ocService()->lang->get($error, $params);
 			throw new Exception($error['message'], $error['code']);
 		} catch(Exception $exception) {
 			self::$_instance->event('writeLog')->fire(
@@ -73,7 +73,7 @@ class Error extends ServiceProvider
 	public static function trigger($error, array $params = array(), $errorType = E_USER_ERROR)
 	{
 		$errorType = $errorType ? : E_USER_ERROR;
-		$error = Ocara::services()->lang->get($error, $params);
+		$error = ocService()->lang->get($error, $params);
 		trigger_error($error['message'], $errorType);
 	}
 
@@ -104,7 +104,7 @@ class Error extends ServiceProvider
     {
         if ($this->hasProperty($name)) {
             if ($params && !is_array($params[0])) {
-                $params[0] = Ocara::services()->lang->get($params[0], $params);
+                $params[0] = ocService()->lang->get($params[0], $params);
             }
             $exceptionClass = $this->getProperty($name);
             throw ocClass($exceptionClass, $params);

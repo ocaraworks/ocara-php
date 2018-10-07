@@ -57,7 +57,7 @@ class Path extends Basis
         $result = ocDir($root, $mapDir) . $path;
         if (isset($result)) {
             if ($local && $isFile && ($result = ocFileExists($result)) == false) {
-                Ocara::services()->error->show('not_exists_file', array($path));
+                ocService()->error->show('not_exists_file', array($path));
             }
             $path = $result;
         }

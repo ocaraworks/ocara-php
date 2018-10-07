@@ -71,9 +71,9 @@ class Rest extends Base
 
         if (is_array($message)) {
             list($text, $params) = $message;
-            $message = Ocara::services()->lang->get($text, $params);
+            $message = ocService()->lang->get($text, $params);
         } else {
-            $message = Ocara::services()->lang->get($message);
+            $message = ocService()->lang->get($message);
         }
 
         $this->view->output(compact('contentType', 'message', 'data'));
@@ -87,7 +87,7 @@ class Rest extends Base
      */
     public function getRequestId()
     {
-        return Ocara::services()->request->getGet(ocConfig('CONTROLLERS.rest.id_param', 'id'));
+        return ocService()->request->getGet(ocConfig('CONTROLLERS.rest.id_param', 'id'));
     }
 
     /**

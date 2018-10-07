@@ -29,7 +29,7 @@ class SessionDB extends ServiceProvider
         $this->_container->bindSingleton('_plugin', $location);
 
         if (!(is_object($this->_plugin) && $this->_plugin instanceof ModelBase)) {
-            Ocara::services()->error->show('failed_db_connect');
+            ocService()->error->show('failed_db_connect');
         }
     }
 

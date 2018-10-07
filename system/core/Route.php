@@ -39,7 +39,7 @@ class Route extends Base
             $controller = ocConfig('DEFAULT_CONTROLLER');
         }
 
-        if (Ocara::services()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
+        if (ocService()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
             $_GET = $this->formatGet($_GET);
         }
 

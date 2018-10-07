@@ -39,7 +39,7 @@ class Lang extends Base
 
 		if ($this->_properties === null) {
 			$this->_properties = array();
-			$this->load(OC_ROOT . 'resource/lang/' . Container::getDefault()->config->language());
+			$this->load(OC_ROOT . 'lang/' . Container::getDefault()->config->language());
 		}
 	}
 
@@ -47,25 +47,27 @@ class Lang extends Base
      * 加载控制层语言
      * @param string $path
      */
-    public function loadControlLang($route)
+    public function loadModuleConfig($route)
     {
-        $path = OC_ROOT . 'resource/lang/' . Container::getDefault()->config->language();
-        $paths = array();
         extract($route);
+        $modulePath = $module
+            . '/private/lang/'
+            . Container::getDefault()->config->language()
+            . OC_DIR_SEP;
 
-        if (isset($module) && $module && is_dir($path . OC_DIR_SEP . $module)) {
-            $path = $path . OC_DIR_SEP . $module;
-            $paths[] = $path;
-        }
+        $path = ocPath('modules', $modulePath);
+        $paths = array();
 
-        if ($controller && is_dir($path = $path . OC_DIR_SEP . $controller)) {
+        if (is_dir($path)) {
             $paths[] = $path;
-            if ($action && is_dir($path = $path . OC_DIR_SEP . $action)) {
+            if ($controller && is_dir($path = $path . OC_DIR_SEP . $controller)) {
                 $paths[] = $path;
+                if ($action && is_dir($path = $path . OC_DIR_SEP . $action)) {
+                    $paths[] = $path;
+                }
             }
+            $this->load($paths);
         }
-
-        $this->load($paths);
     }
 
 	/**

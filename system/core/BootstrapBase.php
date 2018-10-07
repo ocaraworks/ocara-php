@@ -34,7 +34,7 @@ abstract class BootstrapBase extends Base
         extract($route);
 
         if (empty($controller) || empty($action)) {
-            Ocara::services()->error->show("MVC Route Error!");
+            ocService()->error->show("MVC Route Error!");
         }
 
         list($umodule, $ucontroller, $uaction) = array_values(array_map('ucfirst', $route));
@@ -63,13 +63,13 @@ abstract class BootstrapBase extends Base
             }
         }
 
-        Ocara::services()->config->loadControlConfig($route);
-        Ocara::services()->lang->loadControlLang($route);
+        ocService()->config->loadModuleConfig($route);
+        ocService()->lang->loadModuleConfig($route);
         Container::getDefault()->bindSingleton($controlClass);
 
         $Control = Container::getDefault()->create($controlClass, array($route));
         if ($method != '_action' && !method_exists($Control, $method)) {
-            Ocara::services()->error->show('no_special_class', array('Action', $uaction));
+            ocService()->error->show('no_special_class', array('Action', $uaction));
         }
 
         $Control->init($route);
@@ -97,7 +97,7 @@ abstract class BootstrapBase extends Base
 
         if (!ocFileExists($path)) {
             if ($required) {
-                Ocara::services()->error->show('no_special_file', array($type, $target . '.php'));
+                ocService()->error->show('no_special_file', array($type, $target . '.php'));
             }
             return false;
         }
@@ -105,7 +105,7 @@ abstract class BootstrapBase extends Base
         include_once ($path);
         if (!class_exists($namespace . $target . $type,  false)) {
             if ($required) {
-                Ocara::services()->error->show('no_special_class', array($type, $target));
+                ocService()->error->show('no_special_class', array($type, $target));
             }
             return false;
         }

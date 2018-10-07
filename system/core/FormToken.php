@@ -47,12 +47,12 @@ class FormToken extends Base
 		$token = $this->genToken($formName);
 
 		list($tokenName, $tokenRoute) = $this->_tokenKey;
-		$sessData = Ocara::services()->session->get($tokenName);
+		$sessData = ocService()->session->get($tokenName);
 
 		if (is_array($sessData)) {
-			Ocara::services()->session->set($this->_tokenKey, $token);
+			ocService()->session->set($this->_tokenKey, $token);
 		} else {
-			Ocara::services()->session->set($tokenName, array($tokenRoute => $token));
+			ocService()->session->set($tokenName, array($tokenRoute => $token));
 		}
 
 		return $token;
@@ -67,7 +67,7 @@ class FormToken extends Base
 		$checkRepeatSubmit = ocConfig('FORM.check_repeat_submit', true);
 
 		if ($checkRepeatSubmit && $this->has()) {
-			Ocara::services()->session->delete($this->_tokenKey);
+			ocService()->session->delete($this->_tokenKey);
 			$this->_formName = null;
 			$this->_tokenName = null;
 			$this->_tokenKey = array();
@@ -134,7 +134,7 @@ class FormToken extends Base
 		$routeStr = implode(OC_EMPTY, $route);
 
 		if ($config = ocConfig('SOURCE.form.generate_token', null)) {
-			$token = Ocara::services()->call->run($config, array($tag, $formName, $route));
+			$token = ocService()->call->run($config, array($tag, $formName, $route));
 		} else {
 			$token = md5($routeStr . $formName . md5(Code::getRand(5)) . uniqid(mt_rand()));
 		}

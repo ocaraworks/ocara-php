@@ -43,7 +43,7 @@ class Form extends Base
 	{
 		$this->_sign = $name;
 		$this->_validateForm = true;
-		$this->_plugin = Ocara::services()->html;
+		$this->_plugin = ocService()->html;
 
 		$this->init();
 	}

@@ -31,6 +31,7 @@ return array(
 
 	//不能
 	'not_null'						=> array(1700, '%s不能为空。'),
+	'not_write_session_path'        => array(1701, 'Session目录没有写权限。'),
 
 	//空的
 	'null_database' 				=> array(1800, '数据库对象是空的。'), 
@@ -45,10 +46,9 @@ return array(
 	//非法
 	'invalid_path' 					=> array(1900, '文件路径非法：%s。'),
 	'invalid_debug'					=> array(1901, '非开发模式禁止显示调试SQL语句！您可以使用读入文件的方式。'),
-	'invalid_save_path'				=> array(1902, '无效的session保存目录！'),
-	'invalid_exception'				=> array(1903, '指定的Exception不存在或非法！'),
-	'invalid_field_name'			=> array(1904, '字段名必须是字符串。'),
-	'invalid_class_static_method' 	=> array(1905, '%s缺少静态方法%s()！请使用类对象代替类名传递。'),
+	'invalid_exception'				=> array(1902, '指定的Exception不存在或非法！'),
+	'invalid_field_name'			=> array(1903, '字段名必须是字符串。'),
+	'invalid_class_static_method' 	=> array(1904, '%s缺少静态方法%s()！请使用类对象代替类名传递。'),
 
 	//必需
 	'need_condition' 				=> array(2100, '查询条件不存在或为空。'),

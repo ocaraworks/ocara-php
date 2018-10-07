@@ -180,7 +180,7 @@ class Session extends ServiceProvider
 	public function setCookie($saveTime, $path = null, $domain = false, $secure = false, $httponly = true)
 	{	
 		if (session_id()) {
-			Ocara::services()->cookie->create(
+			ocService()->cookie->create(
 			    session_name(),
                 session_id(),
                 $saveTime,

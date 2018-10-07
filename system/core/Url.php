@@ -54,7 +54,7 @@ class Url extends Base
 
 		$result = $this->check($url, OC_URL_ROUTE_TYPE);
 		if ($result === null) {
-			Ocara::services()->error->show('fault_url');
+			ocService()->error->show('fault_url');
 		}
 
 		if ($this->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
@@ -154,8 +154,8 @@ class Url extends Base
 			$params = array();
 		}
 
-		if ($static && Ocara::services()->staticPath->open) {
-			list($file, $args) = Ocara::services()->staticPath->getStaticFile($module, $controller, $action, $params);
+		if ($static && ocService()->staticPath->open) {
+			list($file, $args) = ocService()->staticPath->getStaticFile($module, $controller, $action, $params);
 			if ($file && is_file(ocPath('static', $file))) {
 				return $relative ? OC_DIR_SEP . $file : OC_ROOT_URL . $file;
 			}
@@ -236,7 +236,7 @@ class Url extends Base
 
 		$result = $this->check($uri, $urlType);
 		if ($result === null) {
-			Ocara::services()->error->show('fault_url');
+			ocService()->error->show('fault_url');
 		}
 
 		if ($this->isVirtualUrl($urlType)) {
@@ -264,7 +264,7 @@ class Url extends Base
 		if ($url) {
 			$data  = array_merge(array_fill_keys($fields, null), parse_url($url));
 		} else {
-		    $request = Ocara::services()->request;
+		    $request = ocService()->request;
 			$values = array(
 				OC_PROTOCOL,
                 $request->getServer('HTTP_HOST'),

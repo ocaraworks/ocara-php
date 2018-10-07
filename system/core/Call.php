@@ -91,7 +91,7 @@ class Call extends Base
 	 */
 	protected function _throwError($error, array $params = array())
 	{
-		$error = Ocara::services()->lang->get($error, $params);
+		$error = ocService()->lang->get($error, $params);
 		throw new Exception($error['message'], $error['code']);
 	}
 }

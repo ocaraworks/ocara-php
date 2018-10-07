@@ -18,7 +18,7 @@ class fields_admin
 
 	public function add()
 	{
-		$this->_model = Ocara::services()->request->getPost('model');
+		$this->_model = ocService()->request->getPost('model');
 		$this->updateModel();
 	}
 

@@ -245,7 +245,7 @@ class Request extends Base
 	{
 		if ($key === null) {
 			$data = ocArrayMap('trim', $data);
-			return Ocara::services()->filter->request($data);
+			return ocService()->filter->request($data);
 		}
 		if(array_key_exists($key, $data)) {
 			if (is_array($data[$key])) {
@@ -256,7 +256,7 @@ class Request extends Base
 			if (ocEmpty($value) && $default !== null) {
 				return $default;
 			}
-			return Ocara::services()->filter->request($value);
+			return ocService()->filter->request($value);
 		}
 
 		return $default === null ? OC_EMPTY : $default;

@@ -23,7 +23,7 @@ class action_admin
 
 	public function add(array $data = array())
 	{
-		$request = Ocara::services()->request;
+		$request = ocService()->request;
 		$data    = $data ? : $request->getPost();
 		$actname = explode(OC_DIR_SEP, trim($data['actname'], OC_DIR_SEP));
 		
@@ -49,23 +49,23 @@ class action_admin
 			Develop::error(Develop::back('缺少控制器！'));
 		}
 		
-		$path = OC_ROOT . 'resource/conf/control';
+		$path = OC_ROOT . 'config/control';
 	
 		if ($this->mdlname) {
 			if (is_dir($path = $path . OC_DIR_SEP . $this->mdlname)) {
-				Ocara::services()->config->load($path);
+				ocService()->config->load($path);
 			}
 		}
 
 		if (is_dir($path = $path . OC_DIR_SEP . $this->cname)) {
-			Ocara::services()->config->load($path);
+			ocService()->config->load($path);
 		}
 
 		if (is_dir($path = $path . OC_DIR_SEP . $this->actionName)) {
-			Ocara::services()->config->load($path);
+			ocService()->config->load($path);
 		}
 
-		$CONF = Ocara::services()->config->get();
+		$CONF = ocService()->config->get();
 		$this->tplType = ocGet('TEMPLATE.file_type', $CONF, 'html');
 		$this->createAction();
 	}
@@ -150,31 +150,49 @@ class action_admin
 
 		$content  .= "}";
 
-		Ocara::services()->file->createFile($controlPath . OC_DIR_SEP . $actionFile , 'wb');
-		Ocara::services()->file->writeFile($controlPath . OC_DIR_SEP . $actionFile, $content);
+		ocService()->file->createFile($controlPath . OC_DIR_SEP . $actionFile , 'wb');
+		ocService()->file->writeFile($controlPath . OC_DIR_SEP . $actionFile, $content);
 		
 		$this->createview && $this->createView();
 		
 		die('添加成功！');
 	}
 
+    /**
+     * 获取模块视图路径
+     * @param $subPath
+     */
+    public function getViewPath($subPath = null)
+    {
+        $path = $this->mdlname
+            . '/view/'
+            . $this->ttype
+            . OC_DIR_SEP
+            . $subPath;
+        return ocPath('modules', $path);
+    }
 	
 	public function createView()
 	{
-		$path = OC_APPLICATION_PATH . "view/{$this->ttype}/template/";
+		$path = $this->getViewPath('template');
 		$path = $path . ($this->mdlname ? $this->mdlname . OC_DIR_SEP : false);
 		$path = $path . "{$this->cname}";
+        $ttypePath = ocDir($this->ttype);
+        $cssPath = ocPath('css', $ttypePath);
+        $imagesPath = ocPath('images', $ttypePath);
 
 		ocCheckPath($path);
-		ocCheckPath(OC_APPLICATION_PATH . "view/{$this->ttype}/helper");
-		ocCheckPath(OC_APPLICATION_PATH . "view/{$this->ttype}/part");
-		ocCheckPath(OC_APPLICATION_PATH . "view/{$this->ttype}/layout");
-		ocCheckPath(OC_ROOT . "public/css/{$this->ttype}");
-		ocCheckPath(OC_ROOT . "public/images/{$this->ttype}");
+        ocCheckPath($this->getViewPath('helper'));
+        ocCheckPath($this->getViewPath('part'));
+        ocCheckPath($this->getViewPath('layout'));
+
+		ocCheckPath($cssPath);
+		ocCheckPath($imagesPath);
 
 		//新增css和images目录
-		ocCheckPath(OC_ROOT . "public/css/{$this->ttype}/{$this->mdlname}/{$this->cname}");
-		ocCheckPath(OC_ROOT . "public/images/{$this->ttype}/{$this->mdlname}/{$this->cname}");
+        ocCheckPath(ocDir($cssPath) . "{$this->mdlname}/{$this->cname}");
+        ocCheckPath(ocDir($imagesPath) . "{$this->mdlname}/{$this->cname}");
+
 		$this->addTpl($path, $this->actionName);
 		
 		return true;
@@ -185,7 +203,7 @@ class action_admin
 		$path = ocDir($path) . $tpl . '.' . $this->tplType;
 		$content = "Hello, I'm %s.{$this->tplType}.";
 		
-		File::openFile($path, 'wb');
-		File::writeFile($path, sprintf($content, $tpl));
+		ocService()->file->openFile($path, 'wb');
+        ocService()->file->writeFile($path, sprintf($content, $tpl));
 	}
 }

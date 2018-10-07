@@ -1,54 +1,68 @@
 <?php
 $dirs = array(
 	'application' => array(
-		'controller', 
-		'model/Main',
-		'view/default/helper', 
-		'view/default/part', 
-		'view/default/layout', 
-		'view/default/template'
+		'console/make',
+        'console/tasks',
+        'entities',
+        'model/main',
+        'modules/index/controllers',
+        'modules/index/logic',
+        'modules/index/private',
+        'modules/index/view/default/helper',
+        'modules/index/view/default/part',
+        'modules/index/view/default/layout',
+        'modules/index/view/default/template',
+        'values',
+        'view/default/helper',
+        'view/default/part',
+        'view/default/layout',
 	), 
 	'public' => array(
 		'attachments',
-		'css/default', 
-		'images/default', 
-		'js',
+		'resource/css/default',
+		'resource/images/default',
+		'resource/js',
 		'html',
-		'runtime/cache',
-		'runtime/logs',
-		'runtime/sessions'
-	), 
-	'resource' => array(
-		'conf/control', 
+	),
+	'data' => array(
+	    'docs',
+        'runtime/cache',
+        'runtime/logs',
+        'runtime/sessions',
+        'table/fields'
+    ),
+	'config' => array(
+        'conf/control',
 		'conf/model/main',
-		'conf/fields/main',
-		'data', 
-		'lang/zh_cn/control', 
-		'lang/zh_cn/model/main',
+    ),
+	'lang' => array(
+		'zh_cn/control',
+		'zh_cn/model/main',
 	),
 	'service' => array(
 		'functions', 
-		'library',
+		'library/Base',
 		'support'
 	)
 );
 
 $files = array(
 	'application' => array(
-		'controller/CommonController.php',
-		'controller/RedisController.php',
-		'model/MainBase.php',
-		'model/MemcacheBase.php',
-		'model/RedisBase.php',
+		'library/Base/CommonController.php',
+		'library/Base/RedisController.php',
+		'library/Base/MainBase.php',
+		'library/Base/MemcacheBase.php',
+		'library/Base/RedisBase.php',
 		'view/default/layout/layout.php'
 	),
-	'resource' 	  => array(
-		'conf/application.php', 
-		'conf/develop.php', 
-		'conf/database.php',
-		'conf/cache.php',
-		'conf/event.php',
-		'conf/callback.php',
-		'conf/static.php',
+	'config' 	  => array(
+		'application.php',
+		'develop.php',
+		'database.php',
+		'cache.php',
+		'event.php',
+		'env.php',
+		'callback.php',
+		'static.php',
 	)
 );

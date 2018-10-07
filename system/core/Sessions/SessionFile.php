@@ -26,17 +26,24 @@ class SessionFile extends ServiceProvider
      */
     public function boot()
     {
-        $savePath = ocConfig('SESSION.location', 'sessions');
-   	 	if (empty($savePath)) {
-    		Ocara::services()->error->show('invalid_save_path');
-    	}
-    	
-    	$this->_savePath = ocPath('runtime', $savePath);
-		if (!ocCheckPath($this->_savePath)) {
-            if (!ocCheckPath($this->_savePath)) {
-                Ocara::services()->error->show('no_session_path');
+        $savePath = ocConfig('SESSION.location', null);
+
+   	 	if ($savePath) {
+            $savePath = ocPath('runtime', $savePath);
+            if (!ocCheckPath($savePath)) {
+                if (!ocCheckPath($savePath)) {
+                    ocService()->error->show('no_session_path');
+                }
             }
-		}
+    	} else {
+            $savePath = session_save_path();
+        }
+
+        if (!is_writable($savePath)) {
+            ocService()->error->show('not_write_session_path');
+        }
+
+        $this->_savePath = $savePath;
     }
     
     /**
@@ -89,7 +96,7 @@ class SessionFile extends ServiceProvider
         try {
             ocWrite("{$this->_savePath}/sess_$id", stripslashes($data));
         } catch(Exception $exception) {
-            Ocara::services()->error->show($exception->getMessage());
+            ocService()->error->show($exception->getMessage());
         }
 
         return true;

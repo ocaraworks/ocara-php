@@ -33,7 +33,7 @@ function ocCheckExtension($extension, $required = true)
 {
 	if (!extension_loaded($extension)) {
 		if ($required) {
-			Ocara::services()->error->show('failed_load_extension', array($extension));
+			ocService()->error->show('failed_load_extension', array($extension));
 		}
 		return false;
 	}
@@ -49,7 +49,7 @@ function ocCheckExtension($extension, $required = true)
  */
 function ocGlobal($name, $value = null)
 {
-	$globals = Ocara::services()->globals;
+	$globals = ocService()->globals;
 
 	if (func_num_args() >= 2) {
         $globals->set($name, $value);
@@ -116,7 +116,7 @@ function ocCheckPath($path, $perm = null, $required = false)
 		$perm = $perm ? : 0755;
 		if (!@mkdir($path, $perm, true)) {
 			if ($required) {
-				Ocara::services()->error->show('failed_make_dir');
+				ocService()->error->show('failed_make_dir');
 			} else {
 				return false;
 			}
@@ -177,7 +177,7 @@ function ocFunc($filePath)
 		ocImport($filePath);
 	}
 
-	Ocara::services()->error->show('not_exists_function_file');
+	ocService()->error->show('not_exists_function_file');
 }
 
 /**
@@ -188,7 +188,7 @@ function ocFunc($filePath)
 function ocSql($sql)
 {
 	if (is_string($sql) || is_numeric($sql)) {
-		$sql = Ocara::services()->request->stripSqlTag($sql);
+		$sql = ocService()->request->stripSqlTag($sql);
 		return OC_SQL_TAG . $sql;
 	}
 	debug_print_backtrace();
@@ -222,7 +222,7 @@ function ocIsStandardName($name)
 function ocWrite($filePath, $content, $append = false, $perm = null)
 {
 	if (is_dir($filePath)) {
-		Ocara::services()->error->show('exists_dir');
+		ocService()->error->show('exists_dir');
 	}
 
     $perm = $perm ? : 0755;
@@ -235,12 +235,12 @@ function ocWrite($filePath, $content, $append = false, $perm = null)
 	if (ocCheckPath($dirPath, $perm)) {
 
 		if (!is_writable($dirPath)) {
-			Ocara::services()->error->show('no_dir_write_perm');
+			ocService()->error->show('no_dir_write_perm');
 		}
 
 		if($fo = @fopen($filePath, $append ? 'ab' : 'wb')) {
 			if (false === flock($fo, LOCK_EX | LOCK_NB)) {
-				Ocara::services()->error->show('failed_file_lock');
+				ocService()->error->show('failed_file_lock');
 			}
 			if (is_array($content)) {
 				foreach ($content as $row){
@@ -278,7 +278,7 @@ function ocWrite($filePath, $content, $append = false, $perm = null)
 function ocRead($filePath, $checkPath = true)
 {
 	if ($checkPath && !preg_match('/^(.+)?\.\w+$/', $filePath)) {
-		Ocara::services()->error->show('invalid_path', array($filePath));
+		ocService()->error->show('invalid_path', array($filePath));
 	}
 
 	$filePath = ocCheckFilePath(dirname($filePath)
@@ -288,11 +288,11 @@ function ocRead($filePath, $checkPath = true)
 
 	if (ocFileExists($filePath)) {
 		if (!is_readable($filePath)) {
-			Ocara::services()->error->show('no_file_read_perm');
+			ocService()->error->show('no_file_read_perm');
 		}
 		if ($fo = @fopen($filePath, 'rb')) {
 			if (false === flock($fo, LOCK_SH | LOCK_NB)) {
-				Ocara::services()->error->show('failed_file_lock');
+				ocService()->error->show('failed_file_lock');
 			}
 			@fseek($fo, 0);
 			while (!@feof($fo)) {
@@ -384,7 +384,7 @@ function ocCurl($url, $data = null, array $headers = array(), $showError = false
 	
 		if ($showError && $error = curl_error($ch)) {
 			curl_close($ch);
-			Ocara::services()->error->show('failed_curl_return', array(curl_error($ch)));
+			ocService()->error->show('failed_curl_return', array(curl_error($ch)));
 		}
 		
 		curl_close($ch);

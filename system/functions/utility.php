@@ -40,7 +40,7 @@ function ocGet($key, array $data, $default = null, $required = false)
 		if ($result = ocCheckKey(false, $key, $data, true, $default)) {
 			return $result[0];
 		}
-		Ocara::services()->error->show('not_exists_key', array($key));
+		ocService()->error->show('not_exists_key', array($key));
 	}
 	
 	return ocCheckKey(false, $key, $data, false, $default);
@@ -199,7 +199,7 @@ function ocSet(array &$data, $key, $value)
 
 	for ($i = 0;$i <= $max;$i++) {
 		if (!is_array($pointer)) {
-			Ocara::services()->error->show('need_array_to_set');
+			ocService()->error->show('need_array_to_set');
 		}
 		$k = $key[$i];
 		if ($i == $max) {
@@ -306,7 +306,7 @@ function ocDel(array &$data, $key)
 function ocGetExceptionData($exception)
 {
 	if (!(is_object($exception) && $exception instanceof \Exception)) {
-		Ocara::services()->error->show('invalid_exception');
+		ocService()->error->show('invalid_exception');
 	}
 
 	$errorType = 'exception_error';
@@ -355,7 +355,7 @@ function ocErrorHandler($level, $message, $file, $line, $context = '')
  */
 function ocExceptionHandler($exception)
 {
-    Ocara::services()->error->handler($exception);
+    ocService()->error->handler($exception);
 }
 
 /**
@@ -364,18 +364,23 @@ function ocExceptionHandler($exception)
  * @param bool|string $getDefault
  * @return string
  */
-function ocService($name, $getDefault = false)
+function ocService($name = null, $getDefault = false)
 {
-    if (!Ocara::services() && $getDefault) {
-        if (is_string($getDefault)) {
-            $class = $getDefault;
-        } else {
-            $class = '\Ocara\\' . ucfirst($name);
+    $services = Ocara::services();
+
+    if (func_num_args()) {
+        if ($getDefault && empty($services)) {
+            if (is_string($getDefault)) {
+                $class = $getDefault;
+            } else {
+                $class = '\Ocara\\' . ucfirst($name);
+            }
+            return new $class();
         }
-        return new $class();
+        return $services->getService($name);
     }
 
-	return Ocara::services()->getService($name);
+    return $services;
 }
 
 /**
@@ -419,7 +424,7 @@ function ocDump($content)
  */
 function ocError($error = null, array $params = array())
 {
-    $error = Ocara::services()->error;
+    $error = ocService()->error;
     $args = func_get_args();
 
     if ($args) {
@@ -496,7 +501,7 @@ function ocImport($path, $required = true, $once = true, array $vars = array())
 		} else {
 			if ($required) {
 				$files = explode(OC_DIR_SEP, trim($path, OC_DIR_SEP));
-				Ocara::services()->error->show('not_exists_file', array(end($files)));
+				ocService()->error->show('not_exists_file', array(end($files)));
 			}
 		}
 	} elseif (is_array($path)) {
@@ -603,7 +608,7 @@ function ocBasename($filePath)
  */
 function ocUrl($route, $params = array(), $relative = false, $urlType = null, $static = true)
 {
-	return Ocara::services()->url->create($route, $params, $relative, $urlType, $static);
+	return ocService()->url->create($route, $params, $relative, $urlType, $static);
 }
 
 /**
