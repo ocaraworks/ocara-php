@@ -39,8 +39,6 @@ class FormManager extends ServiceProvider
 	public function create($name)
 	{
 		$form = $this->createService('form', array($name));
-		$form->setRoute($this->getRoute());
-
 		return $form;
 	}
 
@@ -68,7 +66,6 @@ class FormManager extends ServiceProvider
 
 		$forms = $this->getProperty();
 		foreach ($forms as $formName => $form) {
-			$this->formToken->setRoute($form->getRoute());
 			if ($this->formToken->has($formName, $postToken)) {
 				$postForm = $form;
 				$this->formToken->setCurrentForm($formName);
@@ -111,7 +108,6 @@ class FormManager extends ServiceProvider
 
 		foreach ($forms as $formName => $form) {
 			if (is_object($form) && $form instanceof Form) {
-				$this->formToken->setRoute($form->getRoute());
 				$token = $this->formToken->setToken($formName);
 				$form->setToken($tokenTag, $token);
 			}

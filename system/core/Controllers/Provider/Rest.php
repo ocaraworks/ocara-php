@@ -98,7 +98,7 @@ class Rest extends Base
     {
         if ($result['status'] == 'success') {
             $successCode = strtr(
-                $this->getRoute('action'),
+                ocService()->app->getRoute('action'),
                 ocConfig('CONTROLLERS.rest.success_code_map')
             );
             $this->response->setStatusCode($successCode);

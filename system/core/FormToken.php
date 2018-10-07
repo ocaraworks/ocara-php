@@ -32,7 +32,7 @@ class FormToken extends Base
 		$this->_formName  = $formName;
 		$this->_tokenName = $this->genName($formName);
 		$this->_tokenKey  = array(
-			$this->_tokenName, implode('_', $this->getRoute())
+			$this->_tokenName, implode('_', ocService()->app->getRoute())
 		);
 	}
 
@@ -130,7 +130,7 @@ class FormToken extends Base
 	public function genToken($formName)
 	{
 		$tag = self::getTokenTag();
-		$route = $this->getRoute();
+		$route = ocService()->app->getRoute();
 		$routeStr = implode(OC_EMPTY, $route);
 
 		if ($config = ocConfig('SOURCE.form.generate_token', null)) {

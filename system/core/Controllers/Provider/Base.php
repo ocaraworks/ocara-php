@@ -71,7 +71,7 @@ class Base extends ServiceProvider
     public function model($class = null)
     {
         if (empty($class)) {
-            $class = '\Model\Main\\' . ucfirst($this->getRoute('controller'));
+            $class = '\Model\Main\\' . ucfirst(ocService()->app->getRoute('controller'));
         }
 
         if (isset($this->_models[$class])) {
@@ -94,15 +94,9 @@ class Base extends ServiceProvider
             DatabaseFactory::create();
         });
 
-        $route = array();
-        if (!empty($this->route)) {
-            $this->setRoute($this->route);
-            $route = array('route' => $this->getRoute());
-        }
-
         $services = ocConfig('CONTROLLER_SERVICE_CLASS.Common');
         foreach ($services as $name => $class) {
-            $this->_container->bindSingleton($name, $class, array(), $route);
+            $this->_container->bindSingleton($name, $class, array());
         }
     }
 }

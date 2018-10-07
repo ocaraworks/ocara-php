@@ -60,32 +60,6 @@ abstract class Base extends Basis
     }
 
 	/**
-	 * 设置路由
-	 * @param string|array $route
-	 */
-	public function setRoute($route)
-	{
-		$this->_route = ocService()->app->parseRoute($route);
-	}
-
-	/**
-	 * 获取当前路由
-	 * @param string $name
-	 * @return null
-	 */
-	public function getRoute($name = null)
-	{
-		if (empty($name)) {
-			return $this->_route;
-		}
-		if (array_key_exists($name, $this->_route)) {
-			return $this->_route[$name];
-		}
-
-		return null;
-	}
-
-	/**
 	 * 魔术方法-调用未定义的方法时
 	 * @param string $name
 	 * @param array $params

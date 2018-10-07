@@ -112,7 +112,7 @@ class Common extends Base
         if (empty($file)) {
             $tpl = $this->view->getTpl();
             if (empty($tpl)) {
-                $this->view->setTpl($this->getRoute('action'));
+                $this->view->setTpl(ocService()->app->getRoute('action'));
             }
         }
 
@@ -129,7 +129,7 @@ class Common extends Base
     {
         $model = null;
         if (!$name) {
-            $name = $this->getRoute('controller');
+            $name = ocService()->app->getRoute('controller');
             $model = $this->model();
         }
 
@@ -139,7 +139,6 @@ class Common extends Base
             if ($model) {
                 $form->model($model, false);
             }
-            $form->setRoute($this->getRoute());
             $this->event('afterCreateForm')->fire(array($name, $form));
         }
 

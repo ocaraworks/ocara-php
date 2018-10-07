@@ -25,7 +25,7 @@ class Application extends Basis
      * @param bool $getUpdated
      * @return mixed
      */
-    public function language($getUpdated = false)
+    public function getLanguage($getUpdated = false)
     {
         if ($getUpdated) {
             return $this->get('LANGUAGE', $this->_language);

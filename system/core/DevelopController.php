@@ -19,7 +19,7 @@ class DevelopController extends Base
      */
     public function run()
     {
-        $action = Ocara::getRoute('action');
+        $action = ocService()->app->getRoute('action');
 
         if (Develop::checkLogin() == false) {
             $this->loginAction();
@@ -134,7 +134,7 @@ class DevelopController extends Base
         }
 
         if (ocService()->request->isPost()) {
-            $action = Ocara::getRoute('action');
+            $action = ocService()->app->getRoute('action');
             if ($action != 'login' && $type == 'login') {
                 header("location:" . ocUrl(array(OC_DEV_DIR, 'home', 'index'), array('action' => 'login')));
             }

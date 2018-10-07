@@ -81,7 +81,7 @@ final class Ocara extends Basis
         $config->loadGlobalConfig();
 
         define('OC_SYS_MODEL', $config->get('SYS_MODEL', 'application'));
-        define('OC_LANGUAGE', ocService()->app->language());
+        define('OC_LANGUAGE', ocService()->app->getLanguage());
 
         @ini_set('register_globals', 'Off');
         register_shutdown_function("ocShutdownHandler");

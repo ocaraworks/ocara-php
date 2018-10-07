@@ -52,7 +52,7 @@ class Common extends ViewBase implements ViewInterfaces
 	public function loadEngine()
 	{
 		if ($pluginClass = ocConfig('TEMPLATE.engine', false)) {
-			$route = $this->getRoute();
+			$route = ocService()->app->getRoute();
 			$path  = $this->getViewPath(ocDir(array(
 				'template',
 				$route['module'],
@@ -177,7 +177,7 @@ class Common extends ViewBase implements ViewInterfaces
 	public function getViewPath($subPath = null, $template = null)
     {
         $template = $template ? : $this->_template;
-        $path = $this->getRoute('module')
+        $path = ocService()->app->getRoute('module')
             . '/view/'
             . $template
             . OC_DIR_SEP
@@ -464,7 +464,7 @@ class Common extends ViewBase implements ViewInterfaces
 			$file = $mt[1];
 			$rootTmpl = true;
 		} else {
-			$route = $this->getRoute();
+			$route = ocService()->app->getRoute();
 			$path = $path . ocDir($route['module'], $route['controller']);
 		}
 		
