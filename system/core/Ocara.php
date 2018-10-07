@@ -13,6 +13,8 @@ use Ocara\Container;
 use Ocara\Config;
 use Ocara\Loader;
 use Ocara\ExceptionHandler;
+use Ocara\ApplicationGenerator;
+use Ocara\Application;
 
 defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(true));
 
@@ -59,24 +61,16 @@ final class Ocara extends Basis
 		return self::$_instance;
 	}
 
-    /**
-     * 获取全局默认容器
-     * @return mixed
-     */
-	public static function container()
-    {
-        return Container::getDefault();
-    }
-
 	/**
 	 * 初始化设置
 	 */
 	public static function init()
 	{
-        $container = self::container()
+        $container = Container::getDefault()
             ->bindSingleton('config', '\Ocara\Config')
             ->bindSingleton('loader', '\Ocara\Loader')
             ->bindSingleton('path', '\Ocara\Path')
+            ->bindSingleton('app', '\Ocara\Application')
             ->bindSingleton('exceptionHandler', '\Ocara\ExceptionHandler');
 
         $config = $container->config;
@@ -87,7 +81,7 @@ final class Ocara extends Basis
         $config->loadGlobalConfig();
 
         define('OC_SYS_MODEL', $config->get('SYS_MODEL', 'application'));
-        define('OC_LANGUAGE', $config->language());
+        define('OC_LANGUAGE', ocService()->app->language());
 
         @ini_set('register_globals', 'Off');
         register_shutdown_function("ocShutdownHandler");
@@ -110,7 +104,7 @@ final class Ocara extends Basis
 	public static function create()
 	{
 		include_once (OC_CORE . 'Application.php');
-		Application::create();
+        ApplicationGenerator::create();
 	}
 
 	/**
@@ -120,29 +114,9 @@ final class Ocara extends Basis
 	public static function run($bootstrap = null)
 	{
 		self::getInstance();
-		self::bootstrap($bootstrap);
 
-		self::getRoute();
-		self::$_bootstrap->start(self::$_route);
-	}
-
-	/**
-	 * 获取或设置启动器
-	 * @param $bootstrap
-	 * @return string
-	 */
-	public static function bootstrap($bootstrap = null)
-	{
-	    if (func_num_args()) {
-            $bootstrap = $bootstrap ? : '\Ocara\Bootstrap';
-            self::$_bootstrap = new $bootstrap();
-            self::$_services = self::$_bootstrap->getServiceProvider();
-            self::$_services->setContainer(Container::getDefault());
-            self::$_services->register();
-            self::$_bootstrap->init();
-        }
-
-		return self::$_bootstrap;
+        $application = ocContainer()->app;
+        $application->bootstrap($bootstrap)->start($application->getRoute());
 	}
 
 	/**
@@ -155,89 +129,11 @@ final class Ocara extends Basis
 		$error = $error ? : (OC_SYS_MODEL == 'develop' ? E_ALL : 0);
 
 		set_error_handler(
-            Container::getDefault()->config->get('ERROR_HANDLER.program_error', 'ocErrorHandler'),
+            ocContainer()->config->get('ERROR_HANDLER.program_error', 'ocErrorHandler'),
 			$error
 		);
 
 		return $error;
-	}
-
-	/**
-	 * 获取路由信息
-	 * @param string $name
-	 * @return array|null
-	 */
-	public static function getRoute($name = null)
-	{
-		if (!self::$_route) {
-		    if (!OC_INVOKE) {
-                $_GET = self::$_services->url->parseGet();
-            }
-			list($module, $controller, $action) = self::$_services->route->parseRouteInfo();
-            self::$_route = compact('module', 'controller', 'action');
-		}
-
-		if (isset($name)) {
-			return isset(self::$_route[$name]) ? self::$_route[$name] : null;
-		}
-
-		return self::$_route;
-	}
-
-    /**
-     * 设置路由
-     * @param $route
-     */
-	public static function setRoute($route)
-    {
-        if (!self::$_route) {
-            self::$_route = $route;
-        }
-    }
-
-	/**
-	 * 解析路由字符串
-	 * @param string|array $route
-	 * @return array
-	 */
-	public static function parseRoute($route)
-	{
-		if (is_string($route)) {
-			$routeData = explode(
-				OC_DIR_SEP,
-				trim(str_replace(DIRECTORY_SEPARATOR, OC_DIR_SEP, $route), OC_DIR_SEP)
-			);
-		} elseif (is_array($route)) {
-			$routeData = array_values($route);
-		} else {
-			return array();
-		}
-
-		switch (count($routeData)) {
-			case 2:
-				list($controller, $action) = $routeData;
-				if ($route{0} != OC_DIR_SEP && isset(self::$_route['module'])) {
-					$module = self::$_route['module'];
-				}  else {
-					$module = OC_EMPTY;
-				}
-				break;
-			case 3:
-				list($module, $controller, $action) = $routeData;
-				break;
-			default:
-				return array();
-		}
-
-		return compact('module', 'controller', 'action');
-	}
-
-	/**
-	 * 获取默认服务提供者
-	 */
-	public static function services()
-	{
-		return self::$_services;
 	}
 
 	/**

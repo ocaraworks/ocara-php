@@ -25,7 +25,6 @@ class Config extends Basis
 	 * 数据变量
 	 */
 	protected $_frameworkConfig = array();
-    private static $_language;
 
 	/**
 	 * 初始化
@@ -62,20 +61,7 @@ class Config extends Basis
             throw new Exception('Lost config : $CONF.');
         }
 
-        self::$_language = $this->get('LANGUAGE', 'zh_cn');
-    }
-
-    /**
-     * 获取语言
-     * @param bool $getUpdated
-     * @return mixed
-     */
-    public function language($getUpdated = false)
-    {
-        if ($getUpdated) {
-            return $this->get('LANGUAGE', self::$_language);
-        }
-        return self::$_language;
+        ocService()->app->setLanguage($this->get('LANGUAGE', 'zh_cn'));
     }
 
 	/**

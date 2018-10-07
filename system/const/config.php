@@ -11,7 +11,7 @@ use Ocara\Container;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-$config = Container::getDefault()->config;
+$config = ocContainer()->config;
 
 //入口执行文件名
 define('OC_INDEX_FILE', $config->get('OC_INDEX_FILE', 'index.php'));

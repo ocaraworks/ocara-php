@@ -51,7 +51,7 @@ class Call extends Base
 	protected function _runByString($route, array $params = array(), $return = true)
 	{
 		if (preg_match('/^\/?\w+(\/\w+)+$/', $route, $mt)) {
-			$route = Ocara::parseRoute($route);
+			$route = ocService()->app->parseRoute($route);
 			return Bootstrap::run($route, $return, $params);
 		}
 

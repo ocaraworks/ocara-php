@@ -29,7 +29,7 @@ class Rest extends Base
     {
         $this->request->setAjax();
         $this->response->setContentType(ocConfig('CONTROLLERS.rest.content_type','json'));
-        $this->session->init();
+        $this->session->boot();
         $this->setAjaxResponseErrorCode(true);
         $this->_plugin = $this->view;
     }

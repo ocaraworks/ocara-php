@@ -21,7 +21,7 @@ class Loader extends Basis
 
     public function __construct()
     {
-        $config = Container::getDefault()->config;
+        $config = ocContainer()->config;
         $autoMap = $config->get('AUTOLOAD_MAP', array());
         $appAutoMap = $config->get('AUTOLOAD_MAP', array());
 

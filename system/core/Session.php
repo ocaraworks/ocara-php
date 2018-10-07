@@ -33,7 +33,11 @@ class Session extends ServiceProvider
             $class = ocConfig('SESSION.handler', null);
         }
 
-        $this->_container->bindSingleton('sessionHandler', $class);
+        $this->_container->bindSingleton('sessionHandler', function() use ($class) {
+            $handler = new $class();
+            $handler->boot();
+            return $handler;
+        });
     }
 
     /**

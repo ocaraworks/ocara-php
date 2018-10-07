@@ -138,7 +138,7 @@ class Url extends Base
 	 */
 	public function create($route, $params = array(), $relative = false, $urlType = null, $static = true)
 	{
-		$route = Ocara::parseRoute($route);
+		$route = ocService()->app->parseRoute($route);
 		if (empty($route)) return false;
 
 		extract($route);

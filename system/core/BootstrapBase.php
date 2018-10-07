@@ -65,14 +65,14 @@ abstract class BootstrapBase extends Base
 
         ocService()->config->loadModuleConfig($route);
         ocService()->lang->loadModuleConfig($route);
-        Container::getDefault()->bindSingleton($controlClass);
+        ocContainer()->bindSingleton($controlClass);
 
-        $Control = Container::getDefault()->create($controlClass, array($route));
+        $Control = ocContainer()->create($controlClass, array($route));
         if ($method != '_action' && !method_exists($Control, $method)) {
             ocService()->error->show('no_special_class', array('Action', $uaction));
         }
 
-        $Control->init($route);
+        $Control->boot($route);
         if ($return) {
             $Control->checkForm(false);
             return $Control->doReturnAction($method, $params);

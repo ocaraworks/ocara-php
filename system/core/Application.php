@@ -1,138 +1,137 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架  应用生成类Application
+ * Ocara开源框架  应用生成类ApplicationGenerator
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara;
 
+use Ocara\Basis;
+
 defined('OC_PATH') or exit('Forbidden');
 
-require_once (OC_SYS . 'functions/common.php');
+use Ocara\ServiceProvider;
 
-final class Application
+class Application extends Basis
 {
-	public static $root;
-	public static $dirs;
-	public static $files;
+    private $_language;
+    private $_bootstrap;
+    private $_route;
 
-	/**
-	 * 应用生成
-	 */
-	public static function create()
-	{
-		include (OC_SYS . 'modules/application/data.php');
+    /**
+     * 获取语言
+     * @param bool $getUpdated
+     * @return mixed
+     */
+    public function language($getUpdated = false)
+    {
+        if ($getUpdated) {
+            return $this->get('LANGUAGE', $this->_language);
+        }
+        return $this->_language;
+    }
 
-		$cwd = dirname(ocCommPath(realpath($_SERVER['SCRIPT_FILENAME'])));
-		self::$root  = str_replace('\\', OC_DIR_SEP, $cwd);
-		self::$dirs  = $dirs;
-		self::$files = $files;
+    /**
+     * 设置默认语言
+     * @param $languange
+     */
+    public function setLanguage($languange)
+    {
+        $this->_language = $languange;
+    }
 
-		self::createDir();
-		self::createFile();
-		self::modifyIndex();
+    /**
+     * 获取或设置启动器
+     * @param $bootstrap
+     * @return string
+     */
+    public function bootstrap($bootstrap = null)
+    {
+        if (func_num_args()) {
+            $bootstrap = $bootstrap ? : '\Ocara\Bootstrap';
+            $bootstrap = new $bootstrap();
 
-		exit('Application create Success!');
-	}
+            $provider = $bootstrap->getServiceProvider();
+            $provider->setContainer(ocContainer());
+            $provider->boot();
 
-	/**
-	 * 新建目录
-	 */
-	public static function createDir()
-	{
-		foreach (self::$dirs as $key => $value) {
-			foreach ($value as $v) {
-				$path = self::$root . OC_DIR_SEP . "{$key}/{$v}/";
-				if (ocCheckPath($path)) {
-					continue;
-				} else {
-					self::error($path, 'writable');
-				}
-			}
-		}
-	}
+            ServiceProvider::setDefault($provider);
+            $this->_bootstrap = $bootstrap;
+            $this->_bootstrap->init();
+        }
 
-	/**
-	 * 新建文件
-	 */
-	public static function createFile()
-	{
-		foreach (self::$files as $key => $value) {
+        return $this->_bootstrap;
+    }
 
-			foreach ($value as $v) {
-				$filePath = self::$root . "/{$key}/{$v}";
-				$source   = OC_SYS . 'modules/application/files/';
-				$source  = $source . str_replace(OC_DIR_SEP, '.', "{$key}/{$v}");
-				self::write($filePath, self::read($source));
-			}
-		}
-	}
+    /**
+     * 获取路由信息
+     * @param string $name
+     * @return array|null
+     */
+    public function getRoute($name = null)
+    {
+        if (!$this->_route) {
+            if (!OC_INVOKE) {
+                $_GET = ocService()->url->parseGet();
+            }
+            list($module, $controller, $action) = ocService()->route->parseRouteInfo();
+            $this->_route = compact('module', 'controller', 'action');
+        }
 
-	/**
-	 * 修改index.php内容
-	 */
-	public static function modifyIndex()
-	{
-		$file = $_SERVER["SCRIPT_FILENAME"];
-		$content = self::read($file);
-		$content = str_ireplace(
-			'Ocara\\Ocara:create()',
-			'Ocara\\Ocara:run()',
-			$content
-		);
+        if (isset($name)) {
+            return isset($this->_route[$name]) ? $this->_route[$name] : null;
+        }
 
-		self::write($file, $content);
-	}
+        return $this->_route;
+    }
 
-	/**
-	 * 读取文件
-	 * @param $filePath
-	 * @return mixed
-	 */
-	private static function read($filePath)
-	{
-		if (!ocFileExists($filePath)) {
-			die("Lost ocara file : {$filePath}");
-		}
+    /**
+     * 设置路由
+     * @param $route
+     */
+    public function setRoute($route)
+    {
+        if (!$this->_route) {
+            $this->_route = $route;
+        }
+    }
 
-		if (!$fo = @fopen($filePath, 'rb')) {
-			if (!is_readable($filePath)) {
-				if (!@chmod($filePath, 0755)) self::error($filePath, 'readable');
-			}
-		}
+    /**
+     * 解析路由字符串
+     * @param string|array $route
+     * @return array
+     */
+    public function parseRoute($route)
+    {
+        if (is_string($route)) {
+            $routeData = explode(
+                OC_DIR_SEP,
+                trim(str_replace(DIRECTORY_SEPARATOR, OC_DIR_SEP, $route), OC_DIR_SEP)
+            );
+        } elseif (is_array($route)) {
+            $routeData = array_values($route);
+        } else {
+            return array();
+        }
 
-		$result = fread($fo);
-		@fclose($fo);
+        switch (count($routeData)) {
+            case 2:
+                list($controller, $action) = $routeData;
+                if ($route{0} != OC_DIR_SEP && isset($this->_route['module'])) {
+                    $module = $this->_route['module'];
+                }  else {
+                    $module = OC_EMPTY;
+                }
+                break;
+            case 3:
+                list($module, $controller, $action) = $routeData;
+                break;
+            default:
+                return array();
+        }
 
-		return $result;
-	}
-
-	/**
-	 * 写入内容
-	 * @param string $filePath
-	 * @param string $content
-	 */
-	private static function write($filePath, $content)
-	{
-		if (!$fo = @fopen($filePath, 'wb')) {
-			if (!is_writable($filePath)) {
-				if (!@chmod($filePath, 0777)) self::error($filePath, 'writable');
-			}
-		}
-
-		$result = fwrite($fo, $content);
-		@fclose($fo);
-	}
-
-	/**
-	 * 文件或目录不可写错误
-	 * @param string $path
-	 */
-	private function error($path, $type)
-	{
-		die("Please make sure the parent directory is {$type} : {$path}.");
-	}
+        return compact('module', 'controller', 'action');
+    }
 }
-?>

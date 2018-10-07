@@ -11,6 +11,7 @@ defined('OC_PATH') or exit('Forbidden!');
 
 use Ocara\Ocara;
 use Ocara\Container;
+use Ocara\ServiceProvider;
 use Ocara\ExceptionHandler;
 use Ocara\Exceptions\Exception;
 use Ocara\Exceptions\ErrorException;
@@ -150,7 +151,7 @@ function ocLang($name, array $params = array(), $default = null)
  */
 function ocConfig($key, $default = null, $unEmpty = false)
 {
-	if ($result = Container::getDefault()->config->arrayGet($key)) {
+	if ($result = ocContainer()->config->arrayGet($key)) {
 		return $unEmpty && ocEmpty($result[0]) ? $default : $result[0];
 	}
 
@@ -359,14 +360,14 @@ function ocExceptionHandler($exception)
 }
 
 /**
- * 获取服务
+ * 获取默认服务提供器
  * @param $name
  * @param bool|string $getDefault
  * @return string
  */
 function ocService($name = null, $getDefault = false)
 {
-    $services = Ocara::services();
+    $services = ServiceProvider::getDefault();
 
     if (func_num_args()) {
         if ($getDefault && empty($services)) {
@@ -381,6 +382,15 @@ function ocService($name = null, $getDefault = false)
     }
 
     return $services;
+}
+
+/**
+ * 获取默认容器
+ * @return mixed\
+ */
+function ocContainer()
+{
+    return Container::getDefault();
 }
 
 /**
@@ -731,7 +741,7 @@ function ocClassName($name)
  */
 function ocPath($dir, $path = null)
 {
-    return Container::getDefault()->path->get($dir, $path, OC_ROOT, true, false);
+    return ocContainer()->path->get($dir, $path, OC_ROOT, true, false);
 }
 
 /**
@@ -742,7 +752,7 @@ function ocPath($dir, $path = null)
  */
 function ocFile($dir, $path)
 {
-    return Container::getDefault()->path->get($dir, $path, OC_ROOT, true, true);
+    return ocContainer()->path->get($dir, $path, OC_ROOT, true, true);
 }
 
 /**
@@ -755,7 +765,7 @@ function ocFile($dir, $path)
 function ocRealUrl($dir, $subPath = null, $root = false)
 {
     $root = $root ? : OC_ROOT_URL;
-    return Container::getDefault()->path->get($dir, $subPath, $root, false, false);
+    return ocContainer()->path->get($dir, $subPath, $root, false, false);
 }
 
 /**
@@ -766,5 +776,5 @@ function ocRealUrl($dir, $subPath = null, $root = false)
  */
 function ocSimpleUrl($dir, $subPath)
 {
-    return Container::getDefault()->path->get($dir, $subPath, OC_DIR_SEP, false, false);
+    return ocContainer()->path->get($dir, $subPath, OC_DIR_SEP, false, false);
 }

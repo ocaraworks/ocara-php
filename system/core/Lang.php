@@ -26,7 +26,7 @@ class Lang extends Base
 	{
 		if  ($this->_ocData === null){
 			$this->_ocData = array();
-			$file = Container::getDefault()->config->language() . '.php';
+			$file = OC_LANGUAGE . '.php';
 			$path = OC_SYS . 'data/languages/' . $file;
 
 			if (file_exists($path)) {
@@ -39,7 +39,7 @@ class Lang extends Base
 
 		if ($this->_properties === null) {
 			$this->_properties = array();
-			$this->load(OC_ROOT . 'lang/' . Container::getDefault()->config->language());
+			$this->load(OC_ROOT . 'lang/' . OC_LANGUAGE);
 		}
 	}
 
@@ -52,7 +52,7 @@ class Lang extends Base
         extract($route);
         $modulePath = $module
             . '/private/lang/'
-            . Container::getDefault()->config->language()
+            . OC_LANGUAGE
             . OC_DIR_SEP;
 
         $path = ocPath('modules', $modulePath);

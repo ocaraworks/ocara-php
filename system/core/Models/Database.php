@@ -190,7 +190,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-        $path = ocPath('lang', Container::getDefault()->config->language() . "/model/{$filePath}");
+        $path = ocPath('lang', OC_LANGUAGE . "/model/{$filePath}");
 		if (ocFileExists($path)) {
 			$lang = @include($path);
 			if ($lang && is_array($lang)) {

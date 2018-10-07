@@ -26,17 +26,6 @@ class Container extends Basis
     private static $_default;
 
     /**
-     * 设置默认容器
-     * @param Container $container
-     */
-    public static function setDefault(Container $container)
-    {
-        if (self::$_default === null) {
-            self::$_default = $container;
-        }
-    }
-
-    /**
      * 获取默认容器
      * @return mixed
      */

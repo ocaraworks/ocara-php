@@ -68,6 +68,7 @@ $CONF['USE_FIELD_DESC_LANG'] = 1;
  * 系统服务类（单例模式）
  */
 $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
+    'app'               => 'Ocara\Application',
 	'request' 		    => 'Ocara\Request',
 	'response' 		    => 'Ocara\Response',
 	'ajax'              => 'Ocara\Ajax',

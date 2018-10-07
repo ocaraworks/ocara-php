@@ -37,9 +37,9 @@ class SessionCache extends ServiceProvider
     }
 
     /**
-     * 启动
+     * 初始化
      */
-    public function boot()
+    public function init()
     {
         $prefix = ocConfig('SESSION.location', 'session') . '_';
         $this->_prefix = $prefix . '_';

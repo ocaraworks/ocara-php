@@ -61,7 +61,7 @@ final class Invoke
 	public static function run($route, $params = array())
     {
         $_GET = $params ? : $_GET;
-        $route = Ocara::parseRoute($route);
+        $route = ocService()->app->parseRoute($route);
         Ocara::setRoute($route);
         Ocara::bootstrap()->start($route);
     }

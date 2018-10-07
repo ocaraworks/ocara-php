@@ -18,17 +18,40 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     protected $_container;
     protected $_services = array();
 
+    private static $_default;
+
     /**
      * 初始化
      * ServiceProvider constructor.
      * @param array $data
+     * @param \Ocara\Container|null $container
      */
     public function __construct(array $data = array())
     {
-        $this->setContainer(new Container());
         $this->setProperty($data);
-        $this->register();
-        $this->boot();
+    }
+
+    /**
+     * 设置默认服务提供器
+     * @param ServiceProvider $provider
+     */
+    public static function setDefault(ServiceProvider $provider)
+    {
+        if (self::$_default === null) {
+            self::$_default = $provider;
+        }
+    }
+
+    /**
+     * 获取默认服务提供器
+     * @return mixed
+     */
+    public static function getDefault()
+    {
+        if (self::$_default === null) {
+            self::$_default = new static();
+        }
+        return self::$_default;
     }
 
     /**
@@ -38,10 +61,25 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     {}
 
     /**
-     * 启动服务
+     * 初始化
      */
-    public function boot()
+    public function init()
     {}
+
+    /**
+     * 启动服务
+     * @param \Ocara\Container|null $container
+     */
+    public function boot(Container $container = null)
+    {
+        if (empty($container)) {
+            $container = $this->_container ? : new Container();
+        }
+
+        $this->setContainer($container);
+        $this->register();
+        $this->init();
+    }
 
     /**
      * 获取容器
@@ -69,7 +107,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     {
         return array_key_exists($name, $this->_services)
             || $this->_container->has($name)
-            || Container::getDefault()->has($name);
+            || ocContainer()->has($name);
     }
 
     /**
@@ -86,8 +124,8 @@ class ServiceProvider extends Base implements ServiceProviderInterface
         } elseif ($this->_container && $this->_container->hasBindAll($name)) {
             $instance = $this->_container->get($name, $params, $deps);
             $this->setService($name, $instance);
-        } elseif (Container::getDefault()->hasBindAll($name)) {
-            $instance = Container::getDefault()->get($name, $params, $deps);
+        } elseif (ocContainer()->hasBindAll($name)) {
+            $instance = ocContainer()->get($name, $params, $deps);
             $this->setService($name, $instance);
         }
 
@@ -109,8 +147,8 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
         if ($this->_container && $this->_container->hasBind($key)) {
             return $this->_container->create($key, $params, $deps);
-        } elseif (Container::getDefault()->hasBind($key)) {
-            return Container::getDefault()->create($key, $params, $deps);
+        } elseif (ocContainer()->hasBind($key)) {
+            return ocContainer()->create($key, $params, $deps);
         } else {
             throw new Exception('no_service', array($key));
         }

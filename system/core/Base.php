@@ -65,7 +65,7 @@ abstract class Base extends Basis
 	 */
 	public function setRoute($route)
 	{
-		$this->_route = Ocara::parseRoute($route);
+		$this->_route = ocService()->app->parseRoute($route);
 	}
 
 	/**
@@ -149,7 +149,7 @@ abstract class Base extends Basis
 	 */
 	public static function log($logName)
 	{
-		return Container::getDefault()->create('log', array($logName));
+		return ocContainer()->create('log', array($logName));
 	}
 
 	/**
@@ -172,7 +172,7 @@ abstract class Base extends Basis
     public function event($eventName)
     {
         if (!isset($this->_events[$eventName])) {
-            $event = Container::getDefault()->create('event');
+            $event = ocContainer()->create('event');
             $event->setName($eventName);
             $this->_events[$eventName] = $event;
             if ($this->_event && method_exists($this->_event, $eventName)) {

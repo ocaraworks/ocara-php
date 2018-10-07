@@ -26,7 +26,7 @@ class ServiceBase extends Base
 	{
 		$lang = array();
 		$shortPath = '/languages/'
-			. Container::getDefault()->config->language()
+			. OC_LANGUAGE
 			. OC_DIR_SEP
 			. str_replace(OC_SYS . 'service/library/', '', ocCommPath($filePath));
 
