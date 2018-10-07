@@ -206,7 +206,7 @@ class Validator extends Base
 		$count = count($value);
 		for ($i = 0; $i < $count; $i++) {
 			$val   = $value[$i];
-			$error = ocService()->call->run($callback, array($field, $val, $i));
+			$error = call_user_func_array($callback, array($field, $val, $i));
 			if ($error) {
 				$this->prepareError($error, $field, $val, $i);
 				return false;

@@ -49,7 +49,7 @@ final class CacheFactory extends Base
 		$config = array();
 
 		if ($callback = ocConfig('SOURCE.cache.get_config', null)) {
-			$config = ocService()->call->run($callback, array($connectName));
+			$config = call_user_func_array($callback, array($connectName));
 		}
 
 		if (empty($config)) {

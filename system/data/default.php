@@ -85,7 +85,6 @@ $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
 	'file'			    => 'Ocara\Service\File',
 	'font'			    => 'Ocara\Font',
 	'staticPath'	    => 'Ocara\StaticPath',
-	'call'			    => 'Ocara\Call',
     'globals'           => 'Ocara\Globals',
     'formToken'         => 'Ocara\FormToken',
     'formManager'       => 'Ocara\FormManager',

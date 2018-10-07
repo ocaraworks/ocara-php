@@ -1172,7 +1172,7 @@ abstract class Database extends ModelBase
 		if (is_object($cacheObj)) {
 			if ($callback = ocConfig('EVENT.model.query.get_cache_data', null)) {
 				$params = array($cacheObj, $sql, $cacheRequired);
-				if ($result = ocService()->call->run($callback, $params)) {
+				if ($result = call_user_func_array($callback, $params)) {
 					return $result;
 				}
 			} else {

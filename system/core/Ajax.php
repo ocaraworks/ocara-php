@@ -33,7 +33,7 @@ class Ajax extends Base
 		$result['body']    	= $body;
 
 		if ($callback = ocConfig('SOURCE.ajax.return_result', null)) {
-			$result = $services->call->run($callback, array($result));
+			$result = call_user_func_array($callback, array($result));
 		}
 
 		$response = $services->response;

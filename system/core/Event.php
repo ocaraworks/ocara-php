@@ -221,7 +221,7 @@ class Event extends Basis implements EventInterface
                     if (is_object($callback)) {
                         $callback = array($callback, 'handler');
                     }
-                    return ocService()->call->run($callback, $params);
+                    return call_user_func_array($callback, $params);
                 }
             }
         }

@@ -80,7 +80,7 @@ class StaticBuilder extends ServiceBase
 		$args = preg_match_all('/{(\w+)}/i', $params, $mt) ? $mt[1] : array();
 		$args = array($module, $controller, $action, $args);
 
-		$data    = $callback ? ocService()->call->run($callback, $args) : null;
+		$data    = $callback ? call_user_func_array($callback, $args) : null;
 		$pathMap = ocService()->staticPath->getMvcPathMap($module, $controller, $action);
 
 		$this->_genRow($pathMap, $params, $module, $controller, $action, $data);
