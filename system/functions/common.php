@@ -7,7 +7,7 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
-use Ocara\Ocara;
+use Ocara\Core\Ocara;
 
 defined('OC_PATH') or exit('Forbidden!');
 

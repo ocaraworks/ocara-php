@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Develop;
 
-use Ocara\Ocara;
+use Ocara\Core\Ocara;
 use Ocara\Develop;
 
 class login_admin

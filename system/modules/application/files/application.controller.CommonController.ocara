@@ -4,9 +4,9 @@
  */
 namespace Controller;
 use Ocara\Controller\Common;
-use Ocara\Request;
-use Ocara\Response;
-use Ocara\Error;
+use Ocara\Core\Request;
+use Ocara\Core\Response;
+use Ocara\Core\Error;
 
 abstract class CommonController extends Common
 {

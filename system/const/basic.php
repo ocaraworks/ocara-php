@@ -67,10 +67,10 @@ define('OC_SYS', OC_PATH . 'system/');
 define('OC_EXT', OC_PATH . 'extension/');
 
 //框架系统处理类目录
-define('OC_CORE', OC_SYS . 'core/');
+define('OC_CORE', OC_SYS . 'library/Core/');
 
 //框架系统服务目录
-define('OC_SERVICE', OC_SYS . 'service/');
+define('OC_SERVICE', OC_SYS . 'library/Service/');
 
 //是否外部引入
 defined('OC_INVOKE') OR define('OC_INVOKE', false);

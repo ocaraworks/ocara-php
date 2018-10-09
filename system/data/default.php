@@ -68,27 +68,27 @@ $CONF['USE_FIELD_DESC_LANG'] = 1;
  * 系统服务类（单例模式）
  */
 $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
-    'app'               => 'Ocara\Application',
-	'request' 		    => 'Ocara\Request',
-	'response' 		    => 'Ocara\Response',
-	'ajax'              => 'Ocara\Ajax',
-	'error' 		    => 'Ocara\Error',
-	'filter' 		    => 'Ocara\Filter',
-	'url' 			    => 'Ocara\Url',
-	'lang' 			    => 'Ocara\Lang',
-	'cookie' 		    => 'Ocara\Cookie',
-	'session' 		    => 'Ocara\Session',
-	'route'			    => 'Ocara\Route',
-	'transaction'	    => 'Ocara\Transaction',
+    'app'               => 'Ocara\Core\Application',
+	'request' 		    => 'Ocara\Core\Request',
+	'response' 		    => 'Ocara\Core\Response',
+	'ajax'              => 'Ocara\Core\Ajax',
+	'error' 		    => 'Ocara\Core\Error',
+	'filter' 		    => 'Ocara\Core\Filter',
+	'url' 			    => 'Ocara\Core\Url',
+	'lang' 			    => 'Ocara\Core\Lang',
+	'cookie' 		    => 'Ocara\Core\Cookie',
+	'session' 		    => 'Ocara\Core\Session',
+	'route'			    => 'Ocara\Core\Route',
+	'transaction'	    => 'Ocara\Core\Transaction',
 	'pager' 		    => 'Ocara\Service\Pager',
 	'validator' 	    => 'Ocara\Service\Validator',
 	'file'			    => 'Ocara\Service\File',
-	'font'			    => 'Ocara\Font',
-	'staticPath'	    => 'Ocara\StaticPath',
-    'globals'           => 'Ocara\Globals',
-    'formToken'         => 'Ocara\FormToken',
-    'formManager'       => 'Ocara\FormManager',
-    'exceptionHandler'  => 'Ocara\ExceptionHandler',
+	'font'			    => 'Ocara\Core\Font',
+	'staticPath'	    => 'Ocara\Core\StaticPath',
+    'globals'           => 'Ocara\Core\Globals',
+    'formToken'         => 'Ocara\Core\FormToken',
+    'formManager'       => 'Ocara\Core\FormManager',
+    'exceptionHandler'  => 'Ocara\Core\ExceptionHandler',
     'errorOutput' 	    => 'Ocara\Service\ErrorOutput',
 );
 
@@ -96,10 +96,10 @@ $OC_CONF['SYSTEM_SINGLETON_SERVICE_CLASS'] = array(
  * 系统服务类（非单例模式）
  */
 $OC_CONF['SYSTEM_SERVICE_CLASS'] = array(
-    'event'             => 'Ocara\Event',
-    'log'	            => 'Ocara\Log',
-    'form'              => 'Ocara\Form',
-    'html'              => 'Ocara\Html',
+    'event'             => 'Ocara\Core\Event',
+    'log'	            => 'Ocara\Core\Log',
+    'form'              => 'Ocara\Core\Form',
+    'html'              => 'Ocara\Core\Html',
 );
 
 /**
@@ -196,17 +196,16 @@ $OC_CONF['APP_PATH_INFO'] = array(
  */
 $OC_CONF['AUTOLOAD_MAP'] = array(
 	/*Ocara框架*/
-	'Ocara\\' 								=> OC_SYS . 'core/',
+	'Ocara\\' 								=> OC_SYS . 'library/',
 	'Ocara\Functions\\'     				=> OC_SYS . 'functions/',
 	'Ocara\Develop\\' 						=> OC_SYS . 'modules/develop/library/',
 
 	/*Ocara框架插件*/
-	'Ocara\Service\\' 						=> OC_SYS . 'service/library/',
-	'Ocara\Service\Functions\\'   			=> OC_SYS . 'service/functions/',
+	'Ocara\Service\\' 						=> OC_SYS . 'library/Service/',
 
 	/*Ocara框架扩展插件*/
-	'Ocara\Extension\Service\\'   			=> OC_EXT . 'service/library/',
-	'Ocara\Extension\Service\Functions\\'   => OC_EXT . 'service/functions/',
+	'Ocara\Extension\Service\\'   			=> OC_EXT . 'library/',
+	'Ocara\Extension\Functions\\'           => OC_EXT . 'functions/',
 );
 
 /*
@@ -214,18 +213,16 @@ $OC_CONF['AUTOLOAD_MAP'] = array(
  */
 $OC_CONF['APP_AUTOLOAD_MAP'] = array(
     'console\\' 							=> OC_ROOT . 'application/console/',
-    'entities\\' 							=> OC_ROOT . 'application/entities/',
     'modules\\' 							=> OC_ROOT . 'application/modules/',
-    'models\\' 								=> OC_ROOT . 'application/models/',
-    'values\\' 								=> OC_ROOT . 'application/values/',
     'view\\' 								=> OC_ROOT . 'application/view/',
+    'dal\\' 							    => OC_ROOT . 'application/dal/',
 );
 
 /*
  * 服务组件配置
  */
 $CONF['SERVICE'] = array(
-	'validator' => '\Ocara\Validator',
+	'validator' => '\Ocara\Core\Validator',
 	'validate' => '\Ocara\Service\Validate'
 );
 
