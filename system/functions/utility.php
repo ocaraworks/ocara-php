@@ -356,7 +356,7 @@ function ocErrorHandler($level, $message, $file, $line, $context = '')
  */
 function ocExceptionHandler($exception)
 {
-    ocService()->error->handler($exception);
+    ocService()->error->exceptionHandler($exception);
 }
 
 /**

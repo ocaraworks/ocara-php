@@ -1072,14 +1072,17 @@ abstract class Database extends ModelBase
      * @param $debug
      * @param $queryRow
      * @param bool $count
-     * @param string $dataType
+     * @param null $dataType
      * @return array
+     * @throws Exception
      */
 	private function _find($condition, $option, $debug, $queryRow, $count = false, $dataType = null)
 	{
 	    $this->pushSql($condition, $option, $queryRow);
         $sql = $this->_genSelectSql($count);
 		$cacheInfo = null;
+        $cacheObj = null;
+        $encodeSql = null;
 
 		if (isset($this->_sql['cache']) && is_array($this->_sql['cache'])) {
 			$cacheInfo = $this->_sql['cache'];
@@ -1122,17 +1125,19 @@ abstract class Database extends ModelBase
     /**
      * 是否分页
      * @return bool
+     * @throws Exception
      */
 	public function isPage()
     {
         return ocGet('option.page', $this->_sql) ? true : false;
     }
 
-	/**
-	 * 连接数据库
-	 * @param bool $master
-	 * @return null
-	 */
+    /**
+     * 连接数据库
+     * @param bool $master
+     * @return mixed|null
+     * @throws Exception
+     */
 	public function connect($master = true)
 	{
 		$this->_plugin = null;
@@ -1158,14 +1163,15 @@ abstract class Database extends ModelBase
 		return $this->_plugin;
 	}
 
-	/**
-	 * 获取缓存数据
-	 * @param object $cacheObj
-	 * @param string $sql
-	 * @param string $sqlEncode
-	 * @param bool $cacheRequired
-	 * @return array|bool|\mix|mixed|null|\stdClass|string
-	 */
+    /**
+     * 获取缓存数据
+     * @param object $cacheObj
+     * @param string $sql
+     * @param string $sqlEncode
+     * @param bool $cacheRequired
+     * @return mixed|null
+     * @throws Exception
+     */
 	public function _getCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired)
 	{
 		if (is_object($cacheObj)) {

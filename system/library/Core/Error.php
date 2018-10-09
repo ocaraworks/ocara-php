@@ -23,10 +23,10 @@ class Error extends ServiceProvider
 	 * @return null
 	 * @throws Exception
 	 */
-	public static function check($error, array $params = array(), $required = false)
+	public function check($error, array $params = array(), $required = false)
 	{
 		if ($required == false) return null;
-		self::show($error, $params);
+		$this->show($error, $params);
 	}
 
 	/**
@@ -34,13 +34,13 @@ class Error extends ServiceProvider
 	 * @param string $error
 	 * @param array $params
 	 */
-	public static function writeLog($error, array $params = array())
+	public function writeLog($error, array $params = array())
 	{
 		try {
 			$error = ocService()->lang->get($error, $params);
 			throw new Exception($error['message'], $error['code']);
 		} catch(Exception $exception) {
-			self::$_instance->event('writeLog')->fire(
+            $this->event('writeLog')->fire(
 				$exception->getMessage(), $exception->getTrace()
 			);
 		}
@@ -52,7 +52,7 @@ class Error extends ServiceProvider
 	 * @param array $params
 	 * @throws Exception
 	 */
-	public static function show($error, array $params = array())
+	public function show($error, array $params = array())
 	{
         ocService('transaction', true)->rollback();
 
@@ -69,7 +69,7 @@ class Error extends ServiceProvider
 	 * @param array $params
 	 * @param integer $errorType
 	 */
-	public static function trigger($error, array $params = array(), $errorType = E_USER_ERROR)
+	public function trigger($error, array $params = array(), $errorType = E_USER_ERROR)
 	{
 		$errorType = $errorType ? : E_USER_ERROR;
 		$error = ocService()->lang->get($error, $params);
@@ -81,7 +81,7 @@ class Error extends ServiceProvider
      * @param \Exception $exception
      * @throws Exception
      */
-	public static function exceptionHandler(\Exception $exception)
+	public function exceptionHandler(\Exception $exception)
 	{
 		$function = ocConfig(
 			'ERROR_HANDLER.exception_error',
@@ -89,7 +89,7 @@ class Error extends ServiceProvider
 			true
 		);
 		if (function_exists($function)) {
-			call_user_func($function, $exception);
+			call_user_func_array($function, array($exception));
 		}
 	}
 

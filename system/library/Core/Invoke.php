@@ -30,7 +30,7 @@ final class Invoke
 		define('OC_EXECUTE_START_TIME', microtime(true));
 
 		define('OC_ROOT', self::getCommPath(realpath($rootPath)) . '/');
-		define('OC_PATH', self::getCommPath(realpath(dirname(dirname(__DIR__)))) . '/');
+		define('OC_PATH', self::getCommPath(realpath(dirname(dirname(dirname(__DIR__))))) . '/');
 		define('OC_ROOT_URL', '/');
         define('OC_INVOKE', true);
 
@@ -38,7 +38,7 @@ final class Invoke
 			ltrim(str_replace(OC_ROOT, '', self::getCommPath(realpath($fileSelf))), '/')
 		);
 
-		if (!is_file($path = OC_PATH . '/system/core/Ocara.php')) {
+		if (!is_file($path = OC_PATH . 'system/library/Core/Ocara.php')) {
 			die('Lost ocara file!');
 		}
 
@@ -48,7 +48,8 @@ final class Invoke
 		}
 
 		Ocara::getInstance();
-		Ocara::bootstrap($bootstrap);
+        $application = ocContainer()->app;
+        $application->bootstrap($bootstrap);
 	}
 
     /**
