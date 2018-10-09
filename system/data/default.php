@@ -162,10 +162,11 @@ $OC_CONF['APP_PATH_INFO'] = array(
 	'belong' => array(
         'console'		=> 'application',
 		'modules'  	    => 'application',
-		'models'  	  	=> 'application',
 		'view'  	  	=> 'application',
-        'entities'  	=> 'application',
-        'values'  	  	=> 'application',
+        'dal'           => 'application',
+        'entities'  	=> 'application/dal',
+        'models'  	  	=> 'application/dal',
+        'values'  	  	=> 'application/dal',
 
         'config'        => 'resource',
         'lang'          => 'resource',

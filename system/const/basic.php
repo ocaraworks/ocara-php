@@ -66,6 +66,9 @@ define('OC_SYS', OC_PATH . 'system/');
 //框架扩展目录
 define('OC_EXT', OC_PATH . 'extension/');
 
+//框架类库目录
+define('OC_LIB', OC_SYS . 'library/');
+
 //框架系统处理类目录
 define('OC_CORE', OC_SYS . 'library/Core/');
 

@@ -38,13 +38,8 @@ final class Ocara extends Basis
 	 * @var $CONF 		公共配置 
 	 * @var $OC_LANG    框架语言数据
 	 */
-    private static $_bootstrap;
-	private static $_services;
 	private static $_instance;
 	private static $_info;
-	private static $_language;
-
-	private static $_route = array();
 
 	private function __clone(){}
 	private function __construct(){}

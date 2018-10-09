@@ -14,12 +14,13 @@ defined('OC_PATH') or exit('Forbidden!');
 
 final class CacheFactory extends Base
 {
-	/**
-	 * 新建缓存实例
-	 * @param string $connectName
-	 * @param bool $required
-	 * @return null
-	 */
+    /**
+     * 新建缓存实例
+     * @param string $connectName
+     * @param bool $required
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public static function create($connectName = 'main', $required = true)
 	{
 		if (empty($connectName)) {
@@ -35,11 +36,12 @@ final class CacheFactory extends Base
                     ->check('not_exists_cache', array($connectName), $required);
 	}
 
-	/**
-	 * 获取配置信息
-	 * @param null $connectName
-	 * @return array|bool|mixed|null
-	 */
+    /**
+     * 获取配置信息
+     * @param string $connectName
+     * @return array|mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public static function getConfig($connectName = null)
 	{
 		if (empty($connectName)) {
@@ -58,12 +60,14 @@ final class CacheFactory extends Base
 
 		return $config;
 	}
-	
-	/**
-	 * 连接缓存
-	 * @param string $connectName
-	 * @param bool $required
-	 */
+
+    /**
+     * 连接缓存
+     * @param string $connectName
+     * @param bool $required
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	private static function _connect($connectName, $required = true)
 	{
 		$config = self::getConfig($connectName);

@@ -323,7 +323,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
 		if ($this->_prepared) {
 			return $this->_stmt->error_list;
 		}
-		return $this->_connection->error_list;
+		return array($this->_connection->error);
 	}
 
 	/**

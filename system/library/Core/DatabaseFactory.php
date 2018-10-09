@@ -14,14 +14,14 @@ defined('OC_PATH') or exit('Forbidden!');
 
 final class DatabaseFactory extends Base
 {
-	/**
-	 * 获取数据库实例
-	 * @param string $connectName
-	 * @param bool $master
-	 * @param bool $required
-	 * @return null
-	 * @throws Exception\Exception
-	 */
+    /**
+     * 获取数据库实例
+     * @param string $connectName
+     * @param bool $master
+     * @param bool $required
+     * @return mixed|null
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public static function create($connectName = null, $master = true, $required = true)
 	{
 		if (empty($connectName)) {
@@ -40,12 +40,13 @@ final class DatabaseFactory extends Base
 		return $database;
 	}
 
-	/**
-	 * 获取数据库对象
-	 * @param string $connectName
-	 * @param bool $master
-	 * @return null
-	 */
+    /**
+     * 获取数据库对象
+     * @param $connectName
+     * @param bool $master
+     * @return mixed|null
+     * @throws \Ocara\Exceptions\Exception
+     */
 	private static function _getDatabase($connectName, $master = true)
 	{
 		$object = null;
@@ -61,17 +62,18 @@ final class DatabaseFactory extends Base
 			$config['type']  = self::getDatabaseType($config);
 			$config['class'] = $config['type'];
 			$config['connect_name'] = $connectName;
-			$object = self::_createDatabase('Database', $config);
+			$object = self::_createDatabase('Databases', $config);
 		}
 
 		return $object;
 	}
 
-	/**
-	 * 获取数据库配置信息
-	 * @param string $connectName
-	 * @return array|bool|mixed|null
-	 */
+    /**
+     * 获取数据库配置信息
+     * @param null $connectName
+     * @return array|mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public static function getConfig($connectName = null)
 	{
 		if (empty($connectName)) {
@@ -91,11 +93,12 @@ final class DatabaseFactory extends Base
 		return $config;
 	}
 
-	/**
-	 * 获取数据库对象类名
-	 * @param array $config
-	 * @return string
-	 */
+    /**
+     * 获取数据库对象类名
+     * @param array $config
+     * @return string
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public static function getDatabaseType(array $config)
 	{
 		$type = isset($config['type']) ? ucfirst($config['type']) : OC_EMPTY;
@@ -103,11 +106,12 @@ final class DatabaseFactory extends Base
 		return isset($types[$type]) ? $types[$type] : $type;
 	}
 
-	/**
-	 * 获取数据库对象
-	 * @param string $dir
-	 * @param array $config
-	 */
+    /**
+     * 获取数据库对象
+     * @param string $dir
+     * @param array $config
+     * @return mixed
+     */
 	private static function _createDatabase($dir, $config)
 	{
 		$class = $config['class'] . 'Database';
@@ -117,7 +121,7 @@ final class DatabaseFactory extends Base
 		if ($classInfo) {
 			list($path, $namespace) = $classInfo;
 			include_once($path);
-			$class =  $namespace . 'Database' . OC_NS_SEP . $class;
+			$class =  $namespace . 'Databases' . OC_NS_SEP . $class;
 			if (class_exists($class, false)) {
 				$object = new $class($config);
 				return $object;

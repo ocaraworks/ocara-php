@@ -62,10 +62,12 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 		return $params;
 	}
 
-	/**
-	 * @param string $table
-	 * @return array
-	 */
+    /**
+     * 获取字段
+     * @param string $table
+     * @return array
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function getFields($table)
 	{
 		$table     = $this->getTableFullname($table);

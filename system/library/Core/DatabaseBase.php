@@ -38,10 +38,12 @@ class DatabaseBase extends Sql
 		'more',     'bind'
 	);
 
-	/**
-	 * 初始化方法
-	 * @param array $config
-	 */
+    /**
+     * 初始化方法
+     * DatabaseBase constructor.
+     * @param array $config
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function __construct(array $config)
 	{
 		$options = array(
@@ -111,10 +113,11 @@ class DatabaseBase extends Sql
 		return $this->_connectName;
 	}
 
-	/**
-	 * 初始化设置
-	 * @param array $config
-	 */
+    /**
+     * 初始化设置
+     * @param array $config
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function init(array $config)
 	{
 		$config['password'] = ocGet('password', $config);
@@ -141,10 +144,12 @@ class DatabaseBase extends Sql
 		}
 	}
 
-	/**
-	 * 获取数据库驱动类
-	 * @param array $data
-	 */
+    /**
+     * 获取数据库驱动类
+     * @param array $data
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function getDriver(array $data)
 	{
 		if ($this->_config['isPdo'] && ocCheckExtension($this->_pdoName, false)) {
@@ -158,19 +163,20 @@ class DatabaseBase extends Sql
 		return $object;
 	}
 
-	/**
-	 * 加载数据库驱动类
-	 * @param string $class
-	 */
+    /**
+     * 加载数据库驱动类
+     * @param string $class
+     * @return mixed
+     */
 	public function loadDatabase($class)
 	{
 		$class = $class . 'Driver';
-		$classInfo = ServiceBase::classFileExists("Database/Driver/{$class}.php");
+		$classInfo = ServiceBase::classFileExists("Databases/Driver/{$class}.php");
 
 		if ($classInfo) {
 			list($path, $namespace) = $classInfo;
 			include_once($path);
-			$class = $namespace . 'Database\Driver' . OC_NS_SEP . $class;
+			$class = $namespace . 'Databases\Driver' . OC_NS_SEP . $class;
 			if (class_exists($class, false)) {
 				$object = new $class();
 				return $object;
@@ -180,11 +186,12 @@ class DatabaseBase extends Sql
 		$this->showError('not_exists_database');
 	}
 
-	/**
-	 * 获取配置选项
-	 * @param null $name
-	 * @return array|bool|mixed|null
-	 */
+    /**
+     * 获取配置选项
+     * @param string $name
+     * @return array|bool|mixed|null
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function getConfig($name = null)
 	{
 		if (isset($name)) {
@@ -200,9 +207,9 @@ class DatabaseBase extends Sql
     /**
      * 执行SQL语句
      * @param array $sqlData
-     * @param bool $debug
      * @param bool $required
-     * @return array|bool|mixed|void
+     * @return mixed|void
+     * @throws \Ocara\Exceptions\Exception
      */
 	public function execute(array $sqlData, $required = true)
 	{
@@ -274,12 +281,13 @@ class DatabaseBase extends Sql
 
     /**
      * 查询多行记录
-     * @param $sqlData
+     * @param string|array $sqlData
      * @param bool $debug
      * @param bool $count
      * @param array $unions
-     * @param bool $queryRow
-     * @return array|bool
+     * @param null $dataType
+     * @return array|bool|mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public function query($sqlData, $debug = false, $count = false, $unions = array(), $dataType = null)
     {
@@ -296,11 +304,13 @@ class DatabaseBase extends Sql
 
     /**
      * 查询一行
-     * @param $sqlData
+     * @param string|array $sqlData
      * @param bool $debug
      * @param bool $count
      * @param array $unions
-     * @return array|bool
+     * @param null $dataType
+     * @return array|bool|mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public function queryRow($sqlData, $debug = false, $count = false, $unions = array(), $dataType = null)
     {
@@ -317,10 +327,11 @@ class DatabaseBase extends Sql
 
     /**
      * 查询数据结果
-     * @param $sqlData
+     * @param string|array $sqlData
      * @param bool $count
      * @param array $unions
-     * @return array|bool|mixed|void
+     * @return mixed|void
+     * @throws \Ocara\Exceptions\Exception
      */
     protected function executeQuery($sqlData, $count = false, $unions = array())
     {
@@ -383,12 +394,13 @@ class DatabaseBase extends Sql
 		return $this->_prepared;
 	}
 
-	/**
-	 * 获取最后一次插入记录的自增ID
-	 * @param string $sql
-	 * @param bool $debug
-	 * @return bool
-	 */
+    /**
+     * 获取最后一次插入记录的自增ID
+     * @param string $sql
+     * @param bool $debug
+     * @return bool|mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function getInsertId($sql = null, $debug = false)
 	{
 		if (empty($sql)) $sql = $this->getLastIdSql();
@@ -396,12 +408,13 @@ class DatabaseBase extends Sql
 		return $result ? $result['id'] : false;
 	}
 
-	/**
-	 * 检测表是否存在
-	 * @param string $table
-	 * @param bool $required
-	 * @return array|bool|object|void
-	 */
+    /**
+     * 检测表是否存在
+     * @param string $table
+     * @param bool $required
+     * @return bool|mixed|void
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function tableExists($table, $required = false)
 	{
 		$table = $this->getTableFullname($table);
@@ -415,13 +428,14 @@ class DatabaseBase extends Sql
 		}
 	}
 
-	/**
-	 * 插入记录
-	 * @param string $table
-	 * @param array $data
-	 * @param bool $debug
-	 * @return bool
-	 */
+    /**
+     * 插入记录
+     * @param string $table
+     * @param array $data
+     * @param bool $debug
+     * @return array|bool|mixed|void
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function insert($table, array $data = array(), $debug = false)
 	{
 		if (empty($data)) {
@@ -440,14 +454,15 @@ class DatabaseBase extends Sql
 		return $result;
 	}
 
-	/**
-	 * 更新记录
-	 * @param string $table
-	 * @param string|array $data
-	 * @param string|array $condition
-	 * @param bool $debug
-	 * @return array|bool|object|void
-	 */
+    /**
+     * 更新记录
+     * @param string $table
+     * @param null $data
+     * @param null $condition
+     * @param bool $debug
+     * @return array|bool|mixed|void
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function update($table, $data = null, $condition = null, $debug = false)
 	{
 		if (empty($data)) {
@@ -466,13 +481,14 @@ class DatabaseBase extends Sql
 		return $result;
 	}
 
-	/**
-	 * 删除记录
-	 * @param string $table
-	 * @param string|array $condition
-	 * @param bool $debug
-	 * @return array|bool|object|void
-	 */
+    /**
+     * 删除记录
+     * @param string $table
+     * @param $condition
+     * @param bool $debug
+     * @return array|bool|mixed|void
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function delete($table, $condition, $debug = false)
 	{
 		$table = $this->getTableFullname($table);
@@ -511,10 +527,11 @@ class DatabaseBase extends Sql
 		return $this->getTableNameSql($databaseName, $table);
 	}
 
-	/**
-	 * 选择数据库
-	 * @param string $name
-	 */
+    /**
+     * 选择数据库
+     * @param string $name
+     * @return mixed
+     */
 	public function selectDatabase($name)
 	{
 		$result = $this->_plugin->selectDatabase($name);
@@ -621,10 +638,11 @@ class DatabaseBase extends Sql
 		return array();
 	}
 
-	/**
-	 * 解析参数类型
-	 * @param mixed $value
-	 */
+    /**
+     * 解析参数类型
+     * @param mixed $value
+     * @return mixed
+     */
 	private function parseParamType($value)
 	{
 		$mapTypes = $this->_plugin->get_param_types();
@@ -743,12 +761,13 @@ class DatabaseBase extends Sql
 		}
 	}
 
-	/**
-	 * 检测错误
-	 * @param $ret
-	 * @param $sqlData
-	 * @param bool $required
-	 */
+    /**
+     * 检测错误
+     * @param mixed $ret
+     * @param mixed $sqlData
+     * @param bool $required
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function checkError($ret, $sqlData, $required = true)
 	{
 		$this->setError();

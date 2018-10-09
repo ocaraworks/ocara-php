@@ -76,7 +76,7 @@ class ServiceBase extends Base
 	public static function classFileExists($classFile)
 	{
 		if ($classFile) {
-			if (ocFileExists($path = OC_CORE . $classFile)) {
+			if (ocFileExists($path = OC_LIB . $classFile)) {
 				return array($path, 'Ocara' . OC_NS_SEP);
 			}
 			if (ocFileExists($path = OC_EXT . $classFile)) {
