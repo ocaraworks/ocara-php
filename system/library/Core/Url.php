@@ -29,12 +29,12 @@ class Url extends Base
 		return in_array($urlType, array(self::DIR_TYPE, self::PATH_TYPE, self::STATIC_TYPE));
 	}
 
-	/**
-	 * URL请求参数解析
-	 * @param string $url
-	 * @return array|bool|string
-	 * @throws Exception\Exception
-	 */
+    /**
+     * URL请求参数解析
+     * @param string $url
+     * @return array|string
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function parseGet($url = null)
 	{
 		if (empty($url)) {
@@ -248,10 +248,11 @@ class Url extends Base
 		return $this->buildUrl($data);
 	}
 
-	/**
-	 * 解析URL
-	 * @param string $url
-	 */
+    /**
+     * 解析URL
+     * @param string $url
+     * @return array
+     */
 	public function parseUrl($url = null)
 	{
 		$fields = array(
@@ -279,10 +280,11 @@ class Url extends Base
 		return $data;
 	}
 
-	/**
-	 * 生成查询字符串
-	 * @param array $params
-	 */
+    /**
+     * 生成查询字符串
+     * @param array $params
+     * @return string
+     */
 	public function buildQuery(array $params)
 	{
 		$array = array();
@@ -294,10 +296,11 @@ class Url extends Base
 		return implode('&', $array);
 	}
 
-	/**
-	 * 生成URL
-	 * @param array $data
-	 */
+    /**
+     * 生成URL
+     * @param array $data
+     * @return string
+     */
 	public function buildUrl(array $data)
 	{
 		$url = $data['scheme'] . '://';

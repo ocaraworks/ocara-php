@@ -59,7 +59,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
     /**
      * 生成伪静态文件
      * @param string $moreContent
-     * @throws Exception
+     * @throws \Ocara\Exceptions\Exception
      */
     public static function createHtaccess($moreContent = OC_EMPTY)
     {

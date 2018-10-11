@@ -131,11 +131,12 @@ final class Ocara extends Basis
 		return $error;
 	}
 
-	/**
-	 * 框架更新
-	 * @param array $params
-	 * @return bool
-	 */
+    /**
+     * 框架更新
+     * @param array $params
+     * @return bool
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public static function update(array $params = array())
 	{
 		ocImport(OC_ROOT . 'pass/Update.php');
@@ -143,11 +144,12 @@ final class Ocara extends Basis
 		return class_exists('Update', false) ? Update::run($args) : false;
 	}
 
-	/**
-	 * 获取框架信息
-	 * @param null $key
-	 * @return array|bool|mixed|null
-	 */
+    /**
+     * 获取框架信息
+     * @param string $key
+     * @return array|bool|mixed|null
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public static function getInfo($key = null)
 	{
 		if (is_null(self::$_info)) {

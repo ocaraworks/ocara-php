@@ -36,7 +36,7 @@ class login_admin
 		
 		if (!array_key_exists($username, $users)) {
 			Develop::error(Develop::back('用户名不存在。'), 'global');
-		} elseif (!array_key_exists('password', $users[$username]) or $users[$username]['password'] != md5($password)) {
+		} elseif (!array_key_exists('password', $users[$username]) || $users[$username]['password'] != md5($password)) {
 			Develop::error(Develop::back('密码错误。'), 'global');
 		} else {
 			$_SESSION['OC_DEV_LOGIN'] = true;

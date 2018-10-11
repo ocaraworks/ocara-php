@@ -14,8 +14,8 @@ defined('OC_PATH') or exit('Forbidden!');
  */
 $htaccess = "<IfModule mod_rewrite.c>\r\nRewriteEngine On\r\n%s" ;
 $htaccess .= "RewriteBase /\r\n";
-$htaccess .= "RewriteRule ^(public/?.*)|(pass/.+)|(favicon.ico)|(robots\\.txt)|(sitemap\\d*\.[[:alpha:]]{3})$ - [NE,NC,L]\r\n";
-$htaccess .= "RewriteRule ^.+\.html?(\?.*)?$ public/static/$0 [NE,NC]\r\n";
+$htaccess .= "RewriteRule ^(src/?.*)|(pass/.+)|(favicon.ico)|(robots\\.txt)|(sitemap\\d*\.[[:alpha:]]{3})$ - [NE,NC,L]\r\n";
+$htaccess .= "RewriteRule ^.+\.html?(\?.*)?$ static/$0 [NE,NC]\r\n";
 $htaccess .= "RewriteCond %%{REQUEST_FILENAME} !-f\r\n";
 $htaccess .= "RewriteRule ^.*$ " . OC_INDEX_FILE . " [NE,NC,L]\r\n</IfModule>\r\n";
 

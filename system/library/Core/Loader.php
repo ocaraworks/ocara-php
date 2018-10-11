@@ -31,9 +31,9 @@ class Loader extends Basis
 
     /**
      * 自动加载类
-     * @param string $class
-     * @return bool|mixed
-     * @throws Exception
+     * @param $class
+     * @return bool
+     * @throws \ReflectionException
      */
     public function autoload($class)
     {
