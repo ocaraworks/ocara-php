@@ -36,7 +36,6 @@ class Session extends ServiceProvider
 
         $this->_container->bindSingleton('sessionHandler', function() use ($class) {
             $handler = new $class();
-            $handler->boot();
             return $handler;
         });
     }
@@ -45,7 +44,7 @@ class Session extends ServiceProvider
 	 * Session初始化处理
 	 * @param $start
 	 */
-	public function init($start = true)
+	public function boot($start = true)
 	{
         $handler = $this->sessionHandler;
 

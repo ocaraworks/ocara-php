@@ -30,7 +30,6 @@ class Controller extends serviceProvider implements ControllerInterface
 		$provider = 'Ocara\Controllers\Provider\\' . $controllerType;
 		$this->_provider = new $provider(compact('route'));
         $this->_provider->bindEvents($this);
-        $this->_provider->boot();
 
 		$this->config->set('SOURCE.ajax.return_result', array($this->_provider, 'formatAjaxResult'));
 

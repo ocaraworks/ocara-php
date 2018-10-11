@@ -184,6 +184,35 @@ class Common extends ViewBase implements ViewInterfaces
 	    return ocPath('modules', $path);
     }
 
+    /**
+     * 获取公共目录视图路径
+     * @param string $subPath
+     * @param string $template
+     * @return bool|mixed|string
+     */
+    public function getCommonViewPath($subPath = null, $template = null){
+        $template = $template ? : $this->_template;
+        $path = $template . OC_DIR_SEP . $subPath;
+        return ocPath('view', $path);
+    }
+
+    /**
+     * 获取模块视图路径
+     * @param string $module
+     * @param string $subPath
+     * @param string $template
+     * @return bool|mixed|string
+     */
+    public function getModuleViewPath($module, $subPath = null, $template = null){
+        $template = $template ? : $this->_template;
+        $path = $module
+            . '/view/'
+            . $template
+            . OC_DIR_SEP
+            . $subPath;
+        return ocPath('modules', $path);
+    }
+
 	/**
 	 * 设置模板风格
 	 * @param $dir
@@ -433,6 +462,7 @@ class Common extends ViewBase implements ViewInterfaces
 	public function renderLayout($layout)
 	{
 		$path = $this->getViewPath('layout/' . $layout . '.php');
+
 		if (ocFileExists($path)) {
 			$this->_content = $this->readFile($path);
 		} else {
@@ -455,30 +485,34 @@ class Common extends ViewBase implements ViewInterfaces
 	public function readTpl($file, $required = true)
 	{
 		if (empty($file)) return null;
-		
-		$path = 'template/';
-		$rootTmpl = false;
-		
-		if (preg_match('/^\/(.*)$/', $file, $mt)) {
-			$file = $mt[1];
-			$rootTmpl = true;
-		} else {
-			$route = ocService()->app->getRoute();
-			$path = $path . ocDir($route['module'], $route['controller']);
-		}
-		
-		$file = $file . '.' . $this->_fileType;
-		$realPath = $this->getViewPath($path . $file);
 
-		if (ocFileExists($realPath) == false) {
-			if ($required) {
-				ocService()->error->show('not_exists_template_file', array($file));
-			} else {
-				return null;
-			}
-		}
-		
-		if ($this->engine() && empty($rootTmpl)) $realPath = $file;
+		if ($this->engine()) {
+            $realPath = $file;
+            return $this->readFile($realPath, false);
+        }
+
+        if (preg_match('/^\/(.*)$/', $file, $mt)) {
+            $file = $mt[1];
+            $filePath = explode('|', $file);
+            $module = array_shift($filePath);
+            $file = implode('/', $filePath);
+            $path = $this->getModuleViewPath($module, 'template/');
+        } else {
+            $route = ocService()->app->getRoute();
+            $path = $this->getViewPath('template/' . $route['controller']);
+        }
+
+        $file = $file . '.' . $this->_fileType;
+        $realPath = ocDir($path) . $file;
+
+        if (ocFileExists($realPath) == false) {
+            if ($required) {
+                ocService()->error->show('not_exists_template_file', array($file));
+            } else {
+                return null;
+            }
+        }
+
 		return $this->readFile($realPath, false);
 	}
 

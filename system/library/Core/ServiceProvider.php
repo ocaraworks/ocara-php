@@ -26,9 +26,12 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      * @param array $data
      * @param \Ocara\Core\Container|null $container
      */
-    public function __construct(array $data = array())
+    public function __construct(array $data = array(), Container $container = null)
     {
         $this->setProperty($data);
+        $this->setContainer($container ? : new Container());
+        $this->register();
+        $this->init();
     }
 
     /**
@@ -65,21 +68,6 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function init()
     {}
-
-    /**
-     * 启动服务
-     * @param \Ocara\Core\Container|null $container
-     */
-    public function boot(Container $container = null)
-    {
-        if (empty($container)) {
-            $container = $this->_container ? : new Container();
-        }
-
-        $this->setContainer($container);
-        $this->register();
-        $this->init();
-    }
 
     /**
      * 获取容器
@@ -141,11 +129,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function createService($key, $params = array(), $deps = array())
     {
-        if ($this->hasService($key)) {
-            throw new Exception('exists_service', array($key));
-        }
-
-        if ($this->_container && $this->_container->hasBind($key)) {
+        if ($this->_container && $this->_container->has($key)) {
             return $this->_container->create($key, $params, $deps);
         } elseif (ocContainer()->hasBind($key)) {
             return ocContainer()->create($key, $params, $deps);

@@ -53,10 +53,7 @@ class Application extends Basis
             $bootstrap = $bootstrap ? : '\Ocara\Core\Bootstrap';
             $bootstrap = new $bootstrap();
 
-            $provider = $bootstrap->getServiceProvider();
-            $provider->setContainer(ocContainer());
-            $provider->boot();
-
+            $provider = $bootstrap->getServiceProvider(ocContainer());
             ServiceProvider::setDefault($provider);
             $this->_bootstrap = $bootstrap;
             $this->_bootstrap->init();

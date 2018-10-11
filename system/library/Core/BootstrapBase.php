@@ -15,11 +15,12 @@ abstract class BootstrapBase extends Base
 {
     /**
      * 获取默认服务提供器
-     * @return string
+     * @param \Ocara\Core\Container $container
+     * @return Main
      */
-    public function getServiceProvider()
+    public function getServiceProvider(Container $container)
     {
-        $provider = new Main();
+        $provider = new Main(array(), $container);
         return $provider;
     }
 
@@ -75,7 +76,6 @@ abstract class BootstrapBase extends Base
             $service->error->show('no_special_class', array('Action', $uaction));
         }
 
-        $Control->boot();
         $Control->doAction($method);
     }
 
@@ -103,7 +103,7 @@ abstract class BootstrapBase extends Base
         include_once ($path);
         if (!class_exists($namespace . $type,  false)) {
             if ($required) {
-                ocService()->error->show('no_special_class', array($type, $target));
+                ocService()->error->show('no_special_' . lcfirst($type), array($target));
             }
             return false;
         }

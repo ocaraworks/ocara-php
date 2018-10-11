@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Models;
 
+use \ReflectionClass;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\CacheFactory;
 use Ocara\Core\FormToken;
@@ -178,7 +179,8 @@ abstract class Database extends ModelBase
 		$modelConfig = array_fill_keys(array('JOIN', 'MAP', 'VALIDATE', 'LANG'), array());
 		$filePath = self::getConfigPath($class);
 
-		if (ocFileExists($path = ocPath('config', "model/{$filePath}"))) {
+        $path = ocLowerFile(ocPath('config', "model/{$filePath}"));
+		if (ocFileExists($path)) {
 			$CONF = array();
 			include($path);
 			if (isset($CONF) && is_array($CONF)) {
@@ -189,7 +191,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-        $path = ocPath('lang', OC_LANGUAGE . "/model/{$filePath}");
+        $path = ocLowerFile(ocPath('lang', OC_LANGUAGE . "/model/{$filePath}"));
 		if (ocFileExists($path)) {
 			$lang = @include($path);
 			if ($lang && is_array($lang)) {
@@ -248,10 +250,11 @@ abstract class Database extends ModelBase
 	 */
 	public static function getConfigPath($class)
 	{
-		$path = trim(str_ireplace('Model' . OC_NS_SEP, OC_EMPTY, $class), OC_NS_SEP);
-		$filePath = implode(OC_DIR_SEP, array_map('lcfirst', explode(OC_NS_SEP, $path)));
+        $ref = new ReflectionClass($class);
+        $file = ocCommPath($ref->getFileName());
+		$filePath = str_ireplace(ocPath('models'), '', $file);
 
-		return $filePath . '.php';
+		return $filePath;
 	}
 
 	/**
@@ -367,7 +370,7 @@ abstract class Database extends ModelBase
 	public static function getFieldsConfig($class)
 	{
 		$filePath = self::getConfigPath($class);
-		$path = ocPath('table', "fields/{$filePath}");
+		$path = ocLowerFile(ocPath('table', "fields/{$filePath}"));
 
 		if (ocFileExists($path)) {
 			return @include($path);

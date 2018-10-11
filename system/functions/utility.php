@@ -778,3 +778,21 @@ function ocSimpleUrl($dir, $subPath)
 {
     return ocContainer()->path->get($dir, $subPath, OC_DIR_SEP, false, false);
 }
+
+/**
+ * 文件首字母大写
+ * @param $path
+ * @return string
+ */
+function ocUpperFile($path){
+    return dirname($path) . OC_DIR_SEP . ucfirst(basename($path));
+}
+
+/**
+ * 文件首字母小写
+ * @param $path
+ * @return string
+ */
+function ocLowerFile($path){
+    return dirname($path) . OC_DIR_SEP . lcfirst(basename($path));
+}

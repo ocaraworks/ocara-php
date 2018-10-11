@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara\Interfaces;
 
+use Ocara\Core\Container;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 interface Bootstrap
@@ -24,9 +26,10 @@ interface Bootstrap
 	 */
 	public function start($route);
 
-	/**
-	 * 获取默认服务提供器
-	 * @return string
-	 */
-	public function getServiceProvider();
+    /**
+     * 获取默认服务提供器
+     * @param \Ocara\Core\Container $container
+     * @return Main
+     */
+    public function getServiceProvider(Container $container);
 }

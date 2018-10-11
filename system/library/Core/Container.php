@@ -208,7 +208,7 @@ class Container extends Basis
      */
     public function has($name)
     {
-        return $this->hasBindAll($name) || $this->has($name);
+        return $this->hasProperty($name) || $this->hasBindAll($name);
     }
 
     /**
@@ -361,9 +361,11 @@ class Container extends Basis
                 $name = OC_NS_SEP . $dependency->name;
                 if (isset($params[$key]) && is_object($params[$key])) {
                     $class = $params[$key];
-                } elseif ($this->has($name)) {
+                } elseif ($this->hasBind($name)) {
                     $class = $this->create($name);
-                } elseif ($this !== self::$_default && self::$_default && self::$_default->has($name)) {
+                } elseif ($this->hasBindSingleton($name)){
+                    $class = $this->get($name);
+                }elseif ($this !== self::$_default && self::$_default && self::$_default->has($name)) {
                     $class = self::$_default->create($name);
                 }
             }
