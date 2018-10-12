@@ -227,7 +227,7 @@ class DatabaseBase extends Sql
 			}
 		} catch (\Exception $exception) {
 			if (!$this->_wakeUpTimes) {
-				if ($this->_plugin->is_not_Active()) {
+				if ($this->_plugin->is_not_active()) {
 					$this->_plugin->wake_up();
 				}
 				$this->_wakeUpTimes++;
@@ -367,7 +367,7 @@ class DatabaseBase extends Sql
     }
 
 	/**
-	 * 是否预处理
+	 * 是否长连接
 	 * @param bool $pconnect
 	 * @return bool
 	 */

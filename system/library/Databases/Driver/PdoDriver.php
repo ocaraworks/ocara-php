@@ -87,7 +87,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 * 服务器是否断开连接
 	 * @return bool
 	 */
-	public function is_not_Active()
+	public function is_not_active()
 	{
 		return $this->error_no() == '2006';
 	}

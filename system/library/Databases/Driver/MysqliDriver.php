@@ -113,7 +113,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
 	 * 服务器是否断开连接
 	 * @return bool
 	 */
-	public function is_not_Active()
+	public function is_not_active()
 	{
 		return $this->error_no() == '2006';
 	}
@@ -374,6 +374,16 @@ class MysqliDriver extends DriverBase implements DriverInterface
 		$result = call_user_func_array(array($this->_stmt, 'bind_param'), func_get_args());
 		return $result;
 	}
+
+    /**
+     * 绑定参数
+     * @param string $parameter
+     * @param mixed $variable
+     */
+    public function param_count()
+    {
+        return $this->_stmt->param_count;
+    }
 
 	/**
 	 * 绑定参数
