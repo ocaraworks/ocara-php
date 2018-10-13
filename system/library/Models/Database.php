@@ -1905,7 +1905,7 @@ abstract class Database extends ModelBase
 	 * @param ModelBase $model
 	 * @return $this
 	 */
-	public function union(\Ocara\Core\ModelBase $model)
+	public function union(ModelBase $model)
 	{
 		$this->_union($model, false);
 		return $this;
@@ -1916,7 +1916,7 @@ abstract class Database extends ModelBase
 	 * @param ModelBase $model
 	 * @return $this
 	 */
-	public function unionAll(\Ocara\Core\ModelBase $model)
+	public function unionAll(ModelBase $model)
 	{
 		$this->_union($model, true);
 		return $this;
