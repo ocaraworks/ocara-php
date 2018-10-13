@@ -156,10 +156,10 @@ $OC_CONF['CONTROLLERS']['rest'] = array(
 $OC_CONF['APP_PATH_INFO'] = array(
 
     /*目录映射*/
-    'map' => array(),
+    'maps' => array(),
 
 	/*所属目录*/
-	'belong' => array(
+	'belongs' => array(
         'console'		=> 'application',
 		'modules'  	    => 'application',
 		'view'  	  	=> 'application',
@@ -190,6 +190,13 @@ $OC_CONF['APP_PATH_INFO'] = array(
         'logs'          => 'runtime',
         'sessions'      => 'runtime',
 	),
+    'remote_belongs'     => array(
+        'attachments' 	=> '',
+        'css'  		  	=> 'src',
+        'images'  	  	=> 'src',
+        'js'  		  	=> 'src',
+        'static'  	  	=> '',
+    ),
 );
 
 /*

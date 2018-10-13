@@ -38,11 +38,18 @@ class Path extends Basis
     {
         $mapDir = $dir;
 
-        if (isset($this->_properties['map'][$dir])) {
-            $mapDir = $this->_properties['map'][$dir];
+        if (isset($this->_properties['maps'][$dir])) {
+            $mapDir = $this->_properties['maps'][$dir];
         }
 
-        if (isset($this->_properties['belong'][$mapDir])) {
+        $belongs = array();
+        if ($local) {
+            $belongs = $this->_properties['belongs'];
+        } else {
+            $belongs = $this->_properties['remote_belongs'];
+        }
+
+        if (isset($belongs[$mapDir])) {
             if (isset($this->_properties['replace'][$mapDir])) {
                 $replace = $this->_properties['replace'][$mapDir];
             } else {
@@ -51,7 +58,7 @@ class Path extends Basis
             if ($dir == 'lang') {
                 $replace['lang'] = 'lang/' . OC_LANGUAGE;
             }
-            $mapDir = $this->_properties['belong'][$mapDir] . OC_DIR_SEP . $replace;
+            $mapDir = $belongs[$mapDir] . OC_DIR_SEP . $replace;
         }
 
         $result = ocDir($root, $mapDir) . $path;

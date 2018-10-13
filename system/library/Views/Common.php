@@ -355,7 +355,7 @@ class Common extends ViewBase implements ViewInterfaces
 		if (empty($template) && $type != 'js') {
 			$template = $this->_template;
 		}
-		
+
 		$path = $type == 'js' ? $path : $template . OC_DIR_SEP . $path;
 		return ocRealUrl($type, $path);
 	}
