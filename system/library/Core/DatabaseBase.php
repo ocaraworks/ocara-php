@@ -219,11 +219,11 @@ class DatabaseBase extends Sql
 
 		try {
 			if ($this->_prepared && $params) {
-				$this->_plugin->prepare($sql);
+				$this->_plugin->prepare_sql($sql);
 				$this->_bindParams($params);
-				$result = $this->_plugin->execute();
+				$result = $this->_plugin->execute_sql();
 			} else {
-				$result = $this->_plugin->query($sql);
+				$result = $this->_plugin->query_sql($sql);
 			}
 		} catch (\Exception $exception) {
 			if (!$this->_wakeUpTimes) {
@@ -254,7 +254,7 @@ class DatabaseBase extends Sql
         $dataType = $dataType ? : 'array';
 
         if ($count) {
-            $result = $this->_plugin->get_result($dataType, $queryRow);
+            $result = $this->_plugin->get_all_result($dataType, $queryRow);
             $total = 0;
             if ($unions) {
                 foreach ($result as $row) {
@@ -269,7 +269,7 @@ class DatabaseBase extends Sql
             }
             $result = array(array('total' => $total));
         } else {
-            $result = $this->_plugin->get_result($dataType, $queryRow);
+            $result = $this->_plugin->get_all_result($dataType, $queryRow);
         }
 
         if ($queryRow && $result && empty($debug)) {

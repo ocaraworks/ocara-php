@@ -151,14 +151,24 @@ class MysqliDriver extends DriverBase implements DriverInterface
 		return $this->_stmt;
 	}
 
+    /**
+     * @param string $sql
+     * @param int|null $resultmode
+     * @return mixed
+     */
+    public function query($sql, $resultmode = MYSQLI_STORE_RESULT)
+    {
+        return $this->_connection->query($sql);
+    }
+
 	/**
 	 * @param string $sql
 	 * @param int $resultmode
 	 * @return mixed
 	 */
-	public function query($sql, $resultmode = MYSQLI_STORE_RESULT)
+	public function query_sql($sql, $resultmode = MYSQLI_STORE_RESULT)
 	{
-		$this->_recordSet = $this->_connection->query($sql);
+		$this->_recordSet = $this->query($sql);
 		return $this->_recordSet;
 	}
 
@@ -262,7 +272,6 @@ class MysqliDriver extends DriverBase implements DriverInterface
 		if ($this->_prepared) {
 			$this->_stmt->free_result();
 		}
-		$this->_recordSet = null;
 	}
 
 	/**
@@ -364,6 +373,16 @@ class MysqliDriver extends DriverBase implements DriverInterface
 		return $result;
 	}
 
+    /**
+     * 预处理
+     * @param string $sql
+     * @return mixed
+     */
+    public function prepare_sql($sql)
+    {
+        return $this->prepare($sql);
+    }
+
 	/**
 	 * 绑定参数
 	 * @param string $parameter
@@ -394,16 +413,31 @@ class MysqliDriver extends DriverBase implements DriverInterface
 		$result = call_user_func_array(array($this->_stmt, 'bind_result'), func_get_args());
 		return $result;
 	}
-	
+
 	/**
 	 * 执行SQL
 	 */
 	public function execute()
 	{
-		$result = $this->_stmt->execute();
-		$this->_recordSet = $this->_stmt->get_result();
-		$this->_stmt->free_result();
+		return $this->_stmt->execute();
+    }
+
+    /**
+     * 执行SQL
+     */
+    public function execute_sql()
+    {
+		$result = $this->execute();
+		$this->_recordSet = $this->get_result();
+		$this->free_result();
 		return $result;
+	}
+
+    /**
+     * @return mixed
+     */
+	public function get_result(){
+        return $this->_stmt->get_result();
 	}
 
 	/**

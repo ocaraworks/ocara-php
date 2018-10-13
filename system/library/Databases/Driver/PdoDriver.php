@@ -130,10 +130,21 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 * @param int $resultmode
 	 * @return mixed
 	 */
-	public function query($sql, $resultmode = PDO::FETCH_ASSOC)
+	public function query($sql, $resultmode = null)
 	{
-		return $this->_stmt = $this->_instance->query($sql, $resultmode);
+	    $resultmode = $resultmode ? : PDO::FETCH_ASSOC;
+		return $this->_instance->query($sql, $resultmode);
 	}
+
+    /**
+     * @param string $sql
+     * @param int $resultmode
+     * @return mixed
+     */
+    public function query_sql($sql, $resultmode = null)
+    {
+        return $this->_stmt = $this->query($sql, $resultmode);
+    }
 
 	public function close()
 	{}
@@ -329,8 +340,17 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function prepare($sql)
 	{
-		return $this->_stmt = $this->_instance->prepare($sql);
+		return $this->_instance->prepare($sql);
 	}
+
+    /**
+     * 预处理
+     * @param string $sql
+     */
+    public function prepare_sql($sql)
+    {
+        return $this->_stmt = $this->prepare($sql);
+    }
 
 	/**
 	 * 绑定参数
@@ -372,7 +392,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 * @param string $dataType
 	 * @param bool $queryRow
 	 */
-	public function get_result($dataType = 'array', $queryRow = false)
+	public function get_all_result($dataType = 'array', $queryRow = false)
 	{
 		$result = array();
 
@@ -401,12 +421,19 @@ class PdoDriver extends DriverBase implements DriverInterface
 		return $result;
 	}
 
+    /**
+     * @return mixed
+     */
+	public function execute(){
+        return $this->_stmt->execute();
+    }
+
 	/**
 	 * @return mixed
 	 */
-	public function execute()
+	public function execute_sql()
 	{
-		return $this->_stmt->execute();
+		return $this->execute();
 	}
 
 	/**

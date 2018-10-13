@@ -57,7 +57,7 @@ class DriverBase extends Base
 	 * @param bool $queryRow
 	 * @return array
 	 */
-	public function get_result($dataType, $queryRow = false)
+	public function get_all_result($dataType, $queryRow = false)
 	{
 		$result = array();
 

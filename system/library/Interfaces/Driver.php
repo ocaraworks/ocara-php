@@ -28,6 +28,13 @@ interface Driver
 	 */
 	public function query($sql, $resultmode = null);
 
+    /**
+     * 执行SQL语句
+     * @param string $sql
+     * @param integer $resultmode
+     */
+    public function query_sql($sql, $resultmode = null);
+
 	/**
 	 * 关闭数据库
 	 */
@@ -96,22 +103,33 @@ interface Driver
 	 */
 	public function prepare($sql);
 
+    /**
+     * 预处理
+     * @param string $sql
+     */
+    public function prepare_sql($sql);
+
 	/**
 	 * 绑定参数
 	 * @param string $parameter
 	 * @param mixed $variable
 	 */
 	public function bind_param($parameter, &$variable);
-	
+
+    /**
+     * 执行
+     */
+    public function execute();
+
 	/**
 	 * 执行
 	 */
-	public function execute();
+	public function execute_sql();
 
 	/**
-	 * 获取结果集数据
+	 * 获取所有结果集数据
 	 * @param string $dataType
 	 * @param bool $queryRow
 	 */
-	public function get_result($dataType, $queryRow = false);
+	public function get_all_result($dataType, $queryRow = false);
 }
