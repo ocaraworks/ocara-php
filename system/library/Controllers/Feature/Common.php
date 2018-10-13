@@ -22,11 +22,9 @@ class Common extends Base implements Feature
      */
     public function getAction(array $get)
     {
-        $action = ocGet(0, $get);
+        $action = array_shift($get);
 
-        if ($action) {
-            ocDel($get, 0);
-        } else {
+        if (empty($action)) {
             $action = ocConfig('DEFAULT_ACTION');
         }
 

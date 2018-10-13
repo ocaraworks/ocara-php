@@ -70,7 +70,7 @@ class Base extends ServiceProvider
     public function model($class = null)
     {
         if (empty($class)) {
-            $class = '\Model\Main\\' . ucfirst(ocService()->app->getRoute('controller'));
+            $class = '\dal\models\main\\' . ucfirst(ocService()->app->getRoute('controller'));
         }
 
         if (isset($this->_models[$class])) {

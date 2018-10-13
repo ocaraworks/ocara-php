@@ -25,7 +25,7 @@ class Controller extends serviceProvider implements ControllerInterface
 	 */
 	public function init()
 	{
-	    $route = ocService()->app->getRoute();
+	    $route = $this->getRoute();
 		$controllerType = Route::getControllerType($route['module'], $route['controller']);
 		$provider = 'Ocara\Controllers\Provider\\' . $controllerType;
 		$this->_provider = new $provider(compact('route'));
@@ -46,6 +46,15 @@ class Controller extends serviceProvider implements ControllerInterface
 	{
 		return $this->_provider;
 	}
+
+    /**
+     * 获取当前路由
+     * @return mixed
+     */
+	public function getRoute($name = null)
+    {
+	    return call_user_func_array(array(ocService()->app, 'getRoute'), func_get_args());
+    }
 
 	/**
 	 * 执行动作

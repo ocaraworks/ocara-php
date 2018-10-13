@@ -14,10 +14,10 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Url extends Base
 {
-	const DEFAULT_TYPE 	= 1; //默认类型
-	const DIR_TYPE 		= 2; //伪目录类型
-	const PATH_TYPE 	= 3; //伪路径类型
-	const STATIC_TYPE 	= 4; //伪静态类型
+	const ROUTE_TYPE_DEFAULT 	= 1; //默认类型
+	const ROUTE_TYPE_DIR 		= 2; //伪目录类型
+	const ROUTE_TYPE_PATH       = 3; //伪路径类型
+	const ROUTE_TYPE_STATIC 	= 4; //伪静态类型
 	
 	/**
 	 * 是否虚拟URL地址
@@ -26,7 +26,11 @@ class Url extends Base
 	 */
 	public function isVirtualUrl($urlType)
 	{
-		return in_array($urlType, array(self::DIR_TYPE, self::PATH_TYPE, self::STATIC_TYPE));
+		return in_array($urlType, array(
+		    self::ROUTE_TYPE_DIR,
+            self::ROUTE_TYPE_PATH,
+            self::ROUTE_TYPE_STATIC)
+        );
 	}
 
     /**
@@ -102,12 +106,12 @@ class Url extends Base
 		$get = null;
 
 		if ($this->isVirtualUrl($urlType)) {
-			$str  = $urlType == self::PATH_TYPE ? 'index\.php[\/]?' : false;
+			$str  = $urlType == self::ROUTE_TYPE_PATH ? 'index\.php[\/]?' : false;
 			$el   = '[^\/\&\?]';
 			$mvc  = '\w*';
 			$mvcs = $mvc . '\/';
 
-			if ($urlType == self::STATIC_TYPE && $url != OC_DIR_SEP) {
+			if ($urlType == self::ROUTE_TYPE_STATIC && $url != OC_DIR_SEP) {
 				$file = "\.html?";
 			} else {
 				$file = OC_EMPTY;
@@ -169,9 +173,9 @@ class Url extends Base
 			
 			$route     = implode(OC_DIR_SEP, $query);
 			$query     = $params ? OC_DIR_SEP . implode(OC_DIR_SEP, $this->devideQuery($params)) : false;
-			$paramPath = $urlType == self::PATH_TYPE ? OC_INDEX_FILE . OC_DIR_SEP : false;
+			$paramPath = $urlType == self::ROUTE_TYPE_PATH ? OC_INDEX_FILE . OC_DIR_SEP : false;
 			$paramPath = $paramPath . $route . $query;
-			$paramPath = $urlType == self::STATIC_TYPE ? $paramPath . '.html' : $paramPath;
+			$paramPath = $urlType == self::ROUTE_TYPE_STATIC ? $paramPath . '.html' : $paramPath;
 		} else {
 			$route = $query = array();
 			if ($module) {

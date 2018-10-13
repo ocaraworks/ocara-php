@@ -26,7 +26,7 @@ class Route extends Base
         if ($module == OC_DEV_SIGN) return $this->getDevelopRoute($get);
 
         if ($uModule) {
-            $moduleClass = ocNamespace('Controller', $uModule) . $uModule . 'Module';
+            $moduleClass = 'modules' . OC_NS_SEP . $module . OC_NS_SEP. 'Module';
             if (ocClassExists($moduleClass)) {
                 $controller = $get ? array_shift($get) : null;
             } else {
@@ -43,15 +43,15 @@ class Route extends Base
             $controller = ocConfig('DEFAULT_CONTROLLER');
         }
 
-        if (ocService()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
-            $_GET = $this->formatGet($_GET);
-        }
-
         $controllerType = self::getControllerType($module, $controller);
         $routeClass = "\\Ocara\\Controllers\\Feature\\{$controllerType}";
         $routeFeature = new $routeClass();
         $action       = $routeFeature->getAction($get);
         $route        = $routeFeature->getLastRoute($module, $controller, $action);
+
+        if (ocService()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
+            $_GET = $this->formatGet($_GET);
+        }
 
         return $route;
     }
