@@ -11,6 +11,9 @@ use Ocara\Interfaces\Bootstrap as BootstrapInterface;
 
 class Bootstrap extends BootstrapBase implements BootstrapInterface
 {
+    const EVENT_DIE = 'die';
+    const EVENT_BEFORE_RUN = 'beforeRun';
+
     /**
      * 初始化
      */
@@ -19,7 +22,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
         date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
         set_exception_handler(array(ocService()->exceptionHandler, 'run'));
 
-        $this->event('die')
+        $this->event(self::EVENT_DIE)
             ->append(ocConfig('EVENT.oc_die', null));
 
         $this->bindEvents(ocConfig('EVENT.log', ocService()->log));
@@ -32,7 +35,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
             self::createHtaccess();
         }
 
-        $this->event('beforeRun')
+        $this->event(self::EVENT_BEFORE_RUN)
              ->append(ocConfig('EVENT.action.before_run', null))
              ->append(ocConfig('EVENT.auth.check', null));
     }
@@ -52,7 +55,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
             }
         }
 
-        $this->event('beforeRun')->fire(array($route));
+        $this->event(self::EVENT_BEFORE_RUN)->fire(array($route));
         self::run($route);
     }
 

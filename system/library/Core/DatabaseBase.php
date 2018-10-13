@@ -24,6 +24,9 @@ class DatabaseBase extends Sql
 	const DEBUG_PRINT = 2; //用print_r()打印调试信息
 	const DEBUG_DUMP = 3; //用var_dump()打印调试信息
 
+    const EVENT_BEFORE_EXECUTE_SQL = 'beforeExecuteSql';
+    const EVENT_AFTER_EXECUTE_SQL = 'afterExecuteSql';
+
 	/**
 	 * 连接属性
 	 */
@@ -90,10 +93,10 @@ class DatabaseBase extends Sql
 		$this->_config = $config;
 		ocDel($this->_config, 'password');
 
-		$this->event('beforeExecuteSql')
+		$this->event(self::EVENT_BEFORE_EXECUTE_SQL)
 			 ->append(ocConfig('EVENT.database.before_execute_sql', null));
 
-		$this->event('afterExecuteSql')
+		$this->event(self::EVENT_AFTER_EXECUTE_SQL)
 			->append(ocConfig('EVENT.database.after_execute_sql', null));
 
 		$this->init($config);
@@ -222,7 +225,7 @@ class DatabaseBase extends Sql
 	public function execute(array $sqlData, $required = true)
 	{
 	    list($sql, $params) = $sqlData;
-		$this->event('beforeExecuteSql')
+		$this->event(self::EVENT_BEFORE_EXECUTE_SQL)
              ->fire(array($sql, date(ocConfig('DATE_FORMAT.datetime'))));
 
 		try {
@@ -784,7 +787,7 @@ class DatabaseBase extends Sql
 
 		if ($sqlData) {
 			$params = array($sqlData, $errorExists, $error,$ret, date(ocConfig('DATE_FORMAT.datetime')));
-			$this->event('afterExecuteSql')->fire($params);
+			$this->event(self::EVENT_AFTER_EXECUTE_SQL)->fire($params);
 		}
 
 		if ($required && $errorExists) {

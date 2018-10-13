@@ -21,6 +21,8 @@ class Rest extends Base
     protected $_message;
     protected $_hyperMediaLink;
 
+    const EVENT_AFTER = '_after';
+
     /**
      * 初始化设置
      */
@@ -76,7 +78,7 @@ class Rest extends Base
         }
 
         $this->view->output(compact('contentType', 'message', 'data'));
-        $this->event('_after')->fire();
+        $this->event(self::EVENT_AFTER)->fire();
         die();
     }
 

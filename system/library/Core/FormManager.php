@@ -15,6 +15,8 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class FormManager extends ServiceProvider
 {
+    const EVENT_CHECK_ERROR = 'checkError';
+
 	/**
 	 * 注册服务
 	 * @param array $data
@@ -27,7 +29,7 @@ class FormManager extends ServiceProvider
 		$this->_container
 			->bindSingleton('validator', $validator, array($validate));
 
-		$this->event('checkError')
+		$this->event(self::EVENT_CHECK_ERROR)
 			 ->append(ocConfig(array('EVENT', 'form', 'check_error'), null));
 	}
 
@@ -134,8 +136,8 @@ class FormManager extends ServiceProvider
 		$error['errorInfo'] = ocService()->lang->get($errorType, $params);;
 		$error['errorData'] = $data;
 
-		if ($this->event('checkError')->get()) {
-			$this->event('checkError')->fire(array($error, $this->getRoute()));
+		if ($this->event(self::EVENT_CHECK_ERROR)->get()) {
+			$this->event(self::EVENT_CHECK_ERROR)->fire(array($error, $this->getRoute()));
 		} else {
 			ocService()->error->show($error['errorInfo']);
 		}

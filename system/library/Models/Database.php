@@ -54,7 +54,15 @@ abstract class Database extends ModelBase
 	private static $_config = array();
 	private static $_requirePrimary;
 
-	/**
+    const EVENT_BEFORE_CREATE = 'beforeCreate';
+    const EVENT_AFTER_CREATE = 'afterCreate';
+    const EVENT_BEFORE_UPDATE = 'beforeUpdate';
+    const EVENT_AFTER_UPDATE = 'afterUpdate';
+    const EVENT_BEFORE_DELETE = 'beforeDelete';
+    const EVENT_AFTER_DELETE = 'afterDelete';
+    const EVENT_QUERY_SAVE_CACHE_DATA = 'querySaveCacheData';
+
+    /**
 	 * Model constructor.
 	 */
 	public function __construct(array $data = array())
@@ -89,7 +97,7 @@ abstract class Database extends ModelBase
 		}
 
 		$this->bindEvents($this);
-		$this->event('querySaveCacheData')
+		$this->event(self::EVENT_QUERY_SAVE_CACHE_DATA)
 			 ->append(ocConfig('EVENT.model.query.save_cache_data', null));
 
 		if (method_exists($this, '_start')) $this->_start();
@@ -564,10 +572,10 @@ abstract class Database extends ModelBase
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
 			if ($this->_selected) {
-				$this->event('beforeUpdate')->fire();
+				$this->event(self::EVENT_BEFORE_UPDATE)->fire();
 			}
 		} else {
-			$this->event('beforeCreate')->fire();
+			$this->event(self::EVENT_BEFORE_CREATE)->fire();
 		}
 
 		$data = $this->map(array_merge($data, $this->getChanges()));
@@ -586,7 +594,7 @@ abstract class Database extends ModelBase
 			if (!$debug){
 				$this->_relateSave();
 				if($this->_selected) {
-					$this->event('afterUpdate')->fire();
+					$this->event(self::EVENT_AFTER_UPDATE)->fire();
 				}
 			}
 		} else {
@@ -595,7 +603,7 @@ abstract class Database extends ModelBase
 				$this->_insertId = $this->_plugin->getInsertId();
 				$this->_selectInsertRow($data);
 				$this->_relateSave();
-				$this->event('afterCreate')->fire();
+				$this->event(self::EVENT_AFTER_CREATE)->fire();
 			}
 		}
 
@@ -739,7 +747,7 @@ abstract class Database extends ModelBase
 		ocService()->transaction->push($this->_plugin);
 
 		if (!$debug && $this->_selected) {
-			$this->event('beforeDelete')->fire();
+			$this->event(self::EVENT_BEFORE_DELETE)->fire();
 		}
 
 		$result = $this->_plugin->delete($this->_tableName, $condition, $debug);
@@ -747,7 +755,7 @@ abstract class Database extends ModelBase
 			&& !$this->_plugin->errorExists()
 			&& $this->_selected
 		) {
-			$this->event('afterDelete')->fire();
+			$this->event(self::EVENT_AFTER_DELETE)->fire();
 		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
@@ -1203,9 +1211,9 @@ abstract class Database extends ModelBase
 	 */
 	public function _saveCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired, $result)
 	{
-		if ($this->event('querySaveCacheData')->get()) {
+		if ($this->event(self::EVENT_QUERY_SAVE_CACHE_DATA)->get()) {
 			$params = array($cacheObj, $sql, $result, $cacheRequired);
-			$this->event('querySaveCacheData')->fire($params);
+			$this->event(self::EVENT_QUERY_SAVE_CACHE_DATA)->fire($params);
 		} else {
 			$cacheObj->set($sqlEncode, json_encode($result));
 		}

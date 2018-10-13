@@ -24,6 +24,9 @@ class Common extends Base
     private $_submitMethod = 'post';
     private $_checkForm = true;
 
+    const EVENT_AFTER = '_after';
+    const EVENT_AFTER_CREATE_FORM = 'afterCreateForm';
+
     /**
      * 初始化设置
      */
@@ -31,7 +34,7 @@ class Common extends Base
     {
         $this->session->boot();
         $this->setAjaxResponseErrorCode(false);
-        $this->event('afterCreateForm')->append(array($this, 'afterCreateForm'));
+        $this->event(self::EVENT_AFTER_CREATE_FORM)->append(array($this, 'afterCreateForm'));
         $this->_plugin = $this->view;
     }
 
@@ -93,7 +96,7 @@ class Common extends Base
     {
         $content = $this->render($file, $vars);
         $this->view->output(array('content' => $content));
-        $this->event('_after')->fire();
+        $this->event(self::EVENT_AFTER)->fire();
 
         die();
     }
@@ -138,7 +141,7 @@ class Common extends Base
             if ($model) {
                 $form->model($model, false);
             }
-            $this->event('afterCreateForm')->fire(array($name, $form));
+            $this->event(self::EVENT_AFTER_CREATE_FORM)->fire(array($name, $form));
         }
 
         return $form;
