@@ -159,6 +159,8 @@ return array(
 	'no_service'					=> array(2528, '服务不存在：%s'),
     'no_special_module'             => array(2529, '找不到%s模块类'),
 	'no_special_controller'         => array(2530, '找不到%s控制器类'),
+    'no_special_file_module'        => array(2531, '找不到%s模块文件'),
+    'no_special_file_controller'    => array(2532, '找不到%s控制器文件'),
 
 	//已存在
 	'exists_dir'		    		=> array(2601, '已存在同名的目录。'),

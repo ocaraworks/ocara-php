@@ -95,7 +95,7 @@ abstract class BootstrapBase extends Base
 
         if (!ocFileExists($path)) {
             if ($required) {
-                ocService()->error->show('no_special_file', array($type, $target . '.php'));
+                ocService()->error->show('no_special_file_' . lcfirst($type), array(lcfirst($target)));
             }
             return false;
         }
@@ -103,7 +103,7 @@ abstract class BootstrapBase extends Base
         include_once ($path);
         if (!class_exists($namespace . $type,  false)) {
             if ($required) {
-                ocService()->error->show('no_special_' . lcfirst($type), array($target));
+                ocService()->error->show('no_special_' . lcfirst($type), array(lcfirst($target)));
             }
             return false;
         }
