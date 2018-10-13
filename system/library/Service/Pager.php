@@ -194,10 +194,14 @@ class Pager extends ServiceBase
 	 */
 	public function getInfo()
 	{
-		$this->page || $this->page = 1;
+	    if (!is_numeric($this->page)){
+            $this->page = $this->getPage();
+        }
+
+		$this->page  = $this->page ? : 1;
 		$recordEnd   = $this->perPage * $this->page - 1;
 		$recordStart = $recordEnd - ($this->perPage - 1);
-		
+
 		return array($recordStart, $this->perPage);
 	}
 
@@ -287,4 +291,15 @@ class Pager extends ServiceBase
 		
 		return null;
 	}
+
+    /**
+     * 获取当前页
+     * @return int
+     */
+	public function getPage()
+    {
+        $page = ocService()->request->getGet($this->pageParam, null);
+        $page = $page ? : 1;
+        return (int)$page;
+    }
 }

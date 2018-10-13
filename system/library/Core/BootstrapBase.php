@@ -73,7 +73,7 @@ abstract class BootstrapBase extends Base
         $Control = ocContainer()->action;
 
         if ($method != '_action' && !method_exists($Control, $method)) {
-            $service->error->show('no_special_class', array('Action', $uaction));
+            $service->error->show('no_special_class', array('Action', $uAction . 'Action'));
         }
 
         $Control->doAction($method);
