@@ -1500,7 +1500,7 @@ abstract class Database extends ModelBase
 	}
 
 	/**
-	 * 附加排序
+	 * 添加排序
 	 * @param string $orderBy
 	 * @return $this
 	 */
@@ -1512,8 +1512,21 @@ abstract class Database extends ModelBase
 		return $this;
 	}
 
+    /**
+     * 添加union排序
+     * @param string $orderBy
+     * @return $this
+     */
+    public function unionOrderBy($orderBy)
+    {
+        if ($orderBy) {
+            $this->_unions['option']['order'] = $orderBy;
+        }
+        return $this;
+    }
+
 	/**
-	 * 附加Limit
+	 * 添加limit
 	 * @param int $offset
 	 * @param int $rows
 	 * @return $this
@@ -1531,6 +1544,25 @@ abstract class Database extends ModelBase
 		return $this;
 	}
 
+    /**
+     * 添加union limit
+     * @param int $offset
+     * @param int $rows
+     * @return $this
+     */
+    public function unionLimit($offset, $rows = null)
+    {
+        if (isset($rows)) {
+            $rows = $rows ? : 1;
+        } else {
+            $rows = $offset;
+            $offset = 0;
+        }
+
+        $this->_unions['option']['limit'] = array($offset, $rows);
+        return $this;
+    }
+
 	/**
 	 * 分页处理
 	 * @param array $limitInfo
@@ -1539,8 +1571,7 @@ abstract class Database extends ModelBase
 	public function page(array $limitInfo)
 	{
 		$this->_sql['option']['page'] = true;
-		list($offset, $rows) = $limitInfo;
-		return $this->limit($offset, $rows);
+		return $this->limit($limitInfo['offset'], $limitInfo['rows']);
 	}
 
 	/**
@@ -1898,7 +1929,7 @@ abstract class Database extends ModelBase
 	 */
 	public function _union($model, $unionAll = false)
 	{
-		$this->_unions[] = compact('model', 'unionAll');
+		$this->_unions['models'][] = compact('model', 'unionAll');
 	}
 
 	/**

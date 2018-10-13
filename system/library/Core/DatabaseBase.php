@@ -267,7 +267,7 @@ class DatabaseBase extends Sql
         if ($count) {
             $result = $this->_plugin->get_all_result($dataType, $queryRow);
             $total = 0;
-            if ($unions) {
+            if (!empty($unions['models'])) {
                 foreach ($result as $row) {
                     $num = reset($row);
                     $total += (integer)$num;
@@ -348,15 +348,23 @@ class DatabaseBase extends Sql
     {
         list($sql, $params) = $sqlData;
 
-        foreach ($unions as $union) {
-            if ($count) {
-                $unionData = $union['model']->getTotal(self::DEBUG_RETURN);
-            } else {
-                $unionData = $union['model']->getAll(false, false, self::DEBUG_RETURN);
+        if (!empty($unions['models'])) {
+            $sql = $this->wrapSql($sql);
+            foreach ($unions['models'] as $union) {
+                if ($count) {
+                    $unionData = $union['model']->getTotal(self::DEBUG_RETURN);
+                } else {
+                    $unionData = $union['model']->getAll(false, false, self::DEBUG_RETURN);
+                }
+                list($unionSql, $unionParams) = $unionData;
+                $sql .= $this->getUnionSql($unionSql, $union['unionAll']);
+                $params = array_merge($params, $unionParams);
             }
-            list($unionSql, $unionParams) = $unionData;
-            $sql .= $this->getUnionSql($unionSql, $union['unionAll']);
-            $params = array_merge($params, $unionParams);
+            if (!$count && !empty($unions['option'])) {
+                $ordeBy = $unions['option']['order'];
+                $limit = $unions['option']['limit'];
+                $sql = $this->getSubQuerySql($sql, $ordeBy, $limit);
+            }
         }
 
         $result = $this->execute(array($sql, $params));

@@ -802,8 +802,39 @@ class Sql extends Base
 	 */
 	public function getUnionSql($sql, $unionAll = false)
 	{
-		return ($unionAll ? ' UNION ALL ' : ' UNION ') . $sql;
+		return ($unionAll ? ' UNION ALL ' : ' UNION ') . '(' . $sql . ')';
 	}
+
+    /**
+     * 获取子查询SQL
+     * @param string $sql
+     * @param bool $unionAll
+     * @return string
+     */
+    public function getSubQuerySql($sql, $orderBy, array $limit)
+    {
+        $querySql = "SELECT * FROM ($sql) AS a";
+
+        if ($orderBy) {
+            $querySql .= ' ORDER BY ' . $orderBy;
+        }
+
+        if ($limit) {
+            $querySql .= ' LIMIT ' . implode(',', $limit);
+        }
+
+        return $querySql;
+    }
+
+    /**
+     * 将SQL用括号括起来
+     * @param $sql
+     * @return string
+     */
+	public function wrapSql($sql)
+    {
+        return '(' . $sql . ')';
+    }
 
 	/**
 	 * 将条件数组连接成条件字符串
