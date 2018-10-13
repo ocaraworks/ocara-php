@@ -404,7 +404,14 @@ class MysqliDriver extends DriverBase implements DriverInterface
         return $this->_stmt->param_count;
     }
 
-	/**
+    /**
+     * @return mixed
+     */
+    public function next_result(){
+        return $this->_stmt->next_result();
+    }
+
+    /**
 	 * 绑定参数
 	 * @param mixed $vars
 	 */
@@ -413,6 +420,20 @@ class MysqliDriver extends DriverBase implements DriverInterface
 		$result = call_user_func_array(array($this->_stmt, 'bind_result'), func_get_args());
 		return $result;
 	}
+
+    /**
+     * @return mixed
+     */
+    public function get_result(){
+        return $this->_stmt->get_result();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function store_result(){
+        return $this->_stmt->store_result();
+    }
 
 	/**
 	 * 执行SQL
@@ -431,13 +452,6 @@ class MysqliDriver extends DriverBase implements DriverInterface
 		$this->_recordSet = $this->get_result();
 		$this->free_result();
 		return $result;
-	}
-
-    /**
-     * @return mixed
-     */
-	public function get_result(){
-        return $this->_stmt->get_result();
 	}
 
 	/**
