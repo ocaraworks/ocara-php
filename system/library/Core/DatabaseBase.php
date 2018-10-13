@@ -67,6 +67,7 @@ class DatabaseBase extends Sql
 		if (empty($config['options'])) {
 			$config['options'] = array();
 		}
+
 		if (!isset($config['prepare'])) {
 			$config['prepare'] = true;
 		}
@@ -76,6 +77,7 @@ class DatabaseBase extends Sql
 		if (!isset($config['isPdo'])) {
 			$config['isPdo'] = true;
 		}
+
 		if (empty($config['keywords'])) {
 			$config['keywords'] = array();
 		} else {
