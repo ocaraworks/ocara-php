@@ -118,7 +118,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	 */
 	public function selectDatabase($name)
 	{
-		if ($this->_isPdo) {
+		if ($this->isPdo()) {
 			$sqlData = $this->getSelectDbSql($name);
 			return $this->query($sqlData);
 		}

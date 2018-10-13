@@ -56,6 +56,15 @@ class MysqliDriver extends DriverBase implements DriverInterface
 		return $this->_connection;
 	}
 
+    /**
+     * 获取驱动类型
+     * @return mixed
+     */
+    public function driveType()
+    {
+        return 'mysql';
+    }
+
 	/**
 	 * 使用mysqli类连接
 	 * @throws Exception

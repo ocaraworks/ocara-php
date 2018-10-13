@@ -14,7 +14,6 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Sql extends Base
 {
-	protected $_isPdo = false;
 	protected $_prepared;
 	protected $_plugin = null;
 

@@ -25,6 +25,11 @@ class DriverBase extends Base
 	protected $_config;
 	protected $_paramTypesMap = array();
 
+	const DRIVE_TYPE_PDO = 'pdo';
+    const DRIVE_TYPE_ODBC = 'odbc';
+    const DRIVE_TYPE_DBA = 'dba';
+    const DRIVE_TYPE_DBX = 'dbx';
+
 	/**
 	 * 是否长连接
 	 * @param bool $pconnect

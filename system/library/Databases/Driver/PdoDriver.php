@@ -47,6 +47,15 @@ class PdoDriver extends DriverBase implements DriverInterface
 		return $this->_connection = $this->_instance;
 	}
 
+    /**
+     * 获取驱动类型
+     * @return mixed
+     */
+    public function driveType()
+    {
+        return self::DRIVE_TYPE_PDO;
+    }
+
 	/**
 	 * 连接数据库
 	 */

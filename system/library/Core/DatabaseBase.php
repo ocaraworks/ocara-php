@@ -8,7 +8,9 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
+use \Exception;
 use Ocara\Core\Sql;
+use Ocara\Core\DriverBase;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -135,14 +137,18 @@ class DatabaseBase extends Sql
 			$this->isPrepare($config['prepare']);
 		}
 
-		if ($this->_plugin instanceof \Ocara\Databases\Driver\PdoDriver) {
-			$this->_isPdo = true;
-		}
-
 		if (!$exists) {
 			$this->setCharset($config['charset']);
 		}
 	}
+
+    /**
+     * 是否PDO连接
+     * @param $isPdo
+     */
+	public function isPdo(){
+        return $this->_plugin->driveType() == DriverBase::DRIVE_TYPE_PDO;
+    }
 
     /**
      * 获取数据库驱动类
@@ -225,7 +231,7 @@ class DatabaseBase extends Sql
 			} else {
 				$result = $this->_plugin->query_sql($sql);
 			}
-		} catch (\Exception $exception) {
+		} catch (Exception $exception) {
 			if (!$this->_wakeUpTimes) {
 				if ($this->_plugin->is_not_active()) {
 					$this->_plugin->wake_up();
@@ -683,7 +689,7 @@ class DatabaseBase extends Sql
 
 		foreach ($paramData as $key => &$value) {
 			$type = $this->parseParamType($value);
-			if ($this->_isPdo) {
+			if ($this->isPdo()) {
 				$this->_plugin->bind_param($key + 1, $value, $type);
 			} else {
 				$types = $types . $type;
@@ -691,7 +697,7 @@ class DatabaseBase extends Sql
 			}
 		}
 
-		if (!$this->_isPdo && $types) {
+		if (!$this->isPdo() && $types) {
 			array_unshift($data, $types);
 			call_user_func_array(array($this->_plugin, 'bind_param'), $data);
 		}
