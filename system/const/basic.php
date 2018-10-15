@@ -88,5 +88,5 @@ defined('OC_WEB_ROOT') or define('OC_WEB_ROOT', ocCommPath(dirname(realpath($_SE
 defined('OC_ROOT') or define('OC_ROOT', dirname(OC_WEB_ROOT) . OC_DIR_SEP);
 
 //程序根目录
-define('OC_APPLICATION_PATH', OC_ROOT . 'application/');
+defined('OC_APPLICATION_PATH') or define('OC_APPLICATION_PATH', OC_ROOT . 'application/');
 

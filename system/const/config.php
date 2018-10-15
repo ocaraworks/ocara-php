@@ -13,10 +13,10 @@ defined('OC_PATH') or exit('Forbidden!');
 $config = ocContainer()->config;
 
 //入口执行文件名
-define('OC_INDEX_FILE', $config->get('OC_INDEX_FILE', 'index.php'));
+defined('OC_INDEX_FILE') OR define('OC_INDEX_FILE', $config->get('OC_INDEX_FILE', 'index.php'));
 
 //开发者中心标志,URL中使用这个标志来访问开发者中心
-define('OC_DEV_SIGN', $config->get('DEV_SIGN', 'dev'));
+defined('OC_DEV_SIGN') OR define('OC_DEV_SIGN', $config->get('DEV_SIGN', 'dev'));
 
 //根目录URL
 defined('OC_ROOT_URL') or define('OC_ROOT_URL',
