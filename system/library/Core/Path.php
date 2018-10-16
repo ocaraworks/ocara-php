@@ -50,12 +50,13 @@ class Path extends Basis
         }
 
         if (isset($belongs[$mapDir])) {
+
             if (isset($this->_properties['replace'][$mapDir])) {
                 $replace = $this->_properties['replace'][$mapDir];
             } else {
                 $replace = $mapDir;
             }
-            if ($dir == 'lang') {
+            if ($dir == 'lang' && is_array($replace)) {
                 $replace['lang'] = 'lang/' . OC_LANGUAGE;
             }
             $mapDir = $belongs[$mapDir] . OC_DIR_SEP . $replace;
