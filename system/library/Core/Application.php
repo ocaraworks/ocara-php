@@ -51,12 +51,8 @@ class Application extends Basis
     public function bootstrap($bootstrap = null)
     {
         if (func_num_args()) {
-
+            //初始化全局设置
             ocService()->config->loadGlobalConfig();
-
-            if (empty($_SERVER['REQUEST_METHOD'])) {
-                $_SERVER['REQUEST_METHOD'] = 'GET';
-            }
 
             ocImport(array(
                 OC_SYS . 'const/config.php',

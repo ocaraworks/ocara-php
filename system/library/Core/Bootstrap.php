@@ -19,6 +19,10 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
      */
     public function init()
     {
+        if (empty($_SERVER['REQUEST_METHOD'])) {
+            $_SERVER['REQUEST_METHOD'] = 'GET';
+        }
+
         date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
         set_exception_handler(array(ocService()->exceptionHandler, 'run'));
 
