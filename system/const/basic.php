@@ -10,49 +10,51 @@
 defined('OC_PATH') or exit('Forbidden!');
 
 /*
+ * 开始执行时间
+ */
+defined('OC_EXECUTE_START_TIME') OR define('OC_EXECUTE_START_TIME', microtime(true));
+
+/*
  * 基本常量
  */
 //空格
-define('OC_SPACE', chr(32));
+defined('OC_SPACE') or define('OC_SPACE', chr(32));
 
 //空字符串
-define('OC_EMPTY', (string)false);
+defined('OC_EMPTY') or define('OC_EMPTY', (string)false);
 
 //目录分隔符（反斜杠）
-define('OC_DIR_SEP', '/');
+defined('OC_DIR_SEP') or define('OC_DIR_SEP', '/');
 
 //命名空间分隔符（顺斜杠）
-define('OC_NS_SEP', "\\");
+defined('OC_NS_SEP') or define('OC_NS_SEP', "\\");
 
 //英文单引号
-define('OC_QUOTE', "'");
+defined('OC_QUOTE') or define('OC_QUOTE', "'");
 
 //Ocara SQL标记
-define('OC_SQL_TAG', '{oc_sql_tag}');
+defined('OC_SQL_TAG') or define('OC_SQL_TAG', '{oc_sql_tag}');
 
 //TRUE整型值
-define('OC_TRUE', 1);
+defined('OC_TRUE') or define('OC_TRUE', 1);
 
 //FALSE整型值
-define('OC_FALSE', 0);
+defined('OC_FALSE') or define('OC_FALSE', 0);
 
 /*
  * 服务器信息常量
  */
 //是否是Windows系统
-define('OC_IS_WIN', strstr(PHP_OS, 'WIN'));
+defined('OC_IS_WIN') or define('OC_IS_WIN', strstr(PHP_OS, 'WIN'));
 
 //当前文件名
 defined('OC_PHP_SELF') or define('OC_PHP_SELF', basename($_SERVER['PHP_SELF']));
 
-//当前PHP的运行模式
-defined('OC_PHP_SAPI') or define('OC_PHP_SAPI', php_sapi_name());
-
 //当前主机或域名
-define('OC_HOST', ocGet('HTTP_HOST', $_SERVER));
+defined('OC_HOST') or define('OC_HOST', ocGet('HTTP_HOST', $_SERVER));
 
 //协议类型
-define('OC_PROTOCOL', strtolower(ocGet('HTTPS', $_SERVER)) == 'on'? 'https' : 'http');
+defined('OC_PROTOCOL') or define('OC_PROTOCOL', strtolower(ocGet('HTTPS', $_SERVER)) == 'on'? 'https' : 'http');
 
 //当前URL
 defined('OC_REQ_URI') or define('OC_REQ_URI', ocCommPath(ocGet('REQUEST_URI', $_SERVER)));
@@ -61,19 +63,19 @@ defined('OC_REQ_URI') or define('OC_REQ_URI', ocCommPath(ocGet('REQUEST_URI', $_
  * 框架常量
  */
 //框架系统目录
-define('OC_SYS', OC_PATH . 'system/');
+defined('OC_SYS') or define('OC_SYS', OC_PATH . 'system/');
 
 //框架扩展目录
-define('OC_EXT', OC_PATH . 'extension/');
+defined('OC_EXT') or define('OC_EXT', OC_PATH . 'extension/');
 
 //框架类库目录
-define('OC_LIB', OC_SYS . 'library/');
+defined('OC_LIB') or define('OC_LIB', OC_SYS . 'library/');
 
 //框架系统处理类目录
-define('OC_CORE', OC_SYS . 'library/Core/');
+defined('OC_WEB_ROOT') or define('OC_CORE', OC_SYS . 'library/Core/');
 
 //框架系统服务目录
-define('OC_SERVICE', OC_SYS . 'library/Service/');
+defined('OC_WEB_ROOT') or define('OC_SERVICE', OC_SYS . 'library/Service/');
 
 //是否外部引入
 defined('OC_INVOKE') OR define('OC_INVOKE', false);

@@ -57,7 +57,7 @@ class Path extends Basis
                 $replace = $mapDir;
             }
             if ($dir == 'lang' && is_array($replace)) {
-                $replace['lang'] = 'lang/' . OC_LANGUAGE;
+                $replace['lang'] = 'lang/' . ocService()->app->getLanguage();
             }
             $mapDir = $belongs[$mapDir] . OC_DIR_SEP . $replace;
         }

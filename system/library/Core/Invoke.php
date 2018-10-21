@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
+use \Exception;
+
 final class Invoke
 {
 	/**
@@ -22,34 +24,32 @@ final class Invoke
 
 	/**
 	 * 初始化
-	 * @param string $rootPath
-	 * @param string $fileSelf
+	 * @param string $appRoot
+	 * @param string $indexFile
 	 */
-	public static function init($rootPath, $fileSelf, $bootstrap = null)
+	public function init($appRoot, $indexFile, $bootstrap = null)
 	{
-		define('OC_EXECUTE_START_TIME', microtime(true));
+        defined('OC_EXECUTE_START_TIME') OR define('OC_EXECUTE_START_TIME', microtime(true));
 
-		define('OC_ROOT', self::getCommPath(realpath($rootPath)) . '/');
-		define('OC_PATH', self::getCommPath(realpath(dirname(dirname(dirname(__DIR__))))) . '/');
-		define('OC_ROOT_URL', '/');
-        define('OC_INVOKE', true);
+        defined('OC_ROOT') OR define('OC_ROOT', self::getCommPath(realpath($appRoot)) . '/');
+        defined('OC_PATH') OR define('OC_PATH', self::getCommPath(realpath(dirname(dirname(dirname(__DIR__))))) . '/');
+        defined('OC_INVOKE') OR define('OC_INVOKE', true);
 
-		define('OC_PHP_SELF',
-			ltrim(str_replace(OC_ROOT, '', self::getCommPath(realpath($fileSelf))), '/')
+        defined('OC_PHP_SELF') OR  define('OC_PHP_SELF',
+			ltrim(str_replace(OC_ROOT, '', self::getCommPath(realpath($indexFile))), '/')
 		);
 
 		if (!is_file($path = OC_PATH . 'system/library/Core/Ocara.php')) {
-			die('Lost ocara file!');
+			throw new Exception('Lost ocara file!');
 		}
 
 		include_once($path);
 		if (!class_exists('\Ocara\Core\Ocara', false)) {
-			die('Lost Ocara class!');
+            throw new Exception('Lost Ocara class!');
 		}
 
 		Ocara::getInstance();
-        $application = ocContainer()->app;
-        $application->bootstrap($bootstrap);
+        ocContainer()->app->bootstrap($bootstrap);
 	}
 
     /**
@@ -57,11 +57,15 @@ final class Invoke
      * @param $route
      * @param array $params
      */
-	public static function run($route, $params = array())
+	public static function run($route, $params = array(), $requestMethod = 'GET')
     {
-        $_GET = $params ? : $_GET;
+        if ($params) {
+            if ($requestMethod == 'GET'){
+                $_GET = array_merge($_GET, $params);
+            }
+        }
+ocPrint($_GET);
         $app = ocService()->app;
-
         $route = $app->parseRoute($route);
         $app->setRoute($route);
         $app->bootstrap()->start($route);

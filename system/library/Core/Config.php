@@ -36,7 +36,7 @@ class Config extends Basis
 		if (!file_exists($path)) {
 			throw new Exception('Lost ocara config file: default.php.');
 		}
-		
+
 		include ($path);
 
 		if (isset($OC_CONF)) {

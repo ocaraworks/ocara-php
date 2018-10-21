@@ -76,7 +76,7 @@ abstract class BootstrapBase extends Base
             $service->error->show('no_special_class', array('Action', $uAction . 'Action'));
         }
 
-        $Control->doAction($method);
+        return $Control->doAction($method);
     }
 
     /**

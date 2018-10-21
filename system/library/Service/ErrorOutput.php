@@ -42,7 +42,7 @@ class ErrorOutput extends ServiceBase
         $error['file']  = trim(ocCommPath(self::_stripRootPath($error['file'])), OC_DIR_SEP);
         $error['trace'] = nl2br(ocCommPath($error['trace']));
 
-        if (OC_PHP_SAPI == 'cli') {
+        if (PHP_SAPI == 'cli') {
             list ($trace, $traceInfo) = ocDel($error, 'trace', 'traceInfo');
             $error = array_merge(array('time' => date('Y-m-d H:i:s')), $error);
             $content = ocBr2nl(ocJsonEncode($error) . PHP_EOL . $trace);

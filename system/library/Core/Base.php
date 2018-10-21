@@ -50,7 +50,7 @@ abstract class Base extends Basis
                 return $this->_properties[$name];
             }
             if (method_exists($this, '__none')) {
-                $this->__none($name);
+                return $this->__none($name);
             } else {
                 ocService()->error->show('no_property', array($name));
             }

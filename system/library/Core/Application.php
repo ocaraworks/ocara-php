@@ -27,9 +27,10 @@ class Application extends Basis
      */
     public function getLanguage($getUpdated = false)
     {
-        if ($getUpdated) {
-            return $this->get('LANGUAGE', $this->_language);
+        if ($this->_language === null || $getUpdated) {
+            $this->_language = ocService()->config->get('LANGUAGE');
         }
+
         return $this->_language;
     }
 
@@ -50,6 +51,18 @@ class Application extends Basis
     public function bootstrap($bootstrap = null)
     {
         if (func_num_args()) {
+
+            ocService()->config->loadGlobalConfig();
+
+            if (empty($_SERVER['REQUEST_METHOD'])) {
+                $_SERVER['REQUEST_METHOD'] = 'GET';
+            }
+
+            ocImport(array(
+                OC_SYS . 'const/config.php',
+                OC_SYS . 'functions/common.php'
+            ));
+
             $bootstrap = $bootstrap ? : '\Ocara\Core\Bootstrap';
             $bootstrap = new $bootstrap();
 

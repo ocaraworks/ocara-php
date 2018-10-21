@@ -26,7 +26,7 @@ class ServiceBase extends Base
 	{
 		$lang = array();
 		$shortPath = '/Languages/'
-			. ucfirst(OC_LANGUAGE)
+			. ucfirst(ocService()->app->getLanguage())
 			. OC_DIR_SEP
 			. str_replace(OC_SYS . 'library/Service', '', ocCommPath($filePath));
 

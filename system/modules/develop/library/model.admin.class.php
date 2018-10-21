@@ -141,7 +141,7 @@ class model_admin
 
 		//新建语言文件
 		$path = OC_ROOT . "lang/"
-			. OC_LANGUAGE
+			. ocService()->app->getLanguage()
 			. '/model/'
 			. $connectPath
 			. $modelFile

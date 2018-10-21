@@ -374,7 +374,7 @@ function ocService($name = null, $getDefault = false)
             if (is_string($getDefault)) {
                 $class = $getDefault;
             } else {
-                $class = '\Ocara\\' . ucfirst($name);
+                $class = '\Ocara\Core\\' . ucfirst($name);
             }
             return new $class();
         }

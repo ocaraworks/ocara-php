@@ -176,7 +176,7 @@ class Request extends Base
 	 */
 	public function getMethod()
 	{
-		if (OC_PHP_SAPI == 'cli') {
+		if (PHP_SAPI == 'cli') {
 			$method = strtoupper(ocGet('argv.2', $_SERVER));
 			if (in_array($method, ocConfig('ALLOWED_HTTP_METHODS'))) {
 				return $method; 

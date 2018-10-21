@@ -42,7 +42,7 @@ class Url extends Base
 	public function parseGet($url = null)
 	{
 		if (empty($url)) {
-			if (OC_PHP_SAPI == 'cli') {
+			if (PHP_SAPI == 'cli') {
 				$url = trim(ocGet('argv.1', $_SERVER), OC_DIR_SEP);
 			} else {
 				$localUrl = $_SERVER['DOCUMENT_ROOT'] . OC_REQ_URI;

@@ -51,15 +51,15 @@ final class Ocara extends Basis
 	{
 		if (self::$_instance === null) {
 			self::$_instance = new self();
-			self::init();
+			self::register();
 		}
 		return self::$_instance;
 	}
 
 	/**
-	 * 初始化设置
+	 * 服务注册
 	 */
-	public static function init()
+	public static function register()
 	{
         $container = Container::getDefault()
             ->bindSingleton('config', '\Ocara\Core\Config')
@@ -73,24 +73,10 @@ final class Ocara extends Basis
         $exceptionHandler = $container->exceptionHandler;
 
         spl_autoload_register(array($loader, 'autoload'));
-        $config->loadGlobalConfig();
-
-        define('OC_SYS_MODEL', $config->get('SYS_MODEL', 'application'));
-        define('OC_LANGUAGE', ocService()->app->getLanguage());
-
         @ini_set('register_globals', 'Off');
         register_shutdown_function("ocShutdownHandler");
         error_reporting(self::errorReporting());
         set_exception_handler(array($exceptionHandler, 'run'));
-
-        if (empty($_SERVER['REQUEST_METHOD'])) {
-            $_SERVER['REQUEST_METHOD'] = 'GET';
-        }
-
-        ocImport(array(
-            OC_SYS . 'const/config.php',
-            OC_SYS . 'functions/common.php'
-        ));
 	}
 
 	/**
@@ -121,7 +107,8 @@ final class Ocara extends Basis
 	 */
 	public static function errorReporting($error = null)
 	{
-		$error = $error ? : (OC_SYS_MODEL == 'develop' ? E_ALL : 0);
+	    $sysModel = Container::getDefault()->config->get('SYS_MODEL', 'application');
+		$error = $error ? : ($sysModel == 'develop' ? E_ALL : 0);
 
 		set_error_handler(
             ocContainer()->config->get('ERROR_HANDLER.program_error', 'ocErrorHandler'),
