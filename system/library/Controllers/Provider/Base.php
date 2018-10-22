@@ -57,10 +57,8 @@ class Base extends ServiceProvider
         }
 
         $this->response->setContentType($contentType);
-        $this->view->ajaxOutput($data, $message);
+        $this->ajax->ajaxSuccess($data, $message);
         method_exists($this, '_after') && $this->_after();
-
-        die();
     }
 
     /**

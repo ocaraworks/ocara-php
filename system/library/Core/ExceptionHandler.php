@@ -40,13 +40,11 @@ class ExceptionHandler extends Basis
         }
 
         if (ocService('request', true)->isAjax()) {
-            $this->_defaultAjaxHandler();
+            $this->_ajaxError();
         } else {
             $defaultErrorOutput = ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS.errorOutput');
             ocService('errorOutput', $defaultErrorOutput)->display($this->_error);
         }
-
-        die();
     }
 
     /**
@@ -65,12 +63,12 @@ class ExceptionHandler extends Basis
     /**
      * Ajax处理
      */
-    protected function _defaultAjaxHandler()
+    protected function _ajaxError()
     {
         $message = array();
         $message['code'] = $this->_error['code'];
         $message['message'] = $this->_error['message'];
 
-        ocService('ajax', true)->show('error', $message);
+        ocService('ajax', true)->ajaxError($message);
     }
 }

@@ -59,8 +59,14 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
             }
         }
 
-        $this->event(self::EVENT_BEFORE_RUN)->fire(array($route));
-        self::run($route);
+        $this->event(self::EVENT_BEFORE_RUN)
+             ->fire(array($route));
+        self::dispatch($route);
+
+        $response = ocService()->response;
+        $response->sendHeaders();
+
+        return $response->send();
     }
 
     /**

@@ -21,9 +21,10 @@ class Common extends Base
      * @var $_isSubmit 是否POST提交
      * @var $_checkForm 是否检测表单
      */
-    private $_isSubmit = null;
-    private $_submitMethod = 'post';
-    private $_checkForm = true;
+    protected $_isSubmit = null;
+    protected $_submitMethod = 'post';
+    protected $_checkForm = true;
+    protected $_hasRender = false;
 
     const EVENT_AFTER = '_after';
     const EVENT_AFTER_CREATE_FORM = 'afterCreateForm';
@@ -89,20 +90,6 @@ class Common extends Base
     }
 
     /**
-     * 打印模板
-     * @param string $file
-     * @param array $vars
-     */
-    public function display($file = null, array $vars = array())
-    {
-        $content = $this->render($file, $vars);
-        $this->view->output(array('content' => $content));
-        $this->event(self::EVENT_AFTER)->fire();
-
-        die();
-    }
-
-    /**
      * 渲染模板
      * @param string $file
      * @param array $vars
@@ -119,7 +106,20 @@ class Common extends Base
             }
         }
 
-        return $this->view->render($file, $vars, false);
+        $this->view->render($file, $vars, false);
+        $this->view->output(array('content' => $content));
+        $this->event(self::EVENT_AFTER)->fire();
+
+        $this->_hasRender = true;
+    }
+
+    /**
+     * 是否已渲染
+     * @return mixed
+     */
+    public function hasRender()
+    {
+        return $this->_hasRender;
     }
 
     /**

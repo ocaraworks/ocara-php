@@ -433,25 +433,16 @@ class Common extends ViewBase implements ViewInterfaces
 	 */
 	public function output($data)
 	{
+	    $response = ocService()->response;
+
 		if (ocConfig('FORM.data_cahce', 1)) {
-			ocService()->response->setOption(
+            $response->setOption(
 				'Cache-control',
 				'private, must-revalidate'
 			);
 		}
 
-		ocService()->response->sendHeaders();
-		echo $data['content'];
-	}
-
-	/**
-	 * Ajax输出
-	 * @param mixed $data
-	 * @param array $message
-	 */
-	public function ajaxOutput($data, $message)
-	{
-        ocService()->ajax->show('success', $message, $data);
+        $response->setBody($data['content']);
 	}
 
 	/**

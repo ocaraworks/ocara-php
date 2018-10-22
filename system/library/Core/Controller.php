@@ -75,7 +75,7 @@ class Controller extends serviceProvider implements ControllerInterface
 		if ($doWay == 'common') {
 			$this->doCommonAction();
 		} elseif($doWay == 'ajax') {
-			$this->doAjaxAction();
+            $this->doAjaxAction();
 		}
 	}
 
@@ -89,17 +89,19 @@ class Controller extends serviceProvider implements ControllerInterface
 		$this->checkForm();
 
 		if ($this->request->isAjax()) {
-			$data = OC_EMPTY;
-			if (method_exists($this, '_ajax')) {
-				$data = $this->_ajax();
-			}
-			$this->_provider->ajaxReturn($data);
+		    $result = null;
+		    if (method_exists($this, '_ajax')) {
+                $result = $this->_ajax();
+            }
+			$this->_provider->ajaxReturn($result);
 		} elseif ($this->_provider->isSubmit() && method_exists($this, '_submit')) {
 			$this->_submit();
 			$this->_provider->formManager->clearToken();
 		} else{
 			method_exists($this, '_display') && $this->_display();
-			$this->_provider->display();
+            if (!$this->_provider->hasRender()) {
+                $this->_provider->render();
+            }
 		}
 	}
 
@@ -115,7 +117,7 @@ class Controller extends serviceProvider implements ControllerInterface
 			$result = $this->$actionMethod();
 		}
 
-		$this->_provider->display($result);
+		$this->ajax->ajaxSuccess($result);
 	}
 
 	/**

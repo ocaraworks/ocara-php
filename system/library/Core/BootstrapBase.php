@@ -25,12 +25,12 @@ abstract class BootstrapBase extends Base
     }
 
     /**
-     * 启动控制器
+     * 分发路由控制器
      * @param array|string $route
      * @param bool $return
      * @param array $params
      */
-    public static function run($route, $return = false, array $params = array())
+    public static function dispatch($route, $return = false, array $params = array())
     {
         extract($route);
 
@@ -76,7 +76,7 @@ abstract class BootstrapBase extends Base
             $service->error->show('no_special_class', array('Action', $uAction . 'Action'));
         }
 
-        return $Control->doAction($method);
+        $Control->doAction($method);
     }
 
     /**

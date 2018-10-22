@@ -18,6 +18,6 @@ class Rest extends ViewBase implements ViewInterfaces
     public function output($data)
     {
         ocService()->response->setContentType($data['contentType']);
-        ocService()->ajax->show('success', $data['message'], $data['data']);
+        ocService()->ajax->render('success', $data['message'], $data['data']);
     }
 }

@@ -29,7 +29,8 @@ class Response extends Base
 	const STATUS_NOT_IMPLEMENTED = 501;
 	const STATUS_SERVICE_UNAVAILABLE = 503;
 
-	private $_headers = array();
+    protected $_headers = array();
+    protected $_body;
 
 	/**
 	 * 发送头部信息
@@ -54,6 +55,32 @@ class Response extends Base
 			}
 		}
 	}
+
+    /**
+     * 发送响应数据
+     */
+	public function send()
+    {
+        echo $this->content;
+    }
+
+    /**
+     * 设置响应体
+     * @param $body
+     */
+    public function setBody($body)
+    {
+        $this->_body = $body;
+    }
+
+    /**
+     * 获取响应体
+     * @return mixed
+     */
+    public function getBody()
+    {
+        return $this->_body;
+    }
 
 	/**
 	 * 设置头部信息

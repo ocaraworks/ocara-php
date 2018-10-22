@@ -14,13 +14,46 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Ajax extends Base
 {
+
+    /**
+     * Ajax成功
+     * @param mixed $data
+     * @param array $message
+     */
+    public function ajaxSuccess($data, $message)
+    {
+        $this->render('success', $message, $data);
+    }
+
+    /**
+     * AJAX错误
+     * @param $message
+     * @param null $data
+     */
+    public function ajaxError($message, $data = null)
+    {
+        $this->render('error', $message, $data);
+    }
+
+    /**
+     * 获取XML结果
+     */
+    private function getXmlResult($result)
+    {
+        $xmlObj = new Xml();
+        $xmlObj->setData('array', array('root', $result));
+        $xml = $xmlObj->getContent();
+
+        return $xml;
+    }
+
 	/**
-	 * 输出结果
+	 * 渲染结果
 	 * @param string $status
 	 * @param array $message
 	 * @param string $body
 	 */
-	public function show($status, array $message = array(), $body = OC_EMPTY)
+	public function render($status, array $message = array(), $body = OC_EMPTY)
 	{
 	    $services = ocService();
 		if (is_string($message)) {
@@ -55,19 +88,6 @@ class Ajax extends Base
 				break;
 		}
 
-		$response->sendHeaders();
-		echo($content);
-	}
-
-	/**
-	 * 获取XML结果
-	 */
-	private function getXmlResult($result)
-	{
-		$xmlObj = new Xml();
-		$xmlObj->setData('array', array('root', $result));
-		$xml = $xmlObj->getContent();
-
-		return $xml;
+        $response->setBody($content);
 	}
 }

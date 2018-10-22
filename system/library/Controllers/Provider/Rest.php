@@ -79,7 +79,7 @@ class Rest extends Base
 
         $this->view->output(compact('contentType', 'message', 'data'));
         $this->event(self::EVENT_AFTER)->fire();
-        die();
+        return;
     }
 
     /**

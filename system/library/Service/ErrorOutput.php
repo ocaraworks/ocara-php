@@ -58,8 +58,11 @@ class ErrorOutput extends ServiceBase
             }
         }
 
-        ocService('response', true)->sendHeaders();
-        echo $content;
+        $response = ocService('response', true);
+        $response->setBody($content);
+
+        $response->sendHeaders();
+        $response->send();
     }
 
     /**
