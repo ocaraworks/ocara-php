@@ -44,6 +44,24 @@ class Application extends Basis
     }
 
     /**
+     * 规定在哪个错误报告级别会显示用户定义的错误
+     * @param integer $error
+     * @return bool|int
+     */
+    public function errorReporting($error = null)
+    {
+        $sysModel = Container::getDefault()->config->get('SYS_MODEL', 'application');
+        $error = $error ? : ($sysModel == 'develop' ? E_ALL : 0);
+
+        set_error_handler(
+            ocContainer()->config->get('ERROR_HANDLER.program_error', 'ocErrorHandler'),
+            $error
+        );
+
+        return $error;
+    }
+
+    /**
      * 获取或设置启动器
      * @param $bootstrap
      * @return string
@@ -53,6 +71,7 @@ class Application extends Basis
         if (func_num_args()) {
             //初始化全局设置
             ocService()->config->loadGlobalConfig();
+            error_reporting($this->errorReporting());
 
             ocImport(array(
                 OC_SYS . 'const/config.php',

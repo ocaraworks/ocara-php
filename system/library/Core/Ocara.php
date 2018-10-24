@@ -75,7 +75,6 @@ final class Ocara extends Basis
         spl_autoload_register(array($loader, 'autoload'));
         @ini_set('register_globals', 'Off');
         register_shutdown_function("ocShutdownHandler");
-        error_reporting(self::errorReporting());
         set_exception_handler(array($exceptionHandler, 'run'));
 	}
 
@@ -98,24 +97,6 @@ final class Ocara extends Basis
 
         $application = ocContainer()->app;
         $application->bootstrap($bootstrap)->start($application->getRoute());
-	}
-
-	/**
-	 * 规定在哪个错误报告级别会显示用户定义的错误
-	 * @param integer $error
-	 * @return bool|int
-	 */
-	public static function errorReporting($error = null)
-	{
-	    $sysModel = Container::getDefault()->config->get('SYS_MODEL', 'application');
-		$error = $error ? : ($sysModel == 'develop' ? E_ALL : 0);
-
-		set_error_handler(
-            ocContainer()->config->get('ERROR_HANDLER.program_error', 'ocErrorHandler'),
-			$error
-		);
-
-		return $error;
 	}
 
     /**

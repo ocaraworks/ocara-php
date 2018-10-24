@@ -429,9 +429,9 @@ class Common extends ViewBase implements ViewInterfaces
 
 	/**
 	 * 输出内容
-	 * @param string $data
+	 * @param string $content
 	 */
-	public function output($data)
+	public function output($content)
 	{
 	    $response = ocService()->response;
 
@@ -442,7 +442,7 @@ class Common extends ViewBase implements ViewInterfaces
 			);
 		}
 
-        $response->setBody($data['content']);
+        $response->setBody($content);
 	}
 
 	/**

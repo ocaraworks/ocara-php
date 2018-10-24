@@ -106,8 +106,8 @@ class Common extends Base
             }
         }
 
-        $this->view->render($file, $vars, false);
-        $this->view->output(array('content' => $content));
+        $content = $this->view->render($file, $vars, false);
+        $this->view->output($content);
         $this->event(self::EVENT_AFTER)->fire();
 
         $this->_hasRender = true;

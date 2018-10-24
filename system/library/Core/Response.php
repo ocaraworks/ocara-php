@@ -61,7 +61,7 @@ class Response extends Base
      */
 	public function send()
     {
-        echo $this->content;
+        echo $this->_body;
     }
 
     /**
