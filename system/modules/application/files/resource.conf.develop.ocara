@@ -139,12 +139,5 @@ $OC_CONF['DATE_FORMAT'] = array(
  * 自定义错误处理
  */
 $CONF['ERROR_HANDLER'] = array(
-	'program_error' => '', //自定义程序错误处理方式
-	'exception_error' => '', //自定义异常错误处理方式
-
-	/*
-	 * 要取消显示的错误列表
-	 * 比如E_WARNING,E_USER_WARNING等
-	 */
 	'except_error_list' => array(),
 );

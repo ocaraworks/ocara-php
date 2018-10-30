@@ -20,11 +20,35 @@ class ExceptionHandler extends Basis
      * 错误处理
      * @param $exception
      */
-    public function run($exception)
+    public function exceptionHandler($exception)
     {
         $this->_error = ocGetExceptionData($exception);
         $this->report($exception);
         $this->handler($exception);
+    }
+
+    /**
+     * 程序错误
+     * @param $level
+     * @param $message
+     * @param $file
+     * @param $line
+     * @param string $context
+     * @return bool
+     */
+    public function errorHandler($level, $message, $file, $line, $context = '')
+    {
+        try {
+            throw new ErrorException($message, $level, $level, $file, $line);
+        } catch (ErrorException $exception) {
+            $exceptErrors = ocForceArray(ocConfig('ERROR_HANDLER.except_error_list', array()));
+            if (!in_array($level, $exceptErrors)) {
+                $handler = new static();
+                $handler->run($exception);
+            }
+        }
+
+        return false;
     }
 
     /**

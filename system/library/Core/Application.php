@@ -54,7 +54,7 @@ class Application extends Basis
         $error = $error ? : ($sysModel == 'develop' ? E_ALL : 0);
 
         set_error_handler(
-            ocContainer()->config->get('ERROR_HANDLER.program_error', 'ocErrorHandler'),
+            array(ocService()->exceptionHandler, 'errorHandler'),
             $error
         );
 

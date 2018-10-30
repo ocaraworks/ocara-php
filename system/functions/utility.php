@@ -327,39 +327,6 @@ function ocGetExceptionData($exception)
 }
 
 /**
- * 程序错误
- * @param $level
- * @param $message
- * @param $file
- * @param $line
- * @param string $context
- * @return bool
- */
-function ocErrorHandler($level, $message, $file, $line, $context = '')
-{
-	try {
-		throw new ErrorException($message, $level, $level, $file, $line);
-	} catch (ErrorException $exception) {
-		$exceptErrors = ocForceArray(ocConfig('ERROR_HANDLER.except_error_list', array()));
-		if (!in_array($level, $exceptErrors)) {
-			$handler = new ExceptionHandler();
-			$handler->run($exception);
-		}
-	}
-
-	return false;
-}
-
-/**
- * 异常错误
- * @param object $exception
- */
-function ocExceptionHandler($exception)
-{
-    ocService()->error->exceptionHandler($exception);
-}
-
-/**
  * 获取默认服务提供器
  * @param $name
  * @param bool|string $getDefault

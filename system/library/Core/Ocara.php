@@ -75,7 +75,7 @@ final class Ocara extends Basis
         spl_autoload_register(array($loader, 'autoload'));
         @ini_set('register_globals', 'Off');
         register_shutdown_function("ocShutdownHandler");
-        set_exception_handler(array($exceptionHandler, 'run'));
+        set_exception_handler(array($exceptionHandler, 'exceptionHandler'));
 	}
 
 	/**

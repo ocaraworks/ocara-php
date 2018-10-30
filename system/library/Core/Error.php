@@ -79,23 +79,6 @@ class Error extends ServiceProvider
 	}
 
     /**
-     * 异常处理
-     * @param \Exception $exception
-     * @throws Exception
-     */
-	public function exceptionHandler(\Exception $exception)
-	{
-		$function = ocConfig(
-			'ERROR_HANDLER.exception_error',
-			'ocExceptionHandler',
-			true
-		);
-		if (function_exists($function)) {
-			call_user_func_array($function, array($exception));
-		}
-	}
-
-    /**
      * 魔术方法-调用未定义的方法时
      * @param string $name
      * @param array $params
