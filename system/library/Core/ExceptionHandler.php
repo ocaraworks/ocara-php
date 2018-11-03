@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
+use \ErrorException;
 use Ocara\Core\Basis;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -44,7 +45,7 @@ class ExceptionHandler extends Basis
             $exceptErrors = ocForceArray(ocConfig('ERROR_HANDLER.except_error_list', array()));
             if (!in_array($level, $exceptErrors)) {
                 $handler = new static();
-                $handler->run($exception);
+                $handler->exceptionHandler($exception);
             }
         }
 

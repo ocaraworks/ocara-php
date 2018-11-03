@@ -27,17 +27,13 @@ final class Invoke
 	 * @param string $appRoot
 	 * @param string $indexFile
 	 */
-	public function init($appRoot, $indexFile, $bootstrap = null)
+	public function init($bootstrap = null)
 	{
-        defined('OC_EXECUTE_START_TIME') OR define('OC_EXECUTE_START_TIME', microtime(true));
+        defined('OC_ROOT') OR die('forbidden');
 
-        defined('OC_ROOT') OR define('OC_ROOT', self::getCommPath(realpath($appRoot)) . '/');
+        defined('OC_EXECUTE_START_TIME') OR define('OC_EXECUTE_START_TIME', microtime(true));
         defined('OC_PATH') OR define('OC_PATH', self::getCommPath(realpath(dirname(dirname(dirname(__DIR__))))) . '/');
         defined('OC_INVOKE') OR define('OC_INVOKE', true);
-
-        defined('OC_PHP_SELF') OR  define('OC_PHP_SELF',
-			ltrim(str_replace(OC_ROOT, '', self::getCommPath(realpath($indexFile))), '/')
-		);
 
 		if (!is_file($path = OC_PATH . 'system/library/Core/Ocara.php')) {
 			throw new Exception('Lost ocara file!');
@@ -64,10 +60,10 @@ final class Invoke
                 $_GET = array_merge($_GET, $params);
             }
         }
-ocPrint($_GET);
+
         $app = ocService()->app;
         $route = $app->parseRoute($route);
         $app->setRoute($route);
-        $app->bootstrap()->start($route);
+        $app->bootstrap()->start($app->getRoute());
     }
 }

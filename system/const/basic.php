@@ -72,10 +72,10 @@ defined('OC_EXT') or define('OC_EXT', OC_PATH . 'extension/');
 defined('OC_LIB') or define('OC_LIB', OC_SYS . 'library/');
 
 //框架系统处理类目录
-defined('OC_WEB_ROOT') or define('OC_CORE', OC_SYS . 'library/Core/');
+defined('OC_CORE') or define('OC_CORE', OC_SYS . 'library/Core/');
 
 //框架系统服务目录
-defined('OC_WEB_ROOT') or define('OC_SERVICE', OC_SYS . 'library/Service/');
+defined('OC_SERVICE') or define('OC_SERVICE', OC_SYS . 'library/Service/');
 
 //是否外部引入
 defined('OC_INVOKE') OR define('OC_INVOKE', false);
@@ -83,11 +83,11 @@ defined('OC_INVOKE') OR define('OC_INVOKE', false);
 /*
  * 应用程序常量
  */
-//WEB根目录
-defined('OC_WEB_ROOT') or define('OC_WEB_ROOT', ocCommPath(dirname(realpath($_SERVER['SCRIPT_FILENAME']))) . OC_DIR_SEP);
-
 //应用根目录
-defined('OC_ROOT') or define('OC_ROOT', dirname(OC_WEB_ROOT) . OC_DIR_SEP);
+defined('OC_ROOT') or define('OC_ROOT', ocCommPath(dirname(dirname(realpath($_SERVER['SCRIPT_FILENAME'])))) . OC_DIR_SEP);
+
+//WEB根目录
+defined('OC_WEB_ROOT') or define('OC_WEB_ROOT', OC_ROOT . 'public' . OC_DIR_SEP);
 
 //程序根目录
 defined('OC_APPLICATION_PATH') or define('OC_APPLICATION_PATH', OC_ROOT . 'application/');

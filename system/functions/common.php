@@ -171,7 +171,7 @@ function ocFunc($filePath)
 	$filePath = $filePath . '.php';
 
 	if (ocFileExists($file = ocPath('functions', $filePath)) ||
-		ocFileExists($file = OC_SYS . '/service/functions/' . $filePath) ||
+		ocFileExists($file = OC_SYS . 'service/functions/' . $filePath) ||
 		ocFileExists($file = OC_SYS . '../extension/service/functions/' . $filePath)
 	) {
 		ocImport($filePath);

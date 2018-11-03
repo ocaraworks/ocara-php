@@ -162,7 +162,7 @@ return array(
     'no_special_file_module'        => array(2531, '找不到%s模块文件'),
     'no_special_file_controller'    => array(2532, '找不到%s控制器文件'),
 	'no_old_field'                  => array(2533, '找不到旧值。'),
-    'no_old_field'                  => array(2534, '找不到已改变值。'),
+    'no_changed_field'              => array(2534, '找不到已改变值。'),
 
 	//已存在
 	'exists_dir'		    		=> array(2601, '已存在同名的目录。'),

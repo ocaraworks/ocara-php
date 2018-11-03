@@ -24,7 +24,6 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
         }
 
         date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
-        set_exception_handler(array(ocService()->exceptionHandler, 'run'));
 
         $this->event(self::EVENT_DIE)
             ->append(ocConfig('EVENT.oc_die', null));
@@ -35,7 +34,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
             ocService()->error->show('need_short_open_tag');
         }
 
-        if (!ocFileExists(OC_ROOT . '.htaccess')) {
+        if (!ocFileExists(OC_WEB_ROOT . '.htaccess')) {
             self::createHtaccess();
         }
 
@@ -76,14 +75,14 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
      */
     public static function createHtaccess($moreContent = OC_EMPTY)
     {
-        $file = OC_ROOT . '.htaccess';
+        $file = OC_WEB_ROOT . '.htaccess';
         $htaccess = ocImport(OC_SYS . 'data/rewrite/apache.php');
 
         if (empty($htaccess)) {
             ocService()->error->show('no_rewrite_default_file');
         }
 
-        if (is_writeable(OC_ROOT)) {
+        if (is_writeable(OC_WEB_ROOT)) {
             $htaccess = sprintf($htaccess, $moreContent);
             ocWrite($file, $htaccess);
         } else {

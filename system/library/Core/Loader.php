@@ -25,7 +25,7 @@ class Loader extends Basis
         $autoMap = $config->get('AUTOLOAD_MAP', array());
         $appAutoMap = $config->get('APP_AUTOLOAD_MAP', array());
 
-        $this->_defaultPath = OC_ROOT . 'service/library/';
+        $this->_defaultPath = OC_ROOT . 'library/';
         $this->_autoloadMap = array_merge($autoMap, $appAutoMap);
     }
 
@@ -50,7 +50,6 @@ class Loader extends Basis
         }
 
         $filePath = ocCommPath($filePath);
-
         if (ocFileExists($filePath)) {
             include($filePath);
             if (class_exists($newClass, false)) {
@@ -69,12 +68,12 @@ class Loader extends Basis
             if (is_string($func)) {
                 call_user_func_array($func, array($class));
             } elseif (is_array($func)) {
-                $obj = reset($func);
-                if (is_object($obj)) {
-                    $reflection = new ReflectionClass($obj);
-                    $obj = $reflection->getName();
+                $className = reset($func);
+                if (is_object($className)) {
+                    $reflection = new ReflectionClass($className);
+                    $className = $reflection->getName();
                 }
-                if ($obj === __CLASS__) continue;
+                if ($className === __CLASS__) continue;
                 call_user_func_array($func, array($class));
             } else {
                 continue;
@@ -83,7 +82,5 @@ class Loader extends Basis
                 return true;
             }
         }
-
-        ocService('error', true)->show('not_exists_class', array($class));
     }
 }

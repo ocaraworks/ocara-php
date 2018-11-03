@@ -42,8 +42,8 @@ abstract class BootstrapBase extends Base
 
         $modulePath = ocPath('modules', $module);
         $controlPath = $modulePath . "/controllers/{$controller}/";
-        $moduleNamespace = OC_NS_SEP . ocNamespace(array('modules', $module));
-        $controlNamespace = OC_NS_SEP . ocNamespace(array('modules', $module, $controller));
+        $moduleNamespace = OC_NS_SEP . ocNamespace(array('app\modules', $module));
+        $controlNamespace = OC_NS_SEP . ocNamespace(array('app\modules', $module, $controller));
 
         if (!class_exists($moduleNamespace . $uModule . '\Module', false)) {
             self::loadRoute($modulePath, $uModule, $moduleNamespace, 'Module');

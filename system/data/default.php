@@ -174,10 +174,7 @@ $OC_CONF['APP_PATH_INFO'] = array(
         'docs'          => 'resource/data',
         'table'         => 'resource/data',
 
-        'functions'		=> 'service',
-        'library'		=> 'service',
-        'support'		=> 'service',
-
+        'library'	    => '',
         'pass'			=> '',
 
 		'attachments' 	=> 'public',
@@ -220,10 +217,10 @@ $OC_CONF['AUTOLOAD_MAP'] = array(
  * 应用自动加载映射
  */
 $OC_CONF['APP_AUTOLOAD_MAP'] = array(
-    'console\\' 							=> OC_ROOT . 'application/console/',
-    'modules\\' 							=> OC_ROOT . 'application/modules/',
-    'view\\' 								=> OC_ROOT . 'application/view/',
-    'dal\\' 							    => OC_ROOT . 'application/dal/',
+    'app\console\\' 							=> OC_ROOT . 'application/console/',
+    'app\modules\\' 							=> OC_ROOT . 'application/modules/',
+    'app\view\\' 								=> OC_ROOT . 'application/view/',
+    'app\dal\\' 							    => OC_ROOT . 'application/dal/',
 );
 
 /*

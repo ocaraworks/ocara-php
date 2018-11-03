@@ -119,6 +119,9 @@ class Application extends Basis
     public function setRoute($route)
     {
         if (!$this->_route) {
+            if (empty($route['module'])){
+                $route['module'] = 'index';
+            }
             $this->_route = $route;
         }
     }
