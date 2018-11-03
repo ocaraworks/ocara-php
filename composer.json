@@ -19,6 +19,7 @@
             "Ocara\\Extension\\":"extension/library/",
             "Ocara\\Extension\\Functions\\":"extension/functions/",
 			"Ocara\\Develop\\":"system/modules/develop/library/",
+            "Ocara\\Service\\":"system/library/Service/",
         }
     }
 }
