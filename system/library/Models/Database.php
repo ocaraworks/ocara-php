@@ -49,6 +49,7 @@ abstract class Database extends ModelBase
 	private $_primaries = array();
 	private $_joins = array();
 	private $_changes = array();
+    private $_oldData = array();
 	private $_unions = array();
 
 	private static $_config = array();
@@ -344,8 +345,7 @@ abstract class Database extends ModelBase
 	{
 		$data = $this->_getSubmitData($data);
 		if ($data) {
-			ocDel($data, FormToken::getTokenTag());
-			$this->setProperty($data);
+			$this->setProperty($this->map($data));
 		}
 
 		$this->_isOrm = true;
@@ -537,11 +537,34 @@ abstract class Database extends ModelBase
 		return $this->_isOrm;
 	}
 
+    /**
+     * 获取旧值
+     * @param null $key
+     * @return array|mixed
+     */
+	public function getOld($key = null)
+    {
+	    if (func_num_args()) {
+	        if (array_key_exists($key, $this->_oldData)){
+	            return $this->_oldData[$key];
+            }
+            ocService()->error->show('no_old_field');
+        }
+        return $this->_oldData;
+    }
+
 	/**
 	 * 获取已修改字段数据
 	 */
-	public function getChanges()
+	public function getChanged($key = null)
 	{
+	    if (func_num_args()) {
+	        if (in_array($key, $this->_changes)) {
+	            return $this->_changes[$key];
+            }
+            ocService()->error->show('no_changed_field');
+        }
+
 		$changes = array_fill_keys($this->_changes, null);
 		return array_intersect_key($this->getProperty(), $changes);
 	}
@@ -553,11 +576,24 @@ abstract class Database extends ModelBase
 	 */
 	public function hasChanged($key = null)
 	{
-		if (func_get_args()) {
-			return isset($this->_changes[$key]);
+		if (func_num_args()) {
+			return in_array($key, $this->_changes);
 		}
 		return !empty($this->_changes);
 	}
+
+    /**
+     * 是否有改变某个字段
+     * @param string $key
+     * @return bool
+     */
+    public function hasOld($key = null)
+    {
+        if (func_num_args()) {
+            return in_array($key, $this->_oldData);
+        }
+        return !empty($this->_oldData);
+    }
 
 	/**
 	 * 保存记录
@@ -571,6 +607,8 @@ abstract class Database extends ModelBase
 	{
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
+			$oldData = array_diff_key($data, $this->_oldData);
+			$this->_oldData = array_merge($this->_oldData, $oldData);
 			if ($this->_selected) {
 				$this->event(self::EVENT_BEFORE_UPDATE)->fire();
 			}
@@ -578,7 +616,7 @@ abstract class Database extends ModelBase
 			$this->event(self::EVENT_BEFORE_CREATE)->fire();
 		}
 
-		$data = $this->map(array_merge($data, $this->getChanges()));
+		$data = $this->map(array_merge($this->getChanged(), $data));
 		if (empty($data)) {
 			ocService()->error->show('fault_save_data');
 		}
@@ -2119,6 +2157,9 @@ abstract class Database extends ModelBase
         if (isset(self::$_config[$this->_tag]['JOIN'][$key])) {
             $this->_relations[$key] = $value;
         } else {
+            if (!array_key_exists($key, $this->_oldData)){
+                $this->_oldData[$key] = $value;
+            }
             parent::__set($key, $value);
             $this->_changes[] = $key;
         }
