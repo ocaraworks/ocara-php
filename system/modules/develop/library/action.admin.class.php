@@ -9,7 +9,7 @@
 namespace Ocara\Develop;
 
 use Ocara\Core\Ocara;
-use Ocara\Develop;
+use Ocara\Core\Develop;
 
 defined('OC_PATH') or exit('Forbidden!');
 

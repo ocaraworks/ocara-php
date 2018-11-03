@@ -9,7 +9,7 @@
 namespace Ocara\Develop;
 
 use Ocara\Core\Ocara;
-use Ocara\Develop;
+use Ocara\Core\Develop;
 use Ocara\Service\File;
 
 class module_admin

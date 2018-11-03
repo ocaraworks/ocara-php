@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Develop;
 
-use Ocara\Develop;
+use Ocara\Core\Develop;
 use Ocara\Core\Ocara;
 use Ocara\Service\File;
 

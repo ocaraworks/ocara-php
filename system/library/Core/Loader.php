@@ -82,5 +82,7 @@ class Loader extends Basis
                 return true;
             }
         }
+
+        ocService('error', true)->show('not_exists_class', array($class));
     }
 }
