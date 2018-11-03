@@ -80,6 +80,9 @@ defined('OC_SERVICE') or define('OC_SERVICE', OC_SYS . 'library/Service/');
 //是否外部引入
 defined('OC_INVOKE') OR define('OC_INVOKE', false);
 
+//是否命令模块
+defined('OC_COMMAND_MODULE') OR define('OC_COMMAND_MODULE', false);
+
 /*
  * 应用程序常量
  */

@@ -160,7 +160,7 @@ $OC_CONF['APP_PATH_INFO'] = array(
 
 	/*所属目录*/
 	'belongs' => array(
-        'console'		=> 'application',
+        'commands'		=> 'application',
 		'modules'  	    => 'application',
 		'view'  	  	=> 'application',
         'dal'           => 'application',

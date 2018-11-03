@@ -40,7 +40,8 @@ abstract class BootstrapBase extends Base
 
         list($uModule, $uController, $uAction) = array_values(array_map('ucfirst', $route));
 
-        $modulePath = ocPath('modules', $module);
+        $moduleDir = OC_COMMAND_MODULE ? 'commands' : 'modules';
+        $modulePath = ocPath($moduleDir, $module);
         $controlPath = $modulePath . "/controllers/{$controller}/";
         $moduleNamespace = OC_NS_SEP . ocNamespace(array('app\modules', $module));
         $controlNamespace = OC_NS_SEP . ocNamespace(array('app\modules', $module, $controller));
