@@ -607,8 +607,6 @@ abstract class Database extends ModelBase
 	{
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
-			$oldData = array_intersect_key($this->_properties, array_diff_key($data, $this->_oldData));
-			$this->_oldData = array_merge($this->_oldData, $oldData);
 			if ($this->_selected) {
 				$this->event(self::EVENT_BEFORE_UPDATE)->fire();
 			}
@@ -691,12 +689,14 @@ abstract class Database extends ModelBase
 		$this->_plugin->is_prepare($prepare);
 	}
 
-	/**
-	 * 保存数据（ORM模型）
-	 * @param $debug
-	 * @return mixed
-	 */
-	public function save($debug = false)
+    /**
+     * 保存数据（ORM模型）
+     * @param $data
+     * @param bool $debug
+     * @return bool
+     * @throws Exception
+     */
+	public function save($data, $debug = false)
 	{
 		$data = $this->getProperty();
 
@@ -721,15 +721,11 @@ abstract class Database extends ModelBase
 	{
 		$this->connect();
 
-		if ($data && is_array(reset($data))) {
-		    foreach($data as $row) {
-                call_user_func_array(array(__CLASS__, __METHOD__), array($row, $debug));
-            }
-        } else {
+        if (empty($data)) {
             $data = $this->_getSubmitData($data);
-            $result = $this->_save($data, false, $debug);
         }
 
+        $result = $this->_save($data, false, $debug);
 		return $result;
 	}
 
@@ -744,10 +740,24 @@ abstract class Database extends ModelBase
 	{
 		$condition = $this->_getCondition();
 		if (empty($condition)) {
-			ocService()->error->show('need_condition');
+		    ocService()->error->show('need_condition');
 		}
 
-		$data = $this->_getSubmitData($data);
+        if ($this->_selected) {
+            $change = $this->getChanged();
+            if (empty($data) && empty($change)) {
+                $data = $this->_getSubmitData($data);
+            }
+            if ($data){
+                $oldData = array_intersect_key($this->_properties, array_diff_key($data, $this->_oldData));
+                $this->_oldData = array_merge($this->_oldData, $oldData);
+            }
+        } else {
+            if (empty($data)) {
+                $data = $this->_getSubmitData($data);
+            }
+        }
+
 		$result = $this->_save($data, $condition, $debug);
 		return $result;
 	}
@@ -2157,11 +2167,13 @@ abstract class Database extends ModelBase
         if (isset(self::$_config[$this->_tag]['JOIN'][$key])) {
             $this->_relations[$key] = $value;
         } else {
-            if (!array_key_exists($key, $this->_oldData)){
-                $this->_oldData[$key] = ocGet($key, $this->_properties, null);
+            if ($this->_selected) {
+                if (!array_key_exists($key, $this->_oldData)){
+                    $this->_oldData[$key] = ocGet($key, $this->_properties, null);
+                }
+                $this->_changes[] = $key;
             }
             parent::__set($key, $value);
-            $this->_changes[] = $key;
         }
     }
 
