@@ -607,7 +607,7 @@ abstract class Database extends ModelBase
 	{
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
-			$oldData = array_diff_key($data, $this->_oldData);
+			$oldData = array_intersect_key($this->_properties, array_diff_key($data, $this->_oldData));
 			$this->_oldData = array_merge($this->_oldData, $oldData);
 			if ($this->_selected) {
 				$this->event(self::EVENT_BEFORE_UPDATE)->fire();
@@ -2158,7 +2158,7 @@ abstract class Database extends ModelBase
             $this->_relations[$key] = $value;
         } else {
             if (!array_key_exists($key, $this->_oldData)){
-                $this->_oldData[$key] = $value;
+                $this->_oldData[$key] = ocGet($key, $this->_properties, null);
             }
             parent::__set($key, $value);
             $this->_changes[] = $key;
