@@ -696,18 +696,14 @@ abstract class Database extends ModelBase
      * @return bool
      * @throws Exception
      */
-	public function save($data, $debug = false)
+	public function save(array $data = array(), $debug = false)
 	{
-		$data = $this->getProperty();
+		if ($this->_selected) {
+		    return $this->update($data, $debug);
+        } else {
+		    return $this->create($data, $debug);
+        }
 
-		$condition = array();
-		foreach ($this->_primaries as $field) {
-			if ($this->hasProperty($field)) {
-				$condition[$field] = $this->getProperty($field);
-			}
-		}
-
-		$result = $this->_save($data, $condition, $debug);
 		return $result;
 	}
 
@@ -738,7 +734,7 @@ abstract class Database extends ModelBase
 	 */
 	public function update(array $data = array(), $debug = false)
 	{
-		$condition = $this->_getCondition();
+        $condition = $this->_getCondition();
 		if (empty($condition)) {
 		    ocService()->error->show('need_condition');
 		}
