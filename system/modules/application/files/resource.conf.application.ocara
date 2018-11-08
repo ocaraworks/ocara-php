@@ -4,51 +4,50 @@
  * 应用级配置
  * ------------------------------------------------------------------------------------
  */
+return array(
+    /*
+     * 当前网站的主机域名，比如www.baidu.com或bbs.baidu.com等。
+     * 建议填写，否则，系统自动获取当前网址中的域名；
+     * 如果不填写，baidu.com和www.baidu.com如果都可以访问的话
+     * 此时保存在数据库中的图片地址，建议不保存域名，只保存图片目录地址
+     */
+    'WEB_HOST' => '',
 
-/*
- * 当前网站的主机域名，比如www.baidu.com或bbs.baidu.com等。
- * 建议填写，否则，系统自动获取当前网址中的域名；
- * 如果不填写，baidu.com和www.baidu.com如果都可以访问的话
- * 此时保存在数据库中的图片地址，建议不保存域名，只保存图片目录地址
- */
-$CONF['WEB_HOST'] = '';
+    /*
+     * 工具配置
+     */
+    'USE_OCBACK' => 1,
 
+    /*
+     * URL类型
+     * 1  默认类型  形如/index.php?m=m1&c=c1&a=a1&id=2
+     * 2  伪目录类型  形如/m1/c1/a1/2
+     * 3  伪路径类型  形如/index.php/m1/c1/a1/2
+     * 4  伪静态类型  形如/m1/c1/a1/2.html
+     */
+    'URL_ROUTE_TYPE' => 2,
 
-/*
- * 工具配置
- */
-$CONF['USE_OCBACK'] = 1; //开启Ocara自动后台
+    /*
+     * 多语言配置
+     */
+    'LANGUAGE' => 'zh_cn',
 
+    /*
+     * 纯静态生成配置
+     */
+    'STATIC' => array(
+        'open' 			=> 1, //是否开启静态生成
+        'file_type'		=> 'html' //静态文件扩展名，html或htm
+    ),
 
-/*
- * URL类型
- * 1  默认类型  形如/index.php?m=m1&c=c1&a=a1&id=2
- * 2  伪目录类型  形如/m1/c1/a1/2
- * 3  伪路径类型  形如/index.php/m1/c1/a1/2
- * 4  伪静态类型  形如/m1/c1/a1/2.html
- */
-$CONF['URL_ROUTE_TYPE'] = 2;
-
-/*
- * 纯静态生成配置
- */
-$CONF['STATIC'] = array(
-	'open' 			=> 1, //是否开启静态生成
-	'file_type'		=> 'html' //静态文件扩展名，html或htm
-);
-
-/*
- * 多语言配置
- */
-$CONF['LANGUAGE'] = 'zh_cn'; //默认语言
-
-/*
- * 邮箱配置
- */
-$CONF['EMAIL'] = array(
-	'sender'   => '', //发送人，如myname@163.com
-	'host'     => '', //SMTP地址，如smtp.163.com
-	'port'     => '', //SMTP端口，如25
-	'username' => '', //登录用户名，如myname，有的可能是邮箱地址
-	'password' => '', //登录密码，如my123456
+    /*
+     * 邮箱配置
+     */
+    'EMAIL' => array(
+        'sender'   => '', //发送人，如myname@163.com
+        'host'     => '', //SMTP地址，如smtp.163.com
+        'port'     => '', //SMTP端口，如25
+        'username' => '', //登录用户名，如myname，有的可能是邮箱地址
+        'password' => '', //登录密码，如my123456
+    )
 );

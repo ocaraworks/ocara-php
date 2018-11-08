@@ -5,30 +5,34 @@
  * ----------------------------------------------------------------------------
  */
 
-/*
- * 表单使用
- */
-$CONF['SOURCE']['form'] = array(
-	'generate_token' => '', //表单令牌加密处理
-);
+return array(
+    'SOURCE' => array(
+        /*
+         * 表单使用
+         */
+        'form' => array(
+            'generate_token' => '', //表单令牌加密处理
+        ),
 
-/*
- * 数据库相关
- */
-$CONF['SOURCE']['database'] = array(
-	'get_config' => '', //获取数据库配置
-);
+        /*
+         * 数据库相关
+         */
+        'database' => array(
+            'get_config' => '', //获取数据库配置
+        ),
 
-/*
- * 缓存相关
- */
-$CONF['SOURCE']['cache'] = array(
-	'get_config' => '', //获取缓存配置
-);
+        /*
+         * 缓存相关
+         */
+        'cache' => array(
+            'get_config' => '', //获取缓存配置
+        ),
 
-/*
- * AJAX相关
- */
-$CONF['SOURCE']['ajax'] = array(
-	'return_result' => '', //AJAX结果处理
+        /*
+         * AJAX相关
+         */
+        'ajax' => array(
+            'return_result' => '', //AJAX结果处理
+        ),
+    )
 );

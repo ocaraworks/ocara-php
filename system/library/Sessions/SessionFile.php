@@ -25,7 +25,7 @@ class SessionFile extends ServiceProvider
      */
     public function init()
     {
-        $savePath = ocConfig('SESSION.location', null);
+        $savePath = ocConfig('SESSION.options.location', null);
 
    	 	if ($savePath) {
             $savePath = ocPath('runtime', $savePath);
