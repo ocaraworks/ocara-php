@@ -26,7 +26,7 @@ class Route extends Base
         if ($module == OC_DEV_SIGN) return $this->getDevelopRoute($get);
 
         if ($uModule) {
-            $moduleClass = 'modules' . OC_NS_SEP . $module . OC_NS_SEP. 'Module';
+            $moduleClass = "app\modules\{$module}\Module";
             if (ocClassExists($moduleClass)) {
                 $controller = $get ? array_shift($get) : null;
             } else {
@@ -37,17 +37,22 @@ class Route extends Base
 
         if (empty($module)) {
             $module = 'index';
+            $moduleClass = "app\modules\{$module}\Module";
         }
 
         if (empty($controller)) {
             $controller = ocConfig('DEFAULT_CONTROLLER');
         }
 
-        $controllerType = self::getControllerType($module, $controller);
-        $routeClass = "\\Ocara\\Controllers\\Feature\\{$controllerType}";
-        $routeFeature = new $routeClass();
-        $action       = $routeFeature->getAction($get);
-        $route        = $routeFeature->getLastRoute($module, $controller, $action);
+        $providerType = $moduleClass::providerType();
+        $featureClass = self::getFeatureClass($providerType);
+
+        if (!ocClassExists($featureClass)) {
+            ocService()->error->show('not_exists_class', $featureClass);
+        }
+
+        $feature = new $featureClass();
+        $route = $feature->getRoute($module, $controller, $get);
 
         if (ocService()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
             $_GET = $this->formatGet($_GET);
@@ -57,23 +62,40 @@ class Route extends Base
     }
 
     /**
-     * 获取控制器类型
-     * @param $module
-     * @param $controller
-     * @return string
+     * 获取提供器特性类
+     * @param $providerType
+     * @return array
      */
-    public static function getControllerType($module, $controller)
+    public static function getFeatureClass($providerType)
     {
-        $route = ltrim(implode('/', array($module, $controller)), '/');
-        $isRestful = in_array($route, ocConfig(array('ROUTE', 'resource'), array()));
+        $features = ocConfig(array('ROUTE', 'features'), array());
 
-        if ($isRestful) {
-            $controllerType = 'Rest';
+        if (isset($features[$providerType])) {
+            $class = $features[$providerType];
         } else {
-            $controllerType = 'Common';
+            $class = "\\Ocara\\Controllers\\Feature\\{$providerType}";
         }
 
-        return $controllerType;
+        return $class;
+    }
+
+    /**
+     * 获取提供器类
+     * @param $controllerType
+     * @return null|string
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public static function getProviderClass($providerType)
+    {
+        $providers = ocConfig(array('ROUTE', 'providers'), array());
+
+        if (isset($providers[$providerType])) {
+            $class = $providers[$providerType];
+        } else {
+            $class = "\\Ocara\\Controllers\\Provider\\{$providerType}";
+        }
+
+        return $class;
     }
 
     /**
@@ -109,6 +131,7 @@ class Route extends Base
                 $get[$row[0]] = isset($row[1]) ? $row[1] : null;
             }
         }
+
         return $last ? $get + $last : $get;
     }
 }

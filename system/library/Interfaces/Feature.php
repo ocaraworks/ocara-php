@@ -12,19 +12,12 @@ defined('OC_PATH') or exit('Forbidden!');
 
 interface Feature
 {
-	/**
-	 * 获取路由
-	 * @param array $get
-	 * @return array|bool|mixed|null
-	 */
-	public function getAction(array $get);
-
-	/**
-	 * 设置最终路由
-	 * @param string $module
-	 * @param string $controller
-	 * @param string $action
-	 * @return array
-	 */
-	public function getLastRoute($module, $controller, $action);
+    /**
+     * 获取路由
+     * @param $module
+     * @param $controller
+     * @param array $get
+     * @return mixed
+     */
+	public function getRoute($module, $controller, array $get);
 }

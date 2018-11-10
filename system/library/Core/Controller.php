@@ -10,6 +10,7 @@ namespace Ocara\Core;
 
 use Ocara\Core\ServiceProvider;
 use Ocara\Interfaces\Controller as ControllerInterface;
+use Ocara\Core\Route;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -19,6 +20,7 @@ class Controller extends serviceProvider implements ControllerInterface
 	 * @var $_provider 控制器提供者
 	 */
 	protected $_provider;
+    protected static $_providerType;
 
 	/**
 	 * 初始化设置
@@ -26,8 +28,12 @@ class Controller extends serviceProvider implements ControllerInterface
 	public function init()
 	{
 	    $route = $this->getRoute();
-		$controllerType = Route::getControllerType($route['module'], $route['controller']);
-		$provider = 'Ocara\Controllers\Provider\\' . $controllerType;
+        $provider = Route::getProviderClass(self::providerType());
+
+        if (!ocClassExists($provider)){
+            ocService()->error->show('not_exists_class', $provider);
+        }
+
 		$this->_provider = new $provider(compact('route'));
         $this->_provider->bindEvents($this);
 
@@ -46,6 +52,14 @@ class Controller extends serviceProvider implements ControllerInterface
 	{
 		return $this->_provider;
 	}
+
+    /**
+     * 获取提供者类型
+     */
+	public static function providerType()
+    {
+	    return self::$_providerType ? ucfirst(self::$_providerType): 'Common';
+    }
 
     /**
      * 获取当前路由

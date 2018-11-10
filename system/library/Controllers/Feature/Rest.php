@@ -6,14 +6,14 @@ use Ocara\Controllers\Feature\Base;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class Rest extends Base implements Feature
+class Rest extends Base implements Feature
 {
     /**
      * 获取路由
      * @param array $get
      * @return null
      */
-    public function getAction(array $get)
+    public function getRoute($module, $controller, array $get)
     {
         $id = null;
         $idParam = ocConfig('CONTROLLERS.rest.id_param', 'id');
@@ -42,7 +42,7 @@ final class Rest extends Base implements Feature
         }
 
         $_GET = array_values($get);
-
-        return null;
+        $route = array($module, $controller, $action);
+        return $route;
     }
 }

@@ -17,10 +17,13 @@ class Common extends Base implements Feature
 {
     /**
      * 获取路由
+     * @param $module
+     * @param $controller
      * @param array $get
-     * @return array|bool|mixed|null
+     * @return array|mixed
+     * @throws \Ocara\Exceptions\Exception
      */
-    public function getAction(array $get)
+    public function getRoute($module, $controller, array $get)
     {
         $action = array_shift($get);
 
@@ -29,6 +32,11 @@ class Common extends Base implements Feature
         }
 
         $_GET = array_values($get);
-        return $action;
+        if (empty($action)) {
+            $action = ocConfig('DEFAULT_ACTION', 'index');
+        }
+
+        $route = array($module, $controller, $action);
+        return $route;
     }
 }
