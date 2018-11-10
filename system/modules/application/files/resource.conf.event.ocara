@@ -11,8 +11,7 @@ return array(
          * 错误输出事件
          */
         'error' => array(
-            'output'      => '', // 输出错误日志
-            'write_log'   => '', // 记录错误日志
+            'before_output'      => '', //打印错误前
         ),
 
         /*
