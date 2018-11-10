@@ -32,9 +32,9 @@ class Config extends Basis
 	 */
 	public function __construct()
 	{
-        $path = OC_SYS . 'data/default.php';
+        $path = OC_SYS . 'data/config.php';
 		if (!file_exists($path)) {
-			throw new Exception('Lost ocara config file: default.php.');
+			throw new Exception('Lost ocara config file: config.php.');
 		}
 
 		include ($path);
