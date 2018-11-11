@@ -63,25 +63,49 @@ class Base extends ServiceProvider
     }
 
     /**
+     * 渲染Ajax数据
+     * @param string $data
+     */
+    public function renderAjax($data = '')
+    {
+        $this->response->setContentType($this->_apiContentType);
+        $this->ajax->render('success', $this->getMessage(), $data);
+        $this->event(self::EVENT_AFTER)->fire();
+
+        $this->_hasRender = true;
+    }
+
+    /**
      * 渲染API数据
      * @param string $data
      */
     public function renderApi($data = '')
     {
-        $message = $this->_message;
+        $message = $this->getMessage();
         $contentType = $this->_apiContentType;
-
-        if (is_array($message)) {
-            list($text, $params) = $message;
-            $message = ocService()->lang->get($text, $params);
-        } else {
-            $message = ocService()->lang->get($message);
-        }
 
         $this->view->output(compact('contentType', 'message', 'data'));
         $this->event(self::EVENT_AFTER)->fire();
 
         $this->_hasRender = true;
+    }
+
+    /**
+     * 获取返回信息
+     * @return mixed
+     */
+    public function getMessage()
+    {
+        $message = $this->_message;
+
+        if (is_array($message)) {
+            list($text, $params) = $message;
+            $message = $this->lang->get($text, $params);
+        } else {
+            $message = $this->lang->get($message);
+        }
+
+        return $message;
     }
 
     /**

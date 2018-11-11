@@ -123,7 +123,7 @@ class Controller extends serviceProvider implements ControllerInterface
                     $result = $this->_ajax();
                 }
                 if (!$this->_provider->hasRender()) {
-                    $this->_provider->renderApi($result);
+                    $this->_provider->renderAjax($result);
                 }
             } elseif ($this->_provider->isSubmit() && method_exists($this, '_submit')) {
                 $this->_submit();
