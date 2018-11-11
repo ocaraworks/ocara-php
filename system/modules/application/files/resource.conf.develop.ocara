@@ -67,10 +67,10 @@ return array(
     ),
 
     /*
-     * AJAX配置
+     * API配置
      */
-    'AJAX' => array(
-        'response_error_code' => 0, //AJAX是否在HTTP头部返回HTTP错误码
+    'API' => array(
+        'is_send_error_code' => 0, //API渲染时是否在HTTP头部返回HTTP错误码
     ),
 
     /*

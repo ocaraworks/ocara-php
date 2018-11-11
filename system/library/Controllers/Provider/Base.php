@@ -16,51 +16,26 @@ defined('OC_PATH') or exit('Forbidden!');
 class Base extends ServiceProvider
 {
     protected $_models = array();
-    protected $_ajaxContentType;
+    protected $_apiContentType;
     protected $_message;
 
     /**
      * 设置Ajax返回的数据格式
      * @param $contentType
      */
-    public function setAjaxContentType($contentType)
+    public function setApiContentType($contentType)
     {
-        $this->_ajaxContentType = $contentType;
+        $this->_apiContentType = $contentType;
     }
 
     /**
      * 是否在HTTP头部返回错误码
      * @param bool $value
      */
-    public function setAjaxResponseErrorCode($value)
+    public function isSendApiErrorCode($value)
     {
         $value = $value ? 1 : 0;
-        $this->config->set('AJAX.response_error_code', $value);
-    }
-
-    /**
-     * Ajax返回数据
-     * @param string $data
-     * @param string $message
-     * @throws \Ocara\Exceptions\Exception
-     */
-	public function ajaxReturn($data = '', $message = '')
-    {
-        if (is_array($message)) {
-            list($text, $params) = $message;
-            $message = $this->lang->get($text, $params);
-        } else {
-            $message = $this->lang->get($message);
-        }
-
-        $contentType = $this->_ajaxContentType;
-        if (!$contentType) {
-            $contentType = ocConfig('DEFAULT_AJAX_CONTENT_TYPE', 'json');
-        }
-
-        $this->response->setContentType($contentType);
-        $this->ajax->ajaxSuccess($data, $message);
-        method_exists($this, '_after') && $this->_after();
+        $this->config->set('API.is_send_error_code', $value);
     }
 
     /**
@@ -83,6 +58,7 @@ class Base extends ServiceProvider
         $content = $this->view->render($file, $vars, false);
         $this->view->output(compact('content'));
         $this->event(self::EVENT_AFTER)->fire();
+
         $this->_hasRender = true;
     }
 
@@ -93,7 +69,7 @@ class Base extends ServiceProvider
     public function renderApi($data = '')
     {
         $message = $this->_message;
-        $contentType = $this->_ajaxContentType;
+        $contentType = $this->_apiContentType;
 
         if (is_array($message)) {
             list($text, $params) = $message;
@@ -104,6 +80,7 @@ class Base extends ServiceProvider
 
         $this->view->output(compact('contentType', 'message', 'data'));
         $this->event(self::EVENT_AFTER)->fire();
+
         $this->_hasRender = true;
     }
 

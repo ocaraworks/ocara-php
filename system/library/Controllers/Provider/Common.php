@@ -30,7 +30,7 @@ class Common extends Base
     public function init()
     {
         $this->session->boot();
-        $this->setAjaxResponseErrorCode(false);
+        $this->isSendApiErrorCode(false);
         $this->event(self::EVENT_AFTER_CREATE_FORM)->append(array($this, 'afterCreateForm'));
         $this->_plugin = $this->view;
     }
