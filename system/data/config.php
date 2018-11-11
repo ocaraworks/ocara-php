@@ -112,7 +112,7 @@ return array(
             'view' => 'Ocara\Views\Common',
         ),
         'Rest' => array(
-            'view' => 'Ocara\Views\Data',
+            'view' => 'Ocara\Views\Api',
         ),
     ),
     
