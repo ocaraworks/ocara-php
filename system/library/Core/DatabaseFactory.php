@@ -80,14 +80,13 @@ final class DatabaseFactory extends Base
 			$connectName = 'main';
 		}
 
-		$config = array();
+        $config = ocForceArray(ocConfig("DATABASE.{$connectName}"));
 
 		if ($callback = ocConfig('SOURCE.database.get_config', null)) {
-			$config = call_user_func_array($callback, array($connectName));
-		}
-
-		if (empty($config)) {
-			$config = ocForceArray(ocConfig("DATABASE.{$connectName}"));
+			$config = array_merge(
+			    $config,
+                call_user_func_array($callback, array($connectName))
+            );
 		}
 
 		return $config;

@@ -842,7 +842,10 @@ abstract class Database extends ModelBase
 	{
 		if ($sql) {
 			$sqlData = $this->_plugin->getSqlData($sql);
-			return $this->connect(false)->query($sqlData, $debug);
+			$dataType = $this->_sql['option']['dataType'] ? : 'array';
+			return $this
+                ->connect(false)
+                ->query($sqlData, $debug, false, array(), $dataType);
 		}
 
 		return false;
@@ -858,9 +861,10 @@ abstract class Database extends ModelBase
 	{
 		if ($sql) {
 			$sqlData = $this->_plugin->getSqlData($sql);
+            $dataType = $this->_sql['option']['dataType'] ? : 'array';
 			return $this
                 ->connect(false)
-                ->query($sqlData, $debug);
+                ->query($sqlData, $debug, false, array(), $dataType);
 		}
 
 		return false;
@@ -1950,7 +1954,6 @@ abstract class Database extends ModelBase
 	{
 		return $this->_table;
 	}
-
 
 	/**
 	 * 合并查询（去除重复值）
