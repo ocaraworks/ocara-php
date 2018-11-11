@@ -22,7 +22,7 @@ interface Template
 	 * @param string $name
 	 * @param mixed $value
 	 */
-	function setVar($name, $value);
+	function set($name, $value);
 
 	/**
 	 * 注册对象
@@ -40,5 +40,5 @@ interface Template
 	 * 获取变量
 	 * @param string $name
 	 */
-	function getVar($name = null);
+	function get($name = null);
 }

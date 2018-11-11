@@ -623,7 +623,7 @@ abstract class Database extends ModelBase
 			ocService()->transaction->begin();
 		}
 
-		ocService()->transaction->push($this->_plugin);
+		$this->pushTransaction();
 
 		if ($condition) {
 			$result = $this->_plugin->update($this->_tableName, $data, $condition, $debug);
@@ -688,6 +688,14 @@ abstract class Database extends ModelBase
 	{
 		$this->_plugin->is_prepare($prepare);
 	}
+
+    /**
+     * 推入事务池中
+     */
+	public function pushTransaction(){
+	    $this->connect();
+        ocService()->transaction->push($this->_plugin);
+    }
 
     /**
      * 保存数据（ORM模型）
@@ -788,7 +796,7 @@ abstract class Database extends ModelBase
 			ocService()->error->show('need_condition');
 		}
 
-		ocService()->transaction->push($this->_plugin);
+		$this->pushTransaction();
 
 		if (!$debug && $this->_selected) {
 			$this->event(self::EVENT_BEFORE_DELETE)->fire();
@@ -878,15 +886,15 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 按主键选择一行记录
-	 * @param string|array|number $primaryValues
+	 * @param string|array|number $values
 	 * @param null $options
 	 * @param bool $debug
 	 * @return static
 	 */
-	public static function select($primaryValues, $options = null, $debug = false)
+	public static function select($values, $options = null, $debug = false)
 	{
 		$model = new static();
-		$condition = $model->_getPrimaryCondition($primaryValues);
+		$condition = $model->_getPrimaryCondition($values);
 
 		return $model->findRow($condition, $options, $debug);
 	}
@@ -932,7 +940,7 @@ abstract class Database extends ModelBase
 	 * @param bool $debug
 	 * @return array|ObjectRecords
 	 */
-	public function find($condition = null, $options = null, $debug = false)
+	public function findAll($condition = null, $options = null, $debug = false)
 	{
         $records = $this->_find($condition, $options, $debug, false, false, self::getClass());
 		return $records;
@@ -2207,7 +2215,7 @@ abstract class Database extends ModelBase
                     ocError('fault_find_value');
                 }
                 $model->where(array($remainName => $value));
-                return $isRow ? $model->findRow() : $model->find();
+                return $isRow ? $model->findRow() : $model->findAll();
             } else {
                 ocError('not_exists_find_field');
             }

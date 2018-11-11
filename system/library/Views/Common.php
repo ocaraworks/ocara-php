@@ -104,7 +104,7 @@ class Common extends ViewBase implements ViewInterfaces
 				$this->_vars[$name] = $value;
 				ocGlobal('View', $this);
 			} else {
-				$this->_plugin->setVar($name, $value);
+				$this->_plugin->set($name, $value);
 			}
 		}
 	}
@@ -433,7 +433,7 @@ class Common extends ViewBase implements ViewInterfaces
 			foreach ($functions as $name) {
 				$this->_plugin->registerPlugin(array('function', $name, $name));
 			}
-			$this->_plugin->setVar('View', $this);
+			$this->_plugin->set('View', $this);
 		}
 
 		$this->_content = $this->readTpl($file, $required);

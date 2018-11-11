@@ -56,7 +56,7 @@ class Smarty extends ServiceBase implements TemplateInterface
 	/**
 	 * @see Interface_OCTemplate::assign()
 	 */
-	public function setVar($name, $value)
+	public function set($name, $value)
 	{
 		$this->_plugin->assign($name, $value);
 	}
@@ -64,7 +64,7 @@ class Smarty extends ServiceBase implements TemplateInterface
 	/**
 	 * @see Interface_OCTemplate::getVars()
 	 */
-	public function getVar($name = null)
+	public function get($name = null)
 	{
 		return $this->_plugin->getTemplateVars($name);
 	}
