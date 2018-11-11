@@ -18,7 +18,6 @@ class Rest extends Base
     /**
      * @var $_message 返回消息
      */
-    protected $_message;
     protected $_hyperMediaLink;
 
     const EVENT_AFTER = '_after';
@@ -40,16 +39,7 @@ class Rest extends Base
      */
     public function getDoWay()
     {
-        return 'ajax';
-    }
-
-    /**
-     * 设置返回消息
-     * @param $message
-     */
-    public function setMessage($message)
-    {
-        $this->_message = $message;
+        return 'api';
     }
 
     /**
@@ -62,38 +52,20 @@ class Rest extends Base
     }
 
     /**
-     * Ajax返回数据
-     * @param string $data
-     */
-    public function display($data = '')
-    {
-        $message = $this->_message;
-        $contentType = $this->_ajaxContentType;
-
-        if (is_array($message)) {
-            list($text, $params) = $message;
-            $message = ocService()->lang->get($text, $params);
-        } else {
-            $message = ocService()->lang->get($message);
-        }
-
-        $this->view->output(compact('contentType', 'message', 'data'));
-        $this->event(self::EVENT_AFTER)->fire();
-        return;
-    }
-
-    /**
      * 获取当前请求的ID
-     * @return null|string
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public function getRequestId()
     {
-        return ocService()->request->getGet(ocConfig('CONTROLLERS.rest.id_param', 'id'));
+        return $this->request->getGet(ocConfig('CONTROLLERS.rest.id_param', 'id'));
     }
 
     /**
      * 输出内容（回调函数）
      * @param $result
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public function formatAjaxResult($result)
     {

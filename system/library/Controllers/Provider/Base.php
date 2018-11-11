@@ -17,6 +17,7 @@ class Base extends ServiceProvider
 {
     protected $_models = array();
     protected $_ajaxContentType;
+    protected $_message;
 
     /**
      * 设置Ajax返回的数据格式
@@ -37,10 +38,11 @@ class Base extends ServiceProvider
         $this->config->set('AJAX.response_error_code', $value);
     }
 
-	/**
+    /**
      * Ajax返回数据
      * @param string $data
      * @param string $message
+     * @throws \Ocara\Exceptions\Exception
      */
 	public function ajaxReturn($data = '', $message = '')
     {
@@ -62,24 +64,66 @@ class Base extends ServiceProvider
     }
 
     /**
-     * 获取或设置Model-静态属性保存
-     * @param string $class
+     * 渲染模板
+     * @param string $file
+     * @param array $vars
+     * @return mixed
      */
-    public function model($class = null)
+    public function renderFile($file = null, array $vars = array())
     {
-        if (empty($class)) {
-            $class = '\dal\models\main\\' . ucfirst(ocService()->app->getRoute('controller'));
-        }
+        $this->formManager->setToken();
 
-        if (isset($this->_models[$class])) {
-            $model = $this->_models[$class];
-            if (is_object($model) && $model instanceof ModelBase) {
-                return $model;
+        if (empty($file)) {
+            $tpl = $this->view->getTpl();
+            if (empty($tpl)) {
+                $this->view->setTpl(ocService()->app->getRoute('action'));
             }
         }
 
-        $this->_models[$class] = new $class();
-        return $this->_models[$class];
+        $content = $this->view->render($file, $vars, false);
+        $this->view->output(compact('content'));
+        $this->event(self::EVENT_AFTER)->fire();
+
+        $this->_hasRender = true;
+    }
+
+    /**
+     * 渲染数据
+     * @param string $data
+     */
+    public function renderData($data = '')
+    {
+        $message = $this->_message;
+        $contentType = $this->_ajaxContentType;
+
+        if (is_array($message)) {
+            list($text, $params) = $message;
+            $message = ocService()->lang->get($text, $params);
+        } else {
+            $message = ocService()->lang->get($message);
+        }
+
+        $this->view->output(compact('contentType', 'message', 'data'));
+        $this->event(self::EVENT_AFTER)->fire();
+        $this->_hasRender = true;
+    }
+
+    /**
+     * 是否已渲染
+     * @return mixed
+     */
+    public function hasRender()
+    {
+        return $this->_hasRender;
+    }
+
+    /**
+     * 设置返回消息
+     * @param $message
+     */
+    public function setMessage($message)
+    {
+        $this->_message = $message;
     }
 
     /**

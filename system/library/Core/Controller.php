@@ -19,7 +19,13 @@ class Controller extends serviceProvider implements ControllerInterface
 	/**
 	 * @var $_provider 控制器提供者
 	 */
+	protected $_models;
 	protected $_provider;
+    protected $_isSubmit = null;
+    protected $_submitMethod = 'post';
+    protected $_checkForm = true;
+    protected $_hasRender = false;
+
     protected static $_providerType;
 
 	/**
@@ -76,7 +82,7 @@ class Controller extends serviceProvider implements ControllerInterface
 	 */
 	public function doAction($actionMethod)
 	{
-		$doWay = $this->_provider->getDoWay();
+        $doWay = $this->_provider->getDoWay();
 
 		if (!$this->_provider->isSubmit()) {
 			if (method_exists($this, '_isSubmit')) {
@@ -88,8 +94,8 @@ class Controller extends serviceProvider implements ControllerInterface
 
 		if ($doWay == 'common') {
 			$this->doCommonAction();
-		} elseif($doWay == 'ajax') {
-            $this->doAjaxAction();
+		} elseif($doWay == 'api') {
+            $this->doApiAction();
 		}
 	}
 
@@ -114,7 +120,7 @@ class Controller extends serviceProvider implements ControllerInterface
 		} else{
 			method_exists($this, '_display') && $this->_display();
             if (!$this->_provider->hasRender()) {
-                $this->_provider->render();
+                $this->_provider->renderFile();
             }
 		}
 	}
@@ -123,7 +129,7 @@ class Controller extends serviceProvider implements ControllerInterface
 	 * 执行动作
 	 * @param string $actionMethod
 	 */
-	public function doAjaxAction($actionMethod)
+	public function doApiAction($actionMethod)
 	{
 		if ($actionMethod == '_action') {
 			$result = $this->_action();
@@ -133,6 +139,169 @@ class Controller extends serviceProvider implements ControllerInterface
 
 		$this->ajax->ajaxSuccess($result);
 	}
+
+    /**
+     * 设置和获取表单提交方式
+     * @param string $method
+     * @return string
+     */
+    public function submitMethod($method = null)
+    {
+        if (isset($method)) {
+            $method = $method == 'get' ? 'get' : 'post';
+            $this->_submitMethod = $method;
+        }
+        return $this->_submitMethod;
+    }
+
+    /**
+     * 设置和获取是否表单提交
+     * @param bool $isSubmit
+     * @return bool
+     */
+    public function isSubmit($isSubmit = null)
+    {
+        if (isset($isSubmit)) {
+            $this->_isSubmit = $isSubmit ? true : false;
+        } else {
+            return $this->_isSubmit;
+        }
+    }
+
+    /**
+     * 获取表单提交的数据
+     * @param null $key
+     * @param null $default
+     * @return array|null|string
+     */
+    public function getSubmit($key = null, $default = null)
+    {
+        $data = $this->_submitMethod == 'post' ? $_POST : $_GET;
+        $data = ocService()->request->getRequestValue($data, $key, $default);
+        return $data;
+    }
+
+    /**
+     * 获取表单并自动验证
+     * @param null $name
+     * @return $this|Form
+     * @throws \Ocara\Core\Exception
+     */
+    public function form($name = null)
+    {
+        $model = null;
+        if (!$name) {
+            $name = ocService()->app->getRoute('controller');
+            $model = $this->model();
+        }
+
+        $form = $this->formManager->get($name);
+        if (!$form) {
+            $form = $this->formManager->create($name);
+            if ($model) {
+                $form->model($model, false);
+            }
+            $this->event(self::EVENT_AFTER_CREATE_FORM)->fire(array($name, $form));
+        }
+
+        return $form;
+    }
+
+    /**
+     * 新建表单后处理
+     * @param $name
+     * @param $form
+     * @param Event $event
+     */
+    public function afterCreateForm($name, $form, Event $event = null)
+    {
+        $this->view->assign($name, $form);
+    }
+
+    /**
+     * 开启/关闭/检测表单验证功能
+     * @param null $check
+     * @return bool
+     */
+    public function isCheckForm($check = null)
+    {
+        if ($check === null) {
+            return $this->_checkForm;
+        }
+        $this->_checkForm = $check ? true : false;
+    }
+
+    /**
+     * 数据模型字段验证
+     * @param array $data
+     * @param string|object $model
+     * @param Validator|null $validator
+     * @return mixed
+     */
+    public function validate($data, $model, Validator &$validator = null)
+    {
+        $validator = $validator ? : $this->validator;
+
+        if (is_object($model)) {
+            if ($model instanceof DatabaseModel) {
+                $class = $model->getClass();
+            } else {
+                ocService()->error->show('fault_model_object');
+            }
+        } else {
+            $class = $model;
+        }
+
+        $data = DatabaseModel::mapData($data, $class);
+        $rules = DatabaseModel::getConfig('VALIDATE', null, $class);
+        $lang = DatabaseModel::getConfig('LANG', null, $class);
+        $result = $validator->setRules($rules)->setLang($lang)->validate($data);
+
+        return $result;
+    }
+
+    /**
+     * 表单检测
+     */
+    public function checkForm()
+    {
+        $this->isSubmit();
+        if (!($this->_isSubmit && $this->_checkForm && $this->formManager->get()))
+            return true;
+
+        $tokenTag  = $this->formToken->getTokenTag();
+        $postToken = $this->getSubmit($tokenTag);
+        $postForm = $this->formManager->getSubmitForm($postToken);
+
+        if ($postForm) {
+            $data = $this->getSubmit();
+            $this->formManager->validate($postForm, $data);
+        }
+
+        return true;
+    }
+
+    /**
+     * 获取或设置Model-静态属性保存
+     * @param string $class
+     * @return mixed
+     */
+    public function model($class = null)
+    {
+        if (empty($class)) {
+            $class = '\app\dal\models\main\\' . ucfirst(ocService()->app->getRoute('controller'));
+        }
+
+        if (isset($this->_models[$class])) {
+            $model = $this->_models[$class];
+            if (is_object($model) && $model instanceof ModelBase) {
+                return $model;
+            }
+        }
+
+        $this->_models[$class] = new $class();
+        return $this->_models[$class];
+    }
 
 	/**
 	 * 获取不存在的属性时

@@ -109,13 +109,12 @@ class Common extends ViewBase implements ViewInterfaces
 		}
 	}
 
-	/**
-	 * 获取所有已注册变量
-	 * @param string $name
-	 * @param mixed $default
-	 * @return array|null
-	 * @throws \Ocara\Exceptions\Exception
-	 */
+    /**
+     * 获取所有已注册变量
+     * @param string $name
+     * @param string $default
+     * @return array|mixed|null
+     */
 	public function getVar($name = null, $default = null)
 	{
 		$vars = $this->_plugin === null ? $this->_vars : $this->_plugin->getVar();
@@ -144,11 +143,12 @@ class Common extends ViewBase implements ViewInterfaces
 		return array_key_exists($name, $this->_vars);
 	}
 
-	/**
-	 * 设置layout
-	 * @param string $layout
-	 * @return $this
-	 */
+    /**
+     * 设置layout
+     * @param string $layout
+     * @return $this
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function setLayout($layout = null)
 	{
 		$layout = empty($layout) ? ocConfig('TEMPLATE.default_layout', 'layout') : $layout;
@@ -171,7 +171,9 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 获取模块视图路径
-     * @param $subPath
+     * @param string $subPath
+     * @param string $template
+     * @return bool|mixed|string
      */
 	public function getViewPath($subPath = null, $template = null)
     {
@@ -265,12 +267,14 @@ class Common extends ViewBase implements ViewInterfaces
 		return $this->_layout;
 	}
 
-	/**
-	 * 显示部分
-	 * @param string $part
-	 * @param string $template
-	 * @param bool $show
-	 */
+    /**
+     * 显示部分
+     * @param string $part
+     * @param string $template
+     * @param bool $show
+     * @return string
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function _readPart($part, $template = null, $show = true)
 	{
 		$part = ocForceArray($part);
@@ -296,21 +300,24 @@ class Common extends ViewBase implements ViewInterfaces
 		}
 	}
 
-	/**
-	 * 显示part内容
-	 * @param string $part
-	 * @param string $template
-	 */
+    /**
+     * 显示part内容
+     * @param string $part
+     * @param string $template
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function showPart($part, $template = null)
 	{
 		$this->_readPart($part, $template);
 	}
 
-	/**
-	 * 获取part内容
-	 * @param string $part
-	 * @param string $template
-	 */
+    /**
+     * 获取part内容
+     * @param string $part
+     * @param string $template
+     * @return string
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function getPart($part, $template = null)
 	{
 		return $this->_readPart($part, $template, false);
@@ -331,23 +338,25 @@ class Common extends ViewBase implements ViewInterfaces
 			}
 		}
 	}
-	
-	/**
-	 * 获取图片URL
-	 * @param string $path
-	 * @param string $template
-	 */
+
+    /**
+     * 获取图片URL
+     * @param string $path
+     * @param string $template
+     * @return string
+     */
 	public function getImageUrl($path, $template = null)
 	{
 		return $this->getUrl('images', $path, $template);
 	}
 
-	/**
-	 * 获取包装的HTML
-	 * @param string $path
-	 * @param string $template
-	 * @param bool $cache
-	 */
+    /**
+     * 获取包装的HTML
+     * @param string $path
+     * @param string $template
+     * @param bool $cache
+     * @return bool|string
+     */
 	public function wrap($path, $template = null, $cache = true)
 	{
 		$array = explode('.', $path);
@@ -363,12 +372,13 @@ class Common extends ViewBase implements ViewInterfaces
 		return false;
 	}
 
-	/**
-	 * 获取URL
-	 * @param string $type
-	 * @param string $path
-	 * @param string $template
-	 */
+    /**
+     * 获取URL
+     * @param string $type
+     * @param string $path
+     * @param string $template
+     * @return string
+     */
 	public function getUrl($type, $path, $template = null)
 	{
 		if (empty($template) && $type != 'js') {
@@ -379,10 +389,11 @@ class Common extends ViewBase implements ViewInterfaces
 		return ocRealUrl($type, $path);
 	}
 
-	/**
-	 * 显示其他模板文件
-	 * @param string $file
-	 */
+    /**
+     * 显示其他模板文件
+     * @param string $file
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function showTpl($file = null)
 	{
 		if (empty($file)) {
@@ -412,13 +423,15 @@ class Common extends ViewBase implements ViewInterfaces
 	{
 		return $this->_tpl;
 	}
-	
-	/**
-	 * 渲染模板
-	 * @param string $file
-	 * @param array $vars
-	 * @param bool $required
-	 */
+
+    /**
+     * 渲染模板
+     * @param null $file
+     * @param array $vars
+     * @param bool $required
+     * @return mixed|null
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function render($file = null, array $vars = array(), $required = true)
 	{
 		$file = $file ? : $this->_tpl;
@@ -446,12 +459,14 @@ class Common extends ViewBase implements ViewInterfaces
 		return $this->_content;
 	}
 
-	/**
-	 * 输出内容
-	 * @param string $content
-	 */
-	public function output($content)
+    /**
+     * 输出内容
+     * @param array $data
+     * @throws \Ocara\Exceptions\Exception
+     */
+	public function output($data)
 	{
+	    $content = $data['content'];
 	    $response = ocService()->response;
 
 		if (ocConfig('FORM.data_cahce', 1)) {
@@ -464,11 +479,11 @@ class Common extends ViewBase implements ViewInterfaces
         $response->setBody($content);
 	}
 
-	/**
-	 * 渲染Layout
-	 * @param $layout
-	 * @throws Exception
-	 */
+    /**
+     * 渲染Layout
+     * @param $layout
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function renderLayout($layout)
 	{
 		$path = $this->getViewPath('layout/' . $layout . '.php');
@@ -487,11 +502,13 @@ class Common extends ViewBase implements ViewInterfaces
 		}
 	}
 
-	/**
-	 * 读取模板文件内容
-	 * @param string $file
-	 * @param bool $required
-	 */
+    /**
+     * 读取模板文件内容
+     * @param string $file
+     * @param bool $required
+     * @return mixed|null
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function readTpl($file, $required = true)
 	{
 		if (empty($file)) return null;
@@ -526,12 +543,13 @@ class Common extends ViewBase implements ViewInterfaces
 		return $this->readFile($realPath, false);
 	}
 
-	/**
-	 * 缓存HTML
-	 * $data为文件路径或内容
-	 * @param string $path
-	 * @param bool $ban
-	 */
+    /**
+     * 缓存HTML
+     * @param string $path
+     * @param bool $ban
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function readFile($path, $ban = true)
 	{
 		ob_start();
@@ -549,12 +567,13 @@ class Common extends ViewBase implements ViewInterfaces
 		return ocService()->filter->bom($content);
 	}
 
-	/**
-	 * 包装为HTML内容
-	 * @param string $type
-	 * @param string $value
-	 * @param bool $cache
-	 */
+    /**
+     * 包装为HTML内容
+     * @param string $type
+     * @param string $value
+     * @param bool $cache
+     * @return string
+     */
 	private function _wrapHtml($type, $value, $cache = true)
 	{
 		$cache = empty($cache) || ($cache && empty($this->_useCache)) ? false : true;

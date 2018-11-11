@@ -170,10 +170,11 @@ class Request extends Base
 		}
 	}
 
-	/**
-	 * 获取请求方式
-	 * @return null
-	 */
+    /**
+     * 获取请求方式
+     * @return string
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function getMethod()
 	{
 		if (PHP_SAPI == 'cli') {
