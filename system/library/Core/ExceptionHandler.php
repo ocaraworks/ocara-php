@@ -20,6 +20,7 @@ class ExceptionHandler extends Basis
     /**
      * 错误处理
      * @param $exception
+     * @throws \Ocara\Exceptions\Exception
      */
     public function exceptionHandler($exception)
     {
@@ -36,6 +37,7 @@ class ExceptionHandler extends Basis
      * @param $line
      * @param string $context
      * @return bool
+     * @throws \Ocara\Exceptions\Exception
      */
     public function errorHandler($level, $message, $file, $line, $context = '')
     {
@@ -55,6 +57,7 @@ class ExceptionHandler extends Basis
     /**
      * 错误处理
      * @param $exception
+     * @throws \Ocara\Exceptions\Exception
      */
     public function handler($exception)
     {

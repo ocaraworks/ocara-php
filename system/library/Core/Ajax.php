@@ -77,7 +77,7 @@ class Ajax extends Base
 
 		if (!$statusCode && !ocConfig('API.is_send_error_code', 0)) {
 			$response->setStatusCode(Response::STATUS_OK);
-			$result['statusCode'] 	= $response->getOption('statusCode');
+			$result['statusCode'] = $response->getOption('statusCode');
 		}
 
 		$contentType = $response->getOption('contentType');
