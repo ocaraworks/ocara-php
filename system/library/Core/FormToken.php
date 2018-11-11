@@ -134,7 +134,7 @@ class FormToken extends Base
 		$routeStr = implode(OC_EMPTY, $route);
 
 		if ($config = ocConfig('SOURCE.form.generate_token', null)) {
-			$token = ocService()->call->run($config, array($tag, $formName, $route));
+			$token = call_user_func_array($config, array($tag, $formName, $route));
 		} else {
 			$token = md5($routeStr . $formName . md5(Code::getRand(5)) . uniqid(mt_rand()));
 		}

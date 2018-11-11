@@ -181,6 +181,14 @@ class Common extends ViewBase implements ViewInterfaces
             . $template
             . OC_DIR_SEP
             . $subPath;
+
+        if (!ocFileExists($path)) {
+            $path = ocService()->app->getRoute('module')
+            . '/view/default/'
+            . OC_DIR_SEP
+            . $subPath;
+        }
+
 	    return ocPath('modules', $path);
     }
 
@@ -190,7 +198,8 @@ class Common extends ViewBase implements ViewInterfaces
      * @param string $template
      * @return bool|mixed|string
      */
-    public function getCommonViewPath($subPath = null, $template = null){
+    public function getCommonViewPath($subPath = null, $template = null)
+    {
         $template = $template ? : $this->_template;
         $path = $template . OC_DIR_SEP . $subPath;
         return ocPath('view', $path);
@@ -203,13 +212,22 @@ class Common extends ViewBase implements ViewInterfaces
      * @param string $template
      * @return bool|mixed|string
      */
-    public function getModuleViewPath($module, $subPath = null, $template = null){
+    public function getModuleViewPath($module, $subPath = null, $template = null)
+    {
         $template = $template ? : $this->_template;
         $path = $module
             . '/view/'
             . $template
             . OC_DIR_SEP
             . $subPath;
+
+        if (!ocFileExists($path)) {
+            $path = $module
+                . '/view/default/'
+                . OC_DIR_SEP
+                . $subPath;
+        }
+
         return ocPath('modules', $path);
     }
 
