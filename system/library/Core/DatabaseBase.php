@@ -782,8 +782,8 @@ class DatabaseBase extends Sql
 
     /**
      * 检测错误
-     * @param mixed $ret
-     * @param mixed $sqlData
+     * @param $ret
+     * @param $sqlData
      * @param bool $required
      * @throws \Ocara\Exceptions\Exception
      */

@@ -13,12 +13,13 @@ use Ocara\Interfaces\Cache as CacheInterface;
 
 class Memcache extends CacheBase implements CacheInterface
 {
-	/**
-	 * 初始化代码
-	 * @param array $config
-	 * @param bool $required
-	 * @return null
-	 */
+    /**
+     * 初始化代码
+     * @param array $config
+     * @param bool $required
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function connect($config, $required = true)
 	{
 		if (!ocGet('open', $config, false)) {
@@ -37,11 +38,12 @@ class Memcache extends CacheBase implements CacheInterface
 		$this->_addServers($config, $class);
 	}
 
-	/**
-	 * 添加服务器
-	 * @param array $config
-	 * @param string $class
-	 */
+    /**
+     * 添加服务器
+     * @param $config
+     * @param $class
+     * @throws \Ocara\Exceptions\Exception
+     */
 	private function _addServers($config, $class)
 	{
 		$servers = ocGet('servers', $config, array());
@@ -65,7 +67,8 @@ class Memcache extends CacheBase implements CacheInterface
     /**
      * 设置变量值
      * @param string $name
-     * @param mixed $value
+     * @param bool $value
+     * @return bool
      */
     public function set($name, $value)
     {
@@ -73,7 +76,7 @@ class Memcache extends CacheBase implements CacheInterface
         $expireTime = array_key_exists(2, $args) ? $args[2] : 0;
         $params = array_key_exists(3, $args) ? $args[3] : array();
 
-		if (i_object($this->_plugin)) {
+		if (is_object($this->_plugin)) {
 			return $this->_plugin->set($name, $value, $params, $expireTime);
 		}
 
@@ -95,10 +98,11 @@ class Memcache extends CacheBase implements CacheInterface
 		return null;
 	}
 
-	/**
-	 * 删除KEY
-	 * @param string $name
-	 */
+    /**
+     * 删除KEY
+     * @param string $name
+     * @return mixed
+     */
 	public function delete($name)
 	{
 		return $this->_plugin->delete($name);

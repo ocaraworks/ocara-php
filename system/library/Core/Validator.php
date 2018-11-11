@@ -34,11 +34,12 @@ class Validator extends Base
 		$this->_validate = $validate;
 	}
 
-	/**
-	 * 表单验证
-	 * @param array $data
-	 * @return bool
-	 */
+    /**
+     * 表单验证
+     * @param array $data
+     * @return bool
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function validate(array $data)
 	{
 		$result = true;
@@ -157,13 +158,14 @@ class Validator extends Base
 		return true;
 	}
 
-	/**
-	 * 正则表达式验证
-	 * @param string $field
-	 * @param string $value
-	 * @param $expression
-	 * @return bool
-	 */
+    /**
+     * 正则表达式验证
+     * @param $field
+     * @param $value
+     * @param $expression
+     * @return bool
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function expression($field, $value, $expression)
 	{
 		$count = count($value);
@@ -255,10 +257,11 @@ class Validator extends Base
 		$this->_errorLocation = array($error, $message, $field, $value, $index, $params);
 	}
 
-	/**
-	 * 绑定错误
-	 * @param array $lang
-	 */
+    /**
+     * 绑定错误
+     * @param array $lang
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function setError(array $lang)
 	{
 		list($error, $message, $field, $value, $index, $params) = $this->_errorLocation;
