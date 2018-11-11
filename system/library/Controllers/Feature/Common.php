@@ -17,8 +17,8 @@ class Common extends Base implements Feature
 {
     /**
      * 获取路由
-     * @param $module
-     * @param $controller
+     * @param string $module
+     * @param string $controller
      * @param array $get
      * @return array|mixed
      * @throws \Ocara\Exceptions\Exception

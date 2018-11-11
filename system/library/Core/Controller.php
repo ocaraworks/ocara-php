@@ -93,36 +93,48 @@ class Controller extends serviceProvider implements ControllerInterface
 		}
 
 		if ($doWay == 'common') {
-			$this->doCommonAction();
+            $this->doCommonAction($actionMethod);
 		} elseif($doWay == 'api') {
-            $this->doApiAction();
+            $this->doApiAction($actionMethod);
 		}
+
+		$this->response->send();
 	}
 
-	/**
-	 * 执行动作（类方法）
-	 */
-	public function doCommonAction()
+    /**
+     * 执行动作
+     * @param $actionMethod
+     */
+	public function doCommonAction($actionMethod)
 	{
-		method_exists($this, '_action') && $this->_action();
-		method_exists($this, '_form') && $this->_form();
-		$this->checkForm();
-
-		if ($this->request->isAjax()) {
-		    $result = null;
-		    if (method_exists($this, '_ajax')) {
-                $result = $this->_ajax();
-            }
-			$this->_provider->ajaxReturn($result);
-		} elseif ($this->_provider->isSubmit() && method_exists($this, '_submit')) {
-			$this->_submit();
-			$this->_provider->formManager->clearToken();
-		} else{
-			method_exists($this, '_display') && $this->_display();
+	    if ($actionMethod) {
+            $this->$actionMethod();
             if (!$this->_provider->hasRender()) {
                 $this->_provider->renderFile();
             }
-		}
+        } else {
+            method_exists($this, '_action') && $this->_action();
+            method_exists($this, '_form') && $this->_form();
+            $this->checkForm();
+
+            if ($this->request->isAjax()) {
+                $result = null;
+                if (method_exists($this, '_ajax')) {
+                    $result = $this->_ajax();
+                }
+                if (!$this->_provider->hasRender()) {
+                    $this->_provider->renderApi($result);
+                }
+            } elseif ($this->_provider->isSubmit() && method_exists($this, '_submit')) {
+                $this->_submit();
+                $this->_provider->formManager->clearToken();
+            } else{
+                method_exists($this, '_display') && $this->_display();
+                if (!$this->_provider->hasRender()) {
+                    $this->_provider->renderFile();
+                }
+            }
+        }
 	}
 
 	/**
@@ -131,13 +143,13 @@ class Controller extends serviceProvider implements ControllerInterface
 	 */
 	public function doApiAction($actionMethod)
 	{
-		if ($actionMethod == '_action') {
-			$result = $this->_action();
+		if ($actionMethod) {
+            $result = $this->$actionMethod();
 		} else {
-			$result = $this->$actionMethod();
+            $result = $this->_action();
 		}
 
-		$this->ajax->ajaxSuccess($result);
+		$this->_provider->renderApi($result);
 	}
 
     /**

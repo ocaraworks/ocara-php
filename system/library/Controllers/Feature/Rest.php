@@ -10,8 +10,11 @@ class Rest extends Base implements Feature
 {
     /**
      * 获取路由
+     * @param string $module
+     * @param string $controller
      * @param array $get
-     * @return null
+     * @return array|mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public function getRoute($module, $controller, array $get)
     {

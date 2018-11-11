@@ -13,7 +13,7 @@ use Ocara\Interfaces\View as ViewInterfaces;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class Rest extends ViewBase implements ViewInterfaces
+class Api extends ViewBase implements ViewInterfaces
 {
     public function output($data)
     {

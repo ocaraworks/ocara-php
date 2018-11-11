@@ -17,8 +17,9 @@ class Ajax extends Base
 
     /**
      * Ajax成功
-     * @param mixed $data
-     * @param array $message
+     * @param $data
+     * @param $message
+     * @throws \Ocara\Exceptions\Exception
      */
     public function ajaxSuccess($data, $message)
     {
@@ -29,6 +30,7 @@ class Ajax extends Base
      * AJAX错误
      * @param $message
      * @param null $data
+     * @throws \Ocara\Exceptions\Exception
      */
     public function ajaxError($message, $data = null)
     {
@@ -47,12 +49,13 @@ class Ajax extends Base
         return $xml;
     }
 
-	/**
-	 * 渲染结果
-	 * @param string $status
-	 * @param array $message
-	 * @param string $body
-	 */
+    /**
+     * 渲染结果
+     * @param $status
+     * @param array $message
+     * @param string $body
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function render($status, array $message = array(), $body = OC_EMPTY)
 	{
 	    $services = ocService();

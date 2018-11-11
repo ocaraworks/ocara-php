@@ -27,10 +27,9 @@ abstract class BootstrapBase extends Base
     /**
      * 分发路由控制器
      * @param array|string $route
-     * @param bool $return
      * @param array $params
      */
-    public static function dispatch($route, $return = false, array $params = array())
+    public static function dispatch($route, array $params = array())
     {
         extract($route);
 
@@ -61,7 +60,7 @@ abstract class BootstrapBase extends Base
                 $actionClass = $controlNamespace . $uAction . 'Action';
                 if (class_exists($actionClass, false)) {
                     $controlClass = $actionClass;
-                    $method = '_action';
+                    $method = null;
                 }
             }
         }
@@ -73,7 +72,7 @@ abstract class BootstrapBase extends Base
         $service->lang->loadModuleConfig($route);
         $Control = ocContainer()->action;
 
-        if ($method != '_action' && !method_exists($Control, $method)) {
+        if (empty($method) || !method_exists($Control, $method)) {
             $service->error->show('no_special_class', array('Action', $uAction . 'Action'));
         }
 

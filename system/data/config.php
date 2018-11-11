@@ -7,7 +7,7 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
-defined('OC_PATH') or exit('Forbidden!'),
+defined('OC_PATH') or exit('Forbidden!');
 
 return array(
     /*
@@ -104,7 +104,7 @@ return array(
         'html'              => 'Ocara\Core\Html',
     ),
     
-    /**
+    /*
      * 控制器服务类
      */
     'CONTROLLER_SERVICE_CLASS' => array(
@@ -112,7 +112,7 @@ return array(
             'view' => 'Ocara\Views\Common',
         ),
         'Rest' => array(
-            'view' => 'Ocara\Views\Rest',
+            'view' => 'Ocara\Views\Data',
         ),
     ),
     

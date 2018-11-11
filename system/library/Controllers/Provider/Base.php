@@ -83,15 +83,14 @@ class Base extends ServiceProvider
         $content = $this->view->render($file, $vars, false);
         $this->view->output(compact('content'));
         $this->event(self::EVENT_AFTER)->fire();
-
         $this->_hasRender = true;
     }
 
     /**
-     * 渲染数据
+     * 渲染API数据
      * @param string $data
      */
-    public function renderData($data = '')
+    public function renderApi($data = '')
     {
         $message = $this->_message;
         $contentType = $this->_ajaxContentType;

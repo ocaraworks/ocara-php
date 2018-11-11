@@ -44,7 +44,8 @@ class Redis extends CacheBase implements CacheInterface
     /**
      * 设置变量值
      * @param string $name
-     * @param mixed $value
+     * @param bool $value
+     * @return bool
      */
     public function set($name, $value)
     {
@@ -71,10 +72,11 @@ class Redis extends CacheBase implements CacheInterface
 		return null;
 	}
 
-	/**
-	 * 删除KEY
-	 * @param string $name
-	 */
+    /**
+     * 删除KEY
+     * @param string $name
+     * @return mixed
+     */
 	public function delete($name)
 	{
 		return $this->_plugin->delete($name);

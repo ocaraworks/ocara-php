@@ -101,21 +101,23 @@ class Response extends Base
 		$this->_headers[$name] = $value;
 	}
 
-	/**
-	 * 获取头部设置
-	 * @param $name
-	 * @return mixed|null
-	 */
+    /**
+     * 获取头部设置
+     * @param string $name
+     * @return null
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function getOption($name)
 	{
 		$this->prepareHeaders();
 		return $this->_getOption($name);
 	}
 
-	/**
-	 * 设置状态
-	 * @param $code
-	 */
+    /**
+     * 设置状态
+     * @param $code
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function setStatusCode($code)
 	{
 		$httpStatus = ocConfig('HTTP_STATUS');
@@ -179,10 +181,11 @@ class Response extends Base
 		}
 	}
 
-	/**
-	 * 获取要发送的头数据
-	 * @return null
-	 */
+    /**
+     * 获取要发送的头数据
+     * @return array
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function prepareHeaders()
 	{
 		$data = $this->_headers;
