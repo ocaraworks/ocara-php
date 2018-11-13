@@ -2246,16 +2246,17 @@ abstract class Database extends ModelBase
             ocError('need_find_value');
         }
 
+        $value = reset($params);
+        if (!ocSimple($value)) {
+            ocError('fault_find_value');
+        }
+
         $model = new static();
         $fields = $model->getFields();
 
         if (array_key_exists($fieldName, $fields)){
             $fieldName = ocHumpToLine($fieldName);
             if (array_key_exists($fieldName, $fields)) {
-                $value = reset($params);
-                if (!ocSimple($value)) {
-                    ocError('fault_find_value');
-                }
                 $model->where(array($fieldName => $value));
                 return $model->$method();
             }
