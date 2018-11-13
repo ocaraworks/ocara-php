@@ -888,6 +888,36 @@ abstract class Database extends ModelBase
 		$this->_sql = $sql;
 	}
 
+    /**
+     * 默认查询字段列表
+     * @return $this
+     */
+	public function defaultFields()
+    {
+        if (method_exists($this, '_fields')) {
+            $fields = $this->_fields();
+            if ($fields) {
+                $this->fields($fields);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * 默认查询条件
+     * @return $this
+     */
+    public function defaultCondition()
+    {
+        if (method_exists($this, '_condition')) {
+            $where = $this->_condition();
+            if ($where) {
+                $this->where($where);
+            }
+        }
+        return $this;
+    }
+
 	/**
 	 * 按主键选择一行记录
 	 * @param string|array|number $values
