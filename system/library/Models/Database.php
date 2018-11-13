@@ -2216,10 +2216,9 @@ abstract class Database extends ModelBase
 
     /**
      * 魔术方法-调用未定义的静态方法时
-     * >= php 5.3
      * @param string $name
      * @param array $params
-     * @throws Exception
+     * @return mixed
      */
     public static function __callStatic($name, $params)
     {
