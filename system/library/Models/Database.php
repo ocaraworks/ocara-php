@@ -2229,11 +2229,25 @@ abstract class Database extends ModelBase
             $method = $matches[1];
             $fieldName = $matches[6];
             $fieldName = lcfirst($fieldName);
-            $model = new static();
-            $fields = $model->getFields();
-            if (array_key_exists($fieldName, $fields)
-                || array_key_exists($fieldName = ocHumpToLine($fieldName), $fields)
-            ) {
+            return self::_queryDynamic($method, $fieldName);
+        }
+
+        return parent::__callStatic($name, $params);
+    }
+
+    /**
+     * 动态查询
+     * @param $method
+     * @param $fieldName
+     * @return mixed
+     */
+    protected static function _queryDynamic($method, $fieldName){
+        $model = new static();
+        $fields = $model->getFields();
+
+        if (array_key_exists($fieldName, $fields)){
+            $fieldName = ocHumpToLine($fieldName);
+            if (array_key_exists($fieldName, $fields)) {
                 if (empty($params)) {
                     ocError('need_find_value');
                 }
@@ -2243,11 +2257,9 @@ abstract class Database extends ModelBase
                 }
                 $model->where(array($fieldName => $value));
                 return $model->$method();
-            } else {
-                ocError('not_exists_find_field');
             }
         }
 
-        return parent::__callStatic($name, $params);
+        ocError('not_exists_find_field');
     }
 }
