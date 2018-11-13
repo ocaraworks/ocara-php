@@ -2226,8 +2226,7 @@ abstract class Database extends ModelBase
 
         if (preg_match($regExp, $name, $matches)) {
             $method = $matches[1];
-            $fieldName = $matches[6];
-            $fieldName = lcfirst($fieldName);
+            $fieldName = lcfirst($matches[6]);
             return self::_queryDynamic($method, $fieldName);
         }
 
@@ -2238,18 +2237,21 @@ abstract class Database extends ModelBase
      * 动态查询
      * @param $method
      * @param $fieldName
+     * @param $params
      * @return mixed
      */
-    protected static function _queryDynamic($method, $fieldName){
+    protected static function _queryDynamic($method, $fieldName, $params)
+    {
+        if (empty($params)) {
+            ocError('need_find_value');
+        }
+
         $model = new static();
         $fields = $model->getFields();
 
         if (array_key_exists($fieldName, $fields)){
             $fieldName = ocHumpToLine($fieldName);
             if (array_key_exists($fieldName, $fields)) {
-                if (empty($params)) {
-                    ocError('need_find_value');
-                }
                 $value = reset($params);
                 if (!ocSimple($value)) {
                     ocError('fault_find_value');
