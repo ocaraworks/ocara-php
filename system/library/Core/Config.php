@@ -9,7 +9,7 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Basis;
-use Ocara\Exceptions\Exception;
+use \Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 

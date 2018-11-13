@@ -2223,22 +2223,16 @@ abstract class Database extends ModelBase
      */
     public static function __callStatic($name, $params)
     {
-        $remainName = OC_EMPTY;
-        $isRow = false;
+        $regExp = '/^((findRowBy)|(findBy)|(getRowBy)|(getAllBy))(\w+)$/';
 
-        if (substr($name, 0, 9) == 'findRowBy') {
-            $remainName = substr($name, 9);
-            $isRow = true;
-        } elseif (substr($name, 0, 6) == 'findBy') {
-            $remainName = substr($name, 6);
-        }
-
-        if ($remainName) {
-            $remainName = lcfirst($remainName);
+        if (preg_match($regExp, $name, $matches)) {
+            $method = $matches[1];
+            $fieldName = $matches[6];
+            $fieldName = lcfirst($fieldName);
             $model = new static();
             $fields = $model->getFields();
-            if (array_key_exists($remainName, $fields)
-                || array_key_exists($remainName = ocHumpToLine($remainName), $fields)
+            if (array_key_exists($fieldName, $fields)
+                || array_key_exists($fieldName = ocHumpToLine($fieldName), $fields)
             ) {
                 if (empty($params)) {
                     ocError('need_find_value');
@@ -2247,8 +2241,8 @@ abstract class Database extends ModelBase
                 if (!ocSimple($value)) {
                     ocError('fault_find_value');
                 }
-                $model->where(array($remainName => $value));
-                return $isRow ? $model->findRow() : $model->findAll();
+                $model->where(array($fieldName => $value));
+                return $model->$method();
             } else {
                 ocError('not_exists_find_field');
             }
