@@ -37,7 +37,7 @@ class Config extends Basis
 			throw new Exception('Lost ocara config file: config.php.');
 		}
 
-		include ($path);
+        $OC_CONF = include ($path);
 
 		if (isset($OC_CONF)) {
             $this->_frameworkConfig = $OC_CONF;
@@ -92,30 +92,35 @@ class Config extends Basis
 	 */
 	public function load($paths)
 	{
-		$CONF = &$this->_properties;
         $paths = ocForceArray($paths);
+        $config = array($this->_properties);
 
 		foreach ($paths as $path) {
 			if ($files = scandir($path)) {
-				$config = $CONF;
 				foreach ($files as $file) {
 					if ($file == '.' || $file == '..') continue;
 					$fileType = pathinfo($file, PATHINFO_EXTENSION);
 					$file = $path . OC_DIR_SEP . $file;
 					if (is_file($file) && $fileType == 'php') {
-						include ($file);
+					    $content = include($file);
+					    if (is_array($content)) {
+                            $config[] = $content;
+					    }
 					}
 				}
-				empty($CONF) && $CONF = $config;
 			}
 		}
+
+		$config = call_user_func_array('array_merge', $config);
+        $this->_properties = $config;
 	}
-	
-	/**
-	 * 设置配置
-	 * @param string|array $key
-	 * @param mixed $value
-	 */
+
+    /**
+     * 设置配置
+     * @param $key
+     * @param $value
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function set($key, $value)
 	{
 		ocSet($this->_properties, $key, $value);
@@ -146,6 +151,7 @@ class Config extends Basis
 
     /**
      * 存在配置时返回值数组
+     * @param string|array $key
      * @return array|bool|null
      */
     public function arrayGet($key){
@@ -167,11 +173,12 @@ class Config extends Basis
         ocDel($this->_properties, $key);
     }
 
-	/**
-	 * 获取默认配置
-	 * @param string|array $key
-	 * @return array|bool|mixed|null
-	 */
+    /**
+     * 获取默认配置
+     * @param string $key
+     * @return array|bool|mixed|null
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function getDefault($key = null)
 	{
 		if (isset($key)) {

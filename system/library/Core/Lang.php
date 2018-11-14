@@ -100,10 +100,11 @@ class Lang extends Base
 	}
 
     /**
-     * 获取语言配置（方法重写）
-     * @param string $key
-     * @param mixed $args
+     * 获取语言配置
+     * @param string|array $key
+     * @param array $params
      * @return array|null
+     * @throws Exception
      */
     public function get($key = null, array $params = array())
     {
@@ -121,7 +122,7 @@ class Lang extends Base
 
 	/**
 	 * 获取默认语言
-	 * @param string $key
+	 * @param string|array $key
 	 * @param array $params
 	 * @return array|null
 	 * @throws Exception
@@ -135,11 +136,12 @@ class Lang extends Base
 		return $this->_ocData;
 	}
 
-	/**
-	 * 设置语言
-	 * @param string|array $key
-	 * @param mixed $value
-	 */
+    /**
+     * 设置语言
+     * @param string|array $key
+     * @param null $value
+     * @throws Exception
+     */
 	public function set($key, $value = null)
 	{
 		ocSet($this->_properties, $key, $value);

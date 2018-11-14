@@ -18,6 +18,7 @@ class Base extends ServiceProvider
     protected $_models = array();
     protected $_apiContentType;
     protected $_message;
+    protected $_hasRender = false;
 
     /**
      * 设置Ajax返回的数据格式

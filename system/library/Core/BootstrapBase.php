@@ -60,7 +60,7 @@ abstract class BootstrapBase extends Base
                 $actionClass = $controlNamespace . $uAction . 'Action';
                 if (class_exists($actionClass, false)) {
                     $controlClass = $actionClass;
-                    $method = null;
+                    $method = '_action';
                 }
             }
         }
@@ -72,7 +72,7 @@ abstract class BootstrapBase extends Base
         $service->lang->loadModuleConfig($route);
         $Control = ocContainer()->action;
 
-        if (empty($method) || !method_exists($Control, $method)) {
+        if (!method_exists($Control, $method)) {
             $service->error->show('no_special_class', array('Action', $uAction . 'Action'));
         }
 

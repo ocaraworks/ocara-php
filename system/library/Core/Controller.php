@@ -24,9 +24,15 @@ class Controller extends serviceProvider implements ControllerInterface
     protected $_isSubmit = null;
     protected $_submitMethod = 'post';
     protected $_checkForm = true;
-    protected $_hasRender = false;
 
     protected static $_providerType;
+
+    /**
+     * @var $_isSubmit 是否POST提交
+     * @var $_checkForm 是否检测表单
+     */
+    const EVENT_AFTER = '_after';
+    const EVENT_AFTER_CREATE_FORM = 'afterCreateForm';
 
 	/**
 	 * 初始化设置
@@ -44,6 +50,7 @@ class Controller extends serviceProvider implements ControllerInterface
         $this->_provider->bindEvents($this);
 
 		$this->config->set('SOURCE.ajax.return_result', array($this->_provider, 'formatAjaxResult'));
+        $this->event(self::EVENT_AFTER_CREATE_FORM)->append(array($this, 'afterCreateForm'));
 
 		method_exists($this, '_start') && $this->_start();
 		method_exists($this, '_module') && $this->_module();
@@ -84,11 +91,11 @@ class Controller extends serviceProvider implements ControllerInterface
 	{
         $doWay = $this->_provider->getDoWay();
 
-		if (!$this->_provider->isSubmit()) {
+		if (!$this->isSubmit()) {
 			if (method_exists($this, '_isSubmit')) {
-				$this->_provider->isSubmit($this->_isSubmit());
+				$this->isSubmit($this->_isSubmit());
 			} elseif ($this->submitMethod() == 'post') {
-				$this->_provider->isSubmit($this->request->isPost());
+				$this->isSubmit($this->request->isPost());
 			}
 		}
 
@@ -107,12 +114,7 @@ class Controller extends serviceProvider implements ControllerInterface
      */
 	public function doCommonAction($actionMethod)
 	{
-	    if ($actionMethod) {
-            $this->$actionMethod();
-            if (!$this->_provider->hasRender()) {
-                $this->_provider->renderFile();
-            }
-        } else {
+	    if ($actionMethod == '_action') {
             method_exists($this, '_action') && $this->_action();
             method_exists($this, '_form') && $this->_form();
             $this->checkForm();
@@ -125,7 +127,7 @@ class Controller extends serviceProvider implements ControllerInterface
                 if (!$this->_provider->hasRender()) {
                     $this->_provider->renderAjax($result);
                 }
-            } elseif ($this->_provider->isSubmit() && method_exists($this, '_submit')) {
+            } elseif ($this->isSubmit() && method_exists($this, '_submit')) {
                 $this->_submit();
                 $this->_provider->formManager->clearToken();
             } else{
@@ -133,6 +135,11 @@ class Controller extends serviceProvider implements ControllerInterface
                 if (!$this->_provider->hasRender()) {
                     $this->_provider->renderFile();
                 }
+            }
+        } else {
+            $this->$actionMethod();
+            if (!$this->_provider->hasRender()) {
+                $this->_provider->renderFile();
             }
         }
 	}

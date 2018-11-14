@@ -18,20 +18,12 @@ defined('OC_PATH') or exit('Forbidden!');
 class Common extends Base
 {
     /**
-     * @var $_isSubmit 是否POST提交
-     * @var $_checkForm 是否检测表单
-     */
-    const EVENT_AFTER = '_after';
-    const EVENT_AFTER_CREATE_FORM = 'afterCreateForm';
-
-    /**
      * 初始化设置
      */
     public function init()
     {
         $this->session->boot();
         $this->isSendApiErrorCode(false);
-        $this->event(self::EVENT_AFTER_CREATE_FORM)->append(array($this, 'afterCreateForm'));
         $this->_plugin = $this->view;
     }
 

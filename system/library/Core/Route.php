@@ -26,7 +26,7 @@ class Route extends Base
         if ($module == OC_DEV_SIGN) return $this->getDevelopRoute($get);
 
         if ($uModule) {
-            $moduleClass = "app\modules\{$module}\Module";
+            $moduleClass = 'app\modules\\' . $module . '\Module';
             if (ocClassExists($moduleClass)) {
                 $controller = $get ? array_shift($get) : null;
             } else {
@@ -37,7 +37,7 @@ class Route extends Base
 
         if (empty($module)) {
             $module = 'index';
-            $moduleClass = "app\modules\{$module}\Module";
+            $moduleClass = 'app\modules\\' . $module . '\Module';
         }
 
         if (empty($controller)) {
@@ -64,7 +64,8 @@ class Route extends Base
     /**
      * 获取提供器特性类
      * @param $providerType
-     * @return array
+     * @return string
+     * @throws \Ocara\Exceptions\Exception
      */
     public static function getFeatureClass($providerType)
     {
