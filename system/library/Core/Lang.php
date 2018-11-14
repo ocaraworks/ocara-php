@@ -18,10 +18,10 @@ class Lang extends Base
 	protected $_properties = null;
 	protected $_ocData = null;
 
-	/**
-	 * 初始化
-	 * @throws Exception
-	 */
+    /**
+     * 初始化
+     * Lang constructor.
+     */
 	public function __construct()
 	{
 		if  ($this->_ocData === null){
@@ -30,7 +30,7 @@ class Lang extends Base
 			$path = OC_SYS . 'data/languages/' . $file;
 
 			if (file_exists($path)) {
-				$lang = include ($path);
+				$lang = include($path);
 				if ($lang) {
 					$this->_ocData = ocForceArray($lang);
 				}
@@ -45,12 +45,11 @@ class Lang extends Base
 
     /**
      * 加载控制层语言
-     * @param string $path
+     * @param $route
      */
     public function loadModuleConfig($route)
     {
-        extract($route);
-        $modulePath = $module
+        $modulePath = $route['module']
             . '/private/lang/'
             . ocService()->app->getLanguage()
             . OC_DIR_SEP;
@@ -60,9 +59,9 @@ class Lang extends Base
 
         if (is_dir($path)) {
             $paths[] = $path;
-            if ($controller && is_dir($path = $path . OC_DIR_SEP . $controller)) {
+            if ($route['controller'] && is_dir($path = $path . OC_DIR_SEP . $route['controller'])) {
                 $paths[] = $path;
-                if ($action && is_dir($path = $path . OC_DIR_SEP . $action)) {
+                if ($route['action'] && is_dir($path = $path . OC_DIR_SEP . $route['action'])) {
                     $paths[] = $path;
                 }
             }
@@ -70,11 +69,10 @@ class Lang extends Base
         }
     }
 
-	/**
-	 * 加载语言配置
-	 * @param array $paths
-	 * @return array
-	 */
+    /**
+     * 加载语言配置
+     * @param $paths
+     */
 	public function load($paths)
 	{
         $paths = ocForceArray($paths);
@@ -96,7 +94,8 @@ class Lang extends Base
 			}
 		}
 
-		return $data;
+        $data = call_user_func_array('array_merge', $data);
+        $this->_properties = $data;
 	}
 
     /**
@@ -120,13 +119,12 @@ class Lang extends Base
 		return $this->_properties;
 	}
 
-	/**
-	 * 获取默认语言
-	 * @param string|array $key
-	 * @param array $params
-	 * @return array|null
-	 * @throws Exception
-	 */
+    /**
+     * 获取默认语言
+     * @param string|array $key
+     * @param array $params
+     * @return array|null
+     */
 	public function getDefault($key = null, array $params = array())
 	{
 		if (isset($key)) {
@@ -147,23 +145,21 @@ class Lang extends Base
 		ocSet($this->_properties, $key, $value);
 	}
 
-	/**
-	 * 检查语言键名是否存在
-	 * @param string|array $key
-	 * @return array|bool|mixed|null
-	 * @throws Exception
-	 */
+    /**
+     * 检查语言键名是否存在
+     * @param string|array $key
+     * @return array|bool|mixed|null
+     */
 	public function has($key = null)
 	{
 		return ocKeyExists($key, $this->_properties);
 	}
 
-	/**
-	 * 删除语言配置
-	 * @param string|array $key
-	 * @return array|null
-	 * @throws Exception
-	 */
+    /**
+     * 删除语言配置
+     * @param string|array $key
+     * @return array|null
+     */
 	public function delete($key)
 	{
 		return ocDel($this->_properties, $key);

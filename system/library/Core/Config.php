@@ -64,21 +64,20 @@ class Config extends Basis
         ocService()->app->setLanguage($this->get('LANGUAGE', 'zh_cn'));
     }
 
-	/**
-	 * 加载模块配置
-	 * @param string $dir
-	 */
+    /**
+     * 加载模块配置
+     * @param array $route
+     */
 	public function loadModuleConfig($route = array())
 	{
-        extract($route);
-        $path = ocPath('modules', $module . '/private/config/');
+        $path = ocPath('modules', $route['module'] . '/private/config/');
         $paths = array();
 
         if (is_dir($path)) {
             $paths[] = $path;
-            if ($controller && is_dir($path = $path . OC_DIR_SEP . $controller)) {
+            if ($route['controller'] && is_dir($path = $path . OC_DIR_SEP . $route['controller'])) {
                 $paths[] = $path;
-                if ($action && is_dir($path = $path . OC_DIR_SEP . $action)) {
+                if ($route['action'] && is_dir($path = $path . OC_DIR_SEP . $route['action'])) {
                     $paths[] = $path;
                 }
             }
@@ -166,7 +165,6 @@ class Config extends Basis
     /**
      * 删除配置
      * @param string|array $key
-     * @param mixed $value
      */
     public function delete($key)
     {
@@ -175,7 +173,7 @@ class Config extends Basis
 
     /**
      * 获取默认配置
-     * @param string $key
+     * @param string|array $key
      * @return array|bool|mixed|null
      * @throws \Ocara\Exceptions\Exception
      */
@@ -188,11 +186,11 @@ class Config extends Basis
 		return $this->_frameworkConfig;
 	}
 
-	/**
-	 * 检查配置键名是否存在
-	 * @param string|array $key
-	 * @return array|bool|mixed|null
-	 */
+    /**
+     * 检查配置键名是否存在
+     * @param string|array $key
+     * @return bool
+     */
 	public function has($key)
 	{
 		return ocKeyExists($key, $this->_properties) || ocKeyExists($key, $this->_frameworkConfig);
