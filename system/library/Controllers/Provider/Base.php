@@ -69,8 +69,6 @@ class Base extends ServiceProvider
     {
         $this->response->setContentType($this->_apiContentType);
         $this->ajax->render('success', $this->getMessage(), $data);
-        $this->event(self::EVENT_AFTER)->fire();
-
         $this->_hasRender = true;
     }
 
@@ -84,8 +82,6 @@ class Base extends ServiceProvider
         $contentType = $this->_apiContentType;
 
         $this->view->output(compact('contentType', 'message', 'data'));
-        $this->event(self::EVENT_AFTER)->fire();
-
         $this->_hasRender = true;
     }
 
@@ -101,7 +97,9 @@ class Base extends ServiceProvider
             list($text, $params) = $message;
             $message = $this->lang->get($text, $params);
         } else {
-            $message = $this->lang->get($message);
+            if (!ocEmpty($message)){
+                $message = $this->lang->get($message);
+            }
         }
 
         return $message;

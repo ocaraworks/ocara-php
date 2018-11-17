@@ -26,7 +26,7 @@ class ExceptionHandler extends Basis
     {
         $this->_error = ocGetExceptionData($exception);
         $this->report($exception);
-        $this->handler($exception);
+        return $this->handler($exception);
     }
 
     /**

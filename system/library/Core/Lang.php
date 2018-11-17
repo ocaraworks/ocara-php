@@ -107,7 +107,7 @@ class Lang extends Base
      */
     public function get($key = null, array $params = array())
     {
-		if (isset($key)) {
+		if (func_num_args()) {
 			if (ocKeyExists($key, $this->_properties)) {
                 $value =  ocGetLanguage($this->_properties, $key, $params);
 			} else {
@@ -127,7 +127,7 @@ class Lang extends Base
      */
 	public function getDefault($key = null, array $params = array())
 	{
-		if (isset($key)) {
+		if (func_num_args()) {
 			return ocGetLanguage($this->_ocData, $key, $params);
 		}
 

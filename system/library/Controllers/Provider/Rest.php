@@ -20,8 +20,6 @@ class Rest extends Base
      */
     protected $_hyperMediaLink;
 
-    const EVENT_AFTER = '_after';
-
     /**
      * 初始化设置
      */

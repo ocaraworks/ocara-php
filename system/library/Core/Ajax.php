@@ -54,14 +54,15 @@ class Ajax extends Base
     /**
      * 渲染结果
      * @param $status
-     * @param array $message
+     * @param string|array $message
      * @param string $body
      * @throws \Ocara\Exceptions\Exception
      */
-	public function render($status, array $message = array(), $body = OC_EMPTY)
+	public function render($status, $message = array(), $body = OC_EMPTY)
 	{
 	    $services = ocService();
-		if (is_string($message)) {
+
+        if (!is_array($message)) {
 			$message = $services->lang->get($message);
 		}
 
