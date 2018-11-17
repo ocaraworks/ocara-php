@@ -12,8 +12,8 @@ use Ocara\Core\Ocara;
 use Ocara\Core\Develop;
 use Ocara\Service\File;
 use Ocara\Service\FileCache;
-use Ocara\DatabaseFactory;
-use Ocara\Container;
+use Ocara\Core\DatabaseFactory;
+use Ocara\Core\Container;
 
 class model_admin
 {
@@ -26,9 +26,10 @@ class model_admin
 
 	public function add()
 	{
+	    $defaultServer = DatabaseFactory::getDefaultServer();
 		$request = ocService()->request;
 		$this->_modelType = $request->getPost('modelType');
-		$this->_connectName = $request->getPost('connect', 'main');
+		$this->_connectName = $request->getPost('connect', $defaultServer);
 		$this->_table = $request->getPost('table');
 		$this->_model = $request->getPost('model');
 		$this->_primaries = $request->getPost('primaries');
@@ -37,7 +38,7 @@ class model_admin
 			if (empty($this->_model)) {
 				$this->_model = ocHump($this->_table);
 			}
-			$this->_database = ocService()->request->getPost('database', ocConfig('DATABASE.main.name'));
+			$this->_database = ocService()->request->getPost('database', ocConfig('DATABASE.'.$defaultServer.'.name'));
 			$this->createDatabaseModel();
 		} elseif ($this->_modelType == 'Cache') {
 			if (empty($this->_model)) {

@@ -29,7 +29,7 @@
 
 <div>
 <span class="left-span">模板类型</span>
-<input type="text" name="ttype" id="ttype" value="default" checked />
+<input type="text" name="ttype" id="ttype" value="defaults" checked />
 </div>
 
 <div><span class="left-span">&nbsp;</span><input type="submit" value="提交" name="submit" /></div>

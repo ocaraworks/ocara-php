@@ -13,7 +13,7 @@
 
 <div>
 <span class="left-span">数据库连接配置名：</span>
-<input type="text" name="connect" id="connect" value="main">
+<input type="text" name="connect" id="connect" value="<?php echo \Ocara\Core\DatabaseFactory::getDefaultServer();?>">
 </div>
 
 <div>

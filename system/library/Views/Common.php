@@ -38,7 +38,7 @@ class Common extends ViewBase implements ViewInterfaces
 	public function __construct()
 	{
 		$this->_fileType  = ocConfig('TEMPLATE.file_type', 'html');
-		$this->_template = ocConfig('TEMPLATE.default', 'default');
+		$this->_template = ocConfig('TEMPLATE.default', 'defaults');
 
 		$this->loadEngine();
 		$this->setLayout();
@@ -187,7 +187,7 @@ class Common extends ViewBase implements ViewInterfaces
 
         if (!ocFileExists($path)) {
             $path = $module
-                . '/view/default/'
+                . '/view/defaults/'
                 . OC_DIR_SEP
                 . $subPath;
         }
@@ -226,7 +226,7 @@ class Common extends ViewBase implements ViewInterfaces
 
         if (!ocFileExists($path)) {
             $path = $module
-                . '/view/default/'
+                . '/view/defaults/'
                 . OC_DIR_SEP
                 . $subPath;
         }

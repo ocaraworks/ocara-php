@@ -515,7 +515,7 @@ abstract class Database extends ModelBase
 	 */
 	public function cache($server = null, $required = false)
 	{
-		$server = $server ? : 'main';
+		$server = $server ? : DatabaseFactory::getDefaultServer();
 		$this->_sql['cache'] = array($server, $required);
 		return $this;
 	}

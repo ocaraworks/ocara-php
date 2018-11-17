@@ -15,6 +15,12 @@ defined('OC_PATH') or exit('Forbidden!');
 final class DatabaseFactory extends Base
 {
     /**
+     * 默认服务器名
+     * @var string
+     */
+    protected static $_defaultServer = 'defaults';
+
+    /**
      * 获取数据库实例
      * @param string $connectName
      * @param bool $master
@@ -25,7 +31,7 @@ final class DatabaseFactory extends Base
 	public static function create($connectName = null, $master = true, $required = true)
 	{
 		if (empty($connectName)) {
-			$connectName = 'main';
+			$connectName = self::$_defaultServer;
 		}
 
 		$database = self::_getDatabase($connectName, $master);
@@ -39,6 +45,15 @@ final class DatabaseFactory extends Base
 
 		return $database;
 	}
+
+    /**
+     * 获取默认服务器名称
+     * @return string
+     */
+	public static function getDefaultServer()
+    {
+	    return self::$_defaultServer;
+    }
 
     /**
      * 获取数据库对象
@@ -77,7 +92,7 @@ final class DatabaseFactory extends Base
 	public static function getConfig($connectName = null)
 	{
 		if (empty($connectName)) {
-			$connectName = 'main';
+			$connectName = self::$_defaultServer;
 		}
 
         $config = ocForceArray(ocConfig("DATABASE.{$connectName}"));

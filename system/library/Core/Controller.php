@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
+use Ocara\Core\DatabaseFactory;
 use Ocara\Core\ServiceProvider;
 use Ocara\Interfaces\Controller as ControllerInterface;
 use Ocara\Core\Route;
@@ -308,7 +309,10 @@ class Controller extends serviceProvider implements ControllerInterface
     public function model($class = null)
     {
         if (empty($class)) {
-            $class = '\app\dal\models\main\\' . ucfirst(ocService()->app->getRoute('controller'));
+            $class = '\app\dal\models\\'
+                . DatabaseFactory::getDefaultServer()
+                . OC_NS_SEP
+                . ucfirst(ocService()->app->getRoute('controller'));
         }
 
         if (isset($this->_models[$class])) {
