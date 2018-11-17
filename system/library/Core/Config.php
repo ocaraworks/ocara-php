@@ -70,11 +70,18 @@ class Config extends Basis
      */
 	public function loadModuleConfig($route = array())
 	{
-        $path = ocPath('modules', $route['module'] . '/privates/config/');
+	    if ($route['module']) {
+            $path = ocPath('modules', $route['module'] . '/privates/config/');
+        } else {
+            $path = ocPath('config');
+        }
+
         $paths = array();
 
         if (is_dir($path)) {
-            $paths[] = $path;
+            if ($route['module']) {
+                $paths[] = $path;
+            }
             if ($route['controller'] && is_dir($path = $path . OC_DIR_SEP . $route['controller'])) {
                 $paths[] = $path;
                 if ($route['action'] && is_dir($path = $path . OC_DIR_SEP . $route['action'])) {

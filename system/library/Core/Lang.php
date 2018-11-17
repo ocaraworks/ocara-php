@@ -49,16 +49,22 @@ class Lang extends Base
      */
     public function loadModuleConfig($route)
     {
-        $modulePath = $route['module']
-            . '/privates/lang/'
-            . ocService()->app->getLanguage()
-            . OC_DIR_SEP;
+        if ($route['module']) {
+            $modulePath = $route['module']
+                . '/privates/lang/'
+                . ocService()->app->getLanguage()
+                . OC_DIR_SEP;
+        } else {
+            $path = ocPath('lang');
+        }
 
         $path = ocPath('modules', $modulePath);
         $paths = array();
 
         if (is_dir($path)) {
-            $paths[] = $path;
+            if ($route['module']) {
+                $paths[] = $path;
+            }
             if ($route['controller'] && is_dir($path = $path . OC_DIR_SEP . $route['controller'])) {
                 $paths[] = $path;
                 if ($route['action'] && is_dir($path = $path . OC_DIR_SEP . $route['action'])) {
