@@ -190,9 +190,8 @@ abstract class Database extends ModelBase
 
         $path = ocLowerFile(ocPath('config', "model/{$filePath}"));
 		if (ocFileExists($path)) {
-			$CONF = array();
-			include($path);
-			if (isset($CONF) && is_array($CONF)) {
+			$CONF = @include($path);
+			if (is_array($CONF)) {
 				$modelConfig = array_merge(
 					array_diff_key($modelConfig, $CONF),
 					array_intersect_key($CONF, $modelConfig)
