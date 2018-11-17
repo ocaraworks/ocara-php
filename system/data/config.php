@@ -172,12 +172,16 @@ return array(
             'models'  	  	=> 'application/dal',
             'values'  	  	=> 'application/dal',
     
-            'config'        => 'resource',
-            'lang'          => 'resource',
-            'data'          => 'resource',
-            'docs'          => 'resource/data',
-            'table'         => 'resource/data',
-    
+            'config'        => 'application/resource',
+            'lang'          => 'application/resource',
+            'fields'        => 'application/resource',
+
+            'data'          => '',
+            'docs'          => 'data',
+            'cache'         => 'data/runtime',
+            'logs'          => 'data/',
+            'sessions'      => 'data/runtime',
+
             'library'	    => '',
             'pass'			=> '',
     
@@ -186,10 +190,6 @@ return array(
             'images'  	  	=> 'public/src',
             'js'  		  	=> 'public/src',
             'static'  	  	=> 'public',
-    
-            'cache'         => 'runtime',
-            'logs'          => 'runtime',
-            'sessions'      => 'runtime',
         ),
         'remote_belongs'     => array(
             'attachments' 	=> '',
@@ -221,7 +221,7 @@ return array(
      * 应用自动加载映射
      */
     'APP_AUTOLOAD_MAP' => array(
-        'app\console\\' 							=> OC_ROOT . 'application/console/',
+        'app\commands\\' 							=> OC_ROOT . 'application/commands/',
         'app\modules\\' 							=> OC_ROOT . 'application/modules/',
         'app\view\\' 								=> OC_ROOT . 'application/view/',
         'app\dal\\' 							    => OC_ROOT . 'application/dal/',
@@ -234,8 +234,7 @@ return array(
         'validator' => '\Ocara\Core\Validator',
         'validate' => '\Ocara\Service\Validate'
     ),
-    
-    
+
     /*
      * 要向模板引擎注册的函数
      */

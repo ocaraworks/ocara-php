@@ -39,7 +39,7 @@ class Lang extends Base
 
 		if ($this->_properties === null) {
 			$this->_properties = array();
-			$this->load(OC_ROOT . 'lang/' . ocService()->app->getLanguage());
+			$this->load(ocPath('lang', 'lang/' . ocService()->app->getLanguage()));
 		}
 	}
 
@@ -76,7 +76,7 @@ class Lang extends Base
 	public function load($paths)
 	{
         $paths = ocForceArray($paths);
-		$data = array();
+		$data = array($this->_properties);
 
 		foreach ($paths as $path) {
 			if (is_dir($path)) {

@@ -22,11 +22,12 @@ class Route extends Base
         $get     = $_GET;
         $module  = array_shift($get);
         $uModule = ucfirst($module);
+        $moduleClass = OC_EMPTY;
 
         if ($module == OC_DEV_SIGN) return $this->getDevelopRoute($get);
 
         if ($uModule) {
-            $moduleClass = 'app\modules\\' . $module . '\Module';
+            $moduleClass = 'app\modules\\' . $module . OC_NS_SEP . $uModule . 'Module';
             if (ocClassExists($moduleClass)) {
                 $controller = $get ? array_shift($get) : null;
             } else {
@@ -37,7 +38,8 @@ class Route extends Base
 
         if (empty($module)) {
             $module = 'index';
-            $moduleClass = 'app\modules\\' . $module . '\Module';
+            $uModule = ucfirst($module);
+            $moduleClass = 'app\modules\\' . $module . OC_NS_SEP . $uModule . 'Module';
         }
 
         if (empty($controller)) {
@@ -82,8 +84,8 @@ class Route extends Base
 
     /**
      * 获取提供器类
-     * @param $controllerType
-     * @return null|string
+     * @param $providerType
+     * @return string
      * @throws \Ocara\Exceptions\Exception
      */
     public static function getProviderClass($providerType)

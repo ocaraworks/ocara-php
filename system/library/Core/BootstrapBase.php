@@ -31,46 +31,41 @@ abstract class BootstrapBase extends Base
      */
     public static function dispatch($route, array $params = array())
     {
-        extract($route);
+        $uController = ucfirst($route['controller']);
+        $uAction = ucfirst($route['action']);
 
-        if (empty($controller) || empty($action)) {
+        if (empty($route['controller']) || empty($route['action'])) {
             ocService()->error->show("MVC Route Error!");
         }
 
-        list($uModule, $uController, $uAction) = array_values(array_map('ucfirst', $route));
+        $cNamespace = ocNamespace(
+            'app\modules',
+            $route['module'],
+            'controllers',
+            $route['controller']
+        );
 
-        $moduleDir = OC_COMMAND_MODULE ? 'commands' : 'modules';
-        $modulePath = ocPath($moduleDir, $module);
-        $controlPath = $modulePath . "/controllers/{$controller}/";
-        $moduleNamespace = OC_NS_SEP . ocNamespace(array('app\modules', $module));
-        $controlNamespace = OC_NS_SEP . ocNamespace(array('app\modules', $module, 'controllers', $controller));
+        $cClass = $cNamespace . $uController . 'Controller';
+        $method = $route['action'] . 'Action';
 
-        if (!class_exists($moduleNamespace . $uModule . '\Module', false)) {
-            self::loadRoute($modulePath, $uModule, $moduleNamespace, 'Module');
+        if (!class_exists($cClass)) {
+            ocService()->error->show('no_special_controller', array($cClass));
         }
 
-        self::loadRoute($controlPath, $uController, $controlNamespace, 'Controller');
-        $controlClass = $controlNamespace . 'Controller';
-        $method = $action . 'Action';
-
-        if (!method_exists($controlClass, $method)) {
-            $actionPath = $controlPath . "{$uAction}Action.php";
-            if (ocFileExists($actionPath)) {
-                include_once ($actionPath);
-                $actionClass = $controlNamespace . $uAction . 'Action';
-                if (class_exists($actionClass, false)) {
-                    $controlClass = $actionClass;
-                    $method = '_action';
-                }
+        if (!method_exists($cClass, $method)) {
+            $aClass = $cNamespace . 'actions' . OC_NS_SEP . $uAction . 'Action';
+            if (class_exists($aClass)) {
+                $cClass = $aClass;
+                $method = '_action';
             }
         }
 
-        ocContainer()->bindSingleton('action', $controlClass);
+        ocContainer()->bindSingleton('controller', $cClass);
 
         $service = ocService();
         $service->config->loadModuleConfig($route);
         $service->lang->loadModuleConfig($route);
-        $Control = ocContainer()->action;
+        $Control = ocContainer()->controller;
 
         if (!method_exists($Control, $method)) {
             $service->error->show('no_special_class', array('Action', $uAction . 'Action'));
@@ -80,30 +75,17 @@ abstract class BootstrapBase extends Base
     }
 
     /**
-     * MVC文件和类检测
-     * @param string $root
-     * @param string $target
-     * @param string $namespace
-     * @param string $type
+     * MVC类检测
+     * @param $class
+     * @param null $type
      * @param bool $required
      * @return bool
-     * @throws Exception\Exception
      */
-    public static function loadRoute($root, $target, $namespace, $type = null, $required = true)
+    public static function loadRoute($class, $type = null, $required = true)
     {
-        $path = ocDir($root) . $type . '.php';
-
-        if (!ocFileExists($path)) {
+        if (!class_exists($class,  false)) {
             if ($required) {
-                ocService()->error->show('no_special_file_' . lcfirst($type), array(lcfirst($target)));
-            }
-            return false;
-        }
-
-        include_once ($path);
-        if (!class_exists($namespace . $type,  false)) {
-            if ($required) {
-                ocService()->error->show('no_special_' . lcfirst($type), array(lcfirst($target)));
+                ocService()->error->show('no_special_' . lcfirst($type), array($class));
             }
             return false;
         }

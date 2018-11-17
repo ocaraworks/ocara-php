@@ -39,6 +39,8 @@ class Ajax extends Base
 
     /**
      * 获取XML结果
+     * @param $result
+     * @return mixed
      */
     private function getXmlResult($result)
     {
@@ -80,7 +82,9 @@ class Ajax extends Base
 			$result['statusCode'] = $response->getOption('statusCode');
 		}
 
+        $content = null;
 		$contentType = $response->getOption('contentType');
+
 		switch ($contentType)
 		{
 			case 'json':

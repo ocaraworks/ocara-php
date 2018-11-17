@@ -73,6 +73,8 @@ class ExceptionHandler extends Basis
             $defaultErrorOutput = ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS.errorOutput');
             ocService('errorOutput', $defaultErrorOutput)->display($this->_error);
         }
+
+        $response->send();
     }
 
     /**

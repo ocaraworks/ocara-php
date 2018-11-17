@@ -105,7 +105,7 @@ class Controller extends serviceProvider implements ControllerInterface
             $this->doApiAction($actionMethod);
 		}
 
-		$this->response->send();
+        $this->event(self::EVENT_AFTER)->fire();
 	}
 
     /**

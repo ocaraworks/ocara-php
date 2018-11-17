@@ -58,8 +58,6 @@ class Base extends ServiceProvider
 
         $content = $this->view->render($file, $vars, false);
         $this->view->output(compact('content'));
-        $this->event(self::EVENT_AFTER)->fire();
-
         $this->_hasRender = true;
     }
 
