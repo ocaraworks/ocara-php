@@ -54,11 +54,11 @@ class Lang extends Base
                 . '/privates/lang/'
                 . ocService()->app->getLanguage()
                 . OC_DIR_SEP;
+            $path = ocPath('modules', $modulePath);
         } else {
             $path = ocPath('lang');
         }
 
-        $path = ocPath('modules', $modulePath);
         $paths = array();
 
         if (is_dir($path)) {
