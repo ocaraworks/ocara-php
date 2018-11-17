@@ -378,7 +378,7 @@ abstract class Database extends ModelBase
 	public static function getFieldsConfig($class)
 	{
 		$filePath = self::getConfigPath($class);
-		$path = ocLowerFile(ocPath('table', "fields/{$filePath}"));
+		$path = ocLowerFile(ocPath('fields', $filePath));
 
 		if (ocFileExists($path)) {
 			return @include($path);
