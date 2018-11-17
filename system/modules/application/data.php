@@ -8,7 +8,7 @@ $dirs = array(
         'dal/values',
         'modules/index/controllers',
         'modules/index/logic',
-        'modules/index/private',
+        'modules/index/privates',
         'modules/index/view/defaults/helper',
         'modules/index/view/defaults/part',
         'modules/index/view/defaults/layout',

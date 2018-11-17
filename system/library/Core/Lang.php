@@ -50,7 +50,7 @@ class Lang extends Base
     public function loadModuleConfig($route)
     {
         $modulePath = $route['module']
-            . '/private/lang/'
+            . '/privates/lang/'
             . ocService()->app->getLanguage()
             . OC_DIR_SEP;
 
