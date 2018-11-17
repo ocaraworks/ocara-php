@@ -1,68 +1,58 @@
 <?php
 $dirs = array(
 	'application' => array(
-		'commands/make',
-        'commands/tasks',
+		'console/make',
+        'console/tasks',
+        'controller',
         'dal/entities',
         'dal/model/defaults',
         'dal/values',
-        'modules/index/controllers',
-        'modules/index/logic',
-        'modules/index/privates',
-        'modules/index/view/defaults/helper',
-        'modules/index/view/defaults/part',
-        'modules/index/view/defaults/layout',
-        'modules/index/view/defaults/template',
+        'service',
         'view/defaults/helper',
         'view/defaults/part',
         'view/defaults/layout',
-	), 
+        'view/defaults/template',
+        'resource/config/control',
+        'resource/config/model',
+        'resource/fields',
+        'resource/lang/control',
+        'resource/lang/model',
+	),
 	'public' => array(
 		'attachments',
-		'resource/css/defaults',
-		'resource/images/defaults',
-		'resource/js',
-		'html',
+		'src/css/defaults',
+		'src/images/defaults',
+		'src/js',
+		'static',
 	),
 	'data' => array(
 	    'docs',
-        'runtime/cache',
-        'runtime/logs',
-        'runtime/sessions',
-        'table/fields'
     ),
-	'config' => array(
-        'conf/control',
-		'conf/model/defaults',
+	'runtime' => array(
+        'cache',
+        'logs',
+        'sessions',
     ),
-	'lang' => array(
-		'zh_cn/control',
-		'zh_cn/model/defaults',
-	),
-	'service' => array(
-		'functions', 
-		'library/Base',
-		'support'
-	)
 );
 
 $files = array(
-	'application' => array(
-		'library/Base/CommonController.php',
-		'library/Base/RedisController.php',
-		'library/Base/MainBase.php',
-		'library/Base/MemcacheBase.php',
-		'library/Base/RedisBase.php',
-		'view/defaults/layout/layout.php'
+    'application' => array(
+        'resource/config/application.php',
+        'resource/config/develop.php',
+        'resource/config/database.php',
+        'resource/config/cache.php',
+        'resource/config/event.php',
+        'resource/config/env.php',
+        'resource/config/resource.php',
+        'resource/config/static.php',
+        'view/defaults/layout/layout.php'
+    ),
+
+	'library' => array(
+        'Base/BaseService.php',
+		'Base/CommonController.php',
+        'Base/RestController.php',
+        'Base/CacheModel.php',
+        'Base/DatabaseModel.php',
 	),
-	'config' 	  => array(
-		'application.php',
-		'develop.php',
-		'database.php',
-		'cache.php',
-		'event.php',
-		'env.php',
-		'callback.php',
-		'static.php',
-	)
 );

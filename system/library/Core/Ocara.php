@@ -96,7 +96,10 @@ final class Ocara extends Basis
 		self::getInstance();
 
         $application = ocContainer()->app;
-        $application->bootstrap($bootstrap)->start($application->getRoute());
+        $bootstrap = $application->bootstrap($bootstrap);
+
+        $route = $application->getRoute();
+        $bootstrap->start($route);
 	}
 
     /**

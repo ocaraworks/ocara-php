@@ -261,7 +261,7 @@ abstract class Database extends ModelBase
 	{
         $ref = new ReflectionClass($class);
         $file = ocCommPath($ref->getFileName());
-		$filePath = str_ireplace(ocPath('models'), '', $file);
+		$filePath = str_ireplace(ocPath('model'), '', $file);
 
 		return $filePath;
 	}

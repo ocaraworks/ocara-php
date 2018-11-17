@@ -26,7 +26,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
         date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
 
         $this->event(self::EVENT_DIE)
-            ->append(ocConfig('EVENT.oc_die', null));
+             ->append(ocConfig('EVENT.oc_die', null));
 
         $this->bindEvents(ocConfig('EVENT.log', ocService()->log));
 

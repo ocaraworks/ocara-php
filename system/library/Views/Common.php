@@ -32,13 +32,15 @@ class Common extends ViewBase implements ViewInterfaces
 	private $_useCache  = true;
 	private $_useLayout = true;
 
+	protected static $_defaultTemplate = 'defaults';
+
 	/**
 	 * 初始化
 	 */
 	public function __construct()
 	{
 		$this->_fileType  = ocConfig('TEMPLATE.file_type', 'html');
-		$this->_template = ocConfig('TEMPLATE.default', 'defaults');
+		$this->_template = ocConfig('TEMPLATE.default', self::$_defaultTemplate, true);
 
 		$this->loadEngine();
 		$this->setLayout();
@@ -179,20 +181,20 @@ class Common extends ViewBase implements ViewInterfaces
     {
         $template = $template ? : $this->_template;
         $module = ocService()->app->getRoute('module');
-        $path = $module
-            . '/view/'
-            . $template
-            . OC_DIR_SEP
-            . $subPath;
 
-        if (!ocFileExists($path)) {
-            $path = $module
-                . '/view/defaults/'
-                . OC_DIR_SEP
-                . $subPath;
+        if ($module) {
+            $path = ocPath('modules', $module . '/view/' . $template . '/' . $subPath);
+            if (!ocFileExists($path)) {
+                $path = ocPath('modules', $module . '/view/' . self::$_defaultTemplate . '/' . $subPath);
+            }
+        } else {
+            $path = ocPath('view', $template . OC_DIR_SEP . $subPath);
+            if (!ocFileExists($path)) {
+                $path = ocPath('view', self::$_defaultTemplate . OC_DIR_SEP . $subPath);
+            }
         }
 
-	    return ocPath('modules', $path);
+        return $path;
     }
 
     /**
@@ -218,20 +220,13 @@ class Common extends ViewBase implements ViewInterfaces
     public function getModuleViewPath($module, $subPath = null, $template = null)
     {
         $template = $template ? : $this->_template;
-        $path = $module
-            . '/view/'
-            . $template
-            . OC_DIR_SEP
-            . $subPath;
+        $path = ocPath('modules', $module . '/view/' . $template . '/' . $subPath);
 
         if (!ocFileExists($path)) {
-            $path = $module
-                . '/view/defaults/'
-                . OC_DIR_SEP
-                . $subPath;
+            $path = ocPath('modules', $module . '/view/' . self::$_defaultTemplate . '/' . $subPath);
         }
 
-        return ocPath('modules', $path);
+        return $path;
     }
 
 	/**
@@ -523,7 +518,7 @@ class Common extends ViewBase implements ViewInterfaces
             $filePath = explode('|', $file);
             $module = array_shift($filePath);
             $file = implode('/', $filePath);
-            $path = $this->getModuleViewPath($module, 'template/');
+            $path = $this->getModuleViewPath($module, 'template');
         } else {
             $route = ocService()->app->getRoute();
             $path = $this->getViewPath('template/' . $route['controller']);

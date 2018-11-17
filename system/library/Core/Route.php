@@ -27,7 +27,7 @@ class Route extends Base
         if ($module == OC_DEV_SIGN) return $this->getDevelopRoute($get);
 
         if ($uModule) {
-            $moduleClass = 'app\modules\\' . $module . OC_NS_SEP . $uModule . 'Module';
+            $moduleClass = sprintf('app\modules\%s\controller\Module', $module);
             if (ocClassExists($moduleClass)) {
                 $controller = $get ? array_shift($get) : null;
             } else {
@@ -37,9 +37,7 @@ class Route extends Base
         }
 
         if (empty($module)) {
-            $module = 'index';
-            $uModule = ucfirst($module);
-            $moduleClass = 'app\modules\\' . $module . OC_NS_SEP . $uModule . 'Module';
+            $moduleClass = 'app\controller\Module';
         }
 
         if (empty($controller)) {

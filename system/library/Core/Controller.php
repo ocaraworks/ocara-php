@@ -309,7 +309,7 @@ class Controller extends serviceProvider implements ControllerInterface
     public function model($class = null)
     {
         if (empty($class)) {
-            $class = '\app\dal\models\\'
+            $class = '\app\dal\model\\'
                 . DatabaseFactory::getDefaultServer()
                 . OC_NS_SEP
                 . ucfirst(ocService()->app->getRoute('controller'));

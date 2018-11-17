@@ -165,31 +165,36 @@ return array(
         /*所属目录*/
         'belongs' => array(
             'commands'		=> 'application',
-            'modules'  	    => 'application',
-            'view'  	  	=> 'application',
+            'controller'  	=> 'application/controllers',
             'dal'           => 'application',
+            'modules'  	    => 'application',
+            'service'  	    => 'application',
+            'view'  	  	=> 'application',
+
             'entities'  	=> 'application/dal',
-            'models'  	  	=> 'application/dal',
+            'model'  	  	=> 'application/dal',
             'values'  	  	=> 'application/dal',
     
             'config'        => 'application/resource',
-            'lang'          => 'application/resource',
             'fields'        => 'application/resource',
+            'lang'          => 'application/resource',
 
             'data'          => '',
             'docs'          => 'data',
-            'cache'         => 'data/runtime',
-            'logs'          => 'data/',
-            'sessions'      => 'data/runtime',
+            'runtime'       => '',
+            'cache'         => 'runtime',
+            'logs'          => 'runtime',
+            'sessions'      => 'runtime',
 
             'library'	    => '',
             'pass'			=> '',
     
             'attachments' 	=> 'public',
+            'src'           => 'public',
+            'static'  	  	=> 'public',
             'css'  		  	=> 'public/src',
             'images'  	  	=> 'public/src',
             'js'  		  	=> 'public/src',
-            'static'  	  	=> 'public',
         ),
         'remote_belongs'     => array(
             'attachments' 	=> '',
@@ -221,10 +226,7 @@ return array(
      * 应用自动加载映射
      */
     'APP_AUTOLOAD_MAP' => array(
-        'app\commands\\' 							=> OC_ROOT . 'application/commands/',
-        'app\modules\\' 							=> OC_ROOT . 'application/modules/',
-        'app\view\\' 								=> OC_ROOT . 'application/view/',
-        'app\dal\\' 							    => OC_ROOT . 'application/dal/',
+        'app\\' 							=> OC_ROOT . 'application/',
     ),
     
     /*
