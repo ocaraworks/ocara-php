@@ -27,7 +27,7 @@ class Route extends Base
         if ($module == OC_DEV_SIGN) return $this->getDevelopRoute($get);
 
         if ($uModule) {
-            $moduleClass = sprintf('app\modules\%s\controller\Module', $module);
+            $moduleClass = sprintf('app\modules\%s\controller\%sModule', $module, ucfirst($module));
             if (ocClassExists($moduleClass)) {
                 $controller = $get ? array_shift($get) : null;
             } else {

@@ -49,7 +49,7 @@ abstract class BootstrapBase extends Base
             $cNamespace = sprintf('app\controller\%s\\', $route['controller']);
         }
 
-        $cClass = $cNamespace . 'Controller';
+        $cClass = $cNamespace . $uController . 'Controller';
         $method = $route['action'] . 'Action';
 
         if (!class_exists($cClass)) {
@@ -57,7 +57,7 @@ abstract class BootstrapBase extends Base
         }
 
         if (!method_exists($cClass, $method)) {
-            $aClass = $cNamespace . $uAction . 'Action';
+            $aClass = $cNamespace . 'actions\\' . $uAction . 'Action';
             if (class_exists($aClass)) {
                 $cClass = $aClass;
                 $method = '_action';
