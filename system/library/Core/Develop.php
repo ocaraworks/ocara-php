@@ -29,12 +29,13 @@ final class Develop extends Base
 		die();
 	}
 
-	/**
-	 * 输出模板
-	 * @param string $filename
-	 * @param string $tpl
-	 * @param array $vars
-	 */
+    /**
+     * 输出模板
+     * @param $filename
+     * @param $tpl
+     * @param array $vars
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public static function tpl($filename, $tpl, array $vars = array())
 	{
 		(is_array($vars) && $vars) && extract($vars);
@@ -61,20 +62,22 @@ final class Develop extends Base
 		exit();
 	}
 
-	/**
-	 * 打印错误
-	 * @param string $msg
-	 * @param string $tpl
-	 */
+    /**
+     * 打印错误
+     * @param $msg
+     * @param string $tpl
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public static function error($msg, $tpl = 'module')
 	{
 		self::tpl('error', $tpl, get_defined_vars());
 	}
 
-	/**
-	 * 错误返回
-	 * @param string $msg
-	 */
+    /**
+     * 错误返回
+     * @param $msg
+     * @return string
+     */
 	public static function back($msg)
 	{
 		$back = ocService()->html->createElement('a', array(
@@ -83,24 +86,6 @@ final class Develop extends Base
 		), '返回');
 
 		return  $msg . $back;
-	}
-	
-	/**
-	 * 加载并新建类实例
-	 * @param string $filename
-	 * @param string $className
-	 */
-	public static function loadClass($filename, $className)
-	{
-		$path = OC_DEV_DIR . 'library/' . $filename . '.php';
-		$className = '\Ocara\Develop' . OC_NS_SEP . $className;
-
-		if (!ocFileExists($path)) {
-			self::error($filename . '.php' . '类文件不存在.');
-		}
-		
-		include_once ($path);
-		return new $className();
 	}
 
 	/**

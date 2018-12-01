@@ -122,10 +122,11 @@ class DevelopController extends Base
 
     /**
      * 运行action
-     * @param string $type
+     * @param $type
      * @param string $method
      * @param string $tpl
      * @param array $params
+     * @throws \Ocara\Exceptions\Exception
      */
     public static function runAction($type, $method = 'add', $tpl = 'module', array $params = array())
     {
@@ -139,7 +140,8 @@ class DevelopController extends Base
                 header("location:" . ocUrl(array(OC_DEV_DIR, 'home', 'index'), array('action' => 'login')));
             }
 
-            $caObj 	= Develop::loadClass($type . '.admin.class', $type . '_admin');
+            $className	= sprintf('\Ocara\Generators\%sGenerator', ucfirst($type));
+            $caObj = new $className();
             call_user_func_array(array(&$caObj, $method), $params);
 
             if ($action != 'login' && $type == 'login') {
@@ -148,6 +150,6 @@ class DevelopController extends Base
             exit();
         }
 
-        $tpl && Develop::tpl($type . '.admin', $tpl);
+        $tpl && Develop::tpl($type, $tpl);
     }
 }
