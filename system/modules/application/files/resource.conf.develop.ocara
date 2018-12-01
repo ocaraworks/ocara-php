@@ -21,7 +21,7 @@ return array(
     /*
      * 开发者中心标志配置
      */
-    'DEV_SIGN' => 'dev',
+    'DEV_SIGN' => '_dev',
 
     /*
      * 服务组件配置

@@ -16,7 +16,7 @@ return array(
     'LANGUAGE' 				=> 'zh_cn',
     'SYS_MODEL' 			=> '',
     'DEV_SIGN' 				=> '',
-    'ROUTE_PARAM_NAME'	    => 'r', //路由参数名称
+    'ROUTE_PARAM_NAME'	    => '_route', //路由参数名称
     
     'DEFAULT_CONTROLLER' 		=> 'home', //默认控制器
     'DEFAULT_ACTION' 			=> 'index', //默认动作
