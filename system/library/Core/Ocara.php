@@ -96,6 +96,10 @@ final class Ocara extends Basis
 	{
 		self::getInstance();
 
+		if (empty($bootstrap)) {
+            $bootstrap = defined('OC_BOOTSTRAP') ? OC_BOOTSTRAP : 'Ocara\Bootstraps\Common';
+        }
+
         $application = ocContainer()->app;
         $bootstrap = $application->bootstrap($bootstrap);
 
