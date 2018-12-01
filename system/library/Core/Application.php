@@ -50,11 +50,11 @@ class Application extends Basis
      */
     public function errorReporting($error = null)
     {
-        $sysModel = Container::getDefault()->config->get('SYS_MODEL', 'application');
+        $sysModel = ocContainer()->config->get('SYS_MODEL', 'application');
         $error = $error ? : ($sysModel == 'develop' ? E_ALL : 0);
 
         set_error_handler(
-            array(ocService()->exceptionHandler, 'errorHandler'),
+            array(ocContainer()->exceptionHandler, 'errorHandler'),
             $error
         );
 
@@ -63,27 +63,29 @@ class Application extends Basis
 
     /**
      * 获取或设置启动器
-     * @param $bootstrap
-     * @return string
+     * @param null $bootstrap
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public function bootstrap($bootstrap = null)
     {
         if (func_num_args()) {
             //初始化全局设置
-            ocService()->config->loadGlobalConfig();
+            ocContainer()->config->loadGlobalConfig();
             error_reporting($this->errorReporting());
+
+            //初始化默认服务提供器
+            $providerClass = ocConfig('DEFAULT_PROVIDER', 'Ocara\Providers\Main');
+            $provider = new $providerClass(array(), ocContainer());
+            ServiceProvider::setDefault($provider);
 
             ocImport(array(
                 OC_SYS . 'const/config.php',
                 OC_SYS . 'functions/common.php'
             ));
 
-            $bootstrap = $bootstrap ? : '\Ocara\Core\Bootstrap';
-            $bootstrap = new $bootstrap();
-
-            $provider = $bootstrap->getServiceProvider(ocContainer());
-            ServiceProvider::setDefault($provider);
-            $this->_bootstrap = $bootstrap;
+            $bootstrap = $bootstrap ? : '\Ocara\Core\Bootstraps\Common';
+            $this->_bootstrap = new $bootstrap();
             $this->_bootstrap->init();
         }
 

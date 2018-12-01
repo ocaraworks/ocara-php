@@ -5,11 +5,12 @@
  * Date: 2017/6/25 0025
  * Time: 下午 1:50
  */
-namespace Ocara\Core;
+namespace Ocara\Bootstraps;
 
 use Ocara\Interfaces\Bootstrap as BootstrapInterface;
+use Ocara\Core\BootstrapBase;
 
-class Bootstrap extends BootstrapBase implements BootstrapInterface
+class Common extends BootstrapBase implements BootstrapInterface
 {
     const EVENT_DIE = 'die';
     const EVENT_BEFORE_RUN = 'beforeRun';
@@ -46,7 +47,7 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
     /**
      * 运行访问控制器
      * @param array|string $route
-     * @throws Exception\Exception
+     * @return mixed
      */
     public function start($route)
     {
@@ -60,7 +61,8 @@ class Bootstrap extends BootstrapBase implements BootstrapInterface
 
         $this->event(self::EVENT_BEFORE_RUN)
              ->fire(array($route));
-        self::dispatch($route);
+
+        ocService()->dispatcher->dispatch($route);
 
         $response = ocService()->response;
         $response->sendHeaders();

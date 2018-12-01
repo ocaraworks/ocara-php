@@ -87,10 +87,11 @@ final class Ocara extends Basis
         ApplicationGenerator::create();
 	}
 
-	/**
-	 * 运行框架
-	 * @param string $bootstrap
-	 */
+    /**
+     * 运行框架
+     * @param string $bootstrap
+     * @return mixed
+     */
 	public static function run($bootstrap = null)
 	{
 		self::getInstance();
@@ -99,7 +100,7 @@ final class Ocara extends Basis
         $bootstrap = $application->bootstrap($bootstrap);
 
         $route = $application->getRoute();
-        $bootstrap->start($route);
+        return $bootstrap->start($route);
 	}
 
     /**

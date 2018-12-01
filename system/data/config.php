@@ -65,16 +65,21 @@ return array(
      * 将字段的描述作为字段文本
      */
     'USE_FIELD_DESC_LANG' => 1,
-    
+
+    /*
+     * 默认服务提供器
+     */
+    'DEFAULT_PROVIDER' => 'Ocara\Providers\Main',
+
     /*
      * 系统服务类（单例模式）
      */
     'SYSTEM_SINGLETON_SERVICE_CLASS' => array(
-        'app'               => 'Ocara\Core\Application',
         'request' 		    => 'Ocara\Core\Request',
         'response' 		    => 'Ocara\Core\Response',
         'ajax'              => 'Ocara\Core\Ajax',
         'error' 		    => 'Ocara\Core\Error',
+        'dispatcher'        => 'Ocara\Core\Dispatcher',
         'filter' 		    => 'Ocara\Core\Filter',
         'url' 			    => 'Ocara\Core\Url',
         'lang' 			    => 'Ocara\Core\Lang',
@@ -90,8 +95,8 @@ return array(
         'globals'           => 'Ocara\Core\Globals',
         'formToken'         => 'Ocara\Core\FormToken',
         'formManager'       => 'Ocara\Core\FormManager',
-        'exceptionHandler'  => 'Ocara\Core\ExceptionHandler',
         'errorOutput' 	    => 'Ocara\Service\ErrorOutput',
+        'fileLog'           => 'Ocara\Service\FileLog',
     ),
     
     /*

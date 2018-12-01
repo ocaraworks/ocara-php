@@ -337,15 +337,23 @@ function ocService($name = null, $getDefault = false)
     $services = ServiceProvider::getDefault();
 
     if (func_num_args()) {
-        if ($getDefault && empty($services)) {
+        $object = null;
+        if ($services) {
+            $object = $services->getService($name);
+        }
+        if (empty($object) && $getDefault) {
             if (is_string($getDefault)) {
                 $class = $getDefault;
             } else {
-                $class = '\Ocara\Core\\' . ucfirst($name);
+                if ($services) {
+                    $class = $services->config->get('');
+                } else {
+                    $class = '\Ocara\Core\\' . ucfirst($name);
+                }
             }
-            return new $class();
+            $object = new $class();
         }
-        return $services->getService($name);
+        return $object;
     }
 
     return $services;

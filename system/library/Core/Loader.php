@@ -51,7 +51,7 @@ class Loader extends Basis
 
         $filePath = ocCommPath($filePath);
         if (ocFileExists($filePath)) {
-            include($filePath);
+            include_once($filePath);
             if (class_exists($newClass, false)) {
                 if (method_exists($newClass, 'loadLanguage')) {
                     $newClass::loadLanguage($filePath);
@@ -63,8 +63,8 @@ class Loader extends Basis
             }
         }
 
-        $autoloads = spl_autoload_functions();
-        foreach ($autoloads as $func) {
+        $autoLoads = spl_autoload_functions();
+        foreach ($autoLoads as $func) {
             if (is_string($func)) {
                 call_user_func_array($func, array($class));
             } elseif (is_array($func)) {
