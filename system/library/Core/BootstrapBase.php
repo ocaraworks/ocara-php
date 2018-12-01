@@ -38,15 +38,16 @@ abstract class BootstrapBase extends Base
             ocService()->error->show("MVC Route Error!");
         }
 
-        if ($route['module'] || OC_CONSOLE_MODULE) {
-            $dir = OC_CONSOLE_MODULE ? 'console' : 'modules';
-            $cNamespace = sprintf('app\%s\%s\controller\%s\\',
-                $dir,
+        $controllerDir = OC_CONSOLE_MODULE ? 'console' : 'controller';
+
+        if ($route['module']) {
+            $cNamespace = sprintf('app\modules\%s\%s\%s\\',
                 $route['module'],
+                $controllerDir,
                 $route['controller']
             );
         } else {
-            $cNamespace = sprintf('app\controller\%s\\', $route['controller']);
+            $cNamespace = sprintf('app\%s\%s\\', $controllerDir, $route['controller']);
         }
 
         $cClass = $cNamespace . $uController . 'Controller';
