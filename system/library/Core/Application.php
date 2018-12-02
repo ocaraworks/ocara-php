@@ -78,13 +78,10 @@ class Application extends Basis
             $providerClass = ocConfig('DEFAULT_PROVIDER', 'Ocara\Providers\Main');
             $provider = new $providerClass(array(), ocContainer());
             ServiceProvider::setDefault($provider);
-
-            ocImport(array(
-                OC_SYS . 'const/config.php',
-                OC_SYS . 'functions/common.php'
-            ));
+            ocImport(array(OC_SYS . 'const/config.php'));
 
             $bootstrap = $bootstrap ? : '\Ocara\Core\Bootstraps\Common';
+
             $this->_bootstrap = new $bootstrap();
             $this->_bootstrap->init();
         }
@@ -96,6 +93,7 @@ class Application extends Basis
      * 获取路由信息
      * @param string $name
      * @return array|null
+     * @throws \Ocara\Exceptions\Exception
      */
     public function getRoute($name = null)
     {

@@ -25,11 +25,4 @@ interface Bootstrap
 	 * @throws Exception\Exception
 	 */
 	public function start($route);
-
-    /**
-     * 获取默认服务提供器
-     * @param \Ocara\Core\Container $container
-     * @return Main
-     */
-    public function getServiceProvider(Container $container);
 }

@@ -24,6 +24,7 @@ defined('OC_PATH') OR define(
 );
 
 require_once (OC_PATH . 'system/functions/utility.php');
+require_once (OC_PATH . 'system/functions/common.php');
 require_once (OC_PATH . 'system/const/basic.php');
 require_once (OC_CORE . 'Basis.php');
 require_once (OC_CORE . 'Container.php');

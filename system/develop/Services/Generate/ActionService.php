@@ -6,13 +6,13 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Generators;
+namespace Ocara\Develop\Services\Generate;
 
 use Ocara\Core\Develop;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class ActionGenerator
+class ActionService
 {
 
 	public function __construct()

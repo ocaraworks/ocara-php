@@ -6,12 +6,12 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Generators;
+namespace Ocara\Develop\Services\Generate;
 
 use Ocara\Core\Develop;
 use Ocara\Service\FileCache;
 
-class FieldsGenerator
+class FieldsService
 {
 	private $_model;
 

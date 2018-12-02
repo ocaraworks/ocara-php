@@ -47,7 +47,7 @@ class ErrorOutput extends ServiceBase
             $error = array_merge(array('time' => date('Y-m-d H:i:s')), $error);
             $content = ocBr2nl(ocJsonEncode($error) . PHP_EOL . $trace);
         } else {
-            $filePath = OC_SYS . 'modules/exception/index.php';
+            $filePath = OC_SYS . 'resource/exception/index.php';
             if (ocFileExists($filePath)) {
                 ob_start();
                 include($filePath);

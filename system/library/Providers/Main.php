@@ -31,11 +31,14 @@ class Main extends ServiceProvider
         foreach ($services as $name => $namespace) {
             $this->_container->$method($name, function() use($namespace) {
                 $args = func_get_args();
-                if (method_exists($namespace, 'getInstance')) {
-                    return call_user_func_array(array($namespace, 'getInstance'), $args);
-                } else {
-                    return ocClass($namespace, $args);
+                if (class_exists($namespace)) {
+                    if (method_exists($namespace, 'getInstance')) {
+                        return call_user_func_array(array($namespace, 'getInstance'), $args);
+                    } else {
+                        return ocClass($namespace, $args);
+                    }
                 }
+                return null;
             });
         }
     }

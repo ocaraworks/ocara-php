@@ -32,7 +32,7 @@ class Path extends Basis
      * @param bool $local
      * @param bool $isFile
      * @return bool|mixed|string
-     * @throws Exception\Exception
+     * @throws \Ocara\Exceptions\Exception
      */
     public function get($dir, $path, $root = null, $local = true, $isFile = true)
     {

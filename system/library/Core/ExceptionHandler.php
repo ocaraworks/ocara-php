@@ -80,6 +80,7 @@ class ExceptionHandler extends Basis
     /**
      * 错误报告
      * @param $exception
+     * @throws \Ocara\Exceptions\Exception
      */
     public function report($exception)
     {

@@ -6,22 +6,22 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Core;
+namespace Ocara\Develop\Controller;
 
-use Ocara\Core\Base;
+use Ocara\Develop\controller\Module;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class DevelopController extends Base
+class GenerateController extends Module
 {
     /**
      * 析构函数
      */
-    public function run()
+    public function _control()
     {
         $action = ocService()->app->getRoute('action');
 
-        if (Develop::checkLogin() == false) {
+        if (ocService()->app->bootstrap()->checkLogin() == false) {
             $this->loginAction();
         }
 
@@ -37,8 +37,8 @@ class DevelopController extends Base
      */
     public function logoutAction()
     {
-        if (Develop::checkLogin()) {
-            $caObj = Develop::loadClass('login.admin.class', 'login_admin');
+        if (ocService()->app->bootstrap()->checkLogin()) {
+            $caObj = ocService()->app->bootstrap()->loadClass('login.admin.class', 'login_admin');
             $caObj->logout();
         }
 
@@ -130,7 +130,7 @@ class DevelopController extends Base
      */
     public static function runAction($type, $method = 'add', $tpl = 'module', array $params = array())
     {
-        if ($type == 'login' && Develop::checkLogin()) {
+        if ($type == 'login' && ocService()->app->bootstrap()->checkLogin()) {
             header("location:" . ocUrl(array(OC_DEV_DIR, 'home', 'index')));
         }
 
@@ -140,16 +140,15 @@ class DevelopController extends Base
                 header("location:" . ocUrl(array(OC_DEV_DIR, 'home', 'index'), array('action' => 'login')));
             }
 
-            $className	= sprintf('\Ocara\Generators\%sGenerator', ucfirst($type));
-            $caObj = new $className();
+            $serviceClass = sprintf('\Ocara\Develop\Services\Generate\%sService', ucfirst($type));
+            $caObj = new $serviceClass();
             call_user_func_array(array(&$caObj, $method), $params);
 
             if ($action != 'login' && $type == 'login') {
                 header("location:" . ocUrl(array(OC_DEV_DIR, 'home', 'index')));
             }
-            exit();
+        } else {
+            $tpl && ocService()->app->bootstrap()->tpl($type, $tpl);
         }
-
-        $tpl && Develop::tpl($type, $tpl);
     }
 }

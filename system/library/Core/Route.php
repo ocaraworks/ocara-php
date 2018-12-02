@@ -37,7 +37,7 @@ class Route extends Base
         }
 
         if (empty($module)) {
-            $moduleClass = 'app\controller\Module';
+            $moduleClass = OC_CONTROLLER_SPACE . OC_NS_SEP . 'Module';
         }
 
         if (empty($controller)) {

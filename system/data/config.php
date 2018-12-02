@@ -79,7 +79,7 @@ return array(
         'response' 		    => 'Ocara\Core\Response',
         'ajax'              => 'Ocara\Core\Ajax',
         'error' 		    => 'Ocara\Core\Error',
-        'dispatcher'        => 'Ocara\Core\Dispatcher',
+        'dispatcher'        => 'Ocara\Dispatchers\Common',
         'filter' 		    => 'Ocara\Core\Filter',
         'url' 			    => 'Ocara\Core\Url',
         'lang' 			    => 'Ocara\Core\Lang',
@@ -217,7 +217,7 @@ return array(
         /*Ocara框架*/
         'Ocara\\' 								=> OC_SYS . 'library/',
         'Ocara\Functions\\'     				=> OC_SYS . 'functions/',
-        'Ocara\Develop\\' 						=> OC_SYS . 'modules/develop/library/',
+        'Ocara\Develop\\' 						=> OC_SYS . 'develop/',
     
         /*Ocara框架插件*/
         'Ocara\Service\\' 						=> OC_SYS . 'library/Service/',

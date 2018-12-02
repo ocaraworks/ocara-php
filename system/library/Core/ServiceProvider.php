@@ -101,7 +101,9 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     /**
      * 获取服务组件
      * @param string $name
-     * @return array|mixed|null
+     * @param array $params
+     * @param array $deps
+     * @return mixed|null
      */
     public function getService($name, $params = array(), $deps = array())
     {
@@ -122,10 +124,11 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 新建服务组件
-     * @param mixed $key
+     * @param $key
      * @param array $params
      * @param array $deps
-     * @return mixed|null
+     * @return mixed
+     * @throws Exception
      */
     public function createService($key, $params = array(), $deps = array())
     {
@@ -150,8 +153,9 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 属性不存在时的处理
-     * @param string $key
-     * @throws Exception\Exception
+     * @param $key
+     * @return array|mixed|null
+     * @throws Exception
      */
     public function __none($key)
     {

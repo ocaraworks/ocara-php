@@ -6,20 +6,20 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Core;
+namespace Ocara\Dispatchers;
 
 use Ocara\Core\Base;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class Dispatcher extends Base
+class Common extends Base
 {
     /**
      * 分发路由控制器
-     * @param array|string $route
-     * @param array $params
+     * @param $route
+     * @throws \Ocara\Exceptions\Exception
      */
-    public function dispatch($route, array $params = array())
+    public function dispatch($route)
     {
         $uController = ucfirst($route['controller']);
         $uAction = ucfirst($route['action']);
@@ -44,7 +44,7 @@ class Dispatcher extends Base
         $method = $route['action'] . 'Action';
 
         if (!class_exists($cClass)) {
-            ocService()->error->show('no_special_controller', array($cClass));
+            ocService()->error->show('no_controller', array($uController . 'Controller'));
         }
 
         if (!method_exists($cClass, $method)) {
@@ -63,7 +63,7 @@ class Dispatcher extends Base
         $Control = ocContainer()->controller;
 
         if (!method_exists($Control, $method)) {
-            $service->error->show('no_special_class', array('Action', $uAction . 'Action'));
+            $service->error->show('no_special_action', array('Action', $uAction . 'Action'));
         }
 
         $Control->doAction($method);

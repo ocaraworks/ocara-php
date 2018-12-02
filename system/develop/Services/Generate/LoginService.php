@@ -6,12 +6,11 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Develop;
+namespace Ocara\Develop\Services\Generate;
 
-use Ocara\Core\Ocara;
 use Ocara\Core\Develop;
 
-class login_admin
+class LoginService
 {
 
 	/**

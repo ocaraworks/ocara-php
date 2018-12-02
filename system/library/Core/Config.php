@@ -67,6 +67,7 @@ class Config extends Basis
     /**
      * 加载模块配置
      * @param array $route
+     * @throws \Ocara\Exceptions\Exception
      */
 	public function loadModuleConfig($route = array())
 	{

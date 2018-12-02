@@ -53,11 +53,12 @@ class FileLog extends ServiceBase implements LogInterface
 		$this->maxLogSize = $maxLogSize ? : 2;
 	}
 
-	/**
-	 * 新建日志（目录）
-	 * @param string $logName
-	 * @return bool
-	 */
+    /**
+     * 新建日志（目录）
+     * @param string $logName
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function create($logName)
 	{
 		return ocService()->file->createDir($this->logRoot . $logName, 0777);
@@ -73,12 +74,13 @@ class FileLog extends ServiceBase implements LogInterface
 		return is_dir($this->logRoot . $logName);
 	}
 
-	/**
-	 * 向最近日志文件写入一行
-	 * @param string $logName
-	 * @param string $content
-	 * @return bool|int|void
-	 */
+    /**
+     * 向最近日志文件写入一行
+     * @param string $logName
+     * @param string $content
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function write($logName, $content)
 	{
 		if(!ocScalar($content)){
@@ -104,11 +106,12 @@ class FileLog extends ServiceBase implements LogInterface
 		return ocService()->file->appendFile($lastLogFile, "{$content}" . PHP_EOL);
 	}
 
-	/**
-	 * 读取日志内容
-	 * @param string $logName
-	 * @return bool|\mix|null|string
-	 */
+    /**
+     * 读取日志内容
+     * @param string $logName
+     * @return bool|\mix|null|string
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function read($logName)
 	{
 		if ($this->logType == 'sys') {
@@ -120,33 +123,36 @@ class FileLog extends ServiceBase implements LogInterface
 		return ocFileExists($file) ? ocRead($file) : null;
 	}
 
-	/**
-	 * 清理日志文件
-	 * @param string logName
-	 * @return bool
-	 */
+    /**
+     * 清理日志文件
+     * @param null $logName
+     * @return bool
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function clear($logName = null)
 	{
 		$path = $this->logRoot . $logName;
 		return is_dir($path) ? ocService()->file->clearDir($path, true) : false;
 	}
 
-	/**
-	 * 删除日志（目录）
-	 * @param string $logName
-	 * @return bool
-	 */
+    /**
+     * 删除日志（目录）
+     * @param string $logName
+     * @return bool
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function delete($logName)
 	{
 		$path = $this->logRoot . $logName;
 		return is_dir($path) ? ocService()->file->delDir($path, true) : false;
 	}
 
-	/**
-	 * 清空最近日志文件内容
-	 * @param string $logName
-	 * @return bool|int|void
-	 */
+    /**
+     * 清空最近日志文件内容
+     * @param string $logName
+     * @return bool|int|void
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function flush($logName)
 	{
 		if ($this->logType == 'sys') {
@@ -163,12 +169,13 @@ class FileLog extends ServiceBase implements LogInterface
 		return false;
 	}
 
-	/**
-	 * 获取最近日志文件
-	 * @param $logName
-	 * @param bool $create
-	 * @return bool|mixed|string
-	 */
+    /**
+     * 获取最近日志文件
+     * @param $logName
+     * @param bool $create
+     * @return bool|mixed|string
+     * @throws \Ocara\Exceptions\Exception
+     */
 	protected function _getLastLogFile($logName, $create = true)
 	{
 		$logPath = $this->logRoot . ocDir($logName);
@@ -198,11 +205,12 @@ class FileLog extends ServiceBase implements LogInterface
 		return $create ? ocBasename($this->_createLogFile($logName)) : false;
 	}
 
-	/**
-	 * 新建日志文件
-	 * @param $logName
-	 * @return bool|mixed|string
-	 */
+    /**
+     * 新建日志文件
+     * @param $logName
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	protected function _createLogFile($logName)
 	{
 		$path = $this->logRoot . ocDir($logName);

@@ -124,10 +124,11 @@ function ocCheckKey($onlyCheck, $key, array $data, $arrayGet = false, $default =
 
 /**
  * 获取语言文本
- * @param string|array $name
+ * @param $name
  * @param array $params
- * @param null $default
- * @return array|null
+ * @param mixed $default
+ * @return null
+ * @throws Exception
  */
 function ocLang($name, array $params = array(), $default = null)
 {
@@ -328,9 +329,10 @@ function ocGetExceptionData($exception)
 
 /**
  * 获取默认服务提供器
- * @param $name
- * @param bool|string $getDefault
- * @return string
+ * @param string $name
+ * @param bool $getDefault
+ * @return mixed|null
+ * @throws Exception
  */
 function ocService($name = null, $getDefault = false)
 {
@@ -345,10 +347,12 @@ function ocService($name = null, $getDefault = false)
             if (is_string($getDefault)) {
                 $class = $getDefault;
             } else {
-                if ($services) {
-                    $class = $services->config->get('');
-                } else {
-                    $class = '\Ocara\Core\\' . ucfirst($name);
+                $class = '\Ocara\Core\\' . ucfirst($name);
+                if ($name == 'fileLog') {
+                    ocPrint(class_exists($class));
+                }
+                if (!class_exists($class)) {
+                    $class = '\Ocara\Service\\' . ucfirst($name);
                 }
             }
             $object = new $class();
@@ -376,7 +380,13 @@ function ocShutdownHandler()
 	$error = error_get_last();
 	if ($error) {
 		if (@ini_get('display_errors')) {
-			ocService()->exceptionHandler->errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
+			ocService()->exceptionHandler
+                ->errorHandler(
+                    $error['type'],
+                    $error['message'],
+                    $error['file'],
+                    $error['line']
+                );
 		}
 	}
 }
@@ -403,9 +413,10 @@ function ocDump($content)
 
 /**
  * 输出错误或返回错误处理类
- * @param null $error
+ * @param string $error
  * @param array $params
  * @return mixed|null
+ * @throws Exception
  */
 function ocError($error = null, array $params = array())
 {
@@ -425,6 +436,7 @@ function ocError($error = null, array $params = array())
  * @param $message
  * @param array $params
  * @return array
+ * @throws Exception
  */
 function ocGetLanguage(array $languages, $message, array $params = array())
 {
@@ -587,9 +599,10 @@ function ocBasename($filePath)
  * @param $route
  * @param array $params
  * @param bool $relative
- * @param inter $urlType
+ * @param null $urlType
  * @param bool $static
- * @return string
+ * @return mixed
+ * @throws Exception
  */
 function ocUrl($route, $params = array(), $relative = false, $urlType = null, $static = true)
 {
@@ -635,9 +648,9 @@ function ocHump($name, $sep = OC_EMPTY)
 
 /**
  * 驼峰式转下划线
- * @param string $str
- * @param null $sep
- * @return mixed
+ * @param $str
+ * @param string $sep
+ * @return null|string|string[]
  */
 function ocHumpToLine($str, $sep = '_')
 {
@@ -710,9 +723,10 @@ function ocClassName($name)
 
 /**
  * 获取完整路径
- * @param string $dir
- * @param string $path
- * @return bool|mixed|string
+ * @param $dir
+ * @param null $path
+ * @return mixed
+ * @throws Exception
  */
 function ocPath($dir, $path = null)
 {
@@ -721,9 +735,10 @@ function ocPath($dir, $path = null)
 
 /**
  * 获取完整文件路径，检查文件是否存在
- * @param string $dir
- * @param string $path
- * @return bool|mixed|string
+ * @param $dir
+ * @param $path
+ * @return mixed
+ * @throws Exception
  */
 function ocFile($dir, $path)
 {
@@ -733,9 +748,9 @@ function ocFile($dir, $path)
 /**
  * 获取绝对URL
  * @param $dir
- * @param string $subPath
- * @param string $root
- * @return string
+ * @param null $subPath
+ * @param bool $root
+ * @return mixed
  */
 function ocRealUrl($dir, $subPath = null, $root = false)
 {

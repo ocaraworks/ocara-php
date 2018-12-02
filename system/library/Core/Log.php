@@ -36,6 +36,7 @@ class Log extends Base
      * @param array $traceInfo
      * @param string $type
      * @throws \Ocara\Exceptions\Exception
+     * @throws \ReflectionException
      */
     public function write($message, array $traceInfo = array(), $type = 'info')
     {
@@ -67,7 +68,6 @@ class Log extends Base
      * 信息日志
      * @param $content
      * @param array $traceInfo
-     * @throws \Ocara\Exceptions\Exception
      */
     public function info($content, array $traceInfo = array())
     {
@@ -111,6 +111,7 @@ class Log extends Base
      * 获取Trace字符串
      * @param array $traceInfo
      * @return string
+     * @throws \ReflectionException
      */
     public static function getTraceString(array $traceInfo)
     {
@@ -132,10 +133,11 @@ class Log extends Base
 
     /**
      * 获取一行Trace数据
-     * @param integer $index
-     * @param string $format
-     * @param array $row
+     * @param $index
+     * @param $format
+     * @param $row
      * @return string
+     * @throws \ReflectionException
      */
     private static function _getTraceRow($index, $format, $row)
     {

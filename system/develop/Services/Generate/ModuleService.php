@@ -6,11 +6,11 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Generators;
+namespace Ocara\Develop\Services\Generate;
 
 use Ocara\Core\Develop;
 
-class ModuleGenerator
+class ModuleService
 {
 	private $_mdlname;
 

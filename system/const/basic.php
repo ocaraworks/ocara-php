@@ -78,14 +78,17 @@ defined('OC_CORE') or define('OC_CORE', OC_SYS . 'library/Core/');
 defined('OC_SERVICE') or define('OC_SERVICE', OC_SYS . 'library/Service/');
 
 //是否外部引入
-defined('OC_INVOKE') OR define('OC_INVOKE', false);
+defined('OC_INVOKE') or define('OC_INVOKE', false);
 
 //是否命令模块
-defined('OC_CONSOLE_MODULE') OR define('OC_CONSOLE_MODULE', false);
+defined('OC_CONSOLE_MODULE') or define('OC_CONSOLE_MODULE', false);
 
 /*
  * 应用程序常量
  */
+//控制器根域名空间
+defined('OC_CONTROLLER_SPACE') or define('OC_CONTROLLER_SPACE', 'app\controller');
+
 //应用根目录
 defined('OC_ROOT') or define('OC_ROOT', ocCommPath(dirname(dirname(realpath($_SERVER['SCRIPT_FILENAME'])))) . OC_DIR_SEP);
 

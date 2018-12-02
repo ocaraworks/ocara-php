@@ -6,15 +6,13 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Develop;
+namespace Ocara\Develop\Services\Generate;
 
 use Ocara\Core\Develop;
-use Ocara\Core\Ocara;
-use Ocara\Service\File;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class controller_admin
+class ControllerService
 {
 
 	public function __construct()

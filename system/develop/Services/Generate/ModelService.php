@@ -6,16 +6,13 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Develop;
+namespace Ocara\Develop\Services\Generate;
 
-use Ocara\Core\Ocara;
 use Ocara\Core\Develop;
-use Ocara\Service\File;
 use Ocara\Service\FileCache;
 use Ocara\Core\DatabaseFactory;
-use Ocara\Core\Container;
 
-class model_admin
+class ModelService
 {
 	private $_modelType;
 	private $_connectName;

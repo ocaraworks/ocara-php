@@ -13,14 +13,31 @@ use Ocara\Providers\Main;
 
 abstract class BootstrapBase extends Base
 {
+    const EVENT_DIE = 'die';
+    const EVENT_BEFORE_RUN = 'beforeRun';
+
     /**
-     * 获取默认服务提供器
-     * @param \Ocara\Core\Container $container
-     * @return Main
+     * 初始化
      */
-    public function getServiceProvider(Container $container)
+    public function init()
     {
-        $provider = new Main(array(), $container);
-        return $provider;
+        if (empty($_SERVER['REQUEST_METHOD'])) {
+            $_SERVER['REQUEST_METHOD'] = 'GET';
+        }
+
+        date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
+
+        $this->event(self::EVENT_DIE)
+            ->append(ocConfig('EVENT.oc_die', null));
+
+        $this->bindEvents(ocConfig('EVENT.log', ocService()->log));
+
+        if (!@ini_get('short_open_tag')) {
+            ocService()->error->show('need_short_open_tag');
+        }
+
+        $this->event(self::EVENT_BEFORE_RUN)
+            ->append(ocConfig('EVENT.action.before_run', null))
+            ->append(ocConfig('EVENT.auth.check', null));
     }
 }

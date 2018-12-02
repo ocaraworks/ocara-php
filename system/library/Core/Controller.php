@@ -77,7 +77,9 @@ class Controller extends serviceProvider implements ControllerInterface
 
     /**
      * 获取当前路由
+     * @param string $name
      * @return mixed
+     * @throws \Ocara\Exceptions\Exception
      */
 	public function getRoute($name = null)
     {
@@ -192,7 +194,8 @@ class Controller extends serviceProvider implements ControllerInterface
      * 获取表单提交的数据
      * @param null $key
      * @param null $default
-     * @return array|null|string
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public function getSubmit($key = null, $default = null)
     {
@@ -204,8 +207,8 @@ class Controller extends serviceProvider implements ControllerInterface
     /**
      * 获取表单并自动验证
      * @param null $name
-     * @return $this|Form
-     * @throws \Ocara\Core\Exception
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public function form($name = null)
     {
@@ -253,10 +256,11 @@ class Controller extends serviceProvider implements ControllerInterface
 
     /**
      * 数据模型字段验证
-     * @param array $data
-     * @param string|object $model
+     * @param $data
+     * @param $model
      * @param Validator|null $validator
      * @return mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public function validate($data, $model, Validator &$validator = null)
     {
@@ -303,8 +307,9 @@ class Controller extends serviceProvider implements ControllerInterface
 
     /**
      * 获取或设置Model-静态属性保存
-     * @param string $class
+     * @param null $class
      * @return mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public function model($class = null)
     {
@@ -326,11 +331,12 @@ class Controller extends serviceProvider implements ControllerInterface
         return $this->_models[$class];
     }
 
-	/**
-	 * 获取不存在的属性时
-	 * @param string $key
-	 * @return array|null
-	 */
+    /**
+     * 获取不存在的属性时
+     * @param string $key
+     * @return array|mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function &__get($key)
 	{
         if ($this->hasProperty($key)) {
@@ -345,13 +351,13 @@ class Controller extends serviceProvider implements ControllerInterface
         ocService()->error->show('no_property', array($key));
 	}
 
-	/**
-	 * 调用未定义的方法时
-	 * @param string $name
-	 * @param array $params
-	 * @return mixed
-	 * @throws Exception\Exception
-	 */
+    /**
+     * 调用未定义的方法时
+     * @param string $name
+     * @param array $params
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function __call($name, $params)
 	{
         if (isset($this->_traits[$name])) {

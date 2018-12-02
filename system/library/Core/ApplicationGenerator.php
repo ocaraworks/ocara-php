@@ -21,7 +21,7 @@ final class ApplicationGenerator
 	 */
 	public static function create()
 	{
-		include (OC_SYS . 'modules/application/data.php');
+		include (OC_SYS . 'resource/application/data.php');
 
 		$cwd = dirname(ocCommPath(realpath($_SERVER['SCRIPT_FILENAME'])));
 		self::$root  = str_replace('\\', OC_DIR_SEP, $cwd);
@@ -61,7 +61,7 @@ final class ApplicationGenerator
 
 			foreach ($value as $v) {
 				$filePath = self::$root . "/{$key}/{$v}";
-				$source   = OC_SYS . 'modules/application/files/';
+				$source   = OC_SYS . 'resource/application/files/';
 				$source  = $source . str_replace(OC_DIR_SEP, '.', "{$key}/{$v}");
 				self::write($filePath, self::read($source));
 			}
