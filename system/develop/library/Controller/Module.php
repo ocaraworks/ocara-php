@@ -5,11 +5,11 @@
  * Date: 2018/9/15
  * Time: 0:47
  */
-namespace Ocara\Develop\controller;
+namespace Ocara\Develop\Controller;
 
-use Ocara\Core\Container;
+use Ocara\Core\Controller;
 
-class Module extends Container
+class Module extends Controller
 {
     public function _module()
     {

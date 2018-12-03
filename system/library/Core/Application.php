@@ -24,6 +24,7 @@ class Application extends Basis
      * 获取语言
      * @param bool $getUpdated
      * @return mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public function getLanguage($getUpdated = false)
     {

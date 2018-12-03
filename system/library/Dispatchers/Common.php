@@ -21,13 +21,12 @@ class Common extends Base
      */
     public function dispatch($route)
     {
-        $uController = ucfirst($route['controller']);
-        $uAction = ucfirst($route['action']);
-
         if (empty($route['controller']) || empty($route['action'])) {
-            ocService()->error->show("MVC Route Error!");
+            ocService()->error->show('null_route');
         }
 
+        $uController = ucfirst($route['controller']);
+        $uAction = ucfirst($route['action']);
         $controllerDir = OC_CONSOLE_MODULE ? 'console' : 'controller';
 
         if ($route['module']) {
@@ -56,14 +55,10 @@ class Common extends Base
         }
 
         ocContainer()->bindSingleton('controller', $cClass);
-
-        $service = ocService();
-        $service->config->loadModuleConfig($route);
-        $service->lang->loadModuleConfig($route);
         $Control = ocContainer()->controller;
 
         if (!method_exists($Control, $method)) {
-            $service->error->show('no_special_action', array('Action', $uAction . 'Action'));
+            ocService()->error->show('no_special_action', array('Action', $uAction . 'Action'));
         }
 
         $Control->doAction($method);

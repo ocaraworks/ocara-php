@@ -42,6 +42,7 @@ return array(
 	'null_action_param' 			=> array(1805, '参数值不能为空！'),
 	'null_receiver' 				=> array(1806, '邮件Socket发送没有提供接收方！'),
 	'null_template_engine'			=> array(1807, '模板插件是空的！'),
+    'null_route'                    => array(1808, '路由为空或错误！'),
 
 	//非法
 	'invalid_path' 					=> array(1900, '文件路径非法：%s。'),

@@ -45,11 +45,16 @@ class Url extends Base
 			if (PHP_SAPI == 'cli') {
 				$url = trim(ocGet('argv.1', $_SERVER), OC_DIR_SEP);
 			} else {
+                $webRoot = ocCommPath(OC_WEB_ROOT);
+                $documentRoot = ocCommPath($_SERVER['DOCUMENT_ROOT']);
 				$localUrl = $_SERVER['DOCUMENT_ROOT'] . OC_REQ_URI;
 				if ($localUrl == $_SERVER['SCRIPT_FILENAME']) {
 					return array();
 				}
-				$url = trim(OC_REQ_URI, OC_DIR_SEP);
+
+                $urlDir = ocCommPath(str_ireplace($documentRoot, '', $webRoot));
+				$requestUri = str_ireplace($urlDir, '/', OC_REQ_URI);
+				$url = trim($requestUri, OC_DIR_SEP);
 			}
 		}
 
@@ -130,15 +135,16 @@ class Url extends Base
 		return $get;
 	}
 
-	/**
-	 * 新建URL
-	 * @param string|array $route
-	 * @param string|array $params
-	 * @param bool $relative
-	 * @param integer $urlType
-	 * @param bool $static
-	 * @return bool|string
-	 */
+    /**
+     * 新建URL
+     * @param $route
+     * @param array $params
+     * @param bool $relative
+     * @param null $urlType
+     * @param bool $static
+     * @return bool|string
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function create($route, $params = array(), $relative = false, $urlType = null, $static = true)
 	{
 		$route = ocService()->app->parseRoute($route);

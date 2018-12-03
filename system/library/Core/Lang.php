@@ -44,35 +44,72 @@ class Lang extends Base
 	}
 
     /**
-     * 加载控制层语言
+     * 加载模块配置
      * @param $route
+     * @param string $rootPath
+     * @throws \Ocara\Exceptions\Exception
      */
-    public function loadModuleConfig($route)
+    public function loadModuleConfig($route, $rootPath = null)
     {
-        if ($route['module']) {
-            $modulePath = $route['module']
-                . '/privates/lang/'
-                . ocService()->app->getLanguage()
-                . OC_DIR_SEP;
-            $path = ocPath('modules', $modulePath);
-        } else {
-            $path = ocPath('lang');
-        }
+        $subPath = sprintf(
+            'lang/%s/control/',
+            ocService()->app->getLanguage()
+        );
+        $path = $this->_getConfigPath($route, $subPath, $rootPath);
+        $this->load($path);
+    }
 
+    /**
+     * 加载控制器动作配置
+     * @param array $route
+     * @param string $rootPath
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public function loadActionConfig($route = array(), $rootPath = null)
+    {
+        $subPath = sprintf(
+            'lang/%s/control/%s/',
+            ocService()->app->getLanguage(),
+            $route['controller']
+        );
+
+        $path = $this->_getConfigPath($route, $subPath, $rootPath);
         $paths = array();
 
         if (is_dir($path)) {
-            if ($route['module']) {
+            if ($route['action'] && is_dir($path = $path . OC_DIR_SEP . $route['action'])) {
                 $paths[] = $path;
             }
-            if ($route['controller'] && is_dir($path = $path . OC_DIR_SEP . $route['controller'])) {
-                $paths[] = $path;
-                if ($route['action'] && is_dir($path = $path . OC_DIR_SEP . $route['action'])) {
-                    $paths[] = $path;
-                }
-            }
-            $this->load($paths);
         }
+
+        $this->load($paths);
+    }
+
+    /**
+     * 获取配置文件路径
+     * @param $route
+     * @param $subPath
+     * @param $rootPath
+     * @return mixed|string
+     * @throws \Ocara\Exceptions\Exception
+     */
+    protected function _getConfigPath($route, $subPath, $rootPath)
+    {
+        if ($route['module']) {
+            $subPath = $route['module'] . '/privates/' . $subPath;
+        }
+
+        if ($rootPath) {
+            $path = $rootPath . OC_DIR_SEP . $subPath;
+        } else {
+            if ($route['module']) {
+                $path = ocPath('modules', $subPath);
+            } else {
+                $path = ocPath('application', 'resource/' . $subPath);
+            }
+        }
+
+        return $path;
     }
 
     /**
@@ -81,27 +118,29 @@ class Lang extends Base
      */
 	public function load($paths)
 	{
-        $paths = ocForceArray($paths);
-		$data = array($this->_properties);
+	    if ($paths) {
+            $paths = ocForceArray($paths);
+            $data = array($this->_properties);
 
-		foreach ($paths as $path) {
-			if (is_dir($path)) {
-                $files = scandir($path);
-				foreach ($files as $file) {
-					if ($file == '.' || $file == '..') continue;
-					$fileType = pathinfo($file, PATHINFO_EXTENSION);
-					if (is_file($file = $path . OC_DIR_SEP . $file) && $fileType == 'php') {
-						$row = @include ($file);
-						if ($row && is_array($row)) {
-							$data[] = $row;
-						}
-					}
-				}
-			}
-		}
+            foreach ($paths as $path) {
+                if (is_dir($path)) {
+                    $files = scandir($path);
+                    foreach ($files as $file) {
+                        if ($file == '.' || $file == '..') continue;
+                        $fileType = pathinfo($file, PATHINFO_EXTENSION);
+                        if (is_file($file = $path . OC_DIR_SEP . $file) && $fileType == 'php') {
+                            $row = @include($file);
+                            if ($row && is_array($row)) {
+                                $data[] = $row;
+                            }
+                        }
+                    }
+                }
+            }
 
-        $data = call_user_func_array('array_merge', $data);
-        $this->_properties = $data;
+            $data = call_user_func_array('array_merge', $data);
+            $this->_properties = $data;
+        }
 	}
 
     /**
@@ -130,6 +169,7 @@ class Lang extends Base
      * @param string|array $key
      * @param array $params
      * @return array|null
+     * @throws Exception
      */
 	public function getDefault($key = null, array $params = array())
 	{

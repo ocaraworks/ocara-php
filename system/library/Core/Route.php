@@ -23,6 +23,7 @@ class Route extends Base
         $module  = array_shift($get);
         $uModule = ucfirst($module);
         $moduleClass = OC_EMPTY;
+        $controller = OC_EMPTY;
 
         if ($module == OC_DEV_SIGN) return $this->getDevelopRoute($get);
 
@@ -38,10 +39,6 @@ class Route extends Base
 
         if (empty($module)) {
             $moduleClass = OC_CONTROLLER_SPACE . OC_NS_SEP . 'Module';
-        }
-
-        if (empty($controller)) {
-            $controller = ocConfig('DEFAULT_CONTROLLER');
         }
 
         $providerType = $moduleClass::providerType();

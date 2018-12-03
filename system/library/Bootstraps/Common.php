@@ -29,8 +29,19 @@ class Common extends BootstrapBase implements BootstrapInterface
      */
     public function start($route)
     {
+        $service = ocService();
+        $service->config->loadModuleConfig($route);
+        $service->lang->loadModuleConfig($route);
+
+        if (empty($route['controller'])) {
+            $route['controller'] = ocConfig('DEFAULT_CONTROLLER');
+        }
+
+        $service->config->loadActionConfig($route);
+        $service->lang->loadActionConfig($route);
+
         $this->event(self::EVENT_BEFORE_RUN)
-             ->fire(array($route));
+             ->fire();
 
         ocService()->dispatcher->dispatch($route);
 

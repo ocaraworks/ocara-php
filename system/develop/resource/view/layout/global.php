@@ -1,12 +1,9 @@
-<?php
-use Ocara\Core\Develop;
-?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Ocara框架开发者中心</title>
-<?php ocImport(OC_DEV_DIR . 'css/index.php');?>
+<?php ocImport(OC_DEV_DIR . 'view/css/index.php');?>
 <style type="text/css">
 #main{width:100%;font-size:15px;}
 .submit{width:390px;text-align:center;}
@@ -23,7 +20,7 @@ use Ocara\Core\Develop;
 <div id="header">
 <div id="logo">Ocara框架开发者中心</div>
 <div id="member">
-<?php if(Develop::checkLogin()) {?>
+<?php if(ocService()->app->bootstrap()->checkLogin()) {?>
 <a href="<?php echo ocUrl(array(OC_DEV_SIGN,'home','logout'));?>">登出</a> 
 <span>您好 <font><?php echo $_SESSION['OC_DEV_USERNAME'];?></font>，欢迎使用本系统！ </span>
 <?php } ?>
@@ -32,7 +29,7 @@ use Ocara\Core\Develop;
 <div id="sep"></div>
 <div id="main">
 <div class="global">
-<?php ocImport(OC_DEV_DIR.'tpl/'.$contentFile.'.php', true, false, $vars);?>
+<?php ocImport(OC_DEV_DIR.'view/template/generate/'.$contentFile.'.php', true, false, $vars);?>
 </div>
 </div>
 <div id="footer"></div>

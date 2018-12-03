@@ -28,23 +28,31 @@ class Develop extends BootstrapBase implements BootstrapInterface
             ocService()->error->show('unallowed_develop');
         }
 
+        $resourcePath = OC_SYS . 'develop/resource';
+
+        $service = ocService();
+        $service->config->loadModuleConfig($route, $resourcePath);
+        $service->lang->loadModuleConfig($route, $resourcePath);
+
+        if (empty($route['controller'])) {
+            $route['controller'] = ocConfig('DEFAULT_CONTROLLER');
+        }
+
+        $service->config->loadActionConfig($route, $resourcePath);
+        $service->lang->loadActionConfig($route, $resourcePath);
+
         session_start();
-
         $this->event(self::EVENT_BEFORE_RUN)
-             ->fire(array($route));
+             ->fire();
 
-        define('OC_DEV_DIR', OC_SYS . 'resource/develop/');
-        $developConfig = ocImport(OC_DEV_DIR . 'config.php', true, false);
-        self::$config = $developConfig;
+        define('OC_DEV_DIR', $resourcePath . OC_DIR_SEP);
 
         $dispatcher = new DevelopDispatcher();
-        ocService()->setService('dispatcher', $dispatcher);
-        $dispatcher->dispatch();
+        $service->setService('dispatcher', $dispatcher);
+        $dispatcher->dispatch($route);
 
-        $response = ocService()->response;
-        $response->sendHeaders();
-
-        return $response->send();
+        $service->response->sendHeaders();
+        return $service->response->send();
     }
 
     /**
@@ -59,9 +67,9 @@ class Develop extends BootstrapBase implements BootstrapInterface
         (is_array($vars) && $vars) && extract($vars);
 
         if($tpl == 'global'){
-            $path = OC_DEV_DIR.'global.php';
+            $path = OC_DEV_DIR . 'view/layout/global.php';
         } else {
-            $path = OC_DEV_DIR . ($filename ? 'tpl/' . $filename : 'index') . '.php';
+            $path = OC_DEV_DIR . ($filename ? 'view/template/generate/' . $filename : 'index') . '.php';
         }
 
         if (!ocFileExists($path)) {
@@ -72,12 +80,10 @@ class Develop extends BootstrapBase implements BootstrapInterface
             $contentFile = $filename;
             include($path);
         } else {
-            ocImport(OC_DEV_DIR . 'header.php');
+            ocImport(OC_DEV_DIR . 'view/layout/header.php');
             include($path);
-            ocImport(OC_DEV_DIR . 'footer.php');
+            ocImport(OC_DEV_DIR . 'view/layout/footer.php');
         }
-
-        exit();
     }
 
     /**

@@ -66,61 +66,94 @@ class Config extends Basis
 
     /**
      * 加载模块配置
-     * @param array $route
+     * @param $route
+     * @param string $rootPath
      * @throws \Ocara\Exceptions\Exception
      */
-	public function loadModuleConfig($route = array())
+    public function loadModuleConfig($route, $rootPath = null)
+    {
+        $subPath = 'config/control/';
+        $path = $this->_getConfigPath($route, $subPath, $rootPath);
+        $this->load($path);
+    }
+
+    /**
+     * 加载控制器动作配置
+     * @param array $route
+     * @param string $rootPath
+     * @throws \Ocara\Exceptions\Exception
+     */
+	public function loadActionConfig($route = array(), $rootPath = null)
 	{
-	    if ($route['module']) {
-            $path = ocPath('modules', $route['module'] . '/privates/config/');
-        } else {
-            $path = ocPath('config');
-        }
+        $subPath = sprintf('config/control/%s/', $route['controller']);
+        $path = $this->_getConfigPath($route, $subPath, $rootPath);
 
         $paths = array();
-
         if (is_dir($path)) {
-            if ($route['module']) {
+            if ($route['action'] && is_dir($path = $path . OC_DIR_SEP . $route['action'])) {
                 $paths[] = $path;
             }
-            if ($route['controller'] && is_dir($path = $path . OC_DIR_SEP . $route['controller'])) {
-                $paths[] = $path;
-                if ($route['action'] && is_dir($path = $path . OC_DIR_SEP . $route['action'])) {
-                    $paths[] = $path;
-                }
-            }
-            $this->load($paths);
         }
+
+        $this->load($paths);
 	}
+
+    /**
+     * 获取配置文件路径
+     * @param $route
+     * @param $subPath
+     * @param $rootPath
+     * @return mixed|string
+     * @throws \Ocara\Exceptions\Exception
+     */
+	protected function _getConfigPath($route, $subPath, $rootPath)
+    {
+        if ($route['module']) {
+            $subPath = $route['module'] . '/privates/' . $subPath;
+        }
+
+        if ($rootPath) {
+            $path = $rootPath . OC_DIR_SEP . $subPath;
+        } else {
+            if ($route['module']) {
+                $path = ocPath('modules', $subPath);
+            } else {
+                $path = ocPath('application', 'resource/' . $subPath);
+            }
+        }
+
+        return $path;
+    }
 
 	/**
 	 * 加载配置
 	 * @param string|array $paths
 	 */
 	public function load($paths)
-	{
-        $paths = ocForceArray($paths);
-        $config = array($this->_properties);
+    {
+        if ($paths) {
+            $paths = ocForceArray($paths);
+            $config = array($this->_properties);
+            foreach ($paths as $path) {
+                if ($files = scandir($path)) {
+                    foreach ($files as $file) {
+                        if ($file == '.' || $file == '..') continue;
+                        $fileType = pathinfo($file, PATHINFO_EXTENSION);
+                        $file = $path . OC_DIR_SEP . $file;
+                        if (is_file($file) && $fileType == 'php') {
+                            $content = include($file);
+                            if (is_array($content)) {
+                                $config[] = $content;
+                            }
+                        }
+                    }
+                }
+            }
 
-		foreach ($paths as $path) {
-			if ($files = scandir($path)) {
-				foreach ($files as $file) {
-					if ($file == '.' || $file == '..') continue;
-					$fileType = pathinfo($file, PATHINFO_EXTENSION);
-					$file = $path . OC_DIR_SEP . $file;
-					if (is_file($file) && $fileType == 'php') {
-					    $content = include($file);
-					    if (is_array($content)) {
-                            $config[] = $content;
-					    }
-					}
-				}
-			}
-		}
-
-		$config = call_user_func_array('array_merge', $config);
-        $this->_properties = $config;
-	}
+            $config = call_user_func_array('array_merge', $config);
+            $this->_properties = $config;
+        }
+    }
 
     /**
      * 设置配置

@@ -6,7 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Develop;
+namespace Ocara\Dispatchers;
 
 use Ocara\Core\Base;
 use Ocara\Modules\Develop\DevelopController;
@@ -23,13 +23,13 @@ class Develop extends Base
     public function dispatch($route)
     {
         if (empty($route['controller']) || empty($route['action'])) {
-            ocService()->error->show("MVC Route Error!");
+            ocService()->error->show('null_route');
         }
 
         $actionMethod = $route['action'] . 'Action';
         $uController = ucfirst($route['controller']);
 
-        $class = 'Ocara\Develop\Controller\\' . $uController;
+        $class = sprintf('Ocara\Develop\Controller\%s\%s', $uController, $uController . 'Controller');
         $controller = new $class();
         $controller->$actionMethod();
     }

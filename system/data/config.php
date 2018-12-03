@@ -217,7 +217,7 @@ return array(
         /*Ocara框架*/
         'Ocara\\' 								=> OC_SYS . 'library/',
         'Ocara\Functions\\'     				=> OC_SYS . 'functions/',
-        'Ocara\Develop\\' 						=> OC_SYS . 'develop/',
+        'Ocara\Develop\\' 						=> OC_SYS . 'develop/library/',
     
         /*Ocara框架插件*/
         'Ocara\Service\\' 						=> OC_SYS . 'library/Service/',

@@ -93,7 +93,7 @@ defined('OC_CONTROLLER_SPACE') or define('OC_CONTROLLER_SPACE', 'app\controller'
 defined('OC_ROOT') or define('OC_ROOT', ocCommPath(dirname(dirname(realpath($_SERVER['SCRIPT_FILENAME'])))) . OC_DIR_SEP);
 
 //WEB根目录
-defined('OC_WEB_ROOT') or define('OC_WEB_ROOT', OC_ROOT . 'public' . OC_DIR_SEP);
+defined('OC_WEB_ROOT') or define('OC_WEB_ROOT', ocCommPath(OC_ROOT . 'public' . OC_DIR_SEP));
 
 //程序根目录
 defined('OC_APPLICATION_PATH') or define('OC_APPLICATION_PATH', OC_ROOT . 'application/');

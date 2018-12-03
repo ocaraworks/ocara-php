@@ -1,12 +1,9 @@
-<?php
-use Ocara\Core\Develop;
-?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Ocara框架开发者中心</title>
-<?php ocImport(OC_DEV_DIR . 'css/index.php');?>
+<?php ocImport(OC_DEV_DIR . 'view/css/index.php');?>
 <style type="text/css">
 #logo{float:left;}
 #member{float:right;font-size:12px;width:300px;top: 15px;position: relative;margin-right:15px;}
@@ -19,7 +16,7 @@ use Ocara\Core\Develop;
 <div id="header">
 <div id="logo">Ocara框架开发者中心</div>
 <div id="member">
-<?php if(Develop::checkLogin()) {?>
+<?php if(ocService()->app->bootstrap()->checkLogin()) {?>
 <a href="<?php echo ocUrl(array(OC_DEV_SIGN,'home','logout'));?>">登出</a> 
 <span>您好 <font><?php echo $_SESSION['OC_DEV_USERNAME'];?></font>，欢迎使用本系统！ </span>
 <?php } ?>
@@ -34,7 +31,7 @@ use Ocara\Core\Develop;
 	<li><a href="<?php echo ocUrl(array(OC_DEV_SIGN,'home','adminControl'));?>" target="iframe-main">控制器(Controller)</a></li>
 	<li><a href="<?php echo ocUrl(array(OC_DEV_SIGN,'home','adminModule'));?>" target="iframe-main">模块(Module)</a></li>
 	<li><a href="<?php echo ocUrl(array(OC_DEV_SIGN,'home','adminFields'));?>" target="iframe-main">字段更新</a></li>
-	<?php if(Develop::checkLogin() && $_SESSION['OC_DEV_USERNAME'] == 'root') {?>
+	<?php if(ocService()->app->bootstrap()->checkLogin() && $_SESSION['OC_DEV_USERNAME'] == 'root') {?>
 	<li><a href="<?php echo ocUrl(array(OC_DEV_SIGN,'home','adminUsers'));?>" target="iframe-main">用户管理</a></li>
 	<?php } ?>
 	

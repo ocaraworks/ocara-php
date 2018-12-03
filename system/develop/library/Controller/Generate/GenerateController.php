@@ -6,9 +6,9 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Develop\Controller;
+namespace Ocara\Develop\Controller\Generate;
 
-use Ocara\Develop\controller\Module;
+use Ocara\Develop\Controller\Module;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -23,12 +23,12 @@ class GenerateController extends Module
 
         if (ocService()->app->bootstrap()->checkLogin() == false) {
             $this->loginAction();
-        }
-
-        if ($action && method_exists($this, $method = strtolower($action) . 'Action')) {
-            $this->$method();
         } else {
-            ocImport(OC_DEV_DIR . 'index.php');
+            if ($action && method_exists($this, $method = strtolower($action) . 'Action')) {
+                $this->$method();
+            } else {
+                ocImport(OC_DEV_DIR . 'view/layout/index.php');
+            }
         }
     }
 
@@ -44,7 +44,7 @@ class GenerateController extends Module
 
         header(
             "location:" . ocUrl(array(OC_DEV_SIGN, 'home', 'index'),
-            array('action' => 'login'))
+                array('action' => 'login'))
         );
     }
 
@@ -54,6 +54,11 @@ class GenerateController extends Module
     public function loginAction()
     {
         $this->runAction('login', 'login', 'global');
+    }
+
+    public function indexAction()
+    {
+        $this->runAction('index');
     }
 
     /**
