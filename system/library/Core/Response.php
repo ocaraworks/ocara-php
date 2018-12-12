@@ -144,12 +144,13 @@ class Response extends Base
 		$this->_headers['charset'] = $charset;
 	}
 
-	/**
-	 * 内部路由跳转
-	 * @param array|string $route
-	 * @param array $params
-	 * @param bool $die
-	 */
+    /**
+     * 内部路由跳转
+     * @param $route
+     * @param array $params
+     * @param bool $die
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function jump($route, array $params = array(), $die = true)
 	{
 		if ($route) {
@@ -163,11 +164,12 @@ class Response extends Base
 		}
 	}
 
-	/**
-	 * 外部跳转
-	 * @param string $url
-	 * @param bool $die
-	 */
+    /**
+     * 外部跳转
+     * @param $url
+     * @param bool $die
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function redirect($url, $die = true)
 	{
 		if ($url) {

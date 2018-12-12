@@ -57,7 +57,7 @@ class StaticBuilder extends ServiceBase
 	 */
 	public function genAction($route, $data)
 	{
-		extract(ocService()->app->parseRoute($route));
+		extract(ocService()->app->formatRoute($route));
 		
 		foreach ($data as $row) {
 			list($file, $param) = ocService()->staticPath->getStaticFile($module, $controller, $action, $row);

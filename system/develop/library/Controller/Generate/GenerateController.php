@@ -9,6 +9,8 @@
 namespace Ocara\Develop\Controller\Generate;
 
 use Ocara\Develop\Controller\Module;
+use Ocara\Develop\Services\Generate\LoginService;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -19,16 +21,16 @@ class GenerateController extends Module
      */
     public function _control()
     {
-        $action = ocService()->app->getRoute('action');
+        $this->checkLogin();
+    }
 
-        if (ocService()->app->bootstrap()->checkLogin() == false) {
-            $this->loginAction();
-        } else {
-            if ($action && method_exists($this, $method = strtolower($action) . 'Action')) {
-                $this->$method();
-            } else {
-                ocImport(OC_DEV_DIR . 'view/layout/index.php');
-            }
+    /**
+     * 检测登录
+     */
+    public function checkLogin()
+    {
+        if (empty($_SESSION['OC_DEV_LOGIN']) && $this->getRoute('action') == 'login') {
+            $this->reponse->redirect('generate/login');
         }
     }
 
@@ -37,15 +39,12 @@ class GenerateController extends Module
      */
     public function logoutAction()
     {
-        if (ocService()->app->bootstrap()->checkLogin()) {
-            $caObj = ocService()->app->bootstrap()->loadClass('login.admin.class', 'login_admin');
-            $caObj->logout();
+        if ($this->checkLogin()) {
+            $service = (new LoginService());
+            $service->logout();
         }
 
-        header(
-            "location:" . ocUrl(array(OC_DEV_SIGN, 'home', 'index'),
-                array('action' => 'login'))
-        );
+        $this->reponse->redirect('generate/index');
     }
 
     /**
@@ -53,9 +52,13 @@ class GenerateController extends Module
      */
     public function loginAction()
     {
-        $this->runAction('login', 'login', 'global');
+        $this->runAction('login', 'global');
     }
 
+    /**
+     * 首页
+     * @throws \Ocara\Exceptions\Exception
+     */
     public function indexAction()
     {
         $this->runAction('index');
@@ -127,33 +130,71 @@ class GenerateController extends Module
 
     /**
      * 运行action
-     * @param $type
+     * @param $serviceName
      * @param string $method
      * @param string $tpl
      * @param array $params
+     * @throws Exception
+     */
+    public function runAction($serviceName, $method = 'add', $tpl = 'module', array $params = array())
+    {
+        if (!ocService()->request->isPost()){
+            return $this->tpl($method, $tpl);
+        }
+
+        try {
+            $serviceClass = sprintf('\Ocara\Develop\Services\Generate\%sService', ucfirst($serviceName));
+            $service = new $serviceClass();
+            call_user_func_array(array(&$service, $method), $params);
+        } catch (Exception $exception) {
+            $this->tpl('error', $tpl, get_defined_vars());
+        }
+    }
+
+    /**
+     * 输出模板
+     * @param $filename
+     * @param $tpl
+     * @param array $vars
      * @throws \Ocara\Exceptions\Exception
      */
-    public static function runAction($type, $method = 'add', $tpl = 'module', array $params = array())
+    public function tpl($filename, $tpl, array $vars = array())
     {
-        if ($type == 'login' && ocService()->app->bootstrap()->checkLogin()) {
-            header("location:" . ocUrl(array(OC_DEV_DIR, 'home', 'index')));
-        }
+        (is_array($vars) && $vars) && extract($vars);
 
-        if (ocService()->request->isPost()) {
-            $action = ocService()->app->getRoute('action');
-            if ($action != 'login' && $type == 'login') {
-                header("location:" . ocUrl(array(OC_DEV_DIR, 'home', 'index'), array('action' => 'login')));
-            }
-
-            $serviceClass = sprintf('\Ocara\Develop\Services\Generate\%sService', ucfirst($type));
-            $caObj = new $serviceClass();
-            call_user_func_array(array(&$caObj, $method), $params);
-
-            if ($action != 'login' && $type == 'login') {
-                header("location:" . ocUrl(array(OC_DEV_DIR, 'home', 'index')));
-            }
+        if($tpl == 'global'){
+            $path = OC_DEV_DIR . 'view/layout/global.php';
         } else {
-            $tpl && ocService()->app->bootstrap()->tpl($type, $tpl);
+            $path = OC_DEV_DIR . ($filename ? 'view/template/generate/' . $filename : 'index') . '.php';
         }
+
+        if (!ocFileExists($path)) {
+            throw new Exception($filename . '模板文件不存在.');
+        }
+
+        if($tpl == 'global'){
+            $contentFile = $filename;
+            include($path);
+        } else {
+            ocImport(OC_DEV_DIR . 'view/layout/header.php');
+            include($path);
+            ocImport(OC_DEV_DIR . 'view/layout/footer.php');
+        }
+    }
+
+    /**
+     * 错误返回
+     * @param $msg
+     * @return string
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public function back($msg)
+    {
+        $back = ocService()->html->createElement('a', array(
+            'href' => 'javascript:;',
+            'onclick' => 'setTimeout(function(){history.back();},0)',
+        ), '返回');
+
+        return  $msg . $back;
     }
 }

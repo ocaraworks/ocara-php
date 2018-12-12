@@ -213,7 +213,7 @@ return array(
     /*
      * 自动加载映射
      */
-    'AUTOLOAD_MAP' => array(
+    'NAMESPACE_MAP' => array(
         /*Ocara框架*/
         'Ocara\\' 								=> OC_SYS . 'library/',
         'Ocara\Functions\\'     				=> OC_SYS . 'functions/',
@@ -225,12 +225,8 @@ return array(
         /*Ocara框架扩展插件*/
         'Ocara\Extension\Service\\'   			=> OC_EXT . 'library/',
         'Ocara\Extension\Functions\\'           => OC_EXT . 'functions/',
-    ),
-    
-    /*
-     * 应用自动加载映射
-     */
-    'APP_AUTOLOAD_MAP' => array(
+
+        /*应用自动加载映射*/
         'app\\' 							=> OC_ROOT . 'application/',
     ),
     

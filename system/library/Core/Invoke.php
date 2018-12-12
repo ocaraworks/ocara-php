@@ -62,7 +62,7 @@ final class Invoke
         }
 
         $app = ocService()->app;
-        $route = $app->parseRoute($route);
+        $route = $app->formatRoute($route);
         $app->setRoute($route);
         $app->bootstrap()->start($app->getRoute());
     }

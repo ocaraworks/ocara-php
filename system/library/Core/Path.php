@@ -14,6 +14,8 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Path extends Basis
 {
+    public $_maps = array();
+
 	/**
 	 * 初始化
 	 */
@@ -23,6 +25,16 @@ class Path extends Basis
 		$paths = $config->get('APP_PATH_INFO', array());
 		$this->setProperty($paths);
 	}
+
+    /**
+     * 路径映射
+     * @param $dir
+     * @param $path
+     */
+	public function setMap($dir, $path)
+    {
+	    $this->_maps[$dir] = $path;
+    }
 
     /**
      * 生成文件或目录的路径
@@ -35,6 +47,41 @@ class Path extends Basis
      * @throws \Ocara\Exceptions\Exception
      */
     public function get($dir, $path, $root = null, $local = true, $isFile = true)
+    {
+        if (array_key_exists($dir, $this->_maps)) {
+            $rootPath = $this->_maps[$dir];
+        } else {
+            $mapDir = $this->getConfigMapDir($dir, $local);
+            $rootPath = ocDir($root, $mapDir);
+        }
+
+        $result = ocCommPath($rootPath . $path);
+        if (isset($result)) {
+            if ($local && $isFile && ($result = ocFileExists($result)) == false) {
+                ocService()->error->show('not_exists_file', array($path));
+            }
+            $path = $result;
+        }
+
+        return $path;
+	}
+
+    /**
+     * 获取映射路径
+     * @return mixed
+     */
+	public function getMap($dir)
+    {
+        return array_key_exists($dir, $this->_maps) ? $this->_maps[$dir] : null;
+    }
+
+    /**
+     * 获取配置映射路径
+     * @param $dir
+     * @return string
+     * @throws \Ocara\Exceptions\Exception
+     */
+	public function getConfigMapDir($dir, $local)
     {
         $mapDir = $dir;
 
@@ -50,7 +97,6 @@ class Path extends Basis
         }
 
         if (isset($belongs[$mapDir])) {
-
             if (isset($this->_properties['replace'][$mapDir])) {
                 $replace = $this->_properties['replace'][$mapDir];
             } else {
@@ -62,14 +108,6 @@ class Path extends Basis
             $mapDir = $belongs[$mapDir] . OC_DIR_SEP . $replace;
         }
 
-        $result = ocDir($root, $mapDir) . $path;
-        if (isset($result)) {
-            if ($local && $isFile && ($result = ocFileExists($result)) == false) {
-                ocService()->error->show('not_exists_file', array($path));
-            }
-            $path = $result;
-        }
-
-        return $path;
-	}
+        return $mapDir;
+    }
 }

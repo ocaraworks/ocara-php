@@ -41,9 +41,9 @@ class Base extends ServiceProvider
 
     /**
      * 渲染模板
-     * @param string $file
+     * @param null $file
      * @param array $vars
-     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public function renderFile($file = null, array $vars = array())
     {

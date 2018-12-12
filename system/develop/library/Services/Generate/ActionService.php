@@ -171,7 +171,8 @@ class ActionService
     /**
      * 获取模块视图路径
      * @param null $subPath
-     * @return bool|mixed|string
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public function getViewPath($subPath = null)
     {
@@ -218,6 +219,7 @@ class ActionService
      * 添加模板文件
      * @param $path
      * @param $tpl
+     * @throws \Ocara\Exceptions\Exception
      */
 	public function addTpl($path, $tpl)
 	{

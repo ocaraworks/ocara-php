@@ -116,7 +116,11 @@ class Config extends Basis
             $path = $rootPath . OC_DIR_SEP . $subPath;
         } else {
             if ($route['module']) {
-                $path = ocPath('modules', $subPath);
+                if (OC_MODULE_PATH) {
+                    $path = ocDir(array(OC_MODULE_PATH, $subPath));
+                } else {
+                    $path = ocPath('modules', $subPath);
+                }
             } else {
                 $path = ocPath('application', 'resource/' . $subPath);
             }
@@ -135,7 +139,8 @@ class Config extends Basis
             $paths = ocForceArray($paths);
             $config = array($this->_properties);
             foreach ($paths as $path) {
-                if ($files = scandir($path)) {
+                if (is_dir($path)) {
+                    $files = scandir($path);
                     foreach ($files as $file) {
                         if ($file == '.' || $file == '..') continue;
                         $fileType = pathinfo($file, PATHINFO_EXTENSION);

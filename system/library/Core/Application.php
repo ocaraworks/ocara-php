@@ -75,6 +75,12 @@ class Application extends Basis
             ocContainer()->config->loadGlobalConfig();
             error_reporting($this->errorReporting());
 
+            //设置模块路径
+            if (OC_MODULE_PATH) {
+                ocContainer()->path->setMap('modules', OC_MODULE_PATH);
+                ocContainer()->loader->registerNamespace('app\modules\\', OC_MODULE_PATH);
+            }
+
             //初始化默认服务提供器
             $providerClass = ocConfig('DEFAULT_PROVIDER', 'Ocara\Providers\Main');
             $provider = new $providerClass(array(), ocContainer());
@@ -91,6 +97,24 @@ class Application extends Basis
     }
 
     /**
+     * 解析路由
+     * @return array
+     */
+    public function parseRoute()
+    {
+        if (!OC_INVOKE) {
+            $_GET = ocService()->url->parseGet();
+        }
+
+        list($module, $controller, $action) = ocService()
+            ->route
+            ->parseRouteInfo();
+
+        $route = compact('module', 'controller', 'action');
+        return $route;
+    }
+
+    /**
      * 获取路由信息
      * @param string $name
      * @return array|null
@@ -98,14 +122,6 @@ class Application extends Basis
      */
     public function getRoute($name = null)
     {
-        if (!$this->_route) {
-            if (!OC_INVOKE) {
-                $_GET = ocService()->url->parseGet();
-            }
-            list($module, $controller, $action) = ocService()->route->parseRouteInfo();
-            $this->_route = compact('module', 'controller', 'action');
-        }
-
         if (isset($name)) {
             return isset($this->_route[$name]) ? $this->_route[$name] : null;
         }
@@ -119,20 +135,19 @@ class Application extends Basis
      */
     public function setRoute($route)
     {
-        if (!$this->_route) {
-            if (empty($route['module'])){
-                $route['module'] = 'index';
-            }
-            $this->_route = $route;
+        if (empty($route['module'])){
+            $route['module'] = 'index';
         }
+
+        $this->_route = $route;
     }
 
     /**
-     * 解析路由字符串
+     * 格式化路由字符串
      * @param string|array $route
      * @return array
      */
-    public function parseRoute($route)
+    public function formatRoute($route)
     {
         if (is_string($route)) {
             $routeData = explode(

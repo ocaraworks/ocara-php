@@ -104,7 +104,7 @@ final class Ocara extends Basis
         $application = ocContainer()->app;
         $bootstrap = $application->bootstrap($bootstrap);
 
-        $route = $application->getRoute();
+        $route = $application->parseRoute();
         return $bootstrap->start($route);
 	}
 

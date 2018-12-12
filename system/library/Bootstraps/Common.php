@@ -37,6 +37,7 @@ class Common extends BootstrapBase implements BootstrapInterface
             $route['controller'] = ocConfig('DEFAULT_CONTROLLER');
         }
 
+        $service->app->setRoute($route);
         $service->config->loadActionConfig($route);
         $service->lang->loadActionConfig($route);
 

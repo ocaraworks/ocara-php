@@ -17,16 +17,26 @@ defined('OC_PATH') or exit('Forbidden!');
 class Loader extends Basis
 {
     private $_defaultPath;
-    private $_autoloadMap;
+    private $_namespaceMap;
 
     public function __construct()
     {
-        $config = ocContainer()->config;
-        $autoMap = $config->get('AUTOLOAD_MAP', array());
-        $appAutoMap = $config->get('APP_AUTOLOAD_MAP', array());
-
         $this->_defaultPath = OC_ROOT . 'library/';
-        $this->_autoloadMap = array_merge($autoMap, $appAutoMap);
+
+        $config = ocContainer()->config;
+        $defaultAutoMap = $config->getDefault('NAMESPACE_MAP', array());
+        $autoMap = $config->get('NAMESPACE_MAP', array());
+
+        $this->_namespaceMap = array_merge($defaultAutoMap, $autoMap);
+    }
+
+    /**
+     * 注册命名空间
+     * @param $namespace
+     * @param $path
+     */
+    public function registerNamespace($namespace, $path) {
+        $this->_namespaceMap[$namespace] = $path;
     }
 
     /**
@@ -40,7 +50,7 @@ class Loader extends Basis
         $newClass = trim($class, OC_NS_SEP);
 
         if (strstr($newClass, OC_NS_SEP)) {
-            $filePath = strtr($newClass, $this->_autoloadMap);
+            $filePath = strtr($newClass, $this->_namespaceMap);
             if ($filePath == $newClass) {
                 $filePath = $this->_defaultPath . $newClass;
             }
@@ -50,6 +60,7 @@ class Loader extends Basis
         }
 
         $filePath = ocCommPath($filePath);
+
         if (ocFileExists($filePath)) {
             include_once($filePath);
             if (class_exists($newClass, false)) {

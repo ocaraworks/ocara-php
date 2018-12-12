@@ -86,14 +86,14 @@ defined('OC_CONSOLE_MODULE') or define('OC_CONSOLE_MODULE', false);
 /*
  * 应用程序常量
  */
-//控制器根域名空间
-defined('OC_CONTROLLER_SPACE') or define('OC_CONTROLLER_SPACE', 'app\controller');
-
 //应用根目录
 defined('OC_ROOT') or define('OC_ROOT', ocCommPath(dirname(dirname(realpath($_SERVER['SCRIPT_FILENAME'])))) . OC_DIR_SEP);
 
 //WEB根目录
 defined('OC_WEB_ROOT') or define('OC_WEB_ROOT', ocCommPath(OC_ROOT . 'public' . OC_DIR_SEP));
+
+//模块目录
+defined('OC_MODULE_PATH') or define('OC_MODULE_PATH', null);
 
 //程序根目录
 defined('OC_APPLICATION_PATH') or define('OC_APPLICATION_PATH', OC_ROOT . 'application/');

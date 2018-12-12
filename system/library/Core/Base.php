@@ -40,8 +40,8 @@ abstract class Base extends Basis
     /**
      * 获取自定义属性
      * @param string $name
-     * @param mixed $args
-     * @return array|mixed
+     * @return array|mixed|自定义属性
+     * @throws \Ocara\Exceptions\Exception
      */
     public function &getProperty($name = null)
     {
@@ -59,13 +59,13 @@ abstract class Base extends Basis
         return $this->_properties;
     }
 
-	/**
-	 * 魔术方法-调用未定义的方法时
-	 * @param string $name
-	 * @param array $params
-	 * @return mixed
-	 * @throws Exception
-	 */
+    /**
+     * 魔术方法-调用未定义的方法时
+     * @param string $name
+     * @param $params
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function __call($name, $params)
 	{
 		$obj = $this;
@@ -86,10 +86,10 @@ abstract class Base extends Basis
 
     /**
      * 魔术方法-调用未定义的静态方法时
-     * >= php 5.3
      * @param string $name
      * @param array $params
-     * @throws Exception
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public static function __callStatic($name, $params)
     {
@@ -99,8 +99,8 @@ abstract class Base extends Basis
     /**
      * 魔术方法-获取自定义属性
      * @param string $key
-     * @return mixed
-     * @throws Exception
+     * @return array|mixed|自定义属性
+     * @throws \Ocara\Exceptions\Exception
      */
     public function __get($key)
     {
@@ -117,10 +117,11 @@ abstract class Base extends Basis
         ocService()->error->show('no_property', array($key));
     }
 
-	/**
-	 * 获取日志对象
-	 * @param string $logName
-	 */
+    /**
+     * 获取日志对象
+     * @param $logName
+     * @return mixed
+     */
 	public static function log($logName)
 	{
 		return ocContainer()->create('log', array($logName));

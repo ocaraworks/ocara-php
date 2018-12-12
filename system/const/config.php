@@ -23,9 +23,6 @@ defined('OC_LANGUAGE') OR define('OC_LANGUAGE', ocService()->app->getLanguage())
 //入口执行文件名
 defined('OC_INDEX_FILE') OR define('OC_INDEX_FILE', $config->get('OC_INDEX_FILE', 'index.php'));
 
-//开发者中心标志,URL中使用这个标志来访问开发者中心
-defined('OC_DEV_SIGN') OR define('OC_DEV_SIGN', $config->get('DEV_SIGN', '_dev'));
-
 //根目录URL
 defined('OC_ROOT_URL') or define('OC_ROOT_URL',
     PHP_SAPI == 'cli' || OC_INVOKE ?
@@ -37,6 +34,10 @@ defined('OC_ROOT_URL') or define('OC_ROOT_URL',
 
 //URL路由类型
 defined('OC_URL_ROUTE_TYPE') OR define(
-  'OC_URL_ROUTE_TYPE', PHP_SAPI == 'cli' || OC_INVOKE ?  Url::ROUTE_TYPE_DIR : $config->get('URL_ROUTE_TYPE', 1)
+  'OC_URL_ROUTE_TYPE',
+  PHP_SAPI == 'cli' || OC_INVOKE ?
+      Url::ROUTE_TYPE_DIR
+      :
+      $config->get('URL_ROUTE_TYPE', Url::ROUTE_TYPE_DEFAULT)
 );
 

@@ -86,9 +86,9 @@ class Url extends Base
 				$get[$key] = $value;
 			}
 
-			$routeParamName = ocConfig('ROUTE_PARAM_NAME', 'r');
+			$routeParamName = ocConfig('ROUTE_PARAM_NAME', '_route');
 			if (isset($get[$routeParamName])) {
-				$route = explode('/', ocDel($get, $routeParamName));
+				$route = explode(OC_DIR_SEP, ocDel($get, $routeParamName));
 				$route[1] = isset($route[1]) ? $route[1] : null;
 				$route[2] = isset($route[2]) ? $route[2] : null;
 				$get = array_merge($route, $get);
@@ -147,7 +147,7 @@ class Url extends Base
      */
 	public function create($route, $params = array(), $relative = false, $urlType = null, $static = true)
 	{
-		$route = ocService()->app->parseRoute($route);
+		$route = ocService()->app->formatRoute($route);
 		if (empty($route)) return false;
 
 		extract($route);
@@ -185,15 +185,16 @@ class Url extends Base
 		} else {
 			$route = $query = array();
 			if ($module) {
-				$route['m'] = $module;
+			    $route[] = $module;
 			}
 
-			$route['c'] = $controller;
-			$route['a'] = $action;
+			$route[] = $controller;
+			$route[] = $action;
 
-			foreach ($route as $key => $value) {
-				$query[] = $key . '=' . $value;
-			}
+			$route = implode(OC_DIR_SEP, $route);
+			$routeParam = ocConfig('ROUTE_PARAM_NAME');
+
+			$query[] = $routeParam . '=' . $route;
 			foreach ($params as $key => $value) {
 				$query[] = $key . '=' . $value;
 			}

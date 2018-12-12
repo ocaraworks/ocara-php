@@ -347,10 +347,11 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 获取包装的HTML
-     * @param string $path
-     * @param string $template
+     * @param $path
+     * @param null $template
      * @param bool $cache
      * @return bool|string
+     * @throws \Ocara\Exceptions\Exception
      */
 	public function wrap($path, $template = null, $cache = true)
 	{
@@ -564,10 +565,11 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 包装为HTML内容
-     * @param string $type
-     * @param string $value
+     * @param $type
+     * @param $value
      * @param bool $cache
      * @return string
+     * @throws \Ocara\Exceptions\Exception
      */
 	private function _wrapHtml($type, $value, $cache = true)
 	{

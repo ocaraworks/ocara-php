@@ -25,8 +25,6 @@ class Route extends Base
         $moduleClass = OC_EMPTY;
         $controller = OC_EMPTY;
 
-        if ($module == OC_DEV_SIGN) return $this->getDevelopRoute($get);
-
         if ($uModule) {
             $moduleClass = sprintf('app\modules\%s\controller\%sModule', $module, ucfirst($module));
             if (ocClassExists($moduleClass)) {
@@ -38,7 +36,7 @@ class Route extends Base
         }
 
         if (empty($module)) {
-            $moduleClass = OC_CONTROLLER_SPACE . OC_NS_SEP . 'Module';
+            $moduleClass = 'app\controller\\' . 'Module';
         }
 
         $providerType = $moduleClass::providerType();
@@ -94,19 +92,6 @@ class Route extends Base
         }
 
         return $class;
-    }
-
-    /**
-     * 获取开发者中心路由
-     * @param $get
-     * @return array
-     */
-    public function getDevelopRoute($get)
-    {
-        $controller = array_shift($get);
-        $action = array_shift($get);
-        $route = array(OC_DEV_SIGN, $controller, $action);
-        return $route;
     }
 
     /**
