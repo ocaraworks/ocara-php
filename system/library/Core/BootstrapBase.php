@@ -17,6 +17,22 @@ abstract class BootstrapBase extends Base
     const EVENT_BEFORE_RUN = 'beforeRun';
 
     /**
+     * 注册事件
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public function registerEvents()
+    {
+        $this->event(self::EVENT_DIE)
+            ->append(ocConfig('EVENT.oc_die', null));
+
+        $this->bindEvents(ocConfig('EVENT.log', ocService()->log));
+
+        $this->event(self::EVENT_BEFORE_RUN)
+             ->append(ocConfig('EVENT.action.before_run', null))
+             ->append(ocConfig('EVENT.auth.check', null));
+    }
+
+    /**
      * 初始化
      */
     public function init()
@@ -27,17 +43,8 @@ abstract class BootstrapBase extends Base
 
         date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
 
-        $this->event(self::EVENT_DIE)
-            ->append(ocConfig('EVENT.oc_die', null));
-
-        $this->bindEvents(ocConfig('EVENT.log', ocService()->log));
-
         if (!@ini_get('short_open_tag')) {
             ocService()->error->show('need_short_open_tag');
         }
-
-        $this->event(self::EVENT_BEFORE_RUN)
-            ->append(ocConfig('EVENT.action.before_run', null))
-            ->append(ocConfig('EVENT.auth.check', null));
     }
 }

@@ -97,15 +97,22 @@ abstract class Database extends ModelBase
 			$this->_primaries = explode(',', $this->_primary);
 		}
 
-		$this->bindEvents($this);
-		$this->event(self::EVENT_QUERY_SAVE_CACHE_DATA)
-			 ->append(ocConfig('EVENT.model.query.save_cache_data', null));
-
 		if (method_exists($this, '_start')) $this->_start();
 		if (method_exists($this, '_model')) $this->_model();
 
 		return $this;
 	}
+
+    /**
+     * 注册事件
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public function registerEvents()
+    {
+        $this->bindEvents($this);
+        $this->event(self::EVENT_QUERY_SAVE_CACHE_DATA)
+             ->append(ocConfig('EVENT.model.query.save_cache_data', null));
+    }
 
 	/**
 	 * 获取Model标记
@@ -607,10 +614,10 @@ abstract class Database extends ModelBase
 		if ($condition) {
 			call_user_func_array('ocDel', array(&$data, $this->_primaries));
 			if ($this->_selected) {
-				$this->event(self::EVENT_BEFORE_UPDATE)->fire();
+				$this->fire(self::EVENT_BEFORE_UPDATE);
 			}
 		} else {
-			$this->event(self::EVENT_BEFORE_CREATE)->fire();
+			$this->fire(self::EVENT_BEFORE_CREATE);
 		}
 
 		$data = $this->map(array_merge($this->getChanged(), $data));
@@ -629,7 +636,7 @@ abstract class Database extends ModelBase
 			if (!$debug){
 				$this->_relateSave();
 				if($this->_selected) {
-					$this->event(self::EVENT_AFTER_UPDATE)->fire();
+					$this->fire(self::EVENT_AFTER_UPDATE);
 				}
 			}
 		} else {
@@ -638,7 +645,7 @@ abstract class Database extends ModelBase
 				$this->_insertId = $this->_plugin->getInsertId();
 				$this->_selectInsertRow($data);
 				$this->_relateSave();
-				$this->event(self::EVENT_AFTER_CREATE)->fire();
+				$this->fire(self::EVENT_AFTER_CREATE);
 			}
 		}
 
@@ -798,7 +805,7 @@ abstract class Database extends ModelBase
 		$this->pushTransaction();
 
 		if (!$debug && $this->_selected) {
-			$this->event(self::EVENT_BEFORE_DELETE)->fire();
+			$this->fire(self::EVENT_BEFORE_DELETE);
 		}
 
 		$result = $this->_plugin->delete($this->_tableName, $condition, $debug);
@@ -806,7 +813,7 @@ abstract class Database extends ModelBase
 			&& !$this->_plugin->errorExists()
 			&& $this->_selected
 		) {
-			$this->event(self::EVENT_AFTER_DELETE)->fire();
+			$this->fire(self::EVENT_AFTER_DELETE);
 		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
@@ -1298,7 +1305,7 @@ abstract class Database extends ModelBase
 	{
 		if ($this->event(self::EVENT_QUERY_SAVE_CACHE_DATA)->get()) {
 			$params = array($cacheObj, $sql, $result, $cacheRequired);
-			$this->event(self::EVENT_QUERY_SAVE_CACHE_DATA)->fire($params);
+			$this->fire(self::EVENT_QUERY_SAVE_CACHE_DATA, $params);
 		} else {
 			$cacheObj->set($sqlEncode, json_encode($result));
 		}

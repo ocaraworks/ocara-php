@@ -203,7 +203,7 @@ class Event extends Basis implements EventInterface
      * @param array $params
      * @return mixed
      */
-    public function fire($targetObject, array $params = array())
+    public function trigger($targetObject, array $params = array())
     {
         $handlers = $this->_properties;
 

@@ -93,14 +93,21 @@ class DatabaseBase extends Sql
 		$this->_config = $config;
 		ocDel($this->_config, 'password');
 
-		$this->event(self::EVENT_BEFORE_EXECUTE_SQL)
-			 ->append(ocConfig('EVENT.database.before_execute_sql', null));
-
-		$this->event(self::EVENT_AFTER_EXECUTE_SQL)
-			->append(ocConfig('EVENT.database.after_execute_sql', null));
-
 		$this->init($config);
 	}
+
+    /**
+     * 注册事件
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public function registerEvents()
+    {
+        $this->event(self::EVENT_BEFORE_EXECUTE_SQL)
+            ->append(ocConfig('EVENT.database.before_execute_sql', null));
+
+        $this->event(self::EVENT_AFTER_EXECUTE_SQL)
+            ->append(ocConfig('EVENT.database.after_execute_sql', null));
+    }
 
 	/**
 	 * 设置连接名称
@@ -225,8 +232,10 @@ class DatabaseBase extends Sql
 	public function execute(array $sqlData, $required = true)
 	{
 	    list($sql, $params) = $sqlData;
-		$this->event(self::EVENT_BEFORE_EXECUTE_SQL)
-             ->fire(array($sql, date(ocConfig('DATE_FORMAT.datetime'))));
+		$this->fire(
+		    self::EVENT_BEFORE_EXECUTE_SQL,
+            array($sql, date(ocConfig('DATE_FORMAT.datetime')))
+        );
 
 		try {
 			if ($this->_prepared && $params) {
@@ -794,8 +803,8 @@ class DatabaseBase extends Sql
 		$error = $errorExists ? $this->getError() : null;
 
 		if ($sqlData) {
-			$params = array($sqlData, $errorExists, $error,$ret, date(ocConfig('DATE_FORMAT.datetime')));
-			$this->event(self::EVENT_AFTER_EXECUTE_SQL)->fire($params);
+			$params = array($sqlData, $errorExists, $error, $ret, date(ocConfig('DATE_FORMAT.datetime')));
+			$this->fire(self::EVENT_AFTER_EXECUTE_SQL, $params);
 		}
 
 		if ($required && $errorExists) {

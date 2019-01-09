@@ -175,9 +175,10 @@ abstract class Base extends Basis
      * @param array $params
      * @return mixed
      */
-    public function trigger($eventName, array $params)
+    public function fire($eventName, array $params = array())
     {
-        return $this->event($eventName)->fire($this, $params);
+        $this->_checkRegisteredEvents();
+        return $this->event($eventName)->trigger($this, $params);
     }
 
     /**

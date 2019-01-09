@@ -41,8 +41,7 @@ class Common extends BootstrapBase implements BootstrapInterface
         $service->config->loadActionConfig($route);
         $service->lang->loadActionConfig($route);
 
-        $this->event(self::EVENT_BEFORE_RUN)
-             ->fire();
+        $this->fire(self::EVENT_BEFORE_RUN);
 
         ocService()->dispatcher->dispatch($route);
 

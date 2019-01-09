@@ -28,10 +28,17 @@ class FormManager extends ServiceProvider
 
 		$this->_container
 			->bindSingleton('validator', $validator, array($validate));
-
-		$this->event(self::EVENT_CHECK_ERROR)
-			 ->append(ocConfig(array('EVENT', 'form', 'check_error'), null));
 	}
+
+    /**
+     * 注册事件
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public function registerEvents()
+    {
+        $this->event(self::EVENT_CHECK_ERROR)
+            ->append(ocConfig(array('EVENT', 'form', 'check_error'), null));
+    }
 
 	/**
 	 * 新建表单
@@ -137,7 +144,7 @@ class FormManager extends ServiceProvider
 		$error['errorData'] = $data;
 
 		if ($this->event(self::EVENT_CHECK_ERROR)->get()) {
-			$this->event(self::EVENT_CHECK_ERROR)->fire(array($error, $this->getRoute()));
+			$this->fire(self::EVENT_CHECK_ERROR, array($error, $this->getRoute()));
 		} else {
 			ocService()->error->show($error['errorInfo']);
 		}

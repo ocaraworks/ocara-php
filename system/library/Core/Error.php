@@ -42,8 +42,9 @@ class Error extends ServiceProvider
 			$error = ocService()->lang->get($error, $params);
 			throw new Exception($error['message'], $error['code']);
 		} catch(Exception $exception) {
-            $this->event(self::EVENT_WRITE_LOG)->fire(
-				$exception->getMessage(), $exception->getTrace()
+            $this->fire(
+                self::EVENT_WRITE_LOG,
+				array($exception->getMessage(), $exception->getTrace())
 			);
 		}
 	}

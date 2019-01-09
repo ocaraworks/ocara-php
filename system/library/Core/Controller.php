@@ -47,16 +47,24 @@ class Controller extends serviceProvider implements ControllerInterface
             ocService()->error->show('not_exists_class', $provider);
         }
 
-		$this->_provider = new $provider(compact('route'));
         $this->_provider->bindEvents($this);
-
+		$this->_provider = new $provider(compact('route'));
 		$this->config->set('SOURCE.ajax.return_result', array($this->_provider, 'formatAjaxResult'));
-        $this->event(self::EVENT_AFTER_CREATE_FORM)->append(array($this, 'afterCreateForm'));
 
 		method_exists($this, '_start') && $this->_start();
 		method_exists($this, '_module') && $this->_module();
 		method_exists($this, '_control') && $this->_control();
 	}
+
+    /**
+     * 注册事件
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public function registerEvents()
+    {
+        $this->event(self::EVENT_AFTER_CREATE_FORM)
+             ->append(array($this, 'afterCreateForm'));
+    }
 
 	/**
 	 * 获取当前的提供者
@@ -108,7 +116,7 @@ class Controller extends serviceProvider implements ControllerInterface
             $this->doApiAction($actionMethod);
 		}
 
-        $this->event(self::EVENT_AFTER)->fire();
+        $this->fire(self::EVENT_AFTER);
 	}
 
     /**
@@ -224,7 +232,7 @@ class Controller extends serviceProvider implements ControllerInterface
             if ($model) {
                 $form->model($model, false);
             }
-            $this->event(self::EVENT_AFTER_CREATE_FORM)->fire(array($name, $form));
+            $this->fire(self::EVENT_AFTER_CREATE_FORM, array($name, $form));
         }
 
         return $form;

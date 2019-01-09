@@ -42,8 +42,7 @@ class Develop extends BootstrapBase implements BootstrapInterface
         $service->lang->loadActionConfig($route, $resourcePath);
 
         session_start();
-        $this->event(self::EVENT_BEFORE_RUN)
-             ->fire();
+        $this->fire(self::EVENT_BEFORE_RUN);
 
         define('OC_DEV_DIR', $resourcePath . OC_DIR_SEP);
 

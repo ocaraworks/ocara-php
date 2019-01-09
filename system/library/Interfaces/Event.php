@@ -72,7 +72,7 @@ interface Event
      * @param array $params
      * @return mixed
      */
-    public function fire($targetObject, array $params = array());
+    public function trigger($targetObject, array $params = array());
 
     /**
      * 停止事件
