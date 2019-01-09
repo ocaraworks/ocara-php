@@ -68,10 +68,11 @@ interface Event
 
     /**
      * 触发事件
-     * @param $params
+     * @param object $targetObject
+     * @param array $params
      * @return mixed
      */
-    public function fire(array $params = array());
+    public function fire($targetObject, array $params = array());
 
     /**
      * 停止事件

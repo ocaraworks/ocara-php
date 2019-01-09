@@ -27,6 +27,8 @@ abstract class Base extends Basis
     protected $_events = array();
     protected $_traits = array();
 
+    private $_isRegisteredEvent;
+
     /**
      * 实例化
      * @param mixed $params
@@ -140,12 +142,20 @@ abstract class Base extends Basis
 	}
 
     /**
+     * 事件注册
+     */
+	public function registerEvents()
+    {}
+
+    /**
      * 设置或获取事件
      * @param $eventName
      * @return mixed
      */
     public function event($eventName)
     {
+        $this->_checkRegisteredEvents();
+
         if (!isset($this->_events[$eventName])) {
             $event = ocContainer()->create('event');
             $event->setName($eventName);
@@ -160,12 +170,25 @@ abstract class Base extends Basis
     }
 
     /**
+     * 触发事件
+     * @param string $eventName
+     * @param array $params
+     * @return mixed
+     */
+    public function trigger($eventName, array $params)
+    {
+        return $this->event($eventName)->fire($this, $params);
+    }
+
+    /**
      * 绑定事件资源包
      * @param $eventObject
      * @return $this
      */
     public function bindEvents($eventObject)
     {
+        $this->_checkRegisteredEvents();
+
         if (is_string($eventObject) && class_exists($eventObject)) {
             $eventObject = new $eventObject();
         }
@@ -175,6 +198,17 @@ abstract class Base extends Basis
         }
 
         return $this;
+    }
+
+    /**
+     * 检测事件注册
+     */
+    protected function _checkRegisteredEvents()
+    {
+        if (empty($this->_isRegisteredEvent)) {
+            $this->_isRegisteredEvent = true;
+            $this->registerEvents();
+        }
     }
 
     /**

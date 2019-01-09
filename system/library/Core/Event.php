@@ -46,6 +46,7 @@ class Event extends Basis implements EventInterface
      * 新建事件处理器
      * @param $callback
      * @param int $args
+     * @throws \Ocara\Exceptions\Exception
      */
     protected function _create($callback, $args = 0)
     {
@@ -198,10 +199,11 @@ class Event extends Basis implements EventInterface
 
     /**
      * 触发事件
-     * @param $params
+     * @param object $targetObject
+     * @param array $params
      * @return mixed
      */
-    public function fire(array $params = array())
+    public function fire($targetObject, array $params = array())
     {
         $handlers = $this->_properties;
 
@@ -212,7 +214,7 @@ class Event extends Basis implements EventInterface
                 $handlers
             );
 
-            $params[] = $this;
+            $params = array_merge(array($targetObject, $this), $params);
             $this->_running = true;
 
             foreach ($this->_properties as $row) {
