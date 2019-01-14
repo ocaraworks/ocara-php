@@ -156,7 +156,7 @@ class DatabaseBase extends Sql
 
     /**
      * 是否PDO连接
-     * @param $isPdo
+     * @return bool
      */
 	public function isPdo(){
         return $this->_plugin->driveType() == DriverBase::DRIVE_TYPE_PDO;

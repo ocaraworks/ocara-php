@@ -146,7 +146,7 @@ class Event extends Basis implements EventInterface
     /**
      * 删除事件处理器
      * @param $name
-     * @return array|bool
+     * @return $this|array|bool
      */
     public function delete($name)
     {
