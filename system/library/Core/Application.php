@@ -176,6 +176,7 @@ class Application extends Basis
                 return array();
         }
 
-        return compact('module', 'controller', 'action');
+        $result = compact('module', 'controller', 'action');
+        return $result;
     }
 }
