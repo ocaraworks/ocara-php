@@ -63,13 +63,9 @@ class Loader extends Basis
 
         if (ocFileExists($filePath)) {
             include_once($filePath);
-            if (class_exists($newClass, false)) {
-                if (method_exists($newClass, 'loadLanguage')) {
-                    $newClass::loadLanguage($filePath);
-                }
-                return true;
-            }
-            if (interface_exists($newClass, false)) {
+            if (class_exists($newClass, false)
+                || interface_exists($newClass, false)
+            ) {
                 return true;
             }
         }

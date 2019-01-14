@@ -15,37 +15,35 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class ServiceBase extends Base
 {
-	private static $_lang = array();
+	private static $_lang = null;
 	private $_error;
-	
-	/**
+
+	public function __construct()
+    {
+        if (self::$_lang === null) {
+            self::loadLanguage(realpath(__FILE__));
+        }
+    }
+
+    /**
 	 * 加载语言文件
 	 * @param string $filePath
 	 */
 	public static function loadLanguage($filePath)
 	{
-		$lang = array();
-		$shortPath = '/Languages/'
+        $parentPath = realpath('../');
+	    $subPath = str_replace($parentPath, '', ocCommPath($filePath));
+
+        $path = $parentPath . '/Languages/'
 			. ucfirst(ocService()->app->getLanguage())
 			. OC_DIR_SEP
-			. str_replace(OC_SYS . 'library/Service', '', ocCommPath($filePath));
+			. $subPath;
 
-		if (ocFileExists($path = OC_SYS . 'library/Service' . $shortPath)) {
+		if ($path) {
 			$config = include($path);
 			if ($config && is_array($config)) {
-				$lang = $config;
+                self::$_lang[self::getClass()] = $config;
 			}
-		}
-		
-		if (ocFileExists($path = OC_EXT . 'library/Service' . $shortPath)) {
-			$config = include($path);
-			if ($config && is_array($config)) {
-				$lang = array_merge($lang, $config);
-			}
-		}
-		
-		if ($lang) {
-			self::$_lang[self::getClass()] = $lang;
 		}
 	}
 

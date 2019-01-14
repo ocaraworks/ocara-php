@@ -24,7 +24,6 @@ class SocketBase extends ServiceBase
 	public function __construct()
 	{
 		ocCheckExtension('sockets');
-		self::loadLanguage('OCSocket.php');
 	}
 
 	/**
