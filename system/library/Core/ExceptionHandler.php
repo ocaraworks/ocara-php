@@ -17,6 +17,8 @@ class ExceptionHandler extends Basis
 {
     protected $_error;
 
+    const EVENT_ERROR_OUTPUT = 'error_output';
+
     /**
      * 错误处理
      * @param $exception
@@ -67,11 +69,15 @@ class ExceptionHandler extends Basis
             $response->setStatusCode(Response::STATUS_SERVER_ERROR);
         }
 
-        if (ocService('request', true)->isAjax()) {
-            $this->_ajaxError();
+        if ($this->event(self::EVENT_ERROR_OUTPUT)->get()){
+            $this->fire(self::EVENT_ERROR_OUTPUT, array($this->_error));
         } else {
-            $defaultErrorOutput = ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS.errorOutput');
-            ocService('errorOutput', $defaultErrorOutput)->display($this->_error);
+            if (ocService('request', true)->isAjax()) {
+                $this->_ajaxError();
+            } else {
+                $defaultErrorOutput = ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS.errorOutput');
+                ocService('errorOutput', $defaultErrorOutput)->display($this->_error);
+            }
         }
 
         $response->send();
