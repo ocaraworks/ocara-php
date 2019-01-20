@@ -17,6 +17,7 @@ class Event extends Basis implements EventInterface
     protected $_name;
     protected $_running;
     protected $_registry;
+    protected $_defaultHandler;
 
     /**
      * 添加事件处理器
@@ -30,6 +31,17 @@ class Event extends Basis implements EventInterface
             call_user_func_array(array(&$this, '_create'), func_get_args());
         }
 
+        return $this;
+    }
+
+    /**
+     * 设置默认处理器
+     * @param $callback
+     * @return $this
+     */
+    public function setDefault($callback)
+    {
+        $this->_defaultHandler = $callback;
         return $this;
     }
 
@@ -181,10 +193,14 @@ class Event extends Basis implements EventInterface
      * @param $name
      * @return mixed
      */
-    public function has($name)
+    public function has($name = null)
     {
-        $key = $this->_getKey($name);
-        return is_integer($key);
+        if (isset($name)) {
+            $key = $this->_getKey($name);
+            return is_integer($key);
+        }
+
+        return !empty($this->_properties);
     }
 
     /**
@@ -205,28 +221,46 @@ class Event extends Basis implements EventInterface
      */
     public function trigger($targetObject, array $params = array())
     {
-        $handlers = $this->_properties;
+        $params = array_merge(array($targetObject, $this), $params);
+        $results = array();
 
-        if ($handlers) {
+        if ($this->_properties) {
+            $handlers = $this->_properties;
             array_multisort(array_column(
                 $handlers, 'priority'), SORT_DESC,
                 array_column($handlers, 'index'), SORT_ASC,
                 $handlers
             );
 
-            $params = array_merge(array($targetObject, $this), $params);
             $this->_running = true;
-
-            foreach ($this->_properties as $row) {
+            foreach ($handlers as $key => $row) {
                 $callback = $row['callback'];
                 if ($this->_running) {
-                    if (is_object($callback)) {
-                        $callback = array($callback, 'handler');
-                    }
-                    return call_user_func_array($callback, $params);
+                    $results[$key] = $this->_runCallback($callback, $params);
                 }
             }
+        } elseif ($this->_defaultHandler) {
+            $this->_running = true;
+            $results[] = $this->_runCallback($this->_defaultHandler, $params);
         }
+
+        $this->stop();
+        return $results;
+    }
+
+    /**
+     * 运行回调函数
+     * @param $callback
+     * @param $params
+     * @return mixed
+     */
+    public function _runCallback($callback, $params)
+    {
+        if (is_object($callback)) {
+            $callback = array($callback, 'handler');
+        }
+
+        return call_user_func_array($callback, $params);
     }
 
     /**

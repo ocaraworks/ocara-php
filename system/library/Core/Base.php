@@ -36,7 +36,8 @@ abstract class Base extends Basis
      */
     public static function build($params = null)
     {
-        return call_user_func_array('ocClass', array(self::getClass(), func_get_args()));
+        $params = array(self::getClass(), func_get_args());
+        return call_user_func_array('ocClass', $params);
     }
 
     /**

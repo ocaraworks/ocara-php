@@ -9,15 +9,24 @@
 namespace Ocara\Core;
 
 use \ErrorException;
-use Ocara\Core\Basis;
+use Ocara\Core\Base;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class ExceptionHandler extends Basis
+class ExceptionHandler extends Base
 {
-    protected $_error;
+    const EVENT_BEFORE_OUTPUT = 'before_output';
+    const EVENT_OUTPUT = 'output';
+    const EVENT_AFTER_OUTPUT = 'after_output';
 
-    const EVENT_ERROR_OUTPUT = 'error_output';
+    public function registerEvents()
+    {
+        $this->event(self::EVENT_BEFORE_OUTPUT)
+             ->setDefault(array($this, 'report'));
+
+        $this->event(self::EVENT_OUTPUT)
+             ->setDefault(array($this, 'output'));
+    }
 
     /**
      * 错误处理
@@ -26,8 +35,6 @@ class ExceptionHandler extends Basis
      */
     public function exceptionHandler($exception)
     {
-        $this->_error = ocGetExceptionData($exception);
-        $this->report($exception);
         return $this->handler($exception);
     }
 
@@ -69,18 +76,28 @@ class ExceptionHandler extends Basis
             $response->setStatusCode(Response::STATUS_SERVER_ERROR);
         }
 
-        if ($this->event(self::EVENT_ERROR_OUTPUT)->get()){
-            $this->fire(self::EVENT_ERROR_OUTPUT, array($this->_error));
-        } else {
-            if (ocService('request', true)->isAjax()) {
-                $this->_ajaxError();
-            } else {
-                $defaultErrorOutput = ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS.errorOutput');
-                ocService('errorOutput', $defaultErrorOutput)->display($this->_error);
-            }
-        }
+        $this->fire(self::EVENT_BEFORE_OUTPUT, array($exception));
+        $this->fire(self::EVENT_OUTPUT, array($exception));
+        $this->fire(self::EVENT_AFTER_OUTPUT, array($exception));
 
         $response->send();
+    }
+
+    /**
+     * 输出错误
+     * @param $exception
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public function output($exception)
+    {
+        $error = ocGetExceptionData($exception);
+        if (ocService('request', true)->isAjax()) {
+            $this->_ajaxError($error);
+        } else {
+            $defaultOutput = ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS.errorOutput');
+            ocService('errorOutput', $defaultOutput)
+                ->display($error);
+        }
     }
 
     /**
@@ -90,22 +107,27 @@ class ExceptionHandler extends Basis
      */
     public function report($exception)
     {
-        ocService('log', true)->write(
-            $this->_error['message'],
-            $this->_error['traceInfo'],
-            'exception'
-        );
+        $error = ocGetExceptionData($exception);
+        ocService('log', true)
+            ->write(
+                $error['message'],
+                $error['traceInfo'],
+                'exception'
+            );
     }
 
     /**
      * Ajax处理
+     * @param $error
+     * @throws \Ocara\Exceptions\Exception
      */
-    protected function _ajaxError()
+    protected function _ajaxError($error)
     {
         $message = array();
-        $message['code'] = $this->_error['code'];
-        $message['message'] = $this->_error['message'];
+        $message['code'] = $error['code'];
+        $message['message'] = $error['message'];
 
-        ocService('ajax', true)->ajaxError($message);
+        ocService('ajax', true)
+            ->ajaxError($message);
     }
 }

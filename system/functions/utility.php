@@ -329,10 +329,9 @@ function ocGetExceptionData($exception)
 
 /**
  * 获取默认服务提供器
- * @param string $name
+ * @param null $name
  * @param bool $getDefault
  * @return mixed|null
- * @throws Exception
  */
 function ocService($name = null, $getDefault = false)
 {
@@ -348,9 +347,6 @@ function ocService($name = null, $getDefault = false)
                 $class = $getDefault;
             } else {
                 $class = '\Ocara\Core\\' . ucfirst($name);
-                if ($name == 'fileLog') {
-                    ocPrint(class_exists($class));
-                }
                 if (!class_exists($class)) {
                     $class = '\Ocara\Service\\' . ucfirst($name);
                 }
@@ -398,7 +394,6 @@ function ocShutdownHandler()
 function ocPrint($content)
 {
 	print_r($content);
-	die();
 }
 
 /**
@@ -408,7 +403,6 @@ function ocPrint($content)
 function ocDump($content)
 {
 	var_dump($content);
-	die();
 }
 
 /**
