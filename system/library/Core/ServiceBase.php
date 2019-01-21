@@ -21,7 +21,8 @@ class ServiceBase extends Base
 	public function __construct()
     {
         if (self::$_lang === null) {
-            self::loadLanguage(realpath(__FILE__));
+            $reflection = new \ReflectionObject($this);
+            self::loadLanguage($reflection->getFileName());
         }
     }
 
@@ -31,15 +32,14 @@ class ServiceBase extends Base
 	 */
 	public static function loadLanguage($filePath)
 	{
-        $parentPath = realpath('../');
+        $parentPath = ocCommPath(dirname($filePath));
 	    $subPath = str_replace($parentPath, '', ocCommPath($filePath));
 
         $path = $parentPath . '/Languages/'
 			. ucfirst(ocService()->app->getLanguage())
-			. OC_DIR_SEP
 			. $subPath;
 
-		if ($path) {
+		if (ocFileExists($path)) {
 			$config = include($path);
 			if ($config && is_array($config)) {
                 self::$_lang[self::getClass()] = $config;

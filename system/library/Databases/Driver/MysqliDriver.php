@@ -37,8 +37,9 @@ class MysqliDriver extends DriverBase implements DriverInterface
 	}
 
 	/**
+	 * 连接数据库
 	 * @return mixed
-	 * @throws \Ocara\Core\Exception
+	 * @throws Exception
 	 */
 	public function connect()
 	{
@@ -71,6 +72,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
 	 */
 	protected function _connect()
 	{
+		$service = ocService();
 		$host = ($this->_pconnect ? 'p:' : OC_EMPTY) . $this->_config['host'];
 		$args = array(
 			$host, $this->_config['username'],
@@ -79,7 +81,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
 		);
 
 		if (!class_exists('mysqli', false)) {
-			ocService()->error->show('not_exists_class', array('mysqli'));
+			$service->error->show('not_exists_class', array('mysqli'));
 		}
 
 		$limitConnect = ocConfig('DATABASE_LIMIT_CONNECT_TIMES', 3);
@@ -95,7 +97,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
 				if ($timeout){
 					$result = $this->_instance->options(MYSQLI_OPT_CONNECT_TIMEOUT, $timeout);
 					if (!$result) {
-						ocService()->error->show('failed_db_set_timeout');
+						$service->error->show('failed_db_set_timeout');
 					}
 				}
 
@@ -105,14 +107,14 @@ class MysqliDriver extends DriverBase implements DriverInterface
 					$this->_connection = $this->_instance;
 					$this->_stmt = $this->_instance->stmt_init();
 				}
-			} catch (Exception $exception) {
+			} catch (\Exception $exception) {
 				if ($i < $limitConnect) continue;
 				$this->_errno = $exception->getCode();
 				$this->_error = $exception->getMessage();
 				$error = array(
 					$this->_config['name'], $this->_errno, $this->_error
 				);
-				ocService()->error->show('failed_db_connect', $error);
+				$service->error->show('failed_db_connect', $error);
 			}
 			break;
 		}
