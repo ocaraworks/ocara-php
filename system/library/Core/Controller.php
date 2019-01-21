@@ -47,8 +47,8 @@ class Controller extends serviceProvider implements ControllerInterface
             ocService()->error->show('not_exists_class', $provider);
         }
 
+        $this->_provider = new $provider(compact('route'));
         $this->_provider->bindEvents($this);
-		$this->_provider = new $provider(compact('route'));
 		$this->config->set('SOURCE.ajax.return_result', array($this->_provider, 'formatAjaxResult'));
 
 		method_exists($this, '_start') && $this->_start();

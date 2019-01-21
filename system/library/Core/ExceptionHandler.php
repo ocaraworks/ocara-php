@@ -15,9 +15,9 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class ExceptionHandler extends Base
 {
-    const EVENT_BEFORE_OUTPUT = 'before_output';
+    const EVENT_BEFORE_OUTPUT = 'beforeOutput';
     const EVENT_OUTPUT = 'output';
-    const EVENT_AFTER_OUTPUT = 'after_output';
+    const EVENT_AFTER_OUTPUT = 'afterOutput';
 
     public function registerEvents()
     {
@@ -85,10 +85,12 @@ class ExceptionHandler extends Base
 
     /**
      * 输出错误
+     * @param $object
+     * @param $event
      * @param $exception
      * @throws \Ocara\Exceptions\Exception
      */
-    public function output($exception)
+    public function output($object, $event, $exception)
     {
         $error = ocGetExceptionData($exception);
         if (ocService('request', true)->isAjax()) {
@@ -102,10 +104,12 @@ class ExceptionHandler extends Base
 
     /**
      * 错误报告
+     * @param $object
+     * @param $event
      * @param $exception
      * @throws \Ocara\Exceptions\Exception
      */
-    public function report($exception)
+    public function report($object, $event, $exception)
     {
         $error = ocGetExceptionData($exception);
         ocService('log', true)
