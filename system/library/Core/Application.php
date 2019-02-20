@@ -24,7 +24,6 @@ class Application extends Basis
      * 获取语言
      * @param bool $getUpdated
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
      */
     public function getLanguage($getUpdated = false)
     {
@@ -37,11 +36,11 @@ class Application extends Basis
 
     /**
      * 设置默认语言
-     * @param $languange
+     * @param $language
      */
-    public function setLanguage($languange)
+    public function setLanguage($language)
     {
-        $this->_language = $languange;
+        $this->_language = $language;
     }
 
     /**

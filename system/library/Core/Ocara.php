@@ -106,7 +106,10 @@ final class Ocara extends Basis
         $bootstrap = $application->bootstrap($bootstrap);
 
         $route = $application->parseRoute();
-        return $bootstrap->start($route);
+        $route = $bootstrap->loadRouteConfig($route);
+        $result = $bootstrap->start($route);
+
+        return $result;
 	}
 
     /**

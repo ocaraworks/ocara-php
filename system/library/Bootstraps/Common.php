@@ -25,23 +25,10 @@ class Common extends BootstrapBase implements BootstrapInterface
      * 运行访问控制器
      * @param array|string $route
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
      */
     public function start($route)
     {
-        $service = ocService();
-        $service->config->loadModuleConfig($route);
-        $service->lang->loadModuleConfig($route);
-
-        if (empty($route['controller'])) {
-            $route['controller'] = ocConfig('DEFAULT_CONTROLLER');
-        }
-
-        $service->app->setRoute($route);
-        $service->config->loadActionConfig($route);
-        $service->lang->loadActionConfig($route);
-
-        $this->fire(self::EVENT_BEFORE_RUN);
+        $this->fire(self::EVENT_BEFORE_DISPATCH);
 
         ocService()->dispatcher->dispatch($route);
 

@@ -25,4 +25,12 @@ interface Bootstrap
 	 * @throws Exception\Exception
 	 */
 	public function start($route);
+
+    /**
+     * 加载路由配置
+     * @param array $route
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public function loadRouteConfig(array $route);
 }
