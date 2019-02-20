@@ -19,8 +19,8 @@ class Route extends Base
      */
     public function parseRouteInfo()
     {
-        $get     = $_GET;
-        $module  = array_shift($get);
+        $get = $_GET;
+        $module = array_shift($get);
         $uModule = ucfirst($module);
         $moduleClass = OC_EMPTY;
         $controller = OC_EMPTY;

@@ -106,7 +106,6 @@ function ocObject($data)
  * @param integer $perm
  * @param bool $required
  * @return bool
- * @throws \Ocara\Exceptions\Exception
  */
 function ocCheckPath($path, $perm = null, $required = false)
 {
@@ -131,12 +130,13 @@ function ocCheckPath($path, $perm = null, $required = false)
  * @param string $name
  * @param array $params
  * @return object
+ * @throws ReflectionException
  */
 function ocClass($name, array $params = array())
 {
 	if ($params) {
-		$refelction = new ReflectionClass($name);
-		$object = $refelction->newInstanceArgs($params);
+		$reflection = new ReflectionClass($name);
+		$object = $reflection->newInstanceArgs($params);
 	} else {
 		$object = new $name();
 	}
@@ -216,8 +216,7 @@ function ocIsStandardName($name)
  * @param string $content
  * @param bool $append
  * @param int $perm
- * @return bool|int|void
- * @throws \Ocara\Exceptions\Exception
+ * @return bool|int
  */
 function ocWrite($filePath, $content, $append = false, $perm = null)
 {
@@ -272,8 +271,7 @@ function ocWrite($filePath, $content, $append = false, $perm = null)
  * 获取本地文件内容
  * @param string $filePath
  * @param bool $checkPath
- * @return bool|mix|string
- * @throws \Ocara\Exceptions\Exception
+ * @return false|string
  */
 function ocRead($filePath, $checkPath = true)
 {
@@ -315,7 +313,7 @@ function ocRead($filePath, $checkPath = true)
  * @param string $url
  * @param mixed $data
  * @param array $headers
- * @return bool|mix|mixed|null|string
+ * @throws \Ocara\Exceptions\Exception
  */
 function ocRemote($url, $data = null, array $headers = array())
 {
@@ -356,8 +354,7 @@ function ocRemote($url, $data = null, array $headers = array())
  * @param null $data
  * @param array $headers
  * @param bool $showError
- * @return mixed|null
- * @throws \Ocara\Exceptions\Exception
+ * @return bool|string|null
  */
 function ocCurl($url, $data = null, array $headers = array(), $showError = false)
 {
