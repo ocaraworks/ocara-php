@@ -223,7 +223,7 @@ return array(
         'Ocara\Service\\' 						=> OC_SYS . 'library/Service/',
     
         /*Ocara框架扩展插件*/
-        'Ocara\Extension\Service\\'   			=> OC_EXT . 'library/',
+        'Ocara\Extension\\'   			        => OC_EXT . 'library/',
         'Ocara\Extension\Functions\\'           => OC_EXT . 'functions/',
 
         /*应用自动加载映射*/

@@ -569,9 +569,9 @@ function ocJsonEncode($content)
 
 	$content = preg_replace_callback(
 		'#\\\u([0-9a-f]{4})#i',
-		function($matchs)
+		function($matches)
 		{
-			return iconv('UCS-2BE', 'UTF-8', pack('H4', $matchs[1]));
+			return iconv('UCS-2BE', 'UTF-8', pack('H4', $matches[1]));
 		},
 		json_encode($content)
 	);

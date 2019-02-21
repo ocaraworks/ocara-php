@@ -40,4 +40,3 @@ defined('OC_URL_ROUTE_TYPE') OR define(
       :
       $config->get('URL_ROUTE_TYPE', Url::ROUTE_TYPE_DEFAULT)
 );
-

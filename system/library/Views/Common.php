@@ -19,8 +19,8 @@ class Common extends ViewBase implements ViewInterfaces
 	/**
 	 * @var $_template 当前模板
 	 */
-	protected $_plugin = null;
-	
+	protected $_rootPath;
+
 	private $_tpl;
 	private $_fileType;
 	private $_template;
@@ -172,10 +172,11 @@ class Common extends ViewBase implements ViewInterfaces
 	}
 
     /**
-     * 获取模块视图路径
+     * 获取当前视图路径
      * @param string $subPath
      * @param string $template
      * @return bool|mixed|string
+     * @throws \Ocara\Exceptions\Exception
      */
 	public function getViewPath($subPath = null, $template = null)
     {
@@ -183,10 +184,8 @@ class Common extends ViewBase implements ViewInterfaces
         $module = ocService()->app->getRoute('module');
 
         if ($module) {
-            $path = ocPath('modules', $module . '/view/' . $template . '/' . $subPath);
-            if (!ocFileExists($path)) {
-                $path = ocPath('modules', $module . '/view/' . self::$_defaultTemplate . '/' . $subPath);
-            }
+            $rootPath = $this->_rootPath ? : null;
+            $path = $this->getModuleViewPath($module, $subPath, $template, $rootPath);
         } else {
             $path = ocPath('view', $template . OC_DIR_SEP . $subPath);
             if (!ocFileExists($path)) {
@@ -198,41 +197,41 @@ class Common extends ViewBase implements ViewInterfaces
     }
 
     /**
-     * 获取公共目录视图路径
+     * 获取其他模块视图路径
+     * @param $module
      * @param string $subPath
      * @param string $template
-     * @return bool|mixed|string
+     * @param string $rootPath
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
      */
-    public function getCommonViewPath($subPath = null, $template = null)
+    public function getModuleViewPath($module, $subPath = null, $template = null, $rootPath = null)
     {
         $template = $template ? : $this->_template;
-        $path = $template . OC_DIR_SEP . $subPath;
-        return ocPath('view', $path);
-    }
-
-    /**
-     * 获取模块视图路径
-     * @param string $module
-     * @param string $subPath
-     * @param string $template
-     * @return bool|mixed|string
-     */
-    public function getModuleViewPath($module, $subPath = null, $template = null)
-    {
-        $template = $template ? : $this->_template;
-        $path = ocPath('modules', $module . '/view/' . $template . '/' . $subPath);
+        $rootPath = $rootPath ? ocDir($rootPath) : ocPath('modules', $module . '/view/');
+        $path = $rootPath . $template . '/' . $subPath;
 
         if (!ocFileExists($path)) {
-            $path = ocPath('modules', $module . '/view/' . self::$_defaultTemplate . '/' . $subPath);
+            $path = $rootPath . self::$_defaultTemplate . '/' . $subPath;
         }
 
         return $path;
     }
 
-	/**
-	 * 设置模板风格
-	 * @param $dir
-	 */
+    /**
+     * 设置当前模块模板路径
+     * @param $rootPath
+     */
+    public function setModuleRootViewPath($rootPath)
+    {
+        $this->_rootPath = $rootPath;
+    }
+
+    /**
+     * 设置模板风格
+     * @param $dir
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function setTemplate($dir)
 	{
 		if (!is_dir($this->getViewPath('template/' . $dir))) {
@@ -565,11 +564,10 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 包装为HTML内容
-     * @param $type
-     * @param $value
+     * @param array|string $type
+     * @param string $value
      * @param bool $cache
      * @return string
-     * @throws \Ocara\Exceptions\Exception
      */
 	private function _wrapHtml($type, $value, $cache = true)
 	{

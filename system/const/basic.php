@@ -92,9 +92,13 @@ defined('OC_ROOT') or define('OC_ROOT', ocCommPath(dirname(dirname(realpath($_SE
 //WEB根目录
 defined('OC_WEB_ROOT') or define('OC_WEB_ROOT', ocCommPath(OC_ROOT . 'public' . OC_DIR_SEP));
 
-//模块目录
-defined('OC_MODULE_PATH') or define('OC_MODULE_PATH', null);
-
 //程序根目录
 defined('OC_APPLICATION_PATH') or define('OC_APPLICATION_PATH', OC_ROOT . 'application/');
+
+//模块目录
+defined('OC_MODULE_PATH') or define('OC_MODULE_PATH', OC_EMPTY);
+
+//默认模块
+defined('OC_DEFAULT_MODULE') OR define('OC_DEFAULT_MODULE', OC_EMPTY);
+
 

@@ -56,8 +56,8 @@ abstract class BootstrapBase extends Base
      */
     public function loadRouteConfig(array $route)
     {
-        if (empty($route['module']) || defined('OC_DEFAULT_MODULE')) {
-            $route['module'] = OC_DEFAULT_MODULE ? : null;
+        if (empty($route['module'])) {
+            $route['module'] = OC_DEFAULT_MODULE;
         }
 
         $service = ocService();
