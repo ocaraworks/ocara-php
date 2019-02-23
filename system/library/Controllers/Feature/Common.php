@@ -17,26 +17,22 @@ class Common extends Base implements Feature
 {
     /**
      * 获取路由
-     * @param string $module
-     * @param string $controller
+     * @param $module
+     * @param $controller
      * @param array $get
      * @return array|mixed
-     * @throws \Ocara\Exceptions\Exception
      */
     public function getRoute($module, $controller, array $get)
     {
         $action = array_shift($get);
-
-        if (empty($action)) {
-            $action = ocConfig('DEFAULT_ACTION');
-        }
-
-        $_GET = array_values($get);
-        if (empty($action)) {
-            $action = ocConfig('DEFAULT_ACTION', 'index');
-        }
-
         $route = array($module, $controller, $action);
+
+        if (ocService()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
+            $_GET = array_values($get);
+        } else {
+            $_GET = $get;
+        }
+
         return $route;
     }
 }

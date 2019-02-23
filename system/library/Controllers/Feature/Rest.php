@@ -40,11 +40,13 @@ class Rest extends Base implements Feature
         }
 
         $action = ocConfig('CONTROLLERS.rest.action_map.' . $method, null);
-        if (empty($action)) {
-            ocService()->error->show('fault_url');
+
+        if (ocService()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
+            $_GET = array_values($get);
+        } else {
+            $_GET = $get;
         }
 
-        $_GET = array_values($get);
         $route = array($module, $controller, $action);
         return $route;
     }
