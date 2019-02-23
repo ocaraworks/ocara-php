@@ -168,7 +168,6 @@ class Response extends Base
      * 外部跳转
      * @param $url
      * @param bool $die
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function redirect($url, $die = true)
 	{
