@@ -215,13 +215,13 @@ class Event extends Basis implements EventInterface
 
     /**
      * 触发事件
-     * @param object $targetObject
+     * @param object $eventObject
      * @param array $params
      * @return mixed
      */
-    public function trigger($targetObject, array $params = array())
+    public function trigger($eventObject, array $params = array())
     {
-        $params = array_merge(array($targetObject, $this), $params);
+        $params = array_merge(array($eventObject, $this), $params);
         $results = array();
 
         if ($this->_properties) {
