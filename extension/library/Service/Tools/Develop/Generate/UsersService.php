@@ -10,7 +10,7 @@ namespace Ocara\Extension\Service\Tools\Develop\Generate;
 
 use Ocara\Core\Develop;
 
-class UsersService
+class UsersService extends BaseService
 {
 	private $_username;
 	private $_password;
@@ -25,7 +25,7 @@ class UsersService
 	public function edit()
 	{
 		if (empty($this->_username) || empty($this->_password)) {
-			Develop::error(Develop::back('请填满信息！'));
+            $this->showError('请填满信息！');
 		}
 		
 		$path = OC_DEV_DIR . 'data/users_data.php';

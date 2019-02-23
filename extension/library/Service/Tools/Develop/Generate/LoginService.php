@@ -10,7 +10,7 @@ namespace Ocara\Extension\Service\Tools\Develop\Generate;
 
 use Ocara\Core\Develop;
 
-class LoginService
+class LoginService extends BaseService
 {
 
 	/**
@@ -30,13 +30,13 @@ class LoginService
 		$password = $request->getPost('password');
 		
 		if(empty($username) || empty($password)){
-			Develop::error(Develop::back('用户名或密码不能为空。'), 'global');
+            $this->showError('用户名或密码不能为空。');
 		}
 		
 		if (!array_key_exists($username, $users)) {
-			Develop::error(Develop::back('用户名不存在。'), 'global');
+            $this->showError('用户名不存在。');
 		} elseif (!array_key_exists('password', $users[$username]) || $users[$username]['password'] != md5($password)) {
-			Develop::error(Develop::back('密码错误。'), 'global');
+            $this->showError('密码错误。');
 		} else {
 			$_SESSION['OC_DEV_LOGIN'] = true;
 			$_SESSION['OC_DEV_USERNAME'] = $username;

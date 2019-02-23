@@ -11,8 +11,10 @@ namespace Ocara\Extension\Service\Tools\Develop\Generate;
 use Ocara\Core\Develop;
 use Ocara\Service\FileCache;
 use Ocara\Core\DatabaseFactory;
+use Ocara\Exceptions\Exception;
+use Ocara\Extension\Service\Tools\Develop\Generate\BaseService;
 
-class ModelService
+class ModelService extends BaseService
 {
 	private $_modelType;
 	private $_connectName;
@@ -48,14 +50,14 @@ class ModelService
 	public function createDatabaseModel()
 	{
 		$connect = ucfirst($this->_connectName);
-		$connectBase = $connect . 'Base';
+		$modelBase = ucfirst($this->_modelType) . 'Base';
 		$connectPath = $connect . OC_DIR_SEP;
 
 		$namespace = OC_NS_SEP . $connect;
 		$modelName = ucfirst($this->_model);
 
 		if (empty($this->_table)) {
-			Develop::error(Develop::back('请填写表名！'));
+			$this->showError('请填写表名！');
 		}
 
 		if (empty($this->_primaries)) {
@@ -71,15 +73,15 @@ class ModelService
 				$this->_primaries = implode(',', $primaryFields);
 			}
 			if (empty($this->_primaries)) {
-				Develop::error(Develop::back('系统找不到该数据表的主键，请填写主键字段！'));
+				$this->showError('系统找不到该数据表的主键，请填写主键字段！');
 			}
 		}
 
 		$content = "<?php\r\n";
-		$content .= "namespace Model{$namespace};\r\n";
-		$content .= "use Model\\{$connectBase};\r\n";
+		$content .= "namespace app\dal\model{$namespace};\r\n";
+		$content .= "use Base\\{$modelBase};\r\n";
 		$content .= "\r\n";
-		$content .= "class {$modelName} extends {$connectBase}\r\n";
+		$content .= "class {$modelName} extends {$modelBase}\r\n";
 		$content .= "{\r\n";
 
 		$content .= "\tprotected \$_connectName = '{$this->_connectName}';\r\n";
@@ -99,7 +101,7 @@ class ModelService
 
 		$modelPath = $modelPath . $connectPath;
 		if (ocFileExists($path = $modelPath . "{$modelName}.php")) {
-			Develop::error(Develop::back('Model文件已存在，如果需要覆盖，请先手动删除！'));
+			$this->showError('Model文件已存在，如果需要覆盖，请先手动删除！');
 		}
 
         ocService()->file->createFile($path, 'wb');
@@ -157,7 +159,7 @@ class ModelService
 		$cacheType = ucfirst(strtolower(ocConfig(array('CACHE', $this->_connectName, 'type'))));
 
 		if (!in_array($cacheType, array('Redis', 'Memcache'))) {
-			Develop::error(Develop::back('缓存配置类型非法！'));
+			$this->showError('缓存配置类型非法！');
 		}
 
 		if ($cacheType == 'Redis') {
@@ -194,7 +196,7 @@ class ModelService
 
 		$modelPath = $modelPath;
 		if (ocFileExists($path = $modelPath . "{$modelName}.php")) {
-			Develop::error(Develop::back('Model文件已存在，如果需要覆盖，请先手动删除！'));
+			$this->showError('Model文件已存在，如果需要覆盖，请先手动删除！');
 		}
 
         ocService()->file->createFile($path, 'wb');

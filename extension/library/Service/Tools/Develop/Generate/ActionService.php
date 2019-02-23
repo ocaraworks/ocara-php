@@ -8,12 +8,9 @@
  ************************************************************************************************/
 namespace Ocara\Extension\Service\Tools\Develop\Generate;
 
-use Ocara\Core\Develop;
-use Ocara\Exceptions\Exception;
-
 defined('OC_PATH') or exit('Forbidden!');
 
-class ActionService
+class ActionService extends BaseService
 {
 
 	public function __construct()
@@ -38,7 +35,7 @@ class ActionService
 		$this->controllerType = 'Controller';
 
 		if (empty($actname) || empty($this->ttype)) {
-			throw new Exception('控制器名称、动作名称和模板类型为必填信息！');
+			$this->showError('控制器名称、动作名称和模板类型为必填信息！');
 		}
 
 		$count = count($actname);
@@ -52,7 +49,7 @@ class ActionService
 			$this->cname      = strtolower(ocGet(0, $actname));
 			$this->actionName = strtolower(ocGet(1, $actname));
 		} else {
-			throw new Exception('缺少控制器！');
+            $this->showError('缺少控制器！');
 		}
 
 		$path = OC_ROOT . 'config/control';
@@ -92,27 +89,27 @@ class ActionService
         $controlPath = ocDir(array($mdlname ? OC_MODULE_PATH : OC_APPLICATION_PATH, $mdlname));
 
 		if (!is_dir($controlPath)) {
-			throw new Exception("{$this->mdlname}模块不存在.请先添加该模块。");
+            $this->showError("{$this->mdlname}模块不存在.请先添加该模块。");
 		}
 
 		if ($this->mdlname && !ocFileExists($controlPath . "/{$moduleClassName}.php")) {
-			throw new Exception("模块文件“{$moduleClassName}.php”不存在或丢失。");
+            $this->showError("模块文件“{$moduleClassName}.php”不存在或丢失。");
 		}
 
 		if (!is_dir($controlPath = $controlPath . "/{$cname}")) {
-			throw new Exception("{$this->cname}控制器不存在，请先添加该控制器。");
+            $this->showError("{$this->cname}控制器不存在，请先添加该控制器。");
 		}
 
 		$controllerClassPath = $controlPath . "/{$controlClassName}.php";
 		if ($this->mdlname && !ocFileExists($controllerClassPath)) {
-			throw new Exception("控制器文件“{$controlClassName}.php”不存在或丢失。");
+            $this->showError("控制器文件“{$controlClassName}.php”不存在或丢失。");
 		}
 
 		$controlClass = $cname . 'Controller';
 		$moduleNamespace = $mdlname ? "{$mdlname}\\" : '';
 		$controlLongClass = 'Controller\\' . $moduleNamespace . $cname . '\\' . $controlClass;
 
-		foreach (Develop::$config['controller_actions'] as $controllerType => $controllerActions) {
+		foreach (self::$config['controller_actions'] as $controllerType => $controllerActions) {
 			$controllerNamespace = 'Ocara\Controllers\\Provider\\' . $controllerType;
 			$reflection = new \ReflectionClass($controlLongClass);
 			if ($reflection->isSubclassOf($controllerNamespace)) {
@@ -127,7 +124,7 @@ class ActionService
 
 		$actionFile = $className . '.php';
 		if (ocFileExists($controlPath . OC_DIR_SEP . $actionFile)) {
-			throw new Exception('动作文件已存在，如果需要覆盖，请先手动删除！');
+            $this->showError('动作文件已存在，如果需要覆盖，请先手动删除！');
 		}
 
 		$content  = "<?php\r\n";
@@ -144,10 +141,10 @@ class ActionService
 		$content .= "\tprotected function _action()\r\n";
 		$content .= "\t{}\r\n";
 
-		$actions = Develop::$config['controller_actions'][$this->controllerType];
+		$actions = self::$config['controller_actions'][$this->controllerType];
 		if ($actions) {
 			foreach ($actions as $actionName) {
-				$actionDesc = Develop::$config['actions'][$actionName];
+				$actionDesc = self::$config['actions'][$actionName];
 				$content .= "\r\n";
 				$content .= "\t/**\r\n";
 				$content .= "\t * {$actionDesc}\r\n";

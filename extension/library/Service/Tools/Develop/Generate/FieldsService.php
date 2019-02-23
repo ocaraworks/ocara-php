@@ -8,10 +8,9 @@
  ************************************************************************************************/
 namespace Ocara\Extension\Service\Tools\Develop\Generate;
 
-use Ocara\Core\Develop;
 use Ocara\Service\FileCache;
 
-class FieldsService
+class FieldsService extends BaseService
 {
 	private $_model;
 
@@ -24,14 +23,14 @@ class FieldsService
 	public function updateModel()
 	{
 		if (empty($this->_model)) {
-			Develop::error(Develop::back('Model类名不能为空！'));
+            $this->showError('Model类名不能为空！');
 		}
 
 		$modelClass = stripslashes($this->_model);
 		$modelSubPath = ltrim(preg_replace('/^([\\\\]?Model)([\w\\\\]+)$/', '\2', $modelClass), OC_NS_SEP);
 
 		if (!class_exists($modelClass)) {
-			Develop::error(Develop::back('Model类不存在，请重新输入！'));
+			$this->showError('Model类不存在，请重新输入！');
 		}
 
 		$model = new $modelClass();

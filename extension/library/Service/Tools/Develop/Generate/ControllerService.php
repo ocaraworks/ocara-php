@@ -8,11 +8,11 @@
  ************************************************************************************************/
 namespace Ocara\Extension\Service\Tools\Develop\Generate;
 
-use Ocara\Core\Develop;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class ControllerService
+class ControllerService extends BaseService
 {
 
 	public function __construct()
@@ -66,11 +66,11 @@ class ControllerService
 		$moduleClassName = $mdlname . 'Module';
 
 		if (empty($this->cname) || empty($this->ttype)) {
-			Develop::error(Develop::back('控制器名称和模板类型为必填信息！'));
+			$this->showError('控制器名称和模板类型为必填信息！');
 		}
 		
 		if (!is_dir($controlPath = OC_APPLICATION_PATH . "/controller/{$mdlname}")) {
-			Develop::error(Develop::back("{$this->mdlname}模块不存在.请先添加该模块。"));
+			$this->showError("{$this->mdlname}模块不存在.请先添加该模块。");
 		}
 
 		$extends = $this->controllerType;
@@ -78,11 +78,11 @@ class ControllerService
 			$extends = $mdlname . 'Module';
 			$moduleClassPath = $controlPath . "/{$moduleClassName}.php";
 			if (!ocFileExists($moduleClassPath)) {
-				Develop::error(Develop::back("模块文件“{$moduleClassName}.php”不存在或丢失。"));
+				$this->showError("模块文件“{$moduleClassName}.php”不存在或丢失。");
 			}
 			include_once($moduleClassPath);
 			$moduleClass = 'Controller\\' . $moduleNamespace . $extends;
-			foreach (Develop::$config['controller_actions'] as $controllerType => $controllerActions) {
+			foreach (self::$config['controller_actions'] as $controllerType => $controllerActions) {
 				$controllerNamespace = '\Ocara\Controllers\\Provider\\' . $controllerType;
 				$reflection = new \ReflectionClass($moduleClass);
 				if ($reflection->isSubclassOf($controllerNamespace)) {
@@ -97,7 +97,7 @@ class ControllerService
 		}
 		
 		if (ocFileExists($path = $controlPath . "/{$className}.php")) {
-			Develop::error(Develop::back("模块或控制器文件已存在，如果需要覆盖，请先手动删除！"));
+			$this->showError("模块或控制器文件已存在，如果需要覆盖，请先手动删除！");
 		}
 
 		$content  = "<?php\r\n";
@@ -141,7 +141,7 @@ class ControllerService
 
 	public function addAction($path, $actionName, $cname, $extends)
 	{
-		$actions 	  = Develop::$config['controller_actions'][$this->controllerType];
+		$actions 	  = self::$config['controller_actions'][$this->controllerType];
 		$path         = ocDir($path);
 		$action       = strtolower($actionName);
 		$actionName   = ucfirst($action);
@@ -169,7 +169,7 @@ class ControllerService
 
 		if ($actions) {
 			foreach ($actions as $actionName) {
-				$actionDesc = Develop::$config['actions'][$actionName];
+				$actionDesc = self::$config['actions'][$actionName];
 				$content .= "\r\n";
 				$content .= "\t/**\r\n";
 				$content .= "\t * {$actionDesc}\r\n";
@@ -187,7 +187,9 @@ class ControllerService
 
     /**
      * 获取模块视图路径
-     * @param $subPath
+     * @param string $subPath
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
      */
     public function getViewPath($subPath = null)
     {

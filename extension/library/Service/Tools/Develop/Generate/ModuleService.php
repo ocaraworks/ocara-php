@@ -10,7 +10,7 @@ namespace Ocara\Extension\Service\Tools\Develop\Generate;
 
 use Ocara\Core\Develop;
 
-class ModuleService
+class ModuleService extends BaseService
 {
 	private $_mdlname;
 
@@ -48,11 +48,11 @@ class ModuleService
 		}
 		
 		if (empty($this->_mdlname)) {
-			Develop::error(Develop::back('模块名称为必填信息！'));
+			$this->showError('模块名称为必填信息！');
 		}
 		
 		if (ocFileExists($path = $modulePath . "/{$className}.php")) {
-			Develop::error(Develop::back('模块(Module)文件已存在，如果需要覆盖，请先手动删除！'));
+            $this->showError('模块(Module)文件已存在，如果需要覆盖，请先手动删除！');
 		}
 
         ocService()->file->createFile($path, 'wb');
