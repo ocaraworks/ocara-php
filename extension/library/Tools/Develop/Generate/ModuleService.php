@@ -12,22 +12,22 @@ use Ocara\Core\Develop;
 
 class ModuleService extends BaseService
 {
-	private $_mdlname;
+	protected $mdlname;
 
 	public function add()
 	{
-		$this->_mdlname = ocService()->request->getPost('mdlname');
+		$this->mdlname = ocService()->request->getPost('mdlname');
 		$this->createModule();
 	}
 
 	public function createModule()
 	{
-		$mdlname   = ucfirst($this->_mdlname);
+		$mdlname   = ucfirst($this->mdlname);
 		$className = $mdlname . 'Module';
 		$baseController = ocService()->request->getPost('controllerType') . 'Controller';
 
 		$content = "<?php\r\n";
-		$content .= "namespace app\\modules\\{$mdlname}\\controller;\r\n";
+		$content .= "namespace app\\modules\\{$this->mdlname}\\controller;\r\n";
 		$content .= "use Base\\{$baseController};\r\n";
 		
 		$content .= "\r\n";
@@ -39,7 +39,7 @@ class ModuleService extends BaseService
 		$content .= "\tprotected function _module()\r\n\t{}\r\n";
 		$content .= "}";
 
-        $modulePath = OC_APPLICATION_PATH . "modules/{$mdlname}";
+        $modulePath = OC_APPLICATION_PATH . "modules/{$this->mdlname}";
         $language = ocService()->app->getLanguage();
 
         ocCheckPath($modulePath . '/controller');
@@ -47,8 +47,10 @@ class ModuleService extends BaseService
         ocCheckPath($modulePath . '/privates/lang/' . $language);
         ocCheckPath($modulePath . '/view/defautls/layout');
         ocCheckPath($modulePath . '/view/defautls/template');
+        ocCheckPath($modulePath . '/view/defautls/helper');
+        ocCheckPath($modulePath . '/view/defautls/part');
 
-		if (empty($this->_mdlname)) {
+		if (empty($this->mdlname)) {
 			$this->showError('模块名称为必填信息！');
 		}
 		

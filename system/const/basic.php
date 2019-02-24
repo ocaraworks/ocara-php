@@ -98,6 +98,9 @@ defined('OC_APPLICATION_PATH') or define('OC_APPLICATION_PATH', OC_ROOT . 'appli
 //模块目录
 defined('OC_MODULE_PATH') or define('OC_MODULE_PATH', OC_EMPTY);
 
+//模块命名空间常量
+defined('OC_MODULE_NAMESPACE') or define('OC_MODULE_NAMESPACE', OC_EMPTY);
+
 //默认模块
 defined('OC_DEFAULT_MODULE') OR define('OC_DEFAULT_MODULE', OC_EMPTY);
 

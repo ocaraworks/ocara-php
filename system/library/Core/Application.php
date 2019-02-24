@@ -77,7 +77,11 @@ class Application extends Basis
             //set module path
             if (OC_MODULE_PATH) {
                 ocContainer()->path->setMap('modules', OC_MODULE_PATH);
-                ocContainer()->loader->registerNamespace('app\modules\\', OC_MODULE_PATH);
+            }
+
+            //append module namespace
+            if (OC_MODULE_NAMESPACE) {
+                ocContainer()->loader->registerNamespace(OC_MODULE_NAMESPACE, OC_MODULE_PATH);
             }
 
             //initialize default service provider

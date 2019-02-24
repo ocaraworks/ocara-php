@@ -79,56 +79,61 @@ class ActionService extends BaseService
 		$mdlname = ucfirst($this->mdlname);
 		$cname = ucfirst($this->cname);
 		$actionName = ucfirst($this->actionName);
-		$moduleClassName = $mdlname . 'Module';
-		$controlClassName = $cname . 'Controller';
-		$className = $actionName . 'Action';
-        $controlPath = ocDir(array($mdlname ? OC_MODULE_PATH : OC_APPLICATION_PATH, $mdlname));
 
-		if (!is_dir($controlPath)) {
-            $this->showError("{$this->mdlname}模块不存在.请先添加该模块。");
+		$moduleClassName = $mdlname . 'Module';
+        $controlClassName = $cname . 'Controller';
+		$className = $actionName . 'Action';
+
+		if ($mdlname) {
+            $moduleNamespace = "app\\modules\\{$this->mdlname}\\controller";
+            $modulePath = ocPath('application', 'modules/' . $this->mdlname);
+        } else {
+            $moduleNamespace = 'app\controller';
+            $modulePath = ocDir(OC_APPLICATION_PATH);
+        }
+
+        $controlPath = ocDir($modulePath, 'controller', $this->cname);
+        $controllerClassPath = $controlPath . $controlClassName. '.php';
+        $controlNamespace = ocNamespace($moduleNamespace, $this->cname);
+        $actionNamespace = $controlNamespace . 'actions';
+
+		if (!is_dir($modulePath)) {
+            $this->showError("{$this->mdlname}模块目录不存在.请先添加该模块。");
 		}
 
-		if ($this->mdlname && !ocFileExists($controlPath . "/{$moduleClassName}.php")) {
+		if ($this->cname && !ocFileExists($modulePath . "/controller/{$moduleClassName}.php")) {
             $this->showError("模块文件“{$moduleClassName}.php”不存在或丢失。");
 		}
 
-		if (!is_dir($controlPath = $controlPath . "/{$cname}")) {
-            $this->showError("{$this->cname}控制器不存在，请先添加该控制器。");
+		if (!is_dir($controlPath)) {
+            $this->showError("{$this->cname}控制器目录不存在。");
 		}
 
-		$controllerClassPath = $controlPath . "/{$controlClassName}.php";
 		if ($this->mdlname && !ocFileExists($controllerClassPath)) {
             $this->showError("控制器文件“{$controlClassName}.php”不存在或丢失。");
 		}
 
-		$controlClass = $cname . 'Controller';
-		$moduleNamespace = $mdlname ? "{$mdlname}\\" : '';
-		$controlLongClass = 'Controller\\' . $moduleNamespace . $cname . '\\' . $controlClass;
-
 		foreach (self::$config['controller_actions'] as $controllerType => $controllerActions) {
-			$controllerNamespace = 'Ocara\Controllers\\Provider\\' . $controllerType;
-			$reflection = new \ReflectionClass($controlLongClass);
-			if ($reflection->isSubclassOf($controllerNamespace)) {
+			$providerClass = 'Ocara\\Controllers\\Provider\\' . $controllerType;
+			$reflection = new \ReflectionClass($controlNamespace . $controlClassName);
+			if ($reflection->isSubclassOf($providerClass)) {
 				$this->controllerType = $controllerType;
 				break;
 			}
 		}
 
-		if (!is_dir($controlPath = $controlPath . "/Action")) {
-			@mkdir($controlPath);
-		}
+		ocCheckPath($controlPath . '/actions');
 
-		$actionFile = $className . '.php';
-		if (ocFileExists($controlPath . OC_DIR_SEP . $actionFile)) {
+		if (ocFileExists($controlPath . $className . '.php')) {
             $this->showError('动作文件已存在，如果需要覆盖，请先手动删除！');
 		}
 
 		$content  = "<?php\r\n";
-		$content .= "namespace Controller\\{$moduleNamespace}{$cname}\\Action;\r\n";
-		$content .= "use {$controlLongClass};\r\n";
+		$content .= "namespace {$actionNamespace};\r\n";
+		$content .= "use $controlNamespace\\{$controlClassName};\r\n";
 
 		$content .= "\r\n";
-		$content .= "class {$className} extends {$controlClass}\r\n";
+		$content .= "class {$className} extends {$controlClassName}\r\n";
 
 		$content .= "{\r\n";
 		$content .= "\t/**\r\n";
@@ -152,10 +157,11 @@ class ActionService extends BaseService
 
 		$content  .= "}";
 
-		ocService()->file->createFile($controlPath . OC_DIR_SEP . $actionFile , 'wb');
-		ocService()->file->writeFile($controlPath . OC_DIR_SEP . $actionFile, $content);
+		$actionFile = $controlPath . $className . '.php';
+		ocService()->file->createFile($actionFile , 'wb');
+		ocService()->file->writeFile($actionFile, $content);
 
-		$this->createview && $this->createView();
+		$this->createview && $this->createView($actionNamespace . $className);
 
 		die('添加成功！');
 	}
@@ -178,30 +184,26 @@ class ActionService extends BaseService
 
     /**
      * 新建视图
+     * @param $actionClass
      * @return bool
      * @throws \Ocara\Exceptions\Exception
      */
-	public function createView()
+	public function createView($actionClass)
 	{
-		$path = $this->getViewPath('template');
-		$path = $path . ($this->mdlname ? $this->mdlname . OC_DIR_SEP : false);
-		$path = $path . "{$this->cname}";
-        $ttypePath = ocDir($this->ttype);
-        $cssPath = ocPath('css', $ttypePath);
-        $imagesPath = ocPath('images', $ttypePath);
+	    $action = new $actionClass();
 
-		ocCheckPath($path);
-        ocCheckPath($this->getViewPath('helper'));
-        ocCheckPath($this->getViewPath('part'));
-        ocCheckPath($this->getViewPath('layout'));
+        $template = $this->ttype;
 
-		ocCheckPath($cssPath);
-		ocCheckPath($imagesPath);
+        ocCheckPath($this->getModuleViewPath($this->mdlname, 'helper', $template));
+        ocCheckPath($this->getModuleViewPath($this->mdlname, 'part', $template));
+        ocCheckPath($this->getModuleViewPath($this->mdlname, 'layout', $template));
+        ocCheckPath($this->getModuleViewPath($this->mdlname, 'template', $template));
 
-		//新增css和images目录
-        ocCheckPath(ocDir($cssPath) . "{$this->mdlname}/{$this->cname}");
-        ocCheckPath(ocDir($imagesPath) . "{$this->mdlname}/{$this->cname}");
+        //检查css和images目录
+		ocCheckPath(ocPath('css', ocDir($template, $this->mdlname, $this->cname)));
+		ocCheckPath(ocPath('images', ocDir($template, $this->mdlname, $this->cname)));
 
+        $path = $action->view->getModuleViewPath($this->mdlname, ocDir($this->mdlname, $this->cname), $template);
 		$this->addTpl($path, $this->actionName);
 
 		return true;
@@ -210,15 +212,15 @@ class ActionService extends BaseService
     /**
      * 添加模板文件
      * @param $path
-     * @param $tpl
+     * @param $file
      * @throws \Ocara\Exceptions\Exception
      */
-	public function addTpl($path, $tpl)
+	public function addTpl($path, $file)
 	{
-		$path = ocDir($path) . $tpl . '.' . $this->tplType;
+		$path = ocDir($path) . $file . '.' . $this->tplType;
 		$content = "Hello, I'm %s.{$this->tplType}.";
 
 		ocService()->file->openFile($path, 'wb');
-        ocService()->file->writeFile($path, sprintf($content, $tpl));
+        ocService()->file->writeFile($path, sprintf($content, $file));
 	}
 }
