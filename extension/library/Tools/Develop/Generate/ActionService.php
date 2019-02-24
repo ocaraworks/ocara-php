@@ -90,7 +90,7 @@ class ActionService extends BaseService
         $action = new $actionClass();
 
         $template = $this->ttype;
-        $modulePath = ocPath('modules');
+        $modulePath = ocPath('modules', $this->mdlname .'/view/');
 
         ocCheckPath($action->view->getModuleViewPath($this->mdlname, 'helper', $template, $modulePath));
         ocCheckPath($action->view->getModuleViewPath($this->mdlname, 'part', $template, $modulePath));
@@ -201,7 +201,5 @@ class ActionService extends BaseService
 		ocService()->file->writeFile($actionFile, $content);
 
 		$this->createview && $this->createView($actionNamespace . OC_NS_SEP . $className);
-
-		die('添加成功！');
 	}
 }

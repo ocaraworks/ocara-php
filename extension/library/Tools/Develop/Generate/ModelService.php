@@ -154,7 +154,7 @@ class ModelService extends BaseService
 		$fileCache->format();
 		$fileCache->save($path);
 
-		die("添加成功！");
+        echo("添加成功！");
 	}
 
 	public function createCacheModel()
@@ -205,7 +205,7 @@ class ModelService extends BaseService
         ocService()->file->createFile($path, 'wb');
         ocService()->file->writeFile($path, $content);
 
-		die("添加成功！");
+        echo("添加成功！");
 	}
 }
 

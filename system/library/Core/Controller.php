@@ -58,7 +58,6 @@ class Controller extends serviceProvider implements ControllerInterface
 
     /**
      * 注册事件
-     * @throws \Ocara\Exceptions\Exception
      */
     public function registerEvents()
     {
@@ -87,7 +86,6 @@ class Controller extends serviceProvider implements ControllerInterface
      * 获取当前路由
      * @param string $name
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function getRoute($name = null)
     {

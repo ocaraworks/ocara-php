@@ -56,7 +56,7 @@ class FieldsService extends BaseService
 		$fileCache->setData($fields, null, $modelClass . ' Fields');
 		$fileCache->save($path);
 
-		die("更新成功！");
+        echo("更新成功！");
 	}
 }
 

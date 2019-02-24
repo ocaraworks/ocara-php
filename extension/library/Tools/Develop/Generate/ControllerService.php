@@ -150,6 +150,5 @@ class ControllerService extends BaseService
         ocService()->file->writeFile($path, $content, true);
 
         $this->createAction();
-		die('添加成功！');
 	}
 }

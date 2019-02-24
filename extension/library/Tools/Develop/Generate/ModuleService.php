@@ -45,10 +45,10 @@ class ModuleService extends BaseService
         ocCheckPath($modulePath . '/controller');
         ocCheckPath($modulePath . '/privates/config');
         ocCheckPath($modulePath . '/privates/lang/' . $language);
-        ocCheckPath($modulePath . '/view/defautls/layout');
-        ocCheckPath($modulePath . '/view/defautls/template');
-        ocCheckPath($modulePath . '/view/defautls/helper');
-        ocCheckPath($modulePath . '/view/defautls/part');
+        ocCheckPath($modulePath . '/view/defaults/layout');
+        ocCheckPath($modulePath . '/view/defaults/template');
+        ocCheckPath($modulePath . '/view/defaults/helper');
+        ocCheckPath($modulePath . '/view/defaults/part');
 
 		if (empty($this->mdlname)) {
 			$this->showError('模块名称为必填信息！');
@@ -61,7 +61,7 @@ class ModuleService extends BaseService
         ocService()->file->createFile($path, 'wb');
         ocService()->file->writeFile($path, $content);
 
-		die("添加成功！");
+        echo("添加成功！");
 	}
 }
 

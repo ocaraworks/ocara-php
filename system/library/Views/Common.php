@@ -213,7 +213,7 @@ class Common extends ViewBase implements ViewInterfaces
             if (OC_MODULE_PATH) {
                 $rootPath = ocDir(array(OC_MODULE_PATH, $module, 'view'));
             } else {
-                $rootPath = ocPath('modules');
+                $rootPath = ocPath('modules', $module .'/view/');
             }
         }
 
