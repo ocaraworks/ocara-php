@@ -6,7 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Extension\Service\Tools\Develop\Generate;
+namespace Ocara\Extension\Tools\Develop\Generate;
 
 defined('OC_PATH') or exit('Forbidden!');
 

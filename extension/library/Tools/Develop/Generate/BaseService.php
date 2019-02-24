@@ -5,7 +5,7 @@
  * Date: 2018/12/9
  * Time: 16:03
  */
-namespace Ocara\Extension\Service\Tools\Develop\Generate;
+namespace Ocara\Extension\Tools\Develop\Generate;
 
 use Ocara\Exceptions\Exception;
 

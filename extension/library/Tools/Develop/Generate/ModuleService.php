@@ -6,7 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Extension\Service\Tools\Develop\Generate;
+namespace Ocara\Extension\Tools\Develop\Generate;
 
 use Ocara\Core\Develop;
 
@@ -17,22 +17,18 @@ class ModuleService extends BaseService
 	public function add()
 	{
 		$this->_mdlname = ocService()->request->getPost('mdlname');
-		$this->createModel();
+		$this->createModule();
 	}
 
-	public function createModel()
+	public function createModule()
 	{
 		$mdlname   = ucfirst($this->_mdlname);
 		$className = $mdlname . 'Module';
-		$baseController = ocService()->request->getPost('controllerType');
+		$baseController = ocService()->request->getPost('controllerType') . 'Controller';
 
 		$content = "<?php\r\n";
-		$content .= "namespace Controller\\{$mdlname};\r\n";
-
-		$content .= "use Ocara\\Request;\r\n";
-		$content .= "use Ocara\\Response;\r\n";
-		$content .= "use Ocara\\Error;\r\n";
-		$content .= "use Controller\\{$baseController};\r\n";
+		$content .= "namespace app\\modules\\{$mdlname}\\controller;\r\n";
+		$content .= "use Base\\{$baseController};\r\n";
 		
 		$content .= "\r\n";
 		$content .= "class {$mdlname}Module extends {$baseController}\r\n";
@@ -42,21 +38,27 @@ class ModuleService extends BaseService
 		$content .= "\t */\r\n";
 		$content .= "\tprotected function _module()\r\n\t{}\r\n";
 		$content .= "}";
-		
-		if (!is_dir($modulePath = OC_APPLICATION_PATH . "controller/{$mdlname}")) {
-			@mkdir($modulePath);
-		}
-		
+
+        $modulePath = OC_APPLICATION_PATH . "modules/{$mdlname}";
+        $language = ocService()->app->getLanguage();
+
+        ocCheckPath($modulePath . '/controller');
+        ocCheckPath($modulePath . '/privates/config');
+        ocCheckPath($modulePath . '/privates/lang/' . $language);
+        ocCheckPath($modulePath . '/view/defautls/layout');
+        ocCheckPath($modulePath . '/view/defautls/template');
+
 		if (empty($this->_mdlname)) {
 			$this->showError('模块名称为必填信息！');
 		}
 		
-		if (ocFileExists($path = $modulePath . "/{$className}.php")) {
+		if (ocFileExists($path = $modulePath . "/controller/{$className}.php")) {
             $this->showError('模块(Module)文件已存在，如果需要覆盖，请先手动删除！');
 		}
 
         ocService()->file->createFile($path, 'wb');
         ocService()->file->writeFile($path, $content);
+
 		die("添加成功！");
 	}
 }
