@@ -164,7 +164,7 @@ class ActionService extends BaseService
 		ocCheckPath($controlPath . '/actions/');
 
 		if (ocFileExists($actionFile)) {
-            //$this->showError('动作文件已存在，如果需要覆盖，请先手动删除！');
+            $this->showError('动作文件已存在，如果需要覆盖，请先手动删除！');
 		}
 
 		$content  = "<?php\r\n";
