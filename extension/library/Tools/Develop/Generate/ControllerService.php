@@ -55,7 +55,31 @@ class ControllerService extends BaseService
 		
 		$this->createController();
 	}
-	
+
+    public function createAction()
+    {
+        $this->addAction('index');
+
+        if ($this->vtype != 1) {
+            $this->addAction('create');
+            $this->addAction('update');
+            $this->addAction('delete');
+        }
+    }
+
+    public function addAction($actionName)
+    {
+        $data = array(
+            'mdlname' => $this->mdlname,
+            'actname' => $this->cname . '/' . $actionName,
+            'createview' => 1,
+            'ttype' => 'defaults'
+        );
+
+        $actionService = new ActionService();
+        $actionService->add($data);
+    }
+
 	public function createController()
 	{
 		$mdlname = ucfirst($this->mdlname);
@@ -102,11 +126,12 @@ class ControllerService extends BaseService
 
         $path = $controlPath . OC_DIR_SEP . $this->cname . "/{$className}.php";
 		if (ocFileExists($path)) {
-			$this->showError("模块或控制器文件已存在，如果需要覆盖，请先手动删除！");
+			//$this->showError("模块或控制器文件已存在，如果需要覆盖，请先手动删除！");
 		}
 
 		$content  = "<?php\r\n";
 		$content .= "namespace {$moduleNamespace}\\{$this->cname};\r\n";
+        $content .= "\r\n";
 		$content .= "use {$moduleNamespace}\\{$moduleClassName};\r\n";
 		$content .= "\r\n";
 
@@ -124,30 +149,7 @@ class ControllerService extends BaseService
         ocService()->file->createFile($path, 'wb');
         ocService()->file->writeFile($path, $content, true);
 
-        //$this->createAction();
+        $this->createAction();
 		die('添加成功！');
-	}
-
-	public function createAction()
-    {
-        $this->addAction('index');
-
-        if ($this->vtype != 1) {
-            $this->addAction('create');
-            $this->addAction('update');
-            $this->addAction('delete');
-        }
-    }
-
-	public function addAction($actionName)
-	{
-        $data = array(
-            'actname' => $controllerName . '/' . $this->cname,
-            'createview' => 1,
-            'ttype' => 'defaults'
-        );
-
-        $actionService = new ActionService();
-        $actionService->add($data);
 	}
 }

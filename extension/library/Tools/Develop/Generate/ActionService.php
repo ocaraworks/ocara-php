@@ -22,7 +22,6 @@ class ActionService extends BaseService
      * 添加
      * @param array $data
      * @throws \Ocara\Exceptions\Exception
-     * @throws \ReflectionException
      */
 	public function add(array $data = array())
 	{
@@ -32,20 +31,20 @@ class ActionService extends BaseService
 
 		$this->ttype      = $data['ttype'];
 		$this->createview = $request->getPost('createview');
-		$this->controllerType = 'Controller';
+		$this->controllerType = 'Common';
 
 		if (empty($actname) || empty($this->ttype)) {
 			$this->showError('控制器名称、动作名称和模板类型为必填信息！');
 		}
 
 		$count = count($actname);
-		$this->mdlname = null;
 
 		if ($count >= 3) {
 			$this->mdlname    = strtolower(ocGet(0, $actname));
 			$this->cname      = strtolower(ocGet(1, $actname));
 			$this->actionName = strtolower(ocGet(2, $actname));
 		} elseif ($count == 2) {
+		    $this->mdlname    = !empty($data['mdlname']) ? $data['mdlname'] : null;
 			$this->cname      = strtolower(ocGet(0, $actname));
 			$this->actionName = strtolower(ocGet(1, $actname));
 		} else {
@@ -64,15 +63,59 @@ class ActionService extends BaseService
         $service->config->loadControllerConfig($route);
         $service->config->loadActionConfig($route);
 
-		$CONF = ocService()->config->get();
-		$this->tplType = ocGet('TEMPLATE.file_type', $CONF, 'html');
+		$this->tplType = ocConfig('TEMPLATE.file_type', 'html');
 		$this->createAction();
 	}
 
     /**
+     * 添加模板文件
+     * @param $path
+     * @param $file
+     */
+    public function addTpl($path, $file)
+    {
+        $path = ocDir($path) . $file . '.' . $this->tplType;
+        $content = "Hello, I'm %s.{$this->tplType}.";
+        ocService()->file->writeFile($path, sprintf($content, $file));
+    }
+
+    /**
+     * 新建视图
+     * @param $actionClass
+     * @return bool
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public function createView($actionClass)
+    {
+        $action = new $actionClass();
+
+        $template = $this->ttype;
+        $modulePath = ocPath('modules');
+
+        ocCheckPath($action->view->getModuleViewPath($this->mdlname, 'helper', $template, $modulePath));
+        ocCheckPath($action->view->getModuleViewPath($this->mdlname, 'part', $template, $modulePath));
+        ocCheckPath($action->view->getModuleViewPath($this->mdlname, 'layout', $template, $modulePath));
+        ocCheckPath($action->view->getModuleViewPath($this->mdlname, 'template', $template, $modulePath));
+
+        //检查css和images目录
+        ocCheckPath(ocPath('css', ocDir($template, $this->mdlname, $this->cname)));
+        ocCheckPath(ocPath('images', ocDir($template, $this->mdlname, $this->cname)));
+
+        $path = $action->view->getModuleViewPath(
+            $this->mdlname,
+            ocDir('template', $this->mdlname, $this->cname),
+            $template,
+            $modulePath
+        );
+
+        $this->addTpl($path, $this->actionName);
+
+        return true;
+    }
+
+    /**
      * 新建Action
      * @throws \Ocara\Exceptions\Exception
-     * @throws \ReflectionException
      */
 	public function createAction()
 	{
@@ -92,10 +135,13 @@ class ActionService extends BaseService
             $modulePath = ocDir(OC_APPLICATION_PATH);
         }
 
-        $controlPath = ocDir($modulePath, 'controller', $this->cname);
-        $controllerClassPath = $controlPath . $controlClassName. '.php';
+        $controlPath = ocCommPath(ocDir($modulePath, 'controller', $this->cname));
+        $controllerClassPath = ocCommPath($controlPath . $controlClassName. '.php');
         $controlNamespace = ocNamespace($moduleNamespace, $this->cname);
+        $controllerClass = $controlNamespace . $controlClassName;
+
         $actionNamespace = $controlNamespace . 'actions';
+        $actionFile = ocCommPath($controlPath . 'actions/' . $className . '.php');
 
 		if (!is_dir($modulePath)) {
             $this->showError("{$this->mdlname}模块目录不存在.请先添加该模块。");
@@ -113,24 +159,18 @@ class ActionService extends BaseService
             $this->showError("控制器文件“{$controlClassName}.php”不存在或丢失。");
 		}
 
-		foreach (self::$config['controller_actions'] as $controllerType => $controllerActions) {
-			$providerClass = 'Ocara\\Controllers\\Provider\\' . $controllerType;
-			$reflection = new \ReflectionClass($controlNamespace . $controlClassName);
-			if ($reflection->isSubclassOf($providerClass)) {
-				$this->controllerType = $controllerType;
-				break;
-			}
-		}
+		$this->controllerType = $controllerClass::providerType();
 
-		ocCheckPath($controlPath . '/actions');
+		ocCheckPath($controlPath . '/actions/');
 
-		if (ocFileExists($controlPath . $className . '.php')) {
-            $this->showError('动作文件已存在，如果需要覆盖，请先手动删除！');
+		if (ocFileExists($actionFile)) {
+            //$this->showError('动作文件已存在，如果需要覆盖，请先手动删除！');
 		}
 
 		$content  = "<?php\r\n";
 		$content .= "namespace {$actionNamespace};\r\n";
-		$content .= "use $controlNamespace\\{$controlClassName};\r\n";
+        $content .= "\r\n";
+		$content .= "use $controlNamespace{$controlClassName};\r\n";
 
 		$content .= "\r\n";
 		$content .= "class {$className} extends {$controlClassName}\r\n";
@@ -157,70 +197,11 @@ class ActionService extends BaseService
 
 		$content  .= "}";
 
-		$actionFile = $controlPath . $className . '.php';
 		ocService()->file->createFile($actionFile , 'wb');
 		ocService()->file->writeFile($actionFile, $content);
 
-		$this->createview && $this->createView($actionNamespace . $className);
+		$this->createview && $this->createView($actionNamespace . OC_NS_SEP . $className);
 
 		die('添加成功！');
-	}
-
-    /**
-     * 获取模块视图路径
-     * @param null $subPath
-     * @return mixed
-     * @throws \Ocara\Exceptions\Exception
-     */
-    public function getViewPath($subPath = null)
-    {
-        $path = $this->mdlname
-            . '/view/'
-            . $this->ttype
-            . OC_DIR_SEP
-            . $subPath;
-        return ocPath('modules', $path);
-    }
-
-    /**
-     * 新建视图
-     * @param $actionClass
-     * @return bool
-     * @throws \Ocara\Exceptions\Exception
-     */
-	public function createView($actionClass)
-	{
-	    $action = new $actionClass();
-
-        $template = $this->ttype;
-
-        ocCheckPath($this->getModuleViewPath($this->mdlname, 'helper', $template));
-        ocCheckPath($this->getModuleViewPath($this->mdlname, 'part', $template));
-        ocCheckPath($this->getModuleViewPath($this->mdlname, 'layout', $template));
-        ocCheckPath($this->getModuleViewPath($this->mdlname, 'template', $template));
-
-        //检查css和images目录
-		ocCheckPath(ocPath('css', ocDir($template, $this->mdlname, $this->cname)));
-		ocCheckPath(ocPath('images', ocDir($template, $this->mdlname, $this->cname)));
-
-        $path = $action->view->getModuleViewPath($this->mdlname, ocDir($this->mdlname, $this->cname), $template);
-		$this->addTpl($path, $this->actionName);
-
-		return true;
-	}
-
-    /**
-     * 添加模板文件
-     * @param $path
-     * @param $file
-     * @throws \Ocara\Exceptions\Exception
-     */
-	public function addTpl($path, $file)
-	{
-		$path = ocDir($path) . $file . '.' . $this->tplType;
-		$content = "Hello, I'm %s.{$this->tplType}.";
-
-		ocService()->file->openFile($path, 'wb');
-        ocService()->file->writeFile($path, sprintf($content, $file));
 	}
 }

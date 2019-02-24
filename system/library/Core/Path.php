@@ -44,7 +44,6 @@ class Path extends Basis
      * @param bool $local
      * @param bool $isFile
      * @return bool|mixed|string
-     * @throws \Ocara\Exceptions\Exception
      */
     public function get($dir, $path, $root = null, $local = true, $isFile = true)
     {
@@ -68,7 +67,8 @@ class Path extends Basis
 
     /**
      * 获取映射路径
-     * @return mixed
+     * @param $dir
+     * @return mixed|null
      */
 	public function getMap($dir)
     {
@@ -78,8 +78,8 @@ class Path extends Basis
     /**
      * 获取配置映射路径
      * @param $dir
+     * @param $local
      * @return string
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function getConfigMapDir($dir, $local)
     {

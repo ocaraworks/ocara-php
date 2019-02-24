@@ -26,7 +26,8 @@ class Route extends Base
         $controller = OC_EMPTY;
 
         if ($uModule) {
-            $moduleClass = sprintf('app\modules\%s\controller\%sModule', $module, ucfirst($module));
+            $moduleNamespace = OC_MODULE_NAMESPACE ? ocNamespace(OC_MODULE_NAMESPACE): 'app\modules\\';
+            $moduleClass = sprintf($moduleNamespace .'%s\controller\%sModule', $module, ucfirst($module));
             if (ocClassExists($moduleClass)) {
                 $controller = $get ? array_shift($get) : null;
             } else {

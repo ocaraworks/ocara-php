@@ -19,24 +19,24 @@ class Common extends Base
      * @param $route
      * @throws \Ocara\Exceptions\Exception
      */
-    public function dispatch($route)
+    public function dispatch($route, $moduleNamespace = null)
     {
+        $moduleNamespace = $moduleNamespace ? ocNamespace($moduleNamespace): 'app\modules';
         if (empty($route['controller']) || empty($route['action'])) {
             ocService()->error->show('null_route');
         }
 
         $uController = ucfirst($route['controller']);
         $uAction = ucfirst($route['action']);
-        $controllerDir = OC_CONSOLE_MODULE ? 'console' : 'controller';
 
         if ($route['module']) {
-            $cNamespace = sprintf('app\modules\%s\%s\%s\\',
+            $cNamespace = sprintf($moduleNamespace . '%s\%s\%s\\',
                 $route['module'],
-                $controllerDir,
+                'controller',
                 $route['controller']
             );
         } else {
-            $cNamespace = sprintf('app\%s\%s\\', $controllerDir, $route['controller']);
+            $cNamespace = sprintf('app\controller\%s\\', $route['controller']);
         }
 
         $cClass = $cNamespace . $uController . 'Controller';

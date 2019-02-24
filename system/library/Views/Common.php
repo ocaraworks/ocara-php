@@ -208,9 +208,16 @@ class Common extends ViewBase implements ViewInterfaces
     public function getModuleViewPath($module, $subPath = null, $template = null, $rootPath = null)
     {
         $template = $template ? : $this->_template;
-        $rootPath = $rootPath ? ocDir($rootPath) : ocPath('modules', $module . '/view/');
-        $path = $rootPath . $template . '/' . $subPath;
 
+        if (empty($rootPath)) {
+            if (OC_MODULE_PATH) {
+                $rootPath = ocDir(array(OC_MODULE_PATH, $module, 'view'));
+            } else {
+                $rootPath = ocPath('modules');
+            }
+        }
+
+        $path = $rootPath . $template . '/' . $subPath;
         if (!ocFileExists($path)) {
             $path = $rootPath . self::$_defaultTemplate . '/' . $subPath;
         }

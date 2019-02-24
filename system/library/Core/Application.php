@@ -74,13 +74,8 @@ class Application extends Basis
             ocContainer()->config->loadGlobalConfig();
             error_reporting($this->errorReporting());
 
-            //set module path
-            if (OC_MODULE_PATH) {
-                ocContainer()->path->setMap('modules', OC_MODULE_PATH);
-            }
-
             //append module namespace
-            if (OC_MODULE_NAMESPACE) {
+            if (OC_MODULE_NAMESPACE && OC_MODULE_PATH) {
                 ocContainer()->loader->registerNamespace(OC_MODULE_NAMESPACE, OC_MODULE_PATH);
             }
 
