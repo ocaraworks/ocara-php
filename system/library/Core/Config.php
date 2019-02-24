@@ -83,20 +83,33 @@ class Config extends Basis
      * @param string $rootPath
      * @throws \Ocara\Exceptions\Exception
      */
-	public function loadActionConfig($route = array(), $rootPath = null)
+	public function loadControllerConfig($route = array(), $rootPath = null)
 	{
         $subPath = sprintf('config/control/%s/', $route['controller']);
         $path = $this->_getConfigPath($route, $subPath, $rootPath);
 
-        $paths = array();
+        if (is_dir($path)) {
+            $this->load($path);
+        }
+	}
+
+    /**
+     * 加载控制器动作配置
+     * @param array $route
+     * @param string $rootPath
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public function loadActionConfig($route = array(), $rootPath = null)
+    {
+        $subPath = sprintf('config/control/%s/', $route['controller']);
+        $path = $this->_getConfigPath($route, $subPath, $rootPath);
+
         if (is_dir($path)) {
             if ($route['action'] && is_dir($path = $path . OC_DIR_SEP . $route['action'])) {
-                $paths[] = $path;
+                $this->load($path);
             }
         }
-
-        $this->load($paths);
-	}
+    }
 
     /**
      * 获取配置文件路径

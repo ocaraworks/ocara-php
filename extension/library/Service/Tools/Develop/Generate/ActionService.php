@@ -52,21 +52,17 @@ class ActionService extends BaseService
             $this->showError('缺少控制器！');
 		}
 
-		$path = OC_ROOT . 'config/control';
+		//加载配置
+		$route = array(
+		    'module' => $this->mdlname,
+            'controller' => $this->cname,
+            'action' => $this->actionName
+        );
 
-		if ($this->mdlname) {
-			if (is_dir($path = $path . OC_DIR_SEP . $this->mdlname)) {
-				ocService()->config->load($path);
-			}
-		}
-
-		if (is_dir($path = $path . OC_DIR_SEP . $this->cname)) {
-			ocService()->config->load($path);
-		}
-
-		if (is_dir($path = $path . OC_DIR_SEP . $this->actionName)) {
-			ocService()->config->load($path);
-		}
+		$service = ocService();
+        $service->config->loadModuleConfig($route);
+        $service->config->loadControllerConfig($route);
+        $service->config->loadActionConfig($route);
 
 		$CONF = ocService()->config->get();
 		$this->tplType = ocGet('TEMPLATE.file_type', $CONF, 'html');

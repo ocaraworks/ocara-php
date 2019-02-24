@@ -73,7 +73,10 @@ abstract class BootstrapBase extends Base
         }
 
         $service->app->setRoute($route);
+
+        $service->config->loadControllerConfig($route);
         $service->config->loadActionConfig($route);
+        $service->lang->loadControllerConfig($route);
         $service->lang->loadActionConfig($route);
 
         return $route;

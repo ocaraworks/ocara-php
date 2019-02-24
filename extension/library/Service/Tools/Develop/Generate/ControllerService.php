@@ -38,19 +38,19 @@ class ControllerService extends BaseService
 		$this->ttype      = $data['ttype'];
 		$this->createview = $request->getPost('createview');
 		$this->controllerType = $request->getPost('controllerType');
-		$path = OC_ROOT . 'config/control';
-	
-		if ($this->mdlname) {
-			if (is_dir($path = $path . OC_DIR_SEP . $this->mdlname)) {
-				ocService()->config->load($path);
-			}
-		}
-		
-		if (is_dir($path = $path . OC_DIR_SEP . $this->cname)) {
-			ocService()->config->load($path);
-		}
 
-		$CONF = ocService()->config->get();
+        //加载配置
+        $route = array(
+            'module' => $this->mdlname,
+            'controller' => $this->cname,
+            'action' => null
+        );
+
+        $service = ocService();
+        $service->config->loadModuleConfig($route);
+        $service->config->loadControllerConfig($route);
+
+        $CONF = ocService()->config->get();
 		$this->tplType = ocGet('TEMPLATE.file_type', $CONF, 'html');
 		
 		$this->createController();

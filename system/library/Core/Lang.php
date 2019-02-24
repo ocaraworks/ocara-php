@@ -65,6 +65,26 @@ class Lang extends Base
      * @param string $rootPath
      * @throws \Ocara\Exceptions\Exception
      */
+    public function loadControllerConfig($route = array(), $rootPath = null)
+    {
+        $subPath = sprintf(
+            'lang/%s/control/%s/',
+            ocService()->app->getLanguage(),
+            $route['controller']
+        );
+
+        $path = $this->_getConfigPath($route, $subPath, $rootPath);
+        if (is_dir($path)) {
+            $this->load($path);
+        }
+    }
+
+    /**
+     * 加载控制器动作配置
+     * @param array $route
+     * @param string $rootPath
+     * @throws \Ocara\Exceptions\Exception
+     */
     public function loadActionConfig($route = array(), $rootPath = null)
     {
         $subPath = sprintf(
@@ -74,15 +94,11 @@ class Lang extends Base
         );
 
         $path = $this->_getConfigPath($route, $subPath, $rootPath);
-        $paths = array();
-
         if (is_dir($path)) {
             if ($route['action'] && is_dir($path = $path . OC_DIR_SEP . $route['action'])) {
-                $paths[] = $path;
+                $this->load($path);
             }
         }
-
-        $this->load($paths);
     }
 
     /**

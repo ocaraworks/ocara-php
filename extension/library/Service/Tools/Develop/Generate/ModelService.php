@@ -50,10 +50,10 @@ class ModelService extends BaseService
 	public function createDatabaseModel()
 	{
 		$connect = ucfirst($this->_connectName);
-		$modelBase = ucfirst($this->_modelType) . 'Base';
+		$modelBase = ucfirst($this->_modelType) . 'Model';
 		$connectPath = $connect . OC_DIR_SEP;
 
-		$namespace = OC_NS_SEP . $connect;
+		$namespace = OC_NS_SEP . $this->_connectName;
 		$modelName = ucfirst($this->_model);
 
 		if (empty($this->_table)) {
@@ -84,7 +84,10 @@ class ModelService extends BaseService
 		$content .= "class {$modelName} extends {$modelBase}\r\n";
 		$content .= "{\r\n";
 
-		$content .= "\tprotected \$_connectName = '{$this->_connectName}';\r\n";
+		if ($this->_connectName != 'defaults') {
+            $content .= "\tprotected \$_connectName = '{$this->_connectName}';\r\n";
+        }
+		
 		$content .= "\tprotected \$_database = '{$this->_database}';\r\n";
 		$content .= "\tprotected \$_table = '{$this->_table}';\r\n";
 		$content .= "\tprotected \$_primary = '{$this->_primaries}';\r\n";
@@ -124,7 +127,7 @@ class ModelService extends BaseService
 		$fileCache->save($path, true);
 
 		//新建字段数据文件
-		$modelClass = 'Model' . $namespace . OC_NS_SEP . $modelName;
+		$modelClass = 'app\dal\model' . $namespace . OC_NS_SEP . $modelName;
 
 		$model = new $modelClass();
 		$fields = $model->getFields();

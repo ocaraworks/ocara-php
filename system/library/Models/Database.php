@@ -31,10 +31,10 @@ abstract class Database extends ModelBase
 	protected $_plugin;
 	protected $_primary;
 	protected $_table;
-	protected $_connectName;
 	protected $_fields;
 	protected $_alias;
-
+    protected $_connectName = 'defaults';
+    
 	private $_tag;
 	private $_master;
 	private $_slave;
