@@ -12,6 +12,18 @@
 </div>
 
 <div>
+    <span class="left-span">模块类型</span>
+    <input type="radio" value="Database" name="moduleType" id="moduleType1" checked /> 无&nbsp;
+    <input type="radio" value="Cache" name="moduleType" id="moduleType2" /> 命令模块
+    <input type="radio" value="Cache" name="moduleType" id="moduleType3" /> 工具模块
+</div>
+
+<div>
+    <span class="left-span">模块名称</span>
+    <input type="text" value="" name="module" id="module">
+</div>
+
+<div>
 <span class="left-span">数据库连接配置名：</span>
 <input type="text" name="connect" id="connect" value="<?php echo \Ocara\Core\DatabaseFactory::getDefaultServer();?>">
 </div>

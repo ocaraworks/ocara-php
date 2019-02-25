@@ -34,7 +34,7 @@ abstract class Database extends ModelBase
 	protected $_fields;
 	protected $_alias;
     protected $_connectName = 'defaults';
-    
+
 	private $_tag;
 	private $_master;
 	private $_slave;
@@ -52,8 +52,8 @@ abstract class Database extends ModelBase
     private $_oldData = array();
 	private $_unions = array();
 
-	private static $_config = array();
-	private static $_requirePrimary;
+    protected static $_config = array();
+    protected static $_requirePrimary;
 
     const EVENT_BEFORE_CREATE = 'beforeCreate';
     const EVENT_AFTER_CREATE = 'afterCreate';

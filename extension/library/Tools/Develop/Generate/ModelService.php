@@ -53,7 +53,7 @@ class ModelService extends BaseService
 		$modelBase = ucfirst($this->_modelType) . 'Model';
 		$connectPath = $connect . OC_DIR_SEP;
 
-		$namespace = OC_NS_SEP . $this->_connectName;
+		$namespace = OC_NS_SEP . ocNamespace($this->_connectName, $this->_database);
 		$modelName = ucfirst($this->_model);
 
 		if (empty($this->_table)) {
