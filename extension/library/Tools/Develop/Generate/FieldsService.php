@@ -17,6 +17,7 @@ class FieldsService extends BaseService
 	public function add()
 	{
 		$this->_model = ocService()->request->getPost('model');
+        $this->_ismodule = ocService()->request->getPost('ismodule');
 		$this->updateModel();
 	}
 
@@ -34,20 +35,13 @@ class FieldsService extends BaseService
 		}
 
 		$model = new $modelClass();
-		$connectName = $model->getConnectName();
-		$database = $model->getDatabase();
+		if ($this->_ismodule) {
+            $paths = $model->getModuleConfigPath();
+        } else {
+            $paths = $model->getConfigPath();
+        }
 
-		$serverPath = $connectName . OC_DIR_SEP;
-		$dbPath = $database ? $database . OC_DIR_SEP : OC_EMPTY;
-		$modelFile = implode(OC_DIR_SEP, array_map('lcfirst', explode(OC_NS_SEP, $modelSubPath)));
-
-		//新建字段信息配置
-		$path = OC_ROOT . 'resource/data/fields/'
-			. $serverPath
-			. $dbPath
-			. $modelFile
-			. '.php';
-
+		$path = $paths['fields'];
 		$model->loadFields(false);
 		$fields = $model->getFields();
 

@@ -176,10 +176,12 @@ return array(
             'service'  	    => 'application',
             'view'  	  	=> 'application',
 
+            'dal'           => 'application',
             'entities'  	=> 'application/dal',
             'model'  	  	=> 'application/dal',
             'values'  	  	=> 'application/dal',
-    
+
+            'resource'      => 'application',
             'config'        => 'application/resource',
             'fields'        => 'application/resource',
             'lang'          => 'application/resource',

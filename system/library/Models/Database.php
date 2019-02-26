@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Models;
 
-use \ReflectionClass;
+use \ReflectionObject;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\CacheFactory;
 use Ocara\Core\FormToken;
@@ -53,6 +53,7 @@ abstract class Database extends ModelBase
 	private $_unions = array();
 
     protected static $_config = array();
+    protected static $_configPath = array();
     protected static $_requirePrimary;
 
     const EVENT_BEFORE_CREATE = 'beforeCreate';
@@ -179,9 +180,8 @@ abstract class Database extends ModelBase
 	 */
 	public function loadConfig()
 	{
-	    $class = self::getClass();
-		if (empty(self::$_config[$class])) {
-			self::$_config[$class] = $this->getModelConfig();
+		if (empty(self::$_config[$this->_tag])) {
+			self::$_config[$this->_tag] = $this->getModelConfig();
 		}
 	}
 
@@ -191,11 +191,10 @@ abstract class Database extends ModelBase
 	 */
 	public function getModelConfig()
 	{
-		$modelConfig = array_fill_keys(array('JOIN', 'MAP', 'VALIDATE', 'LANG'), array());
-		$filePath = $this->getConfigPath();
+        $paths = $this->getConfigPath();
+        $modelConfig = array();
 
-        $path = ocLowerFile(ocPath('config', "model/{$filePath}"));
-		if (ocFileExists($path)) {
+		if (ocFileExists($paths['config'])) {
 			$config = @include($path);
 			if (is_array($config)) {
 				$modelConfig = array_merge(
@@ -205,8 +204,7 @@ abstract class Database extends ModelBase
 			}
 		}
 
-        $path = ocLowerFile(ocPath('lang', ocService()->app->getLanguage() . "/model/{$filePath}"));
-		if (ocFileExists($path)) {
+		if (ocFileExists($paths['lang'])) {
 			$lang = @include($path);
 			if ($lang && is_array($lang)) {
 				$modelConfig['LANG'] = array_merge($modelConfig['LANG'], $lang);
@@ -227,32 +225,16 @@ abstract class Database extends ModelBase
 	public function getConfig($key = null, $field = null)
 	{
         $this->loadConfig();
-        $class = self::getClass();
+        $tag = $this->_tag;
 
 		if (isset($key)) {
 			if ($field) {
-				return ocGet(array($key, $field), self::$_config[$class]);
+				return ocGet(array($key, $field), self::$_config[$tag]);
 			}
-			return ocGet($key, self::$_config[$class], array());
+			return ocGet($key, self::$_config[$tag], array());
 		}
 
-		return self::$_config[$class];
-	}
-
-	/**
-	 * 修改字段配置
-	 * @param string $key
-	 * @param string $field
-	 * @param mixed $value
-	 * @param string $class
-	 */
-	public function setConfig($key, $field, $value, $class = null)
-	{
-		$class = $class ? : self::getClass();
-		$config = $this->getConfig($key);
-		$config[$key][$field] = $value;
-
-		self::$_config[$class][$key] = $config;
+		return self::$_config[$tag];
 	}
 
 	/**
@@ -262,12 +244,65 @@ abstract class Database extends ModelBase
 	 */
 	public function getConfigPath()
 	{
-        $ref = new \ReflectionObject($this);
-        $file = ocCommPath($ref->getFileName());
-		$filePath = str_ireplace(ocPath('model'), '', $file);
+	    $tag = $this->_tag;
 
-		return $filePath;
+	    if (!empty(self::$_configPath[$tag])) {
+	        return self::$_configPath[$tag];
+        }
+
+	    $paths = $this->getModuleConfigPath();
+        $file = $paths['file'];
+
+        if (!($paths['config'] && ocFileExists($paths['config']))) {
+            $paths['config'] = ocPath('config', 'model/' . $file);
+        }
+
+        if (!($paths['fields'] && ocFileExists($paths['fields']))) {
+            $paths['fields'] = ocPath('fields',  $file);
+        }
+
+        if (!($paths['lang'] && ocFileExists($paths['lang']))) {
+            $language = ocService()->app->getLanguage();
+            $paths['lang'] = ocPath('lang', "{$language}/model/{$file}");
+        }
+
+        return self::$_configPath[$tag] = $paths;
 	}
+
+    /**
+     * 获取模块模型配置路径
+     * @return array
+     */
+	public function getModuleConfigPath()
+    {
+        $configPath = OC_EMPTY;
+        $fieldsPath = OC_EMPTY;
+        $langPath = OC_EMPTY;
+
+        $ref = new ReflectionObject($this);
+        $filePath = ocCommPath($ref->getFileName());
+        $file = basename($filePath);
+        $position = strpos($filePath, "/privates/model/");
+
+        if ($position) {
+            $language = ocService()->app->getLanguage();
+            $rootPath = substr($filePath, 0, $position + 10);
+            $filePath = substr($filePath, $position + 16) . '/' . $file;
+            $configPath = $rootPath . '/config/model/' . $filePath;
+            $fieldsPath = $rootPath . '/fields/' . $filePath;
+            $langPath = $rootPath . '/lang/' . $language . '/model/' . $filePath;
+        }
+
+        $result = array(
+            'config' => $configPath,
+            'fields' => $fieldsPath,
+            'lang' => $langPath,
+            'filePath' => $filePath,
+            'file' => $file
+        );
+
+        return $result;
+    }
 
 	/**
 	 * 字段映射
