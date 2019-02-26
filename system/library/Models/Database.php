@@ -61,7 +61,7 @@ abstract class Database extends ModelBase
     const EVENT_AFTER_UPDATE = 'afterUpdate';
     const EVENT_BEFORE_DELETE = 'beforeDelete';
     const EVENT_AFTER_DELETE = 'afterDelete';
-    const EVENT_QUERY_SAVE_CACHE_DATA = 'querySaveCacheData';
+    const EVENT_CACHE_QUERY_DATA = 'cacheQueryData';
 
     /**
 	 * Model constructor.
@@ -110,7 +110,7 @@ abstract class Database extends ModelBase
     public function registerEvents()
     {
         $this->bindEvents($this);
-        $this->event(self::EVENT_QUERY_SAVE_CACHE_DATA)
+        $this->event(self::EVENT_CACHE_QUERY_DATA)
              ->append(ocConfig('EVENT.model.query.save_cache_data', null));
     }
 
@@ -1300,9 +1300,9 @@ abstract class Database extends ModelBase
 	 */
 	public function _saveCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired, $result)
 	{
-		if ($this->event(self::EVENT_QUERY_SAVE_CACHE_DATA)->get()) {
+		if ($this->event(self::EVENT_CACHE_QUERY_DATA)->get()) {
 			$params = array($cacheObj, $sql, $result, $cacheRequired);
-			$this->fire(self::EVENT_QUERY_SAVE_CACHE_DATA, $params);
+			$this->fire(self::EVENT_CACHE_QUERY_DATA, $params);
 		} else {
 			$cacheObj->set($sqlEncode, json_encode($result));
 		}
