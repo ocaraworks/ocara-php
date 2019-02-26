@@ -29,7 +29,7 @@ class Form extends Base
 	private $_tokenTag;
 	private $_validateForm = true;
 	
-	private $_modelInfo = array();
+	private $_models = array();
 	private $_lang = array();
 	private $_map = array();
 	private $_attributes = array();
@@ -136,9 +136,9 @@ class Form extends Base
 	 */
 	public function loadModel()
 	{
-		foreach ($this->_modelInfo as $key => $class) {
-			$this->_lang = array_merge($this->_lang, DatabaseModel::getConfig('FIELDS_LANG', null, $class));
-			$this->_map =array_merge($this->_map, DatabaseModel::getConfig('MAP', null, $class));
+		foreach ($this->_models as $key => $model) {
+			$this->_lang = array_merge($this->_lang, $model->getConfig('LANG'));
+			$this->_map = array_merge($this->_map, $model->getConfig('MAP'));
 		}
 
 		return $this;
@@ -161,7 +161,7 @@ class Form extends Base
 	public function model($class, $alias = null)
 	{
 		$alias = $alias ? : $class;
-		$this->_modelInfo[$alias] = $class;
+		$this->_models[$alias] = new $class();
 		return $this;
 	}
 
@@ -210,13 +210,13 @@ class Form extends Base
 		}
 
 		$field = $fields[1];
-		if (isset($this->_modelInfo[$fields[0]])) {
-			$class = $this->_modelInfo[$fields[0]];
+		if (isset($this->_models[$fields[0]])) {
+			$model = $this->_models[$fields[0]];
 		} else {
-			$class = $fields[0];
+            $model = new $fields[0]();
 		}
 
-		$result = DatabaseModel::getConfig(strtoupper($type), $field, $class);
+		$result = $model->getConfig(strtoupper($type), $field);
 		return $result;
 	}
 
@@ -244,11 +244,14 @@ class Form extends Base
 	{
 		$this->loadModel();
 
-		foreach ($this->_modelInfo as $alias => $class) {
-			$data = DatabaseModel::mapData($data, $class);
-			$rules = DatabaseModel::getConfig('VALIDATE', null, $class);
-			$lang = DatabaseModel::getConfig('LANG', null, $class);
-			$result = $validator->setRules($rules)->setLang($lang)->validate($data);
+		foreach ($this->_models as $alias => $model) {
+			$data = $model->mapData($data);
+			$rules = $model->getConfig('VALIDATE');
+			$lang = $model->getConfig('LANG');
+			$result = $validator
+                ->setRules($rules)
+                ->setLang($lang)
+                ->validate($data);
 			if (!$result) {
 				return false;
 			}

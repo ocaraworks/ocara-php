@@ -91,7 +91,7 @@ abstract class Database extends ModelBase
 		$this->_tableName = empty($this->_table) ? lcfirst(self::getClassName()) : $this->_table;
 
 		$this->_join(false, $this->_tag, $this->_alias);
-		self::loadConfig($this->_tag);
+		$this->loadConfig();
 
 		if ($this->_primary) {
 			$this->_primaries = explode(',', $this->_primary);
@@ -175,25 +175,24 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 加载配置文件
-	 * @param string $class
 	 * @return bool
 	 */
-	public static function loadConfig($class)
+	public function loadConfig()
 	{
+	    $class = self::getClass();
 		if (empty(self::$_config[$class])) {
-			self::$_config[$class] = self::getModelConfig($class);
+			self::$_config[$class] = $this->getModelConfig();
 		}
 	}
 
 	/**
 	 * 获取Model的配置
-	 * @param string $class
 	 * @return bool
 	 */
-	public static function getModelConfig($class)
+	public function getModelConfig()
 	{
 		$modelConfig = array_fill_keys(array('JOIN', 'MAP', 'VALIDATE', 'LANG'), array());
-		$filePath = self::getConfigPath($class);
+		$filePath = $this->getConfigPath();
 
         $path = ocLowerFile(ocPath('config', "model/{$filePath}"));
 		if (ocFileExists($path)) {
@@ -225,12 +224,10 @@ abstract class Database extends ModelBase
 	 * @param string $class
 	 * @return array|bool|mixed|null
 	 */
-	public static function getConfig($key = null, $field = null, $class = null)
+	public function getConfig($key = null, $field = null)
 	{
-		$class = $class ? : self::getClass();
-		if (!isset(self::$_config[$class])) {
-			self::loadConfig($class);
-		}
+        $this->loadConfig();
+        $class = self::getClass();
 
 		if (isset($key)) {
 			if ($field) {
@@ -249,10 +246,10 @@ abstract class Database extends ModelBase
 	 * @param mixed $value
 	 * @param string $class
 	 */
-	public static function setConfig($key, $field, $value, $class = null)
+	public function setConfig($key, $field, $value, $class = null)
 	{
 		$class = $class ? : self::getClass();
-		$config = self::getConfig($key);
+		$config = $this->getConfig($key);
 		$config[$key][$field] = $value;
 
 		self::$_config[$class][$key] = $config;
@@ -263,9 +260,9 @@ abstract class Database extends ModelBase
 	 * @param string $class
 	 * @return string
 	 */
-	public static function getConfigPath($class)
+	public function getConfigPath()
 	{
-        $ref = new ReflectionClass($class);
+        $ref = new \ReflectionObject($this);
         $file = ocCommPath($ref->getFileName());
 		$filePath = str_ireplace(ocPath('model'), '', $file);
 
@@ -278,9 +275,9 @@ abstract class Database extends ModelBase
 	 * @param string $class
 	 * @return array
 	 */
-	public static function mapData(array $data, $class)
+	public function mapData(array $data)
 	{
-		$config = self::getConfig('MAP', null, $class);
+		$config = $this->getConfig('MAP');
 		if (!$config) {
 			return $data;
 		}
@@ -366,7 +363,7 @@ abstract class Database extends ModelBase
 	public function loadFields($cache = true)
 	{
 		if ($cache) {
-			$this->_fields = self::getFieldsConfig($this->getClass());
+			$this->_fields = $this->getFieldsConfig();
 		}
 
 		if (!$this->_fields) {
@@ -381,9 +378,9 @@ abstract class Database extends ModelBase
 	 * @param $class
 	 * @return array|mixed
 	 */
-	public static function getFieldsConfig($class)
+	public function getFieldsConfig()
 	{
-		$filePath = self::getConfigPath($class);
+		$filePath = $this->getConfigPath();
 		$path = ocLowerFile(ocPath('fields', $filePath));
 
 		if (ocFileExists($path)) {
@@ -1700,7 +1697,7 @@ abstract class Database extends ModelBase
 		$transforms = array();
 
 		if ($unJoined) {
-			$map = self::getConfig('MAP');
+			$map = $this->getConfig('MAP');
 			if ($map) {
 				$transforms[$this->_alias] = $map;
 			}
@@ -1708,11 +1705,11 @@ abstract class Database extends ModelBase
 			$transforms = array();
 			foreach ($tables as $alias => $row) {
 				if ($alias == $this->_alias) {
-					if ($map = self::getConfig('MAP')) {
+					if ($map = $this->getConfig('MAP')) {
 						$transforms[$this->_alias] = $map;
 					}
 				} elseif (isset($this->_joins[$alias])) {
-					if ($map = self::getConfig('MAP', null, $row['class'])) {
+					if ($map = $this->getConfig('MAP')) {
 						$transforms[$alias] = $map;
 					}
 				}
