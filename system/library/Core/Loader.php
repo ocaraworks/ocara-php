@@ -26,8 +26,12 @@ class Loader extends Basis
         $config = ocContainer()->config;
         $defaultAutoMap = $config->getDefault('NAMESPACE_MAP', array());
         $autoMap = $config->get('NAMESPACE_MAP', array());
+        $result = array_merge($defaultAutoMap, $autoMap);
 
-        $this->_namespaceMap = array_merge($defaultAutoMap, $autoMap);
+        $keys = $this->formatNamespaceKey(array_keys($result));
+        $values = array_values($result);
+        $this->_namespaceMap = array_combine($keys, $values);
+        krsort($this->_namespaceMap);
     }
 
     /**
@@ -35,8 +39,31 @@ class Loader extends Basis
      * @param $namespace
      * @param $path
      */
-    public function registerNamespace($namespace, $path) {
-        $this->_namespaceMap[$namespace] = $path;
+    public function registerNamespace($namespace, $path)
+    {
+        $namespace = $this->formatNamespaceKey($namespace);
+        $this->_namespaceMap[reset($namespace)] = $path;
+        krsort($this->_namespaceMap);
+    }
+
+    /**
+     * 格式化命名空间键名
+     * @param $namespace
+     * @return array
+     */
+    public function formatNamespaceKey($namespace)
+    {
+        $namespace = (array)$namespace;
+        $replace = str_repeat(OC_NS_SEP, 2);
+
+        foreach ($namespace as $key => $value) {
+            if ($value{0} != OC_NS_SEP) {
+                $value = OC_NS_SEP . $value;
+            }
+            $namespace[$key] = sprintf('/%s/', str_replace(OC_NS_SEP, $replace, $value));
+        }
+
+        return $namespace;
     }
 
     /**
@@ -50,7 +77,10 @@ class Loader extends Basis
         $newClass = trim($class, OC_NS_SEP);
 
         if (strstr($newClass, OC_NS_SEP)) {
-            $filePath = strtr($newClass, $this->_namespaceMap);
+            $newClass = OC_NS_SEP . $newClass;
+            $keys = array_keys($this->_namespaceMap);
+            $values = array_values($this->_namespaceMap);
+            $filePath = preg_replace($keys, $values, $newClass,1);
             if ($filePath == $newClass) {
                 $filePath = $this->_defaultPath . $newClass;
             }

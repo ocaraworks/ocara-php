@@ -195,7 +195,7 @@ abstract class Database extends ModelBase
         $modelConfig = array();
 
 		if (ocFileExists($paths['config'])) {
-			$config = @include($path);
+			$config = @include($paths['config']);
 			if (is_array($config)) {
 				$modelConfig = array_merge(
 					array_diff_key($modelConfig, $config),
@@ -205,7 +205,7 @@ abstract class Database extends ModelBase
 		}
 
 		if (ocFileExists($paths['lang'])) {
-			$lang = @include($path);
+			$lang = @include($paths['lang']);
 			if ($lang && is_array($lang)) {
 				$modelConfig['LANG'] = array_merge($modelConfig['LANG'], $lang);
 			}
@@ -287,10 +287,11 @@ abstract class Database extends ModelBase
         if ($position) {
             $language = ocService()->app->getLanguage();
             $rootPath = substr($filePath, 0, $position + 10);
-            $filePath = substr($filePath, $position + 16) . '/' . $file;
-            $configPath = $rootPath . '/config/model/' . $filePath;
-            $fieldsPath = $rootPath . '/fields/' . $filePath;
-            $langPath = $rootPath . '/lang/' . $language . '/model/' . $filePath;
+            $filePath = substr($filePath, $position + 16);
+
+            $configPath = $rootPath . 'config/model/' . $filePath;
+            $fieldsPath = $rootPath . 'fields/' . $filePath;
+            $langPath = $rootPath . 'lang/' . $language . '/model/' . $filePath;
         }
 
         $result = array(

@@ -16,6 +16,7 @@ class ModuleService extends BaseService
 
 	public function add()
 	{
+        $this->mdltype = ocService()->request->getPost('mdltype');
 		$this->mdlname = ocService()->request->getPost('mdlname');
 		$this->createModule();
 	}
@@ -24,10 +25,26 @@ class ModuleService extends BaseService
 	{
 		$mdlname   = ucfirst($this->mdlname);
 		$className = $mdlname . 'Module';
-		$baseController = ocService()->request->getPost('controllerType') . 'Controller';
+		$baseController = ucfirst(ocService()->request->getPost('controllerType')) . 'Controller';
+
+		switch($this->mdltype)
+        {
+            case 'modules':
+                $namespace = 'app\modules';
+                $modulePath = ocPath('application', "modules/{$this->mdlname}");
+                break;
+            case 'console':
+                $namespace = "app\console";
+                $modulePath = ocPath('application', "console/{$this->mdlname}");
+                break;
+            case 'assist':
+                $namespace = "app\assist";
+                $modulePath = ocPath('assist', $this->mdlname);
+                break;
+        }
 
 		$content = "<?php\r\n";
-		$content .= "namespace app\\modules\\{$this->mdlname}\\controller;\r\n";
+		$content .= "namespace {$namespace}\\{$this->mdlname}\\controller;\r\n";
 		$content .= "use Base\\{$baseController};\r\n";
 		
 		$content .= "\r\n";
@@ -39,10 +56,10 @@ class ModuleService extends BaseService
 		$content .= "\tprotected function _module()\r\n\t{}\r\n";
 		$content .= "}";
 
-        $modulePath = OC_APPLICATION_PATH . "modules/{$this->mdlname}";
         $language = ocService()->app->getLanguage();
 
         ocCheckPath($modulePath . '/controller');
+        ocCheckPath($modulePath . '/services');
         ocCheckPath($modulePath . '/privates/config');
         ocCheckPath($modulePath . '/privates/lang/' . $language);
         ocCheckPath($modulePath . '/view/defaults/layout');

@@ -55,7 +55,7 @@ class FileCache extends ServiceBase
 	public function save($filePath, $append = false, $perm = null)
 	{
 		$content = null;
-		
+
 		if (is_string($this->_data)) {
 			$content = '"' . $this->_data . '"';
 		} elseif (is_array($this->_data)) {
@@ -70,7 +70,7 @@ class FileCache extends ServiceBase
 
 		$content = sprintf($this->_content, $content);
 		$content = ($append ? "\r\n" : "<?php\r\n") . $content;
-		
+
 		ocWrite($filePath, $content, $append, $perm);
 	}
 

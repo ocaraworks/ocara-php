@@ -13,14 +13,15 @@
 
 <div>
     <span class="left-span">模块类型</span>
-    <input type="radio" value="Database" name="moduleType" id="moduleType1" checked /> 无&nbsp;
-    <input type="radio" value="Cache" name="moduleType" id="moduleType2" /> 命令模块
-    <input type="radio" value="Cache" name="moduleType" id="moduleType3" /> 工具模块
+    <input type="radio" value="" name="mdltype" id="mdltype1" checked /> 无&nbsp;
+    <input type="radio" value="modules" name="mdltype" id="mdltype2" /> 普通模块
+    <input type="radio" value="console" name="mdltype" id="mdltype3" /> 命令模块
+    <input type="radio" value="assist" name="mdltype" id="mdltype4" /> 工具模块
 </div>
 
 <div>
     <span class="left-span">模块名称</span>
-    <input type="text" value="" name="module" id="module">
+    <input type="text" value="" name="mdlname" id="mdlname">
 </div>
 
 <div>

@@ -12,11 +12,14 @@ use Ocara\Core\Develop;
 use Ocara\Service\FileCache;
 use Ocara\Core\DatabaseFactory;
 use Ocara\Exceptions\Exception;
-use Ocara\Extension\Service\Tools\Develop\Generate\BaseService;
+use Ocara\Extension\Tools\Develop\Generate\BaseService;
+use Ocara\Extension\Tools\Develop\Generate\FieldsService;
 
 class ModelService extends BaseService
 {
-	private $_modelType;
+    private $_modelType;
+	private $_mdltype;
+	private $_mdlname;
 	private $_connectName;
 	private $_table;
 	private $_model;
@@ -27,7 +30,9 @@ class ModelService extends BaseService
 	{
 	    $defaultServer = DatabaseFactory::getDefaultServer();
 		$request = ocService()->request;
-		$this->_modelType = $request->getPost('modelType');
+        $this->_modelType = $request->getPost('modelType');
+		$this->_mdltype = $request->getPost('mdltype');
+		$this->_mdlname = $request->getPost('mdlname');
 		$this->_connectName = $request->getPost('connect', $defaultServer);
 		$this->_table = $request->getPost('table');
 		$this->_model = $request->getPost('model');
@@ -51,10 +56,43 @@ class ModelService extends BaseService
 	{
 		$connect = ucfirst($this->_connectName);
 		$modelBase = ucfirst($this->_modelType) . 'Model';
-		$connectPath = $connect . OC_DIR_SEP;
+		$connectPath = $this->_connectName . OC_DIR_SEP;
 
-		$namespace = OC_NS_SEP . ocNamespace($this->_connectName, $this->_database);
+		$moduleModelDir = "{$this->_mdlname}/privates/model/{$this->_connectName}/{$this->_database}/";
+        $entityModelDir = "{$this->_mdlname}/privates/entity/{$this->_connectName}/{$this->_database}/";
+
+        switch($this->_mdltype)
+        {
+            case 'modules':
+                $rootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\model";
+                $entityRootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\entity";
+                $modelPath = ocPath('application', 'modules/' . $moduleModelDir);
+                $entityPath = ocPath('application', 'modules/' . $entityModelDir);
+                break;
+            case 'console':
+                $rootNamespace = "app\console\\{$this->_mdlname}\\privates\\model";
+                $entityRootNamespace = "app\console\\{$this->_mdlname}\\privates\\entity";
+                $modelPath = ocPath('application', 'console/' . $moduleModelDir);
+                $entityPath = ocPath('application', 'modules/' . $entityModelDir);
+                break;
+            case 'assist':
+                $rootNamespace = "app\\assist\\model";
+                $entityRootNamespace = "app\\assist\\entity";
+                $modelPath = ocPath('assist', $moduleModelDir);
+                $entityPath = ocPath('assist', $entityModelDir);
+                break;
+            default:
+                $rootNamespace = "app\\dal\\model";
+                $entityRootNamespace = "app\\dal\\entity";
+                $modelPath = ocPath('model');
+                $entityPath = ocPath('entity');
+        }
+
+		$namespace = ocNamespace($rootNamespace, $this->_connectName) . $this->_database;
+        $entityNamespace = ocNamespace($entityRootNamespace, $this->_connectName) . $this->_database;
 		$modelName = ucfirst($this->_model);
+        $entityName = ucfirst($this->_model) . 'Entity';
+        $modelClass = $namespace . OC_NS_SEP . $modelName;
 
 		if (empty($this->_table)) {
 			$this->showError('请填写表名！');
@@ -77,8 +115,19 @@ class ModelService extends BaseService
 			}
 		}
 
+        ocCheckPath($modelPath);
+        if (ocFileExists($path = $modelPath .  "{$modelName}.php")) {
+            //$this->showError('Model文件已存在，请先手动删除！');
+        }
+
+        ocCheckPath($entityPath);
+        if (ocFileExists($entityPath = $entityPath .  "{$entityName}.php")) {
+            //$this->showError('实体模型文件已存在，请先手动删除！');
+        }
+
+        //新建模型
 		$content = "<?php\r\n";
-		$content .= "namespace app\dal\model{$namespace};\r\n";
+		$content .= "namespace {$namespace};\r\n";
 		$content .= "use Base\\{$modelBase};\r\n";
 		$content .= "\r\n";
 		$content .= "class {$modelName} extends {$modelBase}\r\n";
@@ -98,64 +147,123 @@ class ModelService extends BaseService
 		$content .= "\tprotected function _model()\r\n\t{}\r\n";
 		$content .= "}";
 
-		if (!is_dir($modelPath = OC_APPLICATION_PATH . "model/")) {
-			@mkdir($modelPath);
-		}
-
-		$modelPath = $modelPath . $connectPath;
-		if (ocFileExists($path = $modelPath . "{$modelName}.php")) {
-			$this->showError('Model文件已存在，如果需要覆盖，请先手动删除！');
-		}
-
         ocService()->file->createFile($path, 'wb');
         ocService()->file->writeFile($path, $content);
+
+        //新建实体模型
+        $content = "<?php\r\n";
+        $content .= "namespace {$entityNamespace};\r\n";
+        $content .= "use {$modelClass};\r\n";
+        $content .= "\r\n";
+        $content .= "class {$entityName} extends {$modelName}\r\n";
+        $content .= "{\r\n";
+        $content .= "}";
+
+        ocService()->file->createFile($entityPath, 'wb');
+        ocService()->file->writeFile($entityPath, $content);
+
+        $model = new $modelClass();
+
+        if (!empty($this->_mdltype)) {
+            $paths = $model->getModuleConfigPath();
+        } else {
+            $paths = $model->getConfigPath();
+        }
 
 		//新建字段配置
 		$fileCache = new FileCache();
 		$modelFile = lcfirst($modelName);
-		$path = OC_ROOT . 'config/model/' . $connectPath . $modelFile . '.php';
+
 		$fileCache->setData(array(), "CONF['MAP']", '字段别名映射');
 		$fileCache->format();
-		$fileCache->save($path);
+		$fileCache->save($paths['config']);
 
 		$fileCache->setData(array(), "CONF['VALIDATE']", '字段验证规则');
 		$fileCache->format();
-		$fileCache->save($path, true);
+		$fileCache->save($paths['config'], true);
 
 		$fileCache->setData(array(), "CONF['JOIN']", '表关联');
 		$fileCache->format();
-		$fileCache->save($path, true);
+		$fileCache->save($paths['config'], true);
 
 		//新建字段数据文件
-		$modelClass = 'app\dal\model' . $namespace . OC_NS_SEP . $modelName;
-
-		$model = new $modelClass();
-		$fields = $model->getFields();
-
-		$path = OC_ROOT . "resource/data/"
-			. '/fields/'
-			. $connectPath
-			. $modelFile
-			. '.php';
-
-		$fileCache->setData($fields, null, "Model\\Main\\{$modelName} Fields");
-		$fileCache->format();
-		$fileCache->save($path);
+        $fieldsService = new FieldsService();
+        $fieldsService->add(array(
+            'model' => $modelClass
+        ));
 
 		//新建语言文件
-		$path = OC_ROOT . "lang/"
-			. ocService()->app->getLanguage()
-			. '/model/'
-			. $connectPath
-			. $modelFile
-			. '.php';
-		$lang = array();
-		$fileCache->setData($lang, null, "Model\\Main\\{$modelName} 语言配置");
+		$fileCache->setData(array(), null, $namespace . "\\{$modelName} language config");
 		$fileCache->format();
-		$fileCache->save($path);
+		$fileCache->save($paths['lang']);
 
         echo("添加成功！");
 	}
+
+	public function createEntityModel()
+    {
+        $connect = ucfirst($this->_connectName);
+        $modelBase = ucfirst($this->_modelType) . 'Model';
+        $connectPath = $this->_connectName . OC_DIR_SEP;
+
+        $moduleModelDir = "{$this->_mdlname}/privates/entity/{$this->_connectName}/{$this->_database}/";
+
+        switch($this->_mdltype)
+        {
+            case 'modules':
+                $rootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\entity";
+                $modelPath = ocPath('application', 'modules/' . $moduleModelDir);
+                break;
+            case 'console':
+                $rootNamespace = "app\console\\{$this->_mdlname}\\privates\\entity";
+                $modelPath = ocPath('application', 'console/' . $moduleModelDir);
+                break;
+            case 'assist':
+                $rootNamespace = "app\assist";
+                $modelPath = ocPath('assist', $moduleModelDir);
+                break;
+            default:
+                $rootNamespace = "app\dal\entity";
+                $modelPath = ocPath('entity');
+        }
+
+        $namespace = ocNamespace($rootNamespace, $this->_connectName) . $this->_database;
+        $modelName = ucfirst($this->_model);
+
+        if (empty($this->_table)) {
+            $this->showError('请填写表名！');
+        }
+
+        $content = "<?php\r\n";
+        $content .= "namespace {$namespace};\r\n";
+        $content .= "use Base\\{$modelBase};\r\n";
+        $content .= "\r\n";
+        $content .= "class {$modelName} extends {$modelBase}\r\n";
+        $content .= "{\r\n";
+
+        if ($this->_connectName != 'defaults') {
+            $content .= "\tprotected \$_connectName = '{$this->_connectName}';\r\n";
+        }
+
+        $content .= "\tprotected \$_database = '{$this->_database}';\r\n";
+        $content .= "\tprotected \$_table = '{$this->_table}';\r\n";
+        $content .= "\tprotected \$_primary = '{$this->_primaries}';\r\n";
+        $content .= "\r\n";
+        $content .= "\t/**\r\n";
+        $content .= "\t * 初始化模型\r\n";
+        $content .= "\t */\r\n";
+        $content .= "\tprotected function _model()\r\n\t{}\r\n";
+        $content .= "}";
+
+        ocCheckPath($modelPath);
+
+        if (ocFileExists($path = $modelPath .  "{$modelName}.php")) {
+            //$this->showError('Model文件已存在，如果需要覆盖，请先手动删除！');
+        }
+
+        ocService()->file->createFile($path, 'wb');
+        ocService()->file->writeFile($path, $content);
+    }
 
 	public function createCacheModel()
 	{
