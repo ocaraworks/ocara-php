@@ -43,7 +43,12 @@
 <span class="left-span">主键字段</span>
 <input type="text" value="" name="primaries" id="primaries">
 </div>
-	
+
+<div>
+    <span class="left-span">目录分库（模型文件放在库目录下面）</span>
+    <input type="checkbox" value="" name="dbdir" id="dbdir">
+</div>
+
 <div>
 <span class="left-span">&nbsp;</span>
 <input type="submit" value="提交" name="submit" />
