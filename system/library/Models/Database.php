@@ -33,6 +33,7 @@ abstract class Database extends ModelBase
 	protected $_table;
 	protected $_fields;
 	protected $_alias;
+    protected $_module;
     protected $_connectName = 'defaults';
 
 	private $_tag;
@@ -282,9 +283,9 @@ abstract class Database extends ModelBase
         $ref = new ReflectionObject($this);
         $filePath = ocCommPath($ref->getFileName());
         $file = basename($filePath);
-        $position = strpos($filePath, "/privates/model/");
+        $position = strpos($filePath, "/privates/");
 
-        if ($position) {
+        if ($position && $this->_module) {
             $language = ocService()->app->getLanguage();
             $rootPath = substr($filePath, 0, $position + 10);
             $filePath = substr($filePath, $position + 16);
