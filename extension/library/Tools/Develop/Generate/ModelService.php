@@ -61,7 +61,7 @@ class ModelService extends BaseService
 		$connectPath = $this->_connectName . OC_DIR_SEP;
 
 		$moduleModelDir = "{$this->_mdlname}/privates/model/{$this->_connectName}/";
-        $entityModelDir = "{$this->_mdlname}/privates/entity/{$this->_connectName}/";
+        $entityModelDir = "{$this->_mdlname}/privates/entities/{$this->_connectName}/";
 
         if ($this->_dbdir) {
             $moduleModelDir .= "{$this->_database}/";
@@ -72,35 +72,35 @@ class ModelService extends BaseService
         {
             case 'modules':
                 $rootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\model";
-                $entityRootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\entity";
+                $entityRootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\entities";
                 $modelPath = ocPath('application', 'modules/' . $moduleModelDir);
                 $entityPath = ocPath('application', 'modules/' . $entityModelDir);
                 break;
             case 'console':
                 $rootNamespace = "app\console\\{$this->_mdlname}\\privates\\model";
-                $entityRootNamespace = "app\console\\{$this->_mdlname}\\privates\\entity";
+                $entityRootNamespace = "app\console\\{$this->_mdlname}\\privates\\entities";
                 $modelPath = ocPath('application', 'console/' . $moduleModelDir);
                 $entityPath = ocPath('application', 'modules/' . $entityModelDir);
                 break;
             case 'assist':
                 $rootNamespace = "app\\assist\\model";
-                $entityRootNamespace = "app\\assist\\entity";
+                $entityRootNamespace = "app\\assist\\entities";
                 $modelPath = ocPath('assist', $moduleModelDir);
                 $entityPath = ocPath('assist', $entityModelDir);
                 break;
             default:
                 $rootNamespace = "app\\dal\\model";
-                $entityRootNamespace = "app\\dal\\entity";
-                $modelPath = ocPath('model');
-                $entityPath = ocPath('entity');
+                $entityRootNamespace = "app\\dal\\entities";
+                $modelPath = ocPath('model', $this->_connectName . OC_DIR_SEP);
+                $entityPath = ocPath('entities', $this->_connectName . OC_DIR_SEP);
         }
 
         if ($this->_dbdir) {
-            $namespace = ocNamespace($rootNamespace) . $this->_connectName;
-            $entityNamespace = ocNamespace($entityRootNamespace) . $this->_connectName;
-        } else {
             $namespace = ocNamespace($rootNamespace, $this->_connectName) . $this->_database;
             $entityNamespace = ocNamespace($entityRootNamespace, $this->_connectName) . $this->_database;
+        } else {
+            $namespace = ocNamespace($rootNamespace) . $this->_connectName;
+            $entityNamespace = ocNamespace($entityRootNamespace) . $this->_connectName;
         }
 
 		$modelName = ucfirst($this->_model);
@@ -150,7 +150,7 @@ class ModelService extends BaseService
             $content .= "\tprotected \$_connectName = '{$this->_connectName}';\r\n";
         }
 
-		if ($this->_mdlname) {
+		if ($this->_mdltype && $this->_mdlname) {
             $content .= "\tprotected \$_module = '{$this->_mdlname}';\r\n";
         }
 
@@ -180,11 +180,15 @@ class ModelService extends BaseService
         ocService()->file->writeFile($entityPath, $content);
 
         $model = new $modelClass();
+        $paths = $model->getConfigPath();
 
         if (!empty($this->_mdltype)) {
-            $paths = $model->getModuleConfigPath();
+            $configPath = $paths['moduleConfig'];
+            $langPath = $paths['moduleLang'];
         } else {
             $paths = $model->getConfigPath();
+            $configPath = $paths['config'];
+            $langPath = $paths['lang'];
         }
 
 		//新建字段配置
@@ -193,15 +197,15 @@ class ModelService extends BaseService
 
 		$fileCache->setData(array(), "CONF['MAP']", '字段别名映射');
 		$fileCache->format();
-		$fileCache->save($paths['config']);
+		$fileCache->save($configPath);
 
 		$fileCache->setData(array(), "CONF['VALIDATE']", '字段验证规则');
 		$fileCache->format();
-		$fileCache->save($paths['config'], true);
+		$fileCache->save($configPath, true);
 
 		$fileCache->setData(array(), "CONF['JOIN']", '表关联');
 		$fileCache->format();
-		$fileCache->save($paths['config'], true);
+		$fileCache->save($configPath, true);
 
 		//新建字段数据文件
         $fieldsService = new FieldsService();
@@ -212,7 +216,7 @@ class ModelService extends BaseService
 		//新建语言文件
 		$fileCache->setData(array(), null, $namespace . "\\{$modelName} language config");
 		$fileCache->format();
-		$fileCache->save($paths['lang']);
+		$fileCache->save($langPath);
 
         echo("添加成功！");
 	}

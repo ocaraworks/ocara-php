@@ -18,7 +18,6 @@ class FieldsService extends BaseService
 	{
 	    $data = $data ? : ocService()->request->getPost();
 		$this->_model = $data['model'];
-        $this->_ismodule = !empty($data['ismodule']);
 
 		$this->updateModel();
 	}
@@ -34,20 +33,15 @@ class FieldsService extends BaseService
 		}
 
 		$model = new $this->_model();
-		if ($this->_ismodule) {
-            $paths = $model->getModuleConfigPath();
-        } else {
-            $paths = $model->getConfigPath();
-        }
+        $paths = $model->getConfigPath();
 
-		$path = $paths['fields'];
 		$model->loadFields(false);
 		$fields = $model->getFields();
 
 		$fileCache = FileCache::build();
 		$fileCache->format();
 		$fileCache->setData($fields, null, $this->_model . ' Fields');
-		$fileCache->save($path);
+		$fileCache->save($paths['fields']);
 
         echo("更新成功！");
 	}

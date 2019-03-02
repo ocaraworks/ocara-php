@@ -195,9 +195,20 @@ abstract class Database extends ModelBase
         $paths = $this->getConfigPath();
         $modelConfig = array();
 
-		if (ocFileExists($paths['config'])) {
-			$config = @include($paths['config']);
-			if (is_array($config)) {
+        if (ocFileExists($paths['config'])) {
+            $config = @include($paths['config']);
+            $modelConfig = $config && is_array($config) ? $config : array();
+        }
+
+        $modelConfig['LANG'] = array();
+        if (ocFileExists($paths['lang'])) {
+            $lang = @include($paths['lang']);
+            $modelConfig['LANG'] = $lang && is_array($lang) ? $lang : array();
+        }
+
+		if (isset($paths['moduleConfig']) && ocFileExists($paths['moduleConfig'])) {
+			$config = @include($paths['moduleConfig']);
+			if ($config && is_array($config)) {
 				$modelConfig = array_merge(
 					array_diff_key($modelConfig, $config),
 					array_intersect_key($config, $modelConfig)
@@ -205,8 +216,8 @@ abstract class Database extends ModelBase
 			}
 		}
 
-		if (ocFileExists($paths['lang'])) {
-			$lang = @include($paths['lang']);
+		if (isset($paths['moduleLang']) && ocFileExists($paths['moduleLang'])) {
+			$lang = @include($paths['moduleLang']);
 			if ($lang && is_array($lang)) {
 				$modelConfig['LANG'] = array_merge($modelConfig['LANG'], $lang);
 			}
@@ -251,60 +262,36 @@ abstract class Database extends ModelBase
 	        return self::$_configPath[$tag];
         }
 
-	    $paths = $this->getModuleConfigPath();
-        $file = $paths['file'];
-
-        if (!($paths['config'] && ocFileExists($paths['config']))) {
-            $paths['config'] = ocPath('config', 'model/' . $file);
-        }
-
-        if (!($paths['fields'] && ocFileExists($paths['fields']))) {
-            $paths['fields'] = ocPath('fields',  $file);
-        }
-
-        if (!($paths['lang'] && ocFileExists($paths['lang']))) {
-            $language = ocService()->app->getLanguage();
-            $paths['lang'] = ocPath('lang', "{$language}/model/{$file}");
-        }
-
-        return self::$_configPath[$tag] = $paths;
-	}
-
-    /**
-     * 获取模块模型配置路径
-     * @return array
-     */
-	public function getModuleConfigPath()
-    {
-        $configPath = OC_EMPTY;
-        $fieldsPath = OC_EMPTY;
-        $langPath = OC_EMPTY;
-
+        $modulePaths = array();
         $ref = new ReflectionObject($this);
         $filePath = ocCommPath($ref->getFileName());
+        $language = ocService()->app->getLanguage();
         $file = basename($filePath);
-        $position = strpos($filePath, "/privates/");
 
-        if ($position && $this->_module) {
-            $language = ocService()->app->getLanguage();
+        if ($this->_module) {
+            $position = strpos($filePath, "/privates/");
             $rootPath = substr($filePath, 0, $position + 10);
             $filePath = substr($filePath, $position + 16);
-
-            $configPath = $rootPath . 'config/model/' . $filePath;
-            $fieldsPath = $rootPath . 'fields/' . $filePath;
-            $langPath = $rootPath . 'lang/' . $language . '/model/' . $filePath;
+            $modulePaths = array(
+                'moduleConfig' => $rootPath . 'config/model/' . $filePath,
+                'moduleLang' => $rootPath . 'lang/' . $language . '/model/' . $filePath,
+            );
+        } else {
+            $position = strpos($filePath, "/dal/");
+            $rootPath = substr($filePath, 0, $position + 5);
+            $filePath = substr($filePath, $position + 11);
         }
 
-        $result = array(
-            'config' => $configPath,
-            'fields' => $fieldsPath,
-            'lang' => $langPath,
+        $paths = array(
+            'file' => $file,
             'filePath' => $filePath,
-            'file' => $file
+            'config' => ocPath('config', "model/{$this->_connectName}/{$filePath}"),
+            'fields' => ocPath('fields',  $this->_connectName . '/' . $filePath),
+            'lang' => ocPath('lang', "{$language}/model/{$this->_connectName}/{$filePath}"),
         );
 
-        return $result;
-    }
+        return self::$_configPath[$tag] = array_merge($paths, $modulePaths);
+	}
 
 	/**
 	 * 字段映射

@@ -77,7 +77,7 @@ class Loader extends Basis
         $newClass = trim($class, OC_NS_SEP);
 
         if (strstr($newClass, OC_NS_SEP)) {
-            $newClass = OC_NS_SEP . $newClass;
+            $newClass = OC_NS_SEP . preg_replace('/[\\\\]+/', '\\', $newClass);
             $keys = array_keys($this->_namespaceMap);
             $values = array_values($this->_namespaceMap);
             $filePath = preg_replace($keys, $values, $newClass,1);

@@ -46,7 +46,7 @@
 
 <div>
     <span class="left-span">目录分库（模型文件放在库目录下面）</span>
-    <input type="checkbox" value="" name="dbdir" id="dbdir">
+    <input type="checkbox" value="1" name="dbdir" id="dbdir">
 </div>
 
 <div>
