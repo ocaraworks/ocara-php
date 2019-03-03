@@ -77,8 +77,6 @@ class ModuleService extends BaseService
 
         ocService()->file->createFile($path, 'wb');
         ocService()->file->writeFile($path, $content);
-
-        echo("添加成功！");
 	}
 }
 

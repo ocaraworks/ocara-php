@@ -209,59 +209,6 @@ class ModelService extends BaseService
 		$fileCache->setData(array(), null, $namespace . "\\{$modelName} language config");
 		$fileCache->format();
 		$fileCache->save($langPath);
-
-        echo("添加成功！");
-	}
-
-	public function createCacheModel()
-	{
-		$cacheType = ucfirst(strtolower(ocConfig(array('CACHE', $this->_connectName, 'type'))));
-
-		if (!in_array($cacheType, array('Redis', 'Memcache'))) {
-			$this->showError('缓存配置类型非法！');
-		}
-
-		if ($cacheType == 'Redis') {
-			$this->_database = ocService()->request->getPost('database', 0);
-		}
-
-		$namespace = OC_NS_SEP . $cacheType;
-		$baseModel = $cacheType . 'Base';
-
-		$modelName = ucfirst($this->_model);
-
-		$content = "<?php\r\n";
-		$content .= "namespace Model{$namespace};\r\n";
-		$content .= "use Model\\{$baseModel};\r\n";
-		$content .= "\r\n";
-		$content .= "class {$modelName} extends {$baseModel}\r\n";
-		$content .= "{\r\n";
-		$content .= "\tprotected \$_connectName = '{$this->_connectName}';\r\n";
-
-		if ($cacheType != 'Memcache') {
-			$content .= "\tprotected \$_database = '{$this->_database}';\r\n";
-		}
-
-		$content .= "\r\n";
-		$content .= "\t/**\r\n";
-		$content .= "\t * 初始化模型\r\n";
-		$content .= "\t */\r\n";
-		$content .= "\tprotected function _model()\r\n\t{}\r\n";
-		$content .= "}";
-
-		if (!is_dir($modelPath = OC_APPLICATION_PATH . "model/{$cacheType}/")) {
-			@mkdir($modelPath);
-		}
-
-		$modelPath = $modelPath;
-		if (ocFileExists($path = $modelPath . "{$modelName}.php")) {
-			$this->showError('Model文件已存在，如果需要覆盖，请先手动删除！');
-		}
-
-        ocService()->file->createFile($path, 'wb');
-        ocService()->file->writeFile($path, $content);
-
-        echo("添加成功！");
 	}
 }
 

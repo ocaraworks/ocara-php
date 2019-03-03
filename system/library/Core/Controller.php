@@ -32,7 +32,7 @@ class Controller extends serviceProvider implements ControllerInterface
      * @var $_isSubmit 是否POST提交
      * @var $_checkForm 是否检测表单
      */
-    const EVENT_AFTER = '_after';
+    const EVENT_AFTER = 'after';
     const EVENT_AFTER_CREATE_FORM = 'afterCreateForm';
 
 	/**
@@ -62,7 +62,10 @@ class Controller extends serviceProvider implements ControllerInterface
     public function registerEvents()
     {
         $this->event(self::EVENT_AFTER_CREATE_FORM)
-             ->append(array($this, 'afterCreateForm'));
+             ->setDefault(array($this, 'afterCreateForm'));
+
+        $this->event(self::EVENT_AFTER)
+             ->setDefault(array($this, 'after'));
     }
 
 	/**

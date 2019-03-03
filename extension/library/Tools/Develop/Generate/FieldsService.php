@@ -42,8 +42,6 @@ class FieldsService extends BaseService
 		$fileCache->format();
 		$fileCache->setData($fields, null, $this->_model . ' Fields');
 		$fileCache->save($paths['fields']);
-
-        echo("更新成功！");
 	}
 }
 
