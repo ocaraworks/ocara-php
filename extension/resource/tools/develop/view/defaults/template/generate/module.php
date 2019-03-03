@@ -2,7 +2,7 @@
 <div class="location">当前位置 > 模块(Module)</div>
 <div class="section-title">添加模块</div>
 <div class="section-body">
-<form action="<?php echo ocUrl(array('generate', 'module'));?>" method="post">
+<form action="<?php echo ocUrl(array('generate', 'action'), array('target' => 'module'));?>" method="post">
 
 <div>
     <span class="left-span">模块类型</span>

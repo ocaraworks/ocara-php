@@ -158,6 +158,7 @@ function ocConfig($key, $default = null, $unEmpty = false)
 
 	if (func_num_args() >= 2) return $default;
 
+	$key = implode('.', ocParseKey($key));
 	throw new Exception('No config for key ' . $key . '.');
 }
 

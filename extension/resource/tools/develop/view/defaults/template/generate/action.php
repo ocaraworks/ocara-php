@@ -2,7 +2,7 @@
 <div class="location">当前位置 > 动作(Action)</div>
 <div class="section-title">添加动作</div>
 <div class="section-body">
-<form id="" action="<?php echo ocUrl(array(OC_MODULE_NAME, 'generate', 'action'));?>" method="post">
+<form id="" action="<?php echo ocUrl(array(OC_MODULE_NAME, 'generate', 'action'), array('target' => 'action'));?>" method="post">
 
 <div>
 <span class="left-span">控制器名/动作名：</span>

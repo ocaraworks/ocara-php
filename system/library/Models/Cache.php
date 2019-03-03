@@ -19,6 +19,7 @@ abstract class Cache extends ModelBase
     protected $_database;
 
     protected $_tag;
+    protected $_prefix;
     protected $_master;
     protected $_slave;
     protected $_connectName;

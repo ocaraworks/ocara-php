@@ -275,6 +275,7 @@ abstract class Database extends ModelBase
             $modulePaths = array(
                 'moduleConfig' => $rootPath . 'config/model/' . $filePath,
                 'moduleLang' => $rootPath . 'lang/' . $language . '/model/' . $filePath,
+                'moduleFields' => $rootPath . 'fields/' . $filePath,
             );
         } else {
             $position = strpos($filePath, "/dal/");
@@ -285,9 +286,9 @@ abstract class Database extends ModelBase
         $paths = array(
             'file' => $file,
             'filePath' => $filePath,
-            'config' => ocPath('config', "model/{$this->_connectName}/{$filePath}"),
-            'fields' => ocPath('fields',  $this->_connectName . '/' . $filePath),
-            'lang' => ocPath('lang', "{$language}/model/{$this->_connectName}/{$filePath}"),
+            'config' => ocPath('config', "model/{$filePath}"),
+            'fields' => ocPath('fields',  $filePath),
+            'lang' => ocPath('lang', "{$language}/model/{$filePath}"),
         );
 
         return self::$_configPath[$tag] = array_merge($paths, $modulePaths);

@@ -180,6 +180,7 @@ return array(
             'entities'  	=> 'application/dal',
             'model'  	  	=> 'application/dal',
             'values'  	  	=> 'application/dal',
+            'cache'  	    => 'application/dal',
 
             'resource'      => 'application',
             'config'        => 'application/resource',
@@ -189,7 +190,7 @@ return array(
             'data'          => '',
             'docs'          => 'data',
             'runtime'       => '',
-            'cache'         => 'runtime',
+            'temp'          => 'runtime',
             'logs'          => 'runtime',
             'sessions'      => 'runtime',
 

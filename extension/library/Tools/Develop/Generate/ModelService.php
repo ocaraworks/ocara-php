@@ -17,7 +17,6 @@ use Ocara\Extension\Tools\Develop\Generate\FieldsService;
 
 class ModelService extends BaseService
 {
-    private $_modelType;
     private $_dbdir;
 	private $_mdltype;
 	private $_mdlname;
@@ -31,7 +30,6 @@ class ModelService extends BaseService
 	{
 	    $defaultServer = DatabaseFactory::getDefaultServer();
 		$request = ocService()->request;
-        $this->_modelType = $request->getPost('modelType');
         $this->_dbdir = $request->getPost('dbdir');
 		$this->_mdltype = $request->getPost('mdltype');
 		$this->_mdlname = $request->getPost('mdlname');
@@ -40,24 +38,18 @@ class ModelService extends BaseService
 		$this->_model = $request->getPost('model');
 		$this->_primaries = $request->getPost('primaries');
 
-		if ($this->_modelType == 'Database') {
-			if (empty($this->_model)) {
-				$this->_model = ocHump($this->_table);
-			}
-			$this->_database = ocService()->request->getPost('database', ocConfig('DATABASE.'.$defaultServer.'.name'));
-			$this->createDatabaseModel();
-		} elseif ($this->_modelType == 'Cache') {
-			if (empty($this->_model)) {
-				$this->_model = $this->_connectName;
-			}
-			$this->createCacheModel();
-		}
+        if (empty($this->_model)) {
+            $this->_model = ocHump($this->_table);
+        }
+
+        $this->_database = ocService()->request->getPost('database', ocConfig('DATABASE.'.$defaultServer.'.name'));
+        $this->createDatabaseModel();
 	}
 
 	public function createDatabaseModel()
 	{
 		$connect = ucfirst($this->_connectName);
-		$modelBase = ucfirst($this->_modelType) . 'Model';
+		$modelBase = 'DatabaseModel';
 		$connectPath = $this->_connectName . OC_DIR_SEP;
 
 		$moduleModelDir = "{$this->_mdlname}/privates/model/{$this->_connectName}/";

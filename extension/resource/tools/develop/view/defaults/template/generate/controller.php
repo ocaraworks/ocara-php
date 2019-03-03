@@ -2,7 +2,7 @@
 <div class="location">当前位置 > 控制器(Controller)</div>
 <div class="section-title">添加控制器</div>
 <div class="section-body">
-<form id="" action="<?php echo ocUrl(array(OC_MODULE_NAME, 'generate', 'controller'));?>" method="post">
+<form id="" action="<?php echo ocUrl(array(OC_MODULE_NAME, 'generate', 'action'), array('target' => 'controller'));?>" method="post">
 
 <div>
     <span class="left-span">控制器类型</span>
