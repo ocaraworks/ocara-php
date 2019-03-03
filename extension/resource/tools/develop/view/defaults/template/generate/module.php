@@ -6,9 +6,9 @@
 
 <div>
     <span class="left-span">模块类型</span>
-    <input type="radio" value="modules" name="mdltype" id="mdltype1" checked /> 普通模块&nbsp;
-    <input type="radio" value="console" name="mdltype" id="mdltype2" /> 命令模块
-    <input type="radio" value="assist" name="mdltype" id="mdltype3" /> 工具模块
+    <input type="radio" value="modules" name="mdltype" id="mdltype1" checked /> 普通模块（modules）&nbsp;
+    <input type="radio" value="console" name="mdltype" id="mdltype2" /> 命令模块（console）
+    <input type="radio" value="assist" name="mdltype" id="mdltype3" /> 工具模块（assist）
 </div>
 
 <div>

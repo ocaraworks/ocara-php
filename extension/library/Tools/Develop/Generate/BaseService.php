@@ -41,4 +41,28 @@ class BaseService
 
         throw new Exception($msg . $back);
     }
+
+    public function getModuleRootPath($mdltype)
+    {
+        switch($mdltype)
+        {
+            case 'modules':
+                $rootNamespace = "app\\modules";
+                $rootModulePath = ocPath('modules') . OC_DIR_SEP;
+                break;
+            case 'console':
+                $rootNamespace = "app\console";
+                $rootModulePath = ocPath('console') . OC_DIR_SEP;
+                break;
+            case 'assist':
+                $rootNamespace = "app\\assist";
+                $rootModulePath = ocPath('assist') . OC_DIR_SEP;
+                break;
+            default:
+                $rootNamespace = "app\\controller";
+                $rootModulePath = OC_APPLICATION_PATH;
+        }
+
+        return compact('rootNamespace', 'rootModulePath');
+    }
 }

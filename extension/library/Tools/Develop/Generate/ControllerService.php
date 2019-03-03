@@ -14,7 +14,6 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class ControllerService extends BaseService
 {
-
 	public function __construct()
 	{
 		$this->tplType = ocConfig('TEMPLATE.file_type', 'html');
@@ -34,8 +33,9 @@ class ControllerService extends BaseService
 			$this->cname   = strtolower(ocGet(0, $cname));
 		}
 
-		$this->vtype      = $data['vtype'];
-		$this->ttype      = $data['ttype'];
+		$this->vtype = $data['vtype'];
+		$this->ttype = $data['ttype'];
+        $this->mdltype = $request->getPost('mdltype');
 		$this->createview = $request->getPost('createview');
 		$this->controllerType = $request->getPost('controllerType');
 
@@ -73,7 +73,8 @@ class ControllerService extends BaseService
             'mdlname' => $this->mdlname,
             'actname' => $this->cname . '/' . $actionName,
             'createview' => 1,
-            'ttype' => 'defaults'
+            'ttype' => 'defaults',
+            'mdltype' => $this->mdltype
         );
 
         $actionService = new ActionService();
@@ -86,11 +87,12 @@ class ControllerService extends BaseService
 		$cname = ucfirst($this->cname);
 		$className = 'Controller';
 		$moduleClassName = $mdlname . 'Module';
+		extract($this->getModuleRootPath($this->mdltype));
 
 		if ($this->mdlname) {
-            $modulePath = ocPath('modules', $this->mdlname . OC_DIR_SEP);
+            $modulePath = ocDir($rootModulePath, $this->mdlname);
         } else {
-            $modulePath = OC_APPLICATION_PATH;
+            $modulePath = $rootModulePath;
 		}
 
         $controlPath = $modulePath . "controller/";
@@ -107,13 +109,13 @@ class ControllerService extends BaseService
         include_once($moduleClassPath);
 
 		if ($this->mdlname) {
-            $moduleNamespace = "app\\modules\\{$this->mdlname}\\controller";
+            $moduleNamespace = $rootNamespace . "\\{$this->mdlname}\\controller";
             $moduleClass = $moduleNamespace . OC_NS_SEP . $moduleClassName;
             if (!ocClassExists($moduleClass)) {
                 $this->showError("模块类不存在或丢失!");
             }
 			foreach (self::$config['controller_actions'] as $controllerType => $controllerActions) {
-				$providerClass = '\Ocara\Controllers\\Provider\\' . $controllerType;
+				$providerClass = '\\Ocara\\Controllers\\Provider\\' . $controllerType;
 				$reflection = new \ReflectionClass($moduleClass);
 				if ($reflection->isSubclassOf($providerClass)) {
 					$this->controllerType = $controllerType;
@@ -121,8 +123,8 @@ class ControllerService extends BaseService
 				}
 			}
 		} else {
-            $moduleNamespace = 'app\controller';
-            $moduleClass = 'app\controller\Module';
+            $moduleNamespace = $rootNamespace;
+            $moduleClass = $rootNamespace . '\Module';
             if (!ocClassExists($moduleClass)) {
                 $this->showError("模块类不存在或丢失!");
             }

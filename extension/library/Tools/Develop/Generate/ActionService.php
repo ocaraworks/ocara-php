@@ -29,8 +29,9 @@ class ActionService extends BaseService
 		$data    = $data ? : $request->getPost();
 		$actname = explode(OC_DIR_SEP, trim($data['actname'], OC_DIR_SEP));
 
-		$this->ttype      = $data['ttype'];
-		$this->createview = $request->getPost('createview');
+		$this->ttype = $data['ttype'];
+        $this->mdltype = ocGet('mdltype', $data, '');
+		$this->createview = ocGet('createview', $data, 0);
 		$this->controllerType = 'Common';
 
 		if (empty($actname) || empty($this->ttype)) {
@@ -127,12 +128,14 @@ class ActionService extends BaseService
         $controlClassName = 'Controller';
 		$className = $actionName . 'Action';
 
+        extract($this->getModuleRootPath($this->mdltype));
+
 		if ($mdlname) {
-            $moduleNamespace = "app\\modules\\{$this->mdlname}\\controller";
-            $modulePath = ocPath('application', 'modules/' . $this->mdlname);
+            $moduleNamespace = $rootNamespace . "\\{$this->mdlname}\\controller";
+            $modulePath = $rootModulePath . OC_DIR_SEP . $this->mdlname;
         } else {
-            $moduleNamespace = 'app\controller';
-            $modulePath = ocDir(OC_APPLICATION_PATH);
+            $moduleNamespace = $rootNamespace;
+            $modulePath = $rootModulePath;
         }
 
         $controlPath = ocCommPath(ocDir($modulePath, 'controller', $this->cname));

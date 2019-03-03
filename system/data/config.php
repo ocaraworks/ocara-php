@@ -173,6 +173,8 @@ return array(
             'controller'  	=> 'application/controllers',
             'dal'           => 'application',
             'modules'  	    => 'application',
+            'console'  	    => 'application',
+            'assist'  	    => 'application',
             'service'  	    => 'application',
             'view'  	  	=> 'application',
 
@@ -194,7 +196,7 @@ return array(
             'logs'          => 'runtime',
             'sessions'      => 'runtime',
 
-            'library'	    => '',
+            'library'	    => 'application',
             'pass'			=> '',
     
             'attachments' 	=> 'public',

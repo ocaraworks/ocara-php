@@ -3,6 +3,13 @@
 <div class="section-title">添加控制器</div>
 <div class="section-body">
 <form id="" action="<?php echo ocUrl(array(OC_MODULE_NAME, 'generate', 'action'), array('target' => 'controller'));?>" method="post">
+<div>
+    <span class="left-span">模块类型</span>
+    <input type="radio" value="" name="mdltype" id="mdltype1" checked /> 默认全局&nbsp;
+    <input type="radio" value="modules" name="mdltype" id="mdltype2" /> 普通模块（modules）
+    <input type="radio" value="console" name="mdltype" id="mdltype3" /> 命令模块（console）
+    <input type="radio" value="assist" name="mdltype" id="mdltype4" /> 工具模块（assist）
+</div>
 
 <div>
     <span class="left-span">控制器类型</span>
