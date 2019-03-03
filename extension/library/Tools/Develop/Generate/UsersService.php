@@ -47,8 +47,9 @@ class UsersService extends BaseService
 			$content .= ");";
 		}
 
-        ocService()->file->createFile($path, 'wb');
-        ocService()->file->writeFile($path, $content);
+		$fileService = ocService()->file;
+        $fileService->createFile($path, 'wb');
+        $fileService->writeFile($path, $content);
 	}
 }
 

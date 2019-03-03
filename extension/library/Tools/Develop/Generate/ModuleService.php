@@ -75,8 +75,9 @@ class ModuleService extends BaseService
             $this->showError('模块(Module)文件已存在，如果需要覆盖，请先手动删除！');
 		}
 
-        ocService()->file->createFile($path, 'wb');
-        ocService()->file->writeFile($path, $content);
+        $fileService = ocService()->file;
+        $fileService->createFile($path, 'wb');
+        $fileService->writeFile($path, $content);
 	}
 }
 

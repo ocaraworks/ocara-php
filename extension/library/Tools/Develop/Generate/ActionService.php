@@ -200,8 +200,9 @@ class ActionService extends BaseService
 
 		$content  .= "}";
 
-		ocService()->file->createFile($actionFile , 'wb');
-		ocService()->file->writeFile($actionFile, $content);
+        $fileService = ocService()->file;
+        $fileService->createFile($actionFile , 'wb');
+        $fileService->writeFile($actionFile, $content);
 
 		$this->createview && $this->createView($actionNamespace . OC_NS_SEP . $className);
 	}

@@ -156,8 +156,9 @@ class ModelService extends BaseService
 		$content .= "\tprotected function _model()\r\n\t{}\r\n";
 		$content .= "}";
 
-        ocService()->file->createFile($path, 'wb');
-        ocService()->file->writeFile($path, $content);
+        $fileService = ocService()->file;
+        $fileService->createFile($path, 'wb');
+        $fileService->writeFile($path, $content);
 
         //新建实体模型
         $content = "<?php\r\n";
@@ -168,8 +169,8 @@ class ModelService extends BaseService
         $content .= "{\r\n";
         $content .= "}";
 
-        ocService()->file->createFile($entityPath, 'wb');
-        ocService()->file->writeFile($entityPath, $content);
+        $fileService->createFile($entityPath, 'wb');
+        $fileService->writeFile($entityPath, $content);
 
         $model = new $modelClass();
         $paths = $model->getConfigPath();
@@ -184,7 +185,7 @@ class ModelService extends BaseService
         }
 
 		//新建字段配置
-		$fileCache = new FileCache();
+		$fileCache = ocService()->fileCache;;
 		$modelFile = lcfirst($modelName);
 
 		$fileCache->setData(array(), "CONF['MAP']", '字段别名映射');

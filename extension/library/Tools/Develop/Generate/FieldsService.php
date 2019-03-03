@@ -38,8 +38,8 @@ class FieldsService extends BaseService
 		$model->loadFields(false);
 		$fields = $model->getFields();
 
-		$fileCache = FileCache::build();
-		$fileCache->format();
+		$fileCache = ocService()->fileCache;
+        $fileCache->format();
 		$fileCache->setData($fields, null, $this->_model . ' Fields');
 		$fileCache->save($paths['fields']);
 	}

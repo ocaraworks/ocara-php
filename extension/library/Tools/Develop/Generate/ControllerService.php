@@ -151,8 +151,9 @@ class ControllerService extends BaseService
 
         ocCheckPath($controlPath . $this->cname);
 
-        ocService()->file->createFile($path, 'wb');
-        ocService()->file->writeFile($path, $content, true);
+        $fileService = ocService()->file;
+        $fileService->createFile($path, 'wb');
+        $fileService->writeFile($path, $content, true);
 
         $this->createAction();
 	}
