@@ -21,7 +21,7 @@ class Loader extends Basis
 
     public function __construct()
     {
-        $this->_defaultPath = OC_ROOT . 'library/';
+        $this->_defaultPath = OC_APPLICATION_PATH . 'library';
 
         $config = ocContainer()->config;
         $defaultAutoMap = $config->getDefault('NAMESPACE_MAP', array());
@@ -86,7 +86,7 @@ class Loader extends Basis
             }
             $filePath .= '.php';
         }  else {
-            $filePath = $this->_defaultPath . $newClass . '.php';
+            $filePath = $this->_defaultPath . OC_DIR_SEP . $newClass . '.php';
         }
 
         $filePath = ocCommPath($filePath);

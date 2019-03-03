@@ -21,7 +21,7 @@ class Common extends Base
      */
     public function dispatch($route, $moduleNamespace = null)
     {
-        $moduleNamespace = $moduleNamespace ? ocNamespace($moduleNamespace): 'app\modules';
+        $moduleNamespace = $moduleNamespace ? ocNamespace($moduleNamespace): 'app\modules' . OC_NS_SEP;
         if (empty($route['controller']) || empty($route['action'])) {
             ocService()->error->show('null_route');
         }
@@ -39,7 +39,7 @@ class Common extends Base
             $cNamespace = sprintf('app\controller\%s\\', $route['controller']);
         }
 
-        $cClass = $cNamespace . $uController . 'Controller';
+        $cClass = $cNamespace . 'Controller';
         $method = $route['action'] . 'Action';
 
         if (!class_exists($cClass)) {
@@ -47,7 +47,7 @@ class Common extends Base
         }
 
         if (!method_exists($cClass, $method)) {
-            $aClass = $cNamespace . 'actions\\' . $uAction . 'Action';
+            $aClass = $cNamespace . $uAction . 'Action';
             if (class_exists($aClass)) {
                 $cClass = $aClass;
                 $method = '_action';

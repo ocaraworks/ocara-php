@@ -84,13 +84,17 @@ class ControllerService extends BaseService
 	{
 		$mdlname = ucfirst($this->mdlname);
 		$cname = ucfirst($this->cname);
-
-		$className = $cname . 'Controller';
+		$className = 'Controller';
 		$moduleClassName = $mdlname . 'Module';
 
-		$modulePath = OC_APPLICATION_PATH . 'modules/' . $mdlname;
-        $controlPath = $modulePath . "/controller";
-        $moduleClassPath = $controlPath . "/{$moduleClassName}.php";
+		if ($this->mdlname) {
+            $modulePath = ocPath('modules', $this->mdlname . OC_DIR_SEP);
+        } else {
+            $modulePath = OC_APPLICATION_PATH;
+		}
+
+        $controlPath = $modulePath . "controller/";
+        $moduleClassPath = $controlPath . "{$moduleClassName}.php";
 
 		if (empty($this->cname) || empty($this->ttype)) {
 			$this->showError('控制器名称和模板类型为必填信息！');
@@ -124,7 +128,7 @@ class ControllerService extends BaseService
             }
         }
 
-        $path = $controlPath . OC_DIR_SEP . $this->cname . "/{$className}.php";
+        $path = $controlPath . $this->cname . "/{$className}.php";
 		if (ocFileExists($path)) {
 			$this->showError("模块或控制器文件已存在，如果需要覆盖，请先手动删除！");
 		}
@@ -143,8 +147,7 @@ class ControllerService extends BaseService
 		$content  .= "\tprotected function _control()\r\n\t{}\r\n";
 		$content  .= "}";
 
-        ocCheckPath($controlPath . OC_DIR_SEP . $this->cname);
-        ocCheckPath($controlPath . OC_DIR_SEP . $this->cname . '/actions');
+        ocCheckPath($controlPath . $this->cname);
 
         ocService()->file->createFile($path, 'wb');
         ocService()->file->writeFile($path, $content, true);

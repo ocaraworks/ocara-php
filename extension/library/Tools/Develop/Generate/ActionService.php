@@ -124,7 +124,7 @@ class ActionService extends BaseService
 		$actionName = ucfirst($this->actionName);
 
 		$moduleClassName = $mdlname . 'Module';
-        $controlClassName = $cname . 'Controller';
+        $controlClassName = 'Controller';
 		$className = $actionName . 'Action';
 
 		if ($mdlname) {
@@ -137,11 +137,11 @@ class ActionService extends BaseService
 
         $controlPath = ocCommPath(ocDir($modulePath, 'controller', $this->cname));
         $controllerClassPath = ocCommPath($controlPath . $controlClassName. '.php');
-        $controlNamespace = ocNamespace($moduleNamespace, $this->cname);
-        $controllerClass = $controlNamespace . $controlClassName;
+        $controlNamespace = ocNamespace($moduleNamespace) . $this->cname;
+        $controllerClass = $controlNamespace . OC_NS_SEP . $controlClassName;
 
-        $actionNamespace = $controlNamespace . 'actions';
-        $actionFile = ocCommPath($controlPath . 'actions/' . $className . '.php');
+        $actionNamespace = $controlNamespace;
+        $actionFile = ocCommPath($controlPath . OC_DIR_SEP . $className . '.php');
 
 		if (!is_dir($modulePath)) {
             $this->showError("{$this->mdlname}模块目录不存在.请先添加该模块。");
@@ -161,7 +161,7 @@ class ActionService extends BaseService
 
 		$this->controllerType = $controllerClass::providerType();
 
-		ocCheckPath($controlPath . '/actions/');
+		ocCheckPath($controlPath);
 
 		if (ocFileExists($actionFile)) {
             $this->showError('动作文件已存在，如果需要覆盖，请先手动删除！');
@@ -170,7 +170,7 @@ class ActionService extends BaseService
 		$content  = "<?php\r\n";
 		$content .= "namespace {$actionNamespace};\r\n";
         $content .= "\r\n";
-		$content .= "use $controlNamespace{$controlClassName};\r\n";
+		$content .= "use $controlNamespace\\{$controlClassName};\r\n";
 
 		$content .= "\r\n";
 		$content .= "class {$className} extends {$controlClassName}\r\n";
