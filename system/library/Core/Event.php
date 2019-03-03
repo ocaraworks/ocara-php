@@ -221,7 +221,7 @@ class Event extends Basis implements EventInterface
      */
     public function trigger($eventObject, array $params = array())
     {
-        $params = array_merge(array($eventObject, $this), $params);
+        $params = array_merge($params, array($this, $eventObject));
         $results = array();
 
         if ($this->_properties) {

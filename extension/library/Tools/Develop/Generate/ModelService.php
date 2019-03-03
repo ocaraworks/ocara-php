@@ -185,7 +185,7 @@ class ModelService extends BaseService
         }
 
 		//新建字段配置
-		$fileCache = ocService()->fileCache;;
+		$fileCache = ocService()->fileCache;
 		$modelFile = lcfirst($modelName);
 
 		$fileCache->setData(array(), "CONF['MAP']", '字段别名映射');

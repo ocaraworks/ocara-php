@@ -251,6 +251,13 @@ class Controller extends serviceProvider implements ControllerInterface
     }
 
     /**
+     * 后置处理
+     * @param Event $event
+     */
+    public function after()
+    {}
+
+    /**
      * 开启/关闭/检测表单验证功能
      * @param null $check
      * @return bool
