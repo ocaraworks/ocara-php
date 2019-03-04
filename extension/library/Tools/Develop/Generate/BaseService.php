@@ -13,15 +13,15 @@ class BaseService
 {
     public static $config =  array(
         'actions' => array(
-            '_form'     => '表单生成',
-            '_display'  => '输出模板',
-            '_submit'   => '提交后处理',
-            '_ajax'     => 'Ajax处理'
+            'registerForms' => '表单注册',
+            'display'       => '输出模板',
+            'submit'        => '提交后处理',
+            'ajax'          => 'Ajax处理'
         ),
         'controller_actions' => array(
             'Common' => array(
-                '_form',    '_display',
-                '_submit',  '_ajax'
+                'registerForms',    'display',
+                'submit',  'ajax'
             ),
             'Rest' => array()
         )

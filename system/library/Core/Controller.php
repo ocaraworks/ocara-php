@@ -19,19 +19,17 @@ class Controller extends serviceProvider implements ControllerInterface
 {
 	/**
 	 * @var $_provider 控制器提供者
+     * @var $_isFormSubmit 是否POST提交
+     * @var $_checkForm 是否检测表单
 	 */
 	protected $_models;
 	protected $_provider;
-    protected $_isSubmit = null;
+    protected $_isFormSubmit = null;
     protected $_submitMethod = 'post';
     protected $_checkForm = true;
 
     protected static $_providerType;
 
-    /**
-     * @var $_isSubmit 是否POST提交
-     * @var $_checkForm 是否检测表单
-     */
     const EVENT_AFTER = 'after';
     const EVENT_AFTER_CREATE_FORM = 'afterCreateForm';
 
@@ -51,9 +49,9 @@ class Controller extends serviceProvider implements ControllerInterface
         $this->_provider->bindEvents($this);
 		$this->config->set('SOURCE.ajax.return_result', array($this->_provider, 'formatAjaxResult'));
 
-		method_exists($this, '_start') && $this->_start();
-		method_exists($this, '_module') && $this->_module();
-		method_exists($this, '_control') && $this->_control();
+		method_exists($this, '__start') && $this->__start();
+		method_exists($this, '__module') && $this->__module();
+		method_exists($this, '__control') && $this->__control();
 	}
 
     /**
@@ -103,11 +101,11 @@ class Controller extends serviceProvider implements ControllerInterface
 	{
         $doWay = $this->_provider->getDoWay();
 
-		if (!$this->isSubmit()) {
-			if (method_exists($this, '_isSubmit')) {
-				$this->isSubmit($this->_isSubmit());
+		if (!$this->isFormSubmit()) {
+			if (method_exists($this, 'isSubmit')) {
+				$this->isFormSubmit($this->isSubmit());
 			} elseif ($this->submitMethod() == 'post') {
-				$this->isSubmit($this->request->isPost());
+				$this->isFormSubmit($this->request->isPost());
 			}
 		}
 
@@ -126,24 +124,24 @@ class Controller extends serviceProvider implements ControllerInterface
      */
 	public function doCommonAction($actionMethod)
 	{
-	    if ($actionMethod == '_action') {
-            method_exists($this, '_action') && $this->_action();
-            method_exists($this, '_form') && $this->_form();
+	    if ($actionMethod == '__action') {
+            method_exists($this, '__action') && $this->__action();
+            method_exists($this, 'registerForms') && $this->registerForms();
             $this->checkForm();
 
             if ($this->request->isAjax()) {
                 $result = null;
-                if (method_exists($this, '_ajax')) {
-                    $result = $this->_ajax();
+                if (method_exists($this, 'ajax')) {
+                    $result = $this->ajax();
                 }
                 if (!$this->_provider->hasRender()) {
                     $this->_provider->renderAjax($result);
                 }
-            } elseif ($this->isSubmit() && method_exists($this, '_submit')) {
-                $this->_submit();
+            } elseif ($this->isFormSubmit() && method_exists($this, 'submit')) {
+                $this->submit();
                 $this->_provider->formManager->clearToken();
             } else{
-                method_exists($this, '_display') && $this->_display();
+                method_exists($this, 'display') && $this->display();
                 if (!$this->_provider->hasRender()) {
                     $this->_provider->renderFile();
                 }
@@ -165,7 +163,7 @@ class Controller extends serviceProvider implements ControllerInterface
 		if ($actionMethod) {
             $result = $this->$actionMethod();
 		} else {
-            $result = $this->_action();
+            $result = $this->__action();
 		}
 
 		$this->_provider->renderApi($result);
@@ -187,15 +185,15 @@ class Controller extends serviceProvider implements ControllerInterface
 
     /**
      * 设置和获取是否表单提交
-     * @param bool $isSubmit
+     * @param bool $isFormSubmit
      * @return bool
      */
-    public function isSubmit($isSubmit = null)
+    public function isFormSubmit($isFormSubmit = null)
     {
-        if (isset($isSubmit)) {
-            $this->_isSubmit = $isSubmit ? true : false;
+        if (isset($isFormSubmit)) {
+            $this->_isFormSubmit = $isFormSubmit ? true : false;
         } else {
-            return $this->_isSubmit;
+            return $this->_isFormSubmit;
         }
     }
 
@@ -206,7 +204,7 @@ class Controller extends serviceProvider implements ControllerInterface
      * @return mixed
      * @throws \Ocara\Exceptions\Exception
      */
-    public function getSubmit($key = null, $default = null)
+    public function getSubmitData($key = null, $default = null)
     {
         $data = $this->_submitMethod == 'post' ? $_POST : $_GET;
         $data = ocService()->request->getRequestValue($data, $key, $default);
@@ -305,16 +303,16 @@ class Controller extends serviceProvider implements ControllerInterface
      */
     public function checkForm()
     {
-        $this->isSubmit();
-        if (!($this->_isSubmit && $this->_checkForm && $this->formManager->get()))
+        $this->isFormSubmit();
+        if (!($this->_isFormSubmit && $this->_checkForm && $this->formManager->get()))
             return true;
 
         $tokenTag  = $this->formToken->getTokenTag();
-        $postToken = $this->getSubmit($tokenTag);
+        $postToken = $this->getSubmitData($tokenTag);
         $postForm = $this->formManager->getSubmitForm($postToken);
 
         if ($postForm) {
-            $data = $this->getSubmit();
+            $data = $this->getSubmitData();
             $this->formManager->validate($postForm, $data);
         }
 

@@ -182,7 +182,7 @@ class ActionService extends BaseService
 		$content .= "\t/**\r\n";
 		$content .= "\t * 初始化\r\n";
 		$content .= "\t */\r\n";
-		$content .= "\tprotected function _action()\r\n";
+		$content .= "\tprotected function __action()\r\n";
 		$content .= "\t{}\r\n";
 
 		$actions = self::$config['controller_actions'][$this->controllerType];
@@ -193,7 +193,7 @@ class ActionService extends BaseService
 				$content .= "\t/**\r\n";
 				$content .= "\t * {$actionDesc}\r\n";
 				$content .= "\t */\r\n";
-				$content .= "\tprotected function {$actionName}()\r\n";
+				$content .= "\tpublic function {$actionName}()\r\n";
 				$content .= "\t{}\r\n";
 			}
 		}

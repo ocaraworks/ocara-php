@@ -105,7 +105,7 @@ class CacheModelService extends BaseService
         $content .= "\t/**\r\n";
         $content .= "\t * 初始化模型\r\n";
         $content .= "\t */\r\n";
-        $content .= "\tprotected function _model()\r\n\t{}\r\n";
+        $content .= "\tpublic function __model()\r\n\t{}\r\n";
         $content .= "}";
 
         $fileService = ocService()->file;

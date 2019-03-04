@@ -12,7 +12,7 @@ class Session extends Database implements SessionInerface
 	/**
 	 * 初始化模型
 	 */
-	protected function _model()
+	public function __model()
 	{}
 
 	/**

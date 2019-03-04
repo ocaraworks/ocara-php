@@ -50,7 +50,7 @@ class Common extends Base
             $aClass = $cNamespace . $uAction . 'Action';
             if (class_exists($aClass)) {
                 $cClass = $aClass;
-                $method = '_action';
+                $method = '__action';
             }
         }
 

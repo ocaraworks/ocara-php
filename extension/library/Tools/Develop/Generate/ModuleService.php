@@ -53,7 +53,7 @@ class ModuleService extends BaseService
 		$content .= "\t/**\r\n";
 		$content .= "\t * 初始化模块\r\n";
 		$content .= "\t */\r\n";
-		$content .= "\tprotected function _module()\r\n\t{}\r\n";
+		$content .= "\tpublic function __module()\r\n\t{}\r\n";
 		$content .= "}";
 
         $language = ocService()->app->getLanguage();

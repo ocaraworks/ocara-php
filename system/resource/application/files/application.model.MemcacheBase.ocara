@@ -7,6 +7,6 @@ use Ocara\Models\Cache;
 
 abstract class MemcacheBase extends Cache
 {
-    public function _start()
+    public function __start()
     {}
 }

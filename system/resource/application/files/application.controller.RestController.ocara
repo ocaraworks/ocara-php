@@ -10,7 +10,7 @@ use Ocara\Core\Error;
 
 abstract class RestController extends Rest
 {
-	public function _start()
+	public function __start()
 	{
 	}
 }
