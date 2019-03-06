@@ -196,7 +196,7 @@ return array(
             'logs'          => 'runtime',
             'sessions'      => 'runtime',
 
-            'library'	    => 'application',
+            'library'	    => '',
             'pass'			=> '',
     
             'attachments' 	=> 'public',
