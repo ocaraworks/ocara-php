@@ -1,18 +1,17 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocaraå¼€æºæ¡†æž¶   æ™®é€šè§†å›¾ç±»View
+ * Ocara¿ªÔ´¿ò¼Ü   ÆÕÍ¨¿ØÖÆÆ÷ÀàRest
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Views;
+namespace Ocara\Controllers;
 
-use Ocara\Core\ViewBase;
-use Ocara\Interfaces\View as ViewInterfaces;
+use Ocara\Core\BaseController;
 
-defined('OC_PATH') or exit('Forbidden!');
-
-class Api extends ViewBase implements ViewInterfaces
+class Rest extends BaseController
 {
+    protected static $_controllerType = 'Rest';
+    protected $_isApi = true;
 }

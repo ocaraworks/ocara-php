@@ -8,7 +8,6 @@
  ************************************************************************************************/
 namespace Ocara\Controllers\Provider;
 
-use Ocara\Core\DatabaseFactory;
 use Ocara\Core\ServiceProvider;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -40,52 +39,6 @@ class Base extends ServiceProvider
     }
 
     /**
-     * 渲染模板
-     * @param null $file
-     * @param array $vars
-     * @throws \Ocara\Exceptions\Exception
-     */
-    public function renderFile($file = null, array $vars = array())
-    {
-        $this->formManager->setToken();
-
-        if (empty($file)) {
-            $tpl = $this->view->getTpl();
-            if (empty($tpl)) {
-                $this->view->setTpl(ocService()->app->getRoute('action'));
-            }
-        }
-
-        $content = $this->view->render($file, $vars, false);
-        $this->view->output(compact('content'));
-        $this->_hasRender = true;
-    }
-
-    /**
-     * 渲染Ajax数据
-     * @param string $data
-     */
-    public function renderAjax($data = '')
-    {
-        $this->response->setContentType($this->_apiContentType);
-        $this->ajax->render('success', $this->getMessage(), $data);
-        $this->_hasRender = true;
-    }
-
-    /**
-     * 渲染API数据
-     * @param string $data
-     */
-    public function renderApi($data = '')
-    {
-        $message = $this->getMessage();
-        $contentType = $this->_apiContentType;
-
-        $this->view->output(compact('contentType', 'message', 'data'));
-        $this->_hasRender = true;
-    }
-
-    /**
      * 获取返回信息
      * @return mixed
      */
@@ -103,38 +56,5 @@ class Base extends ServiceProvider
         }
 
         return $message;
-    }
-
-    /**
-     * 是否已渲染
-     * @return mixed
-     */
-    public function hasRender()
-    {
-        return $this->_hasRender;
-    }
-
-    /**
-     * 设置返回消息
-     * @param $message
-     */
-    public function setMessage($message)
-    {
-        $this->_message = $message;
-    }
-
-    /**
-     * 注册基本组件
-     */
-    public function register()
-    {
-        $this->_container->bindSingleton('db', function(){
-            DatabaseFactory::create();
-        });
-
-        $services = ocConfig('CONTROLLER_SERVICE_CLASS.Common');
-        foreach ($services as $name => $class) {
-            $this->_container->bindSingleton($name, $class, array());
-        }
     }
 }

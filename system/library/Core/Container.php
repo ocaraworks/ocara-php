@@ -39,11 +39,12 @@ class Container extends Basis
 
     /**
      * 单例模式绑定实例
-     * @param string $name
-     * @param mixed $source
+     * @param $name
+     * @param null $source
      * @param array $params
      * @param array $deps
      * @return $this
+     * @throws Exception
      */
     public function bindSingleton($name, $source = null, array $params = array(), array $deps = array())
     {
@@ -66,11 +67,12 @@ class Container extends Basis
 
     /**
      * 绑定实例
-     * @param string $name
-     * @param mixed $source
+     * @param $name
+     * @param null $source
      * @param array $params
      * @param array $deps
      * @return $this
+     * @throws Exception
      */
     public function bind($name, $source = null, array $params = array(), array $deps = array())
     {
@@ -127,12 +129,10 @@ class Container extends Basis
 
     /**
      * 获取绑定数组
-     * @param string $name
-     * @param mixed $source
-     * @param array $params
-     * @param array $deps
-     * @return mixed
-     * @throws Exception
+     * @param $source
+     * @param $params
+     * @param $deps
+     * @return array
      */
     protected function _getMatterArray($source, $params, $deps)
     {
@@ -147,10 +147,12 @@ class Container extends Basis
 
     /**
      * 获取实例
-     * @param string $name
+     * @param null $name
      * @param array $params
      * @param array $deps
-     * @return array|mixed
+     * @return array|mixed|object|自定义属性|null
+     * @throws Exception
+     * @throws \ReflectionException
      */
     public function get($name = null, array $params = array(), array $deps = array())
     {
@@ -213,11 +215,12 @@ class Container extends Basis
 
     /**
      * 新建实例
-     * @param string $name
+     * @param $name
      * @param array $params
      * @param array $deps
-     * @return mixed
+     * @return array|mixed|object|null
      * @throws Exception
+     * @throws \ReflectionException
      */
     public function create($name, array $params = array(), array $deps = array())
     {
@@ -233,11 +236,12 @@ class Container extends Basis
 
     /**
      * 生产实例
-     * @param string $name
+     * @param $name
      * @param array $params
      * @param array $deps
-     * @return mixed
+     * @return array|mixed|object|null
      * @throws Exception
+     * @throws \ReflectionException
      */
     public function make($name, array $params = array(), array $deps = array())
     {
@@ -282,6 +286,9 @@ class Container extends Basis
     /**
      * 获取对象实例
      * @param $matter
+     * @param $params
+     * @param $deps
+     * @return array|mixed|object|null
      * @throws Exception
      * @throws \ReflectionException
      */
@@ -380,8 +387,7 @@ class Container extends Basis
     /**
      * 魔术方法-获取自定义属性
      * @param string $property
-     * @return mixed
-     * @throws Exception
+     * @return array|mixed
      */
     public function __get($property)
     {

@@ -148,17 +148,12 @@ class Response extends Base
      * 内部路由跳转
      * @param $route
      * @param array $params
-     * @param bool $die
-     * @throws \Ocara\Exceptions\Exception
+     * @param null $moduleNamespace
      */
-	public function jump($route, array $params = array(), $die = true)
+	public function jump($route, array $params = array(), $moduleNamespace = null)
 	{
 		if ($route) {
-			if (!headers_sent()) {
-				header_remove('location');
-				header('location:' . ocUrl($route, $params));
-			}
-			$die && die();
+            ocService()->app->run($route, $params, $moduleNamespace);
 		} else {
 			ocService('error', true)->show('not_null', array('route'));
 		}

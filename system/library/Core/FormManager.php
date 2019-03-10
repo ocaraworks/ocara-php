@@ -17,17 +17,17 @@ class FormManager extends ServiceProvider
 {
     const EVENT_CHECK_ERROR = 'checkError';
 
-	/**
-	 * 注册服务
-	 * @param array $data
-	 */
+    /**
+     * 注册服务
+     * @throws Exception
+     */
 	public function register()
 	{
 		$validator = ocConfig('SERVICE.validator', '\Ocara\Core\Validator');
 		$validate = ocConfig('SERVICE.validate', '\Ocara\Service\Validate');
 
 		$this->_container
-			->bindSingleton('validator', $validator, array($validate));
+			 ->bindSingleton('validator', $validator, array($validate));
 	}
 
     /**
@@ -37,14 +37,15 @@ class FormManager extends ServiceProvider
     public function registerEvents()
     {
         $this->event(self::EVENT_CHECK_ERROR)
-            ->append(ocConfig(array('EVENT', 'form', 'check_error'), null));
+             ->append(ocConfig(array('EVENT', 'form', 'check_error'), null));
     }
 
-	/**
-	 * 新建表单
-	 * @param $name
-	 * @return Form
-	 */
+    /**
+     * 新建表单
+     * @param $name
+     * @return mixed
+     * @throws Exception
+     */
 	public function create($name)
 	{
 		$form = $this->createService('form', array($name));
@@ -61,10 +62,11 @@ class FormManager extends ServiceProvider
         return $this->getService($name);
     }
 
-	/**
-	 * 获取提交的表单
-	 * @return null
-	 */
+    /**
+     * 获取提交的表单
+     * @param $postToken
+     * @return |null
+     */
 	public function getSubmitForm($postToken)
 	{
 		$postForm  = null;
@@ -112,15 +114,17 @@ class FormManager extends ServiceProvider
 	 */
 	public function setToken()
 	{
-		$tokenTag = $this->formToken->getTokenTag();
         $forms = $this->getProperty();
 
-		foreach ($forms as $formName => $form) {
-			if (is_object($form) && $form instanceof Form) {
-				$token = $this->formToken->setToken($formName);
-				$form->setToken($tokenTag, $token);
-			}
-		}
+        if ($forms) {
+            $tokenTag = $this->formToken->getTokenTag();
+            foreach ($forms as $formName => $form) {
+                if (is_object($form) && $form instanceof Form) {
+                    $token = $this->formToken->setToken($formName);
+                    $form->setToken($tokenTag, $token);
+                }
+            }
+        }
 	}
 
 	/**
@@ -145,10 +149,8 @@ class FormManager extends ServiceProvider
 
 		if ($this->event(self::EVENT_CHECK_ERROR)->get()) {
 			$this->fire(self::EVENT_CHECK_ERROR, array($error, $this->getRoute()));
-		} else {
-			ocService()->error->show($error['errorInfo']);
 		}
 
-		die();
+        ocService()->error->show($error['errorInfo']);
 	}
 }

@@ -24,13 +24,16 @@ class Common extends BootstrapBase implements BootstrapInterface
     /**
      * 运行访问控制器
      * @param array|string $route
+     * @param array $params
+     * @param null $moduleNamespace
      * @return mixed
      */
-    public function start($route)
+    public function start($route, $params = array(), $moduleNamespace = null)
     {
+        $moduleNamespace = $moduleNamespace ? : OC_MODULE_NAMESPACE;
         $this->fire(self::EVENT_BEFORE_DISPATCH);
 
-        ocService()->dispatcher->dispatch($route, OC_MODULE_NAMESPACE);
+        ocService()->dispatcher->dispatch($route, $moduleNamespace, $params);
 
         $response = ocService()->response;
         $response->sendHeaders();

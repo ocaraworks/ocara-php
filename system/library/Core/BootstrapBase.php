@@ -23,7 +23,7 @@ abstract class BootstrapBase extends Base
     public function registerEvents()
     {
         $this->event(self::EVENT_DIE)
-            ->append(ocConfig('EVENT.oc_die', null));
+             ->append(ocConfig('EVENT.oc_die', null));
 
         $this->bindEvents(ocConfig('EVENT.log', ocService()->log));
 
@@ -46,39 +46,5 @@ abstract class BootstrapBase extends Base
         if (!@ini_get('short_open_tag')) {
             ocService()->error->show('need_short_open_tag');
         }
-    }
-
-    /**
-     * 加载路由配置
-     * @param array $route
-     * @return mixed
-     * @throws \Ocara\Exceptions\Exception
-     */
-    public function loadRouteConfig(array $route)
-    {
-        if (empty($route['module'])) {
-            $route['module'] = OC_DEFAULT_MODULE;
-        }
-
-        $service = ocService();
-        $service->config->loadModuleConfig($route);
-        $service->lang->loadModuleConfig($route);
-
-        if (empty($route['controller'])) {
-            $route['controller'] = ocConfig('DEFAULT_CONTROLLER');
-        }
-
-        if (empty($route['action'])) {
-            $route['action'] = ocConfig('DEFAULT_ACTION');
-        }
-
-        $service->app->setRoute($route);
-
-        $service->config->loadControllerConfig($route);
-        $service->config->loadActionConfig($route);
-        $service->lang->loadControllerConfig($route);
-        $service->lang->loadActionConfig($route);
-
-        return $route;
     }
 }

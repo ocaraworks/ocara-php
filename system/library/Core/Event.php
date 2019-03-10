@@ -58,7 +58,6 @@ class Event extends Basis implements EventInterface
      * 新建事件处理器
      * @param $callback
      * @param int $args
-     * @throws \Ocara\Exceptions\Exception
      */
     protected function _create($callback, $args = 0)
     {

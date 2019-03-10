@@ -9,6 +9,7 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
+use Ocara\Core\BaseController;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -40,8 +41,8 @@ class Route extends Base
             $moduleClass = 'app\controller\\' . 'Module';
         }
 
-        $providerType = $moduleClass::providerType();
-        $featureClass = self::getFeatureClass($providerType);
+        $controllerType = $moduleClass::controllerType();
+        $featureClass = BaseController::getFeatureClass($controllerType);
 
         if (!ocClassExists($featureClass)) {
             ocService()->error->show('not_exists_class', $featureClass);
@@ -55,44 +56,6 @@ class Route extends Base
         }
 
         return $route;
-    }
-
-    /**
-     * 获取提供器特性类
-     * @param $providerType
-     * @return string
-     * @throws \Ocara\Exceptions\Exception
-     */
-    public static function getFeatureClass($providerType)
-    {
-        $features = ocConfig(array('ROUTE', 'features'), array());
-
-        if (isset($features[$providerType])) {
-            $class = $features[$providerType];
-        } else {
-            $class = "\\Ocara\\Controllers\\Feature\\{$providerType}";
-        }
-
-        return $class;
-    }
-
-    /**
-     * 获取提供器类
-     * @param $providerType
-     * @return string
-     * @throws \Ocara\Exceptions\Exception
-     */
-    public static function getProviderClass($providerType)
-    {
-        $providers = ocConfig(array('ROUTE', 'providers'), array());
-
-        if (isset($providers[$providerType])) {
-            $class = $providers[$providerType];
-        } else {
-            $class = "\\Ocara\\Controllers\\Provider\\{$providerType}";
-        }
-
-        return $class;
     }
 
     /**

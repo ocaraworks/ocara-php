@@ -12,9 +12,4 @@ defined('OC_PATH') or exit('Forbidden!');
 
 interface View
 {
-	/**
-	 * 输出内容
-	 * @param array $data
-	 */
-	public function output($data);
 }

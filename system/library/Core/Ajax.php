@@ -61,7 +61,6 @@ class Ajax extends Base
 	public function render($status, $message = array(), $body = OC_EMPTY)
 	{
 	    $services = ocService();
-
         if (!is_array($message)) {
 			$message = $services->lang->get($message);
 		}

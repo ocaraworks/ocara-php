@@ -44,7 +44,6 @@ abstract class Base extends Basis
      * 获取自定义属性
      * @param string $name
      * @return array|mixed|自定义属性
-     * @throws \Ocara\Exceptions\Exception
      */
     public function &getProperty($name = null)
     {
@@ -67,7 +66,6 @@ abstract class Base extends Basis
      * @param string $name
      * @param $params
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function __call($name, $params)
 	{
@@ -92,7 +90,6 @@ abstract class Base extends Basis
      * @param string $name
      * @param array $params
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
      */
     public static function __callStatic($name, $params)
     {
@@ -103,7 +100,6 @@ abstract class Base extends Basis
      * 魔术方法-获取自定义属性
      * @param string $key
      * @return array|mixed|自定义属性
-     * @throws \Ocara\Exceptions\Exception
      */
     public function __get($key)
     {

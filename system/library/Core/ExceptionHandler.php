@@ -66,7 +66,6 @@ class ExceptionHandler extends Base
     /**
      * 错误处理
      * @param $exception
-     * @throws \Ocara\Exceptions\Exception
      */
     public function handler($exception)
     {

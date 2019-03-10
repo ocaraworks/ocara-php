@@ -95,6 +95,19 @@ class Application extends Basis
     }
 
     /**
+     * 执行控制器路由
+     * @param $route
+     * @param array $params
+     * @param null $moduleNamespace
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public function run($route, $params = array(), $moduleNamespace = null)
+    {
+        $this->loadRouteConfig($route);
+        $this->_bootstrap->start($route, $params, $moduleNamespace);
+    }
+
+    /**
      * 解析路由
      * @return array
      */
@@ -132,10 +145,6 @@ class Application extends Basis
      */
     public function setRoute($route)
     {
-        if (empty($route['module'])){
-            $route['module'] = 'index';
-        }
-
         $this->_route = $route;
     }
 
@@ -175,5 +184,40 @@ class Application extends Basis
 
         $result = compact('module', 'controller', 'action');
         return $result;
+    }
+
+    /**
+     * 加载路由配置
+     * @param array $route
+     * @return mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public function loadRouteConfig(array $route)
+    {
+        if (empty($route['module'])) {
+            $route['module'] = OC_DEFAULT_MODULE;
+        }
+
+        $service = ocService();
+        $service->config->loadModuleConfig($route);
+        $service->lang->loadModuleConfig($route);
+
+        if (empty($route['controller'])) {
+            $route['controller'] = ocConfig('DEFAULT_CONTROLLER');
+        }
+
+        if (empty($route['action'])) {
+            $route['action'] = ocConfig('DEFAULT_ACTION');
+        }
+
+        $service->app->setRoute($route);
+
+        $service->config->loadControllerConfig($route);
+        $service->config->loadActionConfig($route);
+
+        $service->lang->loadControllerConfig($route);
+        $service->lang->loadActionConfig($route);
+
+        return $route;
     }
 }

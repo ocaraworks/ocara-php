@@ -17,9 +17,10 @@ class Common extends Base
     /**
      * 分发路由控制器
      * @param $route
-     * @throws \Ocara\Exceptions\Exception
+     * @param null $moduleNamespace
+     * @param array $params
      */
-    public function dispatch($route, $moduleNamespace = null)
+    public function dispatch($route, $moduleNamespace = null, $params = array())
     {
         $moduleNamespace = $moduleNamespace ? ocNamespace($moduleNamespace): 'app\modules' . OC_NS_SEP;
         if (empty($route['controller']) || empty($route['action'])) {
@@ -54,8 +55,7 @@ class Common extends Base
             }
         }
 
-        ocContainer()->bindSingleton('controller', $cClass);
-        $Control = ocContainer()->controller;
+        $Control = new $cClass($params);
 
         if (!method_exists($Control, $method)) {
             ocService()->error->show('no_special_action', array('Action', $uAction . 'Action'));
