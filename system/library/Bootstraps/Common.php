@@ -30,15 +30,14 @@ class Common extends BootstrapBase implements BootstrapInterface
      */
     public function start($route, $params = array(), $moduleNamespace = null)
     {
+        $service = ocService();
         $moduleNamespace = $moduleNamespace ? : OC_MODULE_NAMESPACE;
         $this->fire(self::EVENT_BEFORE_DISPATCH);
 
-        ocService()->dispatcher->dispatch($route, $moduleNamespace, $params);
+        $service->dispatcher->dispatch($route, $moduleNamespace, $params);
+        $service->response->sendHeaders();
 
-        $response = ocService()->response;
-        $response->sendHeaders();
-
-        return $response->send();
+        return $service->response->send();
     }
 
     /**

@@ -31,7 +31,6 @@ class ExceptionHandler extends Base
     /**
      * 错误处理
      * @param $exception
-     * @throws \Ocara\Exceptions\Exception
      */
     public function exceptionHandler($exception)
     {
@@ -79,7 +78,7 @@ class ExceptionHandler extends Base
         $this->fire(self::EVENT_OUTPUT, array($exception));
         $this->fire(self::EVENT_AFTER_OUTPUT, array($exception));
 
-        $response->send();
+        $response->send(true);
     }
 
     /**
@@ -89,26 +88,25 @@ class ExceptionHandler extends Base
      * @param $exception
      * @throws \Ocara\Exceptions\Exception
      */
-    public function output($object, $event, $exception)
+    public function output($exception, $event, $object)
     {
         $error = ocGetExceptionData($exception);
         if (ocService('request', true)->isAjax()) {
             $this->_ajaxError($error);
         } else {
             $defaultOutput = ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS.errorOutput');
-            ocService('errorOutput', $defaultOutput)
-                ->display($error);
+            ocService('errorOutput', $defaultOutput)->display($error);
         }
     }
 
     /**
      * 错误报告
-     * @param $object
-     * @param $event
      * @param $exception
+     * @param $event
+     * @param $object
      * @throws \Ocara\Exceptions\Exception
      */
-    public function report($object, $event, $exception)
+    public function report($exception, $event, $object)
     {
         $error = ocGetExceptionData($exception);
         ocService('log', true)
@@ -122,7 +120,6 @@ class ExceptionHandler extends Base
     /**
      * Ajax处理
      * @param $error
-     * @throws \Ocara\Exceptions\Exception
      */
     protected function _ajaxError($error)
     {

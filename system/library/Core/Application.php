@@ -50,11 +50,12 @@ class Application extends Basis
      */
     public function errorReporting($error = null)
     {
-        $sysModel = ocContainer()->config->get('SYS_MODEL', 'application');
+        $container = ocContainer();
+        $sysModel = $container->config->get('SYS_MODEL', 'application');
         $error = $error ? : ($sysModel == 'develop' ? E_ALL : 0);
 
         set_error_handler(
-            array(ocContainer()->exceptionHandler, 'errorHandler'),
+            array($container->exceptionHandler, 'errorHandler'),
             $error
         );
 
@@ -99,12 +100,14 @@ class Application extends Basis
      * @param $route
      * @param array $params
      * @param null $moduleNamespace
+     * @return mixed
      * @throws \Ocara\Exceptions\Exception
      */
     public function run($route, $params = array(), $moduleNamespace = null)
     {
         $this->loadRouteConfig($route);
-        $this->_bootstrap->start($route, $params, $moduleNamespace);
+        $result = $this->_bootstrap->start($route, $params, $moduleNamespace);
+        return $result;
     }
 
     /**
@@ -113,11 +116,13 @@ class Application extends Basis
      */
     public function parseRoute()
     {
+        $service = ocService();
+
         if (!OC_INVOKE) {
-            $_GET = ocService()->url->parseGet();
+            $_GET = $service->url->parseGet();
         }
 
-        list($module, $controller, $action) = ocService()
+        list($module, $controller, $action) = $service
             ->route
             ->parseRouteInfo();
 

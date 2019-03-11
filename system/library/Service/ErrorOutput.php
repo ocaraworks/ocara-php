@@ -62,7 +62,6 @@ class ErrorOutput extends ServiceBase
         $response->setBody($content);
 
         $response->sendHeaders();
-        $response->send();
     }
 
     /**

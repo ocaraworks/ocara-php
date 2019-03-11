@@ -31,6 +31,7 @@ class Response extends Base
 
     protected $_headers = array();
     protected $_body;
+    protected $_isSend;
 
 	/**
 	 * 发送头部信息
@@ -58,10 +59,16 @@ class Response extends Base
 
     /**
      * 发送响应数据
+     * @param bool $stop
      */
-	public function send()
+	public function send($stop = false)
     {
-        echo $this->_body;
+        if (!$this->_isSend) {
+            echo $this->_body;
+            if ($stop){
+                $this->_isSend = true;
+            }
+        }
     }
 
     /**

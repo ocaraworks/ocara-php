@@ -21,10 +21,12 @@ class Route extends Base
     public function parseRouteInfo()
     {
         $get = $_GET;
-        $module = array_shift($get);
-        $uModule = ucfirst($module);
         $moduleClass = OC_EMPTY;
         $controller = OC_EMPTY;
+
+        $service = ocService();
+        $module = array_shift($get);
+        $uModule = ucfirst($module);
 
         if ($uModule) {
             $moduleNamespace = OC_MODULE_NAMESPACE ? ocNamespace(OC_MODULE_NAMESPACE): 'app\modules\\';
@@ -45,13 +47,13 @@ class Route extends Base
         $featureClass = BaseController::getFeatureClass($controllerType);
 
         if (!ocClassExists($featureClass)) {
-            ocService()->error->show('not_exists_class', $featureClass);
+            $service->error->show('not_exists_class', $featureClass);
         }
 
         $feature = new $featureClass();
         $route = $feature->getRoute($module, $controller, $get);
 
-        if (ocService()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
+        if ($service->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
             $_GET = $this->formatGet($_GET);
         }
 
