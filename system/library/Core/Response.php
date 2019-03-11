@@ -72,6 +72,15 @@ class Response extends Base
     }
 
     /**
+     * 是否已发送
+     * @param $isSend
+     */
+    public function isSend($isSend)
+    {
+        $this->_isSend = $isSend ? true : false;
+    }
+
+    /**
      * 设置响应体
      * @param $body
      */

@@ -19,9 +19,8 @@ abstract class Basis
 
     /**
      * 获取自定义属性
-     * @param string $name
-     * @param mixed $args
-     * @return array|mixed
+     * @param null $name
+     * @return 自定义属性
      */
 	public function &getProperty($name = null)
 	{
@@ -41,11 +40,11 @@ abstract class Basis
 	 */
 	public function setProperty($name, $value = null)
 	{
-		if (is_array($name)) {
-			$this->_properties = array_merge($this->_properties, $name);
-		} else {
-			$this->_properties[$name] = $value;
-		}
+        if (is_array($name)) {
+            $this->_properties = array_merge($this->_properties, $name);
+        } else {
+            $this->_properties[$name] = $value;
+        }
 	}
 
 	/**
@@ -69,7 +68,7 @@ abstract class Basis
                 $this->__unset($key);
             }
         } else {
-            $this->__unset($key);
+            $this->__unset($name);
         }
     }
 

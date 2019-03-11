@@ -246,9 +246,7 @@ class Container extends Basis
     public function make($name, array $params = array(), array $deps = array())
     {
         $source = null;
-        $isSingleton = false;
 
-        $matter = array();
         if (!empty($this->_singletons[$name])) {
             if (!empty($this->_properties[$name])) {
                 throw new Exception("exists_singleton_object");
@@ -256,7 +254,6 @@ class Container extends Basis
             if (is_object($this->_singletons[$name])) {
                 return $this->_properties[$name] = $this->_singletons[$name];
             }
-            $isSingleton = true;
             $matter = (array)$this->_singletons[$name];
         } elseif (!empty($this->_binds[$name])) {
             if (is_object($this->_binds[$name])) {
@@ -296,7 +293,6 @@ class Container extends Basis
     {
         list($source, $inputParams, $inputDeps) = $matter;
         $params = array_merge($inputParams, $params);
-        $deps = array_merge($inputDeps, $deps);
         $instance = null;
 
         if (is_array($source)) {
@@ -342,10 +338,11 @@ class Container extends Basis
 
     /**
      * 获取依赖
-     * @param array $args
-     * @param array $params
+     * @param $args
+     * @param $params
      * @return array
      * @throws Exception
+     * @throws \ReflectionException
      */
     public function getDependencies($args, $params)
     {
@@ -387,7 +384,9 @@ class Container extends Basis
     /**
      * 魔术方法-获取自定义属性
      * @param string $property
-     * @return array|mixed
+     * @return array|mixed|object|自定义属性|null
+     * @throws Exception
+     * @throws \ReflectionException
      */
     public function __get($property)
     {

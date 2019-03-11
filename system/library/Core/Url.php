@@ -47,13 +47,14 @@ class Url extends Base
 			} else {
                 $webRoot = ocCommPath(OC_WEB_ROOT);
                 $documentRoot = ocCommPath($_SERVER['DOCUMENT_ROOT']);
-				$localUrl = $_SERVER['DOCUMENT_ROOT'] . OC_REQ_URI;
-				if ($localUrl == $_SERVER['SCRIPT_FILENAME']) {
+				$localUrl = $documentRoot . OC_REQ_URI;
+
+				if ($localUrl == ocCommPath($_SERVER['SCRIPT_FILENAME'])) {
 					return array();
 				}
 
                 $urlDir = ocCommPath(str_ireplace($documentRoot, '', $webRoot));
-				$requestUri = str_ireplace($urlDir, '/', OC_REQ_URI);
+				$requestUri = str_ireplace($urlDir, '', OC_REQ_URI);
 				$url = trim($requestUri, OC_DIR_SEP);
 			}
 		}

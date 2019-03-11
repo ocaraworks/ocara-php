@@ -41,7 +41,7 @@ class BaseController extends serviceProvider implements ControllerInterface
 	/**
 	 * 初始化设置
 	 */
-	public function init()
+	public function initialize()
 	{
         $this->bindEvents($this);
         $this->session->boot();
@@ -263,11 +263,20 @@ class BaseController extends serviceProvider implements ControllerInterface
 
     /**
      * 渲染模板
+     * @param null $file
      */
-    public function renderFile()
+    public function renderFile($file = null)
     {
         $this->fire(self::EVENT_BEFORE_RENDER);
-        $content = $this->view->renderFile();
+
+        if (empty($file)) {
+            $tpl = $this->view->getTpl();
+            if (empty($tpl)) {
+                $this->view->setTpl(ocService()->app->getRoute('action'));
+            }
+        }
+
+        $content = $this->view->renderFile($file);
         $this->view->outputFile($content);
     }
 

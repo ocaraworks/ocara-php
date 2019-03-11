@@ -105,8 +105,8 @@ class Application extends Basis
      */
     public function run($route, $params = array(), $moduleNamespace = null)
     {
-        $this->loadRouteConfig($route);
-        $result = $this->_bootstrap->start($route, $params, $moduleNamespace);
+        $newRoute = $this->loadRouteConfig($this->formatRoute($route));
+        $result = $this->_bootstrap->start($newRoute, $params, $moduleNamespace);
         return $result;
     }
 
@@ -161,10 +161,8 @@ class Application extends Basis
     public function formatRoute($route)
     {
         if (is_string($route)) {
-            $routeData = explode(
-                OC_DIR_SEP,
-                trim(str_replace(DIRECTORY_SEPARATOR, OC_DIR_SEP, $route), OC_DIR_SEP)
-            );
+            $routeStr = trim(ocCommPath($route), OC_DIR_SEP);
+            $routeData = explode(OC_DIR_SEP, $routeStr);
         } elseif (is_array($route)) {
             $routeData = array_values($route);
         } else {
@@ -199,11 +197,12 @@ class Application extends Basis
      */
     public function loadRouteConfig(array $route)
     {
+        $service = ocService();
+
         if (empty($route['module'])) {
             $route['module'] = OC_DEFAULT_MODULE;
         }
 
-        $service = ocService();
         $service->config->loadModuleConfig($route);
         $service->lang->loadModuleConfig($route);
 

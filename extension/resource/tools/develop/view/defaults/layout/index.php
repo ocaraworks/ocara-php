@@ -16,7 +16,7 @@
 <div id="header">
 <div id="logo">Ocara框架开发者中心</div>
 <div id="member">
-<?php if(ocService()->controller->isLogin()) {?>
+<?php if($isLogin) {?>
 <a href="<?php echo ocUrl(array('home','logout'));?>">登出</a>
 <span>您好 <font><?php echo $_SESSION['OC_DEV_USERNAME'];?></font>，欢迎使用本系统！ </span>
 <?php } ?>
@@ -32,7 +32,7 @@
 	<li><a href="<?php echo ocUrl(array('generate','action'), array('target' => 'controller'));?>" target="iframe-main">控制器(Controller)</a></li>
 	<li><a href="<?php echo ocUrl(array('generate','action'), array('target' => 'module'));?>" target="iframe-main">模块(Module)</a></li>
 	<li><a href="<?php echo ocUrl(array('generate','action'), array('target' => 'fields'));?>" target="iframe-main">字段更新</a></li>
-	<?php if(ocService()->controller->isLogin() && $_SESSION['OC_DEV_USERNAME'] == 'root') {?>
+	<?php if($isLogin && $_SESSION['OC_DEV_USERNAME'] == 'root') {?>
 	<li><a href="<?php echo ocUrl(array('generate','action'), array('target' => 'users'));?>" target="iframe-main">用户管理</a></li>
 	<?php } ?>
 	

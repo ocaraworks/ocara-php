@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Ocara框架开发者中心</title>
-<?php ocImport($this->getModuleViewPath('css/index.php'));?>
+<?php ocImport($this->getViewPath('css/index.php'));?>
 <style type="text/css">
 #main{width:100%;font-size:15px;}
 .submit{width:390px;text-align:center;}
@@ -20,7 +20,7 @@
 <div id="header">
 <div id="logo">Ocara框架开发者中心</div>
 <div id="member">
-<?php if(ocService()->controller->checkLogin()) {?>
+<?php if($isLogin) {?>
 <a href="<?php echo ocUrl(array(OC_MODULE_NAME,'home','logout'));?>">登出</a>
 <span>您好 <font><?php echo $_SESSION['OC_DEV_USERNAME'];?></font>，欢迎使用本系统！ </span>
 <?php } ?>

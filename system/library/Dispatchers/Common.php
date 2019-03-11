@@ -22,9 +22,11 @@ class Common extends Base
      */
     public function dispatch($route, $moduleNamespace = null, $params = array())
     {
-        $moduleNamespace = $moduleNamespace ? ocNamespace($moduleNamespace): 'app\modules' . OC_NS_SEP;
+        $service = ocService();
+        $moduleNamespace = ocNamespace($moduleNamespace ? : 'app\modules');
+
         if (empty($route['controller']) || empty($route['action'])) {
-            ocService()->error->show('null_route');
+            $service->error->show('null_route');
         }
 
         $uController = ucfirst($route['controller']);
@@ -44,7 +46,7 @@ class Common extends Base
         $method = $route['action'] . 'Action';
 
         if (!class_exists($cClass)) {
-            ocService()->error->show('no_controller', array($uController . 'Controller'));
+            $service->error->show('no_controller', array($uController . 'Controller'));
         }
 
         if (!method_exists($cClass, $method)) {
@@ -56,9 +58,11 @@ class Common extends Base
         }
 
         $Control = new $cClass($params);
+        $Control->setRoute($route);
+        $Control->initialize();
 
         if (!method_exists($Control, $method)) {
-            ocService()->error->show('no_special_action', array('Action', $uAction . 'Action'));
+            $service->error->show('no_special_action', array('Action', $uAction . 'Action'));
         }
 
         $Control->doAction($method);

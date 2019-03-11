@@ -172,7 +172,23 @@ class ViewBase extends Base
     }
 
     /**
-     * 获取当前视图路径
+     * 获取路由
+     * @param null $name
+     * @return array|mixed|null
+     */
+    public function getRoute($name = null)
+    {
+        $route = $this->getVar('route');
+
+        if (func_get_args()) {
+            return isset($route[$name]) ? $route[$name] : null;
+        }
+
+        return $route;
+    }
+
+    /**
+     * 获取当前模块的视图路径
      * @param string $subPath
      * @param string $template
      * @return bool|mixed|string
@@ -181,7 +197,7 @@ class ViewBase extends Base
     public function getViewPath($subPath = null, $template = null)
     {
         $template = $template ? : $this->_template;
-        $module = ocService()->app->getRoute('module');
+        $module = $this->getRoute('module');
 
         if ($module) {
             $rootPath = $this->_rootPath ? : null;
