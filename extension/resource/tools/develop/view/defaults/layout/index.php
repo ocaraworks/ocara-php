@@ -17,7 +17,7 @@
 <div id="logo">Ocara框架开发者中心</div>
 <div id="member">
 <?php if($isLogin) {?>
-<a href="<?php echo ocUrl(array('home','logout'));?>">登出</a>
+<a href="<?php echo ocUrl(array('generate','logout'));?>">登出</a>
 <span>您好 <font><?php echo $_SESSION['OC_DEV_USERNAME'];?></font>，欢迎使用本系统！ </span>
 <?php } ?>
 </div>
