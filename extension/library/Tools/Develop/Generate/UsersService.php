@@ -28,7 +28,7 @@ class UsersService extends BaseService
             $this->showError('请填满信息！');
 		}
 		
-		$path = OC_DEV_DIR . 'data/users_data.php';
+		$path = OC_EXT . 'resource/tools/develop/data/users_data.php';
 
 		if(ocFileExists($path)){
 			include_once ($path);

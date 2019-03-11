@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Ocara框架开发者中心</title>
-    <?php ocImport($this->getViewPath('css/content.php'));?>
+    <?php ocImport($this->getViewPath('css/content.php'), true, false);?>
 </head>
 <body>
 <div class="main">

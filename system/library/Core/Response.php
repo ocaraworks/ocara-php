@@ -161,12 +161,12 @@ class Response extends Base
 	}
 
     /**
-     * 内部路由跳转
+     * 转移到另一个控制器动作
      * @param $route
      * @param array $params
      * @param null $moduleNamespace
      */
-	public function jump($route, array $params = array(), $moduleNamespace = null)
+	public function transfer($route, array $params = array(), $moduleNamespace = null)
 	{
 		if ($route) {
             ocService()->app->run($route, $params, $moduleNamespace);
@@ -176,7 +176,18 @@ class Response extends Base
 	}
 
     /**
-     * 外部跳转
+     * 跳转到另一个控制器动作
+     * @param $route
+     * @param array $params
+     * @throws \Ocara\Exceptions\Exception
+     */
+    public function jump($route, array $params = array())
+    {
+        return $this->redirect(ocUrl($route, $params));
+    }
+
+    /**
+     * 打开外部URL链接
      * @param $url
      * @param bool $die
      */

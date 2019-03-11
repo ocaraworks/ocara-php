@@ -18,13 +18,14 @@ class LoginService extends BaseService
 	 */
 	public function login()
 	{
-		$path = OC_DEV_DIR . 'data/users.data.php';
-		
+		$path = OC_EXT . 'resource/tools/develop/data/users_data.php';
+
 		if(!ocFileExists($path)){
-            ocService()->error->show('not_exists_file', array('users.data.php'));
+            ocService()->error->show('not_exists_file', array('users_data.php'));
 		}
 
-		$users = include(OC_DEV_DIR . 'data/users.data.php');
+		$users = include($path);
+
 		$request = ocService()->request;
 		$username = $request->getPost('username');
 		$password = $request->getPost('password');
@@ -41,7 +42,7 @@ class LoginService extends BaseService
 			$_SESSION['OC_DEV_LOGIN'] = true;
 			$_SESSION['OC_DEV_USERNAME'] = $username;
 			ocService()->cookie->create(session_name(), session_id());
-			header("location:" . ocUrl(array(OC_MODULE_NAME, 'home', 'index')));
+			header("location:" . ocUrl(array(OC_MODULE_NAME, 'generate', 'index')));
 		}
 	}
 
