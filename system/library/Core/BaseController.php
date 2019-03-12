@@ -36,6 +36,7 @@ class BaseController extends serviceProvider implements ControllerInterface
 
     const EVENT_AFTER_ACTION = 'afterAction';
     const EVENT_BEFORE_RENDER = 'beforeRender';
+    const EVENT_AFTER_RENDER = 'afterRender';
     const EVENT_AFTER_CREATE_FORM = 'afterCreateForm';
 
 	/**
@@ -78,10 +79,13 @@ class BaseController extends serviceProvider implements ControllerInterface
              ->append(array($this, 'afterCreateForm'));
 
         $this->event(self::EVENT_AFTER_ACTION)
-             ->setDefault(array($this, 'afterAction'));
+             ->append(array($this, 'afterAction'));
 
         $this->event(self::EVENT_BEFORE_RENDER)
-             ->setDefault(array($this, 'beforeRender'));
+             ->append(array($this, 'beforeRender'));
+
+        $this->event(self::EVENT_AFTER_RENDER)
+             ->append(array($this, 'afterRender'));
     }
 
     /**
@@ -257,6 +261,12 @@ class BaseController extends serviceProvider implements ControllerInterface
     {}
 
     /**
+     * 渲染后置事件
+     */
+    public function afterRender()
+    {}
+
+    /**
      * 渲染模板
      * @param null $file
      */
@@ -265,8 +275,6 @@ class BaseController extends serviceProvider implements ControllerInterface
         $this->response->setContentType($this->_contentType);
         $this->formManager->setToken();
 
-        $this->fire(self::EVENT_BEFORE_RENDER);
-
         if (empty($file)) {
             $tpl = $this->view->getTpl();
             if (empty($tpl)) {
@@ -274,9 +282,12 @@ class BaseController extends serviceProvider implements ControllerInterface
             }
         }
 
+        $this->fire(self::EVENT_BEFORE_RENDER);
+
         $content = $this->view->renderFile($file, $vars, $required);
         $this->view->outputFile($content);
 
+        $this->fire(self::EVENT_AFTER_RENDER);
         $this->_hasRender = true;
     }
 
@@ -297,9 +308,11 @@ class BaseController extends serviceProvider implements ControllerInterface
         }
 
         $this->fire(self::EVENT_BEFORE_RENDER);
+
         $content = $this->view->renderApi($this->_result);
         $this->view->outputApi($content);
 
+        $this->fire(self::EVENT_AFTER_RENDER);
         $this->_hasRender = true;
     }
 
