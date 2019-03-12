@@ -189,9 +189,9 @@ class BaseController extends serviceProvider implements ControllerInterface
             $this->_doClassAction();
         } else {
             $this->$actionMethod();
+            $this->render();
         }
 
-        $this->render();
         $this->fire(self::EVENT_AFTER_ACTION);
 	}
 
@@ -212,15 +212,18 @@ class BaseController extends serviceProvider implements ControllerInterface
 
         if ($this->request->isAjax()) {
             if (method_exists($this, 'ajax')) {
-                $this->_result = $this->ajax();
+                $this->ajax();
             }
+            $this->render(false);
         } elseif ($this->isFormSubmit() && method_exists($this, 'submit')) {
             $this->submit();
             $this->formManager->clearToken();
+            $this->render(false);
         } else {
             if (method_exists($this, 'display')) {
                 $this->display();
             }
+            $this->render();
         }
     }
 
@@ -232,15 +235,18 @@ class BaseController extends serviceProvider implements ControllerInterface
 
     /**
      * 渲染视图
+     * @param bool $userDefault
      */
-	public function render()
+	public function render($userDefault = true)
     {
         if ($this->hasRender()) return;
 
-        if ($this->isApi() || $this->request->isAjax()){
+        if ($this->isApi()){
             $this->renderApi();
         } else {
-            $this->renderFile();
+            if ($userDefault) {
+                $this->renderFile();
+            }
         }
     }
 
@@ -269,6 +275,8 @@ class BaseController extends serviceProvider implements ControllerInterface
     /**
      * 渲染模板
      * @param null $file
+     * @param array $vars
+     * @param bool $required
      */
     public function renderFile($file = null, array $vars = array(), $required = true)
     {

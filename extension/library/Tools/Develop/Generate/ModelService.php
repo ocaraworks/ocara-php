@@ -122,12 +122,12 @@ class ModelService extends BaseService
 
         ocCheckPath($modelPath);
         if (ocFileExists($path = $modelPath .  "{$modelName}.php")) {
-            $this->showError('Model文件已存在，请先手动删除！');
+            //$this->showError('Model文件已存在，请先手动删除！');
         }
 
         ocCheckPath($entityPath);
         if (ocFileExists($entityPath = $entityPath .  "{$entityName}.php")) {
-            $this->showError('Entity文件已存在，请先手动删除！');
+            //$this->showError('Entity文件已存在，请先手动删除！');
         }
 
         //新建模型
