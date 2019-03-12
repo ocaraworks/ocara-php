@@ -283,11 +283,10 @@ class BaseController extends serviceProvider implements ControllerInterface
         }
 
         $this->fire(self::EVENT_BEFORE_RENDER);
-
         $content = $this->view->renderFile($file, $vars, $required);
         $this->view->outputFile($content);
-
         $this->fire(self::EVENT_AFTER_RENDER);
+
         $this->_hasRender = true;
     }
 
@@ -308,11 +307,10 @@ class BaseController extends serviceProvider implements ControllerInterface
         }
 
         $this->fire(self::EVENT_BEFORE_RENDER);
-
         $content = $this->view->renderApi($this->_result);
         $this->view->outputApi($content);
-
         $this->fire(self::EVENT_AFTER_RENDER);
+
         $this->_hasRender = true;
     }
 
