@@ -233,16 +233,11 @@ class BaseController extends serviceProvider implements ControllerInterface
     {
         if ($this->hasRender()) return;
 
-        $this->response->setContentType($this->_contentType);
-        $this->formManager->setToken();
-
         if ($this->isApi() || $this->request->isAjax()){
             $this->renderApi();
         } else {
             $this->renderFile();
         }
-
-        $this->_hasRender = true;
     }
 
     /**
@@ -265,8 +260,11 @@ class BaseController extends serviceProvider implements ControllerInterface
      * 渲染模板
      * @param null $file
      */
-    public function renderFile($file = null)
+    public function renderFile($file = null, array $vars = array(), $required = true)
     {
+        $this->response->setContentType($this->_contentType);
+        $this->formManager->setToken();
+
         $this->fire(self::EVENT_BEFORE_RENDER);
 
         if (empty($file)) {
@@ -276,8 +274,10 @@ class BaseController extends serviceProvider implements ControllerInterface
             }
         }
 
-        $content = $this->view->renderFile($file);
+        $content = $this->view->renderFile($file, $vars, $required);
         $this->view->outputFile($content);
+
+        $this->_hasRender = true;
     }
 
     /**
@@ -285,6 +285,9 @@ class BaseController extends serviceProvider implements ControllerInterface
      */
     public function renderApi()
     {
+        $this->response->setContentType($this->_contentType);
+        $this->formManager->setToken();
+
         if (!$this->response->getOption('statusCode')) {
             if ($this->_result['status'] == 'success') {
                 $this->response->setStatusCode(Response::STATUS_OK);
@@ -296,6 +299,8 @@ class BaseController extends serviceProvider implements ControllerInterface
         $this->fire(self::EVENT_BEFORE_RENDER);
         $content = $this->view->renderApi($this->_result);
         $this->view->outputApi($content);
+
+        $this->_hasRender = true;
     }
 
     /**

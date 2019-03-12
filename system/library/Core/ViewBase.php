@@ -525,7 +525,7 @@ class ViewBase extends Base
     public function outputApi($data)
     {
         ocService()->response->setContentType($data['contentType']);
-        ocService()->ajax->render('success', $data['message'], $data['data']);
+        $response->setBody($content);
     }
 
     /**
