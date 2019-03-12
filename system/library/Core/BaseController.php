@@ -209,16 +209,17 @@ class BaseController extends serviceProvider implements ControllerInterface
         }
 
         $this->checkForm();
+        $result = null;
 
         if ($this->request->isAjax()) {
             if (method_exists($this, 'ajax')) {
-                $this->ajax();
+                $result = $this->ajax();
             }
-            $this->render(false);
+            $this->render($result, false);
         } elseif ($this->isFormSubmit() && method_exists($this, 'submit')) {
-            $this->submit();
+            $result = $this->submit();
             $this->formManager->clearToken();
-            $this->render(false);
+            $this->render($result, false);
         } else {
             if (method_exists($this, 'display')) {
                 $this->display();
@@ -234,18 +235,21 @@ class BaseController extends serviceProvider implements ControllerInterface
     {}
 
     /**
-     * 渲染视图
+     * 渲染API
+     * @param $result
      * @param bool $userDefault
      */
-	public function render($userDefault = true)
+	public function render($result = null, $userDefault = true)
     {
         if ($this->hasRender()) return;
 
         if ($this->isApi()){
-            $this->renderApi();
+            $this->renderApi($result);
         } else {
             if ($userDefault) {
                 $this->renderFile();
+            } else {
+                $this->response->setBody($result);
             }
         }
     }
@@ -300,9 +304,23 @@ class BaseController extends serviceProvider implements ControllerInterface
 
     /**
      * 渲染API数据
+     * @param null $data
+     * @param null $message
+     * @param string $status
      */
-    public function renderApi()
+    public function renderApi($data = null, $message = null, $status = 'success')
     {
+        if (is_string($message)) {
+            $message = $this->lang->get($message);
+        }
+
+        $this->_result = array(
+            'status' => $status,
+            'code' => $message['code'],
+            'message' => $message['message'],
+            'body' => $data
+        );
+
         $this->response->setContentType($this->_contentType);
         $this->formManager->setToken();
 
@@ -320,26 +338,6 @@ class BaseController extends serviceProvider implements ControllerInterface
         $this->fire(self::EVENT_AFTER_RENDER);
 
         $this->_hasRender = true;
-    }
-
-    /**
-     * 设置API结果
-     * @param $data
-     * @param $message
-     * @param $status
-     */
-    public function setResult($data, $message = null, $status = 'success')
-    {
-        if (is_string($message)) {
-            $message = $this->lang->get($message);
-        }
-
-        $this->_result = array(
-            'status' => $status,
-            'code' => $message['code'],
-            'message' => $message['message'],
-            'body' => $data
-        );
     }
 
     /**
