@@ -132,7 +132,7 @@ class ControllerService extends BaseService
 
         $path = $controlPath . $this->cname . "/{$className}.php";
 		if (ocFileExists($path)) {
-			$this->showError("模块或控制器文件已存在，如果需要覆盖，请先手动删除！");
+			$this->showError("控制器文件已存在，如果需要覆盖，请先手动删除！");
 		}
 
 		$content  = "<?php\r\n";

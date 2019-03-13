@@ -34,7 +34,7 @@ class CacheModelService extends BaseService
 		$this->_model = $request->getPost('model');
 
         if (empty($this->_model)) {
-            $this->_model = $this->_connectName;
+            $this->showError('请输入缓存模型名称！');
         }
 
         $this->createCacheModel();

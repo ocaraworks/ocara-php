@@ -162,7 +162,7 @@ class ActionService extends BaseService
             $this->showError("控制器文件“{$controlClassName}.php”不存在或丢失。");
 		}
 
-		$this->controllerType = $controllerClass::providerType();
+		$this->controllerType = $controllerClass::controllerType();
 
 		ocCheckPath($controlPath);
 

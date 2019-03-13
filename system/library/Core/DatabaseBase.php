@@ -254,7 +254,7 @@ class DatabaseBase extends Sql
 				$result = call_user_func_array(array($this, __METHOD__), func_get_arg());
 				return $result;
 			}
-			ocError($exception->getMessage());
+            ocService()->error->show($exception->getMessage());
 		}
 
         $result = $this->checkError($result, array($sql, $params), $required);

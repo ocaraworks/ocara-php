@@ -408,10 +408,9 @@ function ocDump($content)
 
 /**
  * 输出错误或返回错误处理类
- * @param string $error
+ * @param null $error
  * @param array $params
  * @return mixed|null
- * @throws Exception
  */
 function ocError($error = null, array $params = array())
 {

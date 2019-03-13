@@ -66,8 +66,10 @@ abstract class Database extends ModelBase
     const EVENT_CACHE_QUERY_DATA = 'cacheQueryData';
 
     /**
-	 * Model constructor.
-	 */
+     * 初始化
+     * Database constructor.
+     * @param array $data
+     */
 	public function __construct(array $data = array())
 	{
 		$this->init();
@@ -134,10 +136,11 @@ abstract class Database extends ModelBase
 		return $this->_tableName;
 	}
 
-	/**
-	 * 获取表的全名（包括前缀）
-	 * @return mixed
-	 */
+    /**
+     * 获取表的全名（包括前缀）
+     * @return mixed
+     * @throws Exception
+     */
 	public function getTableFullname()
 	{
 		return $this->connect()->getTableFullname($this->_tableName);
@@ -175,10 +178,9 @@ abstract class Database extends ModelBase
 		return $this;
 	}
 
-	/**
-	 * 加载配置文件
-	 * @return bool
-	 */
+    /**
+     * 加载配置文件
+     */
 	public function loadConfig()
 	{
 		if (empty(self::$_config[$this->_tag])) {
@@ -227,13 +229,13 @@ abstract class Database extends ModelBase
 		return $modelConfig;
 	}
 
-	/**
-	 * 获取配置数据
-	 * @param string $key
-	 * @param string $field
-	 * @param string $class
-	 * @return array|bool|mixed|null
-	 */
+    /**
+     * 获取配置数据
+     * @param string $key
+     * @param string $field
+     * @return array|bool|mixed|null
+     * @throws Exception
+     */
 	public function getConfig($key = null, $field = null)
 	{
         $this->loadConfig();
@@ -249,11 +251,11 @@ abstract class Database extends ModelBase
 		return self::$_config[$tag];
 	}
 
-	/**
-	 * 获取配置文件路径
-	 * @param string $class
-	 * @return string
-	 */
+    /**
+     * 获取配置文件路径
+     * @return array|mixed
+     * @throws Exception
+     */
 	public function getConfigPath()
 	{
 	    $tag = $this->_tag;
@@ -294,12 +296,12 @@ abstract class Database extends ModelBase
         return self::$_configPath[$tag] = array_merge($paths, $modulePaths);
 	}
 
-	/**
-	 * 字段映射
-	 * @param array $data
-	 * @param string $class
-	 * @return array
-	 */
+    /**
+     * 字段映射
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
 	public function mapData(array $data)
 	{
 		$config = $this->getConfig('MAP');
@@ -319,12 +321,11 @@ abstract class Database extends ModelBase
 		return $result;
 	}
 
-	/**
-	 * 获取当前数据库对象
-	 * @param bool $slave
-	 * @return mixed
-	 * @throws \Ocara\Exceptions\Exception
-	 */
+    /**
+     * 获取当前数据库对象
+     * @param bool $slave
+     * @return mixed
+     */
 	public function db($slave = false)
 	{
 		$name = $slave ? '_slave' : '_plugin';
@@ -380,11 +381,12 @@ abstract class Database extends ModelBase
 		return $this;
 	}
 
-	/**
-	 * 从数据库获取数据表的字段
-	 * @param bool $cache
-	 * @return $this
-	 */
+    /**
+     * 从数据库获取数据表的字段
+     * @param bool $cache
+     * @return $this
+     * @throws Exception
+     */
 	public function loadFields($cache = true)
 	{
 		if ($cache) {
@@ -398,11 +400,11 @@ abstract class Database extends ModelBase
 		return $this;
 	}
 
-	/**
-	 * 获取字段配置
-	 * @param $class
-	 * @return array|mixed
-	 */
+    /**
+     * 获取字段配置
+     * @return array|mixed
+     * @throws Exception
+     */
 	public function getFieldsConfig()
 	{
 		$filePath = $this->getConfigPath();
@@ -444,11 +446,12 @@ abstract class Database extends ModelBase
 		return (object)$properties;
 	}
 
-	/**
-	 * 别名字段数据映射
-	 * @param array $data
-	 * @return array
-	 */
+    /**
+     * 别名字段数据映射
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
 	public function map(array $data)
 	{
 		$result = array();
@@ -480,12 +483,13 @@ abstract class Database extends ModelBase
 		return $result;
 	}
 
-	/**
-	 * 字段别名映射
-	 * @param string $field
-	 * @param bool $return
-	 * @return string
-	 */
+    /**
+     * 字段别名映射
+     * @param string $field
+     * @param bool $return
+     * @return string|null
+     * @throws Exception
+     */
 	public function mapField($field, $return = true)
 	{
 		if (!$this->_fields) {
@@ -524,7 +528,6 @@ abstract class Database extends ModelBase
 
     /**
      * 清理Model的SQL和ORM数据
-     * @param null $args
      * @return $this
      */
 	public function clearAll()
@@ -581,9 +584,11 @@ abstract class Database extends ModelBase
         return $this->_oldData;
     }
 
-	/**
-	 * 获取已修改字段数据
-	 */
+    /**
+     * 获取已修改字段数据
+     * @param null $key
+     * @return array|mixed
+     */
 	public function getChanged($key = null)
 	{
 	    if (func_num_args()) {
@@ -720,17 +725,17 @@ abstract class Database extends ModelBase
     /**
      * 推入事务池中
      */
-	public function pushTransaction(){
+	public function pushTransaction()
+    {
 	    $this->connect();
         ocService()->transaction->push($this->_plugin);
     }
 
     /**
      * 保存数据（ORM模型）
-     * @param $data
+     * @param array $data
      * @param bool $debug
      * @return bool
-     * @throws Exception
      */
 	public function save(array $data = array(), $debug = false)
 	{
@@ -743,12 +748,12 @@ abstract class Database extends ModelBase
 		return $result;
 	}
 
-	/**
-	 * 新建记录
-	 * @param array $data
-	 * @param bool $debug
-	 * @return bool
-	 */
+    /**
+     * 新建记录
+     * @param array $data
+     * @param bool $debug
+     * @return bool
+     */
 	public function create(array $data = array(), $debug = false)
 	{
 		$this->connect();
@@ -761,13 +766,13 @@ abstract class Database extends ModelBase
 		return $result;
 	}
 
-	/**
-	 * 更新记录
-	 * @param array $data
-	 * @param bool $debug
-	 * @return bool
-	 * @throws \Ocara\Core\Exception
-	 */
+    /**
+     * 更新记录
+     * @param array $data
+     * @param bool $debug
+     * @return bool
+     * @throws Exception
+     */
 	public function update(array $data = array(), $debug = false)
 	{
         $condition = $this->_getCondition();
@@ -794,11 +799,12 @@ abstract class Database extends ModelBase
 		return $result;
 	}
 
-	/**
-	 * 获取数据
-	 * @param $data
-	 * @return array|null|string
-	 */
+    /**
+     * 获取数据
+     * @param $data
+     * @return mixed
+     * @throws Exception
+     */
 	protected function _getSubmitData($data)
 	{
 		if (empty($data)) {
@@ -848,10 +854,11 @@ abstract class Database extends ModelBase
 		return $result;
 	}
 
-	/**
-	 * 获取操作条件
-	 * @return array|null
-	 */
+    /**
+     * 获取操作条件
+     * @return mixed
+     * @throws Exception
+     */
 	private function _getCondition()
 	{
 		$this->connect();
@@ -860,12 +867,13 @@ abstract class Database extends ModelBase
 		return $condition;
 	}
 
-	/**
-	 * 用SQL语句获取多条记录
-	 * @param string $sql
-	 * @param bool $debug
-	 * @return bool
-	 */
+    /**
+     * 用SQL语句获取多条记录
+     * @param $sql
+     * @param bool $debug
+     * @return bool
+     * @throws Exception
+     */
 	public function query($sql, $debug = false)
 	{
 		if ($sql) {
@@ -879,12 +887,13 @@ abstract class Database extends ModelBase
 		return false;
 	}
 
-	/**
-	 * 用SQL语句获取一条记录
-	 * @param string $sql
-	 * @param bool $debug
-	 * @return bool
-	 */
+    /**
+     * 用SQL语句获取一条记录
+     * @param $sql
+     * @param bool $debug
+     * @return bool
+     * @throws Exception
+     */
 	public function queryRow($sql, $debug = false)
 	{
 		if ($sql) {
@@ -995,13 +1004,14 @@ abstract class Database extends ModelBase
 		return null;
 	}
 
-	/**
-	 * 选择多条记录
-	 * @param $condition
-	 * @param null $options
-	 * @param bool $debug
-	 * @return array|ObjectRecords
-	 */
+    /**
+     * 选择多条记录
+     * @param null $condition
+     * @param null $options
+     * @param bool $debug
+     * @return array
+     * @throws Exception
+     */
 	public function findAll($condition = null, $options = null, $debug = false)
 	{
         $records = $this->_find($condition, $options, $debug, false, false, self::getClass());
@@ -1010,6 +1020,8 @@ abstract class Database extends ModelBase
 
     /**
      * 设置返回类型为简单对象
+     * @param bool $simpleObject
+     * @return $this
      */
 	public function simple($simpleObject = true)
     {
@@ -1053,12 +1065,12 @@ abstract class Database extends ModelBase
         return $records;
     }
 
-	/**
-	 * 获取主键条件
-	 * @param $condition
-	 * @return array
-	 * @throws \Ocara\Core\Exception
-	 */
+    /**
+     * 获取主键条件
+     * @param $condition
+     * @return array
+     * @throws Exception
+     */
 	private function _getPrimaryCondition($condition)
 	{
 		if (empty($this->_primaries)) {
@@ -1086,37 +1098,40 @@ abstract class Database extends ModelBase
 		return $where;
 	}
 
-	/**
-	 * 查询多条记录
-	 * @param null $condition
-	 * @param null $option
-	 * @param bool $debug
-	 * @return array
-	 */
+    /**
+     * 查询多条记录
+     * @param mixed $condition
+     * @param mixed $option
+     * @param bool $debug
+     * @return array
+     * @throws Exception
+     */
 	public function getAll($condition = null, $option = null, $debug = false)
 	{
 		return $this->_find($condition, $option, $debug, false, false, null, 'array');
 	}
 
-	/**
-	 * 查询一条记录
-	 * @param bool $condition
-	 * @param bool $option
-	 * @param bool $debug
-	 * @return array
-	 */
+    /**
+     * 查询一条记录
+     * @param mixed $condition
+     * @param mixed $option
+     * @param bool $debug
+     * @return array
+     * @throws Exception
+     */
 	public function getRow($condition = null, $option = null, $debug = false)
 	{
 		return $this->_find($condition, $option, $debug, true, false, 'array');
 	}
 
-	/**
-	 * 获取某个字段值
-	 * @param string $field
-	 * @param bool $condition
-	 * @param bool $debug
-	 * @return array|null|string
-	 */
+    /**
+     * 获取某个字段值
+     * @param string $field
+     * @param bool $condition
+     * @param bool $debug
+     * @return array|mixed|string|null
+     * @throws Exception
+     */
 	public function getValue($field, $condition = false, $debug = false)
 	{
 		$row = $this->getRow($condition, $field, $debug);
@@ -1131,11 +1146,12 @@ abstract class Database extends ModelBase
 		return isset($row[$field]) ? $row[$field] : OC_EMPTY;
 	}
 
-	/**
-	 * 查询总数
-	 * @param bool $debug
-	 * @return array|int
-	 */
+    /**
+     * 查询总数
+     * @param bool $debug
+     * @return array|int|mixed
+     * @throws Exception
+     */
 	public function getTotal($debug = false)
 	{
 		$queryRow = true;
@@ -1192,10 +1208,10 @@ abstract class Database extends ModelBase
 
     /**
      * 查询数据
-     * @param $condition
-     * @param $option
-     * @param $debug
-     * @param $queryRow
+     * @param mixed $condition
+     * @param mixed $option
+     * @param bool $debug
+     * @param bool $queryRow
      * @param bool $count
      * @param null $dataType
      * @return array
@@ -1250,7 +1266,6 @@ abstract class Database extends ModelBase
     /**
      * 是否分页
      * @return bool
-     * @throws Exception
      */
 	public function isPage()
     {
@@ -1348,8 +1363,8 @@ abstract class Database extends ModelBase
 	/**
 	 * 右联接
 	 * @param string $class
-	 * @param null $alias
-	 * @param null $on
+	 * @param string $alias
+	 * @param string $on
 	 * @return $this|Database
 	 */
 	public function rightJoin($class, $alias = null, $on = null)
@@ -1360,8 +1375,8 @@ abstract class Database extends ModelBase
 	/**
 	 * 内全联接
 	 * @param string $class
-	 * @param null $alias
-	 * @param null $on
+	 * @param string $alias
+	 * @param string $on
 	 * @return $this|Database
 	 */
 	public function innerJoin($class, $alias = null, $on = null)
@@ -1711,11 +1726,12 @@ abstract class Database extends ModelBase
 		return $this;
 	}
 
-	/**
-	 * 设置字段别名转换映射
-	 * @param array $tables
-	 * @return array
-	 */
+    /**
+     * 设置字段别名转换映射
+     * @param $tables
+     * @return array
+     * @throws Exception
+     */
 	private function _getAliasFields($tables)
 	{
 		$unJoined = count($tables) <= 1;
@@ -1770,11 +1786,12 @@ abstract class Database extends ModelBase
 		return $isDefault;
 	}
 
-	/**
-	 * 生成查询Sql
-	 * @param bool $count
-	 * @return mixed
-	 */
+    /**
+     * 生成查询Sql
+     * @param bool $count
+     * @return mixed
+     * @throws Exception
+     */
 	private function _genSelectSql($count = false)
 	{
 		$option = ocGet('option', $this->_sql, array());
@@ -1810,10 +1827,11 @@ abstract class Database extends ModelBase
 		return $this->_plugin->getSelectSql($fields, $from, $option);
 	}
 
-	/**
-	 * 生成条件数据
-	 * @return mixed
-	 */
+    /**
+     * 生成条件数据
+     * @return string
+     * @throws Exception
+     */
 	private function _genWhere()
 	{
 		$option = ocGet('option', $this->_sql, array());
@@ -1843,11 +1861,12 @@ abstract class Database extends ModelBase
 		return $where ? $this->_plugin->getWhereSql($where) : OC_EMPTY;
 	}
 
-	/**
-	 * 获取条件SQL语句
-	 * @param array $data
-	 * @return array
-	 */
+    /**
+     * 获取条件SQL语句
+     * @param array $data
+     * @return array
+     * @throws Exception
+     */
 	private function _getWhereSql(array $data)
 	{
 		$where = array();
@@ -1888,7 +1907,7 @@ abstract class Database extends ModelBase
 	 * 获取字段列表
 	 * @param array $data
 	 * @param array $aliasFields
-	 * @param $unJoined
+	 * @param bool $unJoined
 	 * @return mixed
 	 */
 	private function _getFieldsSql($data, $aliasFields, $unJoined)
@@ -2064,14 +2083,15 @@ abstract class Database extends ModelBase
 		return empty($table) ? $this->_tableName : $table;
 	}
 
-	/**
-	 * 联接查询
-	 * @param string $type
-	 * @param string $class
-	 * @param string $alias
-	 * @param bool $on
-	 * @return $this
-	 */
+    /**
+     * 联接查询
+     * @param $type
+     * @param $class
+     * @param $alias
+     * @param bool $on
+     * @return $this
+     * @throws Exception
+     */
 	private function _join($type, $class, $alias, $on = false)
 	{
 		$config = array();
@@ -2271,12 +2291,12 @@ abstract class Database extends ModelBase
     protected static function _queryDynamic($method, $fieldName, $params)
     {
         if (empty($params)) {
-            ocError('need_find_value');
+            ocService()->error->show('need_find_value');
         }
 
         $value = reset($params);
         if (!ocSimple($value)) {
-            ocError('fault_find_value');
+            ocService()->error->show('fault_find_value');
         }
 
         $model = new static();
@@ -2290,6 +2310,6 @@ abstract class Database extends ModelBase
             }
         }
 
-        ocError('not_exists_find_field');
+        ocService()->error->show('not_exists_find_field');
     }
 }
