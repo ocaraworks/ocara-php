@@ -341,7 +341,7 @@ function ocService($name = null, $getDefault = false)
     if (func_num_args()) {
         $object = null;
         if ($services) {
-            $object = $services->getService($name);
+            $object = $services->loadService($name);
         }
         if (empty($object) && $getDefault) {
             if (is_string($getDefault)) {

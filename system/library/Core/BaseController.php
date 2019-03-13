@@ -521,7 +521,7 @@ class BaseController extends serviceProvider implements ControllerInterface
      */
 	public function _none($key)
 	{
-		if ($instance = $this->getService($key)) {
+		if ($instance = $this->loadService($key)) {
 			return $instance;
 		}
 

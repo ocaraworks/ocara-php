@@ -48,8 +48,11 @@ class FormManager extends ServiceProvider
      */
 	public function create($name)
 	{
-		$form = $this->createService('form', array($name));
-		return $form;
+	    if (!$this->hasService($name)) {
+            $form = $this->createService('form', array($name));
+            $this->setService($name, $form);
+        }
+        return $this->getService($name);
 	}
 
     /**

@@ -87,11 +87,11 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     }
 
     /**
-     * 检测组件是否存在
+     * 检测是否可提供服务组件
      * @param $name
      * @return bool
      */
-    public function hasService($name)
+    public function canService($name)
     {
         return array_key_exists($name, $this->_services)
             || $this->_container->has($name)
@@ -99,45 +99,45 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     }
 
     /**
-     * 获取服务组件
+     * 获取服务组件，如果没有就加载和新建
      * @param string $name
      * @param array $params
      * @param array $deps
      * @return mixed|null
      */
-    public function getService($name, $params = array(), $deps = array())
+    public function loadService($name, $params = array(), $deps = array())
     {
-        $instance = null;
+        $instance = $this->getService($name);
 
-        if (array_key_exists($name, $this->_services)) {
-            $instance = $this->_services[$name];
-        } elseif ($this->_container && $this->_container->hasBindAll($name)) {
-            $instance = $this->_container->get($name, $params, $deps);
-            $this->setService($name, $instance);
-        } elseif (ocContainer()->hasBindAll($name)) {
-            $instance = ocContainer()->get($name, $params, $deps);
-            $this->setService($name, $instance);
+        if (empty($instance)) {
+            if ($this->_container && $this->_container->hasBindAll($name)) {
+                $instance = $this->_container->get($name, $params, $deps);
+                $this->setService($name, $instance);
+            } elseif (ocContainer()->hasBindAll($name)) {
+                $instance = ocContainer()->get($name, $params, $deps);
+                $this->setService($name, $instance);
+            }
         }
 
         return $instance;
     }
 
     /**
-     * 新建服务组件
+     * 新建动态服务组件
      * @param $key
      * @param array $params
      * @param array $deps
      * @return mixed
      * @throws Exception
      */
-    public function createService($key, $params = array(), $deps = array())
+    public function createService($name, $params = array(), $deps = array())
     {
-        if ($this->_container && $this->_container->has($key)) {
-            return $this->_container->create($key, $params, $deps);
-        } elseif (ocContainer()->hasBind($key)) {
-            return ocContainer()->create($key, $params, $deps);
+        if ($this->_container && $this->_container->has($name)) {
+            return $this->_container->create($name, $params, $deps);
+        } elseif (ocContainer()->hasBind($name)) {
+            return ocContainer()->create($name, $params, $deps);
         } else {
-            throw new Exception('no_service', array($key));
+            throw new Exception('no_service', array($name));
         }
     }
 
@@ -152,6 +152,26 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     }
 
     /**
+     * 检测服务组件是否存在
+     * @param $name
+     * @return bool
+     */
+    public function hasService($name)
+    {
+        return array_key_exists($name, $this->_services);
+    }
+
+    /**
+     * 获取已注册服务组件
+     * @param $name
+     * @return mixed|null
+     */
+    public function getService($name)
+    {
+        return array_key_exists($name, $this->_services) ? $this->_services[$name] : null;
+    }
+
+    /**
      * 属性不存在时的处理
      * @param $key
      * @return array|mixed|null
@@ -159,7 +179,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function __none($key)
     {
-        $instance = $this->getService($key);
+        $instance = $this->loadService($key);
         if ($instance) {
             return $instance;
         }
