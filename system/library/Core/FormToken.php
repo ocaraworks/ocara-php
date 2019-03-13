@@ -36,11 +36,12 @@ class FormToken extends Base
 		);
 	}
 
-	/**
-	 * 设置当前表单令牌
-	 * @param $formName
-	 * @return bool|mixed|null|string
-	 */
+    /**
+     * 设置当前表单令牌
+     * @param $formName
+     * @return mixed|string
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function setToken($formName)
 	{
 		$this->setCurrentForm($formName);
@@ -60,7 +61,7 @@ class FormToken extends Base
 
     /**
      * 清除TOKEN
-     * @param null $args
+     * @throws \Ocara\Exceptions\Exception
      */
 	public function clearToken()
 	{
@@ -122,11 +123,12 @@ class FormToken extends Base
 		return $tokenName;
 	}
 
-	/**
-	 * 生成表单令牌
-	 * @param string $formName
-	 * @return bool|mixed|null|string
-	 */
+    /**
+     * 生成表单令牌
+     * @param $formName
+     * @return mixed|string
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function genToken($formName)
 	{
 		$tag = self::getTokenTag();

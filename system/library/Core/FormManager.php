@@ -65,7 +65,7 @@ class FormManager extends ServiceProvider
     /**
      * 获取提交的表单
      * @param $postToken
-     * @return |null
+     * @return null
      */
 	public function getSubmitForm($postToken)
 	{

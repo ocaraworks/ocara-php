@@ -26,9 +26,10 @@ class Session extends ServiceProvider
     }
 
     /**
-	 * Session初始化处理
-	 * @param $start
-	 */
+     * Session初始化处理
+     * @param bool $start
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function boot($start = true)
 	{
         $handler = $this->sessionHandler;
@@ -48,10 +49,11 @@ class Session extends ServiceProvider
 		$this->_start($start);
 	}
 
-	/**
-	 * 启动Session
-	 * @param bool $start
-	 */
+    /**
+     * 启动Session
+     * @param $start
+     * @throws \Ocara\Exceptions\Exception
+     */
 	private function _start($start)
 	{
 		$saveTime = intval(ocConfig('SESSION.options.save_time', false));
@@ -73,8 +75,9 @@ class Session extends ServiceProvider
 
     /**
      * 获取session变量值
-     * @param bool $name
+     * @param string $name
      * @return array|bool|mixed|null
+     * @throws \Ocara\Exceptions\Exception
      */
     public function get($name = null)
     {
@@ -85,20 +88,21 @@ class Session extends ServiceProvider
         return $_SESSION;
     }
 
-	/**
-	 * 设置session变量
-	 * @param string|array $name
-	 * @param mixed $value
-	 */
+    /**
+     * 设置session变量
+     * @param $name
+     * @param $value
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function set($name, $value)
 	{
 		ocSet($_SESSION, $name, $value);
 	}
 
-	/**
-	 * 删除session变量
-	 * @param string|array $key
-	 */
+    /**
+     * 删除session变量
+     * @param $name
+     */
 	public function delete($name)
 	{
 		ocDel($_SESSION, $name);
@@ -137,11 +141,11 @@ class Session extends ServiceProvider
 		session_gc();
 	}
 
-	/**
-	 * 检测session是否设置
-	 * @param $key
-	 * @return array|bool|mixed|null
-	 */
+    /**
+     * 检测session是否设置
+     * @param $name
+     * @return array|bool|mixed|null
+     */
 	public function has($name)
 	{
 		return ocKeyExists($name, $_SESSION);
@@ -157,14 +161,14 @@ class Session extends ServiceProvider
 		}
 	}
 
-	/**
-	 * cookie保存session设置
-	 * @param $saveTime
-	 * @param string $path
-	 * @param string $domain
-	 * @param bool $secure
-	 * @param bool $httponly
-	 */
+    /**
+     * cookie保存session设置
+     * @param string $saveTime
+     * @param string $path
+     * @param bool $domain
+     * @param bool $secure
+     * @param bool $httponly
+     */
 	public function setCookie($saveTime, $path = null, $domain = false, $secure = false, $httponly = true)
 	{	
 		if (session_id()) {

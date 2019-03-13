@@ -145,17 +145,17 @@ class Form extends Base
 	}
 
 	/**
-	 * 表单开始
+	 * 表单结束
 	 */
 	public function end()
 	{
-		return $this->end = $this->_plugin->createEndHtmlTag('form') . PHP_EOL;
+		return $this->_plugin->createEndHtmlTag('form') . PHP_EOL;
 	}
 
 	/**
 	 * 添加关联Model
 	 * @param string $class
-	 * @param null $alias
+	 * @param string $alias
 	 * @return $this
 	 */
 	public function model($class, $alias = null)
@@ -165,36 +165,39 @@ class Form extends Base
 		return $this;
 	}
 
-	/**
-	 * 获取或修改字段语言
-	 * @param string $field
-	 * @param string $value
-	 * @return array|null
-	 */
+    /**
+     * 获取或修改字段语言
+     * @param string $field
+     * @param string $value
+     * @return array|bool|mixed|null
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function lang($field, $value = null)
 	{
 		$lang = $this->_fieldConfig('lang', $field, $value);
 		return empty($lang) ? $field : $lang;
 	}
 
-	/**
-	 * 获取或修改字段映射
-	 * @param string $field
-	 * @param string $value
-	 * @return array|null
-	 */
+    /**
+     * 获取或修改字段映射
+     * @param string $field
+     * @param string $value
+     * @return array|bool|mixed|null
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function map($field, $value = null)
 	{
 		return $this->_fieldConfig('map', $field, $value);
 	}
 
-	/**
-	 * 获取或修改设置
-	 * @param $type
-	 * @param $field
-	 * @param null $value
-	 * @return array|null
-	 */
+    /**
+     * 获取或修改设置
+     * @param $type
+     * @param $field
+     * @param null $value
+     * @return array|bool|mixed|null
+     * @throws \Ocara\Exceptions\Exception
+     */
 	protected function _fieldConfig($type, $field, $value = null)
 	{
 		$property = '_' . $type;
@@ -220,11 +223,11 @@ class Form extends Base
 		return $result;
 	}
 
-	/**
-	 * 开启/关闭/检测表单验证功能
-	 * @param bool|null $validate
-	 * @return $this|bool
-	 */
+    /**
+     * 开启/关闭/检测表单验证功能
+     * @param null|bool $validate
+     * @return $this|bool
+     */
 	public function validateForm($validate = null)
 	{
 		if ($validate === null) {
@@ -234,12 +237,13 @@ class Form extends Base
 		return $this;
 	}
 
-	/**
-	 * 表单验证
-	 * @param Validator $validator
-	 * @param array $data
-	 * @return bool
-	 */
+    /**
+     * 表单验证
+     * @param Validator $validator
+     * @param array $data
+     * @return bool
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function validate(Validator &$validator, array $data)
 	{
 		$this->loadModel();
