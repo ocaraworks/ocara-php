@@ -93,8 +93,6 @@ return array(
         'font'			    => 'Ocara\Core\Font',
         'staticPath'	    => 'Ocara\Core\StaticPath',
         'globals'           => 'Ocara\Core\Globals',
-        'formToken'         => 'Ocara\Core\FormToken',
-        'formManager'       => 'Ocara\Core\FormManager',
         'errorOutput' 	    => 'Ocara\Service\ErrorOutput',
         'fileLog'           => 'Ocara\Service\FileLog',
     ),
@@ -107,12 +105,15 @@ return array(
         'log'	            => 'Ocara\Core\Log',
         'form'              => 'Ocara\Core\Form',
         'html'              => 'Ocara\Core\Html',
+        'formToken'         => 'Ocara\Core\FormToken',
+        'formManager'       => 'Ocara\Core\FormManager',
     ),
     
     /*
      * 控制器服务类
      */
     'CONTROLLER_SERVICE_CLASS' => array(
+        'All' => array(),
         'Common' => array(
             'view' => 'Ocara\Views\Common',
         ),

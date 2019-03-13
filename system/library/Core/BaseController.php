@@ -64,7 +64,11 @@ class BaseController extends serviceProvider implements ControllerInterface
             DatabaseFactory::create();
         });
 
-        $services = ocConfig('CONTROLLER_SERVICE_CLASS.Common');
+        $services = array_merge(
+            ocConfig('CONTROLLER_SERVICE_CLASS.All'),
+            ocConfig('CONTROLLER_SERVICE_CLASS.' . self::controllerType(), array())
+        );
+
         foreach ($services as $name => $class) {
             $this->_container->bindSingleton($name, $class, array());
         }
