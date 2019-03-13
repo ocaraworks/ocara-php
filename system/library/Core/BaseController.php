@@ -285,12 +285,12 @@ class BaseController extends serviceProvider implements ControllerInterface
     public function renderFile($file = null, array $vars = array(), $required = true)
     {
         $this->response->setContentType($this->_contentType);
-        $this->formManager->setToken();
+        $this->formManager->setToken($this->getRoute());
 
         if (empty($file)) {
             $tpl = $this->view->getTpl();
             if (empty($tpl)) {
-                $this->view->setTpl(ocService()->app->getRoute('action'));
+                $this->view->setTpl($this->getRoute('action'));
             }
         }
 
@@ -322,7 +322,7 @@ class BaseController extends serviceProvider implements ControllerInterface
         );
 
         $this->response->setContentType($this->_contentType);
-        $this->formManager->setToken();
+        $this->formManager->setToken($this->getRoute());
 
         if (!$this->response->getOption('statusCode')) {
             if ($this->_result['status'] == 'success') {
@@ -390,7 +390,7 @@ class BaseController extends serviceProvider implements ControllerInterface
     {
         $model = null;
         if (!$name) {
-            $name = ocService()->app->getRoute('controller');
+            $name = $this->getRoute('controller');
             $model = $this->model();
         }
 
@@ -496,7 +496,7 @@ class BaseController extends serviceProvider implements ControllerInterface
             $class = '\app\dal\model\\'
                 . DatabaseFactory::getDefaultServer()
                 . OC_NS_SEP
-                . ucfirst(ocService()->app->getRoute('controller'));
+                . ucfirst($this->getRoute('controller'));
         }
 
         if (isset($this->_models[$class])) {

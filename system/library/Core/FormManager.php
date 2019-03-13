@@ -112,7 +112,7 @@ class FormManager extends ServiceProvider
 	/**
 	 * 设置Token
 	 */
-	public function setToken()
+	public function setToken($route)
 	{
         $forms = $this->getProperty();
 
@@ -120,7 +120,7 @@ class FormManager extends ServiceProvider
             $tokenTag = $this->formToken->getTokenTag();
             foreach ($forms as $formName => $form) {
                 if (is_object($form) && $form instanceof Form) {
-                    $token = $this->formToken->setToken($formName);
+                    $token = $this->formToken->setToken($formName, $route);
                     $form->setToken($tokenTag, $token);
                 }
             }

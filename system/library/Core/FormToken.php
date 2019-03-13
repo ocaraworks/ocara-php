@@ -23,26 +23,28 @@ class FormToken extends Base
 	private $_tokenName;
 	private $_tokenKey = array();
 
-	/**
-	 * 设置当前表单令牌名称
-	 * @param string $formName
-	 */
-	public function setCurrentForm($formName)
+    /**
+     * 设置当前表单令牌名称
+     * @param $formName
+     * @param $route
+     */
+	public function setCurrentForm($formName, $route)
 	{
 		$this->_formName  = $formName;
 		$this->_tokenName = $this->genName($formName);
 		$this->_tokenKey  = array(
-			$this->_tokenName, implode('_', ocService()->app->getRoute())
+			$this->_tokenName, implode('_', $route)
 		);
 	}
 
     /**
      * 设置当前表单令牌
      * @param $formName
+     * @param $route
      * @return mixed|string
      * @throws \Ocara\Exceptions\Exception
      */
-	public function setToken($formName)
+	public function setToken($formName, $route)
 	{
 		$this->setCurrentForm($formName);
 		$token = $this->genToken($formName);
