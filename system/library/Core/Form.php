@@ -108,7 +108,7 @@ class Form extends Base
 	}
 
 	/**
-	 * 设置token
+	 * 设置Token
 	 * @param string $tokenTag
 	 * @param string $token
 	 */
@@ -117,6 +117,24 @@ class Form extends Base
 		$this->_tokenTag = $tokenTag;
 		$this->_token = $token;
 	}
+
+    /**
+     * 获取Token名称
+     * @return mixed
+     */
+    public function getTokenTag()
+    {
+        return $this->_tokenTag;
+    }
+
+    /**
+     * 获取Token
+     * @return mixed
+     */
+	public function getToken()
+    {
+        return $this->_token;
+    }
 
 	/**
 	 * 表单开始

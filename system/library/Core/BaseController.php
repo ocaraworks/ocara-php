@@ -477,7 +477,7 @@ class BaseController extends serviceProvider implements ControllerInterface
         if (!($this->_isFormSubmit && $this->_checkForm && $this->formManager->get()))
             return true;
 
-        $tokenTag  = $this->formToken->getTokenTag();
+        $tokenTag = $this->formToken->getTokenTag();
         $postToken = $this->getSubmitData($tokenTag);
         $postForm = $this->formManager->getSubmitForm($postToken);
 

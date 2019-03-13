@@ -47,7 +47,7 @@ class FormToken extends Base
 	public function setToken($formName, $route)
 	{
 		$this->setCurrentForm($formName);
-		$token = $this->genToken($formName);
+		$token = $this->genToken($formName, $route);
 
 		list($tokenName, $tokenRoute) = $this->_tokenKey;
 		$sessData = ocService()->session->get($tokenName);
@@ -131,10 +131,9 @@ class FormToken extends Base
      * @return mixed|string
      * @throws \Ocara\Exceptions\Exception
      */
-	public function genToken($formName)
+	public function genToken($formName, $route)
 	{
 		$tag = self::getTokenTag();
-		$route = ocService()->app->getRoute();
 		$routeStr = implode(OC_EMPTY, $route);
 
 		if ($config = ocConfig('SOURCE.form.generate_token', null)) {

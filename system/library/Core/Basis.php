@@ -22,15 +22,15 @@ abstract class Basis
      * @param null $name
      * @return 自定义属性
      */
-	public function &getProperty($name = null)
+	public function getProperty($name = null)
 	{
 		if (isset($name)) {
 			if (array_key_exists($name, $this->_properties)) {
 				return $this->_properties[$name];
 			}
-		} else {
-            return $this->_properties;
-        }
+			return null;
+		}
+		return $this->_properties;
 	}
 
 	/**

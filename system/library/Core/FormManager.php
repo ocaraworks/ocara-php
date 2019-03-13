@@ -48,11 +48,11 @@ class FormManager extends ServiceProvider
      */
 	public function create($name)
 	{
-	    if (!$this->hasService($name)) {
+	    if (!$this->hasProperty($name)) {
             $form = $this->createService('form', array($name));
-            $this->setService($name, $form);
+            $this->setProperty($name, $form);
         }
-        return $this->getService($name);
+        return $this->getProperty($name);
 	}
 
     /**
@@ -62,15 +62,16 @@ class FormManager extends ServiceProvider
      */
 	public function get($name = null)
     {
-        return $this->getService($name);
+        return $this->getProperty($name);
     }
 
     /**
      * 获取提交的表单
      * @param $postToken
-     * @return null
+     * @param $route
+     * @return |null
      */
-	public function getSubmitForm($postToken)
+	public function getSubmitForm($postToken, $route)
 	{
 		$postForm  = null;
 
@@ -82,7 +83,7 @@ class FormManager extends ServiceProvider
 		foreach ($forms as $formName => $form) {
 			if ($this->formToken->has($formName, $postToken)) {
 				$postForm = $form;
-				$this->formToken->setCurrentForm($formName);
+				$this->formToken->setCurrentForm($formName, $route);
 				break;
 			}
 		}

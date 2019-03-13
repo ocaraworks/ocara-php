@@ -41,27 +41,6 @@ abstract class Base extends Basis
     }
 
     /**
-     * 获取自定义属性
-     * @param string $name
-     * @return array|mixed|自定义属性
-     */
-    public function &getProperty($name = null)
-    {
-        if (isset($name)) {
-            if (array_key_exists($name, $this->_properties)) {
-                return $this->_properties[$name];
-            }
-            if (method_exists($this, '__none')) {
-                return $this->__none($name);
-            } else {
-                ocService()->error->show('no_property', array($name));
-            }
-        }
-
-        return $this->_properties;
-    }
-
-    /**
      * 魔术方法-调用未定义的方法时
      * @param string $name
      * @param $params
