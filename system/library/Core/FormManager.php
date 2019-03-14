@@ -17,6 +17,9 @@ class FormManager extends ServiceProvider
 {
     const EVENT_CHECK_ERROR = 'checkError';
 
+    protected $_route;
+    protected $_form;
+
     /**
      * 注册服务
      * @throws Exception
@@ -26,8 +29,7 @@ class FormManager extends ServiceProvider
 		$validator = ocConfig('SERVICE.validator', '\Ocara\Core\Validator');
 		$validate = ocConfig('SERVICE.validate', '\Ocara\Service\Validate');
 
-		$this->_container
-			 ->bindSingleton('validator', $validator, array($validate));
+		$this->_container->bindSingleton('validator', $validator, array($validate));
 	}
 
     /**
@@ -42,17 +44,22 @@ class FormManager extends ServiceProvider
 
     /**
      * 新建表单
-     * @param $name
+     * @param $formName
      * @return mixed
      * @throws Exception
      */
-	public function create($name)
+	public function create($formName)
 	{
-	    if (!$this->hasProperty($name)) {
-            $form = $this->createService('form', array($name));
-            $this->setProperty($name, $form);
+	    if (!$this->hasProperty($formName)) {
+            $form = $this->createService('form', array($formName));
+            $token = $this->formToken->generate($formName, $this->_route);
+
+            $this->saveToken($formName, $token);
+            $form->setTokenInfo(array($this->getTokenTag(), $token));
+            $this->setProperty($formName, $form);
         }
-        return $this->getProperty($name);
+
+        return $this->getProperty($formName);
 	}
 
     /**
@@ -67,49 +74,41 @@ class FormManager extends ServiceProvider
 
     /**
      * 获取提交的表单
-     * @param $requests
-     * @param $route
-     * @return null
+     * @param $requestToken
+     * @return mixed
      * @throws Exception
      */
-	public function getSubmitForm($requests, $route)
+	public function getSubmitForm($requestToken)
 	{
-        $tokenTag = $this->formToken->getTokenTag();
-        $postToken = ocGet($tokenTag, $requests, null);
-		$postForm  = null;
+        if (empty($requestToken)) {
+            $this->error->show('failed_validate_token');
+        }
 
-		if (empty($postToken)) {
-			$this->_showCheckFormError('failed_validate_token');
-		}
+		$tokens = $this->session->get($this->getTokenListTag());
+		$formName = array_search($requestToken, $tokens);
 
-		$forms = $this->getProperty();
-		foreach ($forms as $formName => $form) {
-			if ($this->formToken->has($formName, $postToken)) {
-				$postForm = $form;
-				$this->formToken->setCurrentForm($formName, $route);
-				break;
-			}
-		}
+		if ($formName === false || !$this->hasProperty($formName)) {
+            $this->error->show('not_exists_form');
+        }
 
-		if ($postForm === null) {
-			$this->_showCheckFormError('not_exists_form');
-		}
-
-		return $postForm;
+		$this->_form = $this->getProperty($formName);
+		return $this->_form;
 	}
 
     /**
      * 验证表单
      * @param $data
      * @return bool
+     * @throws Exception
      */
 	public function validate($data)
 	{
-        $postForm = $this->formManager->getSubmitForm($data);
+	    $requestToken = ocGet($this->getTokenTag(), $data, null);
+        $postForm = $this->getSubmitForm($requestToken);
 
 		if ($postForm->validateForm()) {
 			if (!$postForm->validate($this->validator, $data)) {
-				$this->_showCheckFormError(
+				$this->_showValidateError(
 					'failed_validate_form',
 					array($this->validator->getError()),
 					$this->validator->getErrorSource()
@@ -120,40 +119,44 @@ class FormManager extends ServiceProvider
 		return true;
 	}
 
-	/**
-	 * 设置Token
-	 */
-	public function setToken($route)
-	{
-        $forms = $this->getProperty();
+    /**
+     * 获取TOKEN参数名称
+     * @return string
+     * @throws Exception
+     */
+    public function getTokenTag()
+    {
+        return '_oc_' . ocConfig('FORM.token_tag', '_form_token_name');
+    }
 
-        if ($forms) {
-            $tokenTag = $this->formToken->getTokenTag();
-            foreach ($forms as $formName => $form) {
-                if (is_object($form) && $form instanceof Form) {
-                    $token = $this->formToken->setToken($formName, $route);
-                    $form->setToken($tokenTag, $token);
-                }
-            }
-        }
-	}
+    /**
+     * 获取TOKEN参数名称
+     * @return string
+     * @throws Exception
+     */
+    public function getTokenListTag()
+    {
+        return $this->getTokenTag() . '_list';
+    }
+
+    /**
+     * 保存TOKEN
+     * @param $formName
+     * @param $token
+     * @throws Exception
+     */
+    public function saveToken($formName, $token)
+    {
+        ocService()->session->set(array($this->getTokenListTag(), $formName), $token);
+    }
 
 	/**
 	 * 清理Token
 	 */
 	public function clearToken()
 	{
-		$this->formToken->clearToken();
+        ocService()->session->delete($this->getTokenListTag());
 	}
-
-    /**
-     * 获取
-     * @return mixed
-     */
-	public function getTokenTag()
-    {
-        return $this->foken->getTokenTag();
-    }
 
 	/**
 	 * 显示表单检测错误
@@ -161,10 +164,10 @@ class FormManager extends ServiceProvider
 	 * @param array $params
 	 * @param array $data
 	 */
-	private function _showCheckFormError($errorType, $params = array(), $data = array())
+	private function _showValidateError($errorType, $params = array(), $data = array())
 	{
 		$error['errorType'] = $errorType;
-		$error['errorInfo'] = ocService()->lang->get($errorType, $params);;
+		$error['errorInfo'] = ocService()->lang->get($errorType, $params);
 		$error['errorData'] = $data;
 
 		if ($this->event(self::EVENT_CHECK_ERROR)->get()) {

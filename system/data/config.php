@@ -95,6 +95,7 @@ return array(
         'globals'           => 'Ocara\Core\Globals',
         'errorOutput' 	    => 'Ocara\Service\ErrorOutput',
         'fileLog'           => 'Ocara\Service\FileLog',
+        'formToken'         => 'Ocara\Core\FormToken',
     ),
     
     /*
@@ -105,7 +106,6 @@ return array(
         'log'	            => 'Ocara\Core\Log',
         'form'              => 'Ocara\Core\Form',
         'html'              => 'Ocara\Core\Html',
-        'formToken'         => 'Ocara\Core\FormToken',
         'formManager'       => 'Ocara\Core\FormManager',
     ),
     

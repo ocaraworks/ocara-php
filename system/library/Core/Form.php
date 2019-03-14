@@ -17,7 +17,7 @@ class Form extends Base
 {
 	/**
 	 * @var $_id  表单标识
-	 * @var $_token 表单令牌
+	 * @var $_tokenInfo 表单令牌信息
 	 * @var $_lang 表单字段名语言
 	 * @var $_map 表单字段名映射规则
 	 * @var $_validate 表单验证规则
@@ -25,8 +25,7 @@ class Form extends Base
 	protected $_plugin = null;
 
 	private $_sign;
-	private $_token;
-	private $_tokenTag;
+	private $_tokenInfo;
 	private $_validateForm = true;
 	
 	private $_models = array();
@@ -108,32 +107,21 @@ class Form extends Base
 	}
 
 	/**
-	 * 设置Token
-	 * @param string $tokenTag
-	 * @param string $token
+	 * 设置Token信息
+	 * @param array $tokenInfo
 	 */
-	public function setToken($tokenTag, $token)
+	public function setTokenInfo(array $tokenInfo)
 	{
-		$this->_tokenTag = $tokenTag;
-		$this->_token = $token;
+		$this->_tokenInfo = $tokenInfo;
 	}
 
     /**
-     * 获取Token名称
+     * 获取Token信息
      * @return mixed
      */
-    public function getTokenTag()
+	public function getTokenInfo()
     {
-        return $this->_tokenTag;
-    }
-
-    /**
-     * 获取Token
-     * @return mixed
-     */
-	public function getToken()
-    {
-        return $this->_token;
+        return $this->_tokenInfo;
     }
 
 	/**
@@ -141,9 +129,11 @@ class Form extends Base
 	 */
 	public function begin()
 	{
-		$begin = $this->_plugin->createElement('form', $this->_attributes, null);
-		$token = $this->_plugin->input('hidden', $this->_tokenTag, $this->_token);
-		$begin = $begin . PHP_EOL . "\t" . $token;
+		list($tokenTag, $tokenValue) = $this->_tokenInfo;
+		$tokenElement = $this->_plugin->input('hidden', $tokenTag, $tokenValue);
+
+		$formElement = $this->_plugin->createElement('form', $this->_attributes, null);
+        $begin = $formElement . PHP_EOL . "\t" . $tokenElement;
 
 		$this->loadModel();
 		return $begin . PHP_EOL;
