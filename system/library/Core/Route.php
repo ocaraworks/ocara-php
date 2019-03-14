@@ -9,7 +9,7 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
-use Ocara\Core\BaseController;
+use Ocara\Core\ControllerBase;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -44,7 +44,7 @@ class Route extends Base
         }
 
         $controllerType = $moduleClass::controllerType();
-        $featureClass = BaseController::getFeatureClass($controllerType);
+        $featureClass = ControllerBase::getFeatureClass($controllerType);
 
         if (!ocClassExists($featureClass)) {
             $service->error->show('not_exists_class', $featureClass);
