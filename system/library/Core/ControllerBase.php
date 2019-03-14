@@ -11,11 +11,11 @@ namespace Ocara\Core;
 use Ocara\Core\DatabaseFactory;
 use Ocara\Core\ServiceProvider;
 use Ocara\Interfaces\Controller as ControllerInterface;
-use Ocara\Core\Route;
+use Ocara\Core\ModelBase;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class BaseController extends serviceProvider implements ControllerInterface
+class ControllerBase extends serviceProvider implements ControllerInterface
 {
 	/**
 	 * @var $_provider 控制器提供者
@@ -445,25 +445,18 @@ class BaseController extends serviceProvider implements ControllerInterface
     {
         $validator = $validator ? : $this->validator;
 
-        if (is_object($model)) {
-            if ($model instanceof DatabaseModel) {
-                $class = $model->getClass();
-            } else {
-                ocService()->error->show('fault_model_object');
-            }
-        } else {
-            $class = $model;
+        if (!is_object($model)) {
+            $model = new $model();
         }
 
-        $model =  new $class();
-        $data = $model->mapData($data, $class);
-        $rules = $model->getConfig('VALIDATE', null, $class);
-        $lang = $model->etConfig('LANG', null, $class);
+        if (!$model instanceof ModelBase) {
+            ocService()->error->show('fault_model_object');
+        }
 
         $result = $validator
-            ->setRules($rules)
-            ->setLang($lang)
-            ->validate($data);
+            ->setRules($model->getConfig('VALIDATE'))
+            ->setLang($model->getConfig('LANG'))
+            ->validate($model->mapData($data));
 
         return $result;
     }
@@ -477,16 +470,7 @@ class BaseController extends serviceProvider implements ControllerInterface
         if (!($this->_isFormSubmit && $this->_checkForm && $this->formManager->get()))
             return true;
 
-        $tokenTag = $this->formToken->getTokenTag();
-        $postToken = $this->getSubmitData($tokenTag);
-        $postForm = $this->formManager->getSubmitForm($postToken);
-
-        if ($postForm) {
-            $data = $this->getSubmitData();
-            $this->formManager->validate($postForm, $data);
-        }
-
-        return true;
+        return $this->formManager->validate($this->getSubmitData());
     }
 
     /**

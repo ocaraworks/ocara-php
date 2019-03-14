@@ -8,8 +8,8 @@
  ************************************************************************************************/
 namespace Ocara\Controllers;
 
-use Ocara\Core\BaseController;
+use Ocara\Core\ControllerBase;
 
-class Common extends BaseController
+class Common extends ControllerBase
 {
 }

@@ -102,20 +102,24 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 		return $fields;
 	}
 
-	/**
-	 * @param $charset
-	 * @return array|bool|object|void
-	 */
+    /**
+     * 设置字符集
+     * @param $charset
+     * @return array|bool|mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function setCharset($charset)
 	{
 		$sqlData = $this->getSetCharsetSql($charset);
 		return $this->query($sqlData);
 	}
 
-	/**
-	 * @param $name
-	 * @return mixed
-	 */
+    /**
+     * 选择数据库
+     * @param string $name
+     * @return array|bool|mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	public function selectDatabase($name)
 	{
 		if ($this->isPdo()) {

@@ -8,9 +8,9 @@
  ************************************************************************************************/
 namespace Ocara\Controllers;
 
-use Ocara\Core\BaseController;
+use Ocara\Core\ControllerBase;
 
-class Rest extends BaseController
+class Rest extends ControllerBase
 {
     protected static $_controllerType = 'Rest';
     protected $_isApi = true;

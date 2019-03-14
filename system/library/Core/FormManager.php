@@ -67,12 +67,15 @@ class FormManager extends ServiceProvider
 
     /**
      * 获取提交的表单
-     * @param $postToken
+     * @param $requests
      * @param $route
-     * @return |null
+     * @return null
+     * @throws Exception
      */
-	public function getSubmitForm($postToken, $route)
+	public function getSubmitForm($requests, $route)
 	{
+        $tokenTag = $this->formToken->getTokenTag();
+        $postToken = ocGet($tokenTag, $requests, null);
 		$postForm  = null;
 
 		if (empty($postToken)) {
@@ -95,15 +98,17 @@ class FormManager extends ServiceProvider
 		return $postForm;
 	}
 
-	/**
-	 * 验证表单
-	 * @param $form
-	 * @param $data
-	 */
-	public function validate($form, $data)
+    /**
+     * 验证表单
+     * @param $data
+     * @return bool
+     */
+	public function validate($data)
 	{
-		if ($form->validateForm()) {
-			if (!$form->validate($this->validator, $data)) {
+        $postForm = $this->formManager->getSubmitForm($data);
+
+		if ($postForm->validateForm()) {
+			if (!$postForm->validate($this->validator, $data)) {
 				$this->_showCheckFormError(
 					'failed_validate_form',
 					array($this->validator->getError()),
@@ -111,6 +116,8 @@ class FormManager extends ServiceProvider
 				);
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -138,6 +145,15 @@ class FormManager extends ServiceProvider
 	{
 		$this->formToken->clearToken();
 	}
+
+    /**
+     * 获取
+     * @return mixed
+     */
+	public function getTokenTag()
+    {
+        return $this->foken->getTokenTag();
+    }
 
 	/**
 	 * 显示表单检测错误
