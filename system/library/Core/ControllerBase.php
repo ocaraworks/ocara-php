@@ -46,6 +46,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
 	{
         $this->bindEvents($this);
         $this->session->boot();
+        $this->formManager->setRoute($this->getRoute());
         $this->_plugin = $this->view;
 
         $this->view->assign('route', $this->getRoute());
@@ -289,7 +290,6 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     public function renderFile($file = null, array $vars = array(), $required = true)
     {
         $this->response->setContentType($this->_contentType);
-        $this->formManager->setToken($this->getRoute());
 
         if (empty($file)) {
             $tpl = $this->view->getTpl();
@@ -326,7 +326,6 @@ class ControllerBase extends serviceProvider implements ControllerInterface
         );
 
         $this->response->setContentType($this->_contentType);
-        $this->formManager->setToken($this->getRoute());
 
         if (!$this->response->getOption('statusCode')) {
             if ($this->_result['status'] == 'success') {
