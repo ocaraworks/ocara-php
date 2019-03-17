@@ -191,7 +191,6 @@ class Form extends Base
      * @param string $field
      * @param string $value
      * @return array|bool|mixed|null
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function map($field, $value = null)
 	{
@@ -204,7 +203,6 @@ class Form extends Base
      * @param $field
      * @param null $value
      * @return array|bool|mixed|null
-     * @throws \Ocara\Exceptions\Exception
      */
 	protected function _fieldConfig($type, $field, $value = null)
 	{

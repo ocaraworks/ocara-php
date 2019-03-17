@@ -177,7 +177,6 @@ class Config extends Basis
      * 设置配置
      * @param $key
      * @param $value
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function set($key, $value)
 	{
@@ -234,7 +233,6 @@ class Config extends Basis
      * 获取默认配置
      * @param string|array $key
      * @return array|bool|mixed|null
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function getDefault($key = null)
 	{

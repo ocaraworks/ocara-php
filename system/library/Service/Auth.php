@@ -32,10 +32,11 @@ final class Auth extends ServiceBase
 		ocSet($this->_data, $roleList, array());
 	}
 
-	/**
-	 * 获取角色信息
-	 * @param string $roleList
-	 */
+    /**
+     * 获取角色信息
+     * @param $roleList
+     * @return array|bool|mixed|null
+     */
 	public function getRole($roleList)
 	{
 		return ocGet($roleList, $this->_data);

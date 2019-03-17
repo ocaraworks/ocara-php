@@ -75,9 +75,8 @@ class Session extends ServiceProvider
 
     /**
      * 获取session变量值
-     * @param string $name
+     * @param null $name
      * @return array|bool|mixed|null
-     * @throws \Ocara\Exceptions\Exception
      */
     public function get($name = null)
     {
@@ -92,7 +91,6 @@ class Session extends ServiceProvider
      * 设置session变量
      * @param $name
      * @param $value
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function set($name, $value)
 	{

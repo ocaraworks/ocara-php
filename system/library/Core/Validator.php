@@ -260,7 +260,6 @@ class Validator extends Base
     /**
      * 绑定错误
      * @param array $lang
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function setError(array $lang)
 	{

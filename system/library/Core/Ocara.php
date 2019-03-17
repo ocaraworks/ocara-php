@@ -126,9 +126,8 @@ final class Ocara extends Basis
 
     /**
      * 获取框架信息
-     * @param string $key
+     * @param null $key
      * @return array|bool|mixed|null
-     * @throws \Ocara\Exceptions\Exception
      */
 	public static function getInfo($key = null)
 	{

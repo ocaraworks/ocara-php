@@ -208,7 +208,6 @@ class DatabaseBase extends Sql
      * 获取配置选项
      * @param string $name
      * @return array|bool|mixed|null
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function getConfig($name = null)
 	{

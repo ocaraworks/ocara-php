@@ -33,7 +33,6 @@ function ocCommPath($path)
  * @param null $default
  * @param bool $required
  * @return array|bool|mixed|null
- * @throws Exception
  */
 function ocGet($key, array $data, $default = null, $required = false)
 {
@@ -187,7 +186,6 @@ function ocParseKey($key)
  * @param $key
  * @param $value
  * @return mixed
- * @throws Exception
  */
 function ocSet(array &$data, $key, $value)
 {
@@ -427,10 +425,9 @@ function ocError($error = null, array $params = array())
 /**
  * 获取提示内容
  * @param array $languages
- * @param $message
+ * @param mixed $message
  * @param array $params
  * @return array
- * @throws Exception
  */
 function ocGetLanguage(array $languages, $message, array $params = array())
 {

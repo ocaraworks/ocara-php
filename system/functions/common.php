@@ -27,7 +27,6 @@ function ocReplaceSpace($string, $replace = '')
  * @param string $extension
  * @param bool $required
  * @return bool
- * @throws \Ocara\Exceptions\Exception
  */
 function ocCheckExtension($extension, $required = true)
 {

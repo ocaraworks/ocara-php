@@ -586,10 +586,12 @@ class Image extends ServiceBase
 		}
 	}
 
-	/**
-	 * 输出图片
-	 * @param bool $isDestroy
-	 */
+    /**
+     * 输出图片
+     * @param bool $isDestroy
+     * @return bool|mixed
+     * @throws \Ocara\Exceptions\Exception
+     */
 	protected function _print($isDestroy = false)
 	{
 		$contentType = ocGet(0, self::$imageTypes[$this->srcExtName]);

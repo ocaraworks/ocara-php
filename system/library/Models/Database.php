@@ -234,7 +234,6 @@ abstract class Database extends ModelBase
      * @param string $key
      * @param string $field
      * @return array|bool|mixed|null
-     * @throws Exception
      */
 	public function getConfig($key = null, $field = null)
 	{
@@ -1239,7 +1238,7 @@ abstract class Database extends ModelBase
 			if ($cacheData) return $cacheData;
 		}
 
-        $dataType = ocGet('option.dataType', $this->_sql, $dataType ? : 'array');
+        $dataType = ocGet(array('option', 'dataType'), $this->_sql, $dataType ? : 'array');
 		if ($queryRow) {
             $result = $this->_plugin->queryRow($sql, $debug, $count, $this->_unions, $dataType);
 		} else {
@@ -1269,7 +1268,7 @@ abstract class Database extends ModelBase
      */
 	public function isPage()
     {
-        return ocGet('option.page', $this->_sql) ? true : false;
+        return ocGet(array('option', 'page'), $this->_sql) ? true : false;
     }
 
     /**
@@ -1282,7 +1281,7 @@ abstract class Database extends ModelBase
 	{
 		$this->_plugin = null;
 
-		if (!($master || ocGet('option.master', $this->_sql))) {
+		if (!($master || ocGet(array('option', 'master'), $this->_sql))) {
 			if (!is_object($this->_slave)) {
 				$this->_slave = DatabaseFactory::create($this->_connectName, false, false);
 			}
@@ -2246,6 +2245,9 @@ abstract class Database extends ModelBase
 
     /**
      * 设置未定义的属性
+     * @param string $key
+     * @param \Ocara\Core\mxied $value
+     * @return mixed|void
      */
     public function __set($key, $value)
     {

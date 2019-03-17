@@ -43,7 +43,7 @@ class Url extends Base
 	{
 		if (empty($url)) {
 			if (PHP_SAPI == 'cli') {
-				$url = trim(ocGet('argv.1', $_SERVER), OC_DIR_SEP);
+				$url = trim(ocGet(array('argv','1'), $_SERVER), OC_DIR_SEP);
 			} else {
                 $webRoot = ocCommPath(OC_WEB_ROOT);
                 $documentRoot = ocCommPath($_SERVER['DOCUMENT_ROOT']);

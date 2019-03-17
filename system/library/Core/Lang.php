@@ -198,9 +198,8 @@ class Lang extends Base
 
     /**
      * 设置语言
-     * @param string|array $key
+     * @param $key
      * @param null $value
-     * @throws Exception
      */
 	public function set($key, $value = null)
 	{
