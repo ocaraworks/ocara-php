@@ -44,18 +44,16 @@ class SessionFile extends ServiceProvider
 
         $this->_savePath = $savePath;
     }
-    
+
     /**
      * session打开
-     * @param string $savePath
-     * @param string $sessName
+     * @param $savePath
+     * @param $sessName
+     * @return bool
      */
     public function open($savePath, $sessName)
     {
-		if (is_dir($this->_savePath)) {
-			return true;
-		}
-        return false;
+        return is_dir($this->_savePath);
     }
 
     /**
@@ -68,7 +66,8 @@ class SessionFile extends ServiceProvider
 
     /**
      * 读取session信息
-     * @param string $id
+     * @param $id
+     * @return bool|string
      */
     public function read($id)
     {
@@ -86,10 +85,11 @@ class SessionFile extends ServiceProvider
     }
 
     /**
-	 * 保存session
-	 * @param string $id
-	 * @param string $data
-	 */
+     * 保存session
+     * @param $id
+     * @param $data
+     * @return bool
+     */
     public function write($id, $data)
     {
         try {
@@ -102,9 +102,10 @@ class SessionFile extends ServiceProvider
     }
 
     /**
-	 * 销毁session
-	 * @param string $id
-	 */
+     * 销毁session
+     * @param $id
+     * @return bool
+     */
     public function destroy($id)
     {
         $file = "{$this->_savePath}/sess_{$id}";
@@ -117,9 +118,10 @@ class SessionFile extends ServiceProvider
     }
 
     /**
-	 * Session垃圾回收
-	 * @param integer $maxLifeTime
-	 */
+     * Session垃圾回收
+     * @param $maxlifetime
+     * @return bool
+     */
     public function gc($maxlifetime)
     {
         $files = glob("{$this->_savePath}/sess_*");
