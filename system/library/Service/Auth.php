@@ -55,12 +55,12 @@ final class Auth extends ServiceBase
 		ocDel($this->_data, $roleList);
 	}
 
-	/**
-	 * 添加权限
-	 * @param string|array $roleList
-	 * @param string|array $routeList
-	 * @param integer $allowed
-	 */
+    /**
+     * 添加权限
+     * @param string|array $roleList
+     * @param string|array $routeList
+     * @param bool $allowed
+     */
 	public function setAuth($roleList, $routeList, $allowed = true)
 	{
 		if (!is_array($roleList)) {

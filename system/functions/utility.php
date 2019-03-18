@@ -9,10 +9,8 @@
 
 defined('OC_PATH') or exit('Forbidden!');
 
-use Ocara\Core\Ocara;
 use Ocara\Core\Container;
 use Ocara\Core\ServiceProvider;
-use Ocara\Core\ExceptionHandler;
 use Ocara\Exceptions\Exception;
 use Ocara\Exceptions\ErrorException;
 
@@ -24,26 +22,6 @@ use Ocara\Exceptions\ErrorException;
 function ocCommPath($path)
 {
 	return str_replace("\\", OC_DIR_SEP, $path);
-}
-
-/**
- * 获取数组元素值
- * @param mixed $key
- * @param array $data
- * @param null $default
- * @param bool $required
- * @return array|bool|mixed|null
- */
-function ocGet($key, array $data, $default = null, $required = false)
-{
-	if ($required) {
-		if ($result = ocCheckKey(false, $key, $data, true, $default)) {
-			return $result[0];
-		}
-		ocService()->error->show('not_exists_key', array($key));
-	}
-	
-	return ocCheckKey(false, $key, $data, false, $default);
 }
 
 /**
@@ -74,51 +52,35 @@ function ocSimple($data)
  */
 function ocKeyExists($key, array $data)
 {
-	return ocCheckKey(true, $key, $data);
+	return !!ocCheckKey(true, $key, $data);
 }
 
 /**
  * 检测键名
- * @param $onlyCheck
  * @param mixed $key
  * @param array $data
- * @param bool $arrayGet
- * @param null $default
  * @return array|bool|null
  */
-function ocCheckKey($onlyCheck, $key, array $data, $arrayGet = false, $default = null)
+function ocCheckKey($key, array $data)
 {
-	if (is_integer($key)) {
-		if (array_key_exists($key, $data)) {
-			return $onlyCheck ? true : ($arrayGet ? array($data[$key]) : $data[$key]);
-		} else {
-			return $onlyCheck ? false : $default;
-		}
-	}
+    if (is_array($key)) {
+        foreach ($key as $value) {
+            if (is_array($data) && array_key_exists($value, $data)) {
+                $data = $data[$value];
+            } else {
+                return false;
+            }
+        }
+        return array($data);
+    }
 
-	if (is_string($key)) {
-		if (array_key_exists($key, $data)) {
-			return $onlyCheck ? true : ($arrayGet ? array($data[$key]) : $data[$key]);
-		}
-		$key = trim($key, '.');
-		if (false === strstr($key, '.') || $key === '') {
-			return $onlyCheck ? false : $default;
-		}
-		$key = explode('.', $key);
-	}
-	
-	if (is_array($key)) {
-		foreach ($key as $value) {
-			if (is_array($data) && array_key_exists($value, $data)) {
-				$data = $data[$value];
-			} else {
-				return $onlyCheck ? false : $default;
-			}
-		}
-		return $onlyCheck ? true : ($arrayGet ? array($data) : $data);
-	}
-	
-	return $onlyCheck ? false : $default;
+    if (is_string($key) || is_numeric($key)) {
+        if (array_key_exists($key, $data)) {
+            return array($data[$key]);
+        }
+    }
+
+    return false;
 }
 
 /**
@@ -127,7 +89,6 @@ function ocCheckKey($onlyCheck, $key, array $data, $arrayGet = false, $default =
  * @param array $params
  * @param mixed $default
  * @return null
- * @throws Exception
  */
 function ocLang($name, array $params = array(), $default = null)
 {
@@ -155,10 +116,12 @@ function ocConfig($key, $default = null, $unEmpty = false)
 		return $unEmpty && ocEmpty($result[0]) ? $default : $result[0];
 	}
 
-	if (func_num_args() >= 2) return $default;
+	if (func_num_args() == 1) {
+        $key = implode('.', ocParseKey($key));
+        throw new Exception('No config for key ' . $key . '.');
+    }
 
-	$key = implode('.', ocParseKey($key));
-	throw new Exception('No config for key ' . $key . '.');
+	return $default;
 }
 
 /**
@@ -168,16 +131,35 @@ function ocConfig($key, $default = null, $unEmpty = false)
  */
 function ocParseKey($key)
 {
-	if (is_integer($key)) {
-		return array($key);
-	}
+	return is_array($key) ? $key : array($key);
+}
 
-	if (is_string($key)) {
-		$key = trim($key, '.');
-		return $key === OC_EMPTY ? array() : explode('.', $key);
-	}
-	
-	return is_array($key) ? $key : array();
+/**
+ * 获取数组元素值
+ * @param mixed $key
+ * @param array $data
+ * @param null $default
+ * @param bool $required
+ * @return array|bool|mixed|null
+ */
+function ocGet($key, array $data, $default = null, $required = false)
+{
+    if (is_string($key) || is_numeric($key)) {
+        if (array_key_exists($key, $data)) {
+            return $data[$key];
+        }
+    } elseif (is_array($key)) {
+        $result = ocCheckKey($key, $data);
+        if ($result) {
+            return $result[0];
+        }
+    }
+
+    if ($required) {
+        ocService()->error->show('not_exists_key', array($key));
+    }
+
+    return $default;
 }
 
 /**
@@ -189,29 +171,26 @@ function ocParseKey($key)
  */
 function ocSet(array &$data, $key, $value)
 {
-	$key = ocParseKey($key);
-	$max = count($key) - 1;
+    if (!is_array($key)) {
+        return $data[$key] = $value;
+    }
 
-	if ($max == 0) {
-		return $data[$key[0]] = $value;
-	}
+    $max = count($key) - 1;
+    $pointer = &$data;
 
-	$pointer = &$data;
-
-	for ($i = 0;$i <= $max;$i++) {
-		if (!is_array($pointer)) {
-			ocService()->error->show('need_array_to_set');
-		}
-		$k = $key[$i];
-		if ($i == $max) {
-			return $pointer[$k] = $value;
-		} else {
-			if (!array_key_exists($k, $pointer)) {
-				$pointer[$k] = array();
-			}
-			$pointer = &$pointer[$k];
-		}
-	}
+    for ($i = 0;$i <= $max;$i++) {
+        if (!is_array($pointer)) {
+            ocService()->error->show('need_array_to_set');
+        }
+        $k = $key[$i];
+        if ($i == $max) {
+            return $pointer[$k] = $value;
+        }
+        if (!array_key_exists($k, $pointer)) {
+            $pointer[$k] = array();
+        }
+        $pointer = &$pointer[$k];
+    }
 }
 
 /**
@@ -221,7 +200,7 @@ function ocSet(array &$data, $key, $value)
  */
 function ocEmpty($content)
 {
-	return empty($content) && !($content === 0 || $content === '0');
+	return !$content && $content !== 0 && $content !== '0';
 }
 
 /**
@@ -269,29 +248,37 @@ function ocArrayMap($callback, array $data)
  */
 function ocDel(array &$data, $key)
 {
+    $result = array();
 	$key = func_get_args();
-	array_shift($key);
-	if (empty($key)) return null;
-	$result = array();
 
-	foreach ($key as $val) {
+	array_shift($key);
+
+	if (!$key) return null;
+
+	foreach ($key as $value) {
 		$ret = null;
-		if ($val = ocParseKey($val)) {
-			$max = count($val) - 1;
-			$pointer = &$data;
-			for ($i = 0; $i <= $max; $i++) {
-				$k = $val[$i];
-				if (is_array($pointer) && array_key_exists($k, $pointer)) {
-					if ($i == $max) {
-						$ret = $pointer[$k];
-						$pointer[$k] = null;
-						unset($pointer[$k]);
-					} else {
-						$pointer = &$pointer[$k];
-					}
-				}
-			}
-		}
+		if ($value || $value === 0 || $value === '0') {
+		    if (is_array($value)) {
+                $max = count($value) - 1;
+                $pointer = &$data;
+                for ($i = 0; $i <= $max; $i++) {
+                    $k = $value[$i];
+                    if (is_array($pointer) && array_key_exists($k, $pointer)) {
+                        if ($i == $max) {
+                            $ret = $pointer[$k];
+                            $pointer[$k] = null;
+                            unset($pointer[$k]);
+                        } else {
+                            $pointer = &$pointer[$k];
+                        }
+                    }
+                }
+            } elseif (is_string($value) || is_numeric($value)) {
+		        $ret = $data[$value];
+                $data[$value] = null;
+                unset($data[$value]);
+            }
+        }
 		$result[] = $ret;
 	}
 
@@ -302,7 +289,6 @@ function ocDel(array &$data, $key)
  * 获取异常错误数据
  * @param $exception
  * @return array
- * @throws Exception
  */
 function ocGetExceptionData($exception)
 {
@@ -534,16 +520,6 @@ function ocNamespace($path)
 }
 
 /**
- * 首字母小写-兼容PHP5.2版本框架，PHP5.3以上如果没有使用可删除
- * @param string $str
- * @return string
- */
-function ocLf($str)
-{
-	return lcfirst($str);
-}
-
-/**
  * <br/>转nl
  * @param string $str
  * @return mixed
@@ -566,12 +542,12 @@ function ocJsonEncode($content)
 
 	$content = preg_replace_callback(
 		'#\\\u([0-9a-f]{4})#i',
-		function($matches)
-		{
+		function($matches) {
 			return iconv('UCS-2BE', 'UTF-8', pack('H4', $matches[1]));
 		},
 		json_encode($content)
 	);
+
 	return $content;
 }
 
@@ -593,7 +569,6 @@ function ocBasename($filePath)
  * @param null $urlType
  * @param bool $static
  * @return mixed
- * @throws Exception
  */
 function ocUrl($route, $params = array(), $relative = false, $urlType = null, $static = true)
 {
@@ -717,7 +692,6 @@ function ocClassName($name)
  * @param $dir
  * @param null $path
  * @return mixed
- * @throws Exception
  */
 function ocPath($dir, $path = null)
 {
@@ -729,7 +703,6 @@ function ocPath($dir, $path = null)
  * @param $dir
  * @param $path
  * @return mixed
- * @throws Exception
  */
 function ocFile($dir, $path)
 {

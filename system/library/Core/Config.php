@@ -212,8 +212,8 @@ class Config extends Basis
      * @return array|bool|null
      */
     public function arrayGet($key){
-        if (($result = ocCheckKey(false, $key, $this->_properties, true))
-            || ($result = ocCheckKey(false, $key, $this->_frameworkConfig, true))
+        if (($result = ocCheckKey($key, $this->_properties))
+            || ($result = ocCheckKey($key, $this->_frameworkConfig))
         ) {
             return $result;
         }

@@ -7,8 +7,6 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
-use Ocara\Core\Ocara;
-
 defined('OC_PATH') or exit('Forbidden!');
 
 /**
@@ -190,7 +188,7 @@ function ocSql($sql)
 		$sql = ocService()->request->stripSqlTag($sql);
 		return OC_SQL_TAG . $sql;
 	}
-	debug_print_backtrace();
+
 	return $sql;
 }
 
@@ -309,10 +307,10 @@ function ocRead($filePath, $checkPath = true)
 
 /**
  * 获取远程内容
- * @param string $url
- * @param mixed $data
+ * @param $url
+ * @param null $data
  * @param array $headers
- * @throws \Ocara\Exceptions\Exception
+ * @return bool|false|string|null
  */
 function ocRemote($url, $data = null, array $headers = array())
 {
