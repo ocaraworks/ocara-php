@@ -115,7 +115,7 @@ abstract class Database extends ModelBase
     {
         $this->bindEvents($this);
         $this->event(self::EVENT_CACHE_QUERY_DATA)
-             ->append(ocConfig('EVENT.model.query.save_cache_data', null));
+             ->append(ocConfig(array('EVENT', 'model', 'query', 'save_cache_data'), null));
     }
 
 	/**
@@ -1314,7 +1314,7 @@ abstract class Database extends ModelBase
 	public function _getCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired)
 	{
 		if (is_object($cacheObj)) {
-			if ($callback = ocConfig('EVENT.model.query.get_cache_data', null)) {
+			if ($callback = ocConfig(array('EVENT', 'model', 'query', 'get_cache_data'), null)) {
 				$params = array($cacheObj, $sql, $cacheRequired);
 				if ($result = call_user_func_array($callback, $params)) {
 					return $result;

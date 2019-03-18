@@ -70,14 +70,14 @@ class Ajax extends Base
 		$result['message'] 	= $message['message'];
 		$result['body']    	= $body;
 
-		if ($callback = ocConfig('SOURCE.ajax.return_result', null)) {
+		if ($callback = ocConfig(array('SOURCE', 'ajax', 'return_result'), null)) {
 			$result = call_user_func_array($callback, array($result));
 		}
 
 		$response = $services->response;
 		$statusCode = $response->getOption('statusCode');
 
-		if (!$statusCode && !ocConfig('API.is_send_error_code', 0)) {
+		if (!$statusCode && !ocConfig(array('API', 'is_send_error_code'), 0)) {
 			$response->setStatusCode(Response::STATUS_OK);
 			$result['statusCode'] = $response->getOption('statusCode');
 		}

@@ -44,9 +44,9 @@ class Pager extends ServiceBase
 	 */
 	public function __construct()
 	{
-		$pageParam = ocConfig('PAGE.page_param', null);
-		$perPage = ocConfig('PAGE.per_page', null);
-		$perShow = ocConfig('PAGE.per_show', null);
+		$pageParam = ocConfig(array('PAGE', 'page_param'), null);
+		$perPage = ocConfig(array('PAGE', 'per_page'), null);
+		$perShow = ocConfig(array('PAGE', 'per_show'), null);
 
 		$this->config($pageParam, $perPage, $perShow);
 	}

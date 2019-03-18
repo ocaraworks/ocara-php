@@ -103,10 +103,10 @@ class DatabaseBase extends Sql
     public function registerEvents()
     {
         $this->event(self::EVENT_BEFORE_EXECUTE_SQL)
-            ->append(ocConfig('EVENT.database.before_execute_sql', null));
+            ->append(ocConfig(array('EVENT', 'database', 'before_execute_sql'), null));
 
         $this->event(self::EVENT_AFTER_EXECUTE_SQL)
-            ->append(ocConfig('EVENT.database.after_execute_sql', null));
+            ->append(ocConfig(array('EVENT', 'database', 'after_execute_sql'), null));
     }
 
 	/**
@@ -233,7 +233,7 @@ class DatabaseBase extends Sql
 	    list($sql, $params) = $sqlData;
 		$this->fire(
 		    self::EVENT_BEFORE_EXECUTE_SQL,
-            array($sql, date(ocConfig('DATE_FORMAT.datetime')))
+            array($sql, date(ocConfig(array('DATE_FORMAT', 'datetime'))))
         );
 
 		try {
@@ -802,7 +802,8 @@ class DatabaseBase extends Sql
 		$error = $errorExists ? $this->getError() : null;
 
 		if ($sqlData) {
-			$params = array($sqlData, $errorExists, $error, $ret, date(ocConfig('DATE_FORMAT.datetime')));
+		    $dateFormat = array(ocConfig('DATE_FORMAT', 'datetime'));
+			$params = array($sqlData, $errorExists, $error, $ret, date($dateFormat));
 			$this->fire(self::EVENT_AFTER_EXECUTE_SQL, $params);
 		}
 

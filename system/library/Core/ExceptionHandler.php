@@ -52,7 +52,7 @@ class ExceptionHandler extends Base
         try {
             throw new ErrorException($message, $level, $level, $file, $line);
         } catch (ErrorException $exception) {
-            $exceptErrors = ocForceArray(ocConfig('ERROR_HANDLER.except_error_list', array()));
+            $exceptErrors = ocForceArray(ocConfig(array('ERROR_HANDLER', 'except_error_list'), array()));
             if (!in_array($level, $exceptErrors)) {
                 $handler = new static();
                 $handler->exceptionHandler($exception);
@@ -94,7 +94,7 @@ class ExceptionHandler extends Base
         if (ocService('request', true)->isAjax()) {
             $this->_ajaxError($error);
         } else {
-            $defaultOutput = ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS.errorOutput');
+            $defaultOutput = ocConfig(array('SYSTEM_SINGLETON_SERVICE_CLASS', 'errorOutput'));
             ocService('errorOutput', $defaultOutput)->display($error);
         }
     }

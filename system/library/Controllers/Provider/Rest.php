@@ -26,7 +26,7 @@ class Rest extends Base
     public function init()
     {
         $this->request->setAjax();
-        $this->response->setContentType(ocConfig('CONTROLLERS.rest.content_type','json'));
+        $this->response->setContentType(ocConfig(array('CONTROLLERS', 'rest', 'content_type'),'json'));
         $this->session->boot();
         $this->isSendApiErrorCode(true);
         $this->_plugin = $this->view;
@@ -56,7 +56,7 @@ class Rest extends Base
      */
     public function getRequestId()
     {
-        return $this->request->getGet(ocConfig('CONTROLLERS.rest.id_param', 'id'));
+        return $this->request->getGet(ocConfig(array('CONTROLLERS', 'rest', 'id_param'), 'id'));
     }
 
     /**

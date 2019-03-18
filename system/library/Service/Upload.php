@@ -232,7 +232,7 @@ class Upload extends ServiceBase
 			return $this->setError('empty_file_type', array($name));
 		}
 
-		$fileNewName  = $this->prefix . md5(date(ocConfig('DATE_FORMAT.datetime')) . mt_rand(1, 999999)) . '.' . $fileType;
+		$fileNewName  = $this->prefix . md5(date(ocConfig(array('DATE_FORMAT', 'datetime'))) . mt_rand(1, 999999)) . '.' . $fileType;
 		
 		if ($size == 0) {
 			return $this->setError('not_exists_file', array($name));

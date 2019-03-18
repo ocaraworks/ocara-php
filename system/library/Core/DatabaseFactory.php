@@ -95,9 +95,9 @@ final class DatabaseFactory extends Base
 			$connectName = self::$_defaultServer;
 		}
 
-        $config = ocForceArray(ocConfig("DATABASE.{$connectName}"));
+        $config = ocForceArray(ocConfig(array('DATABASE', $connectName)));
 
-		if ($callback = ocConfig('SOURCE.database.get_config', null)) {
+		if ($callback = ocConfig(array('SOURCE', 'database', 'get_config'), null)) {
 			$config = array_merge(
 			    $config,
                 call_user_func_array($callback, array($connectName))

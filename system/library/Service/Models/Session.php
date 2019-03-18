@@ -74,7 +74,7 @@ class Session extends Database implements SessionInerface
 	public function gc()
 	{
 		$where = array(
-			'session_expire_time' => date(ocConfig('DATE_FORMAT.datetime'))
+			'session_expire_time' => date(ocConfig(array('DATE_FORMAT', 'datetime')))
 		);
 
 		$this->cWhere('<', $where)->delete();

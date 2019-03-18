@@ -23,13 +23,13 @@ abstract class BootstrapBase extends Base
     public function registerEvents()
     {
         $this->event(self::EVENT_DIE)
-             ->append(ocConfig('EVENT.oc_die', null));
+             ->append(ocConfig(array('EVENT', 'oc_die'), null));
 
-        $this->bindEvents(ocConfig('EVENT.log', ocService()->log));
+        $this->bindEvents(ocConfig(array('EVENT', 'log'), ocService()->log));
 
         $this->event(self::EVENT_BEFORE_DISPATCH)
-             ->append(ocConfig('EVENT.action.before_run', null))
-             ->append(ocConfig('EVENT.auth.check', null));
+             ->append(ocConfig(array('EVENT', 'action', 'before_run'), null))
+             ->append(ocConfig(array('EVENT', 'auth', 'check'), null));
     }
 
     /**
@@ -41,7 +41,7 @@ abstract class BootstrapBase extends Base
             $_SERVER['REQUEST_METHOD'] = 'GET';
         }
 
-        date_default_timezone_set(ocConfig('DATE_FORMAT.timezone', 'PRC'));
+        date_default_timezone_set(ocConfig(array('DATE_FORMAT', 'timezone'), 'PRC'));
 
         if (!@ini_get('short_open_tag')) {
             ocService()->error->show('need_short_open_tag');

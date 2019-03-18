@@ -26,8 +26,8 @@ class FormManager extends ServiceProvider
      */
 	public function register()
 	{
-		$validator = ocConfig('SERVICE.validator', '\Ocara\Core\Validator');
-		$validate = ocConfig('SERVICE.validate', '\Ocara\Service\Validate');
+		$validator = ocConfig(array('SERVICE', 'validator'), '\Ocara\Core\Validator');
+		$validate = ocConfig(array('SERVICE', 'validate'), '\Ocara\Service\Validate');
 
 		$this->_container->bindSingleton('validator', $validator, array($validate));
 	}
@@ -126,7 +126,7 @@ class FormManager extends ServiceProvider
      */
     public function getTokenTag()
     {
-        return '_oc_' . ocConfig('FORM.token_tag', '_form_token_name');
+        return '_oc_' . ocConfig(array('FORM', 'token_tag'), '_form_token_name');
     }
 
     /**

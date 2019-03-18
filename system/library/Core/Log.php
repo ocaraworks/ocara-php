@@ -27,7 +27,7 @@ class Log extends Base
     {
         $this->_name = $logName ? : 'common';
         $this->_plugin = ocService('fileLog', true);
-        $this->_plugin->setOption(ocConfig('Log.root', 'logs'));
+        $this->_plugin->setOption(ocConfig(array('Log', 'root'), 'logs'));
     }
 
     /**
@@ -40,7 +40,7 @@ class Log extends Base
      */
     public function write($message, array $traceInfo = array(), $type = 'info')
     {
-        $time = date(ocConfig('DATE_FORMAT.datetime'), time());
+        $time = date(ocConfig(array('DATE_FORMAT', 'datetime')), time());
 
         if (!$this->_plugin->has($this->_name)) {
             $this->_plugin->create($this->_name);
@@ -50,7 +50,7 @@ class Log extends Base
             $message .= ocJsonEncode($message);
         }
 
-        $format = ocConfig('LOG.format', '[{type}]|{time}|{message}', true);
+        $format = ocConfig(array('LOG', 'format'), '[{type}]|{time}|{message}', true);
         $message = trim($message);
         $content = ocSprintf($format, compact('type', 'time', 'message'));
 

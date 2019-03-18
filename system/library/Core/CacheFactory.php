@@ -65,12 +65,12 @@ final class CacheFactory extends Base
 
 		$config = array();
 
-		if ($callback = ocConfig('SOURCE.cache.get_config', null)) {
+		if ($callback = ocConfig(array('SOURCE', 'cache', 'get_config'), null)) {
 			$config = call_user_func_array($callback, array($connectName));
 		}
 
 		if (empty($config)) {
-			$config = ocForceArray(ocConfig("CACHE.{$connectName}"));
+			$config = ocForceArray(ocConfig(array('CACHE', $connectName)));
 		}
 
 		return $config;
@@ -86,7 +86,7 @@ final class CacheFactory extends Base
 	private static function _connect($connectName, $required = true)
 	{
 		$config = self::getConfig($connectName);
-		$type = ucfirst(ocConfig('CACHE.' . $connectName . '.type'));
+		$type = ucfirst(ocConfig(array('CACHE', $connectName, 'type')));
 
 		$classInfo = ServiceBase::classFileExists("Caches/{$type}.php");
 		if ($classInfo) {

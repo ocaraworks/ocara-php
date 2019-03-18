@@ -66,8 +66,8 @@ class ControllerBase extends serviceProvider implements ControllerInterface
         });
 
         $services = array_merge(
-            ocConfig('CONTROLLER_SERVICE_CLASS.All'),
-            ocConfig('CONTROLLER_SERVICE_CLASS.' . self::controllerType(), array())
+            ocConfig(array('CONTROLLER_SERVICE_CLASS', 'All')),
+            ocConfig(array('CONTROLLER_SERVICE_CLASS', self::controllerType()), array())
         );
 
         foreach ($services as $name => $class) {

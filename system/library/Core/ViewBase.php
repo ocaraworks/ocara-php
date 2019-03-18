@@ -38,8 +38,8 @@ class ViewBase extends Base
      */
     public function __construct()
     {
-        $this->_fileType  = ocConfig('TEMPLATE.file_type', 'html');
-        $this->_template = ocConfig('TEMPLATE.default', self::$_defaultTemplate, true);
+        $this->_fileType  = ocConfig(array('TEMPLATE', 'file_type'), 'html');
+        $this->_template = ocConfig(array('TEMPLATE', 'default'), self::$_defaultTemplate, true);
 
         $this->loadEngine();
         $this->setLayout();
@@ -51,7 +51,7 @@ class ViewBase extends Base
      */
     public function loadEngine()
     {
-        if ($pluginClass = ocConfig('TEMPLATE.engine', false)) {
+        if ($pluginClass = ocConfig(array('TEMPLATE', 'engine'), false)) {
             $route = ocService()->app->getRoute();
             $path  = $this->getViewPath(ocDir(array(
                 'template',
@@ -153,7 +153,7 @@ class ViewBase extends Base
      */
     public function setLayout($layout = null)
     {
-        $layout = empty($layout) ? ocConfig('TEMPLATE.default_layout', 'layout') : $layout;
+        $layout = empty($layout) ? ocConfig(array('TEMPLATE', 'default_layout'), 'layout') : $layout;
 
         if ($layout) {
             $this->_layout = $layout;
@@ -508,7 +508,7 @@ class ViewBase extends Base
     {
         $response = ocService()->response;
 
-        if (ocConfig('FORM.data_cache', 1)) {
+        if (ocConfig(array('FORM', 'data_cache'), 1)) {
             $response->setOption(
                 'Cache-control',
                 'private, must-revalidate'
@@ -538,12 +538,12 @@ class ViewBase extends Base
     {
         $response = ocService()->response;
 
-        if ($callback = ocConfig('SOURCE.ajax.return_result', null)) {
+        if ($callback = ocConfig(array('SOURCE', 'ajax', 'return_result'), null)) {
             $result = call_user_func_array($callback, array($result));
         }
 
         $statusCode = $response->getOption('statusCode');
-        if (!$statusCode && !ocConfig('API.is_send_error_code', 0)) {
+        if (!$statusCode && !ocConfig(array('API', 'is_send_error_code'), 0)) {
             $response->setStatusCode(Response::STATUS_OK);
             $result['statusCode'] = $response->getOption('statusCode');
         }

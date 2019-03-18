@@ -42,15 +42,15 @@ class Smarty extends ServiceBase implements TemplateInterface
 		$this->_plugin->setCompileDir($compileDir);
 		$this->_plugin->setCacheDir($cacheDir);
 
-		if (ocConfig('SMARTY.use_cache', false)) {
+		if (ocConfig(array('SMARTY', 'use_cache'), false)) {
 			$this->_plugin->cache_lifetime = 60;
 			$this->_plugin->caching = true;
 		} else {
 			$this->_plugin->caching = false;
 		}
 	
-		$this->_plugin->left_delimiter = ocConfig('SMARTY.left_sign');
-		$this->_plugin->right_delimiter = ocConfig('SMARTY.right_sign');
+		$this->_plugin->left_delimiter = ocConfig(array('SMARTY', 'left_sign'));
+		$this->_plugin->right_delimiter = ocConfig(array('SMARTY', 'right_sign'));
 	}
 
 	/**

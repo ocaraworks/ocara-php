@@ -19,7 +19,7 @@ class Rest extends Base implements Feature
     public function getRoute($module, $controller, array $get)
     {
         $id = null;
-        $idParam = ocConfig('CONTROLLERS.rest.id_param', 'id');
+        $idParam = ocConfig(array('CONTROLLERS', 'rest', 'id_param'), 'id');
 
         if (ocService()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
             $count = count($get);
@@ -39,7 +39,7 @@ class Rest extends Base implements Feature
             $_GET[$idParam] = $id;
         }
 
-        $action = ocConfig('CONTROLLERS.rest.action_map.' . $method, null);
+        $action = ocConfig(array('CONTROLLERS', 'rest', 'action_map', $method), null);
 
         if (ocService()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
             $_GET = array_values($get);

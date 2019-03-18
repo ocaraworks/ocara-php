@@ -42,11 +42,11 @@ class Mail extends ServiceBase
 	 */
 	public function __construct()
 	{
-		$sender 	= ocConfig('EMAIL.sender');
-		$host 		= ocConfig('EMAIL.host');
-		$port 		= ocConfig('EMAIL.port');
-		$username 	= ocConfig('EMAIL.username');
-		$password 	= ocConfig('EMAIL.password');
+		$sender 	= ocConfig(array('EMAIL', 'sender'));
+		$host 		= ocConfig(array('EMAIL', 'host'));
+		$port 		= ocConfig(array('EMAIL', 'port'));
+		$username 	= ocConfig(array('EMAIL', 'username'));
+		$password 	= ocConfig(array('EMAIL', 'password'));
 		
 		$this->setServer($host, $port, $username, $password);
 		$this->setSender($sender);

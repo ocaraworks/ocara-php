@@ -25,11 +25,11 @@ class StaticPath extends Base
 	 */
 	public function __construct()
 	{
-		$this->open      = ocConfig('STATIC.open', 0);
-		$this->fileType  = ocConfig('STATIC.file_type', 'html');
-		$this->route     = ocConfig('STATIC.route', null);
-		$this->params    = ocConfig('STATIC.params', array());
-		$this->delimiter = ocConfig('STATIC.delimiter', '-');
+		$this->open      = ocConfig(array('STATIC', 'open'), 0);
+		$this->fileType  = ocConfig(array('STATIC', 'file_type'), 'html');
+		$this->route     = ocConfig(array('STATIC', 'route'), null);
+		$this->params    = ocConfig(array('STATIC', 'params'), array());
+		$this->delimiter = ocConfig(array('STATIC', 'delimiter'), '-');
 	}
 
 	/**

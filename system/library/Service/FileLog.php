@@ -27,7 +27,7 @@ class FileLog extends ServiceBase implements LogInterface
 	public function setOption($logRoot = null, $maxLogSize = null)
 	{
 		if (empty($logRoot)) {
-			$logRoot = ocConfig('LOG.root', false);
+			$logRoot = ocConfig(array('LOG', 'root'), false);
 		}
 		
 		if ($logRoot) {
