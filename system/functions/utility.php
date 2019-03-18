@@ -52,7 +52,7 @@ function ocSimple($data)
  */
 function ocKeyExists($key, array $data)
 {
-	return !!ocCheckKey(true, $key, $data);
+	return !!ocCheckKey($key, $data);
 }
 
 /**
