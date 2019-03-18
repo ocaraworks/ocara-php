@@ -158,6 +158,29 @@ class FormManager extends ServiceProvider
         ocService()->session->delete($this->getTokenListTag());
 	}
 
+    /**
+     * 设置路由
+     * @param $route
+     */
+    public function setRoute($route)
+    {
+        $this->_route = $route;
+    }
+
+    /**
+     * 获取路由信息
+     * @param string $name
+     * @return array|null
+     */
+    public function getRoute($name = null)
+    {
+        if (isset($name)) {
+            return isset($this->_route[$name]) ? $this->_route[$name] : null;
+        }
+
+        return $this->_route;
+    }
+
 	/**
 	 * 显示表单检测错误
 	 * @param string $errorType
