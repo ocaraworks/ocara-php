@@ -41,9 +41,13 @@ abstract class Basis
 	public function setProperty($name, $value = null)
 	{
         if (is_array($name)) {
-            $this->_properties = array_merge($this->_properties, $name);
+            foreach ($name as $key => $value) {
+                $this->setProperty($key, $value);
+            }
         } else {
-            $this->_properties[$name] = $value;
+            if (!property_exists($this, $name)) {
+                $this->_properties[$name] = $value;
+            }
         }
 	}
 
@@ -64,11 +68,12 @@ abstract class Basis
     public function delProperty($name)
     {
         if (is_array($name)) {
-            foreach ($name as $key){
-                $this->__unset($key);
+            foreach ($name as $value) {
+                $this->delProperty($value);
             }
         } else {
-            $this->__unset($name);
+            $this->_properties[$name] = null;
+            unset($this->_properties[$name]);
         }
     }
 
@@ -131,7 +136,9 @@ abstract class Basis
 	 */
 	public function __set($property, $value)
 	{
-		return $this->_properties[$property] = $value;
+	    if (!property_exists($this, $property)) {
+            $this->_properties[$property] = $value;
+        }
 	}
 
 	/**
@@ -140,7 +147,8 @@ abstract class Basis
 	 */
 	public function __unset($property)
 	{
-        $this->_properties[$property] = null;
-        unset($this->_properties[$property]);
+	    if ($this->hasProperty($property)) {
+	        $this->delProperty($property);
+        }
 	}
 }

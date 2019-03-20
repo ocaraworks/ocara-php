@@ -188,10 +188,10 @@ abstract class Database extends ModelBase
 		}
 	}
 
-	/**
-	 * 获取Model的配置
-	 * @return bool
-	 */
+    /**
+     * 获取Model的配置
+     * @return array|mixed
+     */
 	public function getModelConfig()
 	{
         $paths = $this->getConfigPath();
@@ -253,7 +253,6 @@ abstract class Database extends ModelBase
     /**
      * 获取配置文件路径
      * @return array|mixed
-     * @throws Exception
      */
 	public function getConfigPath()
 	{
@@ -299,7 +298,6 @@ abstract class Database extends ModelBase
      * 字段映射
      * @param array $data
      * @return array
-     * @throws Exception
      */
 	public function mapData(array $data)
 	{
@@ -364,11 +362,12 @@ abstract class Database extends ModelBase
 		$this->_sql['tables'][$this->_alias]['fullname'] = $this->getTableName();
 	}
 
-	/**
-	 * 新建ORM模型
-	 * @param array $data
-	 * @return $this
-	 */
+    /**
+     * 新建ORM模型
+     * @param array $data
+     * @return $this
+     * @throws Exception
+     */
 	public function data(array $data = array())
 	{
 		$data = $this->_getSubmitData($data);
@@ -2245,22 +2244,28 @@ abstract class Database extends ModelBase
 
     /**
      * 设置未定义的属性
-     * @param string $key
+     * @param string $name
      * @param \Ocara\Core\mxied $value
      * @return mixed|void
      */
-    public function __set($key, $value)
+    public function __set($name, $value)
     {
-        if (isset(self::$_config[$this->_tag]['JOIN'][$key])) {
-            $this->_relations[$key] = $value;
-        } else {
-            if ($this->_selected) {
-                if (!array_key_exists($key, $this->_oldData)){
-                    $this->_oldData[$key] = ocGet($key, $this->_properties, null);
+        if (!property_exists($this, $name)) {
+            if (isset(self::$_config[$this->_tag]['JOIN'][$name])) {
+                $this->_relations[$name] = $value;
+            } else {
+                $oldValue = null;
+                if ($this->_selected) {
+                    if (!array_key_exists($name, $this->_oldData)){
+                        $oldValue = ocGet($name, $this->getProperty($name), null);
+                    }
                 }
-                $this->_changes[] = $key;
+                parent::__set($name, $value);
+                if ($this->_selected && $this->hasProperty($name)) {
+                    $this->_changes[] = $name;
+                    $this->_oldData[$name] = $oldValue;
+                }
             }
-            parent::__set($key, $value);
         }
     }
 
