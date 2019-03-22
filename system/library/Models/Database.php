@@ -372,7 +372,7 @@ abstract class Database extends ModelBase
 	{
 		$data = $this->_getSubmitData($data);
 		if ($data) {
-			$this->setProperty($this->map($data));
+			$this->_setProperty($this->map($data));
 		}
 
 		$this->_isOrm = true;
@@ -425,23 +425,6 @@ abstract class Database extends ModelBase
 		}
 
 		return $this->_fields;
-	}
-
-	/**
-	 * 获取ORM数据数组
-	 */
-	public function toArray()
-	{
-		return $this->getProperty();
-	}
-
-	/**
-	 * 获取ORM数据对象
-	 */
-	public function toObject()
-	{
-		$properties = $this->getProperty();
-		return (object)$properties;
 	}
 
     /**
@@ -520,7 +503,7 @@ abstract class Database extends ModelBase
 	{
 		$this->_selected = array();
 		$this->_isOrm = false;
-		$this->clearProperties();
+		$this->clearPlusProperties();
 		return $this;
 	}
 
@@ -2250,21 +2233,19 @@ abstract class Database extends ModelBase
      */
     public function __set($name, $value)
     {
-        if (!property_exists($this, $name)) {
-            if (isset(self::$_config[$this->_tag]['JOIN'][$name])) {
-                $this->_relations[$name] = $value;
-            } else {
-                $oldValue = null;
-                if ($this->_selected) {
-                    if (!array_key_exists($name, $this->_oldData)){
-                        $oldValue = ocGet($name, $this->getProperty($name), null);
-                    }
+        if (isset(self::$_config[$this->_tag]['JOIN'][$name])) {
+            $this->_relations[$name] = $value;
+        } else {
+            $oldValue = null;
+            if ($this->_selected) {
+                if (!array_key_exists($name, $this->_oldData)){
+                    $oldValue = $this->getProperty($name);
                 }
-                parent::__set($name, $value);
-                if ($this->_selected && $this->hasProperty($name)) {
-                    $this->_changes[] = $name;
-                    $this->_oldData[$name] = $oldValue;
-                }
+            }
+            parent::__set($name, $value);
+            if ($this->_selected && $this->hasProperty($name)) {
+                $this->_changes[] = $name;
+                $this->_oldData[$name] = $oldValue;
             }
         }
     }

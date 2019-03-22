@@ -77,22 +77,25 @@ abstract class Base extends Basis
 
     /**
      * 魔术方法-获取自定义属性
-     * @param string $key
+     * @param string $property
      * @return array|mixed|自定义属性
      */
-    public function __get($key)
+    public function __get($property)
     {
-        if ($this->hasProperty($key)) {
-            $value = $this->getProperty($key);
-            return $value;
+        //get the property which is in the $_properties.
+        if (!property_exists($this, $property)) {
+            if (array_key_exists($property, $this->_properties)) {
+                $value = $this->_properties[$property];
+                return $value;
+            }
         }
 
         if (method_exists($this, '__none')) {
-            $value = $this->__none($key);
+            $value = $this->__none($property);
             return $value;
         }
 
-        ocService()->error->show('no_property', array($key));
+        ocService()->error->show('no_property', array($property));
     }
 
     /**

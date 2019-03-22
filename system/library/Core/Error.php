@@ -78,24 +78,4 @@ class Error extends ServiceProvider
 		$error = ocService()->lang->get($error, $params);
 		trigger_error($error['message'], $errorType);
 	}
-
-    /**
-     * 魔术方法-调用未定义的方法时
-     * @param string $name
-     * @param array $params
-     * @return mixed
-     * @throws Exception
-     */
-    public function __call($name, $params)
-    {
-        if ($this->hasProperty($name)) {
-            if ($params && !is_array($params[0])) {
-                $params[0] = ocService()->lang->get($params[0], $params);
-            }
-            $exceptionClass = $this->getProperty($name);
-            throw ocClass($exceptionClass, $params);
-        }
-
-        return parent::__call($name, $params);
-    }
 }

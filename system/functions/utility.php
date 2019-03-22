@@ -243,15 +243,17 @@ function ocArrayMap($callback, array $data)
 /**
  * 删除数组元素
  * @param array $data
- * @param $key
+ * @param mixed $key
  * @return array|null
  */
 function ocDel(array &$data, $key)
 {
     $result = array();
-	$key = func_get_args();
 
-	array_shift($key);
+    if (!is_array($key)) {
+        $key = func_get_args();
+        array_shift($key);
+    }
 
 	if (!$key) return null;
 

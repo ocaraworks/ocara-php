@@ -28,7 +28,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function __construct(array $data = array(), Container $container = null)
     {
-        $this->setProperty($data);
+        $this->_setProperty($data);
         $this->setContainer($container ? : new Container());
         $this->register();
         $this->init();
@@ -124,7 +124,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 新建动态服务组件
-     * @param $key
+     * @param string $name
      * @param array $params
      * @param array $deps
      * @return mixed
@@ -173,9 +173,8 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 属性不存在时的处理
-     * @param $key
-     * @return array|mixed|null
-     * @throws Exception
+     * @param string $key
+     * @return mixed|null
      */
     public function __none($key)
     {

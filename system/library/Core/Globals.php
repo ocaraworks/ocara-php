@@ -21,34 +21,38 @@ class Globals extends Base
      */
     public function set($name, $value = null)
     {
-        $this->setProperty($name, $value);
+        $this->setPlusProperty($name, $value);
     }
 
     /**
      * 获取属性
      * @param string $name
+     * @param mixed $args
+     * @return 自定义属性|null
      */
     public function get($name = null, $args = null)
     {
-        return $this->getProperty($name, $args);
+        return $this->getPlusProperty($name, $args);
     }
 
     /**
      * 检查键名是否存在
      * @param string $name
+     * @return bool
      */
     public function has($name = null)
     {
-        return $this->hasProperty($name);
+        return $this->hasPlusProperty($name);
     }
 
     /**
      * 删除属性
-     * @param string $name
+     * @param $name
+     * @return mixed
      */
     public function delete($name)
     {
-        return $this->delProperty($name);
+        return $this->delPlusProperty($name);
     }
 
     /**
@@ -56,6 +60,6 @@ class Globals extends Base
      */
     public function clear()
     {
-        $this->clearProperies();
+        $this->clearPlusProperty();
     }
 }
