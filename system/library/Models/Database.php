@@ -279,7 +279,6 @@ abstract class Database extends ModelBase
             );
         } else {
             $position = strpos($filePath, "/dal/");
-            $rootPath = substr($filePath, 0, $position + 5);
             $filePath = substr($filePath, $position + 11);
         }
 
