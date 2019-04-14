@@ -66,9 +66,8 @@ class Config extends Basis
 
     /**
      * 加载模块配置
-     * @param $route
+     * @param string $route
      * @param string $rootPath
-     * @throws \Ocara\Exceptions\Exception
      */
     public function loadModuleConfig($route, $rootPath = null)
     {
@@ -81,7 +80,6 @@ class Config extends Basis
      * 加载控制器动作配置
      * @param array $route
      * @param string $rootPath
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function loadControllerConfig($route = array(), $rootPath = null)
 	{
@@ -97,7 +95,6 @@ class Config extends Basis
      * 加载控制器动作配置
      * @param array $route
      * @param string $rootPath
-     * @throws \Ocara\Exceptions\Exception
      */
     public function loadActionConfig($route = array(), $rootPath = null)
     {
@@ -117,7 +114,6 @@ class Config extends Basis
      * @param $subPath
      * @param $rootPath
      * @return mixed|string
-     * @throws \Ocara\Exceptions\Exception
      */
 	protected function _getConfigPath($route, $subPath, $rootPath)
     {
