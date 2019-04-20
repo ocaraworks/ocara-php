@@ -30,6 +30,9 @@ class DriverBase extends Base
     const DRIVE_TYPE_DBA = 'dba';
     const DRIVE_TYPE_DBX = 'dbx';
 
+    const DATA_TYPE_ARRAY = 1;
+    const DATA_TYPE_OBJECT = 2;
+
 	/**
 	 * 是否长连接
 	 * @param bool $pconnect
@@ -67,12 +70,12 @@ class DriverBase extends Base
 		$result = array();
 
 		if (is_object($this->_recordSet)) {
-			if ($dataType == 'object') {
+			if ($dataType == self::DATA_TYPE_OBJECT) {
 				while ($row = $this->fetch_assoc()) {
 					$result[] = (object)$row;
 					if ($queryRow) break;
 				}
-			} elseif ($dataType == 'array') {
+			} elseif ($dataType == self::DATA_TYPE_ARRAY) {
 				while ($row = $this->fetch_assoc()) {
 					$result[] = $row;
 					if ($queryRow) break;
@@ -80,8 +83,11 @@ class DriverBase extends Base
 			} else {
                 if (class_exists($dataType)) {
                     while ($row = $this->fetch_assoc()) {
-                        $row = new $dataType($row);
-                        $result[] = $row;
+                        $object = new $dataType();
+                        foreach ($row as $key => $value) {
+                            $object->$key = $value;
+                        }
+                        $result[] = $object;
                         if ($queryRow) break;
                     }
                 }

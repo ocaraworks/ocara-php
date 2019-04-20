@@ -11,6 +11,7 @@ namespace Ocara\Databases;
 use Ocara\Core\DatabaseBase;
 use Ocara\Interfaces\Database as DatabaseInterface;
 use Ocara\Interfaces\Sql as SqlInterface;
+use Ocara\Exceptions\Exception;
 
 class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInterface
 {
@@ -66,14 +67,14 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
      * 获取字段
      * @param string $table
      * @return array
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public function getFields($table)
 	{
 		$table     = $this->getTableFullname($table);
 		$sqlData   = $this->getShowFieldsSql($table);
 		$data      = $this->query($sqlData);
-		$fields    = array();
+		$fields    = array('list' => array(), 'autoIncrementField' => OC_EMPTY);
 		$isComment = ocConfig('USE_FIELD_DESC_LANG', false);
 
 		foreach ($data as $row) {
@@ -96,7 +97,8 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 			$fieldRow['isNull'] = $row['Null'] == 'NO' ? OC_FALSE : OC_TRUE;
 			$fieldRow['isPrimary'] = $row['Key'] == 'PRI' ? OC_TRUE : OC_FALSE;
 			$fieldRow['defaultValue'] = (string)$row['Default'];
-			$fields[$row['Field']] = $fieldRow;
+            $fieldRow['Extra'] = $row['Extra'];
+			$fields['list'][$row['Field']] = $fieldRow;
 		}
 
 		return $fields;
@@ -106,7 +108,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
      * 设置字符集
      * @param $charset
      * @return array|bool|mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public function setCharset($charset)
 	{

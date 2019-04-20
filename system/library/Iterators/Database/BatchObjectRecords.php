@@ -12,28 +12,32 @@ use \Iterator;
 
 class BatchObjectRecords implements Iterator
 {
-    private $_model;
-    private $_sql = array();
-    private $_debug;
+    protected $_model;
+    protected $_entity;
+    protected $_sql = array();
+    protected $_debug;
 
-    private $_position = 0;
-    private $_times = 0;
-    private $_offset = 0;
-    private $_data = array();
-    private $_rows = 0;
+    protected $_position = 0;
+    protected $_times = 0;
+    protected $_offset = 0;
+    protected $_data = array();
+    protected $_rows = 0;
 
     /**
      * 初始化
      * BatchObjectRecords constructor.
      * @param string $model
+     * @param string $entity
      * @param integer $offset
      * @param integer $rows
      * @param array $sql
      * @param bool $debug
      */
-    public function __construct($model, $offset, $rows, array $sql, $debug = false)
+    public function __construct($model, $entity, $offset, $rows, array $sql, $debug = false)
     {
         $this->_model = $model;
+        $this->_entity = $entity;
+        $this->_offset = $offset;
         $this->_sql = $sql;
         $this->_debug = $debug;
         $this->_rows = $rows;
@@ -57,9 +61,8 @@ class BatchObjectRecords implements Iterator
         $data = $this->_data[$this->key()];
 
         if (is_array($data)) {
-            $class = $this->_model;
-            $model = new $class();
-            $result = $model->data($data);
+            $entity = new $this->_entity();
+            $result = $entity->data($data);
         } else {
             $result = $data;
         }

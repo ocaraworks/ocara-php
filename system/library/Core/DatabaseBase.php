@@ -270,7 +270,7 @@ class DatabaseBase extends Sql
      */
 	public function getResult($queryRow = false, $count = false, $unions = array(), $dataType = null)
     {
-        $dataType = $dataType ? : 'array';
+        $dataType = $dataType ? : DriverBase::DATA_TYPE_ARRAY;
 
         if ($count) {
             $result = $this->_plugin->get_all_result($dataType, $queryRow);

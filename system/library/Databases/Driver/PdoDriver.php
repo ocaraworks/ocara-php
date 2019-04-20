@@ -401,17 +401,17 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 * @param string $dataType
 	 * @param bool $queryRow
 	 */
-	public function get_all_result($dataType = 'array', $queryRow = false)
+	public function get_all_result($dataType = DriverBase::DATA_TYPE_ARRAY, $queryRow = false)
 	{
 		$result = array();
 
 		if (is_object($this->_stmt)) {
-            if ($dataType == 'object') {
+            if ($dataType == self::DATA_TYPE_OBJECT) {
                 while ($row = $this->_stmt->fetchObject()) {
                     $result[] = $row;
                     if ($queryRow) break;
                 }
-            } elseif ($dataType == 'array') {
+            } elseif ($dataType == self::DATA_TYPE_ARRAY) {
                 while ($row = $this->_stmt->fetch(PDO::FETCH_ASSOC)) {
                     $result[] = $row;
                     if ($queryRow) break;
@@ -419,8 +419,11 @@ class PdoDriver extends DriverBase implements DriverInterface
             } else {
                 if (class_exists($dataType)) {
                     while ($row = $this->_stmt->fetch(PDO::FETCH_ASSOC)) {
-                        $row = new $dataType($row);
-                        $result[] = $row;
+                        $object = new $dataType();
+                        foreach ($row as $key => $value) {
+                            $object->$key = $value;
+                        }
+                        $result[] = $object;
                         if ($queryRow) break;
                     }
                 }

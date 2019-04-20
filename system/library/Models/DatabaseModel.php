@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Models;
 
+use Ocara\Core\DriverBase;
 use \ReflectionObject;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\CacheFactory;
@@ -21,7 +22,7 @@ use Ocara\Iterators\Database\EachObjectRecords;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-abstract class Database extends ModelBase
+abstract class DatabaseModel extends ModelBase
 {
 
 	/**
@@ -36,38 +37,28 @@ abstract class Database extends ModelBase
     protected $_module;
     protected $_connectName = 'defaults';
 
-	private $_tag;
-	private $_master;
-	private $_slave;
-	private $_database;
-	private $_tableName;
-	private $_isOrm;
-	private $_insertId;
+    protected $_tag;
+    protected $_master;
+    protected $_slave;
+    protected $_database;
+    protected $_tableName;
+    protected $_insertId;
+    protected $_autoIncrementField;
 
-	private $_selected = array();
-	private $_relations = array();
-	private $_sql = array();
-	private $_primaries = array();
-	private $_joins = array();
-	private $_changes = array();
-    private $_oldData = array();
-	private $_unions = array();
+    protected $_sql = array();
+    protected $_primaries = array();
+    protected $_joins = array();
+    protected $_unions = array();
 
     protected static $_config = array();
     protected static $_configPath = array();
     protected static $_requirePrimary;
 
-    const EVENT_BEFORE_CREATE = 'beforeCreate';
-    const EVENT_AFTER_CREATE = 'afterCreate';
-    const EVENT_BEFORE_UPDATE = 'beforeUpdate';
-    const EVENT_AFTER_UPDATE = 'afterUpdate';
-    const EVENT_BEFORE_DELETE = 'beforeDelete';
-    const EVENT_AFTER_DELETE = 'afterDelete';
     const EVENT_CACHE_QUERY_DATA = 'cacheQueryData';
 
     /**
      * 初始化
-     * Database constructor.
+     * DatabaseModel constructor.
      * @param array $data
      */
 	public function __construct(array $data = array())
@@ -109,7 +100,7 @@ abstract class Database extends ModelBase
 
     /**
      * 注册事件
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function registerEvents()
     {
@@ -279,7 +270,6 @@ abstract class Database extends ModelBase
             );
         } else {
             $position = strpos($filePath, "/dal/");
-            $rootPath = substr($filePath, 0, $position + 5);
             $filePath = substr($filePath, $position + 11);
         }
 
@@ -363,23 +353,6 @@ abstract class Database extends ModelBase
 	}
 
     /**
-     * 新建ORM模型
-     * @param array $data
-     * @return $this
-     * @throws Exception
-     */
-	public function data(array $data = array())
-	{
-		$data = $this->_getSubmitData($data);
-		if ($data) {
-			$this->_setProperty($this->map($data));
-		}
-
-		$this->_isOrm = true;
-		return $this;
-	}
-
-    /**
      * 从数据库获取数据表的字段
      * @param bool $cache
      * @return $this
@@ -392,7 +365,9 @@ abstract class Database extends ModelBase
 		}
 
 		if (!$this->_fields) {
-			$this->_fields = $this->connect()->getFields($this->_tableName);
+			$fieldsInfo = $this->connect()->getFields($this->_tableName);
+            $this->_autoIncrementField = $fieldsInfo['autoIncrementField'];
+            $this->_fields = $fieldsInfo['list'];
 		}
 
 		return $this;
@@ -401,7 +376,6 @@ abstract class Database extends ModelBase
     /**
      * 获取字段配置
      * @return array|mixed
-     * @throws Exception
      */
 	public function getFieldsConfig()
 	{
@@ -426,6 +400,14 @@ abstract class Database extends ModelBase
 
 		return $this->_fields;
 	}
+
+    /**
+     * 获取自增字段名
+     */
+    public function getAutoIncrementField()
+    {
+        return $this->_autoIncrementField;
+    }
 
     /**
      * 别名字段数据映射
@@ -496,17 +478,6 @@ abstract class Database extends ModelBase
 		return $this;
 	}
 
-	/**
-	 * 清理ORM数据
-	 */
-	public function clearData()
-	{
-		$this->_selected = array();
-		$this->_isOrm = false;
-		$this->clearPlusProperties();
-		return $this;
-	}
-
     /**
      * 清理Model的SQL和ORM数据
      * @return $this
@@ -514,8 +485,6 @@ abstract class Database extends ModelBase
 	public function clearAll()
 	{
 		$this->clearSql();
-		$this->clearData();
-
 		return $this;
 	}
 
@@ -541,149 +510,38 @@ abstract class Database extends ModelBase
 		return $this;
 	}
 
-	/**
-	 * 是否是ORM模型
-	 */
-	public function isOrm()
-	{
-		return $this->_isOrm;
-	}
-
     /**
-     * 获取旧值
-     * @param null $key
-     * @return array|mixed
-     */
-	public function getOld($key = null)
-    {
-	    if (func_num_args()) {
-	        if (array_key_exists($key, $this->_oldData)){
-	            return $this->_oldData[$key];
-            }
-            ocService()->error->show('no_old_field');
-        }
-        return $this->_oldData;
-    }
-
-    /**
-     * 获取已修改字段数据
-     * @param null $key
-     * @return array|mixed
-     */
-	public function getChanged($key = null)
-	{
-	    if (func_num_args()) {
-	        if (in_array($key, $this->_changes)) {
-	            return $this->_changes[$key];
-            }
-            ocService()->error->show('no_changed_field');
-        }
-
-		$changes = array_fill_keys($this->_changes, null);
-		return array_intersect_key($this->getProperty(), $changes);
-	}
-
-	/**
-	 * 是否有改变某个字段
-	 * @param string $key
-	 * @return bool
-	 */
-	public function hasChanged($key = null)
-	{
-		if (func_num_args()) {
-			return in_array($key, $this->_changes);
-		}
-		return !empty($this->_changes);
-	}
-
-    /**
-     * 是否有改变某个字段
-     * @param string $key
+     * 保存记录
+     * @param $data
+     * @param $condition
+     * @param bool $debug
      * @return bool
+     * @throws Exception
      */
-    public function hasOld($key = null)
+    protected function _save($data, $condition, $debug = false)
     {
-        if (func_num_args()) {
-            return in_array($key, $this->_oldData);
+        $this->fire(self::EVENT_BEFORE_CREATE);
+
+        $data = $this->map($data);
+        if (empty($data)) {
+            ocService()->error->show('fault_save_data');
         }
-        return !empty($this->_oldData);
+
+        $this->pushTransaction();
+
+        if ($condition) {
+            $result = $this->_plugin->update($this->_tableName, $data, $condition, $debug);
+        } else {
+            $result = $this->_plugin->insert($this->_tableName, $data, $debug);
+        }
+
+        $this->clearSql();
+
+        if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
+
+        $result = $this->_plugin->errorExists() ? false : true;
+        return $result;
     }
-
-	/**
-	 * 保存记录
-	 * @param array $data
-	 * @param mixed $condition
-	 * @param bool $debug
-	 * @return bool
-	 * @throws \Ocara\Exceptions\Exception
-	 */
-	private function _save($data, $condition, $debug = false)
-	{
-		if ($condition) {
-			call_user_func_array('ocDel', array(&$data, $this->_primaries));
-			if ($this->_selected) {
-				$this->fire(self::EVENT_BEFORE_UPDATE);
-			}
-		} else {
-			$this->fire(self::EVENT_BEFORE_CREATE);
-		}
-
-		$data = $this->map(array_merge($this->getChanged(), $data));
-		if (empty($data)) {
-			ocService()->error->show('fault_save_data');
-		}
-
-		if (!$debug && $this->_relations) {
-			ocService()->transaction->begin();
-		}
-
-		$this->pushTransaction();
-
-		if ($condition) {
-			$result = $this->_plugin->update($this->_tableName, $data, $condition, $debug);
-			if (!$debug){
-				$this->_relateSave();
-				if($this->_selected) {
-					$this->fire(self::EVENT_AFTER_UPDATE);
-				}
-			}
-		} else {
-			$result = $this->_plugin->insert($this->_tableName, $data, $debug);
-			if (!$debug) {
-				$this->_insertId = $this->_plugin->getInsertId();
-				$this->_selectInsertRow($data);
-				$this->_relateSave();
-				$this->fire(self::EVENT_AFTER_CREATE);
-			}
-		}
-
-		$this->clearSql();
-
-		if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
-
-		$result = $this->_plugin->errorExists() ? false : true;
-		return $result;
-	}
-
-	/**
-	 * 选择当前插入成功的记录
-	 * @param $data
-	 */
-	public function _selectInsertRow($data)
-	{
-		$primaries = array();
-
-		foreach ($this->_primaries as $field) {
-			if (isset($data[$field])) {
-				$primaries[] = $data[$field];
-			} else {
-				$primaries[] = $this->_insertId;
-			}
-		}
-
-		$where = $this->_getPrimaryCondition($primaries);
-		$this->findRow($where);
-	}
 
 	/**
 	 * 获取最后插入的记录ID
@@ -713,27 +571,11 @@ abstract class Database extends ModelBase
     }
 
     /**
-     * 保存数据（ORM模型）
-     * @param array $data
-     * @param bool $debug
-     * @return bool
-     */
-	public function save(array $data = array(), $debug = false)
-	{
-		if ($this->_selected) {
-		    return $this->update($data, $debug);
-        } else {
-		    return $this->create($data, $debug);
-        }
-
-		return $result;
-	}
-
-    /**
      * 新建记录
      * @param array $data
      * @param bool $debug
      * @return bool
+     * @throws Exception
      */
 	public function create(array $data = array(), $debug = false)
 	{
@@ -761,19 +603,8 @@ abstract class Database extends ModelBase
 		    ocService()->error->show('need_condition');
 		}
 
-        if ($this->_selected) {
-            $change = $this->getChanged();
-            if (empty($data) && empty($change)) {
-                $data = $this->_getSubmitData($data);
-            }
-            if ($data){
-                $oldData = array_intersect_key($this->_properties, array_diff_key($data, $this->_oldData));
-                $this->_oldData = array_merge($this->_oldData, $oldData);
-            }
-        } else {
-            if (empty($data)) {
-                $data = $this->_getSubmitData($data);
-            }
+        if (empty($data)) {
+            $data = $this->_getSubmitData($data);
         }
 
 		$result = $this->_save($data, $condition, $debug);
@@ -798,12 +629,12 @@ abstract class Database extends ModelBase
 		return $data;
 	}
 
-	/**
-	 * 删除记录
-	 * @param bool $debug
-	 * @return bool
-	 * @throws \Ocara\Core\Exception
-	 */
+    /**
+     * 删除记录
+     * @param bool $debug
+     * @return bool
+     * @throws Exception
+     */
 	public function delete($debug = false)
 	{
 		$condition = $this->_getCondition();
@@ -811,19 +642,7 @@ abstract class Database extends ModelBase
 			ocService()->error->show('need_condition');
 		}
 
-		$this->pushTransaction();
-
-		if (!$debug && $this->_selected) {
-			$this->fire(self::EVENT_BEFORE_DELETE);
-		}
-
 		$result = $this->_plugin->delete($this->_tableName, $condition, $debug);
-		if (!$debug
-			&& !$this->_plugin->errorExists()
-			&& $this->_selected
-		) {
-			$this->fire(self::EVENT_AFTER_DELETE);
-		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
@@ -840,7 +659,7 @@ abstract class Database extends ModelBase
      * @return mixed
      * @throws Exception
      */
-	private function _getCondition()
+    protected function _getCondition()
 	{
 		$this->connect();
 		$condition = $this->_genWhere();
@@ -859,7 +678,7 @@ abstract class Database extends ModelBase
 	{
 		if ($sql) {
 			$sqlData = $this->_plugin->getSqlData($sql);
-			$dataType = $this->_sql['option']['dataType'] ? : 'array';
+			$dataType = $this->_sql['option']['dataType'] ? : DriverBase::DATA_TYPE_ARRAY;
 			return $this
                 ->connect(false)
                 ->query($sqlData, $debug, false, array(), $dataType);
@@ -879,7 +698,7 @@ abstract class Database extends ModelBase
 	{
 		if ($sql) {
 			$sqlData = $this->_plugin->getSqlData($sql);
-            $dataType = $this->_sql['option']['dataType'] ? : 'array';
+            $dataType = $this->_sql['option']['dataType'] ? : DriverBase::DATA_TYPE_ARRAY;
 			return $this
                 ->connect(false)
                 ->query($sqlData, $debug, false, array(), $dataType);
@@ -936,42 +755,20 @@ abstract class Database extends ModelBase
         return $this;
     }
 
-	/**
-	 * 按主键选择一行记录
-	 * @param string|array|number $values
-	 * @param null $options
-	 * @param bool $debug
-	 * @return static
-	 */
-	public static function select($values, $options = null, $debug = false)
-	{
-		$model = new static();
-		$condition = $model->_getPrimaryCondition($values);
-
-		return $model->findRow($condition, $options, $debug);
-	}
-
-	/**
-	 * 按条件选择首行
-	 * @param bool $condition
-	 * @param null $options
-	 * @param bool $debug
-	 * @return $this|array|null
-	 */
+    /**
+     * 按条件选择首行
+     * @param bool $condition
+     * @param null $options
+     * @param bool $debug
+     * @return $this|array|null
+     * @throws Exception
+     */
 	public function findRow($condition = false, $options = null, $debug = false)
 	{
 		$this->clearData();
 
 		if ($condition) {
 			$this->where($condition);
-		}
-
-		if (!empty($this->_sql['option']['where'])) {
-			$this->_selected['where'] = $this->_sql['option']['where'];
-		}
-
-		if (!empty($this->_sql['option']['mWhere'])) {
-			$this->_selected['mWhere'] = $this->_sql['option']['mWhere'];
 		}
 
 		$data = $this->getRow(null, $options, $debug);
@@ -1000,15 +797,26 @@ abstract class Database extends ModelBase
 	}
 
     /**
-     * 设置返回类型为简单对象
-     * @param bool $simpleObject
+     * 返回对象
      * @return $this
      */
-	public function simple($simpleObject = true)
+	public function asObject()
     {
-        $dataType = $simpleObject ? 'object' : null;
-        $this->_sql['option']['dataType'] = $dataType;
+        $this->_sql['option']['dataType'] = DriverBase::DATA_TYPE_OBJECT;
+        return $this;
+    }
 
+    /**
+     * 返回实体对象
+     * @param null $entityClass
+     * @return $this
+     */
+    public function asEntity($entityClass = null)
+    {
+        if (empty($entityClass)) {
+            $entityClass = ocNamespace(__NAMESPACE__, 'entities',  __CLASS__ . 'Entity');
+        }
+        $this->_sql['option']['dataType'] = $entityClass;
         return $this;
     }
 
@@ -1027,7 +835,7 @@ abstract class Database extends ModelBase
         }
 
         $sql = $this->_sql ? : array();
-        $records = new BatchObjectRecords(self::getClass(), $offset, $rows, $sql, $debug);
+        $records = new BatchObjectRecords(self::getClass(), $this->getEntityClass(), $offset, $rows, $sql, $debug);
 
         return $records;
     }
@@ -1041,43 +849,39 @@ abstract class Database extends ModelBase
     public function each($offset = 0, $debug = false)
     {
         $sql = $this->_sql ? : array();
-        $records = new EachObjectRecords(self::getClass(), $offset, $sql, $debug);
+        $records = new EachObjectRecords(self::getClass(), $this->getEntityClass(), $offset, $sql, $debug);
 
         return $records;
     }
 
     /**
-     * 获取主键条件
-     * @param $condition
-     * @return array
-     * @throws Exception
+     * 获取实体类
+     * @return bool
      */
-	private function _getPrimaryCondition($condition)
-	{
-		if (empty($this->_primaries)) {
-			ocService()->error->show('no_primary');
-		}
+    public function getEntityClass()
+    {
+        $entityClass = OC_EMPTY;
 
-		if (ocEmpty($condition)) {
-			ocService()->error->show('need_primary_value');
-		}
+        if ($this->_sql['option']['dataType']) {
+            $simpleDataTypes = array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT);
+            if (!in_array($this->_sql['option']['dataType'], $simpleDataTypes)) {
+                $entityClass = $this->_sql['option']['dataType'];
+            }
+        }
 
-		if (is_string($condition) || is_numeric($condition)) {
-			$values = explode(',', trim($condition));
-		} elseif (is_array($condition)) {
-			$values = $condition;
-		} else {
-			ocService()->error->show('fault_primary_value_format');
-		}
+        if (!$entityClass) {
+            $class = self::getClass();
+            if (substr($class, -6) == 'Entity') {
+                $entityClass = $class;
+            }
+        }
 
-		if (count($this->_primaries) == count($values)) {
-			$where = $this->map(array_combine($this->_primaries, $values));
-		} else {
-			ocService()->error->show('fault_primary_num');
-		}
+        if (!$entityClass) {
+            $entityClass = ocNamespace(__NAMESPACE__, 'entities',  __CLASS__ . 'Entity');
+        }
 
-		return $where;
-	}
+        return $entityClass;
+    }
 
     /**
      * 查询多条记录
@@ -1198,7 +1002,7 @@ abstract class Database extends ModelBase
      * @return array
      * @throws Exception
      */
-	private function _find($condition, $option, $debug, $queryRow, $count = false, $dataType = null)
+    protected function _find($condition, $option, $debug, $queryRow, $count = false, $dataType = null)
 	{
 	    $this->pushSql($condition, $option, $queryRow);
         $sql = $this->_genSelectSql($count);
@@ -1220,7 +1024,7 @@ abstract class Database extends ModelBase
 			if ($cacheData) return $cacheData;
 		}
 
-        $dataType = ocGet(array('option', 'dataType'), $this->_sql, $dataType ? : 'array');
+        $dataType = ocGet(array('option', 'dataType'), $this->_sql, $dataType ? : DriverBase::DATA_TYPE_ARRAY);
 		if ($queryRow) {
             $result = $this->_plugin->queryRow($sql, $debug, $count, $this->_unions, $dataType);
 		} else {
@@ -1329,37 +1133,40 @@ abstract class Database extends ModelBase
 		}
 	}
 
-	/**
-	 * 左联接
-	 * @param string $class
-	 * @param null $alias
-	 * @param null $on
-	 * @return $this|Database
-	 */
+    /**
+     * 左联接
+     * @param string $class
+     * @param string $alias
+     * @param string $on
+     * @return DatabaseModel
+     * @throws Exception
+     */
 	public function leftJoin($class, $alias = null, $on = null)
 	{
 		return $this->_join('left', $class, $alias, $on);
 	}
 
-	/**
-	 * 右联接
-	 * @param string $class
-	 * @param string $alias
-	 * @param string $on
-	 * @return $this|Database
-	 */
+    /**
+     * 右联接
+     * @param string $class
+     * @param string $alias
+     * @param string $on
+     * @return DatabaseModel
+     * @throws Exception
+     */
 	public function rightJoin($class, $alias = null, $on = null)
 	{
 		return $this->_join('right', $class, $alias, $on);
 	}
 
-	/**
-	 * 内全联接
-	 * @param string $class
-	 * @param string $alias
-	 * @param string $on
-	 * @return $this|Database
-	 */
+    /**
+     * 内全联接
+     * @param string $class
+     * @param string $alias
+     * @param string $on
+     * @return DatabaseModel
+     * @throws Exception
+     */
 	public function innerJoin($class, $alias = null, $on = null)
 	{
 		return $this->_join('inner', $class, $alias, $on);
@@ -1421,7 +1228,7 @@ abstract class Database extends ModelBase
 	 * @param string $alias
 	 * @return $this
 	 */
-	private function _addOn($on, $alias = null)
+    protected function _addOn($on, $alias = null)
 	{
 		$this->_sql['tables'][$alias]['on'] = $on;
 		return $this;
@@ -1673,11 +1480,11 @@ abstract class Database extends ModelBase
         return $this;
     }
 
-	/**
-	 * 分页处理
-	 * @param array $limitInfo
-	 * @return Database
-	 */
+    /**
+     * 分页处理
+     * @param array $limitInfo
+     * @return DatabaseModel
+     */
 	public function page(array $limitInfo)
 	{
 		$this->_sql['option']['page'] = true;
@@ -1746,7 +1553,7 @@ abstract class Database extends ModelBase
 	 * @param $fields
 	 * @return bool
 	 */
-	private function _isDefaultFields($fields)
+    protected function _isDefaultFields($fields)
 	{
 		$isDefault = false;
 		if (empty($fields)) {
@@ -1773,7 +1580,7 @@ abstract class Database extends ModelBase
      * @return mixed
      * @throws Exception
      */
-	private function _genSelectSql($count = false)
+    protected function _genSelectSql($count = false)
 	{
 		$option = ocGet('option', $this->_sql, array());
 		$tables = ocGet('tables', $this->_sql, array());
@@ -1813,19 +1620,10 @@ abstract class Database extends ModelBase
      * @return string
      * @throws Exception
      */
-	private function _genWhere()
+    protected function _genWhere()
 	{
 		$option = ocGet('option', $this->_sql, array());
 		$where = array();
-
-		if (empty($option['where'])) {
-			if (isset($this->_selected['where'])) {
-				$option['where'] = $this->_selected['where'];
-			}
-			if (isset($this->_selected['mWhere'])) {
-				$option['mWhere'] = $this->_selected['mWhere'];
-			}
-		}
 
 		if (!empty($option['where'])) {
 			$option['where'] = $this->_getWhereSql($option['where']);
@@ -1848,7 +1646,7 @@ abstract class Database extends ModelBase
      * @return array
      * @throws Exception
      */
-	private function _getWhereSql(array $data)
+    protected function _getWhereSql(array $data)
 	{
 		$where = array();
 
@@ -1886,21 +1684,20 @@ abstract class Database extends ModelBase
 
 	/**
 	 * 获取字段列表
-	 * @param array $data
+	 * @param array $fieldsData
 	 * @param array $aliasFields
 	 * @param bool $unJoined
 	 * @return mixed
 	 */
-	private function _getFieldsSql($data, $aliasFields, $unJoined)
+    protected function _getFieldsSql($fieldsData, $aliasFields, $unJoined)
 	{
-		if (is_string($data)) {
-			return $data;
+		if (is_string($fieldsData)) {
+			return $fieldsData;
 		}
 
 		$fields = array();
-		$primaries = $this->_selected ? $this->_primaries: array();
 
-		foreach ($data as $key => $value) {
+		foreach ($fieldsData as $key => $value) {
 			list($alias, $fieldData) = $value;
 			if (is_string($fieldData)) {
 				$fieldData = array_map('trim', (explode(',', $fieldData)));
@@ -1910,7 +1707,7 @@ abstract class Database extends ModelBase
 			$fields[] = $this->_plugin->getFieldsSql($fieldData, $aliasFields, $this->_alias, $alias);
 		}
 
-		$sql = $this->_plugin->combineFieldsSql($fields, $aliasFields, $unJoined, $this->_alias, $primaries);
+		$sql = $this->_plugin->combineFieldsSql($fields, $aliasFields, $unJoined, $this->_alias);
 		return $sql;
 	}
 
@@ -1920,7 +1717,7 @@ abstract class Database extends ModelBase
 	 * @param bool $unJoined
 	 * @return null|string
 	 */
-	private function _getFromSql($tables, $unJoined)
+    protected function _getFromSql($tables, $unJoined)
 	{
 		$from = OC_EMPTY;
 
@@ -1974,14 +1771,12 @@ abstract class Database extends ModelBase
 		return $joinOn;
 	}
 
-	/**
-	 * 复杂条件
-	 * @param array $data
-	 * @param string $alias
-	 * @return null
-	 * @throws \Ocara\Core\Exception
-	 */
-	private function _getComplexWhere(array $data, $alias)
+    /**
+     * 复杂条件
+     * @param array $data
+     * @param $alias
+     */
+    protected function _getComplexWhere(array $data, $alias)
 	{
 		$cond = null;
 		list($sign, $field, $value) = $data;
@@ -2073,7 +1868,7 @@ abstract class Database extends ModelBase
      * @return $this
      * @throws Exception
      */
-	private function _join($type, $class, $alias, $on = false)
+    protected function _join($type, $class, $alias, $on = false)
 	{
 		$config = array();
 		$this->connect();
@@ -2107,81 +1902,12 @@ abstract class Database extends ModelBase
 		return $this;
 	}
 
-	/**
-	 * 关联模型查询
-	 * @param $alias
-	 * @return null|ObjectRecords
-	 */
-	private function _relateFind($alias)
-	{
-		$config = $this->_getRelateConfig($alias);
-		$result = null;
-
-		if ($config) {
-			$where = array($config['foreignKey'] => $this->$config['primaryKey']);
-			if (in_array($config['joinType'], array('hasOne','belongsTo'))) {
-				$result = $config['class']::build()
-					->where($where)
-					->where($config['condition'])
-					->findRow();
-			} elseif ($config['joinType'] == 'hasMany') {
-				$result = new ObjectRecords($config['class'], array($where, $config['condition']));
-				$result->setLimit(0, 0, 1);
-			}
-		}
-
-		return $result;
-	}
-
-	/**
-	 * 关联模型数据保存
-	 * @return bool
-	 */
-	private function _relateSave()
-	{
-		if (!$this->_relations) {
-			return true;
-		}
-
-		foreach ($this->_relations as $key => $object) {
-			$config = $this->_getRelateConfig($key);
-			if ($config && $this->hasProperty($config['primaryKey'])) {
-				$data = array();
-				if ($config['joinType'] == 'hasOne' && is_object($object)) {
-					$data = array($object);
-				} elseif ($config['joinType'] == 'hasMany') {
-					if (is_object($object)) {
-						$data = array($object);
-					} elseif (is_array($object)) {
-						$data = $object;
-					}
-				}
-				foreach ($data as &$model) {
-					if ($model->hasChanged() && is_object($model) && $model instanceof \Ocara\Core\ModelBase) {
-						$model->$config['foreignKey'] = $this->$config['primaryKey'];
-						if ($config['condition']) {
-							foreach ($config['condition'] as $field => $value) {
-								$model->$field = $value;
-							}
-						}
-						$model->save();
-					}
-				}
-			}
-		}
-
-		ocService()->transaction->commit();
-
-		return true;
-	}
-
-	/**
-	 * 获取关联配置
-	 * @param string $key
-	 * @return array
-	 * @throws \Ocara\Core\Exception
-	 */
-	private function _getRelateConfig($key)
+    /**
+     * 获取关联配置
+     * @param $key
+     * @return array
+     */
+    protected function _getRelateConfig($key)
 	{
 		if (!isset(self::$_config[$this->_tag]['JOIN'][$key])) {
 			return array();
@@ -2209,48 +1935,6 @@ abstract class Database extends ModelBase
 	}
 
     /**
-     * 获取关联模型
-     * @param string $key
-     * @return mixed
-     */
-    public function &__get($key)
-    {
-        if (isset(self::$_config[$this->_tag]['JOIN'][$key])) {
-            if (!isset($this->_relations[$key])) {
-                $this->_relations[$key] = $this->_relateFind($key);
-            }
-            return $this->_relations[$key];
-        }
-
-        return parent::__get($key);
-    }
-
-    /**
-     * 设置未定义的属性
-     * @param string $name
-     * @param \Ocara\Core\mxied $value
-     * @return mixed|void
-     */
-    public function __set($name, $value)
-    {
-        if (isset(self::$_config[$this->_tag]['JOIN'][$name])) {
-            $this->_relations[$name] = $value;
-        } else {
-            $oldValue = null;
-            if ($this->_selected) {
-                if (!array_key_exists($name, $this->_oldData)){
-                    $oldValue = $this->getProperty($name);
-                }
-            }
-            parent::__set($name, $value);
-            if ($this->_selected && $this->hasProperty($name)) {
-                $this->_changes[] = $name;
-                $this->_oldData[$name] = $oldValue;
-            }
-        }
-    }
-
-    /**
      * 魔术方法-调用未定义的静态方法时
      * @param string $name
      * @param array $params
@@ -2263,7 +1947,7 @@ abstract class Database extends ModelBase
         if (preg_match($regExp, $name, $matches)) {
             $method = $matches[1];
             $fieldName = lcfirst($matches[6]);
-            return self::_queryDynamic($method, $fieldName);
+            return self::_queryDynamic($method, $fieldName, $params);
         }
 
         return parent::__callStatic($name, $params);
@@ -2276,7 +1960,7 @@ abstract class Database extends ModelBase
      * @param $params
      * @return mixed
      */
-    protected static function _queryDynamic($method, $fieldName, $params)
+    protected static function _queryDynamic($method, $fieldName, array $params = array())
     {
         if (empty($params)) {
             ocService()->error->show('need_find_value');
