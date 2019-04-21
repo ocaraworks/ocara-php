@@ -10,17 +10,21 @@ return array(
      * 数据库连接配置
      * 如果是大型分布式数据库，请配置回调函数动态生成配置
      */
-    'DATABASE' => array(
-        //默认数据库
+    'CONNECTS' => array(
+        //默认服务器
         'defaults' => array(
             'type' 		=> 'mysql', //数据库类型
             'host' 		=> '127.0.0.1', //数据库服务器主机和端口，默认端口可以省略
-            'name' 		=> '', //数据库名称
             'username' 	=> '', //数据库用户名
             'password' 	=> '', //数据库用户密码
-            'charset' 	=> '', //数据库编码，如果是utf8不要写成utf-8
-            'prefix' 	=> '', //表名前缀
-            'keywords'  => '', //SQL关键字
+            'databases' => array(
+                'main' => array(
+                    'name' 		=> '', //数据库名称
+                    'charset' 	=> '', //数据库编码，如果是utf8不要写成utf-8
+                    'prefix' 	=> '', //表名前缀
+                    'keywords'  => '', //SQL关键字
+                )
+            )
         )
     )
 );

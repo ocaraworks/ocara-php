@@ -736,6 +736,19 @@ function ocSimpleUrl($dir, $subPath)
 }
 
 /**
+ * 分隔目录
+ * @param $filePath
+ * @param $seprateDir
+ * @return mixed
+ */
+function ocSeprateDir($filePath, $seprateDir)
+{
+    $rootPath = strstr($dir, $seprateDir, true) . $seprateDir;
+    $subDir = str_replace($routePath, OC_EMPTY, $dir);
+    return array($rootPath, $subDir);
+}
+
+/**
  * 文件首字母大写
  * @param $path
  * @return string

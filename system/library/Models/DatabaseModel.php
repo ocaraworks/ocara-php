@@ -49,9 +49,12 @@ abstract class DatabaseModel extends ModelBase
     protected $_primaries = array();
     protected $_joins = array();
     protected $_unions = array();
+    protected $_relateShardingData = array();
+    protected $_relateShardingInfo = array();
 
     protected static $_config = array();
     protected static $_configPath = array();
+
     protected static $_requirePrimary;
 
     const EVENT_CACHE_QUERY_DATA = 'cacheQueryData';
@@ -160,11 +163,17 @@ abstract class DatabaseModel extends ModelBase
 	 * @param array $data
 	 * @return $this
 	 */
-	public function sharding(array $data = array())
+	public function sharding(array $data = array(), $relationName = null)
 	{
-		if (method_exists($this, '_sharding')) {
-			$this->_sharding($data);
-		}
+	    if (func_num_args() >= 2) {
+	        if ($relationName) {
+                $this->_relationSharding[$relationName] = $data;
+            }
+        } else {
+            if (method_exists($this, '_sharding')) {
+                $this->_sharding($data);
+            }
+        }
 
 		return $this;
 	}
@@ -258,27 +267,22 @@ abstract class DatabaseModel extends ModelBase
         $filePath = ocCommPath($ref->getFileName());
         $language = ocService()->app->getLanguage();
         $file = basename($filePath);
+        $dir = dirname($filePath);
 
         if ($this->_module) {
-            $position = strpos($filePath, "/privates/");
-            $rootPath = substr($filePath, 0, $position + 10);
-            $filePath = substr($filePath, $position + 16);
+            list($rootPath, $subDir) = ocSeprateDir($dir, '/privates/database/');
             $modulePaths = array(
-                'moduleConfig' => $rootPath . 'config/model/' . $filePath,
-                'moduleLang' => $rootPath . 'lang/' . $language . '/model/' . $filePath,
-                'moduleFields' => $rootPath . 'fields/' . $filePath,
+                'moduleConfig' => $rootPath . $subDir . '/config/' . $file,
+                'moduleLang' => $rootPath . $subDir . "/lang/{$language}/" . $file
             );
         } else {
-            $position = strpos($filePath, "/dal/");
-            $filePath = substr($filePath, $position + 11);
+            list($rootPath, $subDir) = ocSeprateDir($dir, '/dal/database/');
         }
 
         $paths = array(
-            'file' => $file,
-            'filePath' => $filePath,
-            'config' => ocPath('config', "model/{$filePath}"),
-            'fields' => ocPath('fields',  $filePath),
-            'lang' => ocPath('lang', "{$language}/model/{$filePath}"),
+            'config' => ocPath('dal', "database/{$subDir}/config/{$file}"),
+            'lang' => ocPath('dal', "database/{$subDir}/lang/{$language}/{$file}"),
+            'fields' => ocPath('fields',  $subDir . $file),
         );
 
         return self::$_configPath[$tag] = array_merge($paths, $modulePaths);
@@ -1875,17 +1879,22 @@ abstract class DatabaseModel extends ModelBase
 
 		if ($type == false) {
 			$alias = $this->_alias;
-			$fullname = $this->getTableName();
-			$class = $this->_tag;
+            $fullname = $this->getTableName();
+            $class = $this->_tag;
 		} else {
+            $relateShardinglInfo = $this->_getRelateShardingInfo($keyword);
+            if ($relateShardinglInfo) {
+                list($class, $shardingData) = $relateShardinglInfo;
+            }
 			$config = $this->_getRelateConfig($class);
 			if ($config) {
 				$alias = $alias ? : $class;
 				$class = $config['class'];
-				$model = $class::build();
-			} else {
-				$model = $class::build();
 			}
+            $model = $class::build();
+			if ($shardingData) {
+                $model->sharding($shardingData);
+            }
 			$fullname = $model->getTableName();
 			$alias = $alias ? : $fullname;
 			$this->_joins[$alias] = $model;
@@ -1901,6 +1910,33 @@ abstract class DatabaseModel extends ModelBase
 
 		return $this;
 	}
+
+    /**
+     * 通过关键字获取分库分表信息
+     * @param $keyword
+     * @return string
+     */
+	protected function _getRelateShardingInfo($keyword)
+    {
+        $relationShardinglInfo = array();
+
+        if (preg_match('/^[\{](\w+)[\}]$/i', $keyword, $matches)) {
+            $relationAlias = $matches[1];
+            if (array_key_exists($relationAlias, $this->_relateShardingInfo)) {
+                $relationShardinglInfo = $this->_relateShardingInfo[$relationAlias];
+            } else {
+                if (array_key_exists($relationAlias, $this->_relateShardingData)) {
+                    if ($this->_getRelateConfig[$relationAlias]) {
+                        $shardingData = $this->_relateShardingData[$relationAlias];
+                        $relationShardinglInfo = array($config['class'], $shardingData);
+                        $this->_relateShardingInfo[$relationAlias] = $relateShardinglInfo;
+                    }
+                }
+            }
+        }
+
+        return $relationShardinglInfo;
+    }
 
     /**
      * 获取关联配置
