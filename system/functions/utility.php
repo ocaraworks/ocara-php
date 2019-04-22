@@ -743,8 +743,8 @@ function ocSimpleUrl($dir, $subPath)
  */
 function ocSeprateDir($filePath, $seprateDir)
 {
-    $rootPath = strstr($dir, $seprateDir, true) . $seprateDir;
-    $subDir = str_replace($routePath, OC_EMPTY, $dir);
+    $rootPath = strstr($dir, $seprateDir, true) . $seprateDir . OC_DIR_SEP;
+    $subDir = str_replace($routePath, OC_EMPTY, $dir) . OC_DIR_SEP;
     return array($rootPath, $subDir);
 }
 

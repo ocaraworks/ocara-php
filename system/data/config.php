@@ -170,27 +170,30 @@ return array(
     
         /*所属目录*/
         'belongs' => array(
-            'commands'		=> 'application',
-            'controller'  	=> 'application/controllers',
-            'dal'           => 'application',
-            'modules'  	    => 'application',
+            'controller'  	=> 'application/controller',
             'console'  	    => 'application',
-            'assist'  	    => 'application',
+            'cache'         => 'application',
+            'database'      => 'application',
+            'modules'  	    => 'application',
             'service'  	    => 'application',
             'view'  	  	=> 'application',
 
+            'tools'  	    => '',
+
             'dal'           => 'application',
-            'entities'  	=> 'application/dal',
-            'model'  	  	=> 'application/dal',
-            'values'  	  	=> 'application/dal',
-            'cache'  	    => 'application/dal',
+            'entities'  	=> 'application/database',
+            'model'  	  	=> 'application/database',
+            'values'  	  	=> 'application/database',
+            'cache'  	    => 'application/database',
 
-            'config'        => '',
-            'lang'          => '',
+            'config'        => 'resource',
+            'lang'          => 'resource',
 
-            'data'          => '',
-            'doc'           => 'data',
-            'runtime'       => 'data',
+            'data'          => 'resource',
+            'doc'           => 'resource/data',
+            'fields'        => 'resource/data',
+
+            'runtime'       => '',
             'temp'          => 'data/runtime',
             'logs'          => 'data/runtime',
             'sessions'      => 'data/runtime',
