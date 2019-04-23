@@ -66,9 +66,9 @@ class CacheModelService extends BaseService
                 $rootNamespace = "app\console\\{$this->_mdlname}\\privates\\cache";
                 $modelPath = ocPath('application', 'console/' . $moduleModelDir);
                 break;
-            case 'assist':
-                $rootNamespace = "app\\assist\\cache";
-                $modelPath = ocPath('assist', $moduleModelDir);
+            case 'tools':
+                $rootNamespace = "app\\tools\\cache";
+                $modelPath = ocPath('tools', $moduleModelDir);
                 break;
             default:
                 $rootNamespace = "app\\dal\\cache";

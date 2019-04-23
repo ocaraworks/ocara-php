@@ -74,11 +74,11 @@ class ModelService extends BaseService
                 $modelPath = ocPath('application', 'console/' . $moduleModelDir);
                 $entityPath = ocPath('application', 'modules/' . $entityModelDir);
                 break;
-            case 'assist':
-                $rootNamespace = "app\\assist\\model";
-                $entityRootNamespace = "app\\assist\\entities";
-                $modelPath = ocPath('assist', $moduleModelDir);
-                $entityPath = ocPath('assist', $entityModelDir);
+            case 'tools':
+                $rootNamespace = "app\\tools\\model";
+                $entityRootNamespace = "app\\tools\\entities";
+                $modelPath = ocPath('tools', $moduleModelDir);
+                $entityPath = ocPath('tools', $entityModelDir);
                 break;
             default:
                 $rootNamespace = "app\\dal\\model";

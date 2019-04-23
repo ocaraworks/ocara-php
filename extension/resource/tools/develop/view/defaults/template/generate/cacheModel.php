@@ -9,7 +9,7 @@
     <input type="radio" value="" name="mdltype" id="mdltype1" checked /> 默认全局&nbsp;
     <input type="radio" value="modules" name="mdltype" id="mdltype2" /> 普通模块
     <input type="radio" value="console" name="mdltype" id="mdltype3" /> 命令模块
-    <input type="radio" value="assist" name="mdltype" id="mdltype4" /> 工具模块
+    <input type="radio" value="tools" name="mdltype" id="mdltype4" /> 工具模块
 </div>
 
 <div>

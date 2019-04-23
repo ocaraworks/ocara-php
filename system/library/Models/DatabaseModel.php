@@ -270,13 +270,13 @@ abstract class DatabaseModel extends ModelBase
         $dir = dirname($filePath);
 
         if ($this->_module) {
-            list($rootPath, $subDir) = ocSeprateDir($dir, '/privates/database/');
+            list($rootPath, $subDir) = ocSeprateDir($dir, '/privates/database/model/');
             $modulePaths = array(
                 'moduleConfig' => $rootPath . 'config/' . $subDir . $file,
                 'moduleLang' => $rootPath  . "lang/{$language}/" . $subDir. $file
             );
         } else {
-            list($rootPath, $subDir) = ocSeprateDir($dir, '/application/database/');
+            list($rootPath, $subDir) = ocSeprateDir($dir, '/application/database/model/');
         }
 
         $paths = array(

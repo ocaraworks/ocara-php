@@ -37,9 +37,9 @@ class ModuleService extends BaseService
                 $namespace = "app\console";
                 $modulePath = ocPath('console', "{$this->mdlname}");
                 break;
-            case 'assist':
-                $namespace = "app\assist";
-                $modulePath = ocPath('assist', $this->mdlname);
+            case 'tools':
+                $namespace = "app\tools";
+                $modulePath = ocPath('tools', $this->mdlname);
                 break;
         }
 
