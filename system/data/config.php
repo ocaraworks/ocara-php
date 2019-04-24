@@ -181,7 +181,7 @@ return array(
             'tools'  	    => '',
 
             'dal'           => 'application',
-            'entities'  	=> 'application/database',
+            'entity'  	=> 'application/database',
             'model'  	  	=> 'application/database',
             'values'  	  	=> 'application/database',
             'cache'  	    => 'application/database',
