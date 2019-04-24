@@ -15,7 +15,7 @@ abstract class Basis
 	/**
 	 * @var $_properties 自定义属性
 	 */
-	private $_properties = array();
+	protected $_properties = array();
 
 	/**
 	 * 返回当前类名（去除命名空间）

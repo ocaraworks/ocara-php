@@ -9,6 +9,7 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
+use \Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -33,9 +34,11 @@ class Response extends Base
     protected $_body;
     protected $_isSend;
 
-	/**
-	 * 发送头部信息
-	 */
+    /**
+     * 发送头部信息
+     * @param array $data
+     * @throws Exception
+     */
 	public function sendHeaders(array $data = array())
 	{
 		if (!headers_sent()) {
@@ -121,7 +124,7 @@ class Response extends Base
      * 获取头部设置
      * @param string $name
      * @return null
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public function getOption($name)
 	{
@@ -132,7 +135,7 @@ class Response extends Base
     /**
      * 设置状态
      * @param $code
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public function setStatusCode($code)
 	{
@@ -179,7 +182,7 @@ class Response extends Base
      * 跳转到另一个控制器动作
      * @param $route
      * @param array $params
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function jump($route, array $params = array())
     {
@@ -207,7 +210,7 @@ class Response extends Base
     /**
      * 获取要发送的头数据
      * @return array
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public function prepareHeaders()
 	{
