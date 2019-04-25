@@ -158,18 +158,18 @@ class Container extends Basis
     {
         if (isset($name)) {
             $instance = null;
-            if ($this->hasPlusProperty($name)) {
-                $instance = $this->getPlusProperty($name);
+            if ($this->hasExtraProperty($name)) {
+                $instance = $this->getExtraProperty($name);
             } elseif ($this->hasBindSingleton($name)) {
                 $instance = $this->make($name, $params, $deps);
-                $this->setPlusProperty($name, $instance);
+                $this->setExtraProperty($name, $instance);
             } elseif ($this->hasBind($name)){
                 $instance = $this->create($name, $params, $deps);
             }
             return $instance;
         }
 
-        return $this->getPlusProperty();
+        return $this->getExtraProperty();
     }
 
     /**
@@ -210,7 +210,7 @@ class Container extends Basis
      */
     public function has($name)
     {
-        return $this->hasPlusProperty($name) || $this->hasBindAll($name);
+        return $this->hasExtraProperty($name) || $this->hasBindAll($name);
     }
 
     /**
@@ -248,11 +248,11 @@ class Container extends Basis
         $source = null;
 
         if (!empty($this->_singletons[$name])) {
-            if ($this->getPlusProperty($name)) {
+            if ($this->getExtraProperty($name)) {
                 throw new Exception("exists_singleton_object");
             }
             if (is_object($this->_singletons[$name])) {
-                return $this->setPlusProperty($name, $this->_singletons[$name]);
+                return $this->setExtraProperty($name, $this->_singletons[$name]);
             }
             $matter = (array)$this->_singletons[$name];
         } elseif (!empty($this->_binds[$name])) {

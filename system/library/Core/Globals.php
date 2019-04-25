@@ -21,7 +21,7 @@ class Globals extends Base
      */
     public function set($name, $value = null)
     {
-        $this->setPlusProperty($name, $value);
+        $this->setExtraProperty($name, $value);
     }
 
     /**
@@ -32,7 +32,7 @@ class Globals extends Base
      */
     public function get($name = null, $args = null)
     {
-        return $this->getPlusProperty($name, $args);
+        return $this->getExtraProperty($name, $args);
     }
 
     /**
@@ -42,7 +42,7 @@ class Globals extends Base
      */
     public function has($name = null)
     {
-        return $this->hasPlusProperty($name);
+        return $this->hasExtraProperty($name);
     }
 
     /**
@@ -52,7 +52,7 @@ class Globals extends Base
      */
     public function delete($name)
     {
-        return $this->delPlusProperty($name);
+        return $this->delExtraProperty($name);
     }
 
     /**

@@ -50,16 +50,16 @@ class FormManager extends ServiceProvider
      */
 	public function create($formName)
 	{
-	    if (!$this->hasPlusProperty($formName)) {
+	    if (!$this->hasExtraProperty($formName)) {
             $form = $this->createService('form', array($formName));
             $token = $this->formToken->generate($formName, $this->_route);
 
             $this->saveToken($formName, $token);
             $form->setTokenInfo(array($this->getTokenTag(), $token));
-            $this->setPlusProperty($formName, $form);
+            $this->setExtraProperty($formName, $form);
         }
 
-        return $this->getPlusProperty($formName);
+        return $this->getExtraProperty($formName);
 	}
 
     /**
@@ -69,7 +69,7 @@ class FormManager extends ServiceProvider
      */
 	public function get($name = null)
     {
-        return $this->getPlusProperty($name);
+        return $this->getExtraProperty($name);
     }
 
     /**
@@ -87,11 +87,11 @@ class FormManager extends ServiceProvider
 		$tokens = $this->session->get($this->getTokenListTag());
 		$formName = array_search($requestToken, $tokens);
 
-		if ($formName === false || !$this->hasPlusProperty($formName)) {
+		if ($formName === false || !$this->hasExtraProperty($formName)) {
             $this->error->show('not_exists_form');
         }
 
-		$this->_form = $this->getPlusProperty($formName);
+		$this->_form = $this->getExtraProperty($formName);
 		return $this->_form;
 	}
 

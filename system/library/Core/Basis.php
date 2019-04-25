@@ -15,7 +15,7 @@ abstract class Basis
 	/**
 	 * @var $_properties 自定义属性
 	 */
-	protected $_properties = array();
+	private $_properties = array();
 
 	/**
 	 * 返回当前类名（去除命名空间）
@@ -43,7 +43,7 @@ abstract class Basis
      */
     public function existsProperty($name)
     {
-        return property_exists($this, $name) ? : $this->hasPlusProperty($name);
+        return property_exists($this, $name) ? : $this->hasExtraProperty($name);
     }
 
     /**
@@ -72,7 +72,7 @@ abstract class Basis
      * @param string $name
      * @return bool
      */
-    public function hasPlusProperty($name)
+    public function hasExtraProperty($name)
     {
         return array_key_exists($name, $this->_properties);
     }
@@ -98,7 +98,7 @@ abstract class Basis
      * @param $property
      * @param null $value
      */
-    public function setPlusProperty($property, $value = null)
+    public function setExtraProperty($property, $value = null)
     {
         if (is_array($property)) {
             foreach ($property as $name => $value) {
@@ -118,7 +118,7 @@ abstract class Basis
      * @param mixed $name
      * @return 自定义属性|null
      */
-    public function getPlusProperty($name = null)
+    public function getExtraProperty($name = null)
     {
         if (func_get_args()) {
             if (array_key_exists($name, $this->_properties)) {
@@ -133,7 +133,7 @@ abstract class Basis
      * 删除自定义的属性
      * @param mixed $name
      */
-    public function delPlusProperty($name)
+    public function delExtraProperty($name)
     {
         $names = is_array($name) ? $name : func_get_args();
 
