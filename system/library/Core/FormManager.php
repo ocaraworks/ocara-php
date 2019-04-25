@@ -19,6 +19,7 @@ class FormManager extends ServiceProvider
 
     protected $_route;
     protected $_form;
+    protected $_forms;
 
     /**
      * 注册服务
@@ -34,7 +35,7 @@ class FormManager extends ServiceProvider
 
     /**
      * 注册事件
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function registerEvents()
     {
@@ -50,16 +51,16 @@ class FormManager extends ServiceProvider
      */
 	public function create($formName)
 	{
-	    if (!$this->hasExtraProperty($formName)) {
+	    if (!$this->hasForm($formName)) {
             $form = $this->createService('form', array($formName));
             $token = $this->formToken->generate($formName, $this->_route);
 
             $this->saveToken($formName, $token);
             $form->setTokenInfo(array($this->getTokenTag(), $token));
-            $this->setExtraProperty($formName, $form);
+            $this->addForm($formName, $form);
         }
 
-        return $this->getExtraProperty($formName);
+        return $this->getForm($formName);
 	}
 
     /**
@@ -67,9 +68,29 @@ class FormManager extends ServiceProvider
      * @param $name
      * @return array|mixed
      */
-	public function get($name = null)
+	public function getForm($name = null)
     {
-        return $this->getExtraProperty($name);
+        return array_keys($name, $this->_forms) ? $this->_forms[$name] : null;
+    }
+
+    /**
+     * 设置表单
+     * @param $formName
+     * @param $form
+     */
+    public function addForm($formName, $form)
+    {
+        $this->_forms[$formName] = $form;
+    }
+
+    /**
+     * 是否存在表单
+     * @param $name
+     * @return array
+     */
+    public function hasForm($name)
+    {
+        return array_keys($name, $this->_forms);
     }
 
     /**
@@ -87,11 +108,11 @@ class FormManager extends ServiceProvider
 		$tokens = $this->session->get($this->getTokenListTag());
 		$formName = array_search($requestToken, $tokens);
 
-		if ($formName === false || !$this->hasExtraProperty($formName)) {
+		if ($formName === false || !$this->hasForm($formName)) {
             $this->error->show('not_exists_form');
         }
 
-		$this->_form = $this->getExtraProperty($formName);
+		$this->_form = $this->getForm($formName);
 		return $this->_form;
 	}
 

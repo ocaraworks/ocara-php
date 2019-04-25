@@ -148,7 +148,7 @@ abstract class Basis
     /**
      * 清理自定义属性
      */
-    public function clearPlusProperty()
+    public function clearExtraProperty()
     {
         $this->_properties = array();
     }

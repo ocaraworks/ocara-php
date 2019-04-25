@@ -17,11 +17,11 @@ class Container extends Basis
 {
     /**
      * @var array $_binds 动态绑定类
-     * @var array $_singletons 单例绑定类
+     * @var array $_bindSingletons 单例绑定类
      * @var object $_default 默认容器
      */
     public $_binds = array();
-    public $_singletons = array();
+    public $_bindSingletons = array();
 
     private static $_default;
 
@@ -59,7 +59,7 @@ class Container extends Basis
 
         $matter = $this->_getMatterArray($source, $params, $deps);
         if ($matter) {
-            $this->_singletons[$name] = $matter;
+            $this->_bindSingletons[$name] = $matter;
         }
 
         return $this;
@@ -101,8 +101,8 @@ class Container extends Basis
     public function getBindSingleton($name = null)
     {
         if (func_num_args()) {
-            if (array_key_exists($name, $this->_singletons)) {
-                return $this->_singletons[$name];
+            if (array_key_exists($name, $this->_bindSingletons)) {
+                return $this->_bindSingletons[$name];
             }
             return array();
         }
@@ -180,7 +180,7 @@ class Container extends Basis
     public function hasBindAll($name)
     {
         $name = ocClassName($name);
-        return array_key_exists($name, $this->_binds) || array_key_exists($name, $this->_singletons);
+        return array_key_exists($name, $this->_binds) || array_key_exists($name, $this->_bindSingletons);
     }
 
     /**
@@ -190,7 +190,7 @@ class Container extends Basis
      */
     public function hasBindSingleton($name)
     {
-        return array_key_exists(ocClassName($name), $this->_singletons);
+        return array_key_exists(ocClassName($name), $this->_bindSingletons);
     }
 
     /**
@@ -247,14 +247,14 @@ class Container extends Basis
     {
         $source = null;
 
-        if (!empty($this->_singletons[$name])) {
+        if (!empty($this->_bindSingletons[$name])) {
             if ($this->getExtraProperty($name)) {
                 throw new Exception("exists_singleton_object");
             }
-            if (is_object($this->_singletons[$name])) {
-                return $this->setExtraProperty($name, $this->_singletons[$name]);
+            if (is_object($this->_bindSingletons[$name])) {
+                return $this->setExtraProperty($name, $this->_bindSingletons[$name]);
             }
-            $matter = (array)$this->_singletons[$name];
+            $matter = (array)$this->_bindSingletons[$name];
         } elseif (!empty($this->_binds[$name])) {
             if (is_object($this->_binds[$name])) {
                 return $this->_binds[$name];

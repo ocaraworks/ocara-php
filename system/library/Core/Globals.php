@@ -14,6 +14,8 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Globals extends Base
 {
+    protected $_vars;
+
     /**
      * 设置属性
      * @param string $name
@@ -21,18 +23,17 @@ class Globals extends Base
      */
     public function set($name, $value = null)
     {
-        $this->setExtraProperty($name, $value);
+        $this->_vars[$name] = $value;
     }
 
     /**
      * 获取属性
      * @param string $name
-     * @param mixed $args
      * @return 自定义属性|null
      */
-    public function get($name = null, $args = null)
+    public function get($name = null)
     {
-        return $this->getExtraProperty($name, $args);
+        return array_key_exists($name, $this) ? $this->_vars[$name] : null;
     }
 
     /**
@@ -42,7 +43,7 @@ class Globals extends Base
      */
     public function has($name = null)
     {
-        return $this->hasExtraProperty($name);
+        return array_key_exists($name, $this);
     }
 
     /**
@@ -52,7 +53,10 @@ class Globals extends Base
      */
     public function delete($name)
     {
-        return $this->delExtraProperty($name);
+        if (array_key_exists($name, $this)) {
+            $this->_vars[$name] = null;
+            unset($this->_vars[$name]);
+        }
     }
 
     /**
@@ -60,6 +64,6 @@ class Globals extends Base
      */
     public function clear()
     {
-        $this->clearPlusProperty();
+        $this->_vars = array();
     }
 }
