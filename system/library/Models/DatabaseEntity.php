@@ -359,7 +359,7 @@ abstract class DatabaseEntity extends DatabaseModel
 
         foreach ($this->_relations as $key => $object) {
             $config = $this->_getRelateConfig($key);
-            if ($config && $this->hasProperty($config['primaryKey'])) {
+            if ($config && isset($this->$config['primaryKey'])) {
                 $data = array();
                 if ($config['joinType'] == 'hasOne' && is_object($object)) {
                     $data = array($object);
@@ -418,11 +418,11 @@ abstract class DatabaseEntity extends DatabaseModel
             $oldValue = null;
             if ($this->_selected) {
                 if (!array_key_exists($name, $this->_oldData)){
-                    $oldValue = $this->getProperty($name);
+                    $oldValue = $this->$name;
                 }
             }
             parent::__set($name, $value);
-            if ($this->_selected && $this->hasProperty($name)) {
+            if ($this->_selected && isset($this->$name)) {
                 $this->_changes[] = $name;
                 $this->_oldData[$name] = $oldValue;
             }
