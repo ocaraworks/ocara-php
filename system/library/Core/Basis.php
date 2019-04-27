@@ -39,7 +39,7 @@ abstract class Basis
 	}
 
     /**
-     * 设置自定义的属性
+     * 设置属性
      * @param $property
      * @param null $value
      */

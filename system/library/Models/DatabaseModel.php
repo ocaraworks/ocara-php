@@ -32,7 +32,6 @@ abstract class DatabaseModel extends ModelBase
 	protected $_plugin;
 	protected $_primary;
 	protected $_table;
-	protected $_fields;
 	protected $_alias;
     protected $_module;
     protected $_connectName = 'defaults';
@@ -46,6 +45,7 @@ abstract class DatabaseModel extends ModelBase
     protected $_autoIncrementField;
 
     protected $_sql = array();
+    protected $_fields = array();
     protected $_primaries = array();
     protected $_joins = array();
     protected $_unions = array();
@@ -54,7 +54,6 @@ abstract class DatabaseModel extends ModelBase
 
     protected static $_config = array();
     protected static $_configPath = array();
-
     protected static $_requirePrimary;
 
     const EVENT_CACHE_QUERY_DATA = 'cacheQueryData';
