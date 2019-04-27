@@ -55,10 +55,19 @@ abstract class Basis
     }
 
     /**
-     * 清理自定义属性
+     * 清理属性
+     * @param array $fields
      */
-    protected function _clearProperties()
+    protected function _clearProperties(array $fields = array())
     {
+        $fields = $fields ? : array_keys($this->toArray());
+
+        foreach ($fields as $field) {
+            if (isset($this->$field)) {
+                $this->$field = null;
+            }
+        }
+
         $this->_properties = array();
     }
 
