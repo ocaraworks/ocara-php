@@ -45,10 +45,17 @@ abstract class DatabaseEntity extends DatabaseModel
     {
         $this->_selected = array();
         $this->_isOrm = false;
-        $this->clearPlusProperties();
+
+        $fields = $this->getFields();
+        foreach ($fields as $field) {
+            if (isset($this->$field)) {
+                $this->$field = null;
+            }
+        }
+
+        $this->_clearProperties();
         return $this;
     }
-
 
     /**
      * 清理Model的SQL和ORM数据
