@@ -35,7 +35,7 @@ abstract class Basis
 	 */
 	public static function getClass()
 	{
-		return "\\" . get_called_class();
+		return OC_NS_SEP . get_called_class();
 	}
 
     /**
@@ -109,7 +109,7 @@ abstract class Basis
             }
         }
 
-        $this->_noneProperty($property);
+        $this->_throwAccessPropertyError($property);
 	}
 
 	/**
@@ -125,7 +125,7 @@ abstract class Basis
             return true;
         }
 
-        $this->_noneProperty($property);
+        $this->_throwAccessPropertyError($property);
 	}
 
 	/**
@@ -142,7 +142,7 @@ abstract class Basis
             }
         }
 
-        $this->_noneProperty($property);
+        $this->_throwAccessPropertyError($property);
 	}
 
     /**
@@ -150,8 +150,9 @@ abstract class Basis
      * @param $property
      * @throws Exception
      */
-	protected function _noneProperty($property)
+	protected function _throwAccessPropertyError($property)
     {
-        throw new Exception(' Cannot access private or property ' . self::getClass() . '::$' . $property);
+        $message = sprintf('Cannot access private or property %s::$%s', self::getClass(), $property);
+        throw new Exception($message);
     }
 }
