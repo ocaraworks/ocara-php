@@ -23,8 +23,7 @@ class Path extends Basis
 	public function __construct()
 	{
 	    $config = ocContainer()->config;
-		$paths = $config->get('APP_PATH_INFO', array());
-		$this->setExtraProperty($paths);
+		$this->_data = $config->get('APP_PATH_INFO', array());
 	}
 
     /**

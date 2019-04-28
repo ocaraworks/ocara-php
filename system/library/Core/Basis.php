@@ -115,6 +115,9 @@ abstract class Basis
             if (array_key_exists($property, $this->_properties)) {
                 $value = $this->_properties[$property];
                 return $value;
+            } else {
+                $message = sprintf('Not Found property %s::$%s', self::getClass(), $property);
+                throw new Exception($message);
             }
         }
 

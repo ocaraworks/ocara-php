@@ -15,7 +15,6 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Lang extends Base
 {
-	protected $_properties = null;
 	protected $_frameworkConfig = array();
 	protected $_data = array();
 

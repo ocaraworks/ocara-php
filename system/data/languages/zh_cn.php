@@ -134,7 +134,7 @@ return array(
 	'no_action'                     => array(2503, '找不到控制器动作%s。'),
 	'no_function' 					=> array(2504, '找不到函数：%s。'),
 	'no_method' 					=> array(2506, '找不到方法：%s。'),
-	'no_property'					=> array(2506, '找不到属性：$%s。'),
+	'no_property'					=> array(2506, '找不到属性：$%s。原因是：%s。'),
 	'no_primaries' 					=> array(2507, '没有设置主键。'),
 	'no_file' 						=> array(2508, '文件不存在。'),
 	'no_form' 						=> array(2509, '表单不存在。'),
