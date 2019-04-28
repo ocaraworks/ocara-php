@@ -24,7 +24,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
 	 */
     protected $_route;
 	protected $_models;
-    protected $_isFormSubmit = null;
+    protected $_isFormSubmit = false;
     protected $_submitMethod = 'post';
     protected $_checkForm = true;
     protected $_hasRender = false;
@@ -364,7 +364,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      */
     public function isFormSubmit($isFormSubmit = null)
     {
-        if (isset($isFormSubmit)) {
+        if (func_num_args()) {
             $this->_isFormSubmit = $isFormSubmit ? true : false;
         } else {
             return $this->_isFormSubmit;
@@ -466,7 +466,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     public function checkForm()
     {
         $this->isFormSubmit();
-        if (!($this->_isFormSubmit && $this->_checkForm && $this->formManager->get()))
+        if (!($this->_isFormSubmit && $this->_checkForm && $this->formManager->getForm()))
             return true;
 
         return $this->formManager->validate($this->getSubmitData());
@@ -498,16 +498,17 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     }
 
     /**
-     * 获取不存在的属性时
-     * @param string $key
-     * @return array|mixed
+     * 获取不可访问的属性时
+     * @param $key
+     * @param $reason
+     * @return mixed|null
      */
-	public function _none($key)
+	public function _none($key, $reason)
 	{
 		if ($instance = $this->loadService($key)) {
 			return $instance;
 		}
 
-        ocService()->error->show('no_property', array($key));
+        ocService()->error->show('no_property', array($key, $reason));
 	}
 }

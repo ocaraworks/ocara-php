@@ -201,7 +201,6 @@ class Response extends Base
 				header_remove('location');
 				header('location:' . $url);
 			}
-			$die && die();
 		} else {
             ocService('error', true)->show('not_null', array('url'));
 		}

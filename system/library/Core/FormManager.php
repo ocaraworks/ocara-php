@@ -19,7 +19,8 @@ class FormManager extends ServiceProvider
 
     protected $_route;
     protected $_form;
-    protected $_forms;
+
+    protected $_forms = array();
 
     /**
      * 注册服务
@@ -70,7 +71,7 @@ class FormManager extends ServiceProvider
      */
 	public function getForm($name = null)
     {
-        return array_keys($name, $this->_forms) ? $this->_forms[$name] : null;
+        return array_key_exists($name, $this->_forms) ? $this->_forms[$name] : null;
     }
 
     /**
