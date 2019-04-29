@@ -67,11 +67,11 @@ class ModelService extends BaseService
                 $rootNamespace = "app\console\\{$this->_mdlname}\\privates\\database\\model";
                 $entityRootNamespace = "app\console\\{$this->_mdlname}\\privates\\database\\entity";
                 $modelPath = ocPath('application', 'console/' . $moduleModelDir);
-                $entityPath = ocPath('application', 'modules/' . $entityModelDir);
+                $entityPath = ocPath('application', 'console/' . $entityModelDir);
                 break;
             case 'tools':
-                $rootNamespace = "app\\tools\\database\\model";
-                $entityRootNamespace = "app\\tools\\database\\entity";
+                $rootNamespace = "app\\tools\\{$this->_mdlname}\\privates\\database\\model";
+                $entityRootNamespace = "app\\tools\\{$this->_mdlname}\\privates\\database\\entity";
                 $modelPath = ocPath('tools', $moduleModelDir);
                 $entityPath = ocPath('tools', $entityModelDir);
                 break;
@@ -82,6 +82,8 @@ class ModelService extends BaseService
                 $entityPath = ocPath('entity');
         }
 
+        $namespace = $rootNamespace;
+        $entityNamespace = $entityRootNamespace;
 		$modelName = ucfirst($this->_model);
         $entityName = ucfirst($this->_model) . 'Entity';
         $modelClass = $namespace . OC_NS_SEP . $modelName;
@@ -114,6 +116,7 @@ class ModelService extends BaseService
 
         ocCheckPath($entityPath);
         if (ocFileExists($entityPath = $entityPath .  "{$entityName}.php")) {
+            echo $entityPath;die;
             $this->showError('Entity文件已存在，请先手动删除！');
         }
 

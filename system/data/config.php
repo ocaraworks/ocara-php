@@ -180,11 +180,13 @@ return array(
 
             'tools'  	    => '',
 
+            'cache'  	    => 'application',
+            'database'      => 'application',
+
             'dal'           => 'application',
-            'entity'  	=> 'application/database',
+            'entity'  	    => 'application/database',
             'model'  	  	=> 'application/database',
             'values'  	  	=> 'application/database',
-            'cache'  	    => 'application/database',
 
             'config'        => 'resource',
             'lang'          => 'resource',

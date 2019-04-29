@@ -3,9 +3,9 @@
  * Main数据库模型基类
  */
 namespace Model;
-use Ocara\Models\Database;
+use Ocara\Models\DatabaseModel;
 
-abstract class MainBase extends Database
+abstract class MainBase extends DatabaseModel
 {
     public function __start()
     {}

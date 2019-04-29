@@ -802,7 +802,7 @@ class DatabaseBase extends Sql
 		$error = $errorExists ? $this->getError() : null;
 
 		if ($sqlData) {
-		    $dateFormat = array(ocConfig('DATE_FORMAT', 'datetime'));
+		    $dateFormat = ocConfig('DATE_FORMAT.datetime');
 			$params = array($sqlData, $errorExists, $error, $ret, date($dateFormat));
 			$this->fire(self::EVENT_AFTER_EXECUTE_SQL, $params);
 		}

@@ -91,7 +91,7 @@ class FormManager extends ServiceProvider
      */
     public function hasForm($name)
     {
-        return array_keys($name, $this->_forms);
+        return array_key_exists($name, $this->_forms);
     }
 
     /**

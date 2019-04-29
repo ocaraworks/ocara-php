@@ -27,6 +27,7 @@ class CacheModelService extends BaseService
 	{
 	    $defaultServer = CacheFactory::getDefaultServer();
 		$request = ocService()->request;
+
 		$this->_mdltype = $request->getPost('mdltype');
 		$this->_mdlname = $request->getPost('mdlname');
 		$this->_connectName = $request->getPost('connect', $defaultServer);
@@ -45,7 +46,7 @@ class CacheModelService extends BaseService
 		$connect = ucfirst($this->_connectName);
 		$modelBase = 'CacheModel';
 		$connectPath = $this->_connectName . OC_DIR_SEP;
-		$moduleModelDir = "{$this->_mdlname}/privates/cache/{$this->_connectName}/";
+		$moduleModelDir = "{$this->_mdlname}/privates/cache/";
 
         $cacheType = ucfirst(strtolower(ocConfig(array('CACHE', $this->_connectName, 'type'))));
         if (!in_array($cacheType, array('Redis', 'Memcache'))) {
@@ -67,15 +68,15 @@ class CacheModelService extends BaseService
                 $modelPath = ocPath('application', 'console/' . $moduleModelDir);
                 break;
             case 'tools':
-                $rootNamespace = "app\\tools\\cache";
+                $rootNamespace = "app\\tools\\privates\\cache";
                 $modelPath = ocPath('tools', $moduleModelDir);
                 break;
             default:
-                $rootNamespace = "app\\dal\\cache";
-                $modelPath = ocPath('cache', $this->_connectName . OC_DIR_SEP);
+                $rootNamespace = "app\\cache";
+                $modelPath = ocPath('cache');
         }
 
-        $namespace = ocNamespace($rootNamespace) . $this->_connectName;
+        $namespace = $rootNamespace;
 		$modelName = ucfirst($this->_model);
         $modelClass = $namespace . OC_NS_SEP . $modelName;
 

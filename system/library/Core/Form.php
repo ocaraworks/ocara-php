@@ -9,7 +9,6 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
-use Ocara\Models\Database as DatabaseModel;
 
 defined('OC_PATH') or exit('Forbidden!');
 

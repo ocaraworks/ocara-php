@@ -397,7 +397,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
             $model = $this->model();
         }
 
-        $form = $this->formManager->get($name);
+        $form = $this->formManager->getForm($name);
         if (!$form) {
             $form = $this->formManager->create($name);
             if ($model) {

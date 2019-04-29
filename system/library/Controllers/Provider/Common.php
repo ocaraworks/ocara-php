@@ -8,8 +8,6 @@
  ************************************************************************************************/
 namespace Ocara\Controllers\Provider;
 
-use Ocara\Interfaces\Event;
-use Ocara\Models\Database as DatabaseModel;
 use Ocara\Controllers\Provider\Base;
 use Ocara\Core\Response;
 

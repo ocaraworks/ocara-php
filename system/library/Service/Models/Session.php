@@ -1,10 +1,10 @@
 <?php
 namespace Ocara\Service\Models;
 
-use Ocara\Models\Database;
+use Ocara\Models\DatabaseModel;
 use Ocara\Service\Interfaces\Model\Session as SessionInerface;
 
-class Session extends Database implements SessionInerface
+class Session extends DatabaseModel implements SessionInerface
 {
 	protected $_table = 'sessions';
 	protected $_primary = 'session_id';
