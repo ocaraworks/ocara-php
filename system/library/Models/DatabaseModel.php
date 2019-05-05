@@ -9,6 +9,7 @@
 namespace Ocara\Models;
 
 use Ocara\Core\DriverBase;
+use Ocara\Core\FormManager;
 use \ReflectionObject;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\CacheFactory;
@@ -194,17 +195,20 @@ abstract class DatabaseModel extends ModelBase
 	public function getModelConfig()
 	{
         $paths = $this->getConfigPath();
-        $modelConfig = array();
+        $modelConfig = array_fill_keys(array('MAP', 'VALIDATE', 'JOIN', 'LANG'), array());
 
         if (ocFileExists($paths['config'])) {
             $config = @include($paths['config']);
-            $modelConfig = $config && is_array($config) ? $config : array();
+            if ($config && is_array($config)) {
+                $modelConfig = array_merge($modelConfig, $config);
+            }
         }
 
-        $modelConfig['LANG'] = array();
         if (ocFileExists($paths['lang'])) {
             $lang = @include($paths['lang']);
-            $modelConfig['LANG'] = $lang && is_array($lang) ? $lang : array();
+            if ($lang && is_array($lang)) {
+                $modelConfig['LANG'] = array_merge($modelConfig['LANG'], $lang);
+            }
         }
 
 		if (isset($paths['moduleConfig']) && ocFileExists($paths['moduleConfig'])) {
@@ -405,6 +409,14 @@ abstract class DatabaseModel extends ModelBase
 	}
 
     /**
+     * 获取字段
+     */
+    public function getFieldsName()
+    {
+        return array_keys($this->getFields());
+    }
+
+    /**
      * 获取自增字段名
      */
     public function getAutoIncrementField()
@@ -430,7 +442,7 @@ abstract class DatabaseModel extends ModelBase
 			$key = strtr($key, self::$_config[$this->_tag]['MAP']);
 			if (!$this->_plugin->hasAlias($key)) {
 				if (!isset($this->_fields[$key]) ||
-					$key == FormToken::getTokenTag() ||
+					$key == FormManager::getTokenTag() ||
 					is_object($value)
 				) {
 					continue;
@@ -523,8 +535,6 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function _save($data, $condition, $debug = false)
     {
-        $this->fire(self::EVENT_BEFORE_CREATE);
-
         $data = $this->map($data);
         if (empty($data)) {
             ocService()->error->show('fault_save_data');
@@ -803,6 +813,16 @@ abstract class DatabaseModel extends ModelBase
      * 返回对象
      * @return $this
      */
+    public function asArray()
+    {
+        $this->_sql['option']['dataType'] = DriverBase::DATA_TYPE_ARRAY;
+        return $this;
+    }
+
+    /**
+     * 返回对象
+     * @return $this
+     */
 	public function asObject()
     {
         $this->_sql['option']['dataType'] = DriverBase::DATA_TYPE_OBJECT;
@@ -896,7 +916,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getAll($condition = null, $option = null, $debug = false)
 	{
-		return $this->_find($condition, $option, $debug, false, false, null, 'array');
+		return $this->_find($condition, $option, $debug, false, false, null, DriverBase::DATA_TYPE_ARRAY);
 	}
 
     /**
@@ -909,7 +929,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getRow($condition = null, $option = null, $debug = false)
 	{
-		return $this->_find($condition, $option, $debug, true, false, 'array');
+		return $this->_find($condition, $option, $debug, true, false, DriverBase::DATA_TYPE_ARRAY);
 	}
 
     /**
@@ -947,7 +967,7 @@ abstract class DatabaseModel extends ModelBase
 			$queryRow = false;
 		}
 
-		$result = $this->_find(false, false, $debug, $queryRow, true, 'array');
+		$result = $this->_find(false, false, $debug, $queryRow, true, DriverBase::DATA_TYPE_ARRAY);
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
@@ -1027,7 +1047,7 @@ abstract class DatabaseModel extends ModelBase
 			if ($cacheData) return $cacheData;
 		}
 
-        $dataType = ocGet(array('option', 'dataType'), $this->_sql, $dataType ? : DriverBase::DATA_TYPE_ARRAY);
+        $dataType = $dataType ? : ocGet(array('option', 'dataType'), $this->_sql, DriverBase::DATA_TYPE_ARRAY);
 		if ($queryRow) {
             $result = $this->_plugin->queryRow($sql, $debug, $count, $this->_unions, $dataType);
 		} else {

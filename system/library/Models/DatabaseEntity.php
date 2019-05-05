@@ -45,7 +45,7 @@ abstract class DatabaseEntity extends DatabaseModel
     {
         $this->_selected = array();
         $this->_isOrm = false;
-        $this->_clearProperties($this->getFields());
+        $this->_clearProperties($this->getFieldsName());
         return $this;
     }
 
@@ -140,7 +140,7 @@ abstract class DatabaseEntity extends DatabaseModel
         $model = new static();
         $condition = $model->_getPrimaryCondition($values);
 
-        return $model->asEntity(__CLASS__)->findRow($condition, $options, $debug);
+        return $model->asEntity(self::getClass())->findRow($condition, $options, $debug);
     }
 
     /**

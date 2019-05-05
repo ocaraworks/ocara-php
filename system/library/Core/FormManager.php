@@ -146,7 +146,7 @@ class FormManager extends ServiceProvider
      * @return string
      * @throws Exception
      */
-    public function getTokenTag()
+    public static function getTokenTag()
     {
         return '_oc_' . ocConfig(array('FORM', 'token_tag'), '_form_token_name');
     }
