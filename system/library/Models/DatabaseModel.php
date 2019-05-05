@@ -784,7 +784,9 @@ abstract class DatabaseModel extends ModelBase
 			$this->where($condition);
 		}
 
-		$data = $this->getRow(null, $options, $debug);
+        $dataType = $this->getDataType();
+
+        $result = $this->_find($condition, $option, $debug, true, false, $dataType);
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $data;
 
 		if ($data) {
@@ -841,6 +843,17 @@ abstract class DatabaseModel extends ModelBase
         }
         $this->_sql['option']['dataType'] = $entityClass;
         return $this;
+    }
+
+    /**
+     * 获取当前返回数据类型
+     * @param null $default
+     * @return array|bool|mixed|null
+     */
+    public function getDataType($default = null)
+    {
+        $default = $default ? : DriverBase::DATA_TYPE_ARRAY;
+        return ocGet(array('option', 'dataType'), $this->_sql, $default);
     }
 
     /**
@@ -916,7 +929,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getAll($condition = null, $option = null, $debug = false)
 	{
-		return $this->_find($condition, $option, $debug, false, false, null, DriverBase::DATA_TYPE_ARRAY);
+		return $this->_find($condition, $option, $debug, false, false, DriverBase::DATA_TYPE_ARRAY);
 	}
 
     /**
@@ -1047,7 +1060,7 @@ abstract class DatabaseModel extends ModelBase
 			if ($cacheData) return $cacheData;
 		}
 
-        $dataType = $dataType ? : ocGet(array('option', 'dataType'), $this->_sql, DriverBase::DATA_TYPE_ARRAY);
+        $dataType = $dataType ? : $this->getDataType();
 		if ($queryRow) {
             $result = $this->_plugin->queryRow($sql, $debug, $count, $this->_unions, $dataType);
 		} else {
