@@ -367,7 +367,6 @@ function ocShutdownHandler()
 	$error = error_get_last();
 	if ($error) {
 		if (@ini_get('display_errors')) {
-		    print_r($error);die;
 			ocService()
                 ->exceptionHandler
                 ->errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
