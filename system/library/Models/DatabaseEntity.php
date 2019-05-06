@@ -34,7 +34,6 @@ abstract class DatabaseEntity extends DatabaseModel
             $this->_setProperty($this->map($data));
         }
 
-        $this->_isOrm = true;
         return $this;
     }
 
@@ -44,7 +43,6 @@ abstract class DatabaseEntity extends DatabaseModel
     public function clearData()
     {
         $this->_selected = array();
-        $this->_isOrm = false;
         $this->_clearProperties($this->getFieldsName());
         return $this;
     }
@@ -58,14 +56,6 @@ abstract class DatabaseEntity extends DatabaseModel
         parent::clearAll();
         $this->clearData();
         return $this;
-    }
-
-    /**
-     * 是否是ORM模型
-     */
-    public function isOrm()
-    {
-        return $this->_isOrm;
     }
 
     /**
