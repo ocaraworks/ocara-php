@@ -52,34 +52,34 @@ class ModelService extends BaseService
 		$modelBase = 'DatabaseModel';
 		$connectPath = $this->_connectName . OC_DIR_SEP;
 
-		$moduleModelDir = "{$this->_mdlname}/privates/database/model/";
-        $entityModelDir = "{$this->_mdlname}/privates/database/entity/";
+		$moduleModelDir = "{$this->_mdlname}/privates/model/database/";
+        $entityModelDir = "{$this->_mdlname}/privates/entity/database/";
 
         switch($this->_mdltype)
         {
             case 'modules':
-                $rootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\database\\model";
-                $entityRootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\database\\entity";
+                $rootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\model\\database";
+                $entityRootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\entity\\database";
                 $modelPath = ocPath('application', 'modules/' . $moduleModelDir);
                 $entityPath = ocPath('application', 'modules/' . $entityModelDir);
                 break;
             case 'console':
-                $rootNamespace = "app\console\\{$this->_mdlname}\\privates\\database\\model";
-                $entityRootNamespace = "app\console\\{$this->_mdlname}\\privates\\database\\entity";
+                $rootNamespace = "app\console\\{$this->_mdlname}\\privates\\model\\database";
+                $entityRootNamespace = "app\console\\{$this->_mdlname}\\privates\\entity\\database";
                 $modelPath = ocPath('application', 'console/' . $moduleModelDir);
                 $entityPath = ocPath('application', 'console/' . $entityModelDir);
                 break;
             case 'tools':
-                $rootNamespace = "app\\tools\\{$this->_mdlname}\\privates\\database\\model";
-                $entityRootNamespace = "app\\tools\\{$this->_mdlname}\\privates\\database\\entity";
+                $rootNamespace = "app\\tools\\{$this->_mdlname}\\privates\\model\\database";
+                $entityRootNamespace = "app\\tools\\{$this->_mdlname}\\privates\\entity\\database";
                 $modelPath = ocPath('tools', $moduleModelDir);
                 $entityPath = ocPath('tools', $entityModelDir);
                 break;
             default:
-                $rootNamespace = "app\\database\\model";
-                $entityRootNamespace = "app\\database\\entity";
-                $modelPath = ocPath('model');
-                $entityPath = ocPath('entity');
+                $rootNamespace = "app\\model\\database";
+                $entityRootNamespace = "app\\entity\\database";
+                $modelPath = ocPath('model', 'database');
+                $entityPath = ocPath('entity', 'database');
         }
 
         $namespace = $rootNamespace;

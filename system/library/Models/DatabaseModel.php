@@ -273,18 +273,18 @@ abstract class DatabaseModel extends ModelBase
         $dir = dirname($filePath) . OC_DIR_SEP;
 
         if ($this->_module) {
-            list($rootPath, $subDir) = ocSeprateDir($dir, '/privates/database/model/');
+            list($rootPath, $subDir) = ocSeprateDir($dir, '/privates/model/database/');
             $modulePaths = array(
-                'moduleConfig' => $rootPath . '../config/' . $subDir . $file,
-                'moduleLang' => $rootPath  . "../lang/{$language}/" . $subDir. $file
+                'moduleConfig' => $rootPath . '../../config/' . $subDir . $file,
+                'moduleLang' => $rootPath  . "../../lang/{$language}/" . $subDir. $file
             );
         } else {
-            list($rootPath, $subDir) = ocSeprateDir($dir, '/application/database/model/');
+            list($rootPath, $subDir) = ocSeprateDir($dir, '/application/model/database/');
         }
 
         $paths = array(
-            'config' => ocPath('database', 'config/' . $subDir . $file),
-            'lang' => ocPath('database', "lang/{$language}/" . $subDir . $file),
+            'config' => ocPath('config', $subDir . $file),
+            'lang' => ocPath('lang', $language . OC_DIR_SEP . $subDir . $file),
             'fields' => ocPath('fields',  $subDir . $file),
         );
 
