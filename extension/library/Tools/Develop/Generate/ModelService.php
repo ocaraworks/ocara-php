@@ -78,8 +78,8 @@ class ModelService extends BaseService
             default:
                 $rootNamespace = "app\\model\\database";
                 $entityRootNamespace = "app\\entity\\database";
-                $modelPath = ocPath('model', 'database');
-                $entityPath = ocPath('entity', 'database');
+                $modelPath = ocPath('model', 'database/');
+                $entityPath = ocPath('entity', 'database/');
         }
 
         $namespace = $rootNamespace;
@@ -116,7 +116,6 @@ class ModelService extends BaseService
 
         ocCheckPath($entityPath);
         if (ocFileExists($entityPath = $entityPath .  "{$entityName}.php")) {
-            echo $entityPath;die;
             $this->showError('Entity文件已存在，请先手动删除！');
         }
 

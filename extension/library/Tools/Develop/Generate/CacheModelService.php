@@ -73,7 +73,7 @@ class CacheModelService extends BaseService
                 break;
             default:
                 $rootNamespace = "app\\model\\cache";
-                $modelPath = ocPath('cache');
+                $modelPath = ocPath('model', 'cache/');
         }
 
         $namespace = $rootNamespace;
