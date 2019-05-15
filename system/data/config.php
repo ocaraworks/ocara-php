@@ -170,19 +170,21 @@ return array(
     
         /*所属目录*/
         'belongs' => array(
-            'controller'  	=> 'application',
             'console'  	    => 'application',
-            'entity'        => 'application',
-            'enums'         => 'application',
+            'controller'  	=> 'application',
+            'lang'          => 'application',
             'model'         => 'application',
             'modules'  	    => 'application',
             'service'  	    => 'application',
             'view'  	  	=> 'application',
 
-            'tools'  	    => '',
+            'entity'        => 'application/model',
+            'enums'         => 'application/model',
+            'cache'         => 'application/cache',
+            'database'      => 'application/database',
 
+            'tools'  	    => '',
             'config'        => 'resource',
-            'lang'          => 'resource',
 
             'data'          => 'resource',
             'doc'           => 'resource/data',

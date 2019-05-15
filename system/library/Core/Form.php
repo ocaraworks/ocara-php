@@ -145,7 +145,7 @@ class Form extends Base
 	{
 		foreach ($this->_models as $key => $model) {
 			$this->_lang = array_merge($this->_lang, $model->getConfig('LANG'));
-			$this->_map = array_merge($this->_map, $model->getConfig('MAP'));
+			$this->_map = array_merge($this->_map, $model->getConfig('MAPS'));
 		}
 
 		return $this;
@@ -255,7 +255,7 @@ class Form extends Base
 
 		foreach ($this->_models as $alias => $model) {
 			$data = $model->mapData($data);
-			$rules = $model->getConfig('VALIDATE');
+			$rules = $model->getConfig('VALIDATES');
 			$lang = $model->getConfig('LANG');
 			$result = $validator
                 ->setRules($rules)

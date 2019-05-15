@@ -165,29 +165,14 @@ class ModelService extends BaseService
         $paths = $model->getConfigPath();
 
         if (!empty($this->_mdltype)) {
-            $configPath = $paths['moduleConfig'];
             $langPath = $paths['moduleLang'];
         } else {
             $paths = $model->getConfigPath();
-            $configPath = $paths['config'];
             $langPath = $paths['lang'];
         }
 
 		//新建字段配置
 		$fileCache = ocService()->fileCache;
-		$modelFile = lcfirst($modelName);
-
-		$fileCache->setData(array(), "CONF['MAP']", '字段别名映射');
-		$fileCache->format();
-		$fileCache->save($configPath);
-
-		$fileCache->setData(array(), "CONF['VALIDATE']", '字段验证规则');
-		$fileCache->format();
-		$fileCache->save($configPath, true);
-
-		$fileCache->setData(array(), "CONF['JOIN']", '表关联');
-		$fileCache->format();
-		$fileCache->save($configPath, true);
 
 		//新建字段数据文件
         $fieldsService = new FieldsService();

@@ -3,6 +3,7 @@ namespace Ocara\Models;
 
 use Ocara\Exceptions\Exception;
 use Ocara\Iterators\Database\ObjectRecords;
+use ReflectionObject;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -56,6 +57,15 @@ abstract class DatabaseEntity extends DatabaseModel
         parent::clearAll();
         $this->clearData();
         return $this;
+    }
+
+    /**
+     * 获取模型所在子目录
+     * @return array|mixed
+     */
+    public function getModelLocation()
+    {
+        return '/model/entity/database/';
     }
 
     /**
@@ -376,7 +386,7 @@ abstract class DatabaseEntity extends DatabaseModel
      */
     public function &__get($key)
     {
-        if (isset(self::$_config[$this->_tag]['JOIN'][$key])) {
+        if (isset(self::$_config[$this->_tag]['RELATIONS'][$key])) {
             if (!isset($this->_relations[$key])) {
                 $this->_relations[$key] = $this->_relateFind($key);
             }
@@ -394,7 +404,7 @@ abstract class DatabaseEntity extends DatabaseModel
      */
     public function __set($name, $value)
     {
-        if (isset(self::$_config[$this->_tag]['JOIN'][$name])) {
+        if (isset(self::$_config[$this->_tag]['RELATIONS'][$name])) {
             $this->_relations[$name] = $value;
         } else {
             $oldValue = null;

@@ -195,14 +195,7 @@ abstract class DatabaseModel extends ModelBase
 	public function getModelConfig()
 	{
         $paths = $this->getConfigPath();
-        $modelConfig = array_fill_keys(array('MAP', 'VALIDATE', 'JOIN', 'LANG'), array());
-
-        if (ocFileExists($paths['config'])) {
-            $config = @include($paths['config']);
-            if ($config && is_array($config)) {
-                $modelConfig = array_merge($modelConfig, $config);
-            }
-        }
+        $modelConfig = array_fill_keys(array('MAPS', 'VALIDATES', 'RELATIONS', 'LANG'), array());
 
         if (ocFileExists($paths['lang'])) {
             $lang = @include($paths['lang']);
@@ -211,22 +204,24 @@ abstract class DatabaseModel extends ModelBase
             }
         }
 
-		if (isset($paths['moduleConfig']) && ocFileExists($paths['moduleConfig'])) {
-			$config = @include($paths['moduleConfig']);
-			if ($config && is_array($config)) {
-				$modelConfig = array_merge(
-					array_diff_key($modelConfig, $config),
-					array_intersect_key($config, $modelConfig)
-				);
-			}
-		}
-
-		if (isset($paths['moduleLang']) && ocFileExists($paths['moduleLang'])) {
+		if ($paths['moduleLang'] && ocFileExists($paths['moduleLang'])) {
 			$lang = @include($paths['moduleLang']);
 			if ($lang && is_array($lang)) {
 				$modelConfig['LANG'] = array_merge($modelConfig['LANG'], $lang);
 			}
 		}
+
+		if (method_exists($this, 'maps')) {
+            $modelConfig['MAPS'] = $this->maps() ? : array();
+        }
+
+        if (method_exists($this, 'relations')) {
+            $modelConfig['RELATIONS'] = $this->relations() ? : array();
+        }
+
+        if (method_exists($this, 'validates')) {
+            $modelConfig['VALIDATES'] = $this->validates() ? : array();
+        }
 
 		ksort($modelConfig);
 		return $modelConfig;
@@ -265,31 +260,42 @@ abstract class DatabaseModel extends ModelBase
 	        return self::$_configPath[$tag];
         }
 
-        $modulePaths = array();
+        $moduleLang = OC_EMPTY;
+        $language = ocService()->app->getLanguage();
+
         $ref = new ReflectionObject($this);
         $filePath = ocCommPath($ref->getFileName());
-        $language = ocService()->app->getLanguage();
         $file = basename($filePath);
         $dir = dirname($filePath) . OC_DIR_SEP;
 
         if ($this->_module) {
-            list($rootPath, $subDir) = ocSeprateDir($dir, '/privates/model/database/');
-            $modulePaths = array(
-                'moduleConfig' => $rootPath . '../../config/' . $subDir . $file,
-                'moduleLang' => $rootPath  . "../../lang/{$language}/" . $subDir. $file
-            );
+            list($rootPath, $subDir) = ocSeprateDir($dir, '/privates' . $location);
         } else {
-            list($rootPath, $subDir) = ocSeprateDir($dir, '/application/model/database/');
+            list($rootPath, $subDir) = ocSeprateDir($dir, '/application' . $location);
+        }
+
+        if ($this->_module) {
+            $modulePath = OC_MODULE_PATH ? : ocPath('modules');
+            $moduleLang = $modulePath . '/' . $this->_module . '/privates/lang/' . $language . '/' . $subDir . $file;
         }
 
         $paths = array(
-            'config' => ocPath('config', $subDir . $file),
             'lang' => ocPath('lang', $language . OC_DIR_SEP . $subDir . $file),
             'fields' => ocPath('fields',  $subDir . $file),
+            'moduleLang' => $moduleLang
         );
 
-        return self::$_configPath[$tag] = array_merge($paths, $modulePaths);
+        return self::$_configPath[$tag] = $paths;
 	}
+
+    /**
+     * 获取模型所在子目录
+     * @return array|mixed
+     */
+	public function getModelLocation()
+    {
+        return '/model/database/';
+    }
 
     /**
      * 字段映射
@@ -386,8 +392,8 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getFieldsConfig()
 	{
-		$filePath = $this->getConfigPath();
-		$path = ocLowerFile(ocPath('fields', $filePath));
+		$paths = $this->getConfigPath();
+		$path = ocLowerFile($paths['fields']);
 
 		if (ocFileExists($path)) {
 			return @include($path);
@@ -439,7 +445,7 @@ abstract class DatabaseModel extends ModelBase
 		}
 
 		foreach ($data as $key => $value) {
-			$key = strtr($key, self::$_config[$this->_tag]['MAP']);
+			$key = strtr($key, self::$_config[$this->_tag]['MAPS']);
 			if (!$this->_plugin->hasAlias($key)) {
 				if (!isset($this->_fields[$key]) ||
 					$key == FormManager::getTokenTag() ||
@@ -474,7 +480,7 @@ abstract class DatabaseModel extends ModelBase
 			$this->loadFields();
 		}
 
-		$key = strtr($field, self::$_config[$this->_tag]['MAP']);
+		$key = strtr($field, self::$_config[$this->_tag]['MAPS']);
 		if (isset($this->_fields[$key])) {
 			return $key;
 		}
@@ -1562,7 +1568,7 @@ abstract class DatabaseModel extends ModelBase
 		$transforms = array();
 
 		if ($unJoined) {
-			$map = $this->getConfig('MAP');
+			$map = $this->getConfig('MAPS');
 			if ($map) {
 				$transforms[$this->_alias] = $map;
 			}
@@ -1570,11 +1576,11 @@ abstract class DatabaseModel extends ModelBase
 			$transforms = array();
 			foreach ($tables as $alias => $row) {
 				if ($alias == $this->_alias) {
-					if ($map = $this->getConfig('MAP')) {
+					if ($map = $this->getConfig('MAPS')) {
 						$transforms[$this->_alias] = $map;
 					}
 				} elseif (isset($this->_joins[$alias])) {
-					if ($map = $this->getConfig('MAP')) {
+					if ($map = $this->getConfig('MAPS')) {
 						$transforms[$alias] = $map;
 					}
 				}
@@ -1977,11 +1983,11 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function _getRelateConfig($key)
 	{
-		if (!isset(self::$_config[$this->_tag]['JOIN'][$key])) {
+		if (!isset(self::$_config[$this->_tag]['RELATIONS'][$key])) {
 			return array();
 		}
 
-		$config = self::$_config[$this->_tag]['JOIN'][$key];
+		$config = self::$_config[$this->_tag]['RELATIONS'][$key];
 
 		if (count($config) < 3) {
 			ocService()->error->show('fault_relate_config');
