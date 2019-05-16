@@ -255,7 +255,7 @@ class Form extends Base
 
 		foreach ($this->_models as $alias => $model) {
 			$data = $model->mapData($data);
-			$rules = $model->getConfig('VALIDATES');
+			$rules = $model->getConfig('RULES');
 			$lang = $model->getConfig('LANG');
 			$result = $validator
                 ->addRules($rules)

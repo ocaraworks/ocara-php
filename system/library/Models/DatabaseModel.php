@@ -195,7 +195,7 @@ abstract class DatabaseModel extends ModelBase
 	public function getModelConfig()
 	{
         $paths = $this->getConfigPath();
-        $modelConfig = array_fill_keys(array('MAPS', 'VALIDATES', 'RELATIONS', 'LANG'), array());
+        $modelConfig = array_fill_keys(array('MAPS', 'RULES', 'RELATIONS', 'LANG'), array());
 
         if (ocFileExists($paths['lang'])) {
             $lang = @include($paths['lang']);
@@ -219,8 +219,8 @@ abstract class DatabaseModel extends ModelBase
             $modelConfig['RELATIONS'] = $this->relations() ? : array();
         }
 
-        if (method_exists($this, 'validates')) {
-            $modelConfig['VALIDATES'] = $this->validates() ? : array();
+        if (method_exists($this, 'rules')) {
+            $modelConfig['RULES'] = $this->rules() ? : array();
         }
 
 		ksort($modelConfig);

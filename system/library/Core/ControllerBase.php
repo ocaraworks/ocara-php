@@ -453,7 +453,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
         }
 
         $result = $validator
-            ->addRules($model->getConfig('VALIDATES'))
+            ->addRules($model->getConfig('RULES'))
             ->addLang($model->getConfig('LANG'))
             ->validate($model->mapData($data));
 
