@@ -71,28 +71,6 @@ class Validator extends Base
 	}
 
 	/**
-	 * 设置规则
-	 * @param array $rules
-	 * @return $this
-	 */
-	public function setRules(array $rules)
-	{
-		$this->_rules = $rules;
-		return $this;
-	}
-
-	/**
-	 * 设置语言文本
-	 * @param array $lang
-	 * @return $this
-	 */
-	public function setLang(array $lang)
-	{
-		$this->_lang = $lang;
-		return $this;
-	}
-
-	/**
 	 * 增加验证规则
 	 * @param $field
 	 * @param null $rule
@@ -100,7 +78,11 @@ class Validator extends Base
 	 */
 	public function addRule($field, $rule = null)
 	{
-		$this->_rules[$field] = $rule;
+	    if (is_array($field)) {
+	        $this->_rules = array_merge($this->_rules, $field);
+        } else {
+            $this->_rules[$field] = $rule;
+        }
 		return $this;
 	}
 
@@ -112,7 +94,11 @@ class Validator extends Base
 	 */
 	public function addLang($key, $value = null)
 	{
-		$this->_lang[$key] = $value;
+        if (is_array($key)) {
+            $this->_lang = array_merge($this->_lang, $key);
+        } else {
+            $this->_lang[$key] = $rule;
+        }
 		return $this;
 	}
 

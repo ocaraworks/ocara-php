@@ -258,8 +258,8 @@ class Form extends Base
 			$rules = $model->getConfig('VALIDATES');
 			$lang = $model->getConfig('LANG');
 			$result = $validator
-                ->setRules($rules)
-                ->setLang($lang)
+                ->addRules($rules)
+                ->addLang($lang)
                 ->validate($data);
 			if (!$result) {
 				return false;
