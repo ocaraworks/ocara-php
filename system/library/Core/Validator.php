@@ -97,7 +97,7 @@ class Validator extends Base
         if (is_array($key)) {
             $this->_lang = array_merge($this->_lang, $key);
         } else {
-            $this->_lang[$key] = $rule;
+            $this->_lang[$key] = $value;
         }
 		return $this;
 	}
