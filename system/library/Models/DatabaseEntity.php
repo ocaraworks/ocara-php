@@ -32,7 +32,7 @@ abstract class DatabaseEntity extends DatabaseModel
     {
         $data = $this->_getSubmitData($data);
         if ($data) {
-            $this->_setProperty($this->map($data));
+            $this->_setProperty($this->filterData($data));
         }
 
         return $this;
@@ -304,7 +304,7 @@ abstract class DatabaseEntity extends DatabaseModel
 
         $where = array();
         if (count($this->_primaries) == count($values)) {
-            $where = $this->map(array_combine($this->_primaries, $values));
+            $where = $this->filterData(array_combine($this->_primaries, $values));
         } else {
             ocService()->error->show('fault_primary_num');
         }

@@ -298,16 +298,14 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
-     * 字段映射
+     * 数据字段别名映射
      * @param array $data
      * @return array
      */
 	public function mapData(array $data)
 	{
 		$config = $this->getConfig('MAP');
-		if (!$config) {
-			return $data;
-		}
+		if (!$config) return $data;
 
 		$result = array();
 		foreach ($data as $key => $value) {
@@ -320,6 +318,16 @@ abstract class DatabaseModel extends ModelBase
 
 		return $result;
 	}
+
+	/**
+     * 字段别名映射
+	 */
+	public function mapField($field)
+    {
+        $config = $this->getConfig('MAP');
+        $result = isset($config[$field]) ? $config[$field] : $field;
+        return $result;
+    }
 
     /**
      * 获取当前数据库对象
@@ -431,30 +439,20 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
-     * 别名字段数据映射
+     * 别名字段数据映射过滤
      * @param array $data
      * @return array
      * @throws Exception
      */
-	public function map(array $data)
+	public function filterData(array $data)
 	{
 		$result = array();
 
-		if (!$this->_fields) {
-			$this->loadFields();
-		}
-
-		foreach ($data as $key => $value) {
-			$key = strtr($key, self::$_config[$this->_tag]['MAPS']);
-			if (!$this->_plugin->hasAlias($key)) {
-				if (!isset($this->_fields[$key]) ||
-					$key == FormManager::getTokenTag() ||
-					is_object($value)
-				) {
-					continue;
-				}
+		foreach ($data as $field => $value) {
+            $key = $this->filterField($field);
+			if ($key) {
+                $result[$key] = $value;
 			}
-			$result[$key] = $value;
 		}
 
 		if ($this->_fields) {
@@ -468,24 +466,31 @@ abstract class DatabaseModel extends ModelBase
 	}
 
     /**
-     * 字段别名映射
+     * 字段别名映射过滤
      * @param string $field
      * @param bool $return
      * @return string|null
      * @throws Exception
      */
-	public function mapField($field, $return = true)
+	public function filterField($field)
 	{
 		if (!$this->_fields) {
 			$this->loadFields();
 		}
 
-		$key = strtr($field, self::$_config[$this->_tag]['MAPS']);
-		if (isset($this->_fields[$key])) {
-			return $key;
-		}
+		$mapsConfig = $this->getConfig('MAPS');
+		$key = isset($mapsConfig[$field]) ? $mapsConfig[$field] : $field;
 
-		return $return ? $field : null;
+        if (!$this->_plugin->hasAlias($key)) {
+            if (!isset($this->_fields[$key]) ||
+                $key == FormManager::getTokenTag() ||
+                is_object($value)
+            ) {
+                return null;
+            }
+        }
+
+		return $key;
 	}
 
 	/**
@@ -541,7 +546,7 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function _save($data, $condition, $debug = false)
     {
-        $data = $this->map($data);
+        $data = $this->filterData($data);
         if (empty($data)) {
             ocService()->error->show('fault_save_data');
         }
@@ -1698,13 +1703,13 @@ abstract class DatabaseModel extends ModelBase
 			$condition = null;
 			if ($whereType == 'where') {
 				if (is_array($whereData)) {
-					$whereData = $this->map($whereData);
+					$whereData = $this->filterData($whereData);
 				}
 				if ($whereData) {
 					$condition = $this->_plugin->parseCondition($whereData, 'AND', '=', $alias);
 				}
 			} elseif ($whereType == 'between') {
-				$field = $this->mapField($whereData[0]);
+				$field = $this->filterField($whereData[0]);
 				if($field) {
 					$whereData[0] = $field;
 					$whereData[] = $alias;
