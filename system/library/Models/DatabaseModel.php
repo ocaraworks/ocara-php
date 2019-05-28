@@ -449,10 +449,12 @@ abstract class DatabaseModel extends ModelBase
 		$result = array();
 
 		foreach ($data as $field => $value) {
-            $key = $this->filterField($field);
-			if ($key) {
-                $result[$key] = $value;
-			}
+		    if (!is_object($value)) {
+                $key = $this->filterField($field);
+                if ($key) {
+                    $result[$key] = $value;
+                }
+            }
 		}
 
 		if ($this->_fields) {
@@ -482,10 +484,7 @@ abstract class DatabaseModel extends ModelBase
 		$key = isset($mapsConfig[$field]) ? $mapsConfig[$field] : $field;
 
         if (!$this->_plugin->hasAlias($key)) {
-            if (!isset($this->_fields[$key]) ||
-                $key == FormManager::getTokenTag() ||
-                is_object($value)
-            ) {
+            if (!isset($this->_fields[$key]) || $key == FormManager::getTokenTag()) {
                 return null;
             }
         }
@@ -755,8 +754,8 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function defaultFields()
     {
-        if (method_exists($this, '_fields')) {
-            $fields = $this->_fields();
+        if (method_exists($this, '__fields')) {
+            $fields = $this->__fields();
             if ($fields) {
                 $this->fields($fields);
             }
@@ -770,8 +769,8 @@ abstract class DatabaseModel extends ModelBase
      */
     public function defaultCondition()
     {
-        if (method_exists($this, '_condition')) {
-            $where = $this->_condition();
+        if (method_exists($this, '__condition')) {
+            $where = $this->__condition();
             if ($where) {
                 $this->where($where);
             }
