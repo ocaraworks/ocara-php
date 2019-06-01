@@ -195,7 +195,13 @@ abstract class DatabaseModel extends ModelBase
 	public function getModelConfig()
 	{
         $paths = $this->getConfigPath();
-        $modelConfig = array_fill_keys(array('MAPS', 'RULES', 'RELATIONS', 'LANG'), array());
+
+        $modelConfig = array(
+            'MAPS' => $this->fieldMaps() ? : array(),
+            'RELATIONS' => $this->relations() ? : array(),
+            'RULES' => $this->rules() ? : array(),
+            'LANG' => array()
+        );
 
         if (ocFileExists($paths['lang'])) {
             $lang = @include($paths['lang']);
@@ -211,21 +217,36 @@ abstract class DatabaseModel extends ModelBase
 			}
 		}
 
-		if (method_exists($this, 'maps')) {
-            $modelConfig['MAPS'] = $this->maps() ? : array();
-        }
-
-        if (method_exists($this, 'relations')) {
-            $modelConfig['RELATIONS'] = $this->relations() ? : array();
-        }
-
-        if (method_exists($this, 'rules')) {
-            $modelConfig['RULES'] = $this->rules() ? : array();
-        }
-
 		ksort($modelConfig);
 		return $modelConfig;
 	}
+
+    /**
+     * 数据表字段别名映射
+     * @return array
+     */
+	public function fieldMaps()
+    {
+        return array();
+    }
+
+    /**
+     * 数据表关联
+     * @return array
+     */
+    public function relations()
+    {
+        return array();
+    }
+
+    /**
+     * 字段验证配置
+     * @return array
+     */
+    public function rules()
+    {
+        return array();
+    }
 
     /**
      * 获取配置数据
