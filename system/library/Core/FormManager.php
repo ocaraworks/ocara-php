@@ -123,22 +123,11 @@ class FormManager extends ServiceProvider
      * @return bool
      * @throws Exception
      */
-	public function validate($data)
+	public function checkForm($data)
 	{
 	    $requestToken = ocGet($this->getTokenTag(), $data, null);
         $postForm = $this->getSubmitForm($requestToken);
-
-		if ($postForm->validateForm()) {
-			if (!$postForm->validate($this->validator, $data)) {
-				$this->_showValidateError(
-					'failed_validate_form',
-					array($this->validator->getError()),
-					$this->validator->getErrorSource()
-				);
-			}
-		}
-
-		return true;
+		return $postForm;
 	}
 
     /**

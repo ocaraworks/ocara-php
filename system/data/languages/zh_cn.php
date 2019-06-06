@@ -74,7 +74,6 @@ return array(
 	'failed_email_socket_connect' 	=> array(2205, '邮件Socket连接失败。邮件Socket连接失败。Error message:[%s] %s。'),
 	'failed_curl_return' 			=> array(2206, 'PHP curl扩展执行出错：%s。'),
 	'failed_load_extension' 		=> array(2207, '加载扩展失败：%s。'),
-	'failed_validate_form' 			=> array(2208, '%s'),
 	'failed_validate_token' 		=> array(2208, '表单不存在或来源非法。'),
 	'failed_select_database'		=> array(2209, '要切换的数据库不存在或已删除！'),
 	'failed_file_lock'				=> array(2210, '文件锁定失败'),
@@ -99,8 +98,7 @@ return array(
 	'fault_session_table'			=> array(2316, 'Session表名配置有误'),
 	'fault_relate_config'			=> array(2317, '关联配置有误'),
 	'fault_method_param'			=> array(2318, '函数或方法参数缺失或格式错误'),
-	'fault_model_object' 			=> array(2319, '错误的模型对象，请检查该模型类的父类是否正确！'),
-    'fault_find_value'              => array(2320, '查询字段值格式不正确！'),
+    'fault_find_value'              => array(2319, '查询字段值格式不正确！'),
 
 	//不存在或找不到
 	'not_exists_part' 				=> array(2400, '指定的part文件不存在：{file}.php。'),

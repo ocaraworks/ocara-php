@@ -421,7 +421,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     }
 
     /**
-     * 开启/关闭/检测表单验证功能
+     * 开启/关闭/检测表单令牌功能
      * @param null $check
      * @return bool
      */
@@ -434,33 +434,6 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     }
 
     /**
-     * 数据模型字段验证
-     * @param $data
-     * @param $model
-     * @param Validator|null $validator
-     * @return mixed
-     */
-    public function validate($data, $model, Validator &$validator = null)
-    {
-        $validator = $validator ? : $this->validator;
-
-        if (!is_object($model)) {
-            $model = new $model();
-        }
-
-        if (!$model instanceof ModelBase) {
-            ocService()->error->show('fault_model_object');
-        }
-
-        $result = $validator
-            ->addRules($model->getConfig('RULES'))
-            ->addLang($model->getConfig('LANG'))
-            ->validate($model->mapData($data));
-
-        return $result;
-    }
-
-    /**
      * 表单检测
      */
     public function checkForm()
@@ -469,7 +442,16 @@ class ControllerBase extends serviceProvider implements ControllerInterface
         if (!($this->_isFormSubmit && $this->_checkForm && $this->formManager->getForm()))
             return true;
 
-        return $this->formManager->validate($this->getSubmitData());
+        return $this->formManager->checkForm();
+    }
+
+    /**
+     * 自动进行参数验证
+     */
+    public function validate(array $date = [])
+    {
+        $data = $data ? : $this->getSubmitData();
+        $this->validator->validate($data);
     }
 
     /**
