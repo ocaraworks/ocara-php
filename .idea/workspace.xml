@@ -18,8 +18,26 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/library/Core/Ocara.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="48" column="5" lean-forward="true" selection-start-line="48" selection-start-column="5" selection-end-line="48" selection-end-column="5" />
+            <state relative-caret-position="459">
+              <caret line="58" lean-forward="true" selection-start-line="58" selection-end-line="58" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/functions/common.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="4" column="30" selection-start-line="4" selection-start-column="30" selection-end-line="4" selection-end-column="30" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/functions/utility.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="544">
+              <caret line="736" lean-forward="true" selection-start-line="736" selection-end-line="736" />
             </state>
           </provider>
         </entry>
@@ -28,9 +46,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Code</find>
-      <find>_vars</find>
-      <find>_namespaceMap</find>
       <find>_name</find>
       <find>_info</find>
       <find>_isSend</find>
@@ -58,6 +73,9 @@
       <find>_sessionName</find>
       <find>_prefix</find>
       <find>_savePath</find>
+      <find>OC_EXECUTE_STATR_TIME</find>
+      <find>ocEx</find>
+      <find>Exception</find>
     </findStrings>
     <replaceStrings>
       <replace>-&gt;bootstrap</replace>
@@ -95,6 +113,7 @@
       <dir>D:\wwwroot\vendor\linyihu\ocara\system\data</dir>
       <dir>D:\wwwroot\vendor\linyihu\ocara\system\library</dir>
       <dir>D:\wwwroot\vendor\linyihu\ocara\system</dir>
+      <dir>D:\wwwroot\vendor\linyihu\ocara\system\functions</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -189,14 +208,7 @@
               <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
               <item name="ocara" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
-              <item name="library" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ocara" type="462c0819:PsiDirectoryNode" />
-              <item name="system" type="462c0819:PsiDirectoryNode" />
-              <item name="library" type="462c0819:PsiDirectoryNode" />
-              <item name="Core" type="462c0819:PsiDirectoryNode" />
+              <item name="functions" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -240,12 +252,12 @@
       <workItem from="1558018601706" duration="1804000" />
       <workItem from="1558193857402" duration="1509000" />
       <workItem from="1559888651125" duration="5000" />
-      <workItem from="1559888669937" duration="15239000" />
+      <workItem from="1559888669937" duration="15567000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19544000" />
+    <option name="totallyTimeSpent" value="19872000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -632,16 +644,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/functions/common.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6247" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/functions/utility.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-12129" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/const/config.php">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -664,10 +666,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/system/functions/common.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="30" selection-start-line="4" selection-start-column="30" selection-end-line="4" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/functions/utility.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="736" lean-forward="true" selection-start-line="736" selection-end-line="736" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/Ocara.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="48" column="5" lean-forward="true" selection-start-line="48" selection-start-column="5" selection-end-line="48" selection-end-column="5" />
+        <state relative-caret-position="459">
+          <caret line="58" lean-forward="true" selection-start-line="58" selection-end-line="58" />
         </state>
       </provider>
     </entry>

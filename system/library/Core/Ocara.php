@@ -8,7 +8,6 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
-use Ocara\Core\Basis;
 use Ocara\Core\Container;
 use Ocara\Exceptions\Exception;
 
@@ -17,7 +16,7 @@ defined('OC_PATH') OR define(
     'OC_PATH', str_replace("\\", DIRECTORY_SEPARATOR, realpath(dirname(dirname(dirname(__DIR__))))) . DIRECTORY_SEPARATOR
 );
 
-defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(true));
+defined('OC_EXECUTE_START_TIME') OR define('OC_EXECUTE_START_TIME', microtime(true));
 
 final class Ocara
 {
