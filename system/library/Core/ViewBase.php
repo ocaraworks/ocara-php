@@ -58,7 +58,7 @@ class ViewBase extends Base
                 $route['module'],
                 $route['controller']
             )));
-            $this->_plugin = new $pluginClass($path);
+            $this->plugin = new $pluginClass($path);
         }
     }
 
@@ -67,8 +67,8 @@ class ViewBase extends Base
      */
     public function engine()
     {
-        if (is_object($this->_plugin) && $this->_plugin instanceof TemplateInterface) {
-            return $this->_plugin;
+        if (is_object($this->plugin) && $this->plugin instanceof TemplateInterface) {
+            return $this->plugin;
         }
         return null;
     }
@@ -100,13 +100,13 @@ class ViewBase extends Base
             $variables = $name;
         }
 
-        $null = $this->_plugin === null;
+        $null = $this->plugin === null;
         foreach ($variables as $name => $value) {
             if ($null) {
                 $this->_vars[$name] = $value;
                 ocGlobal('View', $this);
             } else {
-                $this->_plugin->set($name, $value);
+                $this->plugin->set($name, $value);
             }
         }
     }
@@ -119,7 +119,7 @@ class ViewBase extends Base
      */
     public function getVar($name = null, $default = null)
     {
-        $vars = $this->_plugin === null ? $this->_vars : $this->_plugin->getVar();
+        $vars = $this->plugin === null ? $this->_vars : $this->plugin->getVar();
 
         if ($name) {
             $vars = (array)$vars;
@@ -461,9 +461,9 @@ class ViewBase extends Base
             $functions = ocConfig('DEFAULT_VIEW_ENGINE_FUNCTIONS');
             $functions = array_merge($functions, ocConfig('VIEW_ENGINE_FUNCTIONS', array()));
             foreach ($functions as $name) {
-                $this->_plugin->registerPlugin(array('function', $name, $name));
+                $this->plugin->registerPlugin(array('function', $name, $name));
             }
-            $this->_plugin->set('View', $this);
+            $this->plugin->set('View', $this);
         }
 
         $this->_content = $this->readTpl($file, $required);
@@ -614,7 +614,7 @@ class ViewBase extends Base
         ob_start();
 
         if ($this->engine() && empty($ban)) {
-            $this->_plugin->display($path);
+            $this->plugin->display($path);
         } else {
             ($vars = $this->getVar()) && extract($vars);
             include($path);

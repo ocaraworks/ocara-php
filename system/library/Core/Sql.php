@@ -71,7 +71,7 @@ class Sql extends Base
 	public function filterName($name, $addSlashes = true)
 	{
 		if ($addSlashes) {
-			$str = $this->_plugin->real_escape_string($name);
+			$str = $this->plugin->real_escape_string($name);
 			if ($str) {
 				return $this->filterSql($str, false, true, true);
 			}
@@ -92,7 +92,7 @@ class Sql extends Base
 			return $mt[1];
 		} else {
 			if ($addSlashes) {
-				$str = $this->_plugin->real_escape_string($content);
+				$str = $this->plugin->real_escape_string($content);
 				if ($str) {
 					return $this->filterSql($str, false);
 				}
@@ -406,7 +406,7 @@ class Sql extends Base
 			$limit = "{$limit[0]}, {$limit[1]}";
 		}
 
-		$str = $this->_plugin->real_escape_string($limit);
+		$str = $this->plugin->real_escape_string($limit);
 		if ($str) {
 			return $this->filterSql($str, false, true);
 		}
@@ -687,7 +687,7 @@ class Sql extends Base
 			return 'NULL';
 		}
 
-		$str = $this->_plugin->real_escape_string($val);
+		$str = $this->plugin->real_escape_string($val);
 		if ($str) {
 			$val = $this->filterSql($str, false);
 		} else {

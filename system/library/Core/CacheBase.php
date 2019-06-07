@@ -34,10 +34,10 @@ class CacheBase extends Base
 		$this->setConnectName($connectName);
 
 		if (isset(self::$_connects[$connectName]) && self::$_connects[$connectName] instanceof CacheBase) {
-			$this->_plugin = self::$_connects[$connectName];
+			$this->plugin = self::$_connects[$connectName];
 		} else {
 			$this->connect($config, $required);
-			self::$_connects[$connectName] = $this->_plugin;
+			self::$_connects[$connectName] = $this->plugin;
 		}
 	}
 

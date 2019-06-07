@@ -27,7 +27,7 @@ class SessionDB extends ServiceProvider
         $location = ocConfig(array('SESSION', 'options', 'location'), '\Ocara\Service\Models\Session', true);
         $this->_container->bindSingleton('_plugin', $location);
 
-        if (!(is_object($this->_plugin) && $this->_plugin instanceof ModelBase)) {
+        if (!(is_object($this->plugin) && $this->plugin instanceof ModelBase)) {
             ocService()->error->show('failed_db_connect');
         }
     }
@@ -37,7 +37,7 @@ class SessionDB extends ServiceProvider
 	 */
 	public function open()
 	{
-		return is_object($this->_plugin) && $this->_plugin instanceof ModelBase;
+		return is_object($this->plugin) && $this->plugin instanceof ModelBase;
 	}
 
 	/**
@@ -45,7 +45,7 @@ class SessionDB extends ServiceProvider
 	 */
 	public function close()
 	{
-		$this->_plugin = null;
+		$this->plugin = null;
 		return true;
 	}
 
@@ -55,7 +55,7 @@ class SessionDB extends ServiceProvider
 	 */
 	public function read($id)
 	{
-		$sessionData = $this->_plugin->read($id);
+		$sessionData = $this->plugin->read($id);
 		return $sessionData ? stripslashes($sessionData) : OC_EMPTY;
 	}
 
@@ -77,8 +77,8 @@ class SessionDB extends ServiceProvider
 			'session_data' 	  	  => stripslashes($data)
 		);
 
-		$this->_plugin->write($data);
-		$result = $this->_plugin->errorExists();
+		$this->plugin->write($data);
+		$result = $this->plugin->errorExists();
 
 		return $result === true;
 	}
@@ -89,8 +89,8 @@ class SessionDB extends ServiceProvider
 	 */
 	public function destroy($id)
 	{
-		$this->_plugin->destory($id);
-		$result = $this->_plugin->errorExists();
+		$this->plugin->destory($id);
+		$result = $this->plugin->errorExists();
 
 		return $result === true;
 	}
@@ -101,8 +101,8 @@ class SessionDB extends ServiceProvider
 	 */
 	public function gc($saveTime = null)
 	{
-		$this->_plugin->clear();
-		$result = $this->_plugin->errorExists();
+		$this->plugin->clear();
+		$result = $this->plugin->errorExists();
 
 		return $result === true;
 	}

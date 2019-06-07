@@ -48,7 +48,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
         $this->bindEvents($this);
         $this->session->boot();
         $this->formManager->setRoute($this->getRoute());
-        $this->_plugin = $this->view;
+        $this->plugin = $this->view;
 
         $this->view->assign('route', $this->getRoute());
 

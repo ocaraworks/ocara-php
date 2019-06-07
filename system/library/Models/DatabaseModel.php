@@ -479,10 +479,10 @@ abstract class DatabaseModel extends ModelBase
 		}
 
 		if ($this->_fields) {
-			if (!is_object($this->_plugin)) {
-				$this->_plugin = $this->connect();
+			if (!is_object($this->plugin)) {
+				$this->plugin = $this->connect();
 			}
-			$result = $this->_plugin->formatFieldValues($this->_fields, $result);
+			$result = $this->plugin->formatFieldValues($this->_fields, $result);
 		}
 
 		return $result;
@@ -504,7 +504,7 @@ abstract class DatabaseModel extends ModelBase
 		$mapsConfig = $this->getConfig('MAPS');
 		$key = isset($mapsConfig[$field]) ? $mapsConfig[$field] : $field;
 
-        if (!$this->_plugin->hasAlias($key)) {
+        if (!$this->plugin->hasAlias($key)) {
             if (!isset($this->_fields[$key]) || $key == FormManager::getTokenTag()) {
                 return null;
             }
@@ -520,7 +520,7 @@ abstract class DatabaseModel extends ModelBase
 	{
 		$this->_sql = array();
 		$this->_join(false, $this->_tableName, $this->_alias);
-		$this->_plugin = $this->_master;
+		$this->plugin = $this->_master;
 		return $this;
 	}
 
@@ -574,16 +574,16 @@ abstract class DatabaseModel extends ModelBase
         $this->pushTransaction();
 
         if ($condition) {
-            $result = $this->_plugin->update($this->_tableName, $data, $condition, $debug);
+            $result = $this->plugin->update($this->_tableName, $data, $condition, $debug);
         } else {
-            $result = $this->_plugin->insert($this->_tableName, $data, $debug);
+            $result = $this->plugin->insert($this->_tableName, $data, $debug);
         }
 
         $this->clearSql();
 
         if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
 
-        $result = $this->_plugin->errorExists() ? false : true;
+        $result = $this->plugin->errorExists() ? false : true;
         return $result;
     }
 
@@ -602,7 +602,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function prepare($prepare = true)
 	{
-		$this->_plugin->is_prepare($prepare);
+		$this->plugin->is_prepare($prepare);
 	}
 
     /**
@@ -611,7 +611,7 @@ abstract class DatabaseModel extends ModelBase
 	public function pushTransaction()
     {
 	    $this->connect();
-        ocService()->transaction->push($this->_plugin);
+        ocService()->transaction->push($this->plugin);
     }
 
     /**
@@ -686,7 +686,7 @@ abstract class DatabaseModel extends ModelBase
 			ocService()->error->show('need_condition');
 		}
 
-		$result = $this->_plugin->delete($this->_tableName, $condition, $debug);
+		$result = $this->plugin->delete($this->_tableName, $condition, $debug);
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
@@ -694,7 +694,7 @@ abstract class DatabaseModel extends ModelBase
 
 		$this->clearSql();
 
-		$result = $this->_plugin->errorExists() ? false : true;
+		$result = $this->plugin->errorExists() ? false : true;
 		return $result;
 	}
 
@@ -721,7 +721,7 @@ abstract class DatabaseModel extends ModelBase
 	public function query($sql, $debug = false)
 	{
 		if ($sql) {
-			$sqlData = $this->_plugin->getSqlData($sql);
+			$sqlData = $this->plugin->getSqlData($sql);
 			$dataType = $this->_sql['option']['dataType'] ? : DriverBase::DATA_TYPE_ARRAY;
 			return $this
                 ->connect(false)
@@ -741,7 +741,7 @@ abstract class DatabaseModel extends ModelBase
 	public function queryRow($sql, $debug = false)
 	{
 		if ($sql) {
-			$sqlData = $this->_plugin->getSqlData($sql);
+			$sqlData = $this->plugin->getSqlData($sql);
             $dataType = $this->_sql['option']['dataType'] ? : DriverBase::DATA_TYPE_ARRAY;
 			return $this
                 ->connect(false)
@@ -1093,9 +1093,9 @@ abstract class DatabaseModel extends ModelBase
 
         $dataType = $dataType ? : $this->getDataType();
 		if ($queryRow) {
-            $result = $this->_plugin->queryRow($sql, $debug, $count, $this->_unions, $dataType);
+            $result = $this->plugin->queryRow($sql, $debug, $count, $this->_unions, $dataType);
 		} else {
-            $result = $this->_plugin->query($sql, $debug, $count, $this->_unions, $dataType);
+            $result = $this->plugin->query($sql, $debug, $count, $this->_unions, $dataType);
 		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
@@ -1132,27 +1132,27 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function connect($master = true)
 	{
-		$this->_plugin = null;
+		$this->plugin = null;
 
 		if (!($master || ocGet(array('option', 'master'), $this->_sql))) {
 			if (!is_object($this->_slave)) {
 				$this->_slave = DatabaseFactory::create($this->_connectName, false, false);
 			}
-			$this->_plugin = $this->_slave;
+			$this->plugin = $this->_slave;
 		}
 
-		if (!is_object($this->_plugin)) {
+		if (!is_object($this->plugin)) {
 			if (!is_object($this->_master)) {
 				$this->_master = DatabaseFactory::create($this->_connectName);
 			}
-			$this->_plugin = $this->_master;
+			$this->plugin = $this->_master;
 		}
 
 		if ($this->_database) {
-			$this->_plugin->selectDatabase($this->_database);
+			$this->plugin->selectDatabase($this->_database);
 		}
 
-		return $this->_plugin;
+		return $this->plugin;
 	}
 
     /**
@@ -1248,7 +1248,7 @@ abstract class DatabaseModel extends ModelBase
 	public function parseJoinOnSql($alias, $on)
 	{
 		if (is_array($on)) {
-			$on = $this->_plugin->parseCondition($on, 'AND', '=', $alias);
+			$on = $this->plugin->parseCondition($on, 'AND', '=', $alias);
 		}
 
 		return $on;
@@ -1267,7 +1267,7 @@ abstract class DatabaseModel extends ModelBase
 		foreach ($_field as $key => $value) {
 			$value = explode('.', ltrim($value));
 			$field = trim($value[count($value) - 1]);
-			$_field[$key] = $this->_plugin->getFieldNameSql($field, $alias);
+			$_field[$key] = $this->plugin->getFieldNameSql($field, $alias);
 		}
 
 		return implode(',', $_field);
@@ -1566,7 +1566,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function bind($name, $value)
 	{
-		$this->_plugin->bind($name, $value);
+		$this->plugin->bind($name, $value);
 		return $this;
 	}
 
@@ -1657,7 +1657,7 @@ abstract class DatabaseModel extends ModelBase
 		if ($count) {
 			$countField = ocGet('countField', $this->_sql, null);
 			$isGroup = !empty($option['group']);
-			$fields = $this->_plugin->getCountSql($countField, 'total', $isGroup);
+			$fields = $this->plugin->getCountSql($countField, 'total', $isGroup);
 		} else {
 			$aliasFields = $this->_getAliasFields($tables);
 			if (!isset($option['fields']) || $this->_isDefaultFields($option['fields'])) {
@@ -1675,11 +1675,11 @@ abstract class DatabaseModel extends ModelBase
 			if ($count) {
 				ocDel($option, 'limit');
 			} else {
-				$option['limit'] = $this->_plugin->getLimitSql($option['limit']);
+				$option['limit'] = $this->plugin->getLimitSql($option['limit']);
 			}
 		}
 
-		return $this->_plugin->getSelectSql($fields, $from, $option);
+		return $this->plugin->getSelectSql($fields, $from, $option);
 	}
 
     /**
@@ -1699,12 +1699,12 @@ abstract class DatabaseModel extends ModelBase
 
 		if (!empty($option['mWhere'])) {
 			foreach ($option['mWhere'] as $row) {
-				$row['where'] = $this->_plugin->parseCondition($row['where']);
+				$row['where'] = $this->plugin->parseCondition($row['where']);
 				$where[] = $row;
 			}
 		}
 
-		return $where ? $this->_plugin->getWhereSql($where) : OC_EMPTY;
+		return $where ? $this->plugin->getWhereSql($where) : OC_EMPTY;
 	}
 
     /**
@@ -1726,14 +1726,14 @@ abstract class DatabaseModel extends ModelBase
 					$whereData = $this->filterData($whereData);
 				}
 				if ($whereData) {
-					$condition = $this->_plugin->parseCondition($whereData, 'AND', '=', $alias);
+					$condition = $this->plugin->parseCondition($whereData, 'AND', '=', $alias);
 				}
 			} elseif ($whereType == 'between') {
 				$field = $this->filterField($whereData[0]);
 				if($field) {
 					$whereData[0] = $field;
 					$whereData[] = $alias;
-					$condition = call_user_func_array(array($this->_plugin, 'getBetweenSql'), $whereData);
+					$condition = call_user_func_array(array($this->plugin, 'getBetweenSql'), $whereData);
 				}
 			} else {
 				$condition = $this->_getComplexWhere($whereData, $alias);
@@ -1743,8 +1743,8 @@ abstract class DatabaseModel extends ModelBase
 			}
 		}
 
-		$where = $this->_plugin->linkWhere($where);
-		$where = $this->_plugin->wrapWhere($where);
+		$where = $this->plugin->linkWhere($where);
+		$where = $this->plugin->wrapWhere($where);
 
 		return $where;
 	}
@@ -1771,10 +1771,10 @@ abstract class DatabaseModel extends ModelBase
 			}
 			$alias = $unJoined ? false : $alias;
 			$fieldData = (array)$fieldData;
-			$fields[] = $this->_plugin->getFieldsSql($fieldData, $aliasFields, $this->_alias, $alias);
+			$fields[] = $this->plugin->getFieldsSql($fieldData, $aliasFields, $this->_alias, $alias);
 		}
 
-		$sql = $this->_plugin->combineFieldsSql($fields, $aliasFields, $unJoined, $this->_alias);
+		$sql = $this->plugin->combineFieldsSql($fields, $aliasFields, $unJoined, $this->_alias);
 		return $sql;
 	}
 
@@ -1799,8 +1799,8 @@ abstract class DatabaseModel extends ModelBase
 			}
 
 			$on = $this->parseJoinOnSql($alias, $on);
-			$fullname = $this->_plugin->getTableFullname($fullname);
-			$from = $from . $this->_plugin->getJoinSql($type, $fullname, $alias, $on);
+			$fullname = $this->plugin->getTableFullname($fullname);
+			$from = $from . $this->plugin->getJoinSql($type, $fullname, $alias, $on);
 		}
 
 		return $from;
@@ -1817,22 +1817,22 @@ abstract class DatabaseModel extends ModelBase
 		$joinOn = null;
 
 		if ($config) {
-			$foreignField = $this->_plugin->getFieldNameSql($config['foreignKey'], $alias);
-			$primaryField = $this->_plugin->getFieldNameSql($config['primaryKey'], $this->_alias);
+			$foreignField = $this->plugin->getFieldNameSql($config['foreignKey'], $alias);
+			$primaryField = $this->plugin->getFieldNameSql($config['primaryKey'], $this->_alias);
 			$where = array($foreignField => ocSql($primaryField));
-			$condition[] = array('AND', $this->_plugin->parseCondition($where, 'AND', null, $alias));
+			$condition[] = array('AND', $this->plugin->parseCondition($where, 'AND', null, $alias));
 			if (is_array($config['condition'])) {
 				foreach ($config['condition'] as $key => $value) {
 					$sign = null;
 					if (is_array($value)) {
 						list($sign, $value) = $value;
 					}
-					$key = $this->_plugin->getFieldNameSql($key, $alias);
+					$key = $this->plugin->getFieldNameSql($key, $alias);
 					$where = array($key => $value);
-					$condition[] = array('AND', $this->_plugin->parseCondition($where, 'AND', $sign, $alias));
+					$condition[] = array('AND', $this->plugin->parseCondition($where, 'AND', $sign, $alias));
 				}
 			}
-			$joinOn = $this->_plugin->linkWhere($condition);
+			$joinOn = $this->plugin->linkWhere($condition);
 		}
 
 		return $joinOn;
@@ -1861,7 +1861,7 @@ abstract class DatabaseModel extends ModelBase
 		}
 
 		$where = array($field => $value);
-		$cond = $this->_plugin->parseCondition($where, $link, $sign, $alias);
+		$cond = $this->plugin->parseCondition($where, $link, $sign, $alias);
 
 		return $cond;
 	}
