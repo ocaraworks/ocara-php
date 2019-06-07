@@ -93,9 +93,7 @@ class Loader extends Basis
 
         if (ocFileExists($filePath)) {
             include_once($filePath);
-            if (class_exists($newClass, false)
-                || interface_exists($newClass, false)
-            ) {
+            if (class_exists($newClass, false) || interface_exists($newClass, false)) {
                 return true;
             }
         }
@@ -119,7 +117,5 @@ class Loader extends Basis
                 return true;
             }
         }
-
-        ocService('error', true)->show('not_exists_class', array($class));
     }
 }

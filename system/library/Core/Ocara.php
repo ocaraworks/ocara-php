@@ -10,35 +10,15 @@ namespace Ocara\Core;
 
 use Ocara\Core\Basis;
 use Ocara\Core\Container;
-use Ocara\Core\Config;
-use Ocara\Core\Loader;
-use Ocara\Core\ExceptionHandler;
-use Ocara\Core\ApplicationGenerator;
-use Ocara\Core\Application;
+use Ocara\Exceptions\Exception;
 
 defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(true));
-
-//根目录
-defined('OC_PATH') OR define(
-    'OC_PATH', str_replace(DIRECTORY_SEPARATOR, '/', realpath(dirname(dirname(dirname(__DIR__))))) . '/'
-);
-
-require_once (OC_PATH . 'system/functions/utility.php');
-require_once (OC_PATH . 'system/functions/common.php');
-require_once (OC_PATH . 'system/const/basic.php');
-require_once (OC_CORE . 'Basis.php');
-require_once (OC_CORE . 'Base.php');
-require_once (OC_CORE . 'Container.php');
-require_once (OC_CORE . 'Config.php');
-require_once (OC_CORE . 'Loader.php');
-require_once (OC_CORE . 'ExceptionHandler.php');
 
 final class Ocara extends Basis
 {
 	/**
-	 * @var $OC_CONF 	框架信息
-	 * @var $CONF 		公共配置 
-	 * @var $OC_LANG    框架语言数据
+	 * @var $_instance 	实例
+	 * @var $_info 		框架信息
 	 */
 	private static $_instance;
 	private static $_info;
@@ -115,7 +95,7 @@ final class Ocara extends Basis
      * 框架更新
      * @param array $params
      * @return bool
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public static function update(array $params = array())
 	{
