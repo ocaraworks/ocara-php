@@ -16,10 +16,8 @@
         "psr-4": {
 			"Ocara\\":"system/library/",
 			"Ocara\\Functions\\":"system/functions/",
-            "Ocara\\Develop\\":"develop/library/",
-            "Ocara\\Service\\":"library/Service/",
 			"Ocara\\Extension\\":"extension/library/",
-            "Ocara\\Extension\\Functions\\":"extension/functions/"
+            "Ocara\\Extension\\Functions\\":"extension/functions/",
         }
     }
 }

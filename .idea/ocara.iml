@@ -2,12 +2,11 @@
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/system/library/Service" isTestSource="false" packagePrefix="Ocara\Service\" />
       <sourceFolder url="file://$MODULE_DIR$/system/functions" isTestSource="false" packagePrefix="Ocara\Functions\" />
-      <sourceFolder url="file://$MODULE_DIR$/develop/library" isTestSource="false" packagePrefix="Ocara\Develop\" />
       <sourceFolder url="file://$MODULE_DIR$/extension/functions" isTestSource="false" packagePrefix="Ocara\Extension\Functions\" />
       <sourceFolder url="file://$MODULE_DIR$/system/library" isTestSource="false" packagePrefix="Ocara\" />
       <sourceFolder url="file://$MODULE_DIR$/extension/library" isTestSource="false" packagePrefix="Ocara\Extension\" />
-      <sourceFolder url="file://$MODULE_DIR$/library/Service" isTestSource="false" packagePrefix="Ocara\Service\" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
