@@ -9,6 +9,7 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -77,7 +78,7 @@ class StaticPath extends Base
 	 * @param array $data
 	 * @param string $paramsStr
 	 * @return array
-	 * @throws Exception\Exception
+	 * @throws Exception
 	 */
 	private function getParams($offset, $params, $data, $paramsStr)
 	{
@@ -119,7 +120,7 @@ class StaticPath extends Base
 	 * @param string $action
 	 * @param array $data
 	 * @return array
-	 * @throws Exception\Exception\
+	 * @throws Exception
 	 */
 	public function getParamsPathMap($params, $module, $controller, $action, $data)
 	{
@@ -144,14 +145,13 @@ class StaticPath extends Base
 		return array($path, $paramData);
 	}
 
-	/**
-	 * 获取MVC路径
-	 * @param string $module
-	 * @param string $controller
-	 * @param string $action
-	 * @return string
-	 * @throws Exception\Exception
-	 */
+    /**
+     * 获取MVC路径
+     * @param string $module
+     * @param string $controller
+     * @param string $action
+     * @return string
+     */
 	public function getMvcPathMap($module, $controller, $action)
 	{
 		if ($this->route && preg_match('/^{c}[\/-]{a}[\/-]{p}$/i', self::$route)) {

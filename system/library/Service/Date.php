@@ -9,10 +9,11 @@
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
+use Ocara\Exceptions\Exception;
 
 class Date extends ServiceBase
 {
-	protected static $_map = array(
+	protected static $maps = array(
 		'year' 	 => 'year', 
 		'month'  => 'mon', 
 		'day' 	 => 'mday', 
@@ -21,10 +22,12 @@ class Date extends ServiceBase
 		'second' => 'seconds', 
 	);
 
-	/**
-	 * 获取日期信息
-	 * @param string|numric $time
-	 */
+    /**
+     * 获取日期信息
+     * @param string|numeric $time
+     * @return array|string
+     * @throws Exception
+     */
 	public static function getDateInfo($time)
 	{
 		$dateInfo = array();
@@ -33,26 +36,29 @@ class Date extends ServiceBase
 			$dateInfo = self::_getDateInfo($time);
 		} elseif (is_numeric($time)) {
 			$data = getdate($time);
-			foreach (self::$_map as $key => $value) {
+			foreach (self::$maps as $key => $value) {
 				$dateInfo[$key] = $data[$value];
 			}
-		} 
+		}
 		
 		return $dateInfo;
 	}
 
-	/**
-	 * 设置时间参数
-	 * @param string|numric $time
-	 * @param integer $number
-	 * @param string $type
-	 */
+    /**
+     * 设置时间参数
+     * @param string|numric $time
+     * @param integer $number
+     * @param string $type
+     * @return bool|false|string
+     * @return bool|false|string
+     * @throws Exception
+     */
 	public static function set($time, $number, $type)
 	{
 		$dateInfo = self::getDateInfo($time);
 		
 		if ($dateInfo) {
-			if (array_key_exists($type, self::$_map)) {
+			if (array_key_exists($type, self::$maps)) {
 				$dateInfo[$type] = abs($number);
 				self::checkDate($dateInfo);
 			}
@@ -62,35 +68,37 @@ class Date extends ServiceBase
 		return false;
 	}
 
-	/**
-	 * 获取时间参数
-	 * @param string|numric|array $time
-	 * @param string $type
-	 */
+    /**
+     * 获取时间参数
+     * @param string|numric|array $time
+     * @param string $type
+     * @return array|bool|int|mixed|null
+     * @throws Exception
+     */
 	public static function get($time, $type)
 	{
 		$dateInfo = self::getDateInfo($time);
 		
-		if (array_key_exists($type, self::$_map)) {
+		if (array_key_exists($type, self::$maps)) {
 			return ocGet($type, $dateInfo, 0);
 		}
 		
 		return 0;
 	}
 
-	/**
-	 * 增加时间
-	 * @param string|numric|array $time
-	 * @param integer $number
-	 * @param string $type
-	 * @param string $format
-	 */
+    /**增加时间
+     * @param string|numric|array $time
+     * @param integer $number
+     * @param string $type
+     * @param string $format
+     * @return bool|false|string
+     */
 	public static function add($time, $number, $type, $format = null)
 	{
 		$time = self::getDate($time, $format);
 		
 		if ($time) {
-			if (array_key_exists($type, self::$_map)) {
+			if (array_key_exists($type, self::$maps)) {
 				$sign = $number < 0 ? '-' : '+';
 				$number = abs($number);
 				return self::getDate(strtotime("{$time} {$sign} {$number} {$type}"), $format);
@@ -100,11 +108,12 @@ class Date extends ServiceBase
 		return false;
 	}
 
-	/**
-	 * 获取时间字符串
-	 * @param string|numric|array $time
-	 * @param string $format
-	 */
+    /**
+     * 获取时间字符串
+     * @param string|numeric|array $time
+     * @param string $format
+     * @return false|string
+     */
 	public static function getDate($time, $format = null)
 	{
 		$timestamp = self::getTimestamp($time);
@@ -113,12 +122,13 @@ class Date extends ServiceBase
 		return date($format . ' H:i:s', $timestamp);
 	}
 
-	/**
-	 * 获取时间间隔
-	 * @param string|numric $startTime
-	 * @param string|numric $endTime
-	 * @param string $type
-	 */
+    /**
+     * 获取时间间隔
+     * @param string|numric $startTime
+     * @param string|numric $endTime
+     * @param string $type
+     * @return array
+     */
 	public static function getInterval($startTime, $endTime, $type = null)
 	{
 		$start = self::getTimestamp($startTime);
@@ -137,17 +147,18 @@ class Date extends ServiceBase
 		} else 
 			list($days, $hours, $minutes, $seconds) = array_fill(0, 4, 0);
 		
-		if (array_key_exists(rtrim($type, 's'), self::$_map)) {
+		if (array_key_exists(rtrim($type, 's'), self::$maps)) {
 			return $$type;
 		} else {
 			return compact('days', 'hours', 'minutes', 'seconds');
 		}
 	}
 
-	/**
-	 * 生成时间戳
-	 * @param string|numric|array $time
-	 */
+    /**
+     * 生成时间戳
+     * @param string|numric|array $time
+     * @return false|int
+     */
 	public static function getTimestamp($time)
 	{
 		if (is_numeric($time)) {
@@ -164,20 +175,23 @@ class Date extends ServiceBase
 		return 0;
 	}
 
-	/**
-	 * 是否是闰年
-	 * @param integer $year
-	 */
+    /**
+     * 是否是闰年
+     * @param integer $year
+     * @return bool
+     */
 	public static function isYun($year)
 	{
 		return $year % 4 == 0 && $year % 100 != 0 || $year % 400 == 0;
 	}
 
-	/**
-	 * 内部函数-根据时间字符串获取时间参数
-	 * @param string $string
-	 * @param string $format
-	 */
+    /**
+     * 内部函数-根据时间字符串获取时间参数
+     * @param string $string
+     * @param string $format
+     * @return array|mixed
+     * @throws Exception
+     */
 	protected static function _getDateInfo($string, $format = null)
 	{
 		if (!is_string($string)) return $string;
@@ -202,12 +216,14 @@ class Date extends ServiceBase
 		
 		return array();
 	}
-	
-	/**
-	 * 检测日期
-	 * @param array $dateInfo
-	 */
-	public static function checkDate($dateInfo)
+
+    /**
+     * 检测日期
+     * @param array $dateInfo
+     * @return mixed
+     * @throws Exception
+     */
+	public static function checkDate(array $dateInfo)
 	{
 		extract($dateInfo);
 		

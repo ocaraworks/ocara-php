@@ -8,20 +8,24 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
-use Ocara\Core\Basis;
 use Ocara\Core\Container;
 use Ocara\Exceptions\Exception;
 
-defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(true));
+//根目录
+defined('OC_PATH') OR define(
+    'OC_PATH', str_replace("\\", DIRECTORY_SEPARATOR, realpath(dirname(dirname(dirname(__DIR__))))) . DIRECTORY_SEPARATOR
+);
 
-final class Ocara extends Basis
+defined('OC_EXECUTE_START_TIME') OR define('OC_EXECUTE_START_TIME', microtime(true));
+
+final class Ocara
 {
 	/**
-	 * @var $_instance 	实例
-	 * @var $_info 		框架信息
+	 * @var $instance 	实例
+	 * @var $info 		框架信息
 	 */
-	private static $_instance;
-	private static $_info;
+	private static $instance;
+	private static $info;
 
 	private function __clone(){}
 	private function __construct(){}
@@ -31,11 +35,11 @@ final class Ocara extends Basis
 	 */
 	public static function getInstance()
 	{
-		if (self::$_instance === null) {
-			self::$_instance = new self();
+		if (self::$instance === null) {
+			self::$instance = new self();
 			self::register();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
@@ -43,6 +47,17 @@ final class Ocara extends Basis
 	 */
 	public static function register()
 	{
+	    ocImport(array(
+            OC_PATH . 'system/functions/utility.php',
+            OC_PATH . 'system/functions/common.php',
+            OC_PATH . 'system/const/basic.php',
+            OC_CORE . 'Basic.php',
+            OC_CORE . 'Base.php',
+            OC_CORE . 'Container.php',
+            OC_CORE . 'Config.php',
+            OC_CORE . 'Loader.php',
+        ));
+
         $container = Container::getDefault()
             ->bindSingleton('config', '\Ocara\Core\Config')
             ->bindSingleton('loader', '\Ocara\Core\Loader')
@@ -111,22 +126,22 @@ final class Ocara extends Basis
      */
 	public static function getInfo($key = null)
 	{
-		if (is_null(self::$_info)) {
+		if (is_null(self::$info)) {
 			$path = OC_SYS . 'data/framework.php';
 			if (ocFileExists($path)) {
 				include($path);
 			}
 			if (isset($FRAMEWORK_INFO) && is_array($FRAMEWORK_INFO)) {
-				self::$_info = $FRAMEWORK_INFO;
+				self::$info = $FRAMEWORK_INFO;
 			} else {
-				self::$_info = array();
+				self::$info = array();
 			}
 		}
 
 		if (isset($key)) {
-			return ocGet($key, self::$_info);
+			return ocGet($key, self::$info);
 		}
 
-		return self::$_info;
+		return self::$info;
 	}
 }

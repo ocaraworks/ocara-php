@@ -12,11 +12,11 @@ use \Iterator;
 
 class ObjectRecords implements Iterator
 {
-    private $_model;
-    private $_debug;
-    private $_position = 0;
-    private $_length = 0;
-    private $_data = array();
+    private $model;
+    private $debug;
+    private $position = 0;
+    private $length = 0;
+    private $data = array();
 
     /**
      * 初始化
@@ -27,10 +27,10 @@ class ObjectRecords implements Iterator
      */
     public function __construct($model, array $data, $debug = false)
     {
-        $this->_model = $model;
-        $this->_debug = $debug;
-        $this->_data = $data;
-        $this->_length = count($data);
+        $this->model = $model;
+        $this->debug = $debug;
+        $this->data = $data;
+        $this->length = count($data);
     }
 
     /**
@@ -38,7 +38,7 @@ class ObjectRecords implements Iterator
      */
     function rewind()
     {
-         $this->_position = 0;
+         $this->position = 0;
     }
 
     /**
@@ -47,8 +47,8 @@ class ObjectRecords implements Iterator
      */
     function current()
     {
-        $data = $this->_data[$this->key()];
-        $class = $this->_model;
+        $data = $this->data[$this->key()];
+        $class = $this->model;
 
         $model = new $class();
         $result = $model->data($data);
@@ -62,7 +62,7 @@ class ObjectRecords implements Iterator
      */
     function key()
     {
-        return $this->_position;
+        return $this->position;
     }
 
     /**
@@ -70,7 +70,7 @@ class ObjectRecords implements Iterator
      */
     function next()
     {
-        $this->_position++;
+        $this->position++;
     }
 
     /**
@@ -79,7 +79,7 @@ class ObjectRecords implements Iterator
      */
     function valid()
     {
-        $isValid = array_key_exists($this->key(), $this->_data);
+        $isValid = array_key_exists($this->key(), $this->data);
         return $isValid;
     }
 
@@ -89,6 +89,6 @@ class ObjectRecords implements Iterator
      */
     public function toArray()
     {
-        return $this->_data;
+        return $this->data;
     }
 }

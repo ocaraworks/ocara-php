@@ -11,19 +11,20 @@ namespace Ocara\Core;
 use Ocara\Core\Base;
 use Ocara\Core\Form;
 use Ocara\Core\ModelBase;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
 class Validator extends Base
 {
-    private $_errorExists;
-    private $_errorSource;
-    private $_error;
-    private $_errorLocation;
-    private $_validate;
+    private $errorExists;
+    private $errorSource;
+    private $error;
+    private $errorLocation;
+    private $validate;
 
-    protected $_rules = array();
-    protected $_lang = array();
+    protected $rules = array();
+    protected $lang = array();
     protected $models = array();
     protected $ignoreFields = array();
     protected $ignoreModels = array();
@@ -36,20 +37,20 @@ class Validator extends Base
         if (!is_object($validate)) {
             $validate = new $validate();
         }
-        $this->_validate = $validate;
+        $this->validate = $validate;
     }
 
     /**
      * 表单验证
      * @param array $data
      * @return bool
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function validate(array $data)
     {
         $result = true;
-        $rules = $this->_rules;
-        $lang = array_merge(ocService()->lang->get(), $this->_lang);
+        $rules = $this->rules;
+        $lang = array_merge(ocService()->lang->get(), $this->lang);
 
         foreach ($this->models as $model) {
             if (!in_array($model, $this->ignoreModels)) {
@@ -93,9 +94,9 @@ class Validator extends Base
     public function addRule($field, $rule = null)
     {
         if (is_array($field)) {
-            $this->_rules = array_merge($this->_rules, $field);
+            $this->rules = array_merge($this->rules, $field);
         } else {
-            $this->_rules[$field] = $rule;
+            $this->rules[$field] = $rule;
         }
         return $this;
     }
@@ -132,11 +133,11 @@ class Validator extends Base
 
     /**
      * 忽略字段
-     * @param $field
+     * @param $class
      */
     public function ignoreModel($class)
     {
-        $this->ignoreModels[] = $field;
+        $this->ignoreModels[] = $class;
     }
 
 	/**
@@ -148,9 +149,9 @@ class Validator extends Base
 	public function addLang($key, $value = null)
 	{
         if (is_array($key)) {
-            $this->_lang = array_merge($this->_lang, $key);
+            $this->lang = array_merge($this->lang, $key);
         } else {
-            $this->_lang[$key] = $value;
+            $this->lang[$key] = $value;
         }
 		return $this;
 	}
@@ -186,7 +187,7 @@ class Validator extends Base
 			for ($i = 0; $i < $count; $i++) {
 				$val   = $value[$i];
 				$args  = array_merge(array($val), $params);
-				$error = call_user_func_array(array(&$this->_validate, $method), $args);
+				$error = call_user_func_array(array(&$this->validate, $method), $args);
 				if ($error) {
 					$this->prepareError($error, $field, $val, $i, $params);
 					return false;
@@ -203,7 +204,6 @@ class Validator extends Base
      * @param $value
      * @param $expression
      * @return bool
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function expression($field, $value, $expression)
 	{
@@ -216,7 +216,7 @@ class Validator extends Base
 			$newError 	= ocGet(1, $expression);
 
 			$error = call_user_func_array(
-				array(&$this->_validate, 'regExp'),
+				array(&$this->validate, 'regExp'),
 				array($val, $rule)
 			);
 
@@ -230,14 +230,13 @@ class Validator extends Base
 		return true;
 	}
 
-	/**
-	 * 回调函数验证
-	 * @param string $field
-	 * @param string $value
-	 * @param string|array $callback
-	 * @return bool
-	 * @throws Exception\Exception
-	 */
+    /**
+     * 回调函数验证
+     * @param string $field
+     * @param string $value
+     * @param string|array $callback
+     * @return bool
+     */
 	public function callback($field, $value, $callback)
 	{
 		if(empty($callback)) {
@@ -262,7 +261,7 @@ class Validator extends Base
 	 */
 	public function errorExists()
 	{
-		return $this->_errorExists;
+		return $this->errorExists;
 	}
 
 	/**
@@ -270,7 +269,7 @@ class Validator extends Base
 	 */
 	public function getError()
 	{
-		return $this->_error;
+		return $this->error;
 	}
 	
 	/**
@@ -278,7 +277,7 @@ class Validator extends Base
 	 */
 	public function getErrorSource()
 	{
-		return $this->_errorSource;
+		return $this->errorSource;
 	}
 	
 	/**
@@ -293,7 +292,7 @@ class Validator extends Base
 	{
 		list($error, $message) = $errorData;
 		$params = array_values($params);
-		$this->_errorLocation = array($error, $message, $field, $value, $index, $params);
+		$this->errorLocation = array($error, $message, $field, $value, $index, $params);
 	}
 
     /**
@@ -302,7 +301,7 @@ class Validator extends Base
      */
 	public function setError(array $lang)
 	{
-		list($error, $message, $field, $value, $index, $params) = $this->_errorLocation;
+		list($error, $message, $field, $value, $index, $params) = $this->errorLocation;
 		$desc = ocGet($field, $lang, $field);
 
 		if (is_array($error)) {
@@ -318,8 +317,8 @@ class Validator extends Base
 			str_ireplace('{'.($key + 1).'}', $value, $message);
 		}
 
-		$this->_errorExists	= true;
-		$this->_error = $error;
-		$this->_errorSource = array($field, $value, $index);
+		$this->errorExists	= true;
+		$this->error = $error;
+		$this->errorSource = array($field, $value, $index);
 	}
 }

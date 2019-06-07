@@ -15,9 +15,9 @@ defined('OC_PATH') or exit('Forbidden!');
 abstract class Basis
 {
 	/**
-	 * @var $_properties 自定义属性
+	 * @var $properties 自定义属性
 	 */
-	private $_properties = array();
+	private $properties = array();
 
 	/**
 	 * 返回当前类名（去除命名空间）
@@ -68,7 +68,7 @@ abstract class Basis
             }
         }
 
-        $this->_properties = array();
+        $this->properties = array();
     }
 
     /**
@@ -78,7 +78,7 @@ abstract class Basis
     public function toArray()
     {
         $properties = json_decode(json_encode($this), true);
-        return array_merge($properties, $this->_properties);
+        return array_merge($properties, $this->properties);
     }
 
     /**
@@ -97,7 +97,7 @@ abstract class Basis
 	public function __isset($property)
 	{
         if (!property_exists($this, $property)) {
-            return isset($this->_properties[$property]);
+            return isset($this->properties[$property]);
         }
 
         return false;
@@ -112,8 +112,8 @@ abstract class Basis
 	public function __get($property)
 	{
 	    if (!property_exists($this, $property)) {
-            if (array_key_exists($property, $this->_properties)) {
-                $value = $this->_properties[$property];
+            if (array_key_exists($property, $this->properties)) {
+                $value = $this->properties[$property];
                 return $value;
             } else {
                 $message = sprintf('Not Found property %s::$%s', self::getClass(), $property);
@@ -124,32 +124,35 @@ abstract class Basis
         $this->_throwAccessPropertyError($property);
 	}
 
-	/**
-	 * 魔术方法-在给不可访问属性赋值时
-	 * @param string $property
-	 * @param mxied $value
-	 * @return mixed
-	 */
+    /**
+     * 在给不可访问属性赋值时
+     * @param $property
+     * @param $value
+     * @return bool
+     * @throws Exception
+     */
 	public function __set($property, $value)
 	{
 	    if (!property_exists($this, $property)) {
-            $this->_properties[$property] = $value;
+            $this->properties[$property] = $value;
             return true;
         }
 
         $this->_throwAccessPropertyError($property);
 	}
 
-	/**
-	 * 魔术方法-当对不可访问属性调用 unset() 时
-	 * @param string $property
-	 */
+    /**
+     * 当对不可访问属性调用 unset() 时
+     * @param $property
+     * @return bool
+     * @throws Exception
+     */
 	public function __unset($property)
 	{
         if (!property_exists($this, $property)) {
-            if (array_key_exists($property, $this->_properties)) {
-                $this->_properties[$property] = null;
-                unset($this->_properties[$property]);
+            if (array_key_exists($property, $this->properties)) {
+                $this->properties[$property] = null;
+                unset($this->properties[$property]);
                 return true;
             }
         }

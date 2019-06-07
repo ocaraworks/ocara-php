@@ -9,12 +9,13 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
 class Filter extends Base
 {
-	protected $_jsEvents;
+	protected $jsEvents;
 
 	/**
 	 * 初始化
@@ -22,17 +23,18 @@ class Filter extends Base
 	 */
 	public function __construct()
 	{
-		$this->_jsEvents = implode('|', ocConfig('JS_EVENTS', array()));
+		$this->jsEvents = implode('|', ocConfig('JS_EVENTS', array()));
 	}
 
-	/**
-	 * 过滤SQL语句
-	 * @param string|array $content
-	 * @param bool $addSlashes
-	 * @param array $keywords
-	 * @param bool $equal
-	 * @return array|bool|mixed|string
-	 */
+    /**
+     * 过滤SQL语句
+     * @param string|array $content
+     * @param bool $addSlashes
+     * @param array $keywords
+     * @param bool $equal
+     * @return array|bool|mixed|string
+     * @throws Exception
+     */
 	public function sql($content, $addSlashes = true, array $keywords = array(), $equal = false)
 	{
 		if (is_array($content)) {
@@ -113,7 +115,7 @@ class Filter extends Base
 			$content = preg_replace('/<object[^>]*>.*<\/object>/i', OC_EMPTY, $content);
 			$content = preg_replace('/javascript:/i', OC_EMPTY, $content);
 
-			$expression = '/(on('.$this->_jsEvents.'))|(('.$this->_jsEvents.')\((\s*function\()?)/i';
+			$expression = '/(on('.$this->jsEvents.'))|(('.$this->jsEvents.')\((\s*function\()?)/i';
 			$content = preg_replace($expression, OC_EMPTY, $content);
 			
 			return $content;

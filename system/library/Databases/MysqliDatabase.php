@@ -16,18 +16,18 @@ use Ocara\Exceptions\Exception;
 class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInterface
 {
 	/**
-	 * @var $_pdoName pdo扩展名
-	 * @var $_defaultPort 默认数据库端口
+	 * @var $pdoName pdo扩展名
+	 * @var $defaultPort 默认数据库端口
 	 */
-	protected $_pdoName = 'pdo_mysql';
-	protected $_defaultPort = '3306';
-	protected $_defaultFields = '*';
+	protected $pdoName = 'pdo_mysql';
+	protected $defaultPort = '3306';
+	protected $defaultFields = '*';
 
 	/**
 	 * SQL过滤关键字
 	 * @var array
 	 */
-	protected $_keywords = array(
+	protected $keywords = array(
 		'select', 'insert', 'update', 'replace',
 		'join', 'delete', 'union', 'load_file',
 		'outfile'
@@ -37,7 +37,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	 * 不加引号的字段类型
 	 * @var array
 	 */
-	protected static $_quoteBackList = array(
+	protected static $quoteBackList = array(
 		'tinyint', 	'smallint',  'int',
 		'decimal',  'timestamp', 'float',
 		'bigint', 	'mediumint', 'double',
@@ -51,7 +51,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	 */
 	public function getPdoParams($config)
 	{
-		$config['port'] = $config['port'] ? : $this->_defaultPort;
+		$config['port'] = $config['port'] ? : $this->defaultPort;
 		$params = array(
 			'dsn'      => "mysql:dbname={$config['name']};host={$config['host']};port={$config['port']}",
 			'username' => $config['username'],
@@ -120,7 +120,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
      * 选择数据库
      * @param string $name
      * @return array|bool|mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public function selectDatabase($name)
 	{
@@ -129,7 +129,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 			return $this->query($sqlData);
 		}
 
-		return $this->_plugin->select_db($name);
+		return $this->plugin->select_db($name);
 	}
 
 	/**
@@ -141,7 +141,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	{
 		foreach ($data as $key => $value) {
 			$type = 'string';
-			if (isset($fields[$key]) && in_array($fields[$key]['type'], self::$_quoteBackList)) {
+			if (isset($fields[$key]) && in_array($fields[$key]['type'], self::$quoteBackList)) {
 				$type = $fields[$key]['type'];
 				if ($type == 'float') {
 					$type = 'float';

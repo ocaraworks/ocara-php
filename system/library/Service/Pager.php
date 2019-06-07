@@ -9,6 +9,7 @@
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -28,7 +29,7 @@ class Pager extends ServiceBase
 	public $attr;
 	
 	public $page;
-	public $previosPage;
+	public $previousPage;
 	public $nextPage;
 	public $startPage;
 	public $endPage;
@@ -36,12 +37,11 @@ class Pager extends ServiceBase
 	
 	public $actClass = 'current';
 
-	/**
-	 * 析构函数
-	 * @param string  $pageParam
-	 * @param integer $perPage
-	 * @param integer $perShow
-	 */
+    /**
+     * 析构函数
+     * Pager constructor.
+     * @throws Exception
+     */
 	public function __construct()
 	{
 		$pageParam = ocConfig(array('PAGE', 'page_param'), null);
@@ -51,13 +51,14 @@ class Pager extends ServiceBase
 		$this->config($pageParam, $perPage, $perShow);
 	}
 
-	/**
-	 * 分页设置
-	 * @param string $pageParam
-	 * @param integer $perPage
-	 * @param integer $perShow
-	 */
-	public function config($pageParam = null, $perPage = false, $perShow = false)
+    /**
+     * 分页设置
+     * @param string $pageParam
+     * @param int $perPage
+     * @param int $perShow
+     * @return $this
+     */
+	public function config($pageParam = null, $perPage = null, $perShow = null)
 	{
 		if ($pageParam) {
 			$this->setPageParam($pageParam);
@@ -74,10 +75,11 @@ class Pager extends ServiceBase
 		return $this;
 	}
 
-	/**
-	 * 设置当前页
-	 * @param integer $page
-	 */
+    /**
+     * 设置当前页
+     * @param int $page
+     * @return $this
+     */
 	public function setPage($page)
 	{
 		$this->page = $page;
@@ -87,6 +89,7 @@ class Pager extends ServiceBase
     /**
      * 设置分页传递参数名称
      * @param string $pageParam
+     * @return $this
      */
     public function setPageParam($pageParam)
     {
@@ -94,52 +97,57 @@ class Pager extends ServiceBase
         return $this;
     }
 
-	/**
-	 * 设置每页显示多少条记录
-	 * @param integer $perPage
-	 */
+    /**
+     * 设置每页显示多少条记录
+     * @param $perPage
+     * @return $this
+     */
 	public function setPerPage($perPage)
 	{
         $this->perPage = $perPage ? : 10;
 		return $this;
 	}
 
-	/**
-	 * 设置每次显示多少页
-	 * @param integer $perShow
-	 */
+    /**
+     * 设置每次显示多少页
+     * @param $perShow
+     * @return $this
+     */
 	public function setPerShow($perShow)
 	{
         $this->perShow = $perShow ? : 10;
 		return $this;
 	}
 
-	/**
-	 * 设置分页URL
-	 * @param string|array $url
-	 */
+    /**
+     * 设置分页URL
+     * @param $url
+     * @return $this
+     */
 	public function setUrl($url)
 	{
 		$this->url = $url;
 		return $this;
 	}
 
-	/**
-	 * 设置当前页CSS样式
-	 * @param string $class
-	 */
+    /**
+     * 设置当前页CSS样式
+     * @param $class
+     * @return $this
+     */
 	public function setActClass($class)
 	{
 		$this->actClass = $class;
 		return $this;
 	}
 
-	/**
-	 * 形成页码的主函数
-	 * @param integer $total
-	 * @param string|array $url
-	 * @param array $attr
-	 */
+    /**
+     * 形成页码的主函数
+     * @param $total
+     * @param $url
+     * @param array $attr
+     * @return $this|bool
+     */
 	public function setHtml($total, $url, array $attr = array())
 	{
 		if ($total <= $this->perPage) {
@@ -189,9 +197,10 @@ class Pager extends ServiceBase
 		return $this;
 	}
 
-	/**
-	 * 计算分页信息
-	 */
+    /**
+     * 计算分页信息
+     * @return array
+     */
 	public function getInfo()
 	{
 	    if (!is_numeric($this->page)){
@@ -206,9 +215,10 @@ class Pager extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 生成HTML
-	 */
+    /**
+     * 生成HTML
+     * @return string
+     */
 	protected function setPageHtml()
 	{
 		$html = null;
@@ -217,8 +227,8 @@ class Pager extends ServiceBase
 			if ($this->startPage > 1) {
 				$html .= $this->getLink(1, self::getMessage('first_page'));
 			}
-			$this->previosPage = $this->page - 1;
-			$html .= $this->getLink($this->previosPage, self::getMessage('previos_page'));
+			$this->previousPage = $this->page - 1;
+			$html .= $this->getLink($this->previousPage, self::getMessage('previos_page'));
 		}
 		
 		$html .= $this->getPages();
@@ -235,9 +245,10 @@ class Pager extends ServiceBase
 		return $this->html = $html;
 	}
 
-	/**
-	 * 生成数字页码HTML
-	 */
+    /**
+     * 生成数字页码HTML
+     * @return string|null
+     */
 	protected function getPages()
 	{
 		$str = null;
@@ -249,12 +260,13 @@ class Pager extends ServiceBase
 		return $str;
 	}
 
-	/**
-	 * 获取超链接HTML
-	 * @param integer $page
-	 * @param string $text
-	 * @param string $class
-	 */
+    /**
+     * 获取超链接HTML
+     * @param $page
+     * @param $text
+     * @param null $class
+     * @return string
+     */
 	public function getLink($page, $text, $class = null)
 	{
 		$attr = $this->attr;
@@ -274,10 +286,11 @@ class Pager extends ServiceBase
 		return sprintf('<a%s>%s</a>', $str, $text);
 	}
 
-	/**
-	 * 获取页码链接URL
-	 * @param integer $pageNumber
-	 */
+    /**
+     * 获取页码链接URL
+     * @param $pageNumber
+     * @return mixed|string|null
+     */
 	protected function getUrl($pageNumber)
 	{
 		if (is_string($this->url)) {

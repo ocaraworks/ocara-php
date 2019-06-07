@@ -14,12 +14,12 @@ use Ocara\Interfaces\Middleware;
 
 class Event extends Basis implements EventInterface
 {
-    protected $_name;
-    protected $_running;
-    protected $_registry;
-    protected $_defaultHandler;
+    protected $name;
+    protected $running;
+    protected $registry;
+    protected $defaultHandler;
 
-    protected $_handlers = array();
+    protected $handlers = array();
 
     /**
      * 添加事件处理器
@@ -43,7 +43,7 @@ class Event extends Basis implements EventInterface
      */
     public function setDefault($callback)
     {
-        $this->_defaultHandler = $callback;
+        $this->defaultHandler = $callback;
         return $this;
     }
 
@@ -53,7 +53,7 @@ class Event extends Basis implements EventInterface
      */
     public function setName($name)
     {
-        $this->_name = $name;
+        $this->name = $name;
     }
 
     /**
@@ -89,15 +89,15 @@ class Event extends Basis implements EventInterface
             }
         }
 
-        $count = count($this->_handlers);
-        $this->_handlers[$count] = array(
+        $count = count($this->handlers);
+        $this->handlers[$count] = array(
             'callback' => $callback,
             'index' => $count,
             'priority' => $priority,
         );
 
         if ($name) {
-            $this->_registry[$name] = $count;
+            $this->registry[$name] = $count;
         }
     }
 
@@ -111,7 +111,7 @@ class Event extends Basis implements EventInterface
     {
         $key = $this->_getKey($name);
         if (is_integer($key)) {
-            $this->_handlers[$name] = $callback;
+            $this->handlers[$name] = $callback;
         }
 
         return $this;
@@ -127,12 +127,12 @@ class Event extends Basis implements EventInterface
         $key = null;
 
         if (is_string($name)) {
-            if (isset($this->_registry[$name])) {
-                $key = $this->_registry[$name];
+            if (isset($this->registry[$name])) {
+                $key = $this->registry[$name];
             }
         } elseif(is_integer($name)) {
             $name = $name - 1;
-            if (isset($this->_handlers[$name])) {
+            if (isset($this->handlers[$name])) {
                 $key = $name;
             }
         }
@@ -150,7 +150,7 @@ class Event extends Basis implements EventInterface
     {
         $key = $this->_getKey($name);
         if (is_integer($key)) {
-            $this->_handlers[$key]['priority'] = $priority;
+            $this->handlers[$key]['priority'] = $priority;
         }
 
         return $this;
@@ -165,7 +165,7 @@ class Event extends Basis implements EventInterface
     {
         $key = $this->_getKey($name);
         if (is_integer($key)) {
-            ocDel($this->_handlers, $key);
+            ocDel($this->handlers, $key);
         }
 
         return $this;
@@ -181,12 +181,12 @@ class Event extends Basis implements EventInterface
         if (isset($name)) {
             $key = $this->_getKey($name);
             if (is_integer($key)) {
-                return $this->_handlers[$name];
+                return $this->handlers[$name];
             }
             return null;
         }
 
-        return $this->_handlers;
+        return $this->handlers;
     }
 
     /**
@@ -201,7 +201,7 @@ class Event extends Basis implements EventInterface
             return is_integer($key);
         }
 
-        return !empty($this->_handlers);
+        return !empty($this->handlers);
     }
 
     /**
@@ -210,7 +210,7 @@ class Event extends Basis implements EventInterface
      */
     public function clear()
     {
-        $this->_handlers = array();
+        $this->handlers = array();
         return $this;
     }
 
@@ -225,24 +225,24 @@ class Event extends Basis implements EventInterface
         $params = array_merge($params, array($this, $eventObject));
         $results = array();
 
-        if ($this->_handlers) {
-            $handlers = $this->_handlers;
+        if ($this->handlers) {
+            $handlers = $this->handlers;
             array_multisort(array_column(
                 $handlers, 'priority'), SORT_DESC,
                 array_column($handlers, 'index'), SORT_ASC,
                 $handlers
             );
 
-            $this->_running = true;
+            $this->running = true;
             foreach ($handlers as $key => $row) {
                 $callback = $row['callback'];
-                if ($this->_running) {
+                if ($this->running) {
                     $results[$key] = $this->_runCallback($callback, $params);
                 }
             }
-        } elseif ($this->_defaultHandler) {
-            $this->_running = true;
-            $results[] = $this->_runCallback($this->_defaultHandler, $params);
+        } elseif ($this->defaultHandler) {
+            $this->running = true;
+            $results[] = $this->_runCallback($this->defaultHandler, $params);
         }
 
         $this->stop();
@@ -269,7 +269,7 @@ class Event extends Basis implements EventInterface
      */
     public function stop()
     {
-        $this->_running = false;
+        $this->running = false;
         return $this;
     }
 
@@ -279,6 +279,6 @@ class Event extends Basis implements EventInterface
      */
     public function isRunning()
     {
-        return $this->_running;
+        return $this->running;
     }
 }

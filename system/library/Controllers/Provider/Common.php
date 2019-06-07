@@ -22,7 +22,7 @@ class Common extends Base
     {
         $this->session->boot();
         $this->isSendApiErrorCode(false);
-        $this->_plugin = $this->view;
+        $this->plugin = $this->view;
     }
 
     /**

@@ -48,7 +48,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
         $this->bindEvents($this);
         $this->session->boot();
         $this->formManager->setRoute($this->getRoute());
-        $this->_plugin = $this->view;
+        $this->plugin = $this->view;
 
         $this->view->assign('route', $this->getRoute());
 
@@ -62,7 +62,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      */
     public function register()
     {
-        $this->_container->bindSingleton('db', function(){
+        $this->container->bindSingleton('db', function(){
             DatabaseFactory::create();
         });
 
@@ -72,7 +72,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
         );
 
         foreach ($services as $name => $class) {
-            $this->_container->bindSingleton($name, $class, array());
+            $this->container->bindSingleton($name, $class, array());
         }
     }
 

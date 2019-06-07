@@ -23,7 +23,7 @@ abstract class DatabaseEntity extends DatabaseModel
     const EVENT_AFTER_DELETE = 'afterDelete';
 
     /**
-     * ÐÂ½¨ORMÄ£ÐÍ
+     * ï¿½Â½ï¿½ORMÄ£ï¿½ï¿½
      * @param array $data
      * @return $this
      * @throws Exception
@@ -39,7 +39,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ÇåÀíORMÊý¾Ý
+     * ï¿½ï¿½ï¿½ï¿½ORMï¿½ï¿½ï¿½ï¿½
      */
     public function clearData()
     {
@@ -49,7 +49,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ÇåÀíModelµÄSQLºÍORMÊý¾Ý
+     * ï¿½ï¿½ï¿½ï¿½Modelï¿½ï¿½SQLï¿½ï¿½ORMï¿½ï¿½ï¿½ï¿½
      * @return $this
      */
     public function clearAll()
@@ -60,7 +60,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * »ñÈ¡Ä£ÐÍËùÔÚ×ÓÄ¿Â¼
+     * ï¿½ï¿½È¡Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿Â¼
      * @return array|mixed
      */
     public function getModelLocation()
@@ -69,7 +69,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * »ñÈ¡¾ÉÖµ
+     * ï¿½ï¿½È¡ï¿½ï¿½Öµ
      * @param null $key
      * @return array|mixed
      */
@@ -85,7 +85,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * »ñÈ¡ÒÑÐÞ¸Ä×Ö¶ÎÊý¾Ý
+     * ï¿½ï¿½È¡ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½
      * @param null $key
      * @return array|mixed
      */
@@ -103,7 +103,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ÊÇ·ñÓÐ¸Ä±äÄ³¸ö×Ö¶Î
+     * ï¿½Ç·ï¿½ï¿½Ð¸Ä±ï¿½Ä³ï¿½ï¿½ï¿½Ö¶ï¿½
      * @param string $key
      * @return bool
      */
@@ -116,7 +116,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ÊÇ·ñÓÐ¸Ä±äÄ³¸ö×Ö¶Î
+     * ï¿½Ç·ï¿½ï¿½Ð¸Ä±ï¿½Ä³ï¿½ï¿½ï¿½Ö¶ï¿½
      * @param string $key
      * @return bool
      */
@@ -129,7 +129,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * °´Ö÷¼üÑ¡ÔñÒ»ÐÐ¼ÇÂ¼
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½Ò»ï¿½Ð¼ï¿½Â¼
      * @param $values
      * @param null $options
      * @param bool $debug
@@ -144,7 +144,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ÐÂ½¨¼ÇÂ¼
+     * ï¿½Â½ï¿½ï¿½ï¿½Â¼
      * @param array $data
      * @param bool $debug
      * @return bool
@@ -165,7 +165,7 @@ abstract class DatabaseEntity extends DatabaseModel
         $result = parent::create($this->toArray(), $debug);
 
         if (!$debug) {
-            $this->_insertId = $this->_plugin->getInsertId();
+            $this->_insertId = $this->plugin->getInsertId();
             if ($this->_autoIncrementField) {
                 $autoIncrementField = $this->_autoIncrementField;
                 $this->$autoIncrementField = $this->_insertId;
@@ -183,7 +183,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ¸üÐÂ¼ÇÂ¼
+     * ï¿½ï¿½ï¿½Â¼ï¿½Â¼
      * @param array $data
      * @param bool $debug
      * @return bool
@@ -223,7 +223,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ±£´æÊý¾Ý£¨ORMÄ£ÐÍ£©
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ORMÄ£ï¿½Í£ï¿½
      * @param array $data
      * @param bool $debug
      * @return bool
@@ -239,7 +239,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * É¾³ý¼ÇÂ¼
+     * É¾ï¿½ï¿½ï¿½ï¿½Â¼
      * @param bool $debug
      * @return bool
      * @throws Exception
@@ -264,7 +264,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ¹ýÂËÖ÷¼ü×Ö¶Î
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½
      * @param $data
      * @return array
      */
@@ -278,7 +278,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * »ñÈ¡Ö÷¼üÌõ¼þ
+     * ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      * @param $condition
      * @return array
      * @throws Exception
@@ -313,7 +313,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ¹ØÁªÄ£ÐÍ²éÑ¯
+     * ï¿½ï¿½ï¿½ï¿½Ä£ï¿½Í²ï¿½Ñ¯
      * @param $alias
      * @return null|ObjectRecords
      */
@@ -339,7 +339,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ¹ØÁªÄ£ÐÍÊý¾Ý±£´æ
+     * ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½
      * @return bool
      * @throws Exception
      */
@@ -380,7 +380,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * »ñÈ¡¹ØÁªÄ£ÐÍ
+     * ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
      * @param string $key
      * @return mixed
      */
@@ -397,7 +397,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ÉèÖÃÎ´¶¨ÒåµÄÊôÐÔ
+     * ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      * @param string $name
      * @param mxied $value
      * @return mixed|void

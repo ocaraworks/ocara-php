@@ -39,7 +39,7 @@ class Form extends Base
 	public function __construct($name)
 	{
 		$this->_sign = $name;
-		$this->_plugin = ocService()->html;
+		$this->plugin = ocService()->html;
 
 		$this->init();
 	}
@@ -127,9 +127,9 @@ class Form extends Base
 	public function begin()
 	{
 		list($tokenTag, $tokenValue) = $this->_tokenInfo;
-		$tokenElement = $this->_plugin->input('hidden', $tokenTag, $tokenValue);
+		$tokenElement = $this->plugin->input('hidden', $tokenTag, $tokenValue);
 
-		$formElement = $this->_plugin->createElement('form', $this->_attributes, null);
+		$formElement = $this->plugin->createElement('form', $this->_attributes, null);
         $begin = $formElement . PHP_EOL . "\t" . $tokenElement;
 
 		$this->loadModel();
@@ -154,7 +154,7 @@ class Form extends Base
 	 */
 	public function end()
 	{
-		return $this->_plugin->createEndHtmlTag('form') . PHP_EOL;
+		return $this->plugin->createEndHtmlTag('form') . PHP_EOL;
 	}
 
 	/**
@@ -270,8 +270,8 @@ class Form extends Base
 	 */
 	public function __call($name, $params)
 	{
-		if (is_object($this->_plugin) && method_exists($this->_plugin, $name)) {
-			$html = call_user_func_array(array(&$this->_plugin, $name), $params);
+		if (is_object($this->plugin) && method_exists($this->plugin, $name)) {
+			$html = call_user_func_array(array(&$this->plugin, $name), $params);
 			if ($id = reset($params)) {
 				$id = is_array($id) && $id ? reset($id) : $id;
 				$this->_elements[$id][] = $html;

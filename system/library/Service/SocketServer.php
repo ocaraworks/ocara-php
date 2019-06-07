@@ -8,17 +8,18 @@
  ************************************************************************************************/
 namespace Ocara\Service;
 
-use Ocara\Service\SocketBase;
+use Ocara\Exceptions\Exception;
 
 class SocketServer extends SocketBase
 {
-
-	/**
-	 * 启动服务端
-	 * @param string $host
-	 * @param string $port
-	 * @param integer $timeout
-	 */
+    /**
+     * 启动服务端
+     * @param $host
+     * @param $port
+     * @param int $timeout
+     * @return resource
+     * @throws Exception
+     */
 	public function start($host, $port, $timeout = 0)
 	{
 		if ($timeout) @set_time_limit($timeout);
@@ -41,9 +42,11 @@ class SocketServer extends SocketBase
 		}
 	}
 
-	/**
-	 * 接收客户端请求
-	 */
+    /**
+     * 接收客户端请求
+     * @return bool|resource
+     * @throws Exception
+     */
 	public function accept()
 	{
 		if (empty($this->socket)) {
@@ -59,11 +62,13 @@ class SocketServer extends SocketBase
 		return $this->conn;
 	}
 
-	/**
-	 * 读取数据
-	 * @param integer $length
-	 * @param bool $type
-	 */
+    /**
+     * 读取数据
+     * @param int $length
+     * @param int $type
+     * @return string
+     * @throws Exception
+     */
 	public function read($length = 512, $type = PHP_BINARY_READ)
 	{
 		if (empty($this->conn)) {
@@ -79,11 +84,13 @@ class SocketServer extends SocketBase
 		return $result;
 	}
 
-	/**
-	 * 发送数据
-	 * @param string $content
-	 * @param integer $length
-	 */
+    /**
+     * 发送数据
+     * @param $content
+     * @param int $length
+     * @return int
+     * @throws Exception
+     */
 	public function send($content, $length = 0)
 	{
 		if (empty($this->conn)) {

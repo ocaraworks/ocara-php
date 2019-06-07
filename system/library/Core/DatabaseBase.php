@@ -140,12 +140,12 @@ class DatabaseBase extends Sql
 
 		$exists = isset(self::$_connects[$connectName]) && self::$_connects[$connectName] instanceof DriverBase;
 		if ($exists) {
-			$this->_plugin = self::$_connects[$connectName];
+			$this->plugin = self::$_connects[$connectName];
 		} else {
-			$this->_plugin = $this->getDriver($config);
-			self::$_connects[$connectName] = $this->_plugin;
+			$this->plugin = $this->getDriver($config);
+			self::$_connects[$connectName] = $this->plugin;
 			$this->isPconnect($config['pconnect']);
-			$this->_plugin->connect();
+			$this->plugin->connect();
 			$this->isPrepare($config['prepare']);
 		}
 
@@ -159,7 +159,7 @@ class DatabaseBase extends Sql
      * @return bool
      */
 	public function isPdo(){
-        return $this->_plugin->driveType() == DriverBase::DRIVE_TYPE_PDO;
+        return $this->plugin->driveType() == DriverBase::DRIVE_TYPE_PDO;
     }
 
     /**
@@ -238,16 +238,16 @@ class DatabaseBase extends Sql
 
 		try {
 			if ($this->_prepared && $params) {
-				$this->_plugin->prepare_sql($sql);
+				$this->plugin->prepare_sql($sql);
 				$this->_bindParams($params);
-				$result = $this->_plugin->execute_sql();
+				$result = $this->plugin->execute_sql();
 			} else {
-				$result = $this->_plugin->query_sql($sql);
+				$result = $this->plugin->query_sql($sql);
 			}
 		} catch (Exception $exception) {
 			if (!$this->_wakeUpTimes) {
-				if ($this->_plugin->is_not_active()) {
-					$this->_plugin->wake_up();
+				if ($this->plugin->is_not_active()) {
+					$this->plugin->wake_up();
 				}
 				$this->_wakeUpTimes++;
 				$result = call_user_func_array(array($this, __METHOD__), func_get_arg());
@@ -273,7 +273,7 @@ class DatabaseBase extends Sql
         $dataType = $dataType ? : DriverBase::DATA_TYPE_ARRAY;
 
         if ($count) {
-            $result = $this->_plugin->get_all_result($dataType, $queryRow);
+            $result = $this->plugin->get_all_result($dataType, $queryRow);
             $total = 0;
             if (!empty($unions['models'])) {
                 foreach ($result as $row) {
@@ -288,7 +288,7 @@ class DatabaseBase extends Sql
             }
             $result = array(array('total' => $total));
         } else {
-            $result = $this->_plugin->get_all_result($dataType, $queryRow);
+            $result = $this->plugin->get_all_result($dataType, $queryRow);
         }
 
         if ($queryRow && $result && empty($debug)) {
@@ -402,7 +402,7 @@ class DatabaseBase extends Sql
 	{
 		if (isset($pconnect)) {
 			$this->_pconnect = $pconnect ? true : false;
-			$this->_plugin->is_pconnect($pconnect);
+			$this->plugin->is_pconnect($pconnect);
 		}
 		return $this->_pconnect;
 	}
@@ -416,7 +416,7 @@ class DatabaseBase extends Sql
 	{
 		if (isset($prepare)) {
 			$this->_prepared = $prepare ? true : false;
-			$this->_plugin->is_prepare($prepare);
+			$this->plugin->is_prepare($prepare);
 		}
 		return $this->_prepared;
 	}
@@ -561,7 +561,7 @@ class DatabaseBase extends Sql
      */
 	public function selectDatabase($name)
 	{
-		$result = $this->_plugin->selectDatabase($name);
+		$result = $this->plugin->selectDatabase($name);
 
 		if ($result) {
 			$this->_config['name'] = $name;
@@ -586,7 +586,7 @@ class DatabaseBase extends Sql
 	public function beginTransaction()
 	{
 		$this->autocommit(false);
-		$result = $this->_plugin->begin_transaction();
+		$result = $this->plugin->begin_transaction();
 		return $result;
 	}
 
@@ -605,7 +605,7 @@ class DatabaseBase extends Sql
 	 */
 	public function autocommit($autocommit = true)
 	{
-		$result = $this->_plugin->autocommit($autocommit);
+		$result = $this->plugin->autocommit($autocommit);
 		return $result;
 	}
 
@@ -614,7 +614,7 @@ class DatabaseBase extends Sql
 	 */
 	public function commit()
 	{
-		$result = $this->_plugin->commit();
+		$result = $this->plugin->commit();
 		$this->autocommit(true);
 		return $result;
 	}
@@ -624,7 +624,7 @@ class DatabaseBase extends Sql
 	 */
 	public function rollback()
 	{
-		$result = $this->_plugin->rollback();
+		$result = $this->plugin->rollback();
 		$this->autocommit(true);
 		return $result;
 	}
@@ -672,7 +672,7 @@ class DatabaseBase extends Sql
      */
 	private function parseParamType($value)
 	{
-		$mapTypes = $this->_plugin->get_param_types();
+		$mapTypes = $this->plugin->get_param_types();
 
 		if (is_numeric($value)) {
 			return $mapTypes['integer'];
@@ -711,7 +711,7 @@ class DatabaseBase extends Sql
 		foreach ($paramData as $key => &$value) {
 			$type = $this->parseParamType($value);
 			if ($this->isPdo()) {
-				$this->_plugin->bind_param($key + 1, $value, $type);
+				$this->plugin->bind_param($key + 1, $value, $type);
 			} else {
 				$types = $types . $type;
 				$data[] = &$value;
@@ -720,12 +720,12 @@ class DatabaseBase extends Sql
 
 		if (!$this->isPdo() && $types) {
 			array_unshift($data, $types);
-			call_user_func_array(array($this->_plugin, 'bind_param'), $data);
+			call_user_func_array(array($this->plugin, 'bind_param'), $data);
 		}
 
-		if ($bindValues && method_exists($this->_plugin, 'bind_value')) {
+		if ($bindValues && method_exists($this->plugin, 'bind_value')) {
 			foreach ($bindValues as $name => $value) {
-				$this->_plugin->bind_value($name, $value);
+				$this->plugin->bind_value($name, $value);
 			}
 		}
 	}
@@ -737,10 +737,10 @@ class DatabaseBase extends Sql
 	{
 		$this->_error = array();
 
-		if ($this->_plugin->error_no() > 0) {
-			$this->_error['errorCode'] = $this->_plugin->error_no();
-			$this->_error['errorMessage'] = $this->_plugin->error();
-			$this->_error['errorList'] = $this->_plugin->error_list();
+		if ($this->plugin->error_no() > 0) {
+			$this->_error['errorCode'] = $this->plugin->error_no();
+			$this->_error['errorMessage'] = $this->plugin->error();
+			$this->_error['errorList'] = $this->plugin->error_list();
 		}
 	}
 

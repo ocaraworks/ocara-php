@@ -8,7 +8,6 @@
  ************************************************************************************************/
 namespace Ocara\Sessions;
 
-use Ocara\Core\Base;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceProvider;
 
@@ -16,11 +15,10 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class SessionFile extends ServiceProvider
 {
-	
-    private $_savePath;
+    private $savePath;
 
     /**
-     * 启动
+     * 初始化
      * @throws Exception
      */
     public function init()
@@ -42,7 +40,7 @@ class SessionFile extends ServiceProvider
             ocService()->error->show('not_write_session_path');
         }
 
-        $this->_savePath = $savePath;
+        $this->savePath = $savePath;
     }
 
     /**
@@ -53,11 +51,12 @@ class SessionFile extends ServiceProvider
      */
     public function open($savePath, $sessName)
     {
-        return is_dir($this->_savePath);
+        return is_dir($this->savePath);
     }
 
     /**
      * session关闭
+     * @return bool
      */
     public function close()
     {
@@ -71,7 +70,7 @@ class SessionFile extends ServiceProvider
      */
     public function read($id)
     {
-    	$file = "{$this->_savePath}/sess_$id";
+    	$file = "{$this->savePath}/sess_$id";
 
     	if (ocFileExists($file)) {
     		$time = filemtime($file);
@@ -93,7 +92,7 @@ class SessionFile extends ServiceProvider
     public function write($id, $data)
     {
         try {
-            ocWrite("{$this->_savePath}/sess_$id", stripslashes($data));
+            ocWrite("{$this->savePath}/sess_$id", stripslashes($data));
         } catch(Exception $exception) {
             ocService()->error->show($exception->getMessage());
         }
@@ -108,7 +107,7 @@ class SessionFile extends ServiceProvider
      */
     public function destroy($id)
     {
-        $file = "{$this->_savePath}/sess_{$id}";
+        $file = "{$this->savePath}/sess_{$id}";
 
         if (ocFileExists($file)) {
             @unlink($file);
@@ -119,14 +118,14 @@ class SessionFile extends ServiceProvider
 
     /**
      * Session垃圾回收
-     * @param $maxlifetime
+     * @param $maxLifeTime
      * @return bool
      */
-    public function gc($maxlifetime)
+    public function gc($maxLifeTime)
     {
-        $files = glob("{$this->_savePath}/sess_*");
+        $files = glob("{$this->savePath}/sess_*");
         foreach ($files as $file) {
-            if (ocFileExists($file) && filemtime($file) + $maxlifetime < time()) {
+            if (ocFileExists($file) && filemtime($file) + $maxLifeTime < time()) {
                 @unlink($file);
             }
         }

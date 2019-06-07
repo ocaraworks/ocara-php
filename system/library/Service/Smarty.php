@@ -9,18 +9,22 @@
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
+use Ocara\Exceptions\Exception;
 use Ocara\Service\Interfaces\Template as TemplateInterface;
 
 defined('OC_PATH') or exit('Forbidden!');
 
 class Smarty extends ServiceBase implements TemplateInterface
 {
-	protected $_plugin = null;
+	protected $plugin = null;
 
-	/**
-	 * 析构函数
-	 * @param string $templateDir
-	 */
+    /**
+     * 析构函数
+     * Smarty constructor.
+     * @param $templateDir
+     * @param null $perm
+     * @throws Exception
+     */
 	public function __construct($templateDir, $perm = null)
 	{
 		ocImport(OC_SYS . 'modules/smarty/Smarty.class.php');
@@ -29,7 +33,7 @@ class Smarty extends ServiceBase implements TemplateInterface
             ocService()->error->show('no_the_special_class', array('smarty'));
 		}
 
-		$this->_plugin = new \Smarty();
+		$this->plugin = new \Smarty();
 		$compileDir   = ocPath('runtime', 'smarty/cmp/');
 		$cacheDir     = ocPath('runtime', 'smarty/cache/');
 
@@ -38,50 +42,56 @@ class Smarty extends ServiceBase implements TemplateInterface
 		ocCheckPath($compileDir, $perm, true);
 		ocCheckPath($cacheDir, $perm, true);
 
-		$this->_plugin->setTemplateDir($templateDir);
-		$this->_plugin->setCompileDir($compileDir);
-		$this->_plugin->setCacheDir($cacheDir);
+		$this->plugin->setTemplateDir($templateDir);
+		$this->plugin->setCompileDir($compileDir);
+		$this->plugin->setCacheDir($cacheDir);
 
 		if (ocConfig(array('SMARTY', 'use_cache'), false)) {
-			$this->_plugin->cache_lifetime = 60;
-			$this->_plugin->caching = true;
+			$this->plugin->cache_lifetime = 60;
+			$this->plugin->caching = true;
 		} else {
-			$this->_plugin->caching = false;
+			$this->plugin->caching = false;
 		}
 	
-		$this->_plugin->left_delimiter = ocConfig(array('SMARTY', 'left_sign'));
-		$this->_plugin->right_delimiter = ocConfig(array('SMARTY', 'right_sign'));
+		$this->plugin->left_delimiter = ocConfig(array('SMARTY', 'left_sign'));
+		$this->plugin->right_delimiter = ocConfig(array('SMARTY', 'right_sign'));
 	}
 
-	/**
-	 * @see Interface_OCTemplate::assign()
-	 */
+    /**
+     * 设置变量
+     * @param string $name
+     * @param mixed $value
+     */
 	public function set($name, $value)
 	{
-		$this->_plugin->assign($name, $value);
+		$this->plugin->assign($name, $value);
 	}
 
-	/**
-	 * @see Interface_OCTemplate::getVars()
-	 */
+    /**
+     * 获取变量
+     * @param null $name
+     * @return string
+     */
 	public function get($name = null)
 	{
-		return $this->_plugin->getTemplateVars($name);
+		return $this->plugin->getTemplateVars($name);
 	}
 
-	/**
-	 * @see Interface_OCTemplate::registerObject()
-	 */
+    /**
+     * 注册对象
+     * @param array $params
+     */
 	public function registerObject($params)
 	{
-		call_user_func_array(array(&$this->_plugin, 'registerObject'), $params);
+		call_user_func_array(array(&$this->plugin, 'registerObject'), $params);
 	}
 
-	/**
-	 * @see Interface_OCTemplate::registerPlugin()
-	 */
+    /**
+     * 注册插件
+     * @param string $params
+     */
 	public function registerPlugin($params)
 	{
-		call_user_func_array(array(&$this->_plugin, 'registerPlugin'), $params);
+		call_user_func_array(array(&$this->plugin, 'registerPlugin'), $params);
 	}
 }

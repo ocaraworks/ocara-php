@@ -15,7 +15,6 @@ class ErrorOutput extends ServiceBase
     /**
      * 打印错误
      * @param $error
-     * @return bool
      */
     public function display($error)
     {
@@ -76,7 +75,7 @@ class ErrorOutput extends ServiceBase
 
     /**
      * 去除当前出错文件路径的根目录
-     * @param string $errorFile
+     * @param $errorFile
      * @return mixed
      */
     private static function _stripRootPath($errorFile)

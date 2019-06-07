@@ -15,10 +15,10 @@ use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
 
 class ServiceProvider extends Base implements ServiceProviderInterface
 {
-    protected $_container;
-    protected $_services = array();
+    protected $container;
+    protected $services = array();
 
-    private static $_default;
+    private static $default;
 
     /**
      * 初始化
@@ -40,8 +40,8 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public static function setDefault(ServiceProvider $provider)
     {
-        if (self::$_default === null) {
-            self::$_default = $provider;
+        if (self::$default === null) {
+            self::$default = $provider;
         }
     }
 
@@ -51,10 +51,10 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public static function getDefault()
     {
-        if (self::$_default === null) {
-            self::$_default = new static();
+        if (self::$default === null) {
+            self::$default = new static();
         }
-        return self::$_default;
+        return self::$default;
     }
 
     /**
@@ -74,7 +74,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function container()
     {
-        return $this->_container;
+        return $this->container;
     }
 
     /**
@@ -83,7 +83,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function setContainer($container)
     {
-        $this->_container = $container;
+        $this->container = $container;
     }
 
     /**
@@ -93,8 +93,8 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function canService($name)
     {
-        return array_key_exists($name, $this->_services)
-            || $this->_container->has($name)
+        return array_key_exists($name, $this->services)
+            || $this->container->has($name)
             || ocContainer()->has($name);
     }
 
@@ -110,8 +110,8 @@ class ServiceProvider extends Base implements ServiceProviderInterface
         $instance = $this->getService($name);
 
         if (empty($instance)) {
-            if ($this->_container && $this->_container->hasBindAll($name)) {
-                $instance = $this->_container->get($name, $params, $deps);
+            if ($this->container && $this->container->hasBindAll($name)) {
+                $instance = $this->container->get($name, $params, $deps);
                 $this->setService($name, $instance);
             } elseif (ocContainer()->hasBindAll($name)) {
                 $instance = ocContainer()->get($name, $params, $deps);
@@ -132,8 +132,8 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function createService($name, $params = array(), $deps = array())
     {
-        if ($this->_container && $this->_container->has($name)) {
-            return $this->_container->create($name, $params, $deps);
+        if ($this->container && $this->container->has($name)) {
+            return $this->container->create($name, $params, $deps);
         } elseif (ocContainer()->hasBind($name)) {
             return ocContainer()->create($name, $params, $deps);
         } else {
@@ -148,7 +148,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function setService($name, $service)
     {
-        $this->_services[$name] = $service;
+        $this->services[$name] = $service;
     }
 
     /**
@@ -158,7 +158,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function hasService($name)
     {
-        return array_key_exists($name, $this->_services);
+        return array_key_exists($name, $this->services);
     }
 
     /**
@@ -168,7 +168,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function getService($name)
     {
-        return array_key_exists($name, $this->_services) ? $this->_services[$name] : null;
+        return array_key_exists($name, $this->services) ? $this->services[$name] : null;
     }
 
     /**

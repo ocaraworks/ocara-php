@@ -20,11 +20,11 @@ class Sql extends Base
 	protected $_params = array();
 	protected $_config = array();
 
-	/**
-	 * 获取设置编码SQL
-	 * @param $charset
-	 * @return array
-	 */
+    /**
+     * 获取设置编码SQL
+     * @param $charset
+     * @return string
+     */
 	public function getSetCharsetSql($charset)
 	{
 		return 'SET NAMES ' . $charset;
@@ -71,7 +71,7 @@ class Sql extends Base
 	public function filterName($name, $addSlashes = true)
 	{
 		if ($addSlashes) {
-			$str = $this->_plugin->real_escape_string($name);
+			$str = $this->plugin->real_escape_string($name);
 			if ($str) {
 				return $this->filterSql($str, false, true, true);
 			}
@@ -92,7 +92,7 @@ class Sql extends Base
 			return $mt[1];
 		} else {
 			if ($addSlashes) {
-				$str = $this->_plugin->real_escape_string($content);
+				$str = $this->plugin->real_escape_string($content);
 				if ($str) {
 					return $this->filterSql($str, false);
 				}
@@ -330,13 +330,13 @@ class Sql extends Base
 		return $this->getSqlData($sql);
 	}
 
-	/**
-	 * DELETE语句
-	 * @param $table
-	 * @param $where
-	 * @param string $option
-	 * @return string
-	 */
+    /**
+     * DELETE语句
+     * @param $table
+     * @param $where
+     * @param null $option
+     * @return array
+     */
 	public function getDeleteSql($table, $where, $option = null)
 	{
 		$this->checkStringCondition($where);
@@ -406,7 +406,7 @@ class Sql extends Base
 			$limit = "{$limit[0]}, {$limit[1]}";
 		}
 
-		$str = $this->_plugin->real_escape_string($limit);
+		$str = $this->plugin->real_escape_string($limit);
 		if ($str) {
 			return $this->filterSql($str, false, true);
 		}
@@ -687,7 +687,7 @@ class Sql extends Base
 			return 'NULL';
 		}
 
-		$str = $this->_plugin->real_escape_string($val);
+		$str = $this->plugin->real_escape_string($val);
 		if ($str) {
 			$val = $this->filterSql($str, false);
 		} else {
@@ -807,8 +807,9 @@ class Sql extends Base
 
     /**
      * 获取子查询SQL
-     * @param string $sql
-     * @param bool $unionAll
+     * @param $sql
+     * @param $orderBy
+     * @param array $limit
      * @return string
      */
     public function getSubQuerySql($sql, $orderBy, array $limit)

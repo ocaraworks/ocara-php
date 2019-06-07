@@ -12,7 +12,7 @@ use Ocara\Core\ServiceBase;
 
 class StaticBuilder extends ServiceBase
 {
-	private $_dir;
+	private $dir;
 	
 	/**
 	 * 析构函数
@@ -23,13 +23,13 @@ class StaticBuilder extends ServiceBase
 			$this->showError('not_exists_open_config');
 		}
 
-		$this->_dir = ocPath('static');
+		$this->dir = ocPath('static');
 	}
 
-	/**
-	 * 全部静态生成
-	 * @param array $callback
-	 */
+    /**
+     * 全部静态生成
+     * @param $callback
+     */
 	public function genAll($callback)
 	{
 		$params = ocService()->staticPath->params;
@@ -50,11 +50,11 @@ class StaticBuilder extends ServiceBase
 		}
 	}
 
-	/**
-	 * 按动作action生成HTML
-	 * @param string|array $route
-	 * @param array $data
-	 */
+    /**
+     * 按动作action生成HTML
+     * @param $route
+     * @param $data
+     */
 	public function genAction($route, $data)
 	{
 		extract(ocService()->app->formatRoute($route));
@@ -119,16 +119,16 @@ class StaticBuilder extends ServiceBase
 		}
 	}
 
-	/**
-	 * 单页面生成
-	 * @param string $file
-	 * @param string $url
-	 * @return bool|int|void
-	 */
+    /**
+     * 单页面生成
+     * @param string $file
+     * @param string $url
+     * @return bool|int
+     */
 	private function _createHtml($file, $url)
 	{
 		if ($file && $url) {
-			$path = $file ? $this->_dir . $file : false;
+			$path = $file ? $this->dir . $file : false;
 
 			if ($content = ocRemote($url)) {
 				return ocWrite($path, $content);

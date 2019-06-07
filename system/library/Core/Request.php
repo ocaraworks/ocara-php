@@ -9,11 +9,15 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
 class Request extends Base
 {
+    /**
+     * Request constructor.
+     */
 	public function __construct()
 	{
 		$this->setInputStreams();
@@ -173,7 +177,7 @@ class Request extends Base
     /**
      * 获取请求方式
      * @return string
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public function getMethod()
 	{
@@ -282,11 +286,11 @@ class Request extends Base
 		return $default === null ? OC_EMPTY : $default;
 	}
 
-	/**
-	 * 解析Json参数
-	 * @param string $param
-	 * @return array|bool|\mix|mixed|\stdClass|string
-	 */
+    /**
+     * 解析Json参数
+     * @param $param
+     * @return mixed
+     */
 	public function decodeJson($param)
 	{
 		return json_decode(json_decode(html_entity_decode(stripslashes($param))));

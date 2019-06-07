@@ -12,29 +12,29 @@ use Ocara\Core\ServiceBase;
 
 class FileCache extends ServiceBase
 {
-	private $_format = true;
-	private $_content;
-	private $_data;
+	private $format = true;
+	private $content;
+	private $data;
 	
 	/**
 	 * 设置数据
 	 * @param string|array $data
 	 * @param string $name
-	 * @param string $decription
+	 * @param string $description
 	 */
-	public function setData($data, $name = null, $decription = false)
+	public function setData($data, $name = null, $description = null)
 	{
 		$content = null;
 		
-		if ($decription) {
-			$content .= "/**\r\n * {$decription}\r\n */\r\n";
+		if ($description) {
+			$content .= "/**\r\n * {$description}\r\n */\r\n";
 		}
 		
 		$content .= ($name ? "\${$name} = " : "return ");
 		$content .= "%s;\r\n";
 
-		$this->_content = $content;
-		$this->_data = $data;
+		$this->content = $content;
+		$this->data = $data;
 	}
 
 	/**
@@ -43,7 +43,7 @@ class FileCache extends ServiceBase
 	 */
 	public function format($format = true)
 	{
-		$this->_format = $format ? true : false;
+		$this->format = $format ? true : false;
 	}
 
 	/**
@@ -56,29 +56,30 @@ class FileCache extends ServiceBase
 	{
 		$content = null;
 
-		if (is_string($this->_data)) {
-			$content = '"' . $this->_data . '"';
-		} elseif (is_array($this->_data)) {
-			if ($this->_format) {
+		if (is_string($this->data)) {
+			$content = '"' . $this->data . '"';
+		} elseif (is_array($this->data)) {
+			if ($this->format) {
 				$content = "array(\r\n";
-				$content .= $this->_writeArray($this->_data);
+				$content .= $this->_writeArray($this->data);
 				$content .= ")";
 			} else {
-				$content = var_export($this->_data, true);
+				$content = var_export($this->data, true);
 			}
 		} 
 
-		$content = sprintf($this->_content, $content);
+		$content = sprintf($this->content, $content);
 		$content = ($append ? "\r\n" : "<?php\r\n") . $content;
 
 		ocWrite($filePath, $content, $append, $perm);
 	}
 
-	/**
-	 * 读取缓存内容
-	 * @param string $filePath
-	 * @param string $name
-	 */
+    /**
+     * 读取缓存内容
+     * @param $filePath
+     * @param null $name
+     * @return bool|mixed
+     */
 	public function read($filePath, $name = null)
 	{
 		if ($filePath = ocFileExists($filePath, true)) {
@@ -95,11 +96,12 @@ class FileCache extends ServiceBase
 		return false;
 	}
 
-	/**
-	 * 内部函数-写入数组
-	 * @param array $array
-	 * @param integer $tNum
-	 */
+    /**
+     * 内部函数-写入数组
+     * @param $array
+     * @param int $tNum
+     * @return string
+     */
 	protected function _writeArray($array, $tNum = 0)
 	{
 		$tNum = $tNum + 1;
@@ -136,12 +138,13 @@ class FileCache extends ServiceBase
 		return $str;
 	}
 
-	/**
-	 * 内部函数-判断是否为关联数组
-	 * 如果使用数字型键作关联数组，第一条记录键值必须是1而不是0
-	 * 因为通常数字型数组都是从0开始的.
-	 * @param array $array
-	 */
+    /**
+     * 内部函数-判断是否为关联数组
+     * 如果使用数字型键作关联数组，第一条记录键值必须是1而不是0
+     * 因为通常数字型数组都是从0开始的.
+     * @param $array
+     * @return bool
+     */
 	protected function _isAssoc($array)
 	{
 		return array_keys($array) !== range(0, count($array) - 1);

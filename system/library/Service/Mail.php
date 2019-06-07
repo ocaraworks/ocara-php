@@ -9,6 +9,7 @@
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
+use Ocara\Exceptions\Exception;
 
 class Mail extends ServiceBase
 {
@@ -20,8 +21,8 @@ class Mail extends ServiceBase
 	public $host;
 	public $port;
 	
-	private $_username;
-	private $_password;
+	private $username;
+	private $password;
 	
 	public $cc;
 	public $bcc;
@@ -65,8 +66,8 @@ class Mail extends ServiceBase
 	{
 		$this->host 	= $host;
 		$this->port 	= $port;
-		$this->_username = $username;
-		$this->_password = $password;
+		$this->username = $username;
+		$this->password = $password;
 	}
 	
 	/**
@@ -100,13 +101,15 @@ class Mail extends ServiceBase
 	{
 		$this->subject = $subject;
 	}
-	
-	/**
-	 * 本机smtp方式发送邮件
-	 * @param string $header
-	 * @param array $params
-	 */
-	public function localSend($header = null, $params = false)
+
+    /**
+     * 本机smtp方式发送邮件
+     * :TODO 未测试
+     * @param string $header
+     * @param array $params
+     * @return bool
+     */
+	public function localSend($header = null, $params = null)
 	{
 		if ($this->host) @ini_set('SMTP', $this->host);
 		if ($this->port) @ini_set('smtp_port', $this->port);
@@ -123,10 +126,11 @@ class Mail extends ServiceBase
 
 		return mail($this->receiver, $this->subject, $this->content, $this->header, $this->params);
 	}
-	
-	/**
-	 * Socket发送邮件
-	 */
+
+    /**
+     * Socket发送邮件
+     * @return bool
+     */
 	public function socketSend()
 	{
 		$contentType = 'multipart/alternative';
@@ -140,7 +144,7 @@ class Mail extends ServiceBase
 		
 		$socketEmailObj = new SocketEmail(
 			$this->sender, 	 $this->host, 	  $this->port, 
-			$this->_username, $this->_password
+			$this->username, $this->password
 		);
 
 		return $socketEmailObj->send($this->receiver, $this->header, $this->content);
@@ -175,9 +179,10 @@ class Mail extends ServiceBase
 		return $header . "\r\n";
 	}
 
-	/**
-	 * 生成邮件体
-	 */
+    /**
+     * 生成邮件体
+     * @return string
+     */
 	protected function getContent()
 	{
 		$content = null;
@@ -206,11 +211,11 @@ class Mail extends ServiceBase
 		return $content . PHP_EOL;
 	}
 
-	/**
-	 * 生成纯文本和HTML段
-	 * @param string $subBoundary
-	 * @return string
-	 */
+    /**
+     * 生成纯文本和HTML段
+     * @param string $subBoundary
+     * @return string
+     */
 	protected function getText($subBoundary)
 	{
 		$content = null;
@@ -228,11 +233,11 @@ class Mail extends ServiceBase
 		return PHP_EOL . $content  . PHP_EOL;
 	}
 
-	/**
-	 * 组合抄送人
-	 * @param string $cc
-	 * @return bool|string
-	 */
+    /**
+     * 组合抄送人
+     * @param string $cc
+     * @return bool|string
+     */
 	protected function packCc($cc = null)
 	{
 		if ($cc) {
@@ -242,11 +247,11 @@ class Mail extends ServiceBase
 		return $this->cc ? "Cc: {$this->cc}" . PHP_EOL : false;
 	}
 
-	/**
-	 * 组合秘密抄送人
-	 * @param array $bcc
-	 * @return bool|string
-	 */
+    /**
+     * 组合秘密抄送人
+     * @param array $bcc
+     * @return bool|string
+     */
 	protected function packBcc(array $bcc = array())
 	{
 		if ($bcc) {
@@ -256,29 +261,29 @@ class Mail extends ServiceBase
 		return $this->bcc ? "Bcc: {$this->bcc}" . PHP_EOL: false;
 	}
 
-	/**
-	 * 设置回复地址
-	 * @param string $replyTo
-	 */
+    /**
+     * 设置回复地址
+     * @param string $replyTo
+     */
 	public function setReplyTo($replyTo = null)
 	{
 		$this->replyTo = $replyTo ? : $this->sender;
 	}
-	
-	/**
-	 * 不设置回复地址
-	 */
+
+    /**
+     * 不设置回复地址
+     */
 	public function noReply()
 	{
 		$this->replyTo = null;
 	}
-	
-	/**
-	 * 设置纯文本
-	 * @param string $text
-	 * @param string $charset
-	 * @param string $encoding
-	 */
+
+    /**
+     * 设置纯文本
+     * @param string $text
+     * @param string $charset
+     * @param string $encoding
+     */
 	public function setText($text, $charset = 'UTF-8', $encoding = 'quoted-printable')
 	{
 		$content  = "Content-Type: text/plain; charset=\"{$charset}\"" . PHP_EOL;
@@ -311,11 +316,12 @@ class Mail extends ServiceBase
 		$this->related = false;
 	}
 
-	/**
-	 * 设置附件
-	 * @param array $attachments
-	 * @return bool
-	 */
+    /**
+     * 设置附件
+     * @param array|string $attachments
+     * @return bool
+     * @throws Exception
+     */
 	public function setAttachment($attachments = null)
 	{
 		$content = null;
@@ -340,11 +346,12 @@ class Mail extends ServiceBase
 		$this->attachments = $content . PHP_EOL;
 	}
 
-	/**
-	 * 获取附件MIME类型
-	 * @param string $extName
-	 * @return string
-	 */
+    /**
+     * 获取附件MIME类型
+     * @param $extName
+     * @return null
+     * @throws Exception
+     */
 	public function getMimeType($extName)
 	{
 		return ocConfig(array('MINE_TYPES', trim($extName, '.')));

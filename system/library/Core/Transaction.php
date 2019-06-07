@@ -14,8 +14,8 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Transaction extends Base
 {
-	private $_count = 0;
-	private $_list = array();
+	private $count = 0;
+	private $list = array();
 
 	/**
 	 * 推入数据库
@@ -25,9 +25,9 @@ class Transaction extends Base
 	{
 		if (self::hasBegan()) {
 			$key = $database->getConnectName();
-			if (!isset($this->_list[$key])) {
+			if (!isset($this->list[$key])) {
 				$database->beginTransaction();
-				$this->_list[$key] = $database;
+				$this->list[$key] = $database;
 			}
 		}
 	}
@@ -39,8 +39,8 @@ class Transaction extends Base
 	public function cancel($database)
 	{
 		$key = $database->getConnectName();
-		if (isset($this->_list[$key])) {
-			ocDel($this->_list, $key);
+		if (isset($this->list[$key])) {
+			ocDel($this->list, $key);
 		}
 	}
 
@@ -50,7 +50,7 @@ class Transaction extends Base
 	 */
 	public function hasBegan()
 	{
-		return $this->_count > 0;
+		return $this->count > 0;
 	}
 
 	/**
@@ -58,7 +58,7 @@ class Transaction extends Base
 	 */
 	public function begin()
 	{
-		$this->_count ++;
+		$this->count ++;
 	}
 
 	/**
@@ -66,12 +66,12 @@ class Transaction extends Base
 	 */
 	public function commit()
 	{
-		if ($this->_count == 1) {
+		if ($this->count == 1) {
 			self::_commitAll();
-			$this->_count = 0;
-			$this->_list = array();
-		} elseif ($this->_count > 1) {
-			$this->_count --;
+			$this->count = 0;
+			$this->list = array();
+		} elseif ($this->count > 1) {
+			$this->count --;
 		}
 	}
 
@@ -80,10 +80,10 @@ class Transaction extends Base
 	 */
 	public function rollback()
 	{
-		if ($this->_count > 0) {
-			$this->_count = 0;
+		if ($this->count > 0) {
+			$this->count = 0;
 			self::_rollbackAll();
-			$this->_list = array();
+			$this->list = array();
 		}
 	}
 
@@ -92,7 +92,7 @@ class Transaction extends Base
 	 */
 	protected function _commitAll()
 	{
-		foreach ($this->_list as $database) {
+		foreach ($this->list as $database) {
 			$database->commit();
 		}
 	}
@@ -102,7 +102,7 @@ class Transaction extends Base
 	 */
 	protected function _rollbackAll()
 	{
-		foreach ($this->_list as $database) {
+		foreach ($this->list as $database) {
 			$database->rollback();
 		}
 	}

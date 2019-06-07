@@ -10,6 +10,7 @@ namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
 use Ocara\Service\Interfaces\Log as LogInterface;
+use Ocara\Exceptions\Exception;
 
 class FileLog extends ServiceBase implements LogInterface
 {
@@ -18,12 +19,12 @@ class FileLog extends ServiceBase implements LogInterface
 	public $logRoot;
 	public $maxLogSize = 1;
 
-	/**
-	 * 选项设置函数
-	 * @param null $logRoot
-	 * @param null $maxLogSize
-	 * @throws \Ocara\Exceptions\Exception
-	 */
+    /**
+     * 选项设置函数
+     * @param string $logRoot
+     * @param inte $maxLogSize
+     * @throws Exception
+     */
 	public function setOption($logRoot = null, $maxLogSize = null)
 	{
 		if (empty($logRoot)) {
@@ -57,18 +58,17 @@ class FileLog extends ServiceBase implements LogInterface
      * 新建日志（目录）
      * @param string $logName
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function create($logName)
 	{
 		return ocService()->file->createDir($this->logRoot . $logName, 0777);
 	}
 
-	/**
-	 * 检测日志是否存在
-	 * @param $logName
-	 * @return bool
-	 */
+    /**
+     * 检测日志是否存在
+     * @param $logName
+     * @return bool
+     */
 	public function has($logName)
 	{
 		return is_dir($this->logRoot . $logName);
@@ -79,7 +79,6 @@ class FileLog extends ServiceBase implements LogInterface
      * @param string $logName
      * @param string $content
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function write($logName, $content)
 	{
@@ -109,8 +108,7 @@ class FileLog extends ServiceBase implements LogInterface
     /**
      * 读取日志内容
      * @param string $logName
-     * @return bool|\mix|null|string
-     * @throws \Ocara\Exceptions\Exception
+     * @return false|string|null
      */
 	public function read($logName)
 	{
@@ -125,9 +123,8 @@ class FileLog extends ServiceBase implements LogInterface
 
     /**
      * 清理日志文件
-     * @param null $logName
+     * @param string $logName
      * @return bool
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function clear($logName = null)
 	{
@@ -139,7 +136,6 @@ class FileLog extends ServiceBase implements LogInterface
      * 删除日志（目录）
      * @param string $logName
      * @return bool
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function delete($logName)
 	{
@@ -150,8 +146,7 @@ class FileLog extends ServiceBase implements LogInterface
     /**
      * 清空最近日志文件内容
      * @param string $logName
-     * @return bool|int|void
-     * @throws \Ocara\Exceptions\Exception
+     * @return bool|int
      */
 	public function flush($logName)
 	{
@@ -171,10 +166,9 @@ class FileLog extends ServiceBase implements LogInterface
 
     /**
      * 获取最近日志文件
-     * @param $logName
+     * @param string $logName
      * @param bool $create
      * @return bool|mixed|string
-     * @throws \Ocara\Exceptions\Exception
      */
 	protected function _getLastLogFile($logName, $create = true)
 	{
@@ -207,9 +201,8 @@ class FileLog extends ServiceBase implements LogInterface
 
     /**
      * 新建日志文件
-     * @param $logName
+     * @param string $logName
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
      */
 	protected function _createLogFile($logName)
 	{

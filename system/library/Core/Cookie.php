@@ -9,6 +9,7 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -59,16 +60,17 @@ class Cookie extends Base
 		return ocKeyExists($key, $_COOKIE);
 	}
 
-	/**
-	 * 新建cookie变量
-	 * @param string $name
-	 * @param string $value
-	 * @param integer $expire
-	 * @param string $path
-	 * @param string $domain
-	 * @param bool $secure
-	 * @param bool $httponly
-	 */
+    /**
+     * 新建cookie变量
+     * @param string $name
+     * @param string $value
+     * @param int $expire
+     * @param string $path
+     * @param string $domain
+     * @param bool $secure
+     * @param bool $httponly
+     * @throws Exception
+     */
 	public function create($name, $value, $expire = 0, $path = '', $domain = '', $secure = false, $httponly = true)
 	{	
 		$expire   = intval($expire);

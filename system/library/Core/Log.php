@@ -10,24 +10,26 @@ namespace Ocara\Core;
 
 use Ocara\Core\Base;
 use \ReflectionClass;
+use \ReflectionException;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
 class Log extends Base
 {
-    protected $_name;
+    protected $name;
 
     /**
      * 初始化
      * Log constructor.
      * @param null $logName
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function __construct($logName = null)
     {
-        $this->_name = $logName ? : 'common';
-        $this->_plugin = ocService('fileLog', true);
-        $this->_plugin->setOption(ocConfig(array('Log', 'root'), 'logs'));
+        $this->name = $logName ? : 'common';
+        $this->plugin = ocService('fileLog', true);
+        $this->plugin->setOption(ocConfig(array('Log', 'root'), 'logs'));
     }
 
     /**
@@ -35,15 +37,15 @@ class Log extends Base
      * @param $message
      * @param array $traceInfo
      * @param string $type
-     * @throws \Ocara\Exceptions\Exception
-     * @throws \ReflectionException
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function write($message, array $traceInfo = array(), $type = 'info')
     {
         $time = date(ocConfig(array('DATE_FORMAT', 'datetime')), time());
 
-        if (!$this->_plugin->has($this->_name)) {
-            $this->_plugin->create($this->_name);
+        if (!$this->plugin->has($this->name)) {
+            $this->plugin->create($this->name);
         }
 
         if (!ocScalar($message)) {
@@ -59,7 +61,7 @@ class Log extends Base
         }
 
         try {
-            $this->_plugin->write($this->_name, $content);
+            $this->plugin->write($this->name, $content);
         } catch (\Exception $e)
         {}
     }
@@ -68,6 +70,8 @@ class Log extends Base
      * 信息日志
      * @param $content
      * @param array $traceInfo
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function info($content, array $traceInfo = array())
     {
@@ -78,7 +82,8 @@ class Log extends Base
      * 调试日志
      * @param $content
      * @param array $traceInfo
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function debug($content, array $traceInfo = array())
     {
@@ -89,7 +94,8 @@ class Log extends Base
      * 错误日志
      * @param $content
      * @param array $traceInfo
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function error($content, array $traceInfo = array())
     {
@@ -100,7 +106,8 @@ class Log extends Base
      * 警告日志
      * @param $content
      * @param array $traceData
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function warning($content, array $traceData = array())
     {
@@ -111,7 +118,7 @@ class Log extends Base
      * 获取Trace字符串
      * @param array $traceInfo
      * @return string
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public static function getTraceString(array $traceInfo)
     {
@@ -137,7 +144,7 @@ class Log extends Base
      * @param $format
      * @param $row
      * @return string
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private static function _getTraceRow($index, $format, $row)
     {
@@ -166,7 +173,7 @@ class Log extends Base
      * 获取Trace参数字符串
      * @param array $args
      * @return string
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private static function _getTraceArgs(array $args)
     {

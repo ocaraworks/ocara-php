@@ -17,16 +17,16 @@ defined('OC_PATH') or exit('Forbidden!');
 class Container extends Basis
 {
     /**
-     * @var array $_binds 动态绑定类
-     * @var array $_bindSingletons 单例绑定类
-     * @var array $_instances 类实例
-     * @var object $_default 默认容器
+     * @var array $binds 动态绑定类
+     * @var array $bindSingletons 单例绑定类
+     * @var array $instances 类实例
+     * @var object $default 默认容器
      */
-    public $_binds = array();
-    public $_bindSingletons = array();
-    public $_instances = array();
+    public $binds = array();
+    public $bindSingletons = array();
+    public $instances = array();
 
-    private static $_default;
+    private static $default;
 
     /**
      * 获取默认容器
@@ -34,10 +34,10 @@ class Container extends Basis
      */
     public static function getDefault()
     {
-        if (self::$_default === null) {
-            self::$_default = new static();
+        if (self::$default === null) {
+            self::$default = new static();
         }
-        return self::$_default;
+        return self::$default;
     }
 
     /**
@@ -62,7 +62,7 @@ class Container extends Basis
 
         $matter = $this->_getMatterArray($source, $params, $deps);
         if ($matter) {
-            $this->_bindSingletons[$name] = $matter;
+            $this->bindSingletons[$name] = $matter;
         }
 
         return $this;
@@ -90,7 +90,7 @@ class Container extends Basis
 
         $matter = $this->_getMatterArray($source, $params, $deps);
         if ($matter) {
-            $this->_binds[$name] = $matter;
+            $this->binds[$name] = $matter;
         }
 
         return $this;
@@ -104,13 +104,13 @@ class Container extends Basis
     public function getBindSingleton($name = null)
     {
         if (func_num_args()) {
-            if (array_key_exists($name, $this->_bindSingletons)) {
-                return $this->_bindSingletons[$name];
+            if (array_key_exists($name, $this->bindSingletons)) {
+                return $this->bindSingletons[$name];
             }
             return array();
         }
 
-        return $this->_binds;
+        return $this->binds;
     }
 
     /**
@@ -121,13 +121,13 @@ class Container extends Basis
     public function getBind($name = null)
     {
         if (func_num_args()) {
-            if (array_key_exists($name, $this->_binds)) {
-                return $this->_binds[$name];
+            if (array_key_exists($name, $this->binds)) {
+                return $this->binds[$name];
             }
             return array();
         }
 
-        return $this->_binds;
+        return $this->binds;
     }
 
     /**
@@ -183,7 +183,7 @@ class Container extends Basis
     public function hasBindAll($name)
     {
         $name = ocClassName($name);
-        return array_key_exists($name, $this->_binds) || array_key_exists($name, $this->_bindSingletons);
+        return array_key_exists($name, $this->binds) || array_key_exists($name, $this->bindSingletons);
     }
 
     /**
@@ -193,7 +193,7 @@ class Container extends Basis
      */
     public function hasBindSingleton($name)
     {
-        return array_key_exists(ocClassName($name), $this->_bindSingletons);
+        return array_key_exists(ocClassName($name), $this->bindSingletons);
     }
 
     /**
@@ -203,7 +203,7 @@ class Container extends Basis
      */
     public function hasBind($name)
     {
-        return array_key_exists(ocClassName($name), $this->_binds);
+        return array_key_exists(ocClassName($name), $this->binds);
     }
 
     /**
@@ -223,7 +223,7 @@ class Container extends Basis
      */
     public function hasInstance($name)
     {
-        return array_key_exists($name, $this->_instances);
+        return array_key_exists($name, $this->instances);
     }
 
     /**
@@ -234,12 +234,12 @@ class Container extends Basis
     public function getInstance($name = null)
     {
         if (func_get_args()) {
-            if (array_key_exists($name, $this->_instances)) {
-                return $this->_instances[$name];
+            if (array_key_exists($name, $this->instances)) {
+                return $this->instances[$name];
             }
             return null;
         }
-        return $this->_instances;
+        return $this->instances;
     }
 
     /**
@@ -249,7 +249,7 @@ class Container extends Basis
      */
     public function setInstance($name, $instance)
     {
-        $this->_instances[$name] = $instance;
+        $this->instances[$name] = $instance;
     }
 
     /**
@@ -286,19 +286,19 @@ class Container extends Basis
     {
         $source = null;
 
-        if (!empty($this->_bindSingletons[$name])) {
+        if (!empty($this->bindSingletons[$name])) {
             if ($this->getInstance($name)) {
                 throw new Exception("exists_singleton_object");
             }
-            if (is_object($this->_bindSingletons[$name])) {
-                return $this->setInstance($name, $this->_bindSingletons[$name]);
+            if (is_object($this->bindSingletons[$name])) {
+                return $this->setInstance($name, $this->bindSingletons[$name]);
             }
-            $matter = (array)$this->_bindSingletons[$name];
-        } elseif (!empty($this->_binds[$name])) {
-            if (is_object($this->_binds[$name])) {
-                return $this->_binds[$name];
+            $matter = (array)$this->bindSingletons[$name];
+        } elseif (!empty($this->binds[$name])) {
+            if (is_object($this->binds[$name])) {
+                return $this->binds[$name];
             }
-            $matter = (array)$this->_binds[$name];
+            $matter = (array)$this->binds[$name];
         } else {
             throw new Exception("not_exists_dependence_set");
         }
@@ -408,8 +408,8 @@ class Container extends Basis
                     $class = $this->create($name);
                 } elseif ($this->hasBindSingleton($name)){
                     $class = $this->get($name);
-                }elseif ($this !== self::$_default && self::$_default && self::$_default->has($name)) {
-                    $class = self::$_default->create($name);
+                }elseif ($this !== self::$default && self::$default && self::$default->has($name)) {
+                    $class = self::$default->create($name);
                 }
             }
             if ($class) {

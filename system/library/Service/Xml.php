@@ -9,6 +9,7 @@
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
+use Ocara\Exceptions\Exception;
 
 /**
  * 可进行操作：生成、导入、保存和导出（下载）XML
@@ -25,6 +26,7 @@ class Xml extends ServiceBase
 	public $xmlParser;
 	public $xmlObj;
 	public $xmlData;
+	public $encoding;
 
 	/**
 	 * 析构函数
@@ -36,11 +38,12 @@ class Xml extends ServiceBase
 		$this->encoding  = $encoding;
 	}
 
-	/**
-	 * 重新初始化
-	 * @param string $type
-	 * @param string|array $xmlSource
-	 */
+    /**
+     * 重新初始化
+     * @param $type
+     * @param $xmlSource
+     * @throws Exception
+     */
 	public function setData($type, $xmlSource)
 	{
 		if ($type == 'file') {
@@ -62,20 +65,21 @@ class Xml extends ServiceBase
 		}
 	}
 
-	/**
-	 * 保存XML文件
-	 * @param string $filePath
-	 * @param integer $perm
-	 */
+    /**
+     * 保存XML文件
+     * @param $filePath
+     * @param null $perm
+     * @return bool|int
+     */
 	public function save($filePath, $perm = null)
 	{
 		return ocWrite($filePath, $this->xmlData, false, $perm);
 	}
 
-	/**
-	 * 导出（下载 ）
-	 * @param string $fileName
-	 */
+    /**
+     * 导出（下载 ）
+     * @param $fileName
+     */
 	public function export($fileName)
 	{
 		if (!pathinfo($fileName, PATHINFO_EXTENSION)) {
@@ -91,27 +95,28 @@ class Xml extends ServiceBase
 		echo $this->xmlData;
 	}
 
-	/**
-	 * 获取处理后的XML内容
-	 * @return mixed
-	 */
+    /**
+     * 获取处理后的XML内容
+     * @return mixed
+     */
 	public function getContent()
 	{
 		return $this->xmlData;
 	}
 
-	/**
-	 * 生成XML数组
-	 */
+    /**
+     * 生成XML数组
+     * @return array
+     */
 	public function makeArray()
 	{
 		xml_parse_into_struct($this->xmlParser, $this->xmlData, $values, $index);
 		return array($index, $values);
 	}
 
-	/**
-	 * 打印XML
-	 */
+    /**
+     * 打印XML
+     */
 	public function display()
 	{
 		if (is_object($this->xmlObj)) {
@@ -132,10 +137,11 @@ class Xml extends ServiceBase
 		@xml_parser_free($this->xmlParser);
 	}
 
-	/**
-	 * 加载并解析XML字符串
-	 * @param string $xmlSource
-	 */
+    /**
+     * 加载并解析XML字符串
+     * @param $xmlSource
+     * @throws Exception
+     */
 	protected function _loadString($xmlSource)
 	{
 		if (!($this->_parseXml($xmlSource, 'string'))) {
@@ -146,10 +152,11 @@ class Xml extends ServiceBase
 		$this->xmlData = $xmlSource;
 	}
 
-	/**
-	 * 加载并解析XML数组
-	 * @param array $xmlSource
-	 */
+    /**
+     * 加载并解析XML数组
+     * @param array $xmlSource
+     * @throws Exception
+     */
 	protected function _loadArray(array $xmlSource)
 	{
 		$root = ocGet(0, $xmlSource);
@@ -171,11 +178,13 @@ class Xml extends ServiceBase
 		$this->_loadString($xmlData);
 	}
 
-	/**
-	 * 解析XML文件
-	 * @param string $xmlSource
-	 * @param string $type
-	 */
+    /**
+     * 解析XML文件
+     * @param $xmlSource
+     * @param string $type
+     * @return bool|int
+     * @throws Exception
+     */
 	protected function _parseXml($xmlSource, $type = 'file')
 	{
 		$xmlParser = xml_parser_create($this->encoding);
@@ -201,10 +210,11 @@ class Xml extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 生成XML字符串
-	 * @param array $xmlArray
-	 */
+    /**
+     * 生成XML字符串
+     * @param array $xmlArray
+     * @return string|null
+     */
 	protected function _makeXml(array $xmlArray)
 	{
 		$xmlStr = null;

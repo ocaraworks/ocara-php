@@ -9,15 +9,18 @@
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
+use Ocara\Exceptions\Exception;
 
 class Download extends ServiceBase
 {
-	/**
-	 * 下载文件
-	 * @param string $filePath
-	 * @param string $saveName
-	 * @param string $encode
-	 */
+    /**
+     * 下载文件
+     * @param string $filePath
+     * @param string $saveName
+     * @param string $encode
+     * @return bool
+     * @throws Exception
+     */
 	public function download($filePath, $saveName = null, $encode = 'utf-8')
 	{
 		$expression = '/^.+\.(\w{2,4})$/';

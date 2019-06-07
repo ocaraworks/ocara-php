@@ -14,8 +14,8 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Path extends Basis
 {
-    protected $_maps = array();
-    protected $_data = array();
+    protected $maps = array();
+    protected $data = array();
 
 	/**
 	 * 初始化
@@ -23,7 +23,7 @@ class Path extends Basis
 	public function __construct()
 	{
 	    $config = ocContainer()->config;
-		$this->_data = $config->get('APP_PATH_INFO', array());
+		$this->data = $config->get('APP_PATH_INFO', array());
 	}
 
     /**
@@ -33,7 +33,7 @@ class Path extends Basis
      */
 	public function setMap($dir, $path)
     {
-	    $this->_maps[$dir] = $path;
+	    $this->maps[$dir] = $path;
     }
 
     /**
@@ -47,8 +47,8 @@ class Path extends Basis
      */
     public function get($dir, $path, $root = null, $local = true, $isFile = true)
     {
-        if (array_key_exists($dir, $this->_maps)) {
-            $rootPath = $this->_maps[$dir];
+        if (array_key_exists($dir, $this->maps)) {
+            $rootPath = $this->maps[$dir];
         } else {
             $mapDir = $this->getConfigMapDir($dir, $local);
             $rootPath = ocDir($root, $mapDir);
@@ -72,7 +72,7 @@ class Path extends Basis
      */
 	public function getMap($dir)
     {
-        return array_key_exists($dir, $this->_maps) ? $this->_maps[$dir] : null;
+        return array_key_exists($dir, $this->maps) ? $this->maps[$dir] : null;
     }
 
     /**
@@ -85,19 +85,19 @@ class Path extends Basis
     {
         $mapDir = $dir;
 
-        if (isset($this->_data['maps'][$dir])) {
-            $mapDir = $this->_data['maps'][$dir];
+        if (isset($this->data['maps'][$dir])) {
+            $mapDir = $this->data['maps'][$dir];
         }
 
         if ($local) {
-            $belongs = $this->_data['belongs'];
+            $belongs = $this->data['belongs'];
         } else {
-            $belongs = $this->_data['remote_belongs'];
+            $belongs = $this->data['remote_belongs'];
         }
 
         if (isset($belongs[$mapDir])) {
-            if (isset($this->_data['replace'][$mapDir])) {
-                $replace = $this->_data['replace'][$mapDir];
+            if (isset($this->data['replace'][$mapDir])) {
+                $replace = $this->data['replace'][$mapDir];
             } else {
                 $replace = $mapDir;
             }

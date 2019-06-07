@@ -10,6 +10,7 @@ namespace Ocara\Core;
 
 use Ocara\Core\Base;
 use Ocara\Service\Code;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -20,7 +21,7 @@ class FormToken extends Base
      * @param $formName
      * @param $route
      * @return mixed|string
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function generate($formName, $route)
     {

@@ -9,14 +9,16 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 
 class Font extends Base
 {
     /**
      * 获取字体
-     * @param string $name
+     * @param null $name
      * @param null $args
      * @return bool|mixed|string
+     * @throws Exception
      */
     public function get($name = null, $args = null)
     {

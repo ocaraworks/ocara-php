@@ -17,9 +17,9 @@ use Ocara\Exceptions\Exception;
 
 class Application extends Basis
 {
-    private $_language;
-    private $_bootstrap;
-    private $_route;
+    private $language;
+    private $bootstrap;
+    private $route;
 
     /**
      * 获取语言
@@ -28,11 +28,11 @@ class Application extends Basis
      */
     public function getLanguage($getUpdated = false)
     {
-        if ($this->_language === null || $getUpdated) {
-            $this->_language = ocService()->config->get('LANGUAGE');
+        if ($this->language === null || $getUpdated) {
+            $this->language = ocService()->config->get('LANGUAGE');
         }
 
-        return $this->_language;
+        return $this->language;
     }
 
     /**
@@ -41,7 +41,7 @@ class Application extends Basis
      */
     public function setLanguage($language)
     {
-        $this->_language = $language;
+        $this->language = $language;
     }
 
     /**
@@ -89,11 +89,11 @@ class Application extends Basis
             ocImport(array(OC_SYS . 'const/config.php'));
 
             $bootstrap = $bootstrap ? : '\Ocara\Core\Bootstraps\Common';
-            $this->_bootstrap = new $bootstrap();
-            $this->_bootstrap->init();
+            $this->bootstrap = new $bootstrap();
+            $this->bootstrap->init();
         }
 
-        return $this->_bootstrap;
+        return $this->bootstrap;
     }
 
     /**
@@ -107,7 +107,7 @@ class Application extends Basis
     public function run($route, $params = array(), $moduleNamespace = null)
     {
         $newRoute = $this->loadRouteConfig($this->formatRoute($route));
-        $result = $this->_bootstrap->start($newRoute, $params, $moduleNamespace);
+        $result = $this->bootstrap->start($newRoute, $params, $moduleNamespace);
         return $result;
     }
 
@@ -139,10 +139,10 @@ class Application extends Basis
     public function getRoute($name = null)
     {
         if (isset($name)) {
-            return isset($this->_route[$name]) ? $this->_route[$name] : null;
+            return isset($this->route[$name]) ? $this->route[$name] : null;
         }
 
-        return $this->_route;
+        return $this->route;
     }
 
     /**
@@ -151,7 +151,7 @@ class Application extends Basis
      */
     public function setRoute($route)
     {
-        $this->_route = $route;
+        $this->route = $route;
     }
 
     /**
@@ -173,8 +173,8 @@ class Application extends Basis
         switch (count($routeData)) {
             case 2:
                 list($controller, $action) = $routeData;
-                if ($route{0} != OC_DIR_SEP && isset($this->_route['module'])) {
-                    $module = $this->_route['module'];
+                if ($route{0} != OC_DIR_SEP && isset($this->route['module'])) {
+                    $module = $this->route['module'];
                 }  else {
                     $module = OC_EMPTY;
                 }
@@ -216,7 +216,6 @@ class Application extends Basis
         }
 
         $service->app->setRoute($route);
-
         $service->config->loadControllerConfig($route);
         $service->config->loadActionConfig($route);
 

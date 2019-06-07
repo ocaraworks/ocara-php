@@ -29,7 +29,7 @@ class Main extends ServiceProvider
     protected function _createService($services, $method)
     {
         foreach ($services as $name => $namespace) {
-            $this->_container->$method($name, function() use($namespace) {
+            $this->container->$method($name, function() use($namespace) {
                 $args = func_get_args();
                 if (class_exists($namespace)) {
                     if (method_exists($namespace, 'getInstance')) {

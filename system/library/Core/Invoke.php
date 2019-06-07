@@ -22,11 +22,11 @@ final class Invoke
 		return str_replace(DIRECTORY_SEPARATOR, '/', $path);
 	}
 
-	/**
-	 * 初始化
-	 * @param string $appRoot
-	 * @param string $indexFile
-	 */
+    /**
+     * 初始化
+     * @param string $bootstrap
+     * @throws Exception
+     */
 	public function init($bootstrap = null)
 	{
         defined('OC_ROOT') OR die('forbidden');
@@ -49,9 +49,10 @@ final class Invoke
 	}
 
     /**
-     * 运行
+     * 运行路由
      * @param $route
      * @param array $params
+     * @param string $requestMethod
      */
 	public static function run($route, $params = array(), $requestMethod = 'GET')
     {

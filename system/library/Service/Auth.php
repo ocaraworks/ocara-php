@@ -12,7 +12,7 @@ use Ocara\Core\ServiceBase;
 
 final class Auth extends ServiceBase
 {
-	private $_data = array();
+	private $data = array();
 	
 	/**
 	 * 设置权限数据
@@ -20,7 +20,7 @@ final class Auth extends ServiceBase
 	 */
 	public function setData(array $data)
 	{
-		$this->_data = $data;
+		$this->data = $data;
 	}
 	
 	/**
@@ -29,7 +29,7 @@ final class Auth extends ServiceBase
 	 */
 	public function setRole($roleList)
 	{
-		ocSet($this->_data, $roleList, array());
+		ocSet($this->data, $roleList, array());
 	}
 
     /**
@@ -39,7 +39,7 @@ final class Auth extends ServiceBase
      */
 	public function getRole($roleList)
 	{
-		return ocGet($roleList, $this->_data);
+		return ocGet($roleList, $this->data);
 	}
 
 	/**
@@ -52,7 +52,7 @@ final class Auth extends ServiceBase
 			$roleList = ocParseKey($roleList);
 		} 
 		
-		ocDel($this->_data, $roleList);
+		ocDel($this->data, $roleList);
 	}
 
     /**
@@ -72,7 +72,7 @@ final class Auth extends ServiceBase
 		}
 
 		$allowed = $allowed === true ? 1 : 0;
-		ocSet($this->_data, array_merge($roleList, $routeList), $allowed);
+		ocSet($this->data, array_merge($roleList, $routeList), $allowed);
 	}
 
 	/**
@@ -90,18 +90,19 @@ final class Auth extends ServiceBase
 			$routeList = ocParseKey($routeList);
 		}
 
-		ocDel($this->_data, array_merge($roleList, $routeList));
+		ocDel($this->data, array_merge($roleList, $routeList));
 	}
 
-	/**
-	 * 获取权限
-	 * @param string|array $roleList
-	 * @param string|array $routeList
-	 */
+    /**
+     * 获取权限
+     * @param string|array $roleList
+     * @param string|array $routeList
+     * @return array|bool|mixed|null
+     */
 	public function getAuth($roleList = null, $routeList = null)
 	{
 		if (!isset($roleList)) {
-			return $this->_data;
+			return $this->data;
 		}
 
 		if (!is_array($roleList)) {
@@ -114,14 +115,15 @@ final class Auth extends ServiceBase
 
 		$key = $routeList ? array_merge($roleList, $routeList) : $roleList;
 
-		return ocGet($key, $this->_data);
+		return ocGet($key, $this->data);
 	}
 
-	/**
-	 * 检测权限
-	 * @param string $roleList
-	 * @param string $routeList
-	 */
+    /**
+     * 检测权限
+     * @param string $roleList
+     * @param string $routeList
+     * @return bool
+     */
 	public function check($roleList, $routeList)
 	{
 		if (!is_array($roleList)) {
@@ -132,7 +134,7 @@ final class Auth extends ServiceBase
 			$routeList = ocParseKey($routeList);
 		} 
 
-		$result = ocGet(array_merge($roleList, $routeList), $this->_data);
+		$result = ocGet(array_merge($roleList, $routeList), $this->data);
 		return $result == 1 ? true : false;
 	}
 }
