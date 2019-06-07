@@ -180,7 +180,7 @@ class Url extends Base
 			}
 			
 			$route     = implode(OC_DIR_SEP, $query);
-			$query     = $params ? OC_DIR_SEP . implode(OC_DIR_SEP, $this->devideQuery($params)) : false;
+			$query     = $params ? OC_DIR_SEP . implode(OC_DIR_SEP, $this->divideQuery($params)) : false;
 			$paramPath = $urlType == self::ROUTE_TYPE_PATH ? OC_INDEX_FILE . OC_DIR_SEP : false;
 			$paramPath = $paramPath . $route . $query;
 			$paramPath = $urlType == self::ROUTE_TYPE_STATIC ? $paramPath . '.html' : $paramPath;
@@ -212,7 +212,7 @@ class Url extends Base
 	 * @param array $params
 	 * @return array
 	 */
-	public function devideQuery(array $params)
+	public function divideQuery(array $params)
 	{
 		$result = array();
 		
@@ -252,7 +252,7 @@ class Url extends Base
 		}
 
 		if ($this->isVirtualUrl($urlType)) {
-			$data['path'] = $result[3] . OC_DIR_SEP . implode(OC_DIR_SEP, $this->devideQuery($params));
+			$data['path'] = $result[3] . OC_DIR_SEP . implode(OC_DIR_SEP, $this->divideQuery($params));
 		} else {
 			parse_str($data['query'], $query);
 			$data['query'] = $this->buildQuery($query, $params);

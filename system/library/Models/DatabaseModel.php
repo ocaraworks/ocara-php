@@ -27,35 +27,35 @@ abstract class DatabaseModel extends ModelBase
 {
 
 	/**
-	 * @var @_primary 主键字段列表
-	 * @var $_primaries 主键字段数组
+	 * @var @primary 主键字段列表
+	 * @var $primaries 主键字段数组
 	 */
-	protected $_plugin;
-	protected $_primary;
-	protected $_table;
-	protected $_alias;
-    protected $_module;
-    protected $_connectName = 'defaults';
+	protected $plugin;
+	protected $primary;
+	protected $table;
+	protected $alias;
+    protected $module;
+    protected $connectName = 'defaults';
 
-    protected $_tag;
-    protected $_master;
-    protected $_slave;
-    protected $_database;
-    protected $_tableName;
-    protected $_insertId;
-    protected $_autoIncrementField;
+    protected $tag;
+    protected $master;
+    protected $slave;
+    protected $database;
+    protected $tableName;
+    protected $insertId;
+    protected $autoIncrementField;
 
-    protected $_sql = array();
-    protected $_fields = array();
-    protected $_primaries = array();
-    protected $_joins = array();
-    protected $_unions = array();
-    protected $_relateShardingData = array();
-    protected $_relateShardingInfo = array();
+    protected $sql = array();
+    protected $fields = array();
+    protected $primaries = array();
+    protected $joins = array();
+    protected $unions = array();
+    protected $relateShardingData = array();
+    protected $relateShardingInfo = array();
 
-    protected static $_config = array();
-    protected static $_configPath = array();
-    protected static $_requirePrimary;
+    protected static $config = array();
+    protected static $configPath = array();
+    protected static $requirePrimary;
 
     const EVENT_CACHE_QUERY_DATA = 'cacheQueryData';
 
@@ -75,24 +75,24 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function init()
 	{
-		if (self::$_requirePrimary === null) {
+		if (self::$requirePrimary === null) {
 			$required = ocConfig('MODEL_REQUIRE_PRIMARY', true);
-			self::$_requirePrimary = $required ? true : false;
+			self::$requirePrimary = $required ? true : false;
 		}
 
-		if (self::$_requirePrimary && empty($this->_primary)) {
+		if (self::$requirePrimary && empty($this->primary)) {
 			ocService()->error->show('no_primaries');
 		}
 
-		$this->_tag = self::getClass();
-		$this->_alias = $this->_alias ? $this->_alias : 'a';
-		$this->_tableName = empty($this->_table) ? lcfirst(self::getClassName()) : $this->_table;
+		$this->tag = self::getClass();
+		$this->alias = $this->alias ? $this->alias : 'a';
+		$this->tableName = empty($this->table) ? lcfirst(self::getClassName()) : $this->table;
 
-		$this->_join(false, $this->_tag, $this->_alias);
+		$this->_join(false, $this->tag, $this->alias);
 		$this->loadConfig();
 
-		if ($this->_primary) {
-			$this->_primaries = explode(',', $this->_primary);
+		if ($this->primary) {
+			$this->primaries = explode(',', $this->primary);
 		}
 
 		if (method_exists($this, '__start')) $this->__start();
@@ -118,7 +118,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function getTag()
 	{
-		return $this->_tag;
+		return $this->tag;
 	}
 
 	/**
@@ -127,7 +127,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function getTableName()
 	{
-		return $this->_tableName;
+		return $this->tableName;
 	}
 
     /**
@@ -137,7 +137,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getTableFullname()
 	{
-		return $this->connect()->getTableFullname($this->_tableName);
+		return $this->connect()->getTableFullname($this->tableName);
 	}
 
 	/**
@@ -146,7 +146,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function getConnectName()
 	{
-		return $this->_connectName;
+		return $this->connectName;
 	}
 
 	/**
@@ -155,19 +155,20 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function getDatabase()
 	{
-		return $this->_database;
+		return $this->database;
 	}
 
-	/**
-	 * 执行分库分表
-	 * @param array $data
-	 * @return $this
-	 */
+    /**
+     * 执行分库分表
+     * @param array $data
+     * @param null $relationName
+     * @return $this
+     */
 	public function sharding(array $data = array(), $relationName = null)
 	{
 	    if (func_num_args() >= 2) {
 	        if ($relationName) {
-                $this->_relationSharding[$relationName] = $data;
+                $this->relateShardingInfo[$relationName] = $data;
             }
         } else {
             if (method_exists($this, '_sharding')) {
@@ -183,8 +184,8 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function loadConfig()
 	{
-		if (empty(self::$_config[$this->_tag])) {
-			self::$_config[$this->_tag] = $this->getModelConfig();
+		if (empty(self::$config[$this->tag])) {
+			self::$config[$this->tag] = $this->getModelConfig();
 		}
 	}
 
@@ -257,16 +258,16 @@ abstract class DatabaseModel extends ModelBase
 	public function getConfig($key = null, $field = null)
 	{
         $this->loadConfig();
-        $tag = $this->_tag;
+        $tag = $this->tag;
 
 		if (isset($key)) {
 			if ($field) {
-				return ocGet(array($key, $field), self::$_config[$tag]);
+				return ocGet(array($key, $field), self::$config[$tag]);
 			}
-			return ocGet($key, self::$_config[$tag], array());
+			return ocGet($key, self::$config[$tag], array());
 		}
 
-		return self::$_config[$tag];
+		return self::$config[$tag];
 	}
 
     /**
@@ -275,10 +276,10 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getConfigPath()
 	{
-	    $tag = $this->_tag;
+	    $tag = $this->tag;
 
-	    if (!empty(self::$_configPath[$tag])) {
-	        return self::$_configPath[$tag];
+	    if (!empty(self::$configPath[$tag])) {
+	        return self::$configPath[$tag];
         }
 
         $moduleLang = OC_EMPTY;
@@ -289,15 +290,15 @@ abstract class DatabaseModel extends ModelBase
         $file = basename($filePath);
         $dir = dirname($filePath) . OC_DIR_SEP;
 
-        if ($this->_module) {
+        if ($this->module) {
             list($rootPath, $subDir) = ocSeprateDir($dir, '/privates' . $location);
         } else {
             list($rootPath, $subDir) = ocSeprateDir($dir, '/application' . $location);
         }
 
-        if ($this->_module) {
+        if ($this->module) {
             $modulePath = OC_MODULE_PATH ? : ocPath('modules');
-            $moduleLang = $modulePath . '/' . $this->_module . '/privates/lang/' . $language . '/' . $subDir . $file;
+            $moduleLang = $modulePath . '/' . $this->module . '/privates/lang/' . $language . '/' . $subDir . $file;
         }
 
         $paths = array(
@@ -306,7 +307,7 @@ abstract class DatabaseModel extends ModelBase
             'moduleLang' => $moduleLang
         );
 
-        return self::$_configPath[$tag] = $paths;
+        return self::$configPath[$tag] = $paths;
 	}
 
     /**
@@ -340,9 +341,11 @@ abstract class DatabaseModel extends ModelBase
 		return $result;
 	}
 
-	/**
+    /**
      * 字段别名映射
-	 */
+     * @param $field
+     * @return mixed
+     */
 	public function mapField($field)
     {
         $config = $this->getConfig('MAP');
@@ -357,7 +360,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function db($slave = false)
 	{
-		$name = $slave ? '_slave' : '_plugin';
+		$name = $slave ? 'slave' : 'plugin';
 		if (is_object($this->$name)) {
 			return $this->$name;
 		}
@@ -371,7 +374,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function selectDatabase($name)
 	{
-		$this->_database = $name;
+		$this->database = $name;
 	}
 
 	/**
@@ -381,17 +384,17 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function selectTable($name, $primary = null)
 	{
-		$this->_table = $name;
-		$this->_tableName = $name;
+		$this->table = $name;
+		$this->tableName = $name;
 
 		if ($primary) {
-			$this->_primary = $primary;
-			if ($this->_primary) {
-				$this->_primaries = explode(',', $this->_primary);
+			$this->primary = $primary;
+			if ($this->primary) {
+				$this->primaries = explode(',', $this->primary);
 			}
 		}
 
-		$this->_sql['tables'][$this->_alias]['fullname'] = $this->getTableName();
+		$this->sql['tables'][$this->alias]['fullname'] = $this->getTableName();
 	}
 
     /**
@@ -403,13 +406,13 @@ abstract class DatabaseModel extends ModelBase
 	public function loadFields($cache = true)
 	{
 		if ($cache) {
-			$this->_fields = $this->getFieldsConfig();
+			$this->fields = $this->getFieldsConfig();
 		}
 
-		if (!$this->_fields) {
-			$fieldsInfo = $this->connect()->getFields($this->_tableName);
-            $this->_autoIncrementField = $fieldsInfo['autoIncrementField'];
-            $this->_fields = $fieldsInfo['list'];
+		if (!$this->fields) {
+			$fieldsInfo = $this->connect()->getFields($this->tableName);
+            $this->autoIncrementField = $fieldsInfo['autoIncrementField'];
+            $this->fields = $fieldsInfo['list'];
 		}
 
 		return $this;
@@ -436,11 +439,11 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function getFields()
 	{
-		if (empty($this->_fields)) {
+		if (empty($this->fields)) {
 			$this->loadFields();
 		}
 
-		return $this->_fields;
+		return $this->fields;
 	}
 
     /**
@@ -456,7 +459,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function getAutoIncrementField()
     {
-        return $this->_autoIncrementField;
+        return $this->autoIncrementField;
     }
 
     /**
@@ -478,11 +481,11 @@ abstract class DatabaseModel extends ModelBase
             }
 		}
 
-		if ($this->_fields) {
+		if ($this->fields) {
 			if (!is_object($this->plugin)) {
 				$this->plugin = $this->connect();
 			}
-			$result = $this->plugin->formatFieldValues($this->_fields, $result);
+			$result = $this->plugin->formatFieldValues($this->fields, $result);
 		}
 
 		return $result;
@@ -490,14 +493,13 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 字段别名映射过滤
-     * @param string $field
-     * @param bool $return
-     * @return string|null
+     * @param $field
+     * @return mixed|null
      * @throws Exception
      */
 	public function filterField($field)
 	{
-		if (!$this->_fields) {
+		if (!$this->fields) {
 			$this->loadFields();
 		}
 
@@ -505,7 +507,7 @@ abstract class DatabaseModel extends ModelBase
 		$key = isset($mapsConfig[$field]) ? $mapsConfig[$field] : $field;
 
         if (!$this->plugin->hasAlias($key)) {
-            if (!isset($this->_fields[$key]) || $key == FormManager::getTokenTag()) {
+            if (!isset($this->fields[$key]) || $key == FormManager::getTokenTag()) {
                 return null;
             }
         }
@@ -518,9 +520,9 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function clearSql()
 	{
-		$this->_sql = array();
-		$this->_join(false, $this->_tableName, $this->_alias);
-		$this->plugin = $this->_master;
+		$this->sql = array();
+		$this->_join(false, $this->tableName, $this->alias);
+		$this->plugin = $this->master;
 		return $this;
 	}
 
@@ -543,7 +545,7 @@ abstract class DatabaseModel extends ModelBase
 	public function cache($server = null, $required = false)
 	{
 		$server = $server ? : DatabaseFactory::getDefaultServer();
-		$this->_sql['cache'] = array($server, $required);
+		$this->sql['cache'] = array($server, $required);
 		return $this;
 	}
 
@@ -552,7 +554,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function master()
 	{
-		$this->_sql['option']['master'] = true;
+		$this->sql['option']['master'] = true;
 		return $this;
 	}
 
@@ -574,9 +576,9 @@ abstract class DatabaseModel extends ModelBase
         $this->pushTransaction();
 
         if ($condition) {
-            $result = $this->plugin->update($this->_tableName, $data, $condition, $debug);
+            $result = $this->plugin->update($this->tableName, $data, $condition, $debug);
         } else {
-            $result = $this->plugin->insert($this->_tableName, $data, $debug);
+            $result = $this->plugin->insert($this->tableName, $data, $debug);
         }
 
         $this->clearSql();
@@ -593,7 +595,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function getInsertId()
 	{
-		return $this->_insertId;
+		return $this->insertId;
 	}
 
 	/**
@@ -686,7 +688,7 @@ abstract class DatabaseModel extends ModelBase
 			ocService()->error->show('need_condition');
 		}
 
-		$result = $this->plugin->delete($this->_tableName, $condition, $debug);
+		$result = $this->plugin->delete($this->tableName, $condition, $debug);
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
@@ -722,7 +724,7 @@ abstract class DatabaseModel extends ModelBase
 	{
 		if ($sql) {
 			$sqlData = $this->plugin->getSqlData($sql);
-			$dataType = $this->_sql['option']['dataType'] ? : DriverBase::DATA_TYPE_ARRAY;
+			$dataType = $this->sql['option']['dataType'] ? : DriverBase::DATA_TYPE_ARRAY;
 			return $this
                 ->connect(false)
                 ->query($sqlData, $debug, false, array(), $dataType);
@@ -742,7 +744,7 @@ abstract class DatabaseModel extends ModelBase
 	{
 		if ($sql) {
 			$sqlData = $this->plugin->getSqlData($sql);
-            $dataType = $this->_sql['option']['dataType'] ? : DriverBase::DATA_TYPE_ARRAY;
+            $dataType = $this->sql['option']['dataType'] ? : DriverBase::DATA_TYPE_ARRAY;
 			return $this
                 ->connect(false)
                 ->query($sqlData, $debug, false, array(), $dataType);
@@ -757,7 +759,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function getSql()
 	{
-		return $this->_sql;
+		return $this->sql;
 	}
 
 	/**
@@ -766,7 +768,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function setSql($sql)
 	{
-		$this->_sql = $sql;
+		$this->sql = $sql;
 	}
 
     /**
@@ -848,7 +850,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function asArray()
     {
-        $this->_sql['option']['dataType'] = DriverBase::DATA_TYPE_ARRAY;
+        $this->sql['option']['dataType'] = DriverBase::DATA_TYPE_ARRAY;
         return $this;
     }
 
@@ -858,7 +860,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function asObject()
     {
-        $this->_sql['option']['dataType'] = DriverBase::DATA_TYPE_OBJECT;
+        $this->sql['option']['dataType'] = DriverBase::DATA_TYPE_OBJECT;
         return $this;
     }
 
@@ -872,7 +874,7 @@ abstract class DatabaseModel extends ModelBase
         if (empty($entityClass)) {
             $entityClass = ocNamespace(__NAMESPACE__, 'entities',  __CLASS__ . 'Entity');
         }
-        $this->_sql['option']['dataType'] = $entityClass;
+        $this->sql['option']['dataType'] = $entityClass;
         return $this;
     }
 
@@ -884,7 +886,7 @@ abstract class DatabaseModel extends ModelBase
     public function getDataType($default = null)
     {
         $default = $default ? : DriverBase::DATA_TYPE_ARRAY;
-        return ocGet(array('option', 'dataType'), $this->_sql, $default);
+        return ocGet(array('option', 'dataType'), $this->sql, $default);
     }
 
     /**
@@ -901,7 +903,7 @@ abstract class DatabaseModel extends ModelBase
             $offset = 0;
         }
 
-        $sql = $this->_sql ? : array();
+        $sql = $this->sql ? : array();
         $records = new BatchObjectRecords(self::getClass(), $this->getEntityClass(), $offset, $rows, $sql, $debug);
 
         return $records;
@@ -915,7 +917,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function each($offset = 0, $debug = false)
     {
-        $sql = $this->_sql ? : array();
+        $sql = $this->sql ? : array();
         $records = new EachObjectRecords(self::getClass(), $this->getEntityClass(), $offset, $sql, $debug);
 
         return $records;
@@ -929,10 +931,10 @@ abstract class DatabaseModel extends ModelBase
     {
         $entityClass = OC_EMPTY;
 
-        if ($this->_sql['option']['dataType']) {
+        if ($this->sql['option']['dataType']) {
             $simpleDataTypes = array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT);
-            if (!in_array($this->_sql['option']['dataType'], $simpleDataTypes)) {
-                $entityClass = $this->_sql['option']['dataType'];
+            if (!in_array($this->sql['option']['dataType'], $simpleDataTypes)) {
+                $entityClass = $this->sql['option']['dataType'];
             }
         }
 
@@ -1007,7 +1009,7 @@ abstract class DatabaseModel extends ModelBase
 	public function getTotal($debug = false)
 	{
 		$queryRow = true;
-		if ($this->_unions || !empty($this->_sql['option']['group'])) {
+		if ($this->unions || !empty($this->sql['option']['group'])) {
 			$queryRow = false;
 		}
 
@@ -1037,8 +1039,8 @@ abstract class DatabaseModel extends ModelBase
     {
         if ($condition) $this->where($condition);
         if ($queryRow) {
-            if (!empty($this->_sql['option']['limit'])) {
-                $this->_sql['option']['limit'][1] = 1;
+            if (!empty($this->sql['option']['limit'])) {
+                $this->sql['option']['limit'][1] = 1;
             } else {
                 $this->limit(1);
             }
@@ -1077,8 +1079,8 @@ abstract class DatabaseModel extends ModelBase
         $cacheObj = null;
         $encodeSql = null;
 
-		if (isset($this->_sql['cache']) && is_array($this->_sql['cache'])) {
-			$cacheInfo = $this->_sql['cache'];
+		if (isset($this->sql['cache']) && is_array($this->sql['cache'])) {
+			$cacheInfo = $this->sql['cache'];
 		}
 
 		list($cacheConnect, $cacheRequired) = $cacheInfo;
@@ -1093,9 +1095,9 @@ abstract class DatabaseModel extends ModelBase
 
         $dataType = $dataType ? : $this->getDataType();
 		if ($queryRow) {
-            $result = $this->plugin->queryRow($sql, $debug, $count, $this->_unions, $dataType);
+            $result = $this->plugin->queryRow($sql, $debug, $count, $this->unions, $dataType);
 		} else {
-            $result = $this->plugin->query($sql, $debug, $count, $this->_unions, $dataType);
+            $result = $this->plugin->query($sql, $debug, $count, $this->unions, $dataType);
 		}
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
@@ -1121,7 +1123,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function isPage()
     {
-        return ocGet(array('option', 'page'), $this->_sql) ? true : false;
+        return ocGet(array('option', 'page'), $this->sql) ? true : false;
     }
 
     /**
@@ -1134,22 +1136,22 @@ abstract class DatabaseModel extends ModelBase
 	{
 		$this->plugin = null;
 
-		if (!($master || ocGet(array('option', 'master'), $this->_sql))) {
-			if (!is_object($this->_slave)) {
-				$this->_slave = DatabaseFactory::create($this->_connectName, false, false);
+		if (!($master || ocGet(array('option', 'master'), $this->sql))) {
+			if (!is_object($this->slave)) {
+				$this->slave = DatabaseFactory::create($this->connectName, false, false);
 			}
-			$this->plugin = $this->_slave;
+			$this->plugin = $this->slave;
 		}
 
 		if (!is_object($this->plugin)) {
-			if (!is_object($this->_master)) {
-				$this->_master = DatabaseFactory::create($this->_connectName);
+			if (!is_object($this->master)) {
+				$this->master = DatabaseFactory::create($this->connectName);
 			}
-			$this->plugin = $this->_master;
+			$this->plugin = $this->master;
 		}
 
-		if ($this->_database) {
-			$this->plugin->selectDatabase($this->_database);
+		if ($this->database) {
+			$this->plugin->selectDatabase($this->database);
 		}
 
 		return $this->plugin;
@@ -1283,7 +1285,7 @@ abstract class DatabaseModel extends ModelBase
 	{
 		if ($fields) {
 			$fields = array($alias, $fields);
-			$this->_sql['option']['fields'][] = $fields;
+			$this->sql['option']['fields'][] = $fields;
 		}
 
 		return $this;
@@ -1297,7 +1299,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
     protected function _addOn($on, $alias = null)
 	{
-		$this->_sql['tables'][$alias]['on'] = $on;
+		$this->sql['tables'][$alias]['on'] = $on;
 		return $this;
 	}
 
@@ -1313,7 +1315,7 @@ abstract class DatabaseModel extends ModelBase
 	public function between($field, $value1, $value2, $alias = null, $linkSign = 'AND')
 	{
 		$where = array($alias, 'between', array($field, $value1, $value2), $linkSign);
-		$this->_sql['option']['where'][] = $where;
+		$this->sql['option']['where'][] = $where;
 
 		return $this;
 	}
@@ -1343,7 +1345,7 @@ abstract class DatabaseModel extends ModelBase
 	{
 		if (!ocEmpty($where)) {
 			$where = array($alias, 'where', $where, $linkSign);
-			$this->_sql['option']['where'][] = $where;
+			$this->sql['option']['where'][] = $where;
 		}
 
 		return $this;
@@ -1397,7 +1399,7 @@ abstract class DatabaseModel extends ModelBase
 
 		$linkSign = strtoupper($linkSign);
 		$where = array($alias, 'cWhere', array($operator, $field, $value), $linkSign);
-		$this->_sql['option'][$type][] = $where;
+		$this->sql['option'][$type][] = $where;
 
 		return $this;
 	}
@@ -1411,7 +1413,7 @@ abstract class DatabaseModel extends ModelBase
 	public function mWhere($where, $link = null)
 	{
 		$link = $link ? : 'AND';
-		$this->_sql['option']['mWhere'][] = compact('where', 'link');
+		$this->sql['option']['mWhere'][] = compact('where', 'link');
 		return $this;
 	}
 
@@ -1424,7 +1426,7 @@ abstract class DatabaseModel extends ModelBase
 	{
 		$sql = (array)$sql;
 		foreach ($sql as $value) {
-			$this->_sql['option']['more'][] = $value;
+			$this->sql['option']['more'][] = $value;
 		}
 		return $this;
 	}
@@ -1437,7 +1439,7 @@ abstract class DatabaseModel extends ModelBase
 	public function groupBy($groupBy)
 	{
 		if ($groupBy) {
-			$this->_sql['option']['group'] = $groupBy;
+			$this->sql['option']['group'] = $groupBy;
 		}
 		return $this;
 	}
@@ -1452,7 +1454,7 @@ abstract class DatabaseModel extends ModelBase
 	{
 		if (!ocEmpty($having)) {
 			$having = array(false, 'where', $having, $linkSign);
-			$this->_sql['option']['having'][] = $having;
+			$this->sql['option']['having'][] = $having;
 		}
 
 		return $this;
@@ -1491,7 +1493,7 @@ abstract class DatabaseModel extends ModelBase
 	public function orderBy($orderBy)
 	{
 		if ($orderBy) {
-			$this->_sql['option']['order'] = $orderBy;
+			$this->sql['option']['order'] = $orderBy;
 		}
 		return $this;
 	}
@@ -1504,7 +1506,7 @@ abstract class DatabaseModel extends ModelBase
     public function unionOrderBy($orderBy)
     {
         if ($orderBy) {
-            $this->_unions['option']['order'] = $orderBy;
+            $this->unions['option']['order'] = $orderBy;
         }
         return $this;
     }
@@ -1524,7 +1526,7 @@ abstract class DatabaseModel extends ModelBase
             $offset = 0;
         }
 
-		$this->_sql['option']['limit'] = array($offset, $rows);
+		$this->sql['option']['limit'] = array($offset, $rows);
 		return $this;
 	}
 
@@ -1543,7 +1545,7 @@ abstract class DatabaseModel extends ModelBase
             $offset = 0;
         }
 
-        $this->_unions['option']['limit'] = array($offset, $rows);
+        $this->unions['option']['limit'] = array($offset, $rows);
         return $this;
     }
 
@@ -1554,7 +1556,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function page(array $limitInfo)
 	{
-		$this->_sql['option']['page'] = true;
+		$this->sql['option']['page'] = true;
 		return $this->limit($limitInfo['offset'], $limitInfo['rows']);
 	}
 
@@ -1577,7 +1579,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function countField($field)
 	{
-		$this->_sql['countField'] = $field;
+		$this->sql['countField'] = $field;
 		return $this;
 	}
 
@@ -1595,16 +1597,16 @@ abstract class DatabaseModel extends ModelBase
 		if ($unJoined) {
 			$map = $this->getConfig('MAPS');
 			if ($map) {
-				$transforms[$this->_alias] = $map;
+				$transforms[$this->alias] = $map;
 			}
 		} else {
 			$transforms = array();
 			foreach ($tables as $alias => $row) {
-				if ($alias == $this->_alias) {
+				if ($alias == $this->alias) {
 					if ($map = $this->getConfig('MAPS')) {
-						$transforms[$this->_alias] = $map;
+						$transforms[$this->alias] = $map;
 					}
-				} elseif (isset($this->_joins[$alias])) {
+				} elseif (isset($this->joins[$alias])) {
 					if ($map = $this->getConfig('MAPS')) {
 						$transforms[$alias] = $map;
 					}
@@ -1649,19 +1651,19 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function _genSelectSql($count = false)
 	{
-		$option = ocGet('option', $this->_sql, array());
-		$tables = ocGet('tables', $this->_sql, array());
+		$option = ocGet('option', $this->sql, array());
+		$tables = ocGet('tables', $this->sql, array());
 		$unJoined = count($tables) <= 1;
 		$from = $this->_getFromSql($tables, $unJoined);
 
 		if ($count) {
-			$countField = ocGet('countField', $this->_sql, null);
+			$countField = ocGet('countField', $this->sql, null);
 			$isGroup = !empty($option['group']);
 			$fields = $this->plugin->getCountSql($countField, 'total', $isGroup);
 		} else {
 			$aliasFields = $this->_getAliasFields($tables);
 			if (!isset($option['fields']) || $this->_isDefaultFields($option['fields'])) {
-				$option['fields'][] = array($this->_alias, array_keys($this->getFields()));
+				$option['fields'][] = array($this->alias, array_keys($this->getFields()));
 			}
 			$fields = $this->_getFieldsSql($option['fields'], $aliasFields, $unJoined);
 		}
@@ -1689,7 +1691,7 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function _genWhere()
 	{
-		$option = ocGet('option', $this->_sql, array());
+		$option = ocGet('option', $this->sql, array());
 		$where = array();
 
 		if (!empty($option['where'])) {
@@ -1771,10 +1773,10 @@ abstract class DatabaseModel extends ModelBase
 			}
 			$alias = $unJoined ? false : $alias;
 			$fieldData = (array)$fieldData;
-			$fields[] = $this->plugin->getFieldsSql($fieldData, $aliasFields, $this->_alias, $alias);
+			$fields[] = $this->plugin->getFieldsSql($fieldData, $aliasFields, $this->alias, $alias);
 		}
 
-		$sql = $this->plugin->combineFieldsSql($fields, $aliasFields, $unJoined, $this->_alias);
+		$sql = $this->plugin->combineFieldsSql($fields, $aliasFields, $unJoined, $this->alias);
 		return $sql;
 	}
 
@@ -1818,7 +1820,7 @@ abstract class DatabaseModel extends ModelBase
 
 		if ($config) {
 			$foreignField = $this->plugin->getFieldNameSql($config['foreignKey'], $alias);
-			$primaryField = $this->plugin->getFieldNameSql($config['primaryKey'], $this->_alias);
+			$primaryField = $this->plugin->getFieldNameSql($config['primaryKey'], $this->alias);
 			$where = array($foreignField => ocSql($primaryField));
 			$condition[] = array('AND', $this->plugin->parseCondition($where, 'AND', null, $alias));
 			if (is_array($config['condition'])) {
@@ -1842,6 +1844,7 @@ abstract class DatabaseModel extends ModelBase
      * 复杂条件
      * @param array $data
      * @param $alias
+     * @return null
      */
     protected function _getComplexWhere(array $data, $alias)
 	{
@@ -1872,7 +1875,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	protected function getTable()
 	{
-		return $this->_table;
+		return $this->table;
 	}
 
 	/**
@@ -1904,7 +1907,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function _union($model, $unionAll = false)
 	{
-		$this->_unions['models'][] = compact('model', 'unionAll');
+		$this->unions['models'][] = compact('model', 'unionAll');
 	}
 
 	/**
@@ -1913,7 +1916,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function getUnions()
 	{
-		return $this->_unions;
+		return $this->unions;
 	}
 
 	/**
@@ -1923,7 +1926,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	protected function _getTable($table)
 	{
-		return empty($table) ? $this->_tableName : $table;
+		return empty($table) ? $this->tableName : $table;
 	}
 
     /**
@@ -1941,9 +1944,9 @@ abstract class DatabaseModel extends ModelBase
 		$this->connect();
 
 		if ($type == false) {
-			$alias = $this->_alias;
+			$alias = $this->alias;
             $fullname = $this->getTableName();
-            $class = $this->_tag;
+            $class = $this->tag;
 		} else {
             $shardingData = array();
             $relateShardingInfo = $this->_getRelateShardingInfo($class);
@@ -1961,10 +1964,10 @@ abstract class DatabaseModel extends ModelBase
             }
             $fullname = $model->getTableName();
 			$alias = $alias ? : $fullname;
-			$this->_joins[$alias] = $model;
+			$this->joins[$alias] = $model;
 		}
 
-		$this->_sql['tables'][$alias] = compact('type', 'fullname', 'class', 'config');
+		$this->sql['tables'][$alias] = compact('type', 'fullname', 'class', 'config');
 
 		if ($config) {
 			$this->_addOn(null, $alias);
@@ -1986,15 +1989,15 @@ abstract class DatabaseModel extends ModelBase
 
         if (preg_match('/^[\{](\w+)[\}]$/i', $keyword, $matches)) {
             $relationAlias = $matches[1];
-            if (array_key_exists($relationAlias, $this->_relateShardingInfo)) {
-                $relationShardingInfo = $this->_relateShardingInfo[$relationAlias];
+            if (array_key_exists($relationAlias, $this->relateShardingInfo)) {
+                $relationShardingInfo = $this->relateShardingInfo[$relationAlias];
             } else {
-                if (array_key_exists($relationAlias, $this->_relateShardingData)) {
+                if (array_key_exists($relationAlias, $this->relateShardingData)) {
                     $config = $this->_getRelateConfig($relationAlias);
                     if ($config) {
-                        $shardingData = $this->_relateShardingData[$relationAlias];
+                        $shardingData = $this->relateShardingData[$relationAlias];
                         $relationShardingInfo = array($config['class'], $shardingData);
-                        $this->_relateShardingInfo[$relationAlias] = $relationShardingInfo;
+                        $this->relateShardingInfo[$relationAlias] = $relationShardingInfo;
                     }
                 }
             }
@@ -2010,11 +2013,11 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function _getRelateConfig($key)
 	{
-		if (!isset(self::$_config[$this->_tag]['RELATIONS'][$key])) {
+		if (!isset(self::$config[$this->tag]['RELATIONS'][$key])) {
 			return array();
 		}
 
-		$config = self::$_config[$this->_tag]['RELATIONS'][$key];
+		$config = self::$config[$this->tag]['RELATIONS'][$key];
 
 		if (count($config) < 3) {
 			ocService()->error->show('fault_relate_config');

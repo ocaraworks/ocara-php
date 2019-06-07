@@ -21,7 +21,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	/**
 	 * PDO绑定参数类型映射
 	 */
-	protected $_paramTypesMap = array(
+	protected $paramTypesMap = array(
 		'integer' => PDO::PARAM_INT,
 		'string'  => PDO::PARAM_STR,
         'binary'  => PDO::PARAM_LOB,
@@ -34,53 +34,54 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function init($config)
 	{
-		$this->_config = $config;
+		$this->config = $config;
 	}
 
-	/**
-	 * @return mixed
-	 * @throws \Ocara\Core\Exception
-	 */
+    /**
+     * @return mixed
+     * @throws Exception
+     */
 	public function connect()
 	{
 		$this->_connect();
-		return $this->_connection = $this->_instance;
+		return $this->connection = $this->instance;
 	}
 
     /**
      * 获取驱动类型
-     * @return mixed
+     * @return string
      */
     public function driveType()
     {
         return self::DRIVE_TYPE_PDO;
     }
 
-	/**
-	 * 连接数据库
-	 */
+    /**
+     * 连接数据库
+     * @throws Exception
+     */
 	protected function _connect()
 	{
 		$limitConnect = ocConfig('DATABASE_LIMIT_CONNECT_TIMES', 3);
 
 		for ($i = 1; $i <= $limitConnect; $i++) {
 			$error = array();
-			$options = $this->_config['options'];
+			$options = $this->config['options'];
 
-			if ($this->_pconnect) {
+			if ($this->pConnect) {
 				$options[PDO::ATTR_PERSISTENT] = true;
 			}
 
 			try {
-				$this->_instance = new PDO(
-					$this->_config['dsn'], $this->_config['username'],
-					$this->_config['password'], $options
+				$this->instance = new PDO(
+					$this->config['dsn'], $this->config['username'],
+					$this->config['password'], $options
 				);
 			} catch (PDOException $e) {
-				$this->_errno = $e->getCode();
-				$this->_error = $e->getMessage();
+				$this->errNo = $e->getCode();
+				$this->error = $e->getMessage();
 				$error = array(
-					$this->_config['name'], $this->_errno, $this->_error
+					$this->config['name'], $this->errNo, $this->error
 				);
 			}
 			if ($error) {
@@ -109,79 +110,82 @@ class PdoDriver extends DriverBase implements DriverInterface
 		$this->_connect();
 	}
 
-	/**
-	 * 获取连接句柄
-	 */
+    /**
+     * 获取连接句柄
+     * @return mixed
+     */
 	public function connection()
 	{
-		return $this->_connection;
+		return $this->connection;
 	}
 
-	/**
-	 * 选择数据库
-	 * @param $name
-	 */
+    /**
+     * 选择数据库
+     * @param $name
+     */
 	public function select_db($name)
 	{
 		return;
 	}
 
-	/**
-	 * 获取Statement对象
-	 */
+    /**
+     * 获取Statement对象
+     * @return mixed
+     */
 	public function stmt()
 	{
-		return $this->_stmt;
-	}
-
-	/**
-	 * @param string $sql
-	 * @param int $resultmode
-	 * @return mixed
-	 */
-	public function query($sql, $resultmode = null)
-	{
-	    $resultmode = $resultmode ? : PDO::FETCH_ASSOC;
-		return $this->_instance->query($sql, $resultmode);
+		return $this->stmt;
 	}
 
     /**
      * @param string $sql
-     * @param int $resultmode
+     * @param null $resultMode
      * @return mixed
      */
-    public function query_sql($sql, $resultmode = null)
+	public function query($sql, $resultMode = null)
+	{
+	    $resultMode = $resultMode ? : PDO::FETCH_ASSOC;
+		return $this->instance->query($sql, $resultMode);
+	}
+
+    /**
+     * @param string $sql
+     * @param int $resultMode
+     * @return mixed
+     */
+    public function query_sql($sql, $resultMode = null)
     {
-        return $this->_stmt = $this->query($sql, $resultmode);
+        return $this->stmt = $this->query($sql, $resultMode);
     }
 
 	public function close()
 	{}
 
-	/**
-	 * 开始一个事务
-	 * @return mixed
-	 */
+    /**
+     * 开始一个事务
+     * @return mixed
+     */
 	public function begin_transaction()
 	{
-		return $this->_instance->beginTransaction();
+		return $this->instance->beginTransaction();
 	}
 
-	/**
-	 * 检查驱动内的一个事务当前是否处于激活
-	 */
+    /**
+     * 检查驱动内的一个事务当前是否处于激活
+     * @return mixed
+     */
 	public function in_transaction()
 	{
-		return $this->_instance->inTransaction();
+		return $this->instance->inTransaction();
 	}
 
-	/**
-	 * 提交事务
-	 * @return mixed
-	 */
+    /**
+     * 提交事务
+     * @return mixed
+     */
 	public function commit()
 	{
-		return $this->_instance->commit();
+		return $this->instance->commit();
 	}
 
 	/**
@@ -190,37 +194,38 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function rollBack()
 	{
-		return $this->_instance->rollBack();
+		return $this->instance->rollBack();
 	}
 
-	/**
-	 * 设置是否自动提交事务
-	 * @param bool $autocommit
-	 */
+    /**
+     * 设置是否自动提交事务
+     * @param bool $autocommit
+     * @return mixed
+     */
 	public function autocommit($autocommit = true)
 	{
 		$autocommit = $autocommit ? 1 : 0;
-		return $this->_instance->setAttribute(\PDO::ATTR_AUTOCOMMIT, $autocommit);
+		return $this->instance->setAttribute(\PDO::ATTR_AUTOCOMMIT, $autocommit);
 	}
 
-	/**
-	 * 获取参数
-	 * @param mixed $name
-	 * @return mixed
-	 */
+    /**
+     * 获取参数
+     * @param $name
+     * @return mixed
+     */
 	public function get_attribute($name)
 	{
-		return $this->_instance->getAttribute($name);
+		return $this->instance->getAttribute($name);
 	}
 
-	/**
-	 * 设置参数
-	 * @param mixed name
-	 * @return mixed
-	 */
+    /**
+     * 设置参数
+     * @param $name
+     * @return mixed
+     */
 	public function set_attribute($name)
 	{
-		return $this->_instance->getAttribute($name);
+		return $this->instance->getAttribute($name);
 	}
 
 	/**
@@ -228,7 +233,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function fetch_array()
 	{
-		return array_values($this->_stmt->fetchAll());
+		return array_values($this->stmt->fetchAll());
 	}
 
 	/**
@@ -236,7 +241,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function fetch_object()
 	{
-		return $this->_stmt->fetchObject();
+		return $this->stmt->fetchObject();
 	}
 
 	/**
@@ -244,7 +249,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function fetch_assoc()
 	{
-		return $this->_stmt->fetchAll();;
+		return $this->stmt->fetchAll();;
 	}
 
 	/**
@@ -252,7 +257,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function fetch_row()
 	{
-		return $this->_stmt->fetch();
+		return $this->stmt->fetch();
 	}
 
 	public function free_result()
@@ -263,7 +268,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function num_rows()
 	{
-		return $this->_stmt->rowCount();
+		return $this->stmt->rowCount();
 	}
 
 	/**
@@ -272,7 +277,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function data_seek($num = 0)
 	{
-		return $this->_stmt->nextRowset();
+		return $this->stmt->nextRowset();
 	}
 
 	/**
@@ -280,46 +285,46 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function affected_rows()
 	{
-		return $this->_stmt->rowCount();
+		return $this->stmt->rowCount();
 	}
 
-	/**
-	 * @return null
-	 */
+    /**
+     * @return int
+     */
 	public function error_no()
 	{
-		if (is_object($this->_stmt)) {
-			$errorCode = $this->_stmt->errorCode();
+		if (is_object($this->stmt)) {
+			$errorCode = $this->stmt->errorCode();
 		} else {
-			$errorCode = $this->_instance->errorCode();
+			$errorCode = $this->instance->errorCode();
 		}
 
 		return (integer)$errorCode;
 	}
 
-	/**
-	 * @return mixed
-	 */
+    /**
+     * @return mixed
+     */
 	public function error()
 	{
-		if (is_object($this->_stmt)) {
-			$errorList = $this->_stmt->errorInfo();
+		if (is_object($this->stmt)) {
+			$errorList = $this->stmt->errorInfo();
 		} else {
-			$errorList = $this->_instance->errorInfo();
+			$errorList = $this->instance->errorInfo();
 		}
 
 		return end($errorList);
 	}
 
-	/**
-	 * @return mixed
-	 */
+    /**
+     * @return mixed
+     */
 	public function error_list()
 	{
-		if (is_object($this->_stmt)) {
-			$errorList = $this->_stmt->errorInfo();
+		if (is_object($this->stmt)) {
+			$errorList = $this->stmt->errorInfo();
 		} else {
-			$errorList = $this->_instance->errorInfo();
+			$errorList = $this->instance->errorInfo();
 		}
 
 		return $errorList;
@@ -331,7 +336,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function show_fields($sql)
 	{
-		return $this->_instance->query($sql);
+		return $this->instance->query($sql);
 	}
 
 	/**
@@ -342,83 +347,88 @@ class PdoDriver extends DriverBase implements DriverInterface
 	{
 		return $str;
 	}
-	
-	/**
-	 * 预处理
-	 * @param string $sql
-	 */
+
+    /**
+     * 预处理
+     * @param string $sql
+     * @return mixed
+     */
 	public function prepare($sql)
 	{
-		return $this->_instance->prepare($sql);
+		return $this->instance->prepare($sql);
 	}
 
     /**
      * 预处理
      * @param string $sql
+     * @return mixed
      */
     public function prepare_sql($sql)
     {
-        return $this->_stmt = $this->prepare($sql);
+        return $this->stmt = $this->prepare($sql);
     }
 
-	/**
-	 * 绑定参数
-	 * @param string $parameter
-	 * @param scalar $variable
-	 */
+    /**
+     * 绑定参数
+     * @param string $parameter
+     * @param mixed $variable
+     * @return mixed
+     */
 	public function bind_param($parameter, &$variable)
 	{
-		return call_user_func_array(array($this->_stmt, 'bindParam'), func_get_args());
+		return call_user_func_array(array($this->stmt, 'bindParam'), func_get_args());
 	}
 
-	/**
-	 * 绑定参数
-	 * @param string $name
-	 * @param mixed $value
-	 * @param int $type
-	 * @return mixed
-	 */
+    /**
+     * 绑定参数
+     * @param $name
+     * @param $value
+     * @param int $type
+     * @return mixed
+     */
 	public function bind_value($name, $value, $type = PDO::PARAM_STR)
 	{
-		return $this->_stmt->bindValue($name, $value, $type);
+		return $this->stmt->bindValue($name, $value, $type);
 	}
 
-	/**
-	 * 返回绑定参数信息
-	 */
+    /**
+     * 返回绑定参数信息
+     * @return false|string
+     */
 	public function debugDumpParams()
 	{
 		ob_start();
-		$this->_stmt->debugDumpParams();
+		$this->stmt->debugDumpParams();
 		$result = ob_get_contents();
 		ob_end_clean();
 
 		return $result;
 	}
 
-	/**
-	 * 获取结果集数据
-	 * @param string $dataType
-	 * @param bool $queryRow
-	 */
+    /**
+     * 获取结果集数据
+     * @param int|string $dataType
+     * @param bool $queryRow
+     * @return array
+     */
 	public function get_all_result($dataType = DriverBase::DATA_TYPE_ARRAY, $queryRow = false)
 	{
 		$result = array();
 
-		if (is_object($this->_stmt)) {
+		if (is_object($this->stmt)) {
             if ($dataType == self::DATA_TYPE_OBJECT) {
-                while ($row = $this->_stmt->fetchObject()) {
+                while ($row = $this->stmt->fetchObject()) {
                     $result[] = $row;
                     if ($queryRow) break;
                 }
             } elseif ($dataType == self::DATA_TYPE_ARRAY) {
-                while ($row = $this->_stmt->fetch(PDO::FETCH_ASSOC)) {
+                while ($row = $this->stmt->fetch(PDO::FETCH_ASSOC)) {
                     $result[] = $row;
                     if ($queryRow) break;
                 }
             } else {
                 if (class_exists($dataType)) {
-                    while ($row = $this->_stmt->fetch(PDO::FETCH_ASSOC)) {
+                    while ($row = $this->stmt->fetch(PDO::FETCH_ASSOC)) {
                         $object = new $dataType();
                         foreach ($row as $key => $value) {
                             $object->$key = $value;
@@ -437,7 +447,7 @@ class PdoDriver extends DriverBase implements DriverInterface
      * @return mixed
      */
 	public function execute(){
-        return $this->_stmt->execute();
+        return $this->stmt->execute();
     }
 
 	/**
@@ -448,18 +458,18 @@ class PdoDriver extends DriverBase implements DriverInterface
 		return $this->execute();
 	}
 
-	/**
-	 * 找不到方法时
-	 * @param string $name
-	 * @param array $params
-	 * @return mixed
-	 */
+    /**
+     * 找不到方法时
+     * @param string $name
+     * @param $params
+     * @return mixed
+     */
 	public function __call($name, $params)
 	{
-		if ($this->_instance && method_exists($this->_instance, $name)) {
-			return call_user_func_array(array($this->_instance, $name), $params);
+		if ($this->instance && method_exists($this->instance, $name)) {
+			return call_user_func_array(array($this->instance, $name), $params);
 		}
-		parent::_call($name, $params);
+		parent::__call($name, $params);
 	}
 }
 

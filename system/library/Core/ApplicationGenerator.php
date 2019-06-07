@@ -133,4 +133,3 @@ final class ApplicationGenerator
 		die("Please make sure the parent directory is {$type} : {$path}.");
 	}
 }
-?>

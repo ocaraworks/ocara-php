@@ -30,12 +30,13 @@ class DatabaseBase extends Sql
 	/**
 	 * 连接属性
 	 */
-	protected $_pdoName;
-	protected $_connectName;
-	protected $_wakeUpTimes = 0;
+	protected $pdoName;
+	protected $connectName;
+	protected $wakeUpTimes = 0;
+	protected $pConnect;
 
-	private $_error = array();
-	private static $_connects = array();
+	private $error = array();
+	private static $connects = array();
 
 	protected static $paramOptions = array(
 		'set', 		'where', 	'groupBy',
@@ -90,8 +91,8 @@ class DatabaseBase extends Sql
 			);
 		}
 
-		$this->_config = $config;
-		ocDel($this->_config, 'password');
+		$this->config = $config;
+		ocDel($this->config, 'password');
 
 		$this->init($config);
 	}
@@ -115,7 +116,7 @@ class DatabaseBase extends Sql
 	 */
 	public function setConnectName($connectName)
 	{
-		$this->_connectName = $connectName;
+		$this->connectName = $connectName;
 	}
 
 	/**
@@ -124,7 +125,7 @@ class DatabaseBase extends Sql
 	 */
 	public function getConnectName()
 	{
-		return $this->_connectName;
+		return $this->connectName;
 	}
 
     /**
@@ -138,12 +139,12 @@ class DatabaseBase extends Sql
 		$connectName = $config['connect_name'];
 		$this->setConnectName($connectName);
 
-		$exists = isset(self::$_connects[$connectName]) && self::$_connects[$connectName] instanceof DriverBase;
+		$exists = isset(self::$connects[$connectName]) && self::$connects[$connectName] instanceof DriverBase;
 		if ($exists) {
-			$this->plugin = self::$_connects[$connectName];
+			$this->plugin = self::$connects[$connectName];
 		} else {
 			$this->plugin = $this->getDriver($config);
-			self::$_connects[$connectName] = $this->plugin;
+			self::$connects[$connectName] = $this->plugin;
 			$this->isPconnect($config['pconnect']);
 			$this->plugin->connect();
 			$this->isPrepare($config['prepare']);
@@ -170,7 +171,7 @@ class DatabaseBase extends Sql
      */
 	public function getDriver(array $data)
 	{
-		if ($this->_config['isPdo'] && ocCheckExtension($this->_pdoName, false)) {
+		if ($this->config['isPdo'] && ocCheckExtension($this->pdoName, false)) {
 			$object = $this->loadDatabase('Pdo');
 			$object->init($this->getPdoParams($data));
 		} else {
@@ -215,10 +216,10 @@ class DatabaseBase extends Sql
 			if (ocEmpty($name)) {
 				return null;
 			}
-			return ocGet((string)$name, $this->_config);
+			return ocGet((string)$name, $this->config);
 		}
 
-		return $this->_config;
+		return $this->config;
 	}
 
     /**
@@ -237,7 +238,8 @@ class DatabaseBase extends Sql
         );
 
 		try {
-			if ($this->_prepared && $params) {
+            $result = null;
+			if ($this->prepared && $params) {
 				$this->plugin->prepare_sql($sql);
 				$this->_bindParams($params);
 				$result = $this->plugin->execute_sql();
@@ -245,11 +247,11 @@ class DatabaseBase extends Sql
 				$result = $this->plugin->query_sql($sql);
 			}
 		} catch (Exception $exception) {
-			if (!$this->_wakeUpTimes) {
+			if (!$this->wakeUpTimes) {
 				if ($this->plugin->is_not_active()) {
 					$this->plugin->wake_up();
 				}
-				$this->_wakeUpTimes++;
+				$this->wakeUpTimes++;
 				$result = call_user_func_array(array($this, __METHOD__), func_get_arg());
 				return $result;
 			}
@@ -369,9 +371,9 @@ class DatabaseBase extends Sql
                 $params = array_merge($params, $unionParams);
             }
             if (!$count && !empty($unions['option'])) {
-                $ordeBy = $unions['option']['order'];
+                $orderBy = $unions['option']['order'];
                 $limit = $unions['option']['limit'];
-                $sql = $this->getSubQuerySql($sql, $ordeBy, $limit);
+                $sql = $this->getSubQuerySql($sql, $orderBy, $limit);
             }
         }
 
@@ -395,16 +397,16 @@ class DatabaseBase extends Sql
 
 	/**
 	 * 是否长连接
-	 * @param bool $pconnect
+	 * @param bool $pConnect
 	 * @return bool
 	 */
-	public function isPconnect($pconnect = null)
+	public function isPconnect($pConnect = null)
 	{
-		if (isset($pconnect)) {
-			$this->_pconnect = $pconnect ? true : false;
-			$this->plugin->is_pconnect($pconnect);
+		if (isset($pConnect)) {
+			$this->pConnect = $pConnect ? true : false;
+			$this->plugin->is_pconnect($pConnect);
 		}
-		return $this->_pconnect;
+		return $this->pConnect;
 	}
 
 	/**
@@ -415,10 +417,10 @@ class DatabaseBase extends Sql
 	public function isPrepare($prepare = null)
 	{
 		if (isset($prepare)) {
-			$this->_prepared = $prepare ? true : false;
+			$this->prepared = $prepare ? true : false;
 			$this->plugin->is_prepare($prepare);
 		}
-		return $this->_prepared;
+		return $this->prepared;
 	}
 
     /**
@@ -545,9 +547,9 @@ class DatabaseBase extends Sql
 			$databaseName = $mt[1];
 			$table = $mt[2];
 		} else {
-			$databaseName = $this->_config['name'];
-			if ($this->_config['prefix']) {
-				$table = $this->_config['prefix'] . $table;
+			$databaseName = $this->config['name'];
+			if ($this->config['prefix']) {
+				$table = $this->config['prefix'] . $table;
 			}
 		}
 
@@ -564,7 +566,7 @@ class DatabaseBase extends Sql
 		$result = $this->plugin->selectDatabase($name);
 
 		if ($result) {
-			$this->_config['name'] = $name;
+			$this->config['name'] = $name;
 		} else {
 			$this->showError('failed_select_database');
 		}
@@ -577,7 +579,7 @@ class DatabaseBase extends Sql
 	 */
 	public function getKeywords()
 	{
-		return $this->_config['keywords'] ? $this->_config['keywords'] : array();
+		return $this->config['keywords'] ? $this->config['keywords'] : array();
 	}
 
 	/**
@@ -652,7 +654,7 @@ class DatabaseBase extends Sql
 		}
 
 		$option = strtolower($option);
-		$this->_params[$option] = array_merge($this->_params[$option], $data);
+		$this->params[$option] = array_merge($this->params[$option], $data);
 	}
 
 	/**
@@ -735,12 +737,12 @@ class DatabaseBase extends Sql
 	 */
 	public function setError()
 	{
-		$this->_error = array();
+		$this->error = array();
 
 		if ($this->plugin->error_no() > 0) {
-			$this->_error['errorCode'] = $this->plugin->error_no();
-			$this->_error['errorMessage'] = $this->plugin->error();
-			$this->_error['errorList'] = $this->plugin->error_list();
+			$this->error['errorCode'] = $this->plugin->error_no();
+			$this->error['errorMessage'] = $this->plugin->error();
+			$this->error['errorList'] = $this->plugin->error_list();
 		}
 	}
 
@@ -749,7 +751,7 @@ class DatabaseBase extends Sql
 	 */
 	public function getErrorCode()
 	{
-		return ocGet('errorCode', $this->_error);
+		return ocGet('errorCode', $this->error);
 	}
 
 	/**
@@ -757,7 +759,7 @@ class DatabaseBase extends Sql
 	 */
 	public function getError()
 	{
-		return ocGet('errorMessage', $this->_error);
+		return ocGet('errorMessage', $this->error);
 	}
 
 	/**
@@ -765,7 +767,7 @@ class DatabaseBase extends Sql
 	 */
 	public function getErrorList()
 	{
-		return ocGet('errorList', $this->_error);
+		return ocGet('errorList', $this->error);
 	}
 
 	/**
@@ -773,19 +775,17 @@ class DatabaseBase extends Sql
 	 */
 	public function errorExists()
 	{
-		return (boolean)$this->_error;
+		return (boolean)$this->error;
 	}
 
-	/**
-	 * 显示错误信息
-	 */
-	public function showError()
+    /**
+     * 显示错误信息
+     * @param $error
+     */
+	public function showError($error = null)
 	{
-		if ($this->errorExists()) {
-			$error = $this->_error;
-			$this->_error = $error;
-			ocService()->error->show($this->getError());
-		}
+        $error = $error ? : $this->getError();
+        ocService()->error->show($error);
 	}
 
     /**

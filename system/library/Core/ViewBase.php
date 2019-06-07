@@ -9,6 +9,7 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 use Ocara\Service\Interfaces\Template as TemplateInterface;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -16,30 +17,30 @@ defined('OC_PATH') or exit('Forbidden!');
 class ViewBase extends Base
 {
     /**
-     * @var $_template 当前模板
+     * @var $template 当前模板
      */
-    protected $_rootPath;
+    protected $rootPath;
 
-    private $_tpl;
-    private $_fileType;
-    private $_template;
-    private $_vars;
-    private $_content;
-    private $_layout;
-    private $_parentLayout;
+    private $tpl;
+    private $fileType;
+    private $template;
+    private $vars;
+    private $content;
+    private $layout;
+    private $parentLayout;
 
-    private $_useCache  = true;
-    private $_useLayout = true;
+    private $useCache  = true;
+    private $useLayout = true;
 
-    protected static $_defaultTemplate = 'defaults';
+    protected static $defaultTemplate = 'defaults';
 
     /**
      * 初始化
      */
     public function __construct()
     {
-        $this->_fileType  = ocConfig(array('TEMPLATE', 'file_type'), 'html');
-        $this->_template = ocConfig(array('TEMPLATE', 'default'), self::$_defaultTemplate, true);
+        $this->fileType  = ocConfig(array('TEMPLATE', 'file_type'), 'html');
+        $this->template = ocConfig(array('TEMPLATE', 'default'), self::$defaultTemplate, true);
 
         $this->loadEngine();
         $this->setLayout();
@@ -64,6 +65,7 @@ class ViewBase extends Base
 
     /**
      * 获取模板插件
+     * @return null
      */
     public function engine()
     {
@@ -81,9 +83,9 @@ class ViewBase extends Base
     public function useCache($use = null)
     {
         if ($use === null) {
-            return $this->_useCache;
+            return $this->useCache;
         }
-        $this->_useCache = $use ? true : false;
+        $this->useCache = $use ? true : false;
     }
 
     /**
@@ -103,7 +105,7 @@ class ViewBase extends Base
         $null = $this->plugin === null;
         foreach ($variables as $name => $value) {
             if ($null) {
-                $this->_vars[$name] = $value;
+                $this->vars[$name] = $value;
                 ocGlobal('View', $this);
             } else {
                 $this->plugin->set($name, $value);
@@ -119,7 +121,7 @@ class ViewBase extends Base
      */
     public function getVar($name = null, $default = null)
     {
-        $vars = $this->plugin === null ? $this->_vars : $this->plugin->getVar();
+        $vars = $this->plugin === null ? $this->vars : $this->plugin->getVar();
 
         if ($name) {
             $vars = (array)$vars;
@@ -142,21 +144,21 @@ class ViewBase extends Base
      */
     public function hasVar($name)
     {
-        return array_key_exists($name, $this->_vars);
+        return array_key_exists($name, $this->vars);
     }
 
     /**
      * 设置layout
-     * @param string $layout
+     * @param null $layout
      * @return $this
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function setLayout($layout = null)
     {
         $layout = empty($layout) ? ocConfig(array('TEMPLATE', 'default_layout'), 'layout') : $layout;
 
         if ($layout) {
-            $this->_layout = $layout;
+            $this->layout = $layout;
         }
 
         return $this;
@@ -168,7 +170,7 @@ class ViewBase extends Base
      */
     public function inheritLayout($layout)
     {
-        $this->_parentLayout = $layout;
+        $this->parentLayout = $layout;
     }
 
     /**
@@ -192,20 +194,20 @@ class ViewBase extends Base
      * @param string $subPath
      * @param string $template
      * @return bool|mixed|string
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function getViewPath($subPath = null, $template = null)
     {
-        $template = $template ? : $this->_template;
+        $template = $template ? : $this->template;
         $module = $this->getRoute('module');
 
         if ($module) {
-            $rootPath = $this->_rootPath ? : null;
+            $rootPath = $this->rootPath ? : null;
             $path = $this->getModuleViewPath($module, $subPath, $template, $rootPath);
         } else {
             $path = ocPath('view', $template . OC_DIR_SEP . $subPath);
             if (!ocFileExists($path)) {
-                $path = ocPath('view', self::$_defaultTemplate . OC_DIR_SEP . $subPath);
+                $path = ocPath('view', self::$defaultTemplate . OC_DIR_SEP . $subPath);
             }
         }
 
@@ -215,15 +217,14 @@ class ViewBase extends Base
     /**
      * 获取其他模块视图路径
      * @param $module
-     * @param string $subPath
-     * @param string $template
-     * @param string $rootPath
-     * @return mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @param null $subPath
+     * @param null $template
+     * @param null $rootPath
+     * @return string
      */
     public function getModuleViewPath($module, $subPath = null, $template = null, $rootPath = null)
     {
-        $template = $template ? : $this->_template;
+        $template = $template ? : $this->template;
 
         if (empty($rootPath)) {
             if (OC_MODULE_PATH) {
@@ -235,7 +236,7 @@ class ViewBase extends Base
 
         $path = $rootPath . $template . '/' . $subPath;
         if (!ocFileExists($path)) {
-            $path = $rootPath . self::$_defaultTemplate . '/' . $subPath;
+            $path = $rootPath . self::$defaultTemplate . '/' . $subPath;
         }
 
         return $path;
@@ -247,20 +248,20 @@ class ViewBase extends Base
      */
     public function setModuleRootViewPath($rootPath)
     {
-        $this->_rootPath = $rootPath;
+        $this->rootPath = $rootPath;
     }
 
     /**
      * 设置模板风格
      * @param $dir
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function setTemplate($dir)
     {
         if (!is_dir($this->getViewPath('template/' . $dir))) {
             ocService()->error->show('not_exists_template', array($dir));
         }
-        $this->_template = $dir;
+        $this->template = $dir;
     }
 
     /**
@@ -271,9 +272,9 @@ class ViewBase extends Base
     public function useLayout($use = null)
     {
         if ($use === null) {
-            return $this->_useLayout;
+            return $this->useLayout;
         }
-        $this->_useLayout = $use ? true : false;
+        $this->useLayout = $use ? true : false;
     }
 
     /**
@@ -281,7 +282,7 @@ class ViewBase extends Base
      */
     public function getLayout()
     {
-        return $this->_layout;
+        return $this->layout;
     }
 
     /**
@@ -290,7 +291,7 @@ class ViewBase extends Base
      * @param string $template
      * @param bool $show
      * @return string
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function _readPart($part, $template = null, $show = true)
     {
@@ -321,7 +322,7 @@ class ViewBase extends Base
      * 显示part内容
      * @param string $part
      * @param string $template
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function showPart($part, $template = null)
     {
@@ -333,7 +334,7 @@ class ViewBase extends Base
      * @param string $part
      * @param string $template
      * @return string
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function getPart($part, $template = null)
     {
@@ -399,7 +400,7 @@ class ViewBase extends Base
     public function getUrl($type, $path, $template = null)
     {
         if (empty($template) && $type != 'js') {
-            $template = $this->_template;
+            $template = $this->template;
         }
 
         $path = $type == 'js' ? $path : $template . OC_DIR_SEP . $path;
@@ -409,12 +410,12 @@ class ViewBase extends Base
     /**
      * 显示其他模板文件
      * @param string $file
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function showTpl($file = null)
     {
         if (empty($file)) {
-            echo $this->_content;
+            echo $this->content;
         } else {
             $file = (array)$file;
             foreach ($file as $row) {
@@ -430,7 +431,7 @@ class ViewBase extends Base
      */
     public function setTpl($tpl = null)
     {
-        $this->_tpl = $tpl;
+        $this->tpl = $tpl;
     }
 
     /**
@@ -438,7 +439,7 @@ class ViewBase extends Base
      */
     public function getTpl()
     {
-        return $this->_tpl;
+        return $this->tpl;
     }
 
     /**
@@ -447,11 +448,11 @@ class ViewBase extends Base
      * @param array $vars
      * @param bool $required
      * @return mixed|null
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function renderFile($file = null, array $vars = array(), $required = true)
     {
-        $file = $file ? : $this->_tpl;
+        $file = $file ? : $this->tpl;
 
         if ($vars && is_array($vars)) {
             $this->assign($vars);
@@ -466,33 +467,33 @@ class ViewBase extends Base
             $this->plugin->set('View', $this);
         }
 
-        $this->_content = $this->readTpl($file, $required);
-        if ($this->_content) {
-            if ($this->_useLayout && $this->_layout) {
-                $this->renderLayout($this->_layout);
+        $this->content = $this->readTpl($file, $required);
+        if ($this->content) {
+            if ($this->useLayout && $this->layout) {
+                $this->renderLayout($this->layout);
             }
         }
 
-        return $this->_content;
+        return $this->content;
     }
 
     /**
      * 渲染Layout
      * @param $layout
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function renderLayout($layout)
     {
         $path = $this->getViewPath('layout/' . $layout . '.php');
 
         if (ocFileExists($path)) {
-            $this->_content = $this->readFile($path);
+            $this->content = $this->readFile($path);
         } else {
-            ocService()->error->show('not_exists_layout', array($this->_layout));
+            ocService()->error->show('not_exists_layout', array($this->layout));
         }
 
-        $parentLayout = $this->_parentLayout;
-        $this->_parentLayout = null;
+        $parentLayout = $this->parentLayout;
+        $this->parentLayout = null;
 
         if ($parentLayout) {
             $this->renderLayout($parentLayout);
@@ -502,7 +503,7 @@ class ViewBase extends Base
     /**
      * 输出内容
      * @param $content
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function outputFile($content)
     {
@@ -520,11 +521,11 @@ class ViewBase extends Base
 
     /**
      * 输出内容
-     * @param array $data
+     * @param $content
      */
-    public function outputApi($data)
+    public function outputApi($content)
     {
-        ocService()->response->setContentType($data['contentType']);
+        $response = ocService()->response;
         $response->setBody($content);
     }
 
@@ -532,7 +533,7 @@ class ViewBase extends Base
      * 渲染结果
      * @param |null $result
      * @return mixed|void|null
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function renderApi($result)
     {
@@ -549,6 +550,7 @@ class ViewBase extends Base
         }
 
         $contentType = $response->getOption('contentType');
+
         switch ($contentType)
         {
             case 'json':
@@ -557,9 +559,12 @@ class ViewBase extends Base
             case 'xml':
                 $content = $this->getXmlResult($result);
                 break;
+            default:
+                $content = $result;
         }
 
         $response->setBody($content);
+        return $content;
     }
 
     /**
@@ -567,7 +572,7 @@ class ViewBase extends Base
      * @param string $file
      * @param bool $required
      * @return mixed|null
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function readTpl($file, $required = true)
     {
@@ -589,7 +594,7 @@ class ViewBase extends Base
             $path = $this->getViewPath('template/' . $route['controller']);
         }
 
-        $file = $file . '.' . $this->_fileType;
+        $file = $file . '.' . $this->fileType;
         $realPath = ocDir($path) . $file;
 
         if (ocFileExists($realPath) == false) {
@@ -635,7 +640,7 @@ class ViewBase extends Base
      */
     private function _wrapHtml($type, $value, $cache = true)
     {
-        $cache = empty($cache) || ($cache && empty($this->_useCache)) ? false : true;
+        $cache = empty($cache) || ($cache && empty($this->useCache)) ? false : true;
 
         if (in_array($type, array('js', 'css'))) {
             if (!$cache) {

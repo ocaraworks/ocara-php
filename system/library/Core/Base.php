@@ -19,10 +19,10 @@ abstract class Base extends Basis
 	 */
 	protected $route;
 	protected $plugin;
-    protected $event;
+    private $event;
 
-    protected $events = array();
-    protected $traits = array();
+    private $events = array();
+    private $traits = array();
 
     private $isRegisteredEvent;
 

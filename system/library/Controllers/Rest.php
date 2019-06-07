@@ -1,7 +1,7 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara¿ªÔ´¿ò¼Ü   ÆÕÍ¨¿ØÖÆÆ÷ÀàRest
+ * Ocaraå¼€æºæ¡†æž¶   æ™®é€šæŽ§åˆ¶å™¨ç±»Rest
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
@@ -12,6 +12,6 @@ use Ocara\Core\ControllerBase;
 
 class Rest extends ControllerBase
 {
-    protected static $_controllerType = 'Rest';
-    protected $_isApi = true;
+    protected static $controllerType = 'Rest';
+    protected $isApi = true;
 }

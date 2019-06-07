@@ -3,17 +3,16 @@ namespace Ocara\Models;
 
 use Ocara\Exceptions\Exception;
 use Ocara\Iterators\Database\ObjectRecords;
-use ReflectionObject;
 
 defined('OC_PATH') or exit('Forbidden!');
 
 abstract class DatabaseEntity extends DatabaseModel
 {
-    protected $_selected = array();
-    protected $_changes = array();
-    protected $_oldData = array();
-    protected $_relations = array();
-    protected $_isOrm;
+    protected $selected = array();
+    protected $changes = array();
+    protected $oldData = array();
+    protected $relations = array();
+    protected $isOrm;
 
     const EVENT_BEFORE_CREATE = 'beforeCreate';
     const EVENT_AFTER_CREATE = 'afterCreate';
@@ -23,7 +22,7 @@ abstract class DatabaseEntity extends DatabaseModel
     const EVENT_AFTER_DELETE = 'afterDelete';
 
     /**
-     * �½�ORMģ��
+     * 加载数据
      * @param array $data
      * @return $this
      * @throws Exception
@@ -39,17 +38,17 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ����ORM����
+     * 清除数据
      */
     public function clearData()
     {
-        $this->_selected = array();
+        $this->selected = array();
         $this->_clearProperties($this->getFieldsName());
         return $this;
     }
 
     /**
-     * ����Model��SQL��ORM����
+     * 清除查询设置和数据
      * @return $this
      */
     public function clearAll()
@@ -60,7 +59,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ��ȡģ��������Ŀ¼
+     * 获取模型所在目录
      * @return array|mixed
      */
     public function getModelLocation()
@@ -69,67 +68,67 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ��ȡ��ֵ
+     * 获取旧值
      * @param null $key
      * @return array|mixed
      */
     public function getOld($key = null)
     {
         if (func_num_args()) {
-            if (array_key_exists($key, $this->_oldData)){
-                return $this->_oldData[$key];
+            if (array_key_exists($key, $this->oldData)){
+                return $this->oldData[$key];
             }
             ocService()->error->show('no_old_field');
         }
-        return $this->_oldData;
+        return $this->oldData;
     }
 
     /**
-     * ��ȡ���޸��ֶ�����
+     * 获取新值
      * @param null $key
      * @return array|mixed
      */
     public function getChanged($key = null)
     {
         if (func_num_args()) {
-            if (in_array($key, $this->_changes)) {
-                return $this->_changes[$key];
+            if (in_array($key, $this->changes)) {
+                return $this->changes[$key];
             }
             ocService()->error->show('no_changed_field');
         }
 
-        $changes = array_fill_keys($this->_changes, null);
+        $changes = array_fill_keys($this->changes, null);
         return array_intersect_key($this->getProperty(), $changes);
     }
 
     /**
-     * �Ƿ��иı�ĳ���ֶ�
+     * 是否赋新值
      * @param string $key
      * @return bool
      */
     public function hasChanged($key = null)
     {
         if (func_num_args()) {
-            return in_array($key, $this->_changes);
+            return in_array($key, $this->changes);
         }
-        return !empty($this->_changes);
+        return !empty($this->changes);
     }
 
     /**
-     * �Ƿ��иı�ĳ���ֶ�
+     * 是否有旧值
      * @param string $key
      * @return bool
      */
     public function hasOld($key = null)
     {
         if (func_num_args()) {
-            return in_array($key, $this->_oldData);
+            return in_array($key, $this->oldData);
         }
-        return !empty($this->_oldData);
+        return !empty($this->oldData);
     }
 
     /**
-     * ������ѡ��һ�м�¼
+     * 选择记录
      * @param $values
      * @param null $options
      * @param bool $debug
@@ -144,7 +143,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * �½���¼
+     * 新建
      * @param array $data
      * @param bool $debug
      * @return bool
@@ -152,7 +151,7 @@ abstract class DatabaseEntity extends DatabaseModel
      */
     public function create(array $data = array(), $debug = false)
     {
-        if (!$debug && $this->_relations) {
+        if (!$debug && $this->relations) {
             ocService()->transaction->begin();
         }
 
@@ -165,17 +164,17 @@ abstract class DatabaseEntity extends DatabaseModel
         $result = parent::create($this->toArray(), $debug);
 
         if (!$debug) {
-            $this->_insertId = $this->plugin->getInsertId();
-            if ($this->_autoIncrementField) {
-                $autoIncrementField = $this->_autoIncrementField;
-                $this->$autoIncrementField = $this->_insertId;
+            $this->insertId = $this->plugin->getInsertId();
+            if ($this->autoIncrementField) {
+                $autoIncrementField = $this->autoIncrementField;
+                $this->$autoIncrementField = $this->insertId;
             }
             $this->select($this->_mapPrimaryData($this->toArray()));
             $this->_relateSave();
             $this->fire(self::EVENT_AFTER_CREATE);
         }
 
-        if (!$debug && $this->_relations) {
+        if (!$debug && $this->relations) {
             ocService()->transaction->commit();
         }
 
@@ -183,7 +182,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ���¼�¼
+     * 更新
      * @param array $data
      * @param bool $debug
      * @return bool
@@ -191,23 +190,23 @@ abstract class DatabaseEntity extends DatabaseModel
      */
     public function update(array $data = array(), $debug = false)
     {
-        if (empty($this->_selected)) {
+        if (empty($this->selected)) {
             ocService()->error->show('need_condition');
         }
 
-        if (!$debug && $this->_relations) {
+        if (!$debug && $this->relations) {
             ocService()->transaction->begin();
         }
 
         $this->fire(self::EVENT_BEFORE_CREATE);
 
         if ($data){
-            $oldData = array_intersect_key($this->toArray(), array_diff_key($data, $this->_oldData));
-            $this->_oldData = array_merge($this->_oldData, $oldData);
+            $oldData = array_intersect_key($this->toArray(), array_diff_key($data, $this->oldData));
+            $this->oldData = array_merge($this->oldData, $oldData);
         }
 
         $data = array_merge($this->getChanged(), $data);
-        call_user_func_array('ocDel', array(&$data, $this->_primaries));
+        call_user_func_array('ocDel', array(&$data, $this->primaries));
         $result = parent::update($data, $debug);
 
         if (!$debug) {
@@ -215,7 +214,7 @@ abstract class DatabaseEntity extends DatabaseModel
             $this->fire(self::EVENT_AFTER_UPDATE);
         }
 
-        if (!$debug && $this->_relations) {
+        if (!$debug && $this->relations) {
             ocService()->transaction->commit();
         }
 
@@ -223,7 +222,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * �������ݣ�ORMģ�ͣ�
+     * 保存
      * @param array $data
      * @param bool $debug
      * @return bool
@@ -231,7 +230,7 @@ abstract class DatabaseEntity extends DatabaseModel
      */
     public function save(array $data = array(), $debug = false)
     {
-        if ($this->_selected) {
+        if ($this->selected) {
             return $this->update($data, $debug);
         } else {
             return $this->create($data, $debug);
@@ -239,14 +238,14 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ɾ����¼
+     * 删除
      * @param bool $debug
      * @return bool
      * @throws Exception
      */
     public function delete($debug = false)
     {
-        if (empty($this->_selected)) {
+        if (empty($this->selected)) {
             ocService()->error->show('need_condition');
         }
 
@@ -264,28 +263,28 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ���������ֶ�
+     * 赋值主键
      * @param $data
      * @return array
      */
     protected function _mapPrimaryData($data)
     {
         $result = array();
-        foreach ($this->_primaries as $field) {
+        foreach ($this->primaries as $field) {
             $result[$field] = array_key_exists($field, $data);
         }
         return $result;
     }
 
     /**
-     * ��ȡ��������
+     * 获取主键条件
      * @param $condition
      * @return array
      * @throws Exception
      */
     protected function _getPrimaryCondition($condition)
     {
-        if (empty($this->_primaries)) {
+        if (empty($this->primaries)) {
             ocService()->error->show('no_primary');
         }
 
@@ -303,8 +302,8 @@ abstract class DatabaseEntity extends DatabaseModel
         }
 
         $where = array();
-        if (count($this->_primaries) == count($values)) {
-            $where = $this->filterData(array_combine($this->_primaries, $values));
+        if (count($this->primaries) == count($values)) {
+            $where = $this->filterData(array_combine($this->primaries, $values));
         } else {
             ocService()->error->show('fault_primary_num');
         }
@@ -313,7 +312,7 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ����ģ�Ͳ�ѯ
+     * 关联查询
      * @param $alias
      * @return null|ObjectRecords
      */
@@ -339,17 +338,17 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ����ģ�����ݱ���
+     * 关联保存
      * @return bool
      * @throws Exception
      */
     protected function _relateSave()
     {
-        if (!$this->_relations) {
+        if (!$this->relations) {
             return true;
         }
 
-        foreach ($this->_relations as $key => $object) {
+        foreach ($this->relations as $key => $object) {
             $config = $this->_getRelateConfig($key);
             if ($config && isset($this->$config['primaryKey'])) {
                 $data = array();
@@ -380,43 +379,44 @@ abstract class DatabaseEntity extends DatabaseModel
     }
 
     /**
-     * ��ȡ����ģ��
+     * 获取无法访问的属性
      * @param string $key
      * @return mixed
      */
     public function &__get($key)
     {
-        if (isset(self::$_config[$this->_tag]['RELATIONS'][$key])) {
-            if (!isset($this->_relations[$key])) {
-                $this->_relations[$key] = $this->_relateFind($key);
+        if (isset(self::$_config[$this->tag]['RELATIONS'][$key])) {
+            if (!isset($this->relations[$key])) {
+                $this->relations[$key] = $this->_relateFind($key);
             }
-            return $this->_relations[$key];
+            return $this->relations[$key];
         }
 
         return parent::__get($key);
     }
 
     /**
-     * ����δ���������
-     * @param string $name
-     * @param mxied $value
-     * @return mixed|void
+     * 设置无法访问的属性
+     * @param $name
+     * @param $value
+     * @return bool|void
+     * @throws Exception
      */
     public function __set($name, $value)
     {
-        if (isset(self::$_config[$this->_tag]['RELATIONS'][$name])) {
-            $this->_relations[$name] = $value;
+        if (isset(self::$_config[$this->tag]['RELATIONS'][$name])) {
+            $this->relations[$name] = $value;
         } else {
             $oldValue = null;
-            if ($this->_selected) {
-                if (!array_key_exists($name, $this->_oldData)){
+            if ($this->selected) {
+                if (!array_key_exists($name, $this->oldData)){
                     $oldValue = $this->$name;
                 }
             }
             parent::__set($name, $value);
-            if ($this->_selected && isset($this->$name)) {
-                $this->_changes[] = $name;
-                $this->_oldData[$name] = $oldValue;
+            if ($this->selected && isset($this->$name)) {
+                $this->changes[] = $name;
+                $this->oldData[$name] = $oldValue;
             }
         }
     }

@@ -33,14 +33,14 @@ class StaticPath extends Base
 		$this->delimiter = ocConfig(array('STATIC', 'delimiter'), '-');
 	}
 
-	/**
-	 * 获取静态文件
-	 * @param string $module
-	 * @param string $controller
-	 * @param string $action
-	 * @param string $data
-	 * @return array|bool
-	 */
+    /**
+     * 获取静态文件
+     * @param string $module
+     * @param string $controller
+     * @param string $action
+     * @param string $data
+     * @return array|bool
+     */
 	public function getStaticFile($module, $controller, $action, $data = null)
 	{
 		if (empty($controller) || empty($action)) return false;
@@ -71,15 +71,14 @@ class StaticPath extends Base
 		return array($file, $param);
 	}
 
-	/**
-	 * 获取参数
-	 * @param integer $offset
-	 * @param array $params
-	 * @param array $data
-	 * @param string $paramsStr
-	 * @return array
-	 * @throws Exception
-	 */
+    /**
+     * 获取参数
+     * @param integer $offset
+     * @param array $params
+     * @param array $data
+     * @param string $paramsStr
+     * @return array
+     */
 	private function getParams($offset, $params, $data, $paramsStr)
 	{
 		$paramData = array();
@@ -112,16 +111,15 @@ class StaticPath extends Base
 		return array($paramsStr, $paramData);
 	}
 
-	/**
-	 * 获取参数数据路径
-	 * @param array $params
-	 * @param string $module
-	 * @param string $controller
-	 * @param string $action
-	 * @param array $data
-	 * @return array
-	 * @throws Exception
-	 */
+    /**
+     * 获取参数数据路径
+     * @param array $params
+     * @param string $module
+     * @param string $controller
+     * @param string $action
+     * @param array $data
+     * @return array
+     */
 	public function getParamsPathMap($params, $module, $controller, $action, $data)
 	{
 		$extensionName = '.' . $this->fileType;
@@ -147,9 +145,9 @@ class StaticPath extends Base
 
     /**
      * 获取MVC路径
-     * @param string $module
-     * @param string $controller
-     * @param string $action
+     * @param $module
+     * @param $controller
+     * @param $action
      * @return string
      */
 	public function getMvcPathMap($module, $controller, $action)

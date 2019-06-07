@@ -14,10 +14,10 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Base extends ServiceProvider
 {
-    protected $_models = array();
-    protected $_apiContentType;
-    protected $_message;
-    protected $_hasRender = false;
+    protected $models = array();
+    protected $apiContentType;
+    protected $message;
+    protected $hasRender = false;
 
     /**
      * 设置Ajax返回的数据格式
@@ -25,7 +25,7 @@ class Base extends ServiceProvider
      */
     public function setApiContentType($contentType)
     {
-        $this->_apiContentType = $contentType;
+        $this->apiContentType = $contentType;
     }
 
     /**
@@ -44,7 +44,7 @@ class Base extends ServiceProvider
      */
     public function getMessage()
     {
-        $message = $this->_message;
+        $message = $this->message;
 
         if (is_array($message)) {
             list($text, $params) = $message;

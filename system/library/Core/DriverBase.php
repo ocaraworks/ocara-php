@@ -14,16 +14,16 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class DriverBase extends Base
 {
-	protected $_instance;
-	protected $_connection;
-	protected $_stmt;
-	protected $_prepared;
-	protected $_pconnect;
-	protected $_recordSet;
-	protected $_errno;
-	protected $_error;
-	protected $_config;
-	protected $_paramTypesMap = array();
+	protected $instance;
+	protected $connection;
+	protected $stmt;
+	protected $prepared;
+	protected $pConnect;
+	protected $recordSet;
+	protected $errNo;
+	protected $error;
+	protected $config;
+	protected $paramTypesMap = array();
 
 	const DRIVE_TYPE_PDO = 'pdo';
     const DRIVE_TYPE_ODBC = 'odbc';
@@ -35,15 +35,15 @@ class DriverBase extends Base
 
 	/**
 	 * 是否长连接
-	 * @param bool $pconnect
+	 * @param bool $pConnect
 	 * @return bool
 	 */
-	public function is_pconnect($pconnect = true)
+	public function is_pconnect($pConnect = true)
 	{
-		if ($this->_pconnect) {
-			$this->_pconnect = $pconnect ? true : false;
+		if ($this->pConnect) {
+			$this->pConnect = $pConnect ? true : false;
 		}
-		return $this->_pconnect;
+		return $this->pConnect;
 	}
 
 	/**
@@ -53,10 +53,10 @@ class DriverBase extends Base
 	 */
 	public function is_prepare($prepare = true)
 	{
-		if ($this->_prepared) {
-			$this->_prepared = $prepare ? true : false;
+		if ($this->prepared) {
+			$this->prepared = $prepare ? true : false;
 		}
-		return $this->_prepared;
+		return $this->prepared;
 	}
 
 	/**
@@ -69,7 +69,7 @@ class DriverBase extends Base
 	{
 		$result = array();
 
-		if (is_object($this->_recordSet)) {
+		if (is_object($this->recordSet)) {
 			if ($dataType == self::DATA_TYPE_OBJECT) {
 				while ($row = $this->fetch_assoc()) {
 					$result[] = (object)$row;
@@ -93,7 +93,7 @@ class DriverBase extends Base
                 }
             }
 		} else {
-			$result = $this->_recordSet;
+			$result = $this->recordSet;
 		}
 
 		return $result;
@@ -104,6 +104,6 @@ class DriverBase extends Base
 	 */
 	public function get_param_types()
 	{
-		return $this->_paramTypesMap;
+		return $this->paramTypesMap;
 	}
 }

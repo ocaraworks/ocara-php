@@ -31,7 +31,7 @@ class Upload extends ServiceBase
 	 */
 	public function __construct($savePath = null, array $rules = array())
 	{
-		$this->maxSize = floatval(@ini_get('upload_maxfilesize'));
+		$this->maxSize = floatval(@ini_get('upload_max_filesize'));
 		$this->setSavePath($savePath);
 		$this->setRules($rules);
 	}
@@ -255,11 +255,11 @@ class Upload extends ServiceBase
 			} 
 			$allowSize = $this->rules[$fileType];
 			if ($size / 1024 / 1024 > $allowSize) {
-				return $this->setError('invalidfilesize', array($name, $allowSize . 'M'));
+				return $this->setError('invalid_file_size', array($name, $allowSize . 'M'));
 			}
 		} else {
 			if ($this->maxSize && $size / 1024 / 1024 > $this->maxSize) {
-				return $this->setError('exceedfilesize', array($name, $this->maxSize . 'M'));
+				return $this->setError('exceed_file_size', array($name, $this->maxSize . 'M'));
 			}
 		}
 		

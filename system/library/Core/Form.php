@@ -9,28 +9,27 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
 class Form extends Base
 {
 	/**
-	 * @var $_id  表单标识
-	 * @var $_tokenInfo 表单令牌信息
-	 * @var $_lang 表单字段名语言
-	 * @var $_map 表单字段名映射规则
-	 * @var $_validate 表单验证规则
+	 * @var $tokenInfo 表单令牌信息
+	 * @var $lang 表单字段名语言
+	 * @var $maps 表单字段名映射规则
 	 */
-	protected $_plugin = null;
+	protected $plugin = null;
 
-	private $_sign;
-	private $_tokenInfo;
+	private $sign;
+	private $tokenInfo;
 
-	private $_models = array();
-	private $_lang = array();
-	private $_map = array();
-	private $_attributes = array();
-	private $_elements = array();
+	private $models = array();
+	private $lang = array();
+	private $maps = array();
+	private $attributes = array();
+	private $elements = array();
 
 	/**
 	 * 初始化
@@ -38,7 +37,7 @@ class Form extends Base
 	 */
 	public function __construct($name)
 	{
-		$this->_sign = $name;
+		$this->sign = $name;
 		$this->plugin = ocService()->html;
 
 		$this->init();
@@ -52,14 +51,14 @@ class Form extends Base
 	 */
 	public function init($action = null, array $attributes = array())
 	{
-		$this->_attributes = array(
-			'id'     => $this->_sign,
-			'name'   => $this->_sign,
+		$this->attributes = array(
+			'id'     => $this->sign,
+			'name'   => $this->sign,
 			'action' => $action ? : '#',
 		);
 
 		$this->method('POST');
-		$this->_attributes = array_merge($this->_attributes, $attributes);
+		$this->attributes = array_merge($this->attributes, $attributes);
 
 		return $this;
 	}
@@ -72,7 +71,7 @@ class Form extends Base
 	public function method($method = 'POST')
 	{
 		$method = strtolower($method) == 'get' ? 'GET' : 'POST';
-		$this->_attributes['method'] = $method;
+		$this->attributes['method'] = $method;
 		return $this;
 	}
 
@@ -81,35 +80,36 @@ class Form extends Base
 	 */
 	public function upload()
 	{
-		$this->_attributes['enctype'] = 'multipart/form-data';
+		$this->attributes['enctype'] = 'multipart/form-data';
 		return $this;
 	}
 
-	/**
-	 * 获取表单属性
-	 * @param $attr
-	 * @return null
-	 */
+    /**
+     * 获取表单属性
+     * @param $attr
+     * @return mixed|null
+     */
 	public function getAttr($attr)
 	{
-		return array_key_exists($attr, $this->_attributes) ? $this->_attributes[$attr] : null;
+		return array_key_exists($attr, $this->attributes) ? $this->attributes[$attr] : null;
 	}
 
-	/**
-	 * 获取表单标识
-	 */
+    /**
+     * 获取表单标识
+     * @return string
+     */
 	public function getSign()
 	{
-		return $this->_sign;
+		return $this->sign;
 	}
 
-	/**
-	 * 设置Token信息
-	 * @param array $tokenInfo
-	 */
+    /**
+     * 设置Token信息
+     * @param array $tokenInfo
+     */
 	public function setTokenInfo(array $tokenInfo)
 	{
-		$this->_tokenInfo = $tokenInfo;
+		$this->tokenInfo = $tokenInfo;
 	}
 
     /**
@@ -118,64 +118,66 @@ class Form extends Base
      */
 	public function getTokenInfo()
     {
-        return $this->_tokenInfo;
+        return $this->tokenInfo;
     }
 
-	/**
-	 * 表单开始
-	 */
+    /**
+     * 表单开始
+     * @return string
+     */
 	public function begin()
 	{
-		list($tokenTag, $tokenValue) = $this->_tokenInfo;
+		list($tokenTag, $tokenValue) = $this->tokenInfo;
 		$tokenElement = $this->plugin->input('hidden', $tokenTag, $tokenValue);
 
-		$formElement = $this->plugin->createElement('form', $this->_attributes, null);
+		$formElement = $this->plugin->createElement('form', $this->attributes, null);
         $begin = $formElement . PHP_EOL . "\t" . $tokenElement;
 
 		$this->loadModel();
 		return $begin . PHP_EOL;
 	}
 
-	/**
-	 * 加载Model的配置
-	 */
+    /**
+     * 加载Model的配置
+     * @return $this
+     */
 	public function loadModel()
 	{
-		foreach ($this->_models as $key => $model) {
-			$this->_lang = array_merge($this->_lang, $model->getConfig('LANG'));
-			$this->_map = array_merge($this->_map, $model->getConfig('MAPS'));
+		foreach ($this->models as $key => $model) {
+			$this->lang = array_merge($this->lang, $model->getConfig('LANG'));
+			$this->maps = array_merge($this->maps, $model->getConfig('MAPS'));
 		}
 
 		return $this;
 	}
 
-	/**
-	 * 表单结束
-	 */
+    /**
+     * 表单结束
+     * @return string
+     */
 	public function end()
 	{
 		return $this->plugin->createEndHtmlTag('form') . PHP_EOL;
 	}
 
-	/**
-	 * 添加关联Model
-	 * @param string $class
-	 * @param string $alias
-	 * @return $this
-	 */
+    /**
+     * 添加关联Model
+     * @param $class
+     * @param null $alias
+     * @return $this
+     */
 	public function model($class, $alias = null)
 	{
 		$alias = $alias ? : $class;
-		$this->_models[$alias] = new $class();
+		$this->models[$alias] = new $class();
 		return $this;
 	}
 
     /**
      * 获取或修改字段语言
-     * @param string $field
-     * @param string $value
+     * @param $field
+     * @param null $value
      * @return array|bool|mixed|null
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function lang($field, $value = null)
 	{
@@ -185,8 +187,8 @@ class Form extends Base
 
     /**
      * 获取或修改字段映射
-     * @param string $field
-     * @param string $value
+     * @param $field
+     * @param null $value
      * @return array|bool|mixed|null
      */
 	public function map($field, $value = null)
@@ -216,8 +218,8 @@ class Form extends Base
 		}
 
 		$field = $fields[1];
-		if (isset($this->_models[$fields[0]])) {
-			$model = $this->_models[$fields[0]];
+		if (isset($this->models[$fields[0]])) {
+			$model = $this->models[$fields[0]];
 		} else {
             $model = new $fields[0]();
 		}
@@ -232,23 +234,23 @@ class Form extends Base
      */
 	public function getModels()
     {
-        return $this->_models ? : array();
+        return $this->models ? : array();
     }
 
-	/**
-	 * 获取表单元素
-	 * @param string $name
-	 * @return array|null
-	 */
+    /**
+     * 获取表单元素
+     * @param null $name
+     * @return array|mixed|null
+     */
 	public function element($name = null)
 	{
 		if (isset($name)) {
 			$element = null;
-			if (isset($this->_map[$name])) {
-				$name = $this->_map[$name];
+			if (isset($this->maps[$name])) {
+				$name = $this->maps[$name];
 			}
-			if (!empty($this->_elements[$name])) {
-				$element = $this->_elements[$name];
+			if (!empty($this->elements[$name])) {
+				$element = $this->elements[$name];
 				if  (is_array($element)){
 					if (count($element) == 1) {
 						$element = $element[0];
@@ -258,27 +260,26 @@ class Form extends Base
 			return $element;
 		}
 
-		return $this->_elements;
+		return $this->elements;
 	}
 
-	/**
-	 * 魔术方法-调用未定义的方法
-	 * @param string $name
-	 * @param array $params
-	 * @return mixed
-	 * @throws Exception
-	 */
+    /**
+     * 用未定义的方法
+     * @param string $name
+     * @param $params
+     * @return mixed
+     */
 	public function __call($name, $params)
 	{
 		if (is_object($this->plugin) && method_exists($this->plugin, $name)) {
 			$html = call_user_func_array(array(&$this->plugin, $name), $params);
 			if ($id = reset($params)) {
 				$id = is_array($id) && $id ? reset($id) : $id;
-				$this->_elements[$id][] = $html;
+				$this->elements[$id][] = $html;
 			}
 			return $html;
 		}
 
-		return parent::_call($name, $params);
+		return parent::__call($name, $params);
 	}
 }

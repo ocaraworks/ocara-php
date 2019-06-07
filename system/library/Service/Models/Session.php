@@ -1,10 +1,11 @@
 <?php
 namespace Ocara\Service\Models;
 
+use Ocara\Exceptions\Exception;
 use Ocara\Models\DatabaseModel;
-use Ocara\Service\Interfaces\Model\Session as SessionInerface;
+use Ocara\Service\Interfaces\Model\Session as SessionInterface;
 
-class Session extends DatabaseModel implements SessionInerface
+class Session extends DatabaseModel implements SessionInterface
 {
 	protected $_table = 'sessions';
 	protected $_primary = 'session_id';
@@ -15,11 +16,12 @@ class Session extends DatabaseModel implements SessionInerface
 	public function __model()
 	{}
 
-	/**
-	 * 读取session
-	 * @param $sessionId
-	 * @return null
-	 */
+    /**
+     * 读取session
+     * @param $sessionId
+     * @return null
+     * @throws Exception
+     */
 	public function read($sessionId)
 	{
 		$where = array('session_id' => $sessionId);
@@ -31,10 +33,11 @@ class Session extends DatabaseModel implements SessionInerface
 		return $result ? $result['session_data'] : null;
 	}
 
-	/**
-	 * 写入session
-	 * @param $data
-	 */
+    /**
+     * 写入session
+     * @param $data
+     * @throws Exception
+     */
 	public function write($data)
 	{
 		$where = array(
@@ -52,10 +55,11 @@ class Session extends DatabaseModel implements SessionInerface
 		}
 	}
 
-	/**
-	 * 删除session
-	 * @param $sessionId
-	 */
+    /**
+     * 删除session
+     * @param $sessionId
+     * @throws Exception
+     */
 	public function destroy($sessionId)
 	{
 		$where = array(

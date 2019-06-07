@@ -19,7 +19,6 @@ class FormManager extends ServiceProvider
 
     protected $route;
     protected $form;
-
     protected $forms = array();
 
     /**
@@ -110,7 +109,7 @@ class FormManager extends ServiceProvider
 		$formName = array_search($requestToken, $tokens);
 
 		if ($formName === false || !$this->hasForm($formName)) {
-            $this->error->show('not_existsform');
+            $this->error->show('not_exists_form');
         }
 
 		$this->form = $this->getForm($formName);
@@ -137,7 +136,7 @@ class FormManager extends ServiceProvider
      */
     public static function getTokenTag()
     {
-        return '_oc_' . ocConfig(array('FORM', 'token_tag'), 'form_token_name');
+        return '_oc_' . ocConfig(array('FORM', 'token_tag'), '_form_token_name');
     }
 
     /**
