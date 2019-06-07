@@ -23,6 +23,8 @@ class Image extends ServiceBase
 	 */
 	public $srcName;
 	public $srcExtName;
+	public $dstName;
+	public $dstExtName;
 	public $srcObj;
 	public $dstObj;
 	public $srcPath;
@@ -149,6 +151,7 @@ class Image extends ServiceBase
      */
 	public function zoomImage($proportion, $dstPath = null)
 	{
+        $result = null;
 		if (!(is_array($proportion) && !empty($proportion))) return false;
 		
 		if (!$dstPath) {
@@ -204,11 +207,12 @@ class Image extends ServiceBase
 		return $this->srcObj;
 	}
 
-	/**
-	 * 设置目标图片
-	 * @param string $dstPath
-	 * @param Ox integer $perm
-	 */
+    /**
+     * 设置目标图片
+     * @param $dstPath
+     * @param null $perm
+     * @throws Exception
+     */
 	public function setDstImage($dstPath, $perm = null)
 	{
 		$this->_checkImage($dstPath, 'dst');
@@ -246,7 +250,7 @@ class Image extends ServiceBase
 		
 		if ($suffix) {
 			$thumb->dstObj = $thumb->createImage($thumb->srcWidth, $thumb->srcHeight);
-			$result = @imagecopy(
+			@imagecopy(
 				$thumb->dstObj, $thumb->srcObj, 0, 0, 0, 0, $thumb->srcWidth, $thumb->srcHeight
 			);
 			if ($thumb->_print()) {
@@ -519,17 +523,19 @@ class Image extends ServiceBase
      * 水平翻转
      * @param string $image
      * @param null $suffix
+     * @throws Exception
      */
 	public function flipH($image = 'src', $suffix = null)
 	{
 		$this->_flip('h', $image, $suffix);
 	}
 
-	/**
-	 * 垂直翻转
-	 * @param string $image
-	 * @param string $suffix
-	 */
+    /**
+     * 垂直翻转
+     * @param string $image
+     * @param null $suffix
+     * @throws Exception
+     */
 	public function flipV($image = 'src', $suffix = null)
 	{
 		$this->_flip('v', $image, $suffix);
