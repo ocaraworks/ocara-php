@@ -9,25 +9,22 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Basis;
-use Ocara\Core\Container;
 
 defined('OC_PATH') or exit('Forbidden!');
 
 abstract class Base extends Basis
 {
 	/**
-	 * @var $_error 错误信息
-	 * @var $_route 路由信息
-	 * @var $_properties 自定义属性
+	 * @var $route 路由信息
 	 */
-	protected $_route;
-	protected $_plugin;
-    protected $_event;
+	protected $route;
+	protected $plugin;
+    protected $event;
 
-    protected $_events = array();
-    protected $_traits = array();
+    protected $events = array();
+    protected $traits = array();
 
-    private $_isRegisteredEvent;
+    private $isRegisteredEvent;
 
     /**
      * 实例化
@@ -49,16 +46,16 @@ abstract class Base extends Basis
 	public function __call($name, $params)
 	{
 		$obj = $this;
-		while (isset($obj->_plugin) && is_object($obj->_plugin)) {
-			if (method_exists($obj->_plugin, $name)) {
-				return call_user_func_array(array(&$obj->_plugin, $name), $params);
+		while (isset($obj->plugin) && is_object($obj->plugin)) {
+			if (method_exists($obj->plugin, $name)) {
+				return call_user_func_array(array(&$obj->plugin, $name), $params);
 			} else {
-				$obj = $obj->_plugin;
+				$obj = $obj->plugin;
 			}
 		}
 
-        if (isset($this->_traits[$name])) {
-            return call_user_func_array($this->_traits[$name], $params);
+        if (isset($this->traits[$name])) {
+            return call_user_func_array($this->traits[$name], $params);
         }
 
         ocService()->error->show('no_method', array($name));
@@ -114,8 +111,8 @@ abstract class Base extends Basis
 	 */
 	public function plugin()
 	{
-		if (property_exists($this, '_plugin') && is_object($this->_plugin)) {
-			return $this->_plugin;
+		if (property_exists($this, '_plugin') && is_object($this->plugin)) {
+			return $this->plugin;
 		}
 
         ocService()->error->show('no_plugin');
@@ -134,19 +131,19 @@ abstract class Base extends Basis
      */
     public function event($eventName)
     {
-        $this->_checkRegisteredEvents();
+        $this->checkRegisteredEvents();
 
-        if (!isset($this->_events[$eventName])) {
+        if (!isset($this->events[$eventName])) {
             $event = ocContainer()->create('event');
             $event->setName($eventName);
-            $this->_events[$eventName] = $event;
-            if ($this->_event && method_exists($this->_event, $eventName)) {
+            $this->events[$eventName] = $event;
+            if ($this->event && method_exists($this->event, $eventName)) {
                 $event->clear();
-                $event->append(array(&$this->_event, $eventName), $eventName);
+                $event->append(array(&$this->event, $eventName), $eventName);
             }
         }
 
-        return $this->_events[$eventName];
+        return $this->events[$eventName];
     }
 
     /**
@@ -157,7 +154,7 @@ abstract class Base extends Basis
      */
     public function fire($eventName, array $params = array())
     {
-        $this->_checkRegisteredEvents();
+        $this->checkRegisteredEvents();
         return $this->event($eventName)->trigger($this, $params);
     }
 
@@ -168,14 +165,14 @@ abstract class Base extends Basis
      */
     public function bindEvents($eventObject)
     {
-        $this->_checkRegisteredEvents();
+        $this->checkRegisteredEvents();
 
         if (is_string($eventObject) && class_exists($eventObject)) {
             $eventObject = new $eventObject();
         }
 
         if (is_object($eventObject)) {
-            $this->_event = $eventObject;
+            $this->event = $eventObject;
         }
 
         return $this;
@@ -184,10 +181,10 @@ abstract class Base extends Basis
     /**
      * 检测事件注册
      */
-    protected function _checkRegisteredEvents()
+    protected function checkRegisteredEvents()
     {
-        if (empty($this->_isRegisteredEvent)) {
-            $this->_isRegisteredEvent = true;
+        if (empty($this->isRegisteredEvent)) {
+            $this->isRegisteredEvent = true;
             $this->registerEvents();
         }
     }
@@ -200,7 +197,7 @@ abstract class Base extends Basis
     public function traits($name, $function = null)
     {
         if (is_string($name)) {
-            $this->_traits[$name] = $function;
+            $this->traits[$name] = $function;
         } elseif (is_object($name)) {
             if (is_array($function)) {
                 foreach ($function as $name => $value) {
