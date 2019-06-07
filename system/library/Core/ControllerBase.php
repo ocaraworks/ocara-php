@@ -12,6 +12,7 @@ use Ocara\Core\DatabaseFactory;
 use Ocara\Core\ServiceProvider;
 use Ocara\Interfaces\Controller as ControllerInterface;
 use Ocara\Core\ModelBase;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -111,7 +112,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      * 获取提供器类
      * @param $controllerType
      * @return string
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public static function getControllerClass($controllerType)
     {
@@ -130,7 +131,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      * 获取提供器特性类
      * @param $controllerType
      * @return string
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public static function getFeatureClass($controllerType)
     {
@@ -447,8 +448,9 @@ class ControllerBase extends serviceProvider implements ControllerInterface
 
     /**
      * 自动进行参数验证
+     * @param array $data
      */
-    public function validate(array $date = [])
+    public function validate(array $data = [])
     {
         $data = $data ? : $this->getSubmitData();
         $this->validator->validate($data);
