@@ -2,7 +2,7 @@
 
 //根目录
 defined('OC_PATH') OR define(
-    'OC_PATH', str_replace(DIRECTORY_SEPARATOR, '/', realpath(dirname(dirname(dirname(__DIR__))))) . '/'
+    'OC_PATH', str_replace("\\", DIRECTORY_SEPARATOR, realpath(dirname(dirname(dirname(__DIR__))))) . DIRECTORY_SEPARATOR
 );
 
 //加载基本类库
