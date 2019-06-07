@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/system/library/Core/Ocara.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Ocara.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/library/Core/FormManager.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/FormManager.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,39 +14,10 @@
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/system/library/Core/Ocara.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="58" lean-forward="true" selection-start-line="58" selection-end-line="58" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/system/functions/common.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="4" column="30" selection-start-line="4" selection-start-column="30" selection-end-line="4" selection-end-column="30" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/system/functions/utility.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="544">
-              <caret line="736" lean-forward="true" selection-start-line="736" selection-end-line="736" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375" />
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>_name</find>
       <find>_info</find>
       <find>_isSend</find>
       <find>_error</find>
@@ -76,9 +47,9 @@
       <find>OC_EXECUTE_STATR_TIME</find>
       <find>ocEx</find>
       <find>Exception</find>
+      <find>_form</find>
     </findStrings>
     <replaceStrings>
-      <replace>-&gt;bootstrap</replace>
       <replace>-&gt;route</replace>
       <replace>-&gt;properties</replace>
       <replace>connects</replace>
@@ -108,6 +79,7 @@
       <replace>sessionName</replace>
       <replace>prefix</replace>
       <replace>savePath</replace>
+      <replace>form</replace>
     </replaceStrings>
     <dirStrings>
       <dir>D:\wwwroot\vendor\linyihu\ocara\system\data</dir>
@@ -122,7 +94,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/system/library/Core/Lang.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Loader.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Log.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Path.php" />
@@ -173,6 +144,7 @@
         <option value="$PROJECT_DIR$/system/library/Sessions/SessionFile.php" />
         <option value="$PROJECT_DIR$/composer.json" />
         <option value="$PROJECT_DIR$/system/library/Core/Ocara.php" />
+        <option value="$PROJECT_DIR$/system/library/Core/FormManager.php" />
       </list>
     </option>
   </component>
@@ -197,18 +169,20 @@
             <path>
               <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
               <item name="ocara" type="462c0819:PsiDirectoryNode" />
-              <item name="extension" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ocara" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
               <item name="ocara" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
-              <item name="functions" type="462c0819:PsiDirectoryNode" />
+              <item name="library" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ocara" type="462c0819:PsiDirectoryNode" />
+              <item name="system" type="462c0819:PsiDirectoryNode" />
+              <item name="library" type="462c0819:PsiDirectoryNode" />
+              <item name="Core" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -252,16 +226,15 @@
       <workItem from="1558018601706" duration="1804000" />
       <workItem from="1558193857402" duration="1509000" />
       <workItem from="1559888651125" duration="5000" />
-      <workItem from="1559888669937" duration="15567000" />
+      <workItem from="1559888669937" duration="15814000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19872000" />
+    <option name="totallyTimeSpent" value="20119000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2693133" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -288,20 +261,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/system/library/Dispatchers/Common.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="111">
-          <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Exceptions/ErrorException.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="15" column="6" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Exceptions/ReflectionException.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -682,8 +641,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/Ocara.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="58" lean-forward="true" selection-start-line="58" selection-end-line="58" />
+        <state relative-caret-position="393">
+          <caret line="120" lean-forward="true" selection-start-line="120" selection-end-line="120" />
+          <folding>
+            <element signature="e#550#575#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/FormToken.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/FormManager.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2197">
+          <caret line="44" column="5" lean-forward="true" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
         </state>
       </provider>
     </entry>
