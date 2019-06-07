@@ -23,9 +23,8 @@ defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(tr
 require_once (OC_PATH . 'system/functions/utility.php');
 require_once (OC_PATH . 'system/functions/common.php');
 require_once (OC_PATH . 'system/const/basic.php');
-require_once (OC_CORE . 'Basis.php');
 
-final class Ocara extends Basis
+final class Ocara
 {
 	/**
 	 * @var $instance 	实例
@@ -55,6 +54,7 @@ final class Ocara extends Basis
 	public static function register()
 	{
 	    ocImport(array(
+            OC_CORE . 'Basic.php',
             OC_CORE . 'Base.php',
             OC_CORE . 'Container.php',
             OC_CORE . 'Config.php',
