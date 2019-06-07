@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/system/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/system/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Bootstraps/Common.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Bootstraps/Common.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Caches/Memcache.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Caches/Memcache.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Caches/Redis.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Caches/Redis.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/framework.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/library/Core/Loader.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Loader.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/library/Core/Ocara.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Ocara.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,18 +19,25 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/system/library/Bootstraps/Common.php">
+        <entry file="file://$PROJECT_DIR$/system/library/Core/Loader.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="587">
-              <caret line="59" column="9" lean-forward="true" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
-              <folding>
-                <element signature="e#127#158#0#PHP" expanded="true" />
-              </folding>
+            <state relative-caret-position="366">
+              <caret line="98" column="9" lean-forward="true" selection-start-line="98" selection-start-column="9" selection-end-line="98" selection-end-column="9" />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>$relateShardinglInfo</find>
+      <find>_getRelateShardingInfo</find>
+      <find>switch</find>
+    </findStrings>
+    <dirStrings>
+      <dir>D:\wwwroot\vendor\linyihu\ocara\system</dir>
+    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -43,6 +50,11 @@
         <option value="$PROJECT_DIR$/system/library/Caches/Memcache.php" />
         <option value="$PROJECT_DIR$/system/library/Caches/Redis.php" />
         <option value="$PROJECT_DIR$/system/library/Bootstraps/Common.php" />
+        <option value="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" />
+        <option value="$PROJECT_DIR$/system/Framework.php" />
+        <option value="$PROJECT_DIR$/system/framework.php" />
+        <option value="$PROJECT_DIR$/system/library/Core/Ocara.php" />
+        <option value="$PROJECT_DIR$/system/library/Core/Loader.php" />
       </list>
     </option>
   </component>
@@ -80,14 +92,7 @@
               <item name="ocara" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
               <item name="library" type="462c0819:PsiDirectoryNode" />
-              <item name="Bootstraps" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ocara" type="462c0819:PsiDirectoryNode" />
-              <item name="system" type="462c0819:PsiDirectoryNode" />
-              <item name="library" type="462c0819:PsiDirectoryNode" />
-              <item name="Exceptions" type="462c0819:PsiDirectoryNode" />
+              <item name="Core" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -130,12 +135,12 @@
       <workItem from="1558018601706" duration="1804000" />
       <workItem from="1558193857402" duration="1509000" />
       <workItem from="1559888651125" duration="5000" />
-      <workItem from="1559888669937" duration="991000" />
+      <workItem from="1559888669937" duration="4168000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5296000" />
+    <option name="totallyTimeSpent" value="8473000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -166,13 +171,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/system/library/Core/Ajax.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="111">
-          <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/ServiceProvider.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1666">
@@ -251,11 +249,77 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Bootstraps/Common.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="587">
+        <state relative-caret-position="867">
           <caret line="59" column="9" lean-forward="true" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
           <folding>
             <element signature="e#127#158#0#PHP" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Controllers/Rest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="16" column="1" lean-forward="true" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Controllers/Common.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="12" column="6" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-56">
+          <caret line="1976" lean-forward="true" selection-start-line="1976" selection-end-line="1976" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Models/CacheEntity.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="14" column="15" selection-start-line="14" selection-start-column="15" selection-end-line="14" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/framework.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Ocara.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="92" lean-forward="true" selection-start-line="92" selection-end-line="92" />
+          <folding>
+            <element signature="e#550#571#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Ajax.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="239">
+          <caret line="87" column="8" selection-start-line="87" selection-start-column="8" selection-end-line="87" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Application.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-167">
+          <caret line="172" column="8" selection-start-line="172" selection-start-column="8" selection-end-line="172" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Loader.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="366">
+          <caret line="98" column="9" lean-forward="true" selection-start-line="98" selection-start-column="9" selection-end-line="98" selection-end-column="9" />
         </state>
       </provider>
     </entry>
