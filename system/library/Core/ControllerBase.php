@@ -20,20 +20,20 @@ class ControllerBase extends serviceProvider implements ControllerInterface
 {
 	/**
 	 * @var $_provider 控制器提供者
-     * @var $_isFormSubmit 是否POST提交
-     * @var $_checkForm 是否检测表单
+     * @var $isFormSubmit 是否POST提交
+     * @var $checkForm 是否检测表单
 	 */
-    protected $_route;
-	protected $_models;
-    protected $_isFormSubmit = false;
-    protected $_submitMethod = 'post';
-    protected $_checkForm = true;
-    protected $_hasRender = false;
-    protected $_isApi = false;
-    protected $_contentType;
-    protected $_result;
+    protected $route;
+	protected $models;
+    protected $isFormSubmit = false;
+    protected $submitMethod = 'post';
+    protected $checkForm = true;
+    protected $hasRender = false;
+    protected $isApi = false;
+    protected $contentType;
+    protected $result;
 
-    protected static $_controllerType;
+    protected static $controllerType;
 
     const EVENT_AFTER_ACTION = 'afterAction';
     const EVENT_BEFORE_RENDER = 'beforeRender';
@@ -102,10 +102,10 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     public function isApi($isApi = true)
     {
         if (func_get_args()) {
-            $this->_isApi = $isApi ? true : false;
+            $this->isApi = $isApi ? true : false;
         }
 
-        return $this->_isApi;
+        return $this->isApi;
     }
 
     /**
@@ -151,7 +151,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      */
 	public static function controllerType()
     {
-	    return self::$_controllerType ? ucfirst(self::$_controllerType): 'Common';
+	    return self::$controllerType ? ucfirst(self::$controllerType): 'Common';
     }
 
     /**
@@ -160,7 +160,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      */
     public function setRoute($route)
     {
-        $this->_route = $route;
+        $this->route = $route;
     }
 
     /**
@@ -171,10 +171,10 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     public function getRoute($name = null)
     {
         if (isset($name)) {
-            return isset($this->_route[$name]) ? $this->_route[$name] : null;
+            return isset($this->route[$name]) ? $this->route[$name] : null;
         }
 
-        return $this->_route;
+        return $this->route;
     }
 
     /**
@@ -266,7 +266,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      */
     public function hasRender()
     {
-        return $this->_hasRender;
+        return $this->hasRender;
     }
 
     /**
@@ -290,7 +290,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      */
     public function renderFile($file = null, array $vars = array(), $required = true)
     {
-        $this->response->setContentType($this->_contentType);
+        $this->response->setContentType($this->contentType);
 
         if (empty($file)) {
             $tpl = $this->view->getTpl();
@@ -304,7 +304,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
         $this->view->outputFile($content);
         $this->fire(self::EVENT_AFTER_RENDER);
 
-        $this->_hasRender = true;
+        $this->hasRender = true;
     }
 
     /**
@@ -319,17 +319,17 @@ class ControllerBase extends serviceProvider implements ControllerInterface
             $message = $this->lang->get($message);
         }
 
-        $this->_result = array(
+        $this->result = array(
             'status' => $status,
             'code' => $message['code'],
             'message' => $message['message'],
             'body' => $data
         );
 
-        $this->response->setContentType($this->_contentType);
+        $this->response->setContentType($this->contentType);
 
         if (!$this->response->getOption('statusCode')) {
-            if ($this->_result['status'] == 'success') {
+            if ($this->result['status'] == 'success') {
                 $this->response->setStatusCode(Response::STATUS_OK);
             } else {
                 $this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
@@ -337,11 +337,10 @@ class ControllerBase extends serviceProvider implements ControllerInterface
         }
 
         $this->fire(self::EVENT_BEFORE_RENDER);
-        $content = $this->view->renderApi($this->_result);
-        $this->view->outputApi($content);
-        $this->fire(self::EVENT_AFTER_RENDER);
+        $this->view->renderApi($this->result);
 
-        $this->_hasRender = true;
+        $this->fire(self::EVENT_AFTER_RENDER);
+        $this->hasRender = true;
     }
 
     /**
@@ -353,9 +352,9 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     {
         if (isset($method)) {
             $method = $method == 'get' ? 'get' : 'post';
-            $this->_submitMethod = $method;
+            $this->submitMethod = $method;
         }
-        return $this->_submitMethod;
+        return $this->submitMethod;
     }
 
     /**
@@ -366,9 +365,9 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     public function isFormSubmit($isFormSubmit = null)
     {
         if (func_num_args()) {
-            $this->_isFormSubmit = $isFormSubmit ? true : false;
+            $this->isFormSubmit = $isFormSubmit ? true : false;
         } else {
-            return $this->_isFormSubmit;
+            return $this->isFormSubmit;
         }
     }
 
@@ -380,7 +379,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      */
     public function getSubmitData($key = null, $default = null)
     {
-        $data = $this->_submitMethod == 'post' ? $_POST : $_GET;
+        $data = $this->submitMethod == 'post' ? $_POST : $_GET;
         $data = ocService()->request->getRequestValue($data, $key, $default);
         return $data;
     }
@@ -429,9 +428,9 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     public function isCheckForm($check = null)
     {
         if ($check === null) {
-            return $this->_checkForm;
+            return $this->checkForm;
         }
-        $this->_checkForm = $check ? true : false;
+        $this->checkForm = $check ? true : false;
     }
 
     /**
@@ -440,7 +439,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     public function checkForm()
     {
         $this->isFormSubmit();
-        if (!($this->_isFormSubmit && $this->_checkForm && $this->formManager->getForm()))
+        if (!($this->isFormSubmit && $this->checkForm && $this->formManager->getForm()))
             return true;
 
         return $this->formManager->checkForm();
@@ -470,15 +469,15 @@ class ControllerBase extends serviceProvider implements ControllerInterface
                 . ucfirst($this->getRoute('controller'));
         }
 
-        if (isset($this->_models[$class])) {
-            $model = $this->_models[$class];
+        if (isset($this->models[$class])) {
+            $model = $this->models[$class];
             if (is_object($model) && $model instanceof ModelBase) {
                 return $model;
             }
         }
 
-        $this->_models[$class] = new $class();
-        return $this->_models[$class];
+        $this->models[$class] = new $class();
+        return $this->models[$class];
     }
 
     /**

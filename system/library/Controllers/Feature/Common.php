@@ -9,7 +9,6 @@
 namespace Ocara\Controllers\Feature;
 
 use Ocara\Interfaces\Feature;
-use Ocara\Controllers\Feature\Base;
 
 defined('OC_PATH') or exit('Forbidden!');
 

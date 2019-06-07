@@ -43,8 +43,7 @@ class Validator extends Base
     /**
      * 表单验证
      * @param array $data
-     * @return bool
-     * @throws Exception
+     * @return bool|Validator
      */
     public function validate(array $data)
     {

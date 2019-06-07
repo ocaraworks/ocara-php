@@ -110,7 +110,7 @@ class FormManager extends ServiceProvider
 		$formName = array_search($requestToken, $tokens);
 
 		if ($formName === false || !$this->hasForm($formName)) {
-            $this->error->show('not_existsform');
+            $this->error->show('not_exists_form');
         }
 
 		$this->form = $this->getForm($formName);

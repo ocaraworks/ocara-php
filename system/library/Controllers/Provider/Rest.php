@@ -9,7 +9,7 @@
 namespace Ocara\Controllers\Provider;
 
 use Ocara\Core\Response;
-use Ocara\Controllers\Provider\Base;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -18,7 +18,7 @@ class Rest extends Base
     /**
      * @var $_message 返回消息
      */
-    protected $_hyperMediaLink;
+    protected $hyperMediaLink;
 
     /**
      * 初始化设置
@@ -34,6 +34,7 @@ class Rest extends Base
 
     /**
      * 获取动作执行方式
+     * @return string
      */
     public function getDoWay()
     {
@@ -42,17 +43,17 @@ class Rest extends Base
 
     /**
      * 设置Hypermedia
-     * @param $linkInfo
+     * @param array $linkInfo
      */
     public function setMediaLink(array $linkInfo)
     {
-        $this->_hyperMediaLink = $linkInfo;
+        $this->hyperMediaLink = $linkInfo;
     }
 
     /**
      * 获取当前请求的ID
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function getRequestId()
     {
@@ -63,7 +64,7 @@ class Rest extends Base
      * 输出内容（回调函数）
      * @param $result
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function formatAjaxResult($result)
     {

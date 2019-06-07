@@ -16,14 +16,14 @@ defined('OC_PATH') or exit('Forbidden!');
 
 abstract class CacheModel extends ModelBase
 {
-    protected $_plugin;
-    protected $_database;
+    protected $plugin;
+    protected $database;
 
-    protected $_tag;
-    protected $_prefix;
-    protected $_master;
-    protected $_slave;
-    protected $_connectName;
+    protected $tag;
+    protected $prefix;
+    protected $master;
+    protected $slave;
+    protected $connectName;
 
     /**
      * Model constructor.
@@ -38,7 +38,7 @@ abstract class CacheModel extends ModelBase
      */
     public function init()
     {
-        $this->_tag = self::getClass();
+        $this->tag = self::getClass();
         $this->connect();
 
         if (method_exists($this, '__start')) $this->__start();
@@ -53,7 +53,7 @@ abstract class CacheModel extends ModelBase
      */
     public function getTag()
     {
-        return $this->_tag;
+        return $this->tag;
     }
 
     /**
@@ -62,7 +62,7 @@ abstract class CacheModel extends ModelBase
      */
     public function getConnectName()
     {
-        return $this->_connectName;
+        return $this->connectName;
     }
 
     /**
@@ -76,21 +76,21 @@ abstract class CacheModel extends ModelBase
         $this->plugin = null;
 
         if (!$master) {
-            if (!is_object($this->_slave)) {
-                $this->_slave = CacheFactory::create($this->_connectName, false, false);
+            if (!is_object($this->slave)) {
+                $this->slave = CacheFactory::create($this->connectName, false, false);
             }
-            $this->plugin = $this->_slave;
+            $this->plugin = $this->slave;
         }
 
         if (!is_object($this->plugin)) {
-            if (!is_object($this->_master)) {
-                $this->_master = CacheFactory::create($this->_connectName);
+            if (!is_object($this->master)) {
+                $this->master = CacheFactory::create($this->connectName);
             }
-            $this->plugin = $this->_master;
+            $this->plugin = $this->master;
         }
 
-        if ($this->_database) {
-            $this->plugin->selectDatabase($this->_database);
+        if ($this->database) {
+            $this->plugin->selectDatabase($this->database);
         }
 
         return $this->plugin;

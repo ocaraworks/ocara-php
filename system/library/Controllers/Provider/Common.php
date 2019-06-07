@@ -8,7 +8,6 @@
  ************************************************************************************************/
 namespace Ocara\Controllers\Provider;
 
-use Ocara\Controllers\Provider\Base;
 use Ocara\Core\Response;
 
 defined('OC_PATH') or exit('Forbidden!');

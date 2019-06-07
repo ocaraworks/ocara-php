@@ -14,11 +14,11 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Sql extends Base
 {
-	protected $_prepared;
-	protected $_plugin = null;
+	protected $prepared;
+	protected $plugin = null;
 
-	protected $_params = array();
-	protected $_config = array();
+	protected $params = array();
+	protected $config = array();
 
     /**
      * 获取设置编码SQL
@@ -40,12 +40,12 @@ class Sql extends Base
 		return "USE " . $name;
 	}
 
-	/**
-	 * 给逗号分隔的列表加引号
-	 * @param array|string $list
-	 * @param string $quote
-	 * @return array|bool|mixed|string
-	 */
+    /**
+     * 给逗号分隔的列表加引号
+     * @param array|string $list
+     * @param string $quote
+     * @return array|bool|mixed|string
+     */
 	public function quoteList($list, $quote = OC_QUOTE)
 	{
 		$sql = $list;
@@ -116,9 +116,9 @@ class Sql extends Base
 			if ($mt = self::checkOcaraSqlTag($value)) {
 				return $mt[1];
 			} else {
-				if ($this->_prepared && $prepare) {
+				if ($this->prepared && $prepare) {
 					$value = $this->filterSql($value, false);
-					$this->_params[$paramType][] = $value;
+					$this->params[$paramType][] = $value;
 					return '?';
 				}
 				return $this->getValueSql($value, $ifQuote);
@@ -161,7 +161,7 @@ class Sql extends Base
 	 */
 	public function filterSql($content, $addSlashes = true, $equal = false)
 	{
-		return ocService()->filter->sql($content, $addSlashes, $this->_config['keywords'], $equal);
+		return ocService()->filter->sql($content, $addSlashes, $this->config['keywords'], $equal);
 	}
 
 	/**
@@ -235,13 +235,13 @@ class Sql extends Base
 		ocService()->error->show('need_scalar_condition');
 	}
 
-	/**
-	 * SELECT语句
-	 * @param $fields
-	 * @param $tables
-	 * @param $options
-	 * @return string
-	 */
+    /**
+     * SELECT语句
+     * @param $fields
+     * @param $tables
+     * @param $options
+     * @return array
+     */
 	public function getSelectSql($fields, $tables, $options)
 	{
 		$sql = "SELECT {$fields} FROM {$tables} "
@@ -255,12 +255,12 @@ class Sql extends Base
 		return $this->getSqlData($sql);
 	}
 
-	/**
-	 * INSERT语句
-	 * @param string $table
-	 * @param array $data
-	 * @return string
-	 */
+    /**
+     * INSERT语句
+     * @param string $table
+     * @param array $data
+     * @return array
+     */
 	public function getInsertSql($table, $data)
 	{
 		$sql = $this->getInsertSqlBase('INSERT', $table, $data);
@@ -290,13 +290,13 @@ class Sql extends Base
 		return $type . " INTO {$table}({$fields}) VALUES({$values})";
 	}
 
-	/**
-	 * UPDATE语句
-	 * @param string $table
-	 * @param string|array $data
-	 * @param string|array $where
-	 * @return string
-	 */
+    /**
+     * UPDATE语句
+     * @param string $table
+     * @param string|array $data
+     * @param string|array $where
+     * @return array
+     */
 	public function getUpdateSql($table, $data, $where)
 	{
 		$this->checkStringCondition($where);
@@ -318,12 +318,12 @@ class Sql extends Base
 		return $this->getSqlData($sql);
 	}
 
-	/**
-	 * REPLACE语句
-	 * @param $table
-	 * @param $data
-	 * @return string
-	 */
+    /**
+     * REPLACE语句
+     * @param string $table
+     * @param string|array $data
+     * @return array
+     */
 	public function getReplaceSql($table, $data)
 	{
 		$sql = $this->getInsertSqlBase('REPLACE', $table, $data);
@@ -485,14 +485,14 @@ class Sql extends Base
 	{
 		if (empty($options)) return false;
 
-		$ltype = strtolower($type);
+		$lowerType = strtolower($type);
 
 		if (is_string($options) && $type == 'WHERE') {
 			return $options ? " WHERE {$options} " : OC_EMPTY;
 		}
 
-		if (is_array($options) && array_key_exists($ltype, $options)) {
-			$content = $options[$ltype];
+		if (is_array($options) && array_key_exists($lowerType, $options)) {
+			$content = $options[$lowerType];
 			switch ($type) {
 				case 'WHERE':
 				case 'HAVING':
@@ -866,7 +866,7 @@ class Sql extends Base
 	public function bind($name, $value)
 	{
 		if (preg_match('/^:\w+$/', $name)) {
-			$this->_params['bind'][$name] = $value;
+			$this->params['bind'][$name] = $value;
 		}
 	}
 
@@ -876,7 +876,7 @@ class Sql extends Base
 	 */
 	public function getBindParams()
 	{
-		return $this->_params;
+		return $this->params;
 	}
 
 	/**
@@ -886,8 +886,8 @@ class Sql extends Base
 	 */
 	public function getSqlData($sql)
 	{
-        $params = $this->_params ? array($this->_params) : array();
-		$this->_params = array();
+        $params = $this->params ? array($this->params) : array();
+		$this->params = array();
 		$sql = trim($sql);
 		$data = array($sql, $params);
 

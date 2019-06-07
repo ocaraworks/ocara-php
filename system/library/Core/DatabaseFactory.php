@@ -13,7 +13,7 @@ use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class DatabaseFactory extends Base
+class DatabaseFactory extends Base
 {
     /**
      * 默认服务器名
