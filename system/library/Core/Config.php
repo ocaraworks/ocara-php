@@ -73,7 +73,7 @@ class Config extends Basis
     public function loadModuleConfig($route, $rootPath = null)
     {
         $subPath = 'config/control/';
-        $path = $this->_getConfigPath($route, $subPath, $rootPath);
+        $path = $this->getConfigPath($route, $subPath, $rootPath);
         $this->load($path);
     }
 
@@ -85,7 +85,7 @@ class Config extends Basis
 	public function loadControllerConfig($route = array(), $rootPath = null)
 	{
         $subPath = sprintf('config/control/%s/', $route['controller']);
-        $path = $this->_getConfigPath($route, $subPath, $rootPath);
+        $path = $this->getConfigPath($route, $subPath, $rootPath);
 
         if (is_dir($path)) {
             $this->load($path);
@@ -100,7 +100,7 @@ class Config extends Basis
     public function loadActionConfig($route = array(), $rootPath = null)
     {
         $subPath = sprintf('config/control/%s/', $route['controller']);
-        $path = $this->_getConfigPath($route, $subPath, $rootPath);
+        $path = $this->getConfigPath($route, $subPath, $rootPath);
 
         if (is_dir($path)) {
             if ($route['action'] && is_dir($path = $path . OC_DIR_SEP . $route['action'])) {
@@ -116,7 +116,7 @@ class Config extends Basis
      * @param $rootPath
      * @return mixed|string
      */
-	protected function _getConfigPath($route, $subPath, $rootPath)
+	protected function getConfigPath($route, $subPath, $rootPath)
     {
         if ($route['module']) {
             $subPath = $route['module'] . '/privates/' . $subPath;

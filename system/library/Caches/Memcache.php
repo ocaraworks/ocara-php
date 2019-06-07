@@ -35,7 +35,7 @@ class Memcache extends CacheBase implements CacheInterface
 		}
 
 		$this->plugin = new $class();
-		$this->_addServers($config, $class);
+		$this->addServers($config, $class);
 	}
 
     /**
@@ -43,7 +43,7 @@ class Memcache extends CacheBase implements CacheInterface
      * @param $config
      * @param $class
      */
-	private function _addServers($config, $class)
+	private function addServers($config, $class)
 	{
 		$servers = ocGet('servers', $config, array());
 		

@@ -17,16 +17,16 @@ class Main extends ServiceProvider
      */
     public function register()
     {
-        $this->_createService(ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS'), 'bindSingleton');
-        $this->_createService(ocConfig('SYSTEM_SERVICE_CLASS'), 'bind');
+        $this->initService(ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS'), 'bindSingleton');
+        $this->initService(ocConfig('SYSTEM_SERVICE_CLASS'), 'bind');
     }
 
     /**
-     * 新建服务组件
+     * 初始化服务组件
      * @param $services
      * @param $method
      */
-    protected function _createService($services, $method)
+    protected function initService($services, $method)
     {
         foreach ($services as $name => $namespace) {
             $this->container->$method($name, function() use($namespace) {

@@ -53,7 +53,7 @@ class Lang extends Base
             'lang/%s/control/',
             ocService()->app->getLanguage()
         );
-        $path = $this->_getConfigPath($route, $subPath, $rootPath);
+        $path = $this->getConfigPath($route, $subPath, $rootPath);
         $this->load($path);
     }
 
@@ -70,7 +70,7 @@ class Lang extends Base
             $route['controller']
         );
 
-        $path = $this->_getConfigPath($route, $subPath, $rootPath);
+        $path = $this->getConfigPath($route, $subPath, $rootPath);
         if (is_dir($path)) {
             $this->load($path);
         }
@@ -89,7 +89,7 @@ class Lang extends Base
             $route['controller']
         );
 
-        $path = $this->_getConfigPath($route, $subPath, $rootPath);
+        $path = $this->getConfigPath($route, $subPath, $rootPath);
         if (is_dir($path)) {
             if ($route['action'] && is_dir($path = $path . OC_DIR_SEP . $route['action'])) {
                 $this->load($path);
@@ -104,7 +104,7 @@ class Lang extends Base
      * @param $rootPath
      * @return mixed|string
      */
-    protected function _getConfigPath($route, $subPath, $rootPath)
+    protected function getConfigPath($route, $subPath, $rootPath)
     {
         if ($route['module']) {
             $subPath = $route['module'] . '/privates/' . $subPath;

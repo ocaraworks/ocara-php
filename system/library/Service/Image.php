@@ -94,7 +94,7 @@ class Image extends ServiceBase
         $dstLx = null,
         $dstLy = null
 	) {
-		$this->_checkResource();
+		$this->checkResource();
 		if (!$clipWidth) $this->showError('empty_width');
 
 		if (!$clipHeight) $this->showError('empty_height');
@@ -127,9 +127,9 @@ class Image extends ServiceBase
 			imagecopy($this->dstObj, $this->srcObj, $dstLx, $dstLy, $clipLx, $clipLy, $toW, $toH);
 		}
 		
-		if (!$this->_print()) return false;
+		if (!$this->basePrint()) return false;
 		
-		$result = $this->_save();
+		$result = $this->baseSave();
 		
 		if ($result && $dstWidth && $dstHeight) {
 			$srcPath = $this->srcPath;
@@ -197,7 +197,7 @@ class Image extends ServiceBase
 			$this->showError('need_src_image');
 		}
 		
-		$this->_checkImage($srcPath, 'src');
+		$this->checkImage($srcPath, 'src');
 		
 		$createFunc = 'imagecreatefrom' . ($this->srcExtName == 'jpg' ? 'jpeg' : $this->srcExtName);
 		$this->srcObj = $createFunc($srcPath);
@@ -215,8 +215,8 @@ class Image extends ServiceBase
      */
 	public function setDstImage($dstPath, $perm = null)
 	{
-		$this->_checkImage($dstPath, 'dst');
-		$this->_checkPath(dirname($dstPath), $perm);
+		$this->checkImage($dstPath, 'dst');
+		$this->checkPath(dirname($dstPath), $perm);
 		$this->dstPath = $dstPath;
 	}
 
@@ -232,7 +232,7 @@ class Image extends ServiceBase
 	{
 		if (!(is_array($markInfo) && !empty($markInfo))) return false;
 		
-		$imagePath = $this->_getImagePath($dstImage);
+		$imagePath = $this->getImagePath($dstImage);
 		$thumb = new Image();
 		$thumb->setSrcImage($imagePath);
 		
@@ -253,8 +253,8 @@ class Image extends ServiceBase
 			@imagecopy(
 				$thumb->dstObj, $thumb->srcObj, 0, 0, 0, 0, $thumb->srcWidth, $thumb->srcHeight
 			);
-			if ($thumb->_print()) {
-				$thumb->_save();
+			if ($thumb->basePrint()) {
+				$thumb->baseSave();
 			} else {
 				$this->showError('failed_create_image');
 			}
@@ -267,9 +267,9 @@ class Image extends ServiceBase
 		$imgH = $this->getInfo($thumb->dstObj, 'h');
 		
 		if ($markInfo[0] == 'image') {
-			return $this->_imageMark($thumb, $markInfo[1], $imgW, $imgH);
+			return $this->imageMark($thumb, $markInfo[1], $imgW, $imgH);
 		} elseif ($markInfo[0] == 'text') {
-			return $this->_textMark($thumb, $markInfo[1], $imgW, $imgH);
+			return $this->textMark($thumb, $markInfo[1], $imgW, $imgH);
 		}
 		
 		return false;
@@ -311,7 +311,7 @@ class Image extends ServiceBase
      * @param $perm
      * @return bool
      */
-	protected function _checkPath($path, $perm)
+	protected function checkPath($path, $perm)
 	{
 		return ocCheckPath($path, $perm);
 	}
@@ -322,7 +322,7 @@ class Image extends ServiceBase
      * @param $type
      * @throws Exception
      */
-	protected function _checkImage($path, $type)
+	protected function checkImage($path, $type)
 	{
 		$str = $this->getMessage($type == 'src' ? 'src_image' : 'dst_image');
 		
@@ -370,7 +370,7 @@ class Image extends ServiceBase
      * @return array|bool|false
      * @throws Exception
      */
-	public function _textMark(&$thumb, array &$markInfo, $imgW, $imgH)
+	public function textMark(&$thumb, array &$markInfo, $imgW, $imgH)
 	{
 		extract($markInfo);
 		
@@ -396,7 +396,7 @@ class Image extends ServiceBase
 		
 		$color = self::parseColor($color);
 		$color = @imagecolorallocate($thumb->dstObj, $color[0], $color[1], $color[2]);
-		list($textLx, $textLy) = $this->_getLocation($location, $imgW, $imgH, $contentW, $contentH);
+		list($textLx, $textLy) = $this->getLocation($location, $imgW, $imgH, $contentW, $contentH);
 	
 		if (!$this->font) {
 			$result = imagestring(
@@ -409,8 +409,8 @@ class Image extends ServiceBase
 		}
 		
 		if ($result) {
-			if ($result = $thumb->_print()) {
-				$result = $thumb->_save();
+			if ($result = $thumb->basePrint()) {
+				$result = $thumb->baseSave();
 			}
 		}
 		
@@ -426,7 +426,7 @@ class Image extends ServiceBase
      * @return bool
      * @throws Exception
      */
-	public function _imageMark(&$thumb, array &$markInfo, $imgW, $imgH)
+	public function imageMark(&$thumb, array &$markInfo, $imgW, $imgH)
 	{
 		extract($markInfo);
 		$imageMarkParams = array('path', 'location');
@@ -448,12 +448,12 @@ class Image extends ServiceBase
 		if (is_resource($imageObj)) {
 			$w = $this->getInfo($imageObj, 'w');
 			$h = $this->getInfo($imageObj, 'h');
-			list($textLx, $textLy) = $this->_getLocation($location, $imgW, $imgH, $w, $h);
+			list($textLx, $textLy) = $this->getLocation($location, $imgW, $imgH, $w, $h);
 			$pct = isset($transparent) ? $transparent : 100;
 			$result = @imagecopymerge($thumb->dstObj, $imageObj, $textLx, $textLy, 0, 0, $w, $h, $pct);
 			if ($result) {
-				if ($result = $thumb->_print()) {
-					$result = $thumb->_save();
+				if ($result = $thumb->basePrint()) {
+					$result = $thumb->baseSave();
 				}
 			}
 			return $result;
@@ -472,7 +472,7 @@ class Image extends ServiceBase
      * @return array
      * @throws Exception
      */
-	protected function _getLocation($location, $imgW, $imgH, $contentW, $contentH)
+	protected function getLocation($location, $imgW, $imgH, $contentW, $contentH)
 	{
 		if (!in_array(trim($location), self::$locationRule)) {
 			$this->showError('fault_mark_param', array('location'));
@@ -527,7 +527,7 @@ class Image extends ServiceBase
      */
 	public function flipH($image = 'src', $suffix = null)
 	{
-		$this->_flip('h', $image, $suffix);
+		$this->flip('h', $image, $suffix);
 	}
 
     /**
@@ -538,7 +538,7 @@ class Image extends ServiceBase
      */
 	public function flipV($image = 'src', $suffix = null)
 	{
-		$this->_flip('v', $image, $suffix);
+		$this->flip('v', $image, $suffix);
 	}
 
     /**
@@ -563,13 +563,13 @@ class Image extends ServiceBase
      * @return string
      * @throws Exception
      */
-	protected function _getImagePath($image = 'src')
+	protected function getImagePath($image = 'src')
 	{
 		if ($image == 'src') {
-			$this->_checkResource();
+			$this->checkResource();
 			$imagePath = $this->srcPath;
 		} elseif ($image == 'dst') {
-			$this->_checkResource();
+			$this->checkResource();
 			$imagePath = $this->dstPath;
 		} else {
 			if (!ocFileExists($image)) {
@@ -607,7 +607,7 @@ class Image extends ServiceBase
      * 检查图片资源
      * @throws Exception
      */
-	protected function _checkResource()
+	protected function checkResource()
 	{
 		if (!is_resource($this->srcObj)) {
 			$this->showError('no_src_image');
@@ -624,7 +624,7 @@ class Image extends ServiceBase
      * @return bool|mixed
      * @throws Exception
      */
-	protected function _print($isDestroy = false)
+	protected function basePrint($isDestroy = false)
 	{
 		$contentType = ocGet(0, self::$imageTypes[$this->srcExtName]);
 		
@@ -656,7 +656,7 @@ class Image extends ServiceBase
      * @return bool|int
      * @throws Exception
      */
-	protected function _save()
+	protected function baseSave()
 	{
 		if (!is_file($this->srcTemp)) {
 			$this->showError('no_cache_file');
@@ -679,11 +679,11 @@ class Image extends ServiceBase
      * @return bool|int|mixed
      * @throws Exception
      */
-	protected function _flip($type, $image, $suffix = null)
+	protected function flip($type, $image, $suffix = null)
 	{
         $result = null;
 		$type = strtoupper($type);
-		$imagePath = $this->_getImagePath($image);
+		$imagePath = $this->getImagePath($image);
 		$thumb = new Image();
 		$thumb->setSrcImage($imagePath);
 		
@@ -715,9 +715,9 @@ class Image extends ServiceBase
 		}
 		
 		if ($result) {
-			$result = $thumb->_print();
+			$result = $thumb->basePrint();
 			if ($result) {
-                $result = $thumb->_save();
+                $result = $thumb->baseSave();
             }
 		}
 		

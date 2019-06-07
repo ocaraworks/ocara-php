@@ -33,7 +33,7 @@ class Date extends ServiceBase
 		$dateInfo = array();
 
 		if (is_string($time)) {
-			$dateInfo = self::_getDateInfo($time);
+			$dateInfo = self::baseGetDateInfo($time);
 		} elseif (is_numeric($time)) {
 			$data = getdate($time);
 			foreach (self::$maps as $key => $value) {
@@ -192,7 +192,7 @@ class Date extends ServiceBase
      * @return array|mixed
      * @throws Exception
      */
-	protected static function _getDateInfo($string, $format = null)
+	protected static function baseGetDateInfo($string, $format = null)
 	{
 		if (!is_string($string)) return $string;
 		

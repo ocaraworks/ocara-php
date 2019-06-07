@@ -51,7 +51,7 @@ class Session extends ServiceProvider
             register_shutdown_function('session_write_close');
         }
 
-		$this->_start($start);
+		$this->start($start);
 	}
 
     /**
@@ -59,7 +59,7 @@ class Session extends ServiceProvider
      * @param $start
      * @throws Exception
      */
-	private function _start($start)
+	private function start($start)
 	{
 		$saveTime = intval(ocConfig(array('SESSION', 'options', 'save_time'), false));
 

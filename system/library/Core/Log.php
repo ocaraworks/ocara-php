@@ -128,7 +128,7 @@ class Log extends Base
         for ($i = 0, $index = 0; $i < $len; $i++) {
             $row = $traceInfo[$i];
             $format = "#%d %s%s%s%s%s(%s)";
-            $str = self::_getTraceRow($index, $format, $row);
+            $str = self::getTraceRow($index, $format, $row);
             if ($str) {
                 $content[] = $str;
                 $index++;
@@ -146,7 +146,7 @@ class Log extends Base
      * @return string
      * @throws ReflectionException
      */
-    private static function _getTraceRow($index, $format, $row)
+    private static function getTraceRow($index, $format, $row)
     {
         $content = OC_EMPTY;
 
@@ -158,7 +158,7 @@ class Log extends Base
             $type     = isset($row['type']) && $row['type'] ? $row['type'] : false;
 
             $function = isset($row['function']) && $row['function'] ? $row['function'] : false;
-            $args     = isset($row['args']) && $row['args'] ? self::_getTraceArgs($row['args']) : false;
+            $args     = isset($row['args']) && $row['args'] ? self::getTraceArgs($row['args']) : false;
 
             if ($file) {
                 $line = $file ? $line . ': ' : $line;
@@ -175,7 +175,7 @@ class Log extends Base
      * @return string
      * @throws ReflectionException
      */
-    private static function _getTraceArgs(array $args)
+    private static function getTraceArgs(array $args)
     {
         $content = array();
 

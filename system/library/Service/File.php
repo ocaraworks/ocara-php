@@ -124,7 +124,7 @@ class File extends ServiceBase
 	 */
 	public static function writeFile($path, $content, $perm = null, $trim = false)
 	{
-		return ocWrite($path, self::_getContent($content, $trim), false, $perm);
+		return ocWrite($path, self::getContent($content, $trim), false, $perm);
 	}
 
 	/**
@@ -137,7 +137,7 @@ class File extends ServiceBase
 	 */
 	public static function appendFile($path, $content, $perm = null, $trim = false)
 	{
-		return ocWrite($path, self::_getContent($content, $trim), true, $perm);
+		return ocWrite($path, self::getContent($content, $trim), true, $perm);
 	}
 
 	/**
@@ -222,7 +222,7 @@ class File extends ServiceBase
 	 */
 	public static function delDir($path, $recursive = false)
 	{
-		return self::_delDir($path, $recursive, 'del');
+		return self::baseDelDir($path, $recursive, 'del');
 	}
 
 	/**
@@ -233,7 +233,7 @@ class File extends ServiceBase
 	 */
 	public static function clearDir($path, $recursive = false)
 	{
-		return self::_delDir($path, $recursive, 'clear');
+		return self::baseDelDir($path, $recursive, 'clear');
 	}
 
 	/**
@@ -243,7 +243,7 @@ class File extends ServiceBase
 	 * @param string $delType
 	 * @return bool
 	 */
-	private static function _delDir($path, $recursive = false, $delType = 'del')
+	private static function baseDelDir($path, $recursive = false, $delType = 'del')
 	{
 		if (!$path) return false;
 		if (!is_dir($path)) return true;
@@ -277,7 +277,7 @@ class File extends ServiceBase
 	 * @param bool $trim
 	 * @return mixed
 	 */
-	private static function _getContent($content, $trim)
+	private static function getContent($content, $trim)
 	{
 		if ($trim) {
 			if (is_array($content)) {

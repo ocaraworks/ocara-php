@@ -67,7 +67,7 @@ class Transaction extends Base
 	public function commit()
 	{
 		if ($this->count == 1) {
-			self::_commitAll();
+			self::commitAll();
 			$this->count = 0;
 			$this->list = array();
 		} elseif ($this->count > 1) {
@@ -82,7 +82,7 @@ class Transaction extends Base
 	{
 		if ($this->count > 0) {
 			$this->count = 0;
-			self::_rollbackAll();
+			self::rollbackAll();
 			$this->list = array();
 		}
 	}
@@ -90,7 +90,7 @@ class Transaction extends Base
 	/**
 	 * 提交所有事务
 	 */
-	protected function _commitAll()
+	public function commitAll()
 	{
 		foreach ($this->list as $database) {
 			$database->commit();
@@ -100,7 +100,7 @@ class Transaction extends Base
 	/**
 	 * 回滚所有事务
 	 */
-	protected function _rollbackAll()
+	public function rollbackAll()
 	{
 		foreach ($this->list as $database) {
 			$database->rollback();

@@ -192,7 +192,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
         }
 
         if ($actionMethod == '__action') {
-            $this->_doClassAction();
+            $this->doClassAction();
         } else {
             $this->$actionMethod();
             $this->render();
@@ -204,7 +204,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     /**
      * 执行动作类实例
      */
-	protected function _doClassAction()
+	protected function doClassAction()
     {
         if (method_exists($this, '__action')) {
             $this->__action();

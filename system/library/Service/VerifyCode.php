@@ -83,7 +83,7 @@ class VerifyCode extends ServiceBase
 			}
 
 			$this->extName = 'jpg';
-			$color = $this->_parseColor($source);
+			$color = $this->parseColor($source);
 			$color = @imagecolorallocate($this->imgObj, $color[0], $color[1], $color[2]);
 
 			imagefilledrectangle($this->imgObj, 0, 0, $width, $height, $color);
@@ -103,7 +103,7 @@ class VerifyCode extends ServiceBase
 	public function drawLine($color, $startX, $startY, $endX = null, $endY = null)
 	{
 		if (!is_resource($this->imgObj)) return false;
-		$color = $this->_parseColor($color);
+		$color = $this->parseColor($color);
 		$color = @imagecolorallocate($this->imgObj, $color[0], $color[1], $color[2]);
 		
 		if (empty($endX)) {
@@ -138,7 +138,7 @@ class VerifyCode extends ServiceBase
 		$filter     = ocGet('filter', $format);
 		$verifyCode = Code::getCaptcha($type, $length, $filter);
 
-		$this->_addText($verifyCode, $format, $left);
+		$this->addText($verifyCode, $format, $left);
 		$_SESSION[$this->sessionName] = $verifyCode;
 	}
 
@@ -191,7 +191,7 @@ class VerifyCode extends ServiceBase
      * @param array $location
      * @throws Exception
      */
-	protected function _addText($content, array $fontInfo = array(), array $location = array())
+	protected function addText($content, array $fontInfo = array(), array $location = array())
 	{
 		$size 	 = ocGet('size', $fontInfo, 12);
 		$color 	 = ocGet('color', $fontInfo, '#FFFFFF');
@@ -209,7 +209,7 @@ class VerifyCode extends ServiceBase
 			if ($font) $startY += $contentH;
 		}
 
-		$color = $this->_parseColor($color);
+		$color = $this->parseColor($color);
 		$color = @imagecolorallocate($this->imgObj, $color[0], $color[1], $color[2]);
 
 		if (!$font) {
@@ -229,7 +229,7 @@ class VerifyCode extends ServiceBase
      * @return array
      * @throws Exception
      */
-	protected function _parseColor($color)
+	protected function parseColor($color)
 	{
 		if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $color)) {
 			$this->showError('fault_color');

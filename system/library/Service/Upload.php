@@ -119,20 +119,20 @@ class Upload extends ServiceBase
 						'error' 	=> $fileInfo['error'][$i], 
 						'size' 		=> $fileInfo['size'][$i]
 					);
-					$this->files[$index][$i] = $this->_check($row);
+					$this->files[$index][$i] = $this->check($row);
 					if (empty($this->files[$index][$i])) {
 						return false;
 					}
 				}
 			} elseif (is_string($fileInfo['name'])) {
-				$this->files[$index] = $this->_check($fileInfo);
+				$this->files[$index] = $this->check($fileInfo);
 				if (empty($this->files[$index])) {
 					return false;
 				}
 			}
 		}
 		
-		return $this->_uploadAllFile($_FILES);
+		return $this->uploadAllFile($_FILES);
 	}
 
     /**
@@ -153,7 +153,7 @@ class Upload extends ServiceBase
      * @param $files
      * @return bool
      */
-	private function _uploadAllFile($files)
+	private function uploadAllFile($files)
 	{
 		if (!(is_array($files) && $files)) return false;
 		
@@ -164,14 +164,14 @@ class Upload extends ServiceBase
 				$count = count($fileInfo['name']);
 				for ($i = 0;$i < $count;$i++) {
 					$row = $this->files[$index][$i];
-					if (!$this->_uploadFile($row, $path, $index, $i)) {
+					if (!$this->uploadFile($row, $path, $index, $i)) {
 						return $this->setError('failed', array($row['name']));
 					}
 					$path[] = $row['save_path'];
 				}
 			} elseif (is_string($fileInfo['name'])) {
 				$row = $this->files[$index];
-				if (false === $this->_uploadFile($row, $path, $index, false)) {
+				if (false === $this->uploadFile($row, $path, $index, false)) {
 					return $this->setError('failed', array($row['name']));
 				}
 				$path[] = $row['save_path'];
@@ -189,7 +189,7 @@ class Upload extends ServiceBase
      * @param integer|bool $i
      * @return bool
      */
-	private function _uploadFile($row, $path, $index, $i)
+	private function uploadFile($row, $path, $index, $i)
 	{
 		$key = is_integer($i) ? $index . '.' . $i : $index;
 		$save_path = $row['save_path'];
@@ -217,7 +217,7 @@ class Upload extends ServiceBase
      * @return bool
      * @throws Exception
      */
-	protected function _check($file)
+	protected function check($file)
 	{
 		extract($file);
 		

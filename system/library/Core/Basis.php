@@ -43,7 +43,7 @@ abstract class Basis
      * @param $property
      * @param null $value
      */
-    protected function _setProperty($property, $value = null)
+    protected function setProperty($property, $value = null)
     {
         if (is_array($property)) {
             foreach ($property as $name => $value) {
@@ -58,7 +58,7 @@ abstract class Basis
      * 清理属性
      * @param array $fields
      */
-    protected function _clearProperties(array $fields = array())
+    protected function clearProperties(array $fields = array())
     {
         $fields = $fields ? : array_keys($this->toArray());
 
@@ -121,7 +121,7 @@ abstract class Basis
             }
         }
 
-        $this->_throwAccessPropertyError($property);
+        $this->throwAccessPropertyError($property);
 	}
 
     /**
@@ -138,7 +138,7 @@ abstract class Basis
             return true;
         }
 
-        $this->_throwAccessPropertyError($property);
+        $this->throwAccessPropertyError($property);
 	}
 
     /**
@@ -157,7 +157,7 @@ abstract class Basis
             }
         }
 
-        $this->_throwAccessPropertyError($property);
+        $this->throwAccessPropertyError($property);
 	}
 
     /**
@@ -165,7 +165,7 @@ abstract class Basis
      * @param $property
      * @throws Exception
      */
-	protected function _throwAccessPropertyError($property)
+	protected function throwAccessPropertyError($property)
     {
         $message = sprintf('Cannot access private or property %s::$%s', self::getClass(), $property);
         throw new Exception($message);

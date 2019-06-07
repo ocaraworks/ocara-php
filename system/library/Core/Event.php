@@ -30,7 +30,7 @@ class Event extends Basis implements EventInterface
     public function append($callback, $args = 0)
     {
         if ($callback) {
-            call_user_func_array(array(&$this, '_create'), func_get_args());
+            call_user_func_array(array(&$this, 'create'), func_get_args());
         }
 
         return $this;
@@ -61,7 +61,7 @@ class Event extends Basis implements EventInterface
      * @param $callback
      * @param int $args
      */
-    protected function _create($callback, $args = 0)
+    protected function create($callback, $args = 0)
     {
         if (is_string($callback)
             && preg_match('/^[\w\\\\]+$/', $callback)
@@ -109,7 +109,7 @@ class Event extends Basis implements EventInterface
      */
     public function modify($name, $callback)
     {
-        $key = $this->_getKey($name);
+        $key = $this->getKey($name);
         if (is_integer($key)) {
             $this->handlers[$name] = $callback;
         }
@@ -122,7 +122,7 @@ class Event extends Basis implements EventInterface
      * @param $name
      * @return int|null
      */
-    protected function _getKey($name)
+    protected function getKey($name)
     {
         $key = null;
 
@@ -148,7 +148,7 @@ class Event extends Basis implements EventInterface
      */
     public function setPriority($name, $priority)
     {
-        $key = $this->_getKey($name);
+        $key = $this->getKey($name);
         if (is_integer($key)) {
             $this->handlers[$key]['priority'] = $priority;
         }
@@ -163,7 +163,7 @@ class Event extends Basis implements EventInterface
      */
     public function delete($name)
     {
-        $key = $this->_getKey($name);
+        $key = $this->getKey($name);
         if (is_integer($key)) {
             ocDel($this->handlers, $key);
         }
@@ -179,7 +179,7 @@ class Event extends Basis implements EventInterface
     public function get($name = null)
     {
         if (isset($name)) {
-            $key = $this->_getKey($name);
+            $key = $this->getKey($name);
             if (is_integer($key)) {
                 return $this->handlers[$name];
             }
@@ -197,7 +197,7 @@ class Event extends Basis implements EventInterface
     public function has($name = null)
     {
         if (isset($name)) {
-            $key = $this->_getKey($name);
+            $key = $this->getKey($name);
             return is_integer($key);
         }
 
@@ -237,12 +237,12 @@ class Event extends Basis implements EventInterface
             foreach ($handlers as $key => $row) {
                 $callback = $row['callback'];
                 if ($this->running) {
-                    $results[$key] = $this->_runCallback($callback, $params);
+                    $results[$key] = $this->runCallback($callback, $params);
                 }
             }
         } elseif ($this->defaultHandler) {
             $this->running = true;
-            $results[] = $this->_runCallback($this->defaultHandler, $params);
+            $results[] = $this->runCallback($this->defaultHandler, $params);
         }
 
         $this->stop();
@@ -255,7 +255,7 @@ class Event extends Basis implements EventInterface
      * @param $params
      * @return mixed
      */
-    public function _runCallback($callback, $params)
+    public function runCallback($callback, $params)
     {
         if (is_object($callback)) {
             $callback = array($callback, 'handler');
