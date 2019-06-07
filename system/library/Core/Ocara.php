@@ -19,11 +19,6 @@ defined('OC_PATH') OR define(
 
 defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(true));
 
-//加载基本类库
-require_once (OC_PATH . 'system/functions/utility.php');
-require_once (OC_PATH . 'system/functions/common.php');
-require_once (OC_PATH . 'system/const/basic.php');
-
 final class Ocara
 {
 	/**
@@ -54,6 +49,9 @@ final class Ocara
 	public static function register()
 	{
 	    ocImport(array(
+            OC_PATH . 'system/functions/utility.php',
+            OC_PATH . 'system/functions/common.php',
+            OC_PATH . 'system/const/basic.php',
             OC_CORE . 'Basic.php',
             OC_CORE . 'Base.php',
             OC_CORE . 'Container.php',
