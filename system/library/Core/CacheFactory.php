@@ -9,6 +9,7 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -18,19 +19,19 @@ final class CacheFactory extends Base
      * 默认服务器名
      * @var string
      */
-    protected static $_defaultServer = 'defaults';
+    protected static $defaultServer = 'defaults';
 
     /**
      * 新建缓存实例
      * @param string $connectName
      * @param bool $required
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public static function create($connectName = null, $required = true)
 	{
 		if (empty($connectName)) {
-			$connectName = self::$_defaultServer;
+			$connectName = self::$defaultServer;
 		}
 
 		$object = self::_connect($connectName, $required);
@@ -48,19 +49,19 @@ final class CacheFactory extends Base
      */
     public static function getDefaultServer()
     {
-        return self::$_defaultServer;
+        return self::$defaultServer;
     }
 
     /**
      * 获取配置信息
      * @param string $connectName
      * @return array|mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public static function getConfig($connectName = null)
 	{
 		if (empty($connectName)) {
-			$connectName = self::$_defaultServer;
+			$connectName = self::$defaultServer;
 		}
 
 		$config = array();
@@ -81,7 +82,7 @@ final class CacheFactory extends Base
      * @param string $connectName
      * @param bool $required
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	private static function _connect($connectName, $required = true)
 	{

@@ -14,7 +14,7 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Globals extends Base
 {
-    protected $_vars;
+    protected $data;
 
     /**
      * 设置属性
@@ -23,7 +23,7 @@ class Globals extends Base
      */
     public function set($name, $value = null)
     {
-        $this->_vars[$name] = $value;
+        $this->data[$name] = $value;
     }
 
     /**
@@ -33,7 +33,7 @@ class Globals extends Base
      */
     public function get($name = null)
     {
-        return array_key_exists($name, $this) ? $this->_vars[$name] : null;
+        return array_key_exists($name, $this) ? $this->data[$name] : null;
     }
 
     /**
@@ -54,8 +54,8 @@ class Globals extends Base
     public function delete($name)
     {
         if (array_key_exists($name, $this)) {
-            $this->_vars[$name] = null;
-            unset($this->_vars[$name]);
+            $this->data[$name] = null;
+            unset($this->data[$name]);
         }
     }
 
@@ -64,6 +64,6 @@ class Globals extends Base
      */
     public function clear()
     {
-        $this->_vars = array();
+        $this->data = array();
     }
 }

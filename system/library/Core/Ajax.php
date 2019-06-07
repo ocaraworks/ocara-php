@@ -9,6 +9,7 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -19,7 +20,7 @@ class Ajax extends Base
      * Ajax成功
      * @param $data
      * @param $message
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function ajaxSuccess($data, $message)
     {
@@ -30,7 +31,7 @@ class Ajax extends Base
      * AJAX错误
      * @param $message
      * @param null $data
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function ajaxError($message, $data = null)
     {
@@ -54,9 +55,9 @@ class Ajax extends Base
     /**
      * 渲染结果
      * @param $status
-     * @param string|array $message
+     * @param array $message
      * @param string $body
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public function render($status, $message = array(), $body = OC_EMPTY)
 	{

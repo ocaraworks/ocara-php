@@ -15,12 +15,12 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class ServiceBase extends Base
 {
-	private static $_lang = null;
-	private $_error;
+	private static $lang = null;
+	private $error;
 
 	public function __construct()
     {
-        if (self::$_lang === null) {
+        if (self::$lang === null) {
             $reflection = new \ReflectionObject($this);
             self::loadLanguage($reflection->getFileName());
         }
@@ -42,7 +42,7 @@ class ServiceBase extends Base
 		if (ocFileExists($path)) {
 			$config = include($path);
 			if ($config && is_array($config)) {
-                self::$_lang[self::getClass()] = $config;
+                self::$lang[self::getClass()] = $config;
 			}
 		}
 	}
@@ -57,8 +57,8 @@ class ServiceBase extends Base
 	{				
 		$class = self::getClass();
 
-		if ($class && array_key_exists($class, self::$_lang)) {
-			$languages = self::$_lang[$class];
+		if ($class && array_key_exists($class, self::$lang)) {
+			$languages = self::$lang[$class];
 		} else {
 			$languages = array();
 		}
@@ -120,7 +120,7 @@ class ServiceBase extends Base
 	 */
 	public function errorExists()
 	{
-		return empty($this->_error) ? false : true;
+		return empty($this->error) ? false : true;
 	}
 	
 	/**
@@ -128,7 +128,7 @@ class ServiceBase extends Base
 	 */
 	public function getError()
 	{
-		return $this->_error;
+		return $this->error;
 	}
 
 	/**
@@ -139,7 +139,7 @@ class ServiceBase extends Base
 	 */
 	protected function setError($name, array $params = array())
 	{
-		$this->_error = self::getLanguage($name, $params);
+		$this->error = self::getLanguage($name, $params);
 		return false;
 	}
 }

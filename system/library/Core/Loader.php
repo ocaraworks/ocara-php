@@ -16,12 +16,12 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Loader extends Basis
 {
-    private $_defaultPath;
-    private $_namespaceMap;
+    private $defaultPath;
+    private $namespaceMap;
 
     public function __construct()
     {
-        $this->_defaultPath = ocCommPath(OC_ROOT . 'library');
+        $this->defaultPath = ocCommPath(OC_ROOT . 'library');
 
         $config = ocContainer()->config;
         $defaultAutoMap = $config->getDefault('NAMESPACE_MAP', array());
@@ -30,9 +30,9 @@ class Loader extends Basis
 
         $keys = $this->formatNamespaceKey(array_keys($result));
         $values = array_values($result);
-        $this->_namespaceMap = array_combine($keys, $values);
+        $this->namespaceMap = array_combine($keys, $values);
 
-        krsort($this->_namespaceMap);
+        krsort($this->namespaceMap);
     }
 
     /**
@@ -43,8 +43,8 @@ class Loader extends Basis
     public function registerNamespace($namespace, $path)
     {
         $namespace = $this->formatNamespaceKey($namespace);
-        $this->_namespaceMap[reset($namespace)] = $path;
-        krsort($this->_namespaceMap);
+        $this->namespaceMap[reset($namespace)] = $path;
+        krsort($this->namespaceMap);
     }
 
     /**
@@ -79,14 +79,14 @@ class Loader extends Basis
 
         if (strstr($newClass, OC_NS_SEP)) {
             $newClass = OC_NS_SEP . preg_replace('/[\\\\]+/', '\\', $newClass);
-            $keys = array_keys($this->_namespaceMap);
-            $values = array_values($this->_namespaceMap);
+            $keys = array_keys($this->namespaceMap);
+            $values = array_values($this->namespaceMap);
             $filePath = preg_replace($keys, $values, $newClass,1);
             if ($filePath == $newClass) {
-                $filePath = $this->_defaultPath . $newClass;
+                $filePath = $this->defaultPath . $newClass;
             }
         }  else {
-            $filePath = $this->_defaultPath . OC_DIR_SEP . $newClass;
+            $filePath = $this->defaultPath . OC_DIR_SEP . $newClass;
         }
 
         $filePath = ocCommPath($filePath . '.php');

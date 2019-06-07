@@ -14,13 +14,12 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class CacheBase extends Base
 {
-	protected $_plugin;
-	protected $_connectName;
+	protected $connectName;
 
-	protected $_slaves = array();
-	protected $_config = array();
+	protected $slaves = array();
+	protected $config = array();
 
-	private static $_connects = array();
+	private static $connects = array();
 
 	/**
 	 * 初始化方法
@@ -33,11 +32,11 @@ class CacheBase extends Base
 		$connectName = $config['connect_name'];
 		$this->setConnectName($connectName);
 
-		if (isset(self::$_connects[$connectName]) && self::$_connects[$connectName] instanceof CacheBase) {
-			$this->plugin = self::$_connects[$connectName];
+		if (isset(self::$connects[$connectName]) && self::$connects[$connectName] instanceof CacheBase) {
+			$this->plugin = self::$connects[$connectName];
 		} else {
 			$this->connect($config, $required);
-			self::$_connects[$connectName] = $this->plugin;
+			self::$connects[$connectName] = $this->plugin;
 		}
 	}
 
@@ -47,7 +46,7 @@ class CacheBase extends Base
 	 */
 	public function setConnectName($connectName)
 	{
-		$this->_connectName = $connectName;
+		$this->connectName = $connectName;
 	}
 
 	/**
@@ -56,6 +55,6 @@ class CacheBase extends Base
 	 */
 	public function getConnectName()
 	{
-		return $this->_connectName;
+		return $this->connectName;
 	}
 }

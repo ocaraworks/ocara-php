@@ -9,6 +9,7 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -37,7 +38,7 @@ class Url extends Base
      * URL请求参数解析
      * @param string $url
      * @return array|string
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public function parseGet($url = null)
 	{
@@ -144,7 +145,7 @@ class Url extends Base
      * @param null $urlType
      * @param bool $static
      * @return bool|string
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public function create($route, $params = array(), $relative = false, $urlType = null, $static = true)
 	{
@@ -232,7 +233,7 @@ class Url extends Base
 	 * @param string $url
 	 * @param string $urlType
 	 * @return string
-	 * @throws Exception\Exception
+	 * @throws Exception
 	 */
 	public function addQuery(array $params, $url = null, $urlType = null)
 	{

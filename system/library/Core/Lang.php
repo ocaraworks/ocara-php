@@ -15,8 +15,8 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Lang extends Base
 {
-	protected $_frameworkConfig = array();
-	protected $_data = array();
+	protected $frameworkConfig = array();
+	protected $data = array();
 
     /**
      * 初始化
@@ -24,20 +24,20 @@ class Lang extends Base
      */
 	public function __construct()
 	{
-		if  (empty($this->_frameworkConfig)){
+		if  (empty($this->frameworkConfig)){
 			$file = ocService()->app->getLanguage() . '.php';
 			$path = OC_SYS . 'data/languages/' . $file;
 
 			if (file_exists($path)) {
 				$lang = include($path);
 				if ($lang) {
-					$this->_frameworkConfig = ocForceArray($lang);
+					$this->frameworkConfig = ocForceArray($lang);
 				}
 			}
 		}
 
-		if ($this->_data === null) {
-			$this->_data = array();
+		if ($this->data === null) {
+			$this->data = array();
 			$this->load(ocPath('lang', 'lang/' . ocService()->app->getLanguage()));
 		}
 	}
@@ -45,8 +45,7 @@ class Lang extends Base
     /**
      * 加载模块配置
      * @param $route
-     * @param string $rootPath
-     * @throws \Ocara\Exceptions\Exception
+     * @param null $rootPath
      */
     public function loadModuleConfig($route, $rootPath = null)
     {
@@ -61,8 +60,7 @@ class Lang extends Base
     /**
      * 加载控制器动作配置
      * @param array $route
-     * @param string $rootPath
-     * @throws \Ocara\Exceptions\Exception
+     * @param null $rootPath
      */
     public function loadControllerConfig($route = array(), $rootPath = null)
     {
@@ -81,8 +79,7 @@ class Lang extends Base
     /**
      * 加载控制器动作配置
      * @param array $route
-     * @param string $rootPath
-     * @throws \Ocara\Exceptions\Exception
+     * @param null $rootPath
      */
     public function loadActionConfig($route = array(), $rootPath = null)
     {
@@ -106,7 +103,6 @@ class Lang extends Base
      * @param $subPath
      * @param $rootPath
      * @return mixed|string
-     * @throws \Ocara\Exceptions\Exception
      */
     protected function _getConfigPath($route, $subPath, $rootPath)
     {
@@ -135,7 +131,7 @@ class Lang extends Base
 	{
 	    if ($paths) {
             $paths = ocForceArray($paths);
-            $data = array($this->_data);
+            $data = array($this->data);
 
             foreach ($paths as $path) {
                 if (is_dir($path)) {
@@ -154,7 +150,7 @@ class Lang extends Base
             }
 
             $data = call_user_func_array('array_merge', $data);
-            $this->_data = $data;
+            $this->data = $data;
         }
 	}
 
@@ -168,31 +164,30 @@ class Lang extends Base
     public function get($key = null, array $params = array())
     {
 		if (func_num_args()) {
-			if (ocKeyExists($key, $this->_data)) {
-                $value =  ocGetLanguage($this->_data, $key, $params);
+			if (ocKeyExists($key, $this->data)) {
+                $value =  ocGetLanguage($this->data, $key, $params);
 			} else {
                 $value = $this->getDefault($key, $params);
             }
 			return $value;
 		}
 
-		return $this->_data;
+		return $this->data;
 	}
 
     /**
      * 获取默认语言
-     * @param string|array $key
+     * @param string $key
      * @param array $params
-     * @return array|null
-     * @throws Exception
+     * @return array
      */
 	public function getDefault($key = null, array $params = array())
 	{
 		if (func_num_args()) {
-			return ocGetLanguage($this->_frameworkConfig, $key, $params);
+			return ocGetLanguage($this->frameworkConfig, $key, $params);
 		}
 
-		return $this->_frameworkConfig;
+		return $this->frameworkConfig;
 	}
 
     /**
@@ -202,7 +197,7 @@ class Lang extends Base
      */
 	public function set($key, $value = null)
 	{
-		ocSet($this->_data, $key, $value);
+		ocSet($this->data, $key, $value);
 	}
 
     /**
@@ -212,7 +207,7 @@ class Lang extends Base
      */
 	public function has($key = null)
 	{
-		return ocKeyExists($key, $this->_data);
+		return ocKeyExists($key, $this->data);
 	}
 
     /**
@@ -222,6 +217,6 @@ class Lang extends Base
      */
 	public function delete($key)
 	{
-		return ocDel($this->_data, $key);
+		return ocDel($this->data, $key);
 	}
 }

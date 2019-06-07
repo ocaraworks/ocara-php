@@ -14,13 +14,14 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Html extends Base
 {
-	/**
-	 * input
-	 * @param string $type
-	 * @param string $name
-	 * @param array|string $attributes
-	 * @param bool $checked
-	 */
+    /**
+     * input元素
+     * @param string $type
+     * @param string $name
+     * @param array $attributes
+     * @param bool $checked
+     * @return string
+     */
 	public static function input($type, $name, $attributes = null, $checked = false)
 	{
 		$attributes = self::parseAttributes($attributes);
@@ -33,10 +34,11 @@ class Html extends Base
 		return self::_createHtmlTag('input', $name, $attributes, false);
 	}
 
-	/**
-	 * 解析属性数组
-	 * @param array $attributes
-	 */
+    /**
+     * 解析属性数组
+     * @param array $attributes
+     * @return array
+     */
 	protected static function parseAttributes($attributes)
 	{
 		if (!is_array($attributes)) {
@@ -47,113 +49,123 @@ class Html extends Base
 		return $attributes;
 	}
 
-	/**
-	 * 文本框
-	 * @param string $name
-	 * @param array|string $attributes
-	 */
+    /**
+     * 文本框
+     * @param string $name
+     * @param array|null $attributes
+     * @return string
+     */
 	public static function text($name, $attributes = null)
 	{
 		return self::input('text', $name, $attributes);
 	}
 
-	/**
-	 * 密码框
-	 * @param string $name
-	 * @param array|string $attributes
-	 */
+    /**
+     * 密码框
+     * @param string $name
+     * @param array|null $attributes
+     * @return string
+     */
 	public static function password($name, $attributes = null)
 	{
 		return self::input('password', $name, $attributes);
 	}
-	
-	/**
-	 * 文本域
-	 * @param string $name
-	 * @param array|string $attributes
-	 */
+
+    /**
+     * 文本域
+     * @param $name
+     * @param array|null $attributes
+     * @return string
+     */
 	public static function file($name, $attributes = null)
 	{
 		return self::input('file', $name, $attributes);
 	}
-	
-	/**
-	 * 隐藏域
-	 * @param string $name
-	 * @param array|string $attributes
-	 */
+
+    /**
+     * 隐藏域
+     * @param $name
+     * @param array|null $attributes
+     * @return string
+     */
 	public static function hidden($name, $attributes = null)
 	{
 		return self::input('hidden', $name, $attributes);
 	}
-	
-	/**
-	 * 按钮
-	 * @param string $name
-	 * @param array|string $attributes
-	 */
+
+    /**
+     * 按钮
+     * @param $name
+     * @param array|null $attributes
+     * @return string
+     */
 	public static function button($name, array $attributes = null)
 	{
         $attributes = self::parseAttributes($attributes);
 		return self::_createHtmlTag('button', $name, $attributes, false);
 	}
 
-	/**
-	 * 单选框
-	 * @param string $name
-	 * @param string $desc
-	 * @param array|string $attributes
-	 * @param bool $checked
-	 */
+    /**
+     * 单选框
+     * @param $name
+     * @param $desc
+     * @param null $attributes
+     * @param bool $checked
+     * @return string
+     */
 	public static function radio($name, $desc, $attributes = null, $checked = false)
 	{
 		return self::input('radio', $name, $attributes, $checked) . $desc;
 	}
 
-	/**
-	 * 批量单选框
-	 * @param string $name
-	 * @param array $radios
-	 * @param array $checked
-	 * @param array|string $attributes
-	 */
-	public static function radioMulti($name, $radios, $checked = array(), $attributes = array())
+    /**
+     * 批量单选框
+     * @param $name
+     * @param $radios
+     * @param array $checked
+     * @param array $attributes
+     * @return array
+     */
+	public static function radioMulti($name, $radios, $checked = array(), array $attributes = array())
 	{
 		return self::getRadios($name, $radios, $checked, $attributes, 'radio');
 	}
 
-	/**
-	 * 复选框
-	 * @param string $name
-	 * @param string $desc
-	 * @param string|numric|array $attributes
-	 * @param bool $checked
-	 */
+    /**
+     * 复选框
+     * @param $name
+     * @param $desc
+     * @param array|null $attributes
+     * @param bool $checked
+     * @return string
+     */
 	public static function checkbox($name, $desc, $attributes = null, $checked = false)
 	{
 		return self::input('checkbox', $name, $attributes, $checked) . $desc;
 	}
 
-	/**
-	 * 批量复选选框
-	 * @param string $name
-	 * @param array $checkboxes
-	 * @param array $checked
-	 * @param string|numric|array $attributes
-	 */
-	public static function checkboxMulti($name, array $checkboxes, $checked = array(), $attributes = array())
+    /**
+     * 批量复选选框
+     * @param $name
+     * @param array $checkboxes
+     * @param array $checked
+     * @param array $attributes
+     * @return array
+     */
+	public static function checkboxMulti($name, array $checkboxes, $checked = array(), array $attributes = array())
 	{
 		return self::getRadios($name, $checkboxes, $checked, $attributes, 'checkbox');
 	}
-	
-	/**
-	 * 批量生成单选或复选框
-	 * @param string $name
-	 * @param array $data
-	 * @param array $checked
-	 * @param string|numric|array $attributes
-	 * @param string $method
-	 */
+
+    /**
+     * 批量生成单选或复选框
+     * @param $name
+     * @param $data
+     * @param $checked
+     * @param $attributes
+     * @param $method
+     * @return array
+     */
 	protected static function getRadios($name, $data, $checked, $attributes, $method)
 	{
 		$checked = (array)$checked;
@@ -183,15 +195,16 @@ class Html extends Base
 
 		return $boxes;
 	}
-	
-	/**
-	 * 下拉框
-	 * @param string $name
-	 * @param array $options
-	 * @param string|numric|array $attributes
-	 * @param string $nullText
-	 * @param bool $optgroup
-	 */
+
+    /**
+     * 下拉框
+     * @param $name
+     * @param array $options
+     * @param null $attributes
+     * @param bool $nullText
+     * @param bool $optgroup
+     * @return string
+     */
 	public static function select($name, $options = array(), $attributes = null, $nullText = false, $optgroup = false)
 	{
 		$value = false;
@@ -214,25 +227,27 @@ class Html extends Base
 		return $result;
 	}
 
-	/**
-	 * 分组下拉框
-	 * @param string $name
-	 * @param array $options
-	 * @param string|numric|array $attributes
-	 * @param string $nullText
-	 */
+    /**
+     * 分组下拉框
+     * @param $name
+     * @param $options
+     * @param null $attributes
+     * @param bool $nullText
+     * @return string
+     */
 	public static function selectGroup($name, $options, $attributes = null, $nullText = false)
 	{
 		return self::select($name, $options, $attributes, $nullText, true);
 	}
-	
-	/**
-	 * 下拉选项
-	 * @param array $options
-	 * @param string $value
-	 * @param string $nullText
-	 * @param bool $optgroup
-	 */
+
+    /**
+     * 下拉选项
+     * @param $options
+     * @param null $value
+     * @param null $nullText
+     * @param bool $optgroup
+     * @return string|null
+     */
 	public static function options($options, $value = null, $nullText = null, $optgroup = false)
 	{
 		if($nullText) {
@@ -258,12 +273,13 @@ class Html extends Base
 		
 		return $nullText;
 	}
-	
-	/**
-	 * 获取选项框
-	 * @param array $options
-	 * @param string $value
-	 */
+
+    /**
+     * 获取选项框
+     * @param $options
+     * @param $value
+     * @return bool|string
+     */
 	protected static function getOptions($options, $value) 
 	{
 		$str = false;
@@ -283,12 +299,13 @@ class Html extends Base
 
 		return $str;
 	}
-	
-	/**
-	 * 文本域textarea
-	 * @param string $name
-	 * @param string|numric|array $attributes
-	 */
+
+    /**
+     * 文本域textarea
+     * @param $name
+     * @param null $attributes
+     * @return string
+     */
 	public static function textarea($name, $attributes = null)
 	{
 		if (is_array($attributes)) {
@@ -311,13 +328,14 @@ class Html extends Base
 		return $result;
 	}
 
-	/**
-	 * 新增HTML标签
-	 * @param string $type
-	 * @param string $name
-	 * @param array $attributes
-	 * @param string $content
-	 */
+    /**
+     * 新增HTML标签
+     * @param $type
+     * @param $name
+     * @param array $attributes
+     * @param bool $content
+     * @return string
+     */
 	private static function _createHtmlTag($type, $name, array $attributes = array(), $content = true)
 	{
 		$type = strtolower($type);
@@ -342,12 +360,13 @@ class Html extends Base
 		return $html . $content;
 	}
 
-	/**
-	 * 新增HTML元素
-	 * @param string $type
-	 * @param array $attributes
-	 * @param string $content
-	 */
+    /**
+     * 新增HTML元素
+     * @param $type
+     * @param array $attributes
+     * @param bool $content
+     * @return string
+     */
 	public static function createElement($type, array $attributes = array(), $content = true)
 	{
 		return self::_createHtmlTag($type, false, $attributes, $content);
@@ -363,10 +382,11 @@ class Html extends Base
 		return '</' . $name . '>';
 	}
 
-	/**
-	 * 属性连接串
-	 * @param array $attributes
-	 */
+    /**
+     * 属性连接串
+     * @param array $attributes
+     * @return bool|string
+     */
 	public static function getAttr(array $attributes)
 	{
 		$str = false;

@@ -9,6 +9,7 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -18,7 +19,7 @@ final class DatabaseFactory extends Base
      * 默认服务器名
      * @var string
      */
-    protected static $_defaultServer = 'defaults';
+    protected static $defaultServer = 'defaults';
 
     /**
      * 获取数据库实例
@@ -26,12 +27,12 @@ final class DatabaseFactory extends Base
      * @param bool $master
      * @param bool $required
      * @return mixed|null
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public static function create($connectName = null, $master = true, $required = true)
 	{
 		if (empty($connectName)) {
-			$connectName = self::$_defaultServer;
+			$connectName = self::$defaultServer;
 		}
 
 		$database = self::_getDatabase($connectName, $master);
@@ -52,7 +53,7 @@ final class DatabaseFactory extends Base
      */
 	public static function getDefaultServer()
     {
-	    return self::$_defaultServer;
+	    return self::$defaultServer;
     }
 
     /**
@@ -60,7 +61,7 @@ final class DatabaseFactory extends Base
      * @param $connectName
      * @param bool $master
      * @return mixed|null
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	private static function _getDatabase($connectName, $master = true)
 	{
@@ -87,12 +88,12 @@ final class DatabaseFactory extends Base
      * 获取数据库配置信息
      * @param null $connectName
      * @return array|mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public static function getConfig($connectName = null)
 	{
 		if (empty($connectName)) {
-			$connectName = self::$_defaultServer;
+			$connectName = self::$defaultServer;
 		}
 
         $config = ocForceArray(ocConfig(array('DATABASE', $connectName)));
@@ -111,7 +112,7 @@ final class DatabaseFactory extends Base
      * 获取数据库对象类名
      * @param array $config
      * @return string
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public static function getDatabaseType(array $config)
 	{

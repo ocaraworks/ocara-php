@@ -17,11 +17,11 @@ defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(tr
 final class Ocara extends Basis
 {
 	/**
-	 * @var $_instance 	实例
-	 * @var $_info 		框架信息
+	 * @var $instance 	实例
+	 * @var $info 		框架信息
 	 */
-	private static $_instance;
-	private static $_info;
+	private static $instance;
+	private static $info;
 
 	private function __clone(){}
 	private function __construct(){}
@@ -31,11 +31,11 @@ final class Ocara extends Basis
 	 */
 	public static function getInstance()
 	{
-		if (self::$_instance === null) {
-			self::$_instance = new self();
+		if (self::$instance === null) {
+			self::$instance = new self();
 			self::register();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
@@ -111,22 +111,22 @@ final class Ocara extends Basis
      */
 	public static function getInfo($key = null)
 	{
-		if (is_null(self::$_info)) {
+		if (is_null(self::$info)) {
 			$path = OC_SYS . 'data/framework.php';
 			if (ocFileExists($path)) {
 				include($path);
 			}
 			if (isset($FRAMEWORK_INFO) && is_array($FRAMEWORK_INFO)) {
-				self::$_info = $FRAMEWORK_INFO;
+				self::$info = $FRAMEWORK_INFO;
 			} else {
-				self::$_info = array();
+				self::$info = array();
 			}
 		}
 
 		if (isset($key)) {
-			return ocGet($key, self::$_info);
+			return ocGet($key, self::$info);
 		}
 
-		return self::$_info;
+		return self::$info;
 	}
 }

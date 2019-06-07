@@ -30,9 +30,9 @@ class Response extends Base
 	const STATUS_NOT_IMPLEMENTED = 501;
 	const STATUS_SERVICE_UNAVAILABLE = 503;
 
-    protected $_headers = array();
-    protected $_body;
-    protected $_isSend;
+    protected $headers = array();
+    protected $body;
+    protected $isSend;
 
     /**
      * 发送头部信息
@@ -66,10 +66,10 @@ class Response extends Base
      */
 	public function send($stop = false)
     {
-        if (!$this->_isSend) {
-            echo $this->_body;
+        if (!$this->isSend) {
+            echo $this->body;
             if ($stop){
-                $this->_isSend = true;
+                $this->isSend = true;
             }
         }
     }
@@ -80,7 +80,7 @@ class Response extends Base
      */
     public function isSend($isSend)
     {
-        $this->_isSend = $isSend ? true : false;
+        $this->isSend = $isSend ? true : false;
     }
 
     /**
@@ -89,7 +89,7 @@ class Response extends Base
      */
     public function setBody($body)
     {
-        $this->_body = $body;
+        $this->body = $body;
     }
 
     /**
@@ -98,7 +98,7 @@ class Response extends Base
      */
     public function getBody()
     {
-        return $this->_body;
+        return $this->body;
     }
 
 	/**
@@ -107,7 +107,7 @@ class Response extends Base
 	 */
 	public function setHeader($headers)
 	{
-		$this->_headers = array_merge($this->_headers, (array)$headers);
+		$this->headers = array_merge($this->headers, (array)$headers);
 	}
 
 	/**
@@ -117,7 +117,7 @@ class Response extends Base
 	 */
 	public function setOption($name, $value = null)
 	{
-		$this->_headers[$name] = $value;
+		$this->headers[$name] = $value;
 	}
 
     /**
@@ -141,7 +141,7 @@ class Response extends Base
 	{
 		$httpStatus = ocConfig('HTTP_STATUS');
 		if (array_key_exists($code, $httpStatus)) {
-			$this->_headers['statusCode'] = $code;
+			$this->headers['statusCode'] = $code;
 		}
 	}
 
@@ -151,7 +151,7 @@ class Response extends Base
 	 */
 	public function setContentType($contentType)
 	{
-		$this->_headers['contentType'] = $contentType;
+		$this->headers['contentType'] = $contentType;
 	}
 
 	/**
@@ -160,7 +160,7 @@ class Response extends Base
 	 */
 	public function setCharset($charset = 'utf-8')
 	{
-		$this->_headers['charset'] = $charset;
+		$this->headers['charset'] = $charset;
 	}
 
     /**
@@ -213,16 +213,16 @@ class Response extends Base
      */
 	public function prepareHeaders()
 	{
-		$data = $this->_headers;
+		$data = $this->headers;
 		if ($statusCode = $this->_getOption('statusCode')) {
 			$data['statusCode'] = $statusCode;
 		}
 
-		if (empty($this->_headers['contentType'])) {
+		if (empty($this->headers['contentType'])) {
 			if (ocService('request', true)->isAjax()) {
-				$this->_headers['contentType'] = ocConfig('DEFAULT_AJAX_CONTENT_TYPE', 'json');
+				$this->headers['contentType'] = ocConfig('DEFAULT_AJAX_CONTENT_TYPE', 'json');
 			} else {
-				$this->_headers['contentType'] = ocConfig('DEFAULT_CONTENT_TYPE', 'html');
+				$this->headers['contentType'] = ocConfig('DEFAULT_CONTENT_TYPE', 'html');
 			}
 		}
 
@@ -238,8 +238,8 @@ class Response extends Base
 	 */
 	public function _getOption($name)
 	{
-		if (isset($this->_headers[$name])) {
-			return $this->_headers[$name];
+		if (isset($this->headers[$name])) {
+			return $this->headers[$name];
 		}
 
 		return null;
@@ -252,10 +252,10 @@ class Response extends Base
 	{
 		$result = null;
 
-		if (isset($this->_headers['statusCode'])) {
+		if (isset($this->headers['statusCode'])) {
 			$httpStatus = ocConfig('HTTP_STATUS');
-			if (isset($httpStatus[$this->_headers['statusCode']])) {
-				$result = $httpStatus[$this->_headers['statusCode']];
+			if (isset($httpStatus[$this->headers['statusCode']])) {
+				$result = $httpStatus[$this->headers['statusCode']];
 			}
 		}
 
@@ -269,15 +269,15 @@ class Response extends Base
 	{
 		$result = null;
 
-		if (isset($this->_headers['contentType'])) {
-			$contentType = strtolower($this->_headers['contentType']);
+		if (isset($this->headers['contentType'])) {
+			$contentType = strtolower($this->headers['contentType']);
 			$mineTypes = ocConfig('MINE_TYPES');
 			if (array_key_exists($contentType, $mineTypes)) {
 				$contentType = $mineTypes[$contentType];
 			}
 
-			if (!empty($this->_headers['charset'])) {
-				$charset = $this->_headers['charset'];
+			if (!empty($this->headers['charset'])) {
+				$charset = $this->headers['charset'];
 			} else {
 				$charset = 'utf-8';
 			}

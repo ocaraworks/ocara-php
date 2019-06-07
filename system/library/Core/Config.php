@@ -24,8 +24,8 @@ class Config extends Basis
 	/**
 	 * 数据变量
 	 */
-	protected $_frameworkConfig = array();
-	protected $_data = array();
+	protected $frameworkConfig = array();
+	protected $data = array();
 
 	/**
 	 * 初始化
@@ -41,7 +41,7 @@ class Config extends Basis
         $OC_CONF = include ($path);
 
 		if (isset($OC_CONF)) {
-            $this->_frameworkConfig = $OC_CONF;
+            $this->frameworkConfig = $OC_CONF;
         } else {
             throw new Exception('Lost config : $OC_CONF.');
         }
@@ -58,7 +58,7 @@ class Config extends Basis
             $this->load($path);
         }
 
-        if (empty($this->_data)) {
+        if (empty($this->data)) {
             throw new Exception('Lost config : $CONF.');
         }
 
@@ -147,7 +147,7 @@ class Config extends Basis
     {
         if ($paths) {
             $paths = ocForceArray($paths);
-            $config = array($this->_data);
+            $config = array($this->data);
             foreach ($paths as $path) {
                 if (is_dir($path)) {
                     $files = scandir($path);
@@ -166,7 +166,7 @@ class Config extends Basis
             }
 
             $config = call_user_func_array('array_merge', $config);
-            $this->_data = $config;
+            $this->data = $config;
         }
     }
 
@@ -177,7 +177,7 @@ class Config extends Basis
      */
 	public function set($key, $value)
 	{
-		ocSet($this->_data, $key, $value);
+		ocSet($this->data, $key, $value);
 	}
 
     /**
@@ -191,16 +191,16 @@ class Config extends Basis
     {
         if (isset($key)) {
             $result = null;
-            if (ocKeyExists($key, $this->_data)) {
-                $result = ocGet($key, $this->_data);
-            } elseif (ocKeyExists($key, $this->_frameworkConfig)) {
+            if (ocKeyExists($key, $this->data)) {
+                $result = ocGet($key, $this->data);
+            } elseif (ocKeyExists($key, $this->frameworkConfig)) {
                 $result = $this->getDefault($key);
             }
             $result = $result ? : (func_num_args() >= 2 ? $default: $result);
             return $result;
         }
 
-        return $this->_data;
+        return $this->data;
     }
 
     /**
@@ -209,8 +209,8 @@ class Config extends Basis
      * @return array|bool|null
      */
     public function arrayGet($key){
-        if (($result = ocCheckKey($key, $this->_data))
-            || ($result = ocCheckKey($key, $this->_frameworkConfig))
+        if (($result = ocCheckKey($key, $this->data))
+            || ($result = ocCheckKey($key, $this->frameworkConfig))
         ) {
             return $result;
         }
@@ -223,7 +223,7 @@ class Config extends Basis
      */
     public function delete($key)
     {
-        ocDel($this->_data, $key);
+        ocDel($this->data, $key);
     }
 
     /**
@@ -234,10 +234,10 @@ class Config extends Basis
 	public function getDefault($key = null)
 	{
 		if (isset($key)) {
-			return ocGet($key, $this->_frameworkConfig);
+			return ocGet($key, $this->frameworkConfig);
 		}
 
-		return $this->_frameworkConfig;
+		return $this->frameworkConfig;
 	}
 
     /**
@@ -247,6 +247,6 @@ class Config extends Basis
      */
 	public function has($key)
 	{
-		return ocKeyExists($key, $this->_data) || ocKeyExists($key, $this->_frameworkConfig);
+		return ocKeyExists($key, $this->data) || ocKeyExists($key, $this->frameworkConfig);
 	}
 }

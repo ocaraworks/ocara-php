@@ -31,7 +31,7 @@ class FormManager extends ServiceProvider
 		$validator = ocConfig(array('SERVICE', 'validator'), '\Ocara\Core\Validator');
 		$validate = ocConfig(array('SERVICE', 'validate'), '\Ocara\Service\Validate');
 
-		$this->_container->bindSingleton('validator', $validator, array($validate));
+		$this->container->bindSingleton('validator', $validator, array($validate));
 	}
 
     /**
