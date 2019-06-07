@@ -8,8 +8,7 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
-use Ocara\Core\Container;
-use Ocara\Providers\Main;
+use \Ocara\Exceptions\Exception;
 
 abstract class BootstrapBase extends Base
 {
@@ -18,7 +17,7 @@ abstract class BootstrapBase extends Base
 
     /**
      * 注册事件
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function registerEvents()
     {

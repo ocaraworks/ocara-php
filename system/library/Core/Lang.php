@@ -15,8 +15,8 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Lang extends Base
 {
-	protected $_properties = null;
-	protected $_ocData = null;
+	protected $_frameworkConfig = array();
+	protected $_data = array();
 
     /**
      * 初始化
@@ -24,21 +24,20 @@ class Lang extends Base
      */
 	public function __construct()
 	{
-		if  ($this->_ocData === null){
-			$this->_ocData = array();
+		if  (empty($this->_frameworkConfig)){
 			$file = ocService()->app->getLanguage() . '.php';
 			$path = OC_SYS . 'data/languages/' . $file;
 
 			if (file_exists($path)) {
 				$lang = include($path);
 				if ($lang) {
-					$this->_ocData = ocForceArray($lang);
+					$this->_frameworkConfig = ocForceArray($lang);
 				}
 			}
 		}
 
-		if ($this->_properties === null) {
-			$this->_properties = array();
+		if ($this->_data === null) {
+			$this->_data = array();
 			$this->load(ocPath('lang', 'lang/' . ocService()->app->getLanguage()));
 		}
 	}
@@ -136,7 +135,7 @@ class Lang extends Base
 	{
 	    if ($paths) {
             $paths = ocForceArray($paths);
-            $data = array($this->_properties);
+            $data = array($this->_data);
 
             foreach ($paths as $path) {
                 if (is_dir($path)) {
@@ -155,7 +154,7 @@ class Lang extends Base
             }
 
             $data = call_user_func_array('array_merge', $data);
-            $this->_properties = $data;
+            $this->_data = $data;
         }
 	}
 
@@ -169,15 +168,15 @@ class Lang extends Base
     public function get($key = null, array $params = array())
     {
 		if (func_num_args()) {
-			if (ocKeyExists($key, $this->_properties)) {
-                $value =  ocGetLanguage($this->_properties, $key, $params);
+			if (ocKeyExists($key, $this->_data)) {
+                $value =  ocGetLanguage($this->_data, $key, $params);
 			} else {
                 $value = $this->getDefault($key, $params);
             }
 			return $value;
 		}
 
-		return $this->_properties;
+		return $this->_data;
 	}
 
     /**
@@ -190,10 +189,10 @@ class Lang extends Base
 	public function getDefault($key = null, array $params = array())
 	{
 		if (func_num_args()) {
-			return ocGetLanguage($this->_ocData, $key, $params);
+			return ocGetLanguage($this->_frameworkConfig, $key, $params);
 		}
 
-		return $this->_ocData;
+		return $this->_frameworkConfig;
 	}
 
     /**
@@ -203,7 +202,7 @@ class Lang extends Base
      */
 	public function set($key, $value = null)
 	{
-		ocSet($this->_properties, $key, $value);
+		ocSet($this->_data, $key, $value);
 	}
 
     /**
@@ -213,7 +212,7 @@ class Lang extends Base
      */
 	public function has($key = null)
 	{
-		return ocKeyExists($key, $this->_properties);
+		return ocKeyExists($key, $this->_data);
 	}
 
     /**
@@ -223,6 +222,6 @@ class Lang extends Base
      */
 	public function delete($key)
 	{
-		return ocDel($this->_properties, $key);
+		return ocDel($this->_data, $key);
 	}
 }

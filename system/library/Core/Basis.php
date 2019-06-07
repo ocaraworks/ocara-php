@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
+use Ocara\Exceptions\Exception;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 abstract class Basis
@@ -33,52 +35,11 @@ abstract class Basis
 	 */
 	public static function getClass()
 	{
-		return "\\" . get_called_class();
+		return OC_NS_SEP . get_called_class();
 	}
 
     /**
-     * 是否存在属性
-     * @param string $name
-     * @return bool
-     */
-    public function existsProperty($name)
-    {
-        return property_exists($this, $name) ? : $this->hasPlusProperty($name);
-    }
-
-    /**
-     * 是否存在公有属性
-     * @param string $name
-     * @return bool
-     */
-    public function hasProperty($name)
-    {
-        return array_key_exists($name, (array)$this) || array_key_exists($name, $this->_properties);
-    }
-
-    /**
-     * 获取属性
-     * @param $name
-     * @param null $default
-     * @return bool
-     */
-    public function getProperty($name, $default = null)
-    {
-        return isset($this->$name) ? $this->$name : $default;
-    }
-
-    /**
-     * 是否存在自定义属性
-     * @param string $name
-     * @return bool
-     */
-    public function hasPlusProperty($name)
-    {
-        return array_key_exists($name, $this->_properties);
-    }
-
-    /**
-     * 设置自定义的属性
+     * 设置属性
      * @param $property
      * @param null $value
      */
@@ -94,62 +55,19 @@ abstract class Basis
     }
 
     /**
-     * 设置自定义的属性
-     * @param $property
-     * @param null $value
+     * 清理属性
+     * @param array $fields
      */
-    public function setPlusProperty($property, $value = null)
+    protected function _clearProperties(array $fields = array())
     {
-        if (is_array($property)) {
-            foreach ($property as $name => $value) {
-                if (!property_exists($this, $property)) {
-                    $this->_properties[$property] = $value;
-                }
-            }
-        } else {
-            if (!property_exists($this, $property)) {
-                $this->_properties[$property] = $value;
+        $fields = $fields ? : array_keys($this->toArray());
+
+        foreach ($fields as $field) {
+            if (isset($this->$field)) {
+                $this->$field = null;
             }
         }
-    }
 
-    /**
-     * 获取自定义的属性数组
-     * @param mixed $name
-     * @return 自定义属性|null
-     */
-    public function getPlusProperty($name = null)
-    {
-        if (func_get_args()) {
-            if (array_key_exists($name, $this->_properties)) {
-                return $this->_properties[$name];
-            }
-            return null;
-        }
-        return $this->_properties;
-    }
-
-    /**
-     * 删除自定义的属性
-     * @param mixed $name
-     */
-    public function delPlusProperty($name)
-    {
-        $names = is_array($name) ? $name : func_get_args();
-
-        foreach ($names as $name => $value) {
-            if (array_key_exists($name, $this->_properties)) {
-                $this->_properties[$name] = null;
-                unset($this->_properties[$name]);
-            }
-        }
-    }
-
-    /**
-     * 清理自定义属性
-     */
-    public function clearPlusProperty()
-    {
         $this->_properties = array();
     }
 
@@ -178,10 +96,11 @@ abstract class Basis
 	 */
 	public function __isset($property)
 	{
-        //When it is not private, protected. So it is not exists.
-	    if (!property_exists($this, $property)) {
-	        return isset($this->_properties[$property]);
+        if (!property_exists($this, $property)) {
+            return isset($this->_properties[$property]);
         }
+
+        return false;
 	}
 
 	/**
@@ -192,13 +111,17 @@ abstract class Basis
 	 */
 	public function __get($property)
 	{
-        //get the property which is in the $_properties.
 	    if (!property_exists($this, $property)) {
             if (array_key_exists($property, $this->_properties)) {
                 $value = $this->_properties[$property];
                 return $value;
+            } else {
+                $message = sprintf('Not Found property %s::$%s', self::getClass(), $property);
+                throw new Exception($message);
             }
         }
+
+        $this->_throwAccessPropertyError($property);
 	}
 
 	/**
@@ -209,13 +132,12 @@ abstract class Basis
 	 */
 	public function __set($property, $value)
 	{
-        /*
-         * append the property which is not exists.
-         * When it is not private, protected. So it is not exists.
-         */
 	    if (!property_exists($this, $property)) {
             $this->_properties[$property] = $value;
+            return true;
         }
+
+        $this->_throwAccessPropertyError($property);
 	}
 
 	/**
@@ -224,12 +146,25 @@ abstract class Basis
 	 */
 	public function __unset($property)
 	{
-        //unset the property which is in the $_properties.
         if (!property_exists($this, $property)) {
             if (array_key_exists($property, $this->_properties)) {
                 $this->_properties[$property] = null;
                 unset($this->_properties[$property]);
+                return true;
             }
         }
+
+        $this->_throwAccessPropertyError($property);
 	}
+
+    /**
+     * 找不到属性
+     * @param $property
+     * @throws Exception
+     */
+	protected function _throwAccessPropertyError($property)
+    {
+        $message = sprintf('Cannot access private or property %s::$%s', self::getClass(), $property);
+        throw new Exception($message);
+    }
 }

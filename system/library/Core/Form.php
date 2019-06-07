@@ -9,7 +9,6 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
-use Ocara\Models\Database as DatabaseModel;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -26,8 +25,7 @@ class Form extends Base
 
 	private $_sign;
 	private $_tokenInfo;
-	private $_validateForm = true;
-	
+
 	private $_models = array();
 	private $_lang = array();
 	private $_map = array();
@@ -41,7 +39,6 @@ class Form extends Base
 	public function __construct($name)
 	{
 		$this->_sign = $name;
-		$this->_validateForm = true;
 		$this->_plugin = ocService()->html;
 
 		$this->init();
@@ -146,7 +143,7 @@ class Form extends Base
 	{
 		foreach ($this->_models as $key => $model) {
 			$this->_lang = array_merge($this->_lang, $model->getConfig('LANG'));
-			$this->_map = array_merge($this->_map, $model->getConfig('MAP'));
+			$this->_map = array_merge($this->_map, $model->getConfig('MAPS'));
 		}
 
 		return $this;
@@ -230,45 +227,13 @@ class Form extends Base
 	}
 
     /**
-     * 开启/关闭/检测表单验证功能
-     * @param null|bool $validate
-     * @return $this|bool
+     * 获取绑绑定的模型
+     * @return array
      */
-	public function validateForm($validate = null)
-	{
-		if ($validate === null) {
-			return $this->_validateForm;
-		}
-		$this->_validateForm = $validate ? true : false;
-		return $this;
-	}
-
-    /**
-     * 表单验证
-     * @param Validator $validator
-     * @param array $data
-     * @return bool
-     * @throws \Ocara\Exceptions\Exception
-     */
-	public function validate(Validator &$validator, array $data)
-	{
-		$this->loadModel();
-
-		foreach ($this->_models as $alias => $model) {
-			$data = $model->mapData($data);
-			$rules = $model->getConfig('VALIDATE');
-			$lang = $model->getConfig('LANG');
-			$result = $validator
-                ->setRules($rules)
-                ->setLang($lang)
-                ->validate($data);
-			if (!$result) {
-				return false;
-			}
-		}
-
-		return true;
-	}
+	public function getModels()
+    {
+        return $this->_models ? : array();
+    }
 
 	/**
 	 * 获取表单元素

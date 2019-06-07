@@ -13,6 +13,7 @@ use Ocara\Core\Basis;
 defined('OC_PATH') or exit('Forbidden');
 
 use Ocara\Core\ServiceProvider;
+use Ocara\Exceptions\Exception;
 
 class Application extends Basis
 {
@@ -66,7 +67,7 @@ class Application extends Basis
      * 获取或设置启动器
      * @param null $bootstrap
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function bootstrap($bootstrap = null)
     {
@@ -101,7 +102,7 @@ class Application extends Basis
      * @param array $params
      * @param null $moduleNamespace
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function run($route, $params = array(), $moduleNamespace = null)
     {
@@ -193,7 +194,7 @@ class Application extends Basis
      * 加载路由配置
      * @param array $route
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function loadRouteConfig(array $route)
     {

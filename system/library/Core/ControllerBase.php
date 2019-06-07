@@ -12,6 +12,7 @@ use Ocara\Core\DatabaseFactory;
 use Ocara\Core\ServiceProvider;
 use Ocara\Interfaces\Controller as ControllerInterface;
 use Ocara\Core\ModelBase;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -24,7 +25,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
 	 */
     protected $_route;
 	protected $_models;
-    protected $_isFormSubmit = null;
+    protected $_isFormSubmit = false;
     protected $_submitMethod = 'post';
     protected $_checkForm = true;
     protected $_hasRender = false;
@@ -111,7 +112,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      * 获取提供器类
      * @param $controllerType
      * @return string
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public static function getControllerClass($controllerType)
     {
@@ -130,7 +131,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      * 获取提供器特性类
      * @param $controllerType
      * @return string
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public static function getFeatureClass($controllerType)
     {
@@ -364,7 +365,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      */
     public function isFormSubmit($isFormSubmit = null)
     {
-        if (isset($isFormSubmit)) {
+        if (func_num_args()) {
             $this->_isFormSubmit = $isFormSubmit ? true : false;
         } else {
             return $this->_isFormSubmit;
@@ -397,7 +398,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
             $model = $this->model();
         }
 
-        $form = $this->formManager->get($name);
+        $form = $this->formManager->getForm($name);
         if (!$form) {
             $form = $this->formManager->create($name);
             if ($model) {
@@ -421,7 +422,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     }
 
     /**
-     * 开启/关闭/检测表单验证功能
+     * 开启/关闭/检测表单令牌功能
      * @param null $check
      * @return bool
      */
@@ -434,42 +435,25 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     }
 
     /**
-     * 数据模型字段验证
-     * @param $data
-     * @param $model
-     * @param Validator|null $validator
-     * @return mixed
-     */
-    public function validate($data, $model, Validator &$validator = null)
-    {
-        $validator = $validator ? : $this->validator;
-
-        if (!is_object($model)) {
-            $model = new $model();
-        }
-
-        if (!$model instanceof ModelBase) {
-            ocService()->error->show('fault_model_object');
-        }
-
-        $result = $validator
-            ->setRules($model->getConfig('VALIDATE'))
-            ->setLang($model->getConfig('LANG'))
-            ->validate($model->mapData($data));
-
-        return $result;
-    }
-
-    /**
      * 表单检测
      */
     public function checkForm()
     {
         $this->isFormSubmit();
-        if (!($this->_isFormSubmit && $this->_checkForm && $this->formManager->get()))
+        if (!($this->_isFormSubmit && $this->_checkForm && $this->formManager->getForm()))
             return true;
 
-        return $this->formManager->validate($this->getSubmitData());
+        return $this->formManager->checkForm();
+    }
+
+    /**
+     * 自动进行参数验证
+     * @param array $data
+     */
+    public function validate(array $data = [])
+    {
+        $data = $data ? : $this->getSubmitData();
+        $this->validator->validate($data);
     }
 
     /**
@@ -498,16 +482,17 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     }
 
     /**
-     * 获取不存在的属性时
-     * @param string $key
-     * @return array|mixed
+     * 获取不可访问的属性时
+     * @param $key
+     * @param $reason
+     * @return mixed|null
      */
-	public function _none($key)
+	public function _none($key, $reason)
 	{
 		if ($instance = $this->loadService($key)) {
 			return $instance;
 		}
 
-        ocService()->error->show('no_property', array($key));
+        ocService()->error->show('no_property', array($key, $reason));
 	}
 }

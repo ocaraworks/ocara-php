@@ -52,49 +52,38 @@ class ModelService extends BaseService
 		$modelBase = 'DatabaseModel';
 		$connectPath = $this->_connectName . OC_DIR_SEP;
 
-		$moduleModelDir = "{$this->_mdlname}/privates/model/{$this->_connectName}/";
-        $entityModelDir = "{$this->_mdlname}/privates/entities/{$this->_connectName}/";
-
-        if ($this->_dbdir) {
-            $moduleModelDir .= "{$this->_database}/";
-            $entityModelDir .= "{$this->_database}/";
-        }
+		$moduleModelDir = "{$this->_mdlname}/privates/model/database/";
+        $entityModelDir = "{$this->_mdlname}/privates/entity/database/";
 
         switch($this->_mdltype)
         {
             case 'modules':
-                $rootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\model";
-                $entityRootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\entities";
+                $rootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\model\\database";
+                $entityRootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\entity\\database";
                 $modelPath = ocPath('application', 'modules/' . $moduleModelDir);
                 $entityPath = ocPath('application', 'modules/' . $entityModelDir);
                 break;
             case 'console':
-                $rootNamespace = "app\console\\{$this->_mdlname}\\privates\\model";
-                $entityRootNamespace = "app\console\\{$this->_mdlname}\\privates\\entities";
+                $rootNamespace = "app\console\\{$this->_mdlname}\\privates\\model\\database";
+                $entityRootNamespace = "app\console\\{$this->_mdlname}\\privates\\entity\\database";
                 $modelPath = ocPath('application', 'console/' . $moduleModelDir);
-                $entityPath = ocPath('application', 'modules/' . $entityModelDir);
+                $entityPath = ocPath('application', 'console/' . $entityModelDir);
                 break;
-            case 'assist':
-                $rootNamespace = "app\\assist\\model";
-                $entityRootNamespace = "app\\assist\\entities";
-                $modelPath = ocPath('assist', $moduleModelDir);
-                $entityPath = ocPath('assist', $entityModelDir);
+            case 'tools':
+                $rootNamespace = "app\\tools\\{$this->_mdlname}\\privates\\model\\database";
+                $entityRootNamespace = "app\\tools\\{$this->_mdlname}\\privates\\entity\\database";
+                $modelPath = ocPath('tools', $moduleModelDir);
+                $entityPath = ocPath('tools', $entityModelDir);
                 break;
             default:
-                $rootNamespace = "app\\dal\\model";
-                $entityRootNamespace = "app\\dal\\entities";
-                $modelPath = ocPath('model', $this->_connectName . OC_DIR_SEP);
-                $entityPath = ocPath('entities', $this->_connectName . OC_DIR_SEP);
+                $rootNamespace = "app\\model\\database";
+                $entityRootNamespace = "app\\entity\\database";
+                $modelPath = ocPath('model', 'database/');
+                $entityPath = ocPath('entity', 'database/');
         }
 
-        if ($this->_dbdir) {
-            $namespace = ocNamespace($rootNamespace, $this->_connectName) . $this->_database;
-            $entityNamespace = ocNamespace($entityRootNamespace, $this->_connectName) . $this->_database;
-        } else {
-            $namespace = ocNamespace($rootNamespace) . $this->_connectName;
-            $entityNamespace = ocNamespace($entityRootNamespace) . $this->_connectName;
-        }
-
+        $namespace = $rootNamespace;
+        $entityNamespace = $entityRootNamespace;
 		$modelName = ucfirst($this->_model);
         $entityName = ucfirst($this->_model) . 'Entity';
         $modelClass = $namespace . OC_NS_SEP . $modelName;
@@ -176,29 +165,14 @@ class ModelService extends BaseService
         $paths = $model->getConfigPath();
 
         if (!empty($this->_mdltype)) {
-            $configPath = $paths['moduleConfig'];
             $langPath = $paths['moduleLang'];
         } else {
             $paths = $model->getConfigPath();
-            $configPath = $paths['config'];
             $langPath = $paths['lang'];
         }
 
 		//新建字段配置
 		$fileCache = ocService()->fileCache;
-		$modelFile = lcfirst($modelName);
-
-		$fileCache->setData(array(), "CONF['MAP']", '字段别名映射');
-		$fileCache->format();
-		$fileCache->save($configPath);
-
-		$fileCache->setData(array(), "CONF['VALIDATE']", '字段验证规则');
-		$fileCache->format();
-		$fileCache->save($configPath, true);
-
-		$fileCache->setData(array(), "CONF['JOIN']", '表关联');
-		$fileCache->format();
-		$fileCache->save($configPath, true);
 
 		//新建字段数据文件
         $fieldsService = new FieldsService();

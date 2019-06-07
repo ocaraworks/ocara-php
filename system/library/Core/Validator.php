@@ -9,30 +9,35 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
+use Ocara\Core\Form;
+use Ocara\Core\ModelBase;
 
 defined('OC_PATH') or exit('Forbidden!');
 
 class Validator extends Base
 {
-	private $_errorExists;
-	private $_errorSource;
-	private $_error;
-	private $_errorLocation;
-	private $_validate;
+    private $_errorExists;
+    private $_errorSource;
+    private $_error;
+    private $_errorLocation;
+    private $_validate;
 
-	protected $_rules = array();
-	protected $_lang = array();
+    protected $_rules = array();
+    protected $_lang = array();
+    protected $models = array();
+    protected $ignoreFields = array();
+    protected $ignoreModels = array();
 
-	/**
-	 * @param object $validate
-	 */
-	public function __construct($validate)
-	{
-		if (!is_object($validate)) {
-			$validate = new $validate();
-		}
-		$this->_validate = $validate;
-	}
+    /**
+     * @param object $validate
+     */
+    public function __construct($validate)
+    {
+        if (!is_object($validate)) {
+            $validate = new $validate();
+        }
+        $this->_validate = $validate;
+    }
 
     /**
      * 表单验证
@@ -40,69 +45,99 @@ class Validator extends Base
      * @return bool
      * @throws \Ocara\Exceptions\Exception
      */
-	public function validate(array $data)
-	{
-		$result = true;
-		$rules = $this->_rules;
-		$lang = array_merge(ocService()->lang->get(), $this->_lang);
+    public function validate(array $data)
+    {
+        $result = true;
+        $rules = $this->_rules;
+        $lang = array_merge(ocService()->lang->get(), $this->_lang);
 
-		if ($rules) foreach ($rules as $field => $rule) {
-			if (empty($rule)) continue;
-			if(is_string($rule)) $rule = array('common' => $rule);
-			$value = ocGet($field, $data);
-			$value = $value === null ? OC_EMPTY : $value;
-			$value = (array)$value;
+        foreach ($this->models as $model) {
+            if (!in_array($model, $this->ignoreModels)) {
+                $rules = $model->getConfig('RULES');
+                $lang = $model->getConfig('LANG');
+                $result = $this->addRule($rules)->addLang($lang);
+            }
+        }
 
-			if (isset($rule['common']) && $rule['common'] && is_string($rule['common'])) {
-				$result = $this->common($field, $value, $rule['common']);
-			} elseif (isset($rule['expression']) && $rule['expression'] && is_string($rule['expression'])) {
-				$result = $this->expression($field, $value, $rule['expression']);
-			} elseif (isset($rule['callback']) && $rule['callback'] && is_string($rule['callback'])) {
-				$result = $this->callback($field, $value, $rule['callback']);
-			}
+        foreach ($rules as $field => $rule) {
+            if (in_array($field, $this->ignoreFields) || empty($rule)) continue;
+            if (is_string($rule)) $rule = array('common' => $rule);
 
-			if (!$result) {
-				$this->setError($lang);
-				break;
-			}
-		}
+            $value = ocGet($field, $data);
+            $value = $value === null ? OC_EMPTY : $value;
+            $value = (array)$value;
 
-		return $result;
-	}
+            if (isset($rule['common']) && $rule['common'] && is_string($rule['common'])) {
+                $result = $this->common($field, $value, $rule['common']);
+            } elseif (isset($rule['expression']) && $rule['expression'] && is_string($rule['expression'])) {
+                $result = $this->expression($field, $value, $rule['expression']);
+            } elseif (isset($rule['callback']) && $rule['callback'] && is_string($rule['callback'])) {
+                $result = $this->callback($field, $value, $rule['callback']);
+            }
 
-	/**
-	 * 设置规则
-	 * @param array $rules
-	 * @return $this
-	 */
-	public function setRules(array $rules)
-	{
-		$this->_rules = $rules;
-		return $this;
-	}
+            if (!$result) {
+                $this->setError($lang);
+                break;
+            }
+        }
 
-	/**
-	 * 设置语言文本
-	 * @param array $lang
-	 * @return $this
-	 */
-	public function setLang(array $lang)
-	{
-		$this->_lang = $lang;
-		return $this;
-	}
+        return $result;
+    }
 
-	/**
-	 * 增加验证规则
-	 * @param $field
-	 * @param null $rule
-	 * @return $this
-	 */
-	public function addRule($field, $rule = null)
-	{
-		$this->_rules[$field] = $rule;
-		return $this;
-	}
+    /**
+     * 增加验证规则
+     * @param $field
+     * @param null $rule
+     * @return $this
+     */
+    public function addRule($field, $rule = null)
+    {
+        if (is_array($field)) {
+            $this->_rules = array_merge($this->_rules, $field);
+        } else {
+            $this->_rules[$field] = $rule;
+        }
+        return $this;
+    }
+
+    /**
+     * 绑定表单
+     * @param \Ocara\Core\Form $form
+     */
+    public function addForm(Form $form)
+    {
+        $models = $form->getModels();
+        foreach ($models as $model) {
+            $this->addModel($model);
+        }
+    }
+
+    /**
+     * 绑定模型
+     * @param $model
+     */
+    public function addModel(ModelBase $model)
+    {
+        $this->models[] = $model;
+    }
+
+    /**
+     * 忽略字段
+     * @param $field
+     */
+    public function ignore($field)
+    {
+        $this->ignoreFields[] = $field;
+    }
+
+    /**
+     * 忽略字段
+     * @param $field
+     */
+    public function ignoreModel($class)
+    {
+        $this->ignoreModels[] = $field;
+    }
 
 	/**
 	 * 增加语言文本
@@ -112,7 +147,11 @@ class Validator extends Base
 	 */
 	public function addLang($key, $value = null)
 	{
-		$this->_lang[$key] = $value;
+        if (is_array($key)) {
+            $this->_lang = array_merge($this->_lang, $key);
+        } else {
+            $this->_lang[$key] = $value;
+        }
 		return $this;
 	}
 

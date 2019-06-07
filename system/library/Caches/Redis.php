@@ -13,6 +13,12 @@ use Ocara\Interfaces\Cache as CacheInterface;
 
 class Redis extends CacheBase implements CacheInterface
 {
+    /**
+     * 连接数据库实例
+     * @param array $config
+     * @param bool $required
+     * @return mixed
+     */
 	public function connect($config, $required = true)
 	{
 		if (!ocGet('open', $config, false)) {

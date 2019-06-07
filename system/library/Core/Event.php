@@ -19,6 +19,8 @@ class Event extends Basis implements EventInterface
     protected $_registry;
     protected $_defaultHandler;
 
+    protected $_handlers = array();
+
     /**
      * 添加事件处理器
      * @param $callback
@@ -87,8 +89,8 @@ class Event extends Basis implements EventInterface
             }
         }
 
-        $count = count($this->_properties);
-        $this->_properties[$count] = array(
+        $count = count($this->_handlers);
+        $this->_handlers[$count] = array(
             'callback' => $callback,
             'index' => $count,
             'priority' => $priority,
@@ -109,7 +111,7 @@ class Event extends Basis implements EventInterface
     {
         $key = $this->_getKey($name);
         if (is_integer($key)) {
-            $this->_properties[$name] = $callback;
+            $this->_handlers[$name] = $callback;
         }
 
         return $this;
@@ -130,7 +132,7 @@ class Event extends Basis implements EventInterface
             }
         } elseif(is_integer($name)) {
             $name = $name - 1;
-            if (isset($this->_properties[$name])) {
+            if (isset($this->_handlers[$name])) {
                 $key = $name;
             }
         }
@@ -148,7 +150,7 @@ class Event extends Basis implements EventInterface
     {
         $key = $this->_getKey($name);
         if (is_integer($key)) {
-            $this->_properties[$key]['priority'] = $priority;
+            $this->_handlers[$key]['priority'] = $priority;
         }
 
         return $this;
@@ -163,7 +165,7 @@ class Event extends Basis implements EventInterface
     {
         $key = $this->_getKey($name);
         if (is_integer($key)) {
-            ocDel($this->_properties, $key);
+            ocDel($this->_handlers, $key);
         }
 
         return $this;
@@ -179,12 +181,12 @@ class Event extends Basis implements EventInterface
         if (isset($name)) {
             $key = $this->_getKey($name);
             if (is_integer($key)) {
-                return $this->_properties[$name];
+                return $this->_handlers[$name];
             }
             return null;
         }
 
-        return $this->_properties;
+        return $this->_handlers;
     }
 
     /**
@@ -199,7 +201,7 @@ class Event extends Basis implements EventInterface
             return is_integer($key);
         }
 
-        return !empty($this->_properties);
+        return !empty($this->_handlers);
     }
 
     /**
@@ -208,7 +210,7 @@ class Event extends Basis implements EventInterface
      */
     public function clear()
     {
-        $this->_properties = array();
+        $this->_handlers = array();
         return $this;
     }
 
@@ -223,8 +225,8 @@ class Event extends Basis implements EventInterface
         $params = array_merge($params, array($this, $eventObject));
         $results = array();
 
-        if ($this->_properties) {
-            $handlers = $this->_properties;
+        if ($this->_handlers) {
+            $handlers = $this->_handlers;
             array_multisort(array_column(
                 $handlers, 'priority'), SORT_DESC,
                 array_column($handlers, 'index'), SORT_ASC,

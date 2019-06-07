@@ -8,12 +8,13 @@
  ************************************************************************************************/
 namespace Ocara\Models;
 
+use Ocara\Exceptions\Exception;
 use Ocara\Core\CacheFactory;
 use Ocara\Core\ModelBase;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-abstract class Cache extends ModelBase
+abstract class CacheModel extends ModelBase
 {
     protected $_plugin;
     protected $_database;
@@ -65,9 +66,10 @@ abstract class Cache extends ModelBase
     }
 
     /**
-     * 连接数据库
+     * 连接缓存
      * @param bool $master
-     * @return null
+     * @return mixed|null
+     * @throws Exception
      */
     public function connect($master = true)
     {

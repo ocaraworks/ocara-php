@@ -10,6 +10,7 @@ namespace Ocara\Core;
 
 use Ocara\Core\Basis;
 use Ocara\Exceptions\Exception;
+use \ReflectionException;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -17,11 +18,13 @@ class Container extends Basis
 {
     /**
      * @var array $_binds 动态绑定类
-     * @var array $_singletons 单例绑定类
+     * @var array $_bindSingletons 单例绑定类
+     * @var array $_instances 类实例
      * @var object $_default 默认容器
      */
     public $_binds = array();
-    public $_singletons = array();
+    public $_bindSingletons = array();
+    public $_instances = array();
 
     private static $_default;
 
@@ -59,7 +62,7 @@ class Container extends Basis
 
         $matter = $this->_getMatterArray($source, $params, $deps);
         if ($matter) {
-            $this->_singletons[$name] = $matter;
+            $this->_bindSingletons[$name] = $matter;
         }
 
         return $this;
@@ -101,8 +104,8 @@ class Container extends Basis
     public function getBindSingleton($name = null)
     {
         if (func_num_args()) {
-            if (array_key_exists($name, $this->_singletons)) {
-                return $this->_singletons[$name];
+            if (array_key_exists($name, $this->_bindSingletons)) {
+                return $this->_bindSingletons[$name];
             }
             return array();
         }
@@ -152,24 +155,24 @@ class Container extends Basis
      * @param array $deps
      * @return array|mixed|object|自定义属性|null
      * @throws Exception
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function get($name = null, array $params = array(), array $deps = array())
     {
         if (isset($name)) {
             $instance = null;
-            if ($this->hasPlusProperty($name)) {
-                $instance = $this->getPlusProperty($name);
+            if ($this->hasInstance($name)) {
+                $instance = $this->getInstance($name);
             } elseif ($this->hasBindSingleton($name)) {
                 $instance = $this->make($name, $params, $deps);
-                $this->setPlusProperty($name, $instance);
+                $this->setInstance($name, $instance);
             } elseif ($this->hasBind($name)){
                 $instance = $this->create($name, $params, $deps);
             }
             return $instance;
         }
 
-        return $this->getPlusProperty();
+        return $this->getInstance();
     }
 
     /**
@@ -180,7 +183,7 @@ class Container extends Basis
     public function hasBindAll($name)
     {
         $name = ocClassName($name);
-        return array_key_exists($name, $this->_binds) || array_key_exists($name, $this->_singletons);
+        return array_key_exists($name, $this->_binds) || array_key_exists($name, $this->_bindSingletons);
     }
 
     /**
@@ -190,7 +193,7 @@ class Container extends Basis
      */
     public function hasBindSingleton($name)
     {
-        return array_key_exists(ocClassName($name), $this->_singletons);
+        return array_key_exists(ocClassName($name), $this->_bindSingletons);
     }
 
     /**
@@ -210,7 +213,43 @@ class Container extends Basis
      */
     public function has($name)
     {
-        return $this->hasPlusProperty($name) || $this->hasBindAll($name);
+        return $this->hasInstance($name) || $this->hasBindAll($name);
+    }
+
+    /**
+     * 是否存在实例
+     * @param $name
+     * @return bool
+     */
+    public function hasInstance($name)
+    {
+        return array_key_exists($name, $this->_instances);
+    }
+
+    /**
+     * 获取类实例
+     * @param mixed $name
+     * @return 自定义属性|null
+     */
+    public function getInstance($name = null)
+    {
+        if (func_get_args()) {
+            if (array_key_exists($name, $this->_instances)) {
+                return $this->_instances[$name];
+            }
+            return null;
+        }
+        return $this->_instances;
+    }
+
+    /**
+     * 设置实例
+     * @param $name
+     * @param $instance
+     */
+    public function setInstance($name, $instance)
+    {
+        $this->_instances[$name] = $instance;
     }
 
     /**
@@ -220,7 +259,7 @@ class Container extends Basis
      * @param array $deps
      * @return array|mixed|object|null
      * @throws Exception
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function create($name, array $params = array(), array $deps = array())
     {
@@ -241,20 +280,20 @@ class Container extends Basis
      * @param array $deps
      * @return array|mixed|object|null
      * @throws Exception
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function make($name, array $params = array(), array $deps = array())
     {
         $source = null;
 
-        if (!empty($this->_singletons[$name])) {
-            if ($this->getPlusProperty($name)) {
+        if (!empty($this->_bindSingletons[$name])) {
+            if ($this->getInstance($name)) {
                 throw new Exception("exists_singleton_object");
             }
-            if (is_object($this->_singletons[$name])) {
-                return $this->setPlusProperty($name, $this->_singletons[$name]);
+            if (is_object($this->_bindSingletons[$name])) {
+                return $this->setInstance($name, $this->_bindSingletons[$name]);
             }
-            $matter = (array)$this->_singletons[$name];
+            $matter = (array)$this->_bindSingletons[$name];
         } elseif (!empty($this->_binds[$name])) {
             if (is_object($this->_binds[$name])) {
                 return $this->_binds[$name];
@@ -287,7 +326,7 @@ class Container extends Basis
      * @param $deps
      * @return array|mixed|object|null
      * @throws Exception
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function _getMatterInstance($matter, $params, $deps)
     {
@@ -342,7 +381,7 @@ class Container extends Basis
      * @param $params
      * @return array
      * @throws Exception
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getDependencies($args, $params)
     {
@@ -386,7 +425,7 @@ class Container extends Basis
      * @param string $property
      * @return array|mixed|object|自定义属性|null
      * @throws Exception
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function __get($property)
     {

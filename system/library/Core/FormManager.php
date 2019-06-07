@@ -20,6 +20,8 @@ class FormManager extends ServiceProvider
     protected $_route;
     protected $_form;
 
+    protected $_forms = array();
+
     /**
      * 注册服务
      * @throws Exception
@@ -34,7 +36,7 @@ class FormManager extends ServiceProvider
 
     /**
      * 注册事件
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function registerEvents()
     {
@@ -50,16 +52,16 @@ class FormManager extends ServiceProvider
      */
 	public function create($formName)
 	{
-	    if (!$this->hasPlusProperty($formName)) {
+	    if (!$this->hasForm($formName)) {
             $form = $this->createService('form', array($formName));
             $token = $this->formToken->generate($formName, $this->_route);
 
             $this->saveToken($formName, $token);
             $form->setTokenInfo(array($this->getTokenTag(), $token));
-            $this->setPlusProperty($formName, $form);
+            $this->addForm($formName, $form);
         }
 
-        return $this->getPlusProperty($formName);
+        return $this->getForm($formName);
 	}
 
     /**
@@ -67,9 +69,29 @@ class FormManager extends ServiceProvider
      * @param $name
      * @return array|mixed
      */
-	public function get($name = null)
+	public function getForm($name = null)
     {
-        return $this->getPlusProperty($name);
+        return array_key_exists($name, $this->_forms) ? $this->_forms[$name] : null;
+    }
+
+    /**
+     * 设置表单
+     * @param $formName
+     * @param $form
+     */
+    public function addForm($formName, $form)
+    {
+        $this->_forms[$formName] = $form;
+    }
+
+    /**
+     * 是否存在表单
+     * @param $name
+     * @return array
+     */
+    public function hasForm($name)
+    {
+        return array_key_exists($name, $this->_forms);
     }
 
     /**
@@ -87,11 +109,11 @@ class FormManager extends ServiceProvider
 		$tokens = $this->session->get($this->getTokenListTag());
 		$formName = array_search($requestToken, $tokens);
 
-		if ($formName === false || !$this->hasPlusProperty($formName)) {
+		if ($formName === false || !$this->hasForm($formName)) {
             $this->error->show('not_exists_form');
         }
 
-		$this->_form = $this->getPlusProperty($formName);
+		$this->_form = $this->getForm($formName);
 		return $this->_form;
 	}
 
@@ -101,22 +123,11 @@ class FormManager extends ServiceProvider
      * @return bool
      * @throws Exception
      */
-	public function validate($data)
+	public function checkForm($data)
 	{
 	    $requestToken = ocGet($this->getTokenTag(), $data, null);
         $postForm = $this->getSubmitForm($requestToken);
-
-		if ($postForm->validateForm()) {
-			if (!$postForm->validate($this->validator, $data)) {
-				$this->_showValidateError(
-					'failed_validate_form',
-					array($this->validator->getError()),
-					$this->validator->getErrorSource()
-				);
-			}
-		}
-
-		return true;
+		return $postForm;
 	}
 
     /**
@@ -124,7 +135,7 @@ class FormManager extends ServiceProvider
      * @return string
      * @throws Exception
      */
-    public function getTokenTag()
+    public static function getTokenTag()
     {
         return '_oc_' . ocConfig(array('FORM', 'token_tag'), '_form_token_name');
     }

@@ -14,7 +14,8 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Path extends Basis
 {
-    public $_maps = array();
+    protected $_maps = array();
+    protected $_data = array();
 
 	/**
 	 * 初始化
@@ -22,8 +23,7 @@ class Path extends Basis
 	public function __construct()
 	{
 	    $config = ocContainer()->config;
-		$paths = $config->get('APP_PATH_INFO', array());
-		$this->setPlusProperty($paths);
+		$this->_data = $config->get('APP_PATH_INFO', array());
 	}
 
     /**
@@ -85,20 +85,19 @@ class Path extends Basis
     {
         $mapDir = $dir;
 
-        if (isset($this->_properties['maps'][$dir])) {
-            $mapDir = $this->_properties['maps'][$dir];
+        if (isset($this->_data['maps'][$dir])) {
+            $mapDir = $this->_data['maps'][$dir];
         }
 
-        $belongs = array();
         if ($local) {
-            $belongs = $this->_properties['belongs'];
+            $belongs = $this->_data['belongs'];
         } else {
-            $belongs = $this->_properties['remote_belongs'];
+            $belongs = $this->_data['remote_belongs'];
         }
 
         if (isset($belongs[$mapDir])) {
-            if (isset($this->_properties['replace'][$mapDir])) {
-                $replace = $this->_properties['replace'][$mapDir];
+            if (isset($this->_data['replace'][$mapDir])) {
+                $replace = $this->_data['replace'][$mapDir];
             } else {
                 $replace = $mapDir;
             }

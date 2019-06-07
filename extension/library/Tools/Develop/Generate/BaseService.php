@@ -54,9 +54,9 @@ class BaseService
                 $rootNamespace = "app\console";
                 $rootModulePath = ocPath('console') . OC_DIR_SEP;
                 break;
-            case 'assist':
-                $rootNamespace = "app\\assist";
-                $rootModulePath = ocPath('assist') . OC_DIR_SEP;
+            case 'tools':
+                $rootNamespace = "app\\tools";
+                $rootModulePath = ocPath('tools') . OC_DIR_SEP;
                 break;
             default:
                 $rootNamespace = "app\\controller";

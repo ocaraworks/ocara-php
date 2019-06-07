@@ -112,6 +112,8 @@ function ocLang($name, array $params = array(), $default = null)
  */
 function ocConfig($key, $default = null, $unEmpty = false)
 {
+    $key = is_array($key) ? $key : explode('.', $key);
+
 	if ($result = ocContainer()->config->arrayGet($key)) {
 		return $unEmpty && ocEmpty($result[0]) ? $default : $result[0];
 	}
@@ -276,9 +278,11 @@ function ocDel(array &$data, $key)
                     }
                 }
             } elseif (is_string($value) || is_numeric($value)) {
-		        $ret = $data[$value];
-                $data[$value] = null;
-                unset($data[$value]);
+		        if (array_key_exists($value, $data)) {
+                    $ret = $data[$value];
+                    $data[$value] = null;
+                    unset($data[$value]);
+                }
             }
         }
 		$result[] = $ret;
@@ -363,13 +367,9 @@ function ocShutdownHandler()
 	$error = error_get_last();
 	if ($error) {
 		if (@ini_get('display_errors')) {
-			ocService()->exceptionHandler
-                ->errorHandler(
-                    $error['type'],
-                    $error['message'],
-                    $error['file'],
-                    $error['line']
-                );
+			ocService()
+                ->exceptionHandler
+                ->errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
 		}
 	}
 }
@@ -733,6 +733,19 @@ function ocRealUrl($dir, $subPath = null, $root = false)
 function ocSimpleUrl($dir, $subPath)
 {
     return ocContainer()->path->get($dir, $subPath, OC_DIR_SEP, false, false);
+}
+
+/**
+ * 分隔目录
+ * @param $filePath
+ * @param $seprateDir
+ * @return mixed
+ */
+function ocSeprateDir($filePath, $seprateDir)
+{
+    $rootPath = strstr($filePath, $seprateDir, true) . ocDir($seprateDir);
+    $subDir = str_replace($rootPath, OC_EMPTY, $filePath) . OC_DIR_SEP;
+    return array($rootPath, $subDir);
 }
 
 /**

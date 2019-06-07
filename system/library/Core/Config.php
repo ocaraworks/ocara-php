@@ -25,6 +25,7 @@ class Config extends Basis
 	 * 数据变量
 	 */
 	protected $_frameworkConfig = array();
+	protected $_data = array();
 
 	/**
 	 * 初始化
@@ -57,7 +58,7 @@ class Config extends Basis
             $this->load($path);
         }
 
-        if (empty($this->_properties)) {
+        if (empty($this->_data)) {
             throw new Exception('Lost config : $CONF.');
         }
 
@@ -146,7 +147,7 @@ class Config extends Basis
     {
         if ($paths) {
             $paths = ocForceArray($paths);
-            $config = array($this->_properties);
+            $config = array($this->_data);
             foreach ($paths as $path) {
                 if (is_dir($path)) {
                     $files = scandir($path);
@@ -165,7 +166,7 @@ class Config extends Basis
             }
 
             $config = call_user_func_array('array_merge', $config);
-            $this->_properties = $config;
+            $this->_data = $config;
         }
     }
 
@@ -176,7 +177,7 @@ class Config extends Basis
      */
 	public function set($key, $value)
 	{
-		ocSet($this->_properties, $key, $value);
+		ocSet($this->_data, $key, $value);
 	}
 
     /**
@@ -190,8 +191,8 @@ class Config extends Basis
     {
         if (isset($key)) {
             $result = null;
-            if (ocKeyExists($key, $this->_properties)) {
-                $result = ocGet($key, $this->_properties);
+            if (ocKeyExists($key, $this->_data)) {
+                $result = ocGet($key, $this->_data);
             } elseif (ocKeyExists($key, $this->_frameworkConfig)) {
                 $result = $this->getDefault($key);
             }
@@ -199,7 +200,7 @@ class Config extends Basis
             return $result;
         }
 
-        return $this->_properties;
+        return $this->_data;
     }
 
     /**
@@ -208,7 +209,7 @@ class Config extends Basis
      * @return array|bool|null
      */
     public function arrayGet($key){
-        if (($result = ocCheckKey($key, $this->_properties))
+        if (($result = ocCheckKey($key, $this->_data))
             || ($result = ocCheckKey($key, $this->_frameworkConfig))
         ) {
             return $result;
@@ -222,7 +223,7 @@ class Config extends Basis
      */
     public function delete($key)
     {
-        ocDel($this->_properties, $key);
+        ocDel($this->_data, $key);
     }
 
     /**
@@ -246,6 +247,6 @@ class Config extends Basis
      */
 	public function has($key)
 	{
-		return ocKeyExists($key, $this->_properties) || ocKeyExists($key, $this->_frameworkConfig);
+		return ocKeyExists($key, $this->_data) || ocKeyExists($key, $this->_frameworkConfig);
 	}
 }

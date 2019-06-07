@@ -82,20 +82,21 @@ abstract class Base extends Basis
      */
     public function __get($property)
     {
-        //get the property which is in the $_properties.
-        if (!property_exists($this, $property)) {
-            if (array_key_exists($property, $this->_properties)) {
-                $value = $this->_properties[$property];
-                return $value;
-            }
+        try {
+            $result = parent::__get($property);
+            return $result;
+        } catch (\Exception $exception) {
+            $reason = $exception->getMessage();
         }
 
+        $reason = !empty($reason) ? : 'Not Found property';
+
         if (method_exists($this, '__none')) {
-            $value = $this->__none($property);
+            $value = $this->__none($property, $reason);
             return $value;
         }
 
-        ocService()->error->show('no_property', array($property));
+        ocService()->error->show('no_property', array($property, $reason));
     }
 
     /**

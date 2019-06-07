@@ -12,26 +12,29 @@ use \Iterator;
 
 class EachObjectRecords implements Iterator
 {
-    private $_model;
-    private $_debug;
-    private $_result;
+    protected $_model;
+    protected $_entity;
+    protected $_debug;
+    protected $_result;
 
-    private $_position = 0;
-    private $_offset = 0;
+    protected $_position = 0;
+    protected $_offset = 0;
 
-    private $_sql = array();
+    protected $_sql = array();
 
     /**
      * 初始化
      * EachObjectRecords constructor.
      * @param string $model
+     * @param string $entity
      * @param integer $offset
      * @param array $sql
      * @param bool $debug
      */
-    public function __construct($model, $offset, array $sql, $debug = false)
+    public function __construct($model, $entity, $offset, array $sql, $debug = false)
     {
         $this->_model = $model;
+        $this->_entity = $entity;
         $this->_sql = $sql;
         $this->_debug = $debug;
         $this->_offset = $offset ? : 0;
@@ -92,6 +95,7 @@ class EachObjectRecords implements Iterator
 
         $result = $model
             ->limit($this->_offset, 1)
+            ->asEntity($this->_entity)
             ->findRow(null, null, $this->_debug);
 
         $this->_offset += 1;
