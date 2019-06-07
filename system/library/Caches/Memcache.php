@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Caches;
 
+use Ocara\Exceptions\Exception;
 use Ocara\Core\CacheBase;
 use Ocara\Interfaces\Cache as CacheInterface;
 
@@ -18,7 +19,6 @@ class Memcache extends CacheBase implements CacheInterface
      * @param array $config
      * @param bool $required
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function connect($config, $required = true)
 	{
@@ -42,7 +42,6 @@ class Memcache extends CacheBase implements CacheInterface
      * 添加服务器
      * @param $config
      * @param $class
-     * @throws \Ocara\Exceptions\Exception
      */
 	private function _addServers($config, $class)
 	{
