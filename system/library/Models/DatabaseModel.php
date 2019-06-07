@@ -1945,9 +1945,10 @@ abstract class DatabaseModel extends ModelBase
             $fullname = $this->getTableName();
             $class = $this->_tag;
 		} else {
-            $relateShardinglInfo = $this->_getRelateShardingInfo($keyword);
-            if ($relateShardinglInfo) {
-                list($class, $shardingData) = $relateShardinglInfo;
+            $shardingData = array();
+            $relateShardingInfo = $this->_getRelateShardingInfo($class);
+            if ($relateShardingInfo) {
+                list($class, $shardingData) = $relateShardingInfo;
             }
 			$config = $this->_getRelateConfig($class);
 			if ($config) {
@@ -1958,7 +1959,7 @@ abstract class DatabaseModel extends ModelBase
 			if ($shardingData) {
                 $model->sharding($shardingData);
             }
-			$fullname = $model->getTableName();
+            $fullname = $model->getTableName();
 			$alias = $alias ? : $fullname;
 			$this->_joins[$alias] = $model;
 		}
@@ -1981,24 +1982,25 @@ abstract class DatabaseModel extends ModelBase
      */
 	protected function _getRelateShardingInfo($keyword)
     {
-        $relationShardinglInfo = array();
+        $relationShardingInfo = array();
 
         if (preg_match('/^[\{](\w+)[\}]$/i', $keyword, $matches)) {
             $relationAlias = $matches[1];
             if (array_key_exists($relationAlias, $this->_relateShardingInfo)) {
-                $relationShardinglInfo = $this->_relateShardingInfo[$relationAlias];
+                $relationShardingInfo = $this->_relateShardingInfo[$relationAlias];
             } else {
                 if (array_key_exists($relationAlias, $this->_relateShardingData)) {
-                    if ($this->_getRelateConfig[$relationAlias]) {
+                    $config = $this->_getRelateConfig($relationAlias);
+                    if ($config) {
                         $shardingData = $this->_relateShardingData[$relationAlias];
-                        $relationShardinglInfo = array($config['class'], $shardingData);
-                        $this->_relateShardingInfo[$relationAlias] = $relateShardinglInfo;
+                        $relationShardingInfo = array($config['class'], $shardingData);
+                        $this->_relateShardingInfo[$relationAlias] = $relationShardingInfo;
                     }
                 }
             }
         }
 
-        return $relationShardinglInfo;
+        return $relationShardingInfo;
     }
 
     /**
