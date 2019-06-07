@@ -12,10 +12,11 @@ use Ocara\Core\ServiceBase;
 
 class Code extends ServiceBase
 {
-	/**
-	 * 生成随机友好字符（Ascii码值从 33到126）
-	 * @param integer $length
-	 */
+    /**
+     * 生成随机友好字符（Ascii码值从 33到126）
+     * @param $length
+     * @return string|null
+     */
 	public static function getRand($length)
 	{
 		$rand = null;
@@ -26,13 +27,14 @@ class Code extends ServiceBase
 		
 		return $rand;
 	}
-	
-	/**
-	 * 生成随机字符码
-	 * @param string $type
-	 * @param integer $length
-	 * @param array $filter
-	 */
+
+    /**
+     * 生成随机字符码
+     * @param string $type
+     * @param int $length
+     * @param array $filter
+     * @return mixed|string
+     */
 	public static function getCaptcha($type, $length, $filter = array())
 	{
 		$type = strtolower($type);

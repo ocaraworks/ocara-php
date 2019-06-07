@@ -14,10 +14,11 @@ use Ocara\Core\ServiceBase;
 
 class Validate extends ServiceBase
 {
-	/**
-	 * 不能为非0的空值
-	 * @param string $value
-	 */
+    /**
+     * 不能为非0的空值
+     * @param $value
+     * @return array|bool
+     */
 	public static function unempty($value)
 	{
 		$result = !ocEmpty($value);
@@ -25,10 +26,11 @@ class Validate extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 标准命名方式
-	 * @param string $value
-	 */
+    /**
+     * 标准命名方式
+     * @param $value
+     * @return array|false|int
+     */
 	public static function standardName($value)
 	{
 		$result = preg_match('/^[a-zA-Z_]+[a-zA-Z0-9_]*$/', $value);
@@ -36,11 +38,12 @@ class Validate extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 最长字符
-	 * @param string $value
-	 * @param integer $length
-	 */
+    /**
+     * 最长字符
+     * @param $value
+     * @param int $length
+     * @return array|bool
+     */
 	public static function maxLength($value, $length = 0)
 	{
 		$result = strlen($value) <= $length;
@@ -48,11 +51,12 @@ class Validate extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 最短字符
-	 * @param string $value
-	 * @param integer $length
-	 */
+    /**
+     * 最短字符
+     * @param $value
+     * @param int $length
+     * @return array|bool
+     */
 	public static function minLength($value, $length = 0)
 	{
 		$result = strlen($value) >= $length;
@@ -60,12 +64,13 @@ class Validate extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 字符字数
-	 * @param string $value
-	 * @param integer $min
-	 * @param integer $max
-	 */
+    /**
+     * 字符字数
+     * @param $value
+     * @param int $min
+     * @param int $max
+     * @return array|bool
+     */
 	public static function betweenLength($value, $min = 0, $max = 1)
 	{
 		$len    = strlen($value);
@@ -73,11 +78,12 @@ class Validate extends ServiceBase
 		$result = self::validate($result, 'not_in_pointed_length',  array($min, $max));
 		return $result;
 	}
-	
-	/**
-	 * email验证
-	 * @param string $value
-	 */
+
+    /**
+     * email验证
+     * @param $value
+     * @return array|mixed
+     */
 	public static function email($value)
 	{
 		$result = filter_var($value, FILTER_VALIDATE_EMAIL);
@@ -85,10 +91,11 @@ class Validate extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * IP验证
-	 * @param string $value
-	 */
+    /**
+     * IP验证
+     * @param $value
+     * @return array|mixed
+     */
 	public static function ip($value)
 	{
 		$result = filter_var($value, FILTER_VALIDATE_IP);
@@ -96,10 +103,11 @@ class Validate extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * URL验证
-	 * @param string $value
-	 */
+    /**
+     * URL验证
+     * @param $value
+     * @return array|mixed
+     */
 	public static function url($value)
 	{
 		$result = filter_var($value, FILTER_VALIDATE_URL);
@@ -107,11 +115,12 @@ class Validate extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 正则表达式验证
-	 * @param string $value
-	 * @param string $expression
-	 */
+    /**
+     * 正则表达式验证
+     * @param $value
+     * @param string $expression
+     * @return array|false|int
+     */
 	public static function regExp($value, $expression = '')
 	{
 		$result = preg_match($expression, $value);
@@ -119,10 +128,11 @@ class Validate extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 身份证验证
-	 * @param string $value
-	 */
+    /**
+     * 身份证验证
+     * @param $value
+     * @return array|false|int
+     */
 	public static function idCard($value)
 	{
 		$result = preg_match('/^\d{15}|\d{18}$/', $value);
@@ -130,10 +140,11 @@ class Validate extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 验证手机号码
-	 * @param string $value
-	 */
+    /**
+     * 验证手机号码
+     * @param $value
+     * @return array|false|int
+     */
 	public static function mobileTel($value)
 	{
 		$result = preg_match('/^[1]\d{10}$/', $value);
@@ -141,10 +152,11 @@ class Validate extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 验证是否全部是中文
-	 * @param string $value
-	 */
+    /**
+     * 验证是否全部是中文
+     * @param $value
+     * @return array|false|int
+     */
 	public static function chinese($value)
 	{
 		$result = preg_match('/^[\x{4e00}-\x{9fa5}]+$/u', $value);
@@ -152,10 +164,11 @@ class Validate extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 验证是否含有中文
-	 * @param string $value
-	 */
+    /**
+     * 验证是否含有中文
+     * @param $value
+     * @return array|bool
+     */
 	public static function noneChinese($value)
 	{
 		$result = !preg_match('/[\x{4e00}-\x{9fa5}]+/u', $value);
@@ -163,10 +176,11 @@ class Validate extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 验证邮政编码
-	 * @param string $value
-	 */
+    /**
+     * 验证邮政编码
+     * @param $value
+     * @return array|bool
+     */
 	public static function postNum($value)
 	{
 		$result = !preg_match('/^[1-9]\d{5}(?!\d)$/', $value);
@@ -174,12 +188,13 @@ class Validate extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 验证
-	 * @param string $expression
-	 * @param string $error
-	 * @param array $params
-	 */
+    /**
+     * 验证
+     * @param $expression
+     * @param $error
+     * @param array $params
+     * @return array
+     */
 	public static function validate($expression, $error, array $params = array())
 	{
 		if ($expression !== true) {

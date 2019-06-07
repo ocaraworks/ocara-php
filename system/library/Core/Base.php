@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
-use Ocara\Core\Basis;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -82,7 +82,7 @@ abstract class Base extends Basis
         try {
             $result = parent::__get($property);
             return $result;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $reason = $exception->getMessage();
         }
 

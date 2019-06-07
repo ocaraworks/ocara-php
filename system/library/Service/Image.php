@@ -9,6 +9,7 @@
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
+use Ocara\Exceptions\Exception;
 
 class Image extends ServiceBase
 {
@@ -79,12 +80,17 @@ class Image extends ServiceBase
 	 * @param integer $dstLx
 	 * @param integer $dstLy
 	 * @return bool|int|void
-	 * @throws \Ocara\Exceptions\Exception
+	 * @throws Exception
 	 */
-	public function clipImage
-	(
-		$clipWidth, $clipHeight, $clipLx, $clipLy, 
-		$dstWidth = null, $dstHeight = null, $dstLx = null, $dstLy = null
+	public function clipImage(
+		$clipWidth,
+        $clipHeight,
+        $clipLx,
+        $clipLy,
+		$dstWidth = null,
+        $dstHeight = null,
+        $dstLx = null,
+        $dstLy = null
 	) {
 		$this->_checkResource();
 		if (!$clipWidth) $this->showError('empty_width');
@@ -134,11 +140,13 @@ class Image extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 新建缩略图
-	 * @param integer $proportion
-	 * @param string $dstPath
-	 */
+    /**
+     * 新建缩略图
+     * @param $proportion
+     * @param null $dstPath
+     * @return bool|int|void
+     * @throws Exception
+     */
 	public function zoomImage($proportion, $dstPath = null)
 	{
 		if (!(is_array($proportion) && !empty($proportion))) return false;
@@ -174,10 +182,12 @@ class Image extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 设置源图片
-	 * @param string $srcPath
-	 */
+    /**
+     * 设置源图片
+     * @param $srcPath
+     * @return mixed
+     * @throws Exception
+     */
 	public function setSrcImage($srcPath)
 	{
 		if (!ocFileExists($srcPath)) {
@@ -206,16 +216,14 @@ class Image extends ServiceBase
 		$this->dstPath = $dstPath;
 	}
 
-	/**
-	 * 添加水印
-	 * @param string $dstImage
-	 * @param array $markInfo
-	 * $markInfo[0]: text|image
-	 * $markInfo[1]: params array
-	 * image key:path,location,$transparent
-	 * text key:content,location,font,size,color,
-	 * @param string $suffix
-	 */
+    /**
+     * 添加水印
+     * @param $dstImage
+     * @param $markInfo
+     * @param null $suffix
+     * @return array|bool|false
+     * @throws Exception
+     */
 	public function addMark($dstImage, $markInfo, $suffix = null)
 	{
 		if (!(is_array($markInfo) && !empty($markInfo))) return false;
@@ -263,20 +271,23 @@ class Image extends ServiceBase
 		return false;
 	}
 
-	/**
-	 * 删除图片
-	 * @param string $path
-	 */
+    /**
+     * 删除图片
+     * @param $path
+     * @return bool
+     */
 	public function delImage($path)
 	{
 		return ($path = ocFileExists($path, true)) ? unlink($path) : true;
 	}
 
-	/**
-	 * 获取图片信息
-	 * @param object $image
-	 * @param string $infoName
-	 */
+    /**
+     * 获取图片信息
+     * @param $image
+     * @param $infoName
+     * @return false|int
+     * @throws Exception
+     */
 	public function getInfo($image, $infoName)
 	{
 		$infoName = strtoupper($infoName);
@@ -290,21 +301,23 @@ class Image extends ServiceBase
 		$this->showError('invalid_image_param');
 	}
 
-	/**
-	 * 检查路径
-	 * @param string $path
-	 * @param Ox integer $perm
-	 */
+    /**
+     * 检查路径
+     * @param $path
+     * @param $perm
+     * @return bool
+     */
 	protected function _checkPath($path, $perm)
 	{
 		return ocCheckPath($path, $perm);
 	}
 
-	/**
-	 * 检查图片格式
-	 * @param string $path
-	 * @param string $type
-	 */
+    /**
+     * 检查图片格式
+     * @param $path
+     * @param $type
+     * @throws Exception
+     */
 	protected function _checkImage($path, $type)
 	{
 		$str = $this->getMessage($type == 'src' ? 'src_image' : 'dst_image');
@@ -344,14 +357,16 @@ class Image extends ServiceBase
 		}
 	}
 
-	/**
-	 * 添加文字水印
-	 * @param object $thumb
-	 * @param array $markInfo
-	 * @param integer $imgW
-	 * @param integer $imgH
-	 */
-	public function _textMark(&$thumb, &$markInfo, $imgW, $imgH)
+    /**
+     * 添加文字水印
+     * @param object $thumb
+     * @param array $markInfo
+     * @param int $imgW
+     * @param int $imgH
+     * @return array|bool|false
+     * @throws Exception
+     */
+	public function _textMark(&$thumb, array &$markInfo, $imgW, $imgH)
 	{
 		extract($markInfo);
 		
@@ -398,14 +413,16 @@ class Image extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 添加图片水印
-	 * @param object $thumb
-	 * @param array $markInfo
-	 * @param integer $imgW
-	 * @param integer $imgH
-	 */
-	public function _imageMark(&$thumb, &$markInfo, $imgW, $imgH)
+    /**
+     * 添加图片水印
+     * @param $thumb
+     * @param $markInfo
+     * @param $imgW
+     * @param $imgH
+     * @return bool
+     * @throws Exception
+     */
+	public function _imageMark(&$thumb, array &$markInfo, $imgW, $imgH)
 	{
 		extract($markInfo);
 		$imageMarkParams = array('path', 'location');
@@ -441,14 +458,16 @@ class Image extends ServiceBase
 		return false;
 	}
 
-	/**
-	 * 分析水印位置
-	 * @param string $location
-	 * @param integer $imgW
-	 * @param integer $imgH
-	 * @param integer $contentW
-	 * @param integer $contentH
-	 */
+    /**
+     * 分析水印位置
+     * @param $location
+     * @param $imgW
+     * @param $imgH
+     * @param $contentW
+     * @param $contentH
+     * @return array
+     * @throws Exception
+     */
 	protected function _getLocation($location, $imgW, $imgH, $contentW, $contentH)
 	{
 		if (!in_array(trim($location), self::$locationRule)) {
@@ -496,11 +515,11 @@ class Image extends ServiceBase
 		return array($textLx, $textLy);
 	}
 
-	/**
-	 * 水平翻转
-	 * @param string $image
-	 * @param string $suffix
-	 */
+    /**
+     * 水平翻转
+     * @param string $image
+     * @param null $suffix
+     */
 	public function flipH($image = 'src', $suffix = null)
 	{
 		$this->_flip('h', $image, $suffix);
@@ -516,11 +535,13 @@ class Image extends ServiceBase
 		$this->_flip('v', $image, $suffix);
 	}
 
-	/**
-	 * 新建真彩色图片
-	 * @param integer $width
-	 * @param integer $height
-	 */
+    /**
+     * 新建真彩色图片
+     * @param $width
+     * @param $height
+     * @return false|resource
+     * @throws Exception
+     */
 	public function createImage($width, $height)
 	{
 		if (!$result = @imagecreatetruecolor($width, $height)) {
@@ -530,10 +551,12 @@ class Image extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 获取图片地址
-	 * @param string $image
-	 */
+    /**
+     * 获取图片地址
+     * @param string $image
+     * @return string
+     * @throws Exception
+     */
 	protected function _getImagePath($image = 'src')
 	{
 		if ($image == 'src') {
@@ -552,10 +575,12 @@ class Image extends ServiceBase
 		return $imagePath;
 	}
 
-	/**
-	 * 获取颜色值，十六进制转成十进制
-	 * @param string $color
-	 */
+    /**
+     * 获取颜色值，十六进制转成十进制
+     * @param $color
+     * @return array
+     * @throws Exception
+     */
 	public static function parseColor($color)
 	{
 		if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $color)) {
@@ -571,10 +596,11 @@ class Image extends ServiceBase
 		
 		return $colorArray;
 	}
-	
-	/**
-	 * 检查图片资源
-	 */
+
+    /**
+     * 检查图片资源
+     * @throws Exception
+     */
 	protected function _checkResource()
 	{
 		if (!is_resource($this->srcObj)) {
@@ -590,7 +616,7 @@ class Image extends ServiceBase
      * 输出图片
      * @param bool $isDestroy
      * @return bool|mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	protected function _print($isDestroy = false)
 	{
@@ -619,9 +645,11 @@ class Image extends ServiceBase
 		return false;
 	}
 
-	/**
-	 * 保存图片文件
-	 */
+    /**
+     * 保存图片文件
+     * @return bool|int
+     * @throws Exception
+     */
 	protected function _save()
 	{
 		if (!is_file($this->srcTemp)) {
@@ -637,14 +665,17 @@ class Image extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 图片翻转
-	 * @param string $type
-	 * @param string $image
-	 * @param string $suffix
-	 */
+    /**
+     * 图片翻转
+     * @param $type
+     * @param $image
+     * @param null $suffix
+     * @return bool|int|mixed
+     * @throws Exception
+     */
 	protected function _flip($type, $image, $suffix = null)
 	{
+        $result = null;
 		$type = strtoupper($type);
 		$imagePath = $this->_getImagePath($image);
 		$thumb = new Image();
@@ -679,7 +710,9 @@ class Image extends ServiceBase
 		
 		if ($result) {
 			$result = $thumb->_print();
-			$result = $thumb->_save();
+			if ($result) {
+                $result = $thumb->_save();
+            }
 		}
 		
 		return $result;

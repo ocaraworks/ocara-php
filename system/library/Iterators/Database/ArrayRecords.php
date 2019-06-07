@@ -10,6 +10,6 @@ namespace Ocara\Iterators\Database;
 
 use \ArrayIterator;
 
-//class ArrayRecords implements ArrayIterator
-//{
-//}
+class ArrayRecords extends ArrayIterator
+{
+}

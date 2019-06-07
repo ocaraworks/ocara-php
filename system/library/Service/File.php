@@ -104,11 +104,11 @@ class File extends ServiceBase
 		return true;
 	}
 
-	/**
-	 * 读文件的所有内容
-	 * @param string $filePath
-	 * @return bool|\mix|string
-	 */
+    /**
+     * 读文件的所有内容
+     * @param $filePath
+     * @return false|string
+     */
 	public static function readFile($filePath)
 	{
 		return ocRead($filePath);

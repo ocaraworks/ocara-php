@@ -9,18 +9,22 @@
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
+use Ocara\Exceptions\Exception;
 use Ocara\Service\Interfaces\Template as TemplateInterface;
 
 defined('OC_PATH') or exit('Forbidden!');
 
 class Smarty extends ServiceBase implements TemplateInterface
 {
-	protected $_plugin = null;
+	protected $plugin = null;
 
-	/**
-	 * 析构函数
-	 * @param string $templateDir
-	 */
+    /**
+     * 析构函数
+     * Smarty constructor.
+     * @param $templateDir
+     * @param null $perm
+     * @throws Exception
+     */
 	public function __construct($templateDir, $perm = null)
 	{
 		ocImport(OC_SYS . 'modules/smarty/Smarty.class.php');
@@ -53,33 +57,39 @@ class Smarty extends ServiceBase implements TemplateInterface
 		$this->plugin->right_delimiter = ocConfig(array('SMARTY', 'right_sign'));
 	}
 
-	/**
-	 * @see Interface_OCTemplate::assign()
-	 */
+    /**
+     * 设置变量
+     * @param string $name
+     * @param mixed $value
+     */
 	public function set($name, $value)
 	{
 		$this->plugin->assign($name, $value);
 	}
 
-	/**
-	 * @see Interface_OCTemplate::getVars()
-	 */
+    /**
+     * 获取变量
+     * @param null $name
+     * @return string
+     */
 	public function get($name = null)
 	{
 		return $this->plugin->getTemplateVars($name);
 	}
 
-	/**
-	 * @see Interface_OCTemplate::registerObject()
-	 */
+    /**
+     * 注册对象
+     * @param array $params
+     */
 	public function registerObject($params)
 	{
 		call_user_func_array(array(&$this->plugin, 'registerObject'), $params);
 	}
 
-	/**
-	 * @see Interface_OCTemplate::registerPlugin()
-	 */
+    /**
+     * 注册插件
+     * @param string $params
+     */
 	public function registerPlugin($params)
 	{
 		call_user_func_array(array(&$this->plugin, 'registerPlugin'), $params);

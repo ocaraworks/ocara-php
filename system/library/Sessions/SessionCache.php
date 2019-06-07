@@ -8,7 +8,6 @@
  ************************************************************************************************/
 namespace Ocara\Sessions;
 
-use Ocara\Core\Base;
 use Ocara\Core\CacheFactory;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceProvider;
@@ -17,9 +16,7 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class SessionCache extends ServiceProvider
 {
-	
-    private $_plugin;
-    private $_prefix;
+    private $prefix;
 
     /**
      * 注册服务
@@ -41,11 +38,12 @@ class SessionCache extends ServiceProvider
     public function init()
     {
         $prefix = ocConfig(array('SESSION', 'options', 'location'), 'session');
-        $this->_prefix = $prefix;
+        $this->prefix = $prefix;
     }
-    
+
     /**
      * session打开
+     * @return bool
      */
     public function open()
     {
@@ -57,6 +55,7 @@ class SessionCache extends ServiceProvider
 
     /**
      * session关闭
+     * @return bool
      */
     public function close()
     {
@@ -65,25 +64,25 @@ class SessionCache extends ServiceProvider
 
     /**
      * 读取session信息
-     * @param string $id
+     * @param $id
      * @return bool
      */
     public function read($id)
     {
-    	$this->plugin->get($this->_prefix . $id);
+    	$this->plugin->get($this->prefix . $id);
     	return false;
     }
 
     /**
      * 保存session
-     * @param string $id
-     * @param string $data
+     * @param $id
+     * @param $data
      * @return bool
      */
     public function write($id, $data)
     {
         try {
-            $this->plugin->set($this->_prefix . $id, $data);
+            $this->plugin->set($this->prefix . $id, $data);
         } catch(Exception $exception) {
             ocService()->error->show($exception->getMessage());
         }
@@ -98,13 +97,13 @@ class SessionCache extends ServiceProvider
      */
     public function destroy($id)
     {
-        $this->plugin->delete($this->_prefix . $id);
+        $this->plugin->delete($this->prefix . $id);
         return true;
     }
 
     /**
-     * Session垃圾回收
-     * @param integer $maxlifetime
+     * 垃圾回收
+     * @param $maxlifetime
      * @return bool
      */
     public function gc($maxlifetime)

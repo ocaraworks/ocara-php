@@ -9,6 +9,7 @@
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
+use Ocara\Exceptions\Exception;
 
 class SocketBase extends ServiceBase
 {
@@ -26,11 +27,12 @@ class SocketBase extends ServiceBase
 		ocCheckExtension('sockets');
 	}
 
-	/**
-	 * 显示错误
-	 * @param string $errorType
-	 * @param string $connId
-	 */
+    /**
+     * 显示错误
+     * @param string $errorType
+     * @param string $connId
+     * @throws Exception
+     */
 	protected function _showError($errorType, $connId = 'conn')
 	{
 		$this->error = $connId === null ? socket_last_error() : socket_last_error($this->$connId);

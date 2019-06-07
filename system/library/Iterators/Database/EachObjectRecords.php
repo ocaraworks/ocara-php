@@ -12,15 +12,15 @@ use \Iterator;
 
 class EachObjectRecords implements Iterator
 {
-    protected $_model;
-    protected $_entity;
-    protected $_debug;
-    protected $_result;
+    protected $model;
+    protected $entity;
+    protected $debug;
+    protected $result;
 
-    protected $_position = 0;
-    protected $_offset = 0;
+    protected $position = 0;
+    protected $offset = 0;
 
-    protected $_sql = array();
+    protected $sql = array();
 
     /**
      * 初始化
@@ -33,11 +33,11 @@ class EachObjectRecords implements Iterator
      */
     public function __construct($model, $entity, $offset, array $sql, $debug = false)
     {
-        $this->_model = $model;
-        $this->_entity = $entity;
-        $this->_sql = $sql;
-        $this->_debug = $debug;
-        $this->_offset = $offset ? : 0;
+        $this->model = $model;
+        $this->entity = $entity;
+        $this->sql = $sql;
+        $this->debug = $debug;
+        $this->offset = $offset ? : 0;
     }
 
     /**
@@ -45,7 +45,7 @@ class EachObjectRecords implements Iterator
      */
     function rewind()
     {
-        $this->_position = 0;
+        $this->position = 0;
     }
 
     /**
@@ -54,7 +54,7 @@ class EachObjectRecords implements Iterator
      */
     function current()
     {
-        return $this->_result;
+        return $this->result;
     }
 
     /**
@@ -63,7 +63,7 @@ class EachObjectRecords implements Iterator
      */
     function key()
     {
-        return $this->_position;
+        return $this->position;
     }
 
     /**
@@ -71,7 +71,7 @@ class EachObjectRecords implements Iterator
      */
     function next()
     {
-        $this->_position++;
+        $this->position++;
     }
 
     /**
@@ -80,8 +80,8 @@ class EachObjectRecords implements Iterator
      */
     function valid()
     {
-        $this->_result = $this->getResult();
-        return $this->_result ? true : false;
+        $this->result = $this->getResult();
+        return $this->result ? true : false;
     }
 
     /**
@@ -90,15 +90,15 @@ class EachObjectRecords implements Iterator
      */
     public function getResult()
     {
-        $model = new $this->_model();
-        $model->setSql($this->_sql);
+        $model = new $this->model();
+        $model->setSql($this->sql);
 
         $result = $model
-            ->limit($this->_offset, 1)
-            ->asEntity($this->_entity)
-            ->findRow(null, null, $this->_debug);
+            ->limit($this->offset, 1)
+            ->asEntity($this->entity)
+            ->findRow(null, null, $this->debug);
 
-        $this->_offset += 1;
+        $this->offset += 1;
         return $result;
     }
 }

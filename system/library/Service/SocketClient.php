@@ -8,18 +8,20 @@
  ************************************************************************************************/
 namespace Ocara\Service;
 
-use Ocara\Service\SocketBase;
+use Ocara\Exceptions\Exception;
 
 class SocketClient extends SocketBase
 {
-	/**
-	 * 连接服务端
-	 * @param string $host
-	 * @param string $port
-	 * @param integer $limitTime
-	 * @param integer $recTimeout
-	 * @param integer $sendTimeout
-	 */
+    /**
+     * 连接服务端
+     * @param string $host
+     * @param int $port
+     * @param int $limitTime
+     * @param int $recTimeout
+     * @param int $sendTimeout
+     * @return resource
+     * @throws Exception
+     */
 	public function connect($host, $port, $limitTime = 0, $recTimeout = 3, $sendTimeout = 2)
 	{
 		if ($limitTime) @set_time_limit($limitTime);
@@ -42,11 +44,13 @@ class SocketClient extends SocketBase
 		return $this->socket;
 	}
 
-	/**
-	 * 读取数据
-	 * @param integer $length
-	 * @param bool $type
-	 */
+    /**
+     * 读取数据
+     * @param int $length
+     * @param int $type
+     * @return string
+     * @throws Exception
+     */
 	public function read($length = 512, $type = PHP_BINARY_READ)
 	{
 		if (empty($this->socket)) {
@@ -62,11 +66,13 @@ class SocketClient extends SocketBase
 		return $result;
 	}
 
-	/**
-	 * 发送数据
-	 * @param string $content
-	 * @param integer $length
-	 */
+    /**
+     * 发送数据
+     * @param $content
+     * @param int $length
+     * @return int
+     * @throws Exception
+     */
 	public function send($content, $length = 0)
 	{
 		if (empty($this->socket)) {
@@ -83,9 +89,10 @@ class SocketClient extends SocketBase
 		return $result;
 	}
 
-	/**
-	 * 关闭当前Socket链接
-	 */
+    /**
+     * 关闭当前Socket链接
+     * @param int $how
+     */
 	public function shutdown($how = 2)
 	{
 		if (is_resource($this->socket)) {

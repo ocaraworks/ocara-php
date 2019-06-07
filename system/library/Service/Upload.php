@@ -9,6 +9,7 @@
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
+use Ocara\Exceptions\Exception;
 
 class Upload extends ServiceBase
 {
@@ -19,8 +20,9 @@ class Upload extends ServiceBase
 	public $rules;
 	public $savePath;
 	public $maxSize;
+	public $prefix;
 
-	private $_files;
+	private $files;
 
 	/**
 	 * 析构函数
@@ -29,17 +31,18 @@ class Upload extends ServiceBase
 	 */
 	public function __construct($savePath = null, array $rules = array())
 	{
-		$this->maxSize = floatval(@ini_get('upload_max_filesize'));
+		$this->maxSize = floatval(@ini_get('upload_maxfilesize'));
 		$this->setSavePath($savePath);
 		$this->setRules($rules);
 	}
 
-	/**
-	 * 设置上传路径
-	 * @param string $savePath
-	 * @param string $prefix
-	 * @param integer $perm
-	 */
+    /**
+     * 设置上传路径
+     * @param $savePath
+     * @param null $prefix
+     * @param int $perm
+     * @return bool
+     */
 	public function setSavePath($savePath, $prefix = null, $perm = 0777)
 	{
 		if (empty($savePath)) {
@@ -82,18 +85,20 @@ class Upload extends ServiceBase
 	{
 		return count($_FILES) > 0 ? true : false;
 	}
-	
-	/**
-	 * 上传文件
-	 * @param bool $required
-	 */
+
+    /**
+     * 上传文件
+     * @param bool $required
+     * @return array|bool
+     * @throws Exception
+     */
 	public function upload($required = false)
 	{
 		if (!is_writable($this->savePath)) {
 			return $this->setError('un_writable', array(false));
 		}
 		
-		$this->_files = array();
+		$this->files = array();
 		
 		if (count($_FILES) <= 0) {
 			if ($required) {
@@ -114,14 +119,14 @@ class Upload extends ServiceBase
 						'error' 	=> $fileInfo['error'][$i], 
 						'size' 		=> $fileInfo['size'][$i]
 					);
-					$this->_files[$index][$i] = $this->_check($row);
-					if (empty($this->_files[$index][$i])) {
+					$this->files[$index][$i] = $this->_check($row);
+					if (empty($this->files[$index][$i])) {
 						return false;
 					}
 				}
 			} elseif (is_string($fileInfo['name'])) {
-				$this->_files[$index] = $this->_check($fileInfo);
-				if (empty($this->_files[$index])) {
+				$this->files[$index] = $this->_check($fileInfo);
+				if (empty($this->files[$index])) {
 					return false;
 				}
 			}
@@ -130,10 +135,10 @@ class Upload extends ServiceBase
 		return $this->_uploadAllFile($_FILES);
 	}
 
-	/**
-	 * 清理上传过的文件
-	 * @param array $path
-	 */
+    /**
+     * 清理上传过的文件
+     * @param $path
+     */
 	public function clear($path)
 	{
 		$path = $path ? : $_FILES;
@@ -142,11 +147,12 @@ class Upload extends ServiceBase
 			@unlink($row);
 		}
 	}
-	
-	/**
-	 * 上传所有文件
-	 * @param array $files
-	 */
+
+    /**
+     * 上传所有文件
+     * @param $files
+     * @return bool
+     */
 	private function _uploadAllFile($files)
 	{
 		if (!(is_array($files) && $files)) return false;
@@ -157,14 +163,14 @@ class Upload extends ServiceBase
 			if (is_array($fileInfo['name'])) {
 				$count = count($fileInfo['name']);
 				for ($i = 0;$i < $count;$i++) {
-					$row = $this->_files[$index][$i];
+					$row = $this->files[$index][$i];
 					if (!$this->_uploadFile($row, $path, $index, $i)) {
 						return $this->setError('failed', array($row['name']));
 					}
 					$path[] = $row['save_path'];
 				}
 			} elseif (is_string($fileInfo['name'])) {
-				$row = $this->_files[$index];
+				$row = $this->files[$index];
 				if (false === $this->_uploadFile($row, $path, $index, false)) {
 					return $this->setError('failed', array($row['name']));
 				}
@@ -172,22 +178,23 @@ class Upload extends ServiceBase
 			}
 		}
 		
-		return $this->_files;
+		return $this->files;
 	}
 
-	/**
-	 * 上传某个文件
-	 * @param array $row
-	 * @param string $path
-	 * @param integer $index
-	 * @param integer|bool $i
-	 */
+    /**
+     * 上传某个文件
+     * @param array $row
+     * @param string $path
+     * @param integer $index
+     * @param integer|bool $i
+     * @return bool
+     */
 	private function _uploadFile($row, $path, $index, $i)
 	{
 		$key = is_integer($i) ? $index . '.' . $i : $index;
 		$save_path = $row['save_path'];
 
-		if ($row['tmp_name'] && ocKeyExists($key, $this->_files)) {
+		if ($row['tmp_name'] && ocKeyExists($key, $this->files)) {
 			if (!move_uploaded_file($row['tmp_name'], $save_path)) {
 				$this->clear($path);
 				return false;
@@ -195,19 +202,21 @@ class Upload extends ServiceBase
 			$row['save_path'] = str_replace(OC_ROOT, OC_DIR_SEP, $save_path);
 			ocDel($row, 'tmp_name');
 			if (is_integer($i)) {
-				$this->_files[$index][$i] = $row;
+				$this->files[$index][$i] = $row;
 			} else {
-				$this->_files[$index] = $row;
+				$this->files[$index] = $row;
 			}
 		}
 		
 		return true;
 	}
 
-	/**
-	 * 检查文件的合法性
-	 * @param string $file
-	 */
+    /**
+     * 检查文件的合法性
+     * @param $file
+     * @return bool
+     * @throws Exception
+     */
 	protected function _check($file)
 	{
 		extract($file);
@@ -246,11 +255,11 @@ class Upload extends ServiceBase
 			} 
 			$allowSize = $this->rules[$fileType];
 			if ($size / 1024 / 1024 > $allowSize) {
-				return $this->setError('invalid_filesize', array($name, $allowSize . 'M'));
+				return $this->setError('invalidfilesize', array($name, $allowSize . 'M'));
 			}
 		} else {
 			if ($this->maxSize && $size / 1024 / 1024 > $this->maxSize) {
-				return $this->setError('exceed_filesize', array($name, $this->maxSize . 'M'));
+				return $this->setError('exceedfilesize', array($name, $this->maxSize . 'M'));
 			}
 		}
 		

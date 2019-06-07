@@ -12,7 +12,7 @@ use Ocara\Core\ServiceBase;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-final class SocketEmail extends ServiceBase
+class SocketEmail extends ServiceBase
 {
 	public $lastResult;
 	public $fo;
@@ -32,11 +32,11 @@ final class SocketEmail extends ServiceBase
 	 */
 	public function __construct($sender, $host, $port, $username, $password, $timeout = 20)
 	{
-		$this->fo = @fsockopen(gethostbyname($host), $port, $errno, $errmsg, $timeout);
+		$this->fo = @fsockopen(gethostbyname($host), $port, $errNo, $errMsg, $timeout);
 		
 		if (empty($this->fo)) {
-			$errmsg = iconv('gbk', 'utf-8', $errmsg);
-            ocService()->error->show('failed_email_socket_connect', array($errno, $errmsg));
+            $errMsg = iconv('gbk', 'utf-8', $errMsg);
+            ocService()->error->show('failed_email_socket_connect', array($errNo, $errMsg));
 		}
 		
 		if ($timeout) {
@@ -48,12 +48,13 @@ final class SocketEmail extends ServiceBase
 		$this->password = $password;
 	}
 
-	/**
-	 * 发送邮件
-	 * @param string $receiver
-	 * @param string $header
-	 * @param string $content
-	 */
+    /**
+     * 发送邮件
+     * @param $receiver
+     * @param $header
+     * @param $content
+     * @return bool
+     */
 	public function send($receiver, $header, $content)
 	{
 		@socket_set_blocking($this->fo, 1);
@@ -93,11 +94,12 @@ final class SocketEmail extends ServiceBase
 		return true;
 	}
 
-	/**
-	 * 执行命令
-	 * @param string $command
-	 * @param integer $errorStatus
-	 */
+    /**
+     * 执行命令
+     * @param $command
+     * @param $errorStatus
+     * @return bool
+     */
 	public function putCmd($command, $errorStatus)
 	{
 		$command = $command . "\r\n";
@@ -114,5 +116,3 @@ final class SocketEmail extends ServiceBase
 		return false;
 	}
 }
-
-?>

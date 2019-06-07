@@ -12,16 +12,16 @@ use \Iterator;
 
 class BatchObjectRecords implements Iterator
 {
-    protected $_model;
-    protected $_entity;
-    protected $_sql = array();
-    protected $_debug;
+    protected $model;
+    protected $entity;
+    protected $sql = array();
+    protected $debug;
 
-    protected $_position = 0;
-    protected $_times = 0;
-    protected $_offset = 0;
-    protected $_data = array();
-    protected $_rows = 0;
+    protected $position = 0;
+    protected $times = 0;
+    protected $offset = 0;
+    protected $data = array();
+    protected $rows = 0;
 
     /**
      * 初始化
@@ -35,12 +35,12 @@ class BatchObjectRecords implements Iterator
      */
     public function __construct($model, $entity, $offset, $rows, array $sql, $debug = false)
     {
-        $this->_model = $model;
-        $this->_entity = $entity;
-        $this->_offset = $offset;
-        $this->_sql = $sql;
-        $this->_debug = $debug;
-        $this->_rows = $rows;
+        $this->model = $model;
+        $this->entity = $entity;
+        $this->offset = $offset;
+        $this->sql = $sql;
+        $this->debug = $debug;
+        $this->rows = $rows;
     }
 
     /**
@@ -49,7 +49,7 @@ class BatchObjectRecords implements Iterator
     function rewind()
     {
         $this->getResult();
-        $this->_position = 0;
+        $this->position = 0;
     }
 
     /**
@@ -58,10 +58,10 @@ class BatchObjectRecords implements Iterator
      */
     function current()
     {
-        $data = $this->_data[$this->key()];
+        $data = $this->data[$this->key()];
 
         if (is_array($data)) {
-            $entity = new $this->_entity();
+            $entity = new $this->entity();
             $result = $entity->data($data);
         } else {
             $result = $data;
@@ -76,7 +76,7 @@ class BatchObjectRecords implements Iterator
      */
     function key()
     {
-        return $this->_position;
+        return $this->position;
     }
 
     /**
@@ -84,9 +84,9 @@ class BatchObjectRecords implements Iterator
      */
     function next()
     {
-        $this->_position++;
-        if ($this->_position == $this->_rows) {
-            $this->_times++;
+        $this->position++;
+        if ($this->position == $this->rows) {
+            $this->times++;
             $this->rewind();
         }
     }
@@ -97,7 +97,7 @@ class BatchObjectRecords implements Iterator
      */
     function valid()
     {
-        $isValid = $this->_position < $this->_rows && array_key_exists($this->key(), $this->_data);
+        $isValid = $this->position < $this->rows && array_key_exists($this->key(), $this->data);
         return $isValid;
     }
 
@@ -107,14 +107,14 @@ class BatchObjectRecords implements Iterator
      */
     public function getResult()
     {
-        $model = new $this->_model();
-        $model->setSql($this->_sql);
-        $model->limit($this->_offset, $this->_rows);
+        $model = new $this->model();
+        $model->setSql($this->sql);
+        $model->limit($this->offset, $this->rows);
 
-        $list = $model->getAll(null, null, $this->_debug);
+        $list = $model->getAll(null, null, $this->debug);
 
-        $this->_data = $list['data'];
-        $this->_offset += $this->_rows;
-        $this->_times++;
+        $this->data = $list['data'];
+        $this->offset += $this->rows;
+        $this->times++;
     }
 }

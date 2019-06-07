@@ -12,7 +12,18 @@ use Ocara\Core\Basis;
 use Ocara\Core\Container;
 use Ocara\Exceptions\Exception;
 
+//根目录
+defined('OC_PATH') OR define(
+    'OC_PATH', str_replace("\\", DIRECTORY_SEPARATOR, realpath(dirname(dirname(dirname(__DIR__))))) . DIRECTORY_SEPARATOR
+);
+
 defined('OC_EXECUTE_STATR_TIME') OR define('OC_EXECUTE_STATR_TIME', microtime(true));
+
+//加载基本类库
+require_once (OC_PATH . 'system/functions/utility.php');
+require_once (OC_PATH . 'system/functions/common.php');
+require_once (OC_PATH . 'system/const/basic.php');
+require_once (OC_CORE . 'Basis.php');
 
 final class Ocara extends Basis
 {
@@ -43,6 +54,13 @@ final class Ocara extends Basis
 	 */
 	public static function register()
 	{
+	    ocImport(array(
+            OC_CORE . 'Base.php',
+            OC_CORE . 'Container.php',
+            OC_CORE . 'Config.php',
+            OC_CORE . 'Loader.php',
+        ));
+
         $container = Container::getDefault()
             ->bindSingleton('config', '\Ocara\Core\Config')
             ->bindSingleton('loader', '\Ocara\Core\Loader')

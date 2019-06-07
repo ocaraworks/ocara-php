@@ -10,81 +10,86 @@ namespace Ocara\Service;
 
 use Ocara\Core\Ocara;
 use Ocara\Core\ServiceBase;
+use Ocara\Exceptions\Exception;
 
 class Ftp extends ServiceBase
 {
 	public $root;
-	protected $_conn;
-	
-	/**
-	 * FTP连接
-	 * @param string $ftpserver
-	 * @param string $username
-	 * @param string $password
-	 * @param integer $port
-	 * @param integer $timeOut
-	 */
-	public function connect($ftpserver, $username, $password, $port = null, $timeOut = null)
+	protected $connection;
+
+    /**
+     * FTP连接
+     * @param $ftpServer
+     * @param $username
+     * @param $password
+     * @param null $port
+     * @param null $timeOut
+     * @throws Exception
+     */
+	public function connect($ftpServer, $username, $password, $port = null, $timeOut = null)
 	{
 		$port = $port ? : 21;
 		
-		if (!$ftpserver) {
+		if (!$ftpServer) {
 			$this->showError('no_address');
 		}
+
+        $connection = @ftp_connect($ftpServer, $port);
+
+        if (!$connection) {
+            $this->showError('failed_ftp_connect');
+        }
 		
-		$conn = @ftp_connect($ftpserver, $port);
-		
-		if (!$conn) {
-			$this->showError('failed_ftp_connect');
-		}
-		
-		if (!@ftp_login($conn, $username, $password)) {
+		if (!@ftp_login($connection, $username, $password)) {
 			$this->showError('failed_ftp_login');
 		}
 		
-		$this->_conn = $conn;
-		$this->root = @ftp_pwd($this->_conn);
+		$this->connection = $connection;
+		$this->root = @ftp_pwd($this->connection);
 		
 		if ($timeOut && preg_match('/^[0-9]+$/', $timeOut)) {
-			@ftp_set_option($this->_conn, FTP_TIMEOUT_SEC, $timeOut);
+			@ftp_set_option($this->connection, FTP_TIMEOUT_SEC, $timeOut);
 		}
 	}
 
-	/**
-	 * 上传文件
-	 * @param string $localFile
-	 * @param string $remoteFile
-	 * @param bool $asyn
-	 * @param string $mode,'a' is FTP_ASCII,'b' is FTP_BINARY
-	 * @param integer $location
-	 */
+    /**
+     * 上传文件
+     * @param $localFile
+     * @param $remoteFile
+     * @param bool $asyn
+     * @param string $mode
+     * @param int $location
+     * @return bool
+     */
 	public function upload($localFile, $remoteFile, $asyn = true, $mode = 'b', $location = 0)
 	{
 		$mode = $mode == 'b' ? FTP_BINARY : FTP_ASCII;
 		
 		if (!$asyn) {
-			return @ftp_put($this->_conn, $remoteFile, $localFile, $mode);
+			return @ftp_put($this->connection, $remoteFile, $localFile, $mode);
 		}
 		
 		$location = $location ? : 0;
 
-		$result = @ftp_nb_put($this->_conn, $remoteFile, $localFile, $mode, $location);
+		$result = @ftp_nb_put($this->connection, $remoteFile, $localFile, $mode, $location);
 		
 		while ($result == FTP_MOREDATA) {
-			$result = @ftp_nb_continue($this->_conn);
+			$result = @ftp_nb_continue($this->connection);
 		}
 		
 		return $result == FTP_FINISHED ? true : false;
 	}
 
-	/**
-	 * 下载文件
-	 * @param string $remoteFile
-	 * @param string $localFile
-	 * @param bool $asyn
-	 * @param string $mode
-	 * @param integer $location
-	 */
+    /**
+     * 下载文件
+     * @param $remoteFile
+     * @param $localFile
+     * @param bool $asyn
+     * @param string $mode
+     * @param int $location
+     * @return bool
+     * @throws Exception
+     */
 	public function download($remoteFile, $localFile, $asyn = true, $mode = 'b', $location = 0)
 	{
 		$fopen = @fopen($localFile, 'wb');
@@ -96,35 +101,37 @@ class Ftp extends ServiceBase
 		$mode = $mode == 'b' ? FTP_BINARY : FTP_ASCII;
 		
 		if (!$asyn) {
-			return @ftp_get($this->_conn, $localFile, $remoteFile, $mode);
+			return @ftp_get($this->connection, $localFile, $remoteFile, $mode);
 		}
 		
 		$location = $location ? : 0;
 
-		$result = @ftp_nb_get($this->_conn, $localFile, $remoteFile, $mode, $location);
+		$result = @ftp_nb_get($this->connection, $localFile, $remoteFile, $mode, $location);
 		
 		while ($result == FTP_MOREDATA) {
-			$result = @ftp_nb_continue($this->_conn);
+			$result = @ftp_nb_continue($this->connection);
 		}
 		
 		return $result == FTP_FINISHED ? true : false;
 	}
 
-	/**
-	 * 删除文件
-	 * @param string $path
-	 */
+    /**
+     * 删除文件
+     * @param $path
+     * @return bool
+     */
 	public function delFile($path)
 	{
-		return @ftp_delete($this->_conn, $path);
+		return @ftp_delete($this->connection, $path);
 	}
 
-	/**
-	 * 删除FTP目录，支持递归删除
-	 * @param string $dirName
-	 * @param bool $recursive
-	 * @param string $path
-	 */
+    /**
+     * 删除FTP目录，支持递归删除
+     * @param $dirName
+     * @param bool $recursive
+     * @param null $path
+     * @return bool
+     */
 	public function delDir($dirName, $recursive = false, $path = null)
 	{
 		$pwd 	 = ocDir($this->getPwd());
@@ -138,13 +145,13 @@ class Ftp extends ServiceBase
 		$this->chDir($pwd);
 		
 		if (!$recursive) {
-			return @ftp_rmdir($this->_conn, $allPath);
+			return @ftp_rmdir($this->connection, $allPath);
 		}
 		
 		$subFiles = $this->listDir($allPath);
 		$result = false;
 		if (!$subFiles) {
-			return @ftp_rmdir($this->_conn, $allPath);
+			return @ftp_rmdir($this->connection, $allPath);
 		}
 		
 		foreach ($subFiles as $val) {
@@ -158,18 +165,20 @@ class Ftp extends ServiceBase
 		}
 
 		$dir = ltrim($path, OC_DIR_SEP) . OC_DIR_SEP . $dirName;
-		return $result ? @ftp_rmdir($this->_conn, $dir) : false;
+		return $result ? @ftp_rmdir($this->connection, $dir) : false;
 	}
 
-	/**
-	 * 新建FTP目录
-	 * @param string $dirName
-	 * @param Ox integer $perm
-	 */
+    /**
+     * 新建FTP目录
+     * @param $dirName
+     * @param null $perm
+     * @return string
+     * @throws Exception
+     */
 	public function createDir($dirName, $perm = null)
 	{
 		$path = ocDir($this->getPwd());
-		$result = @ftp_mkdir($this->_conn, $path . $dirName);
+		$result = @ftp_mkdir($this->connection, $path . $dirName);
 		
 		if ($perm) {
 			if (!chmod($path, $perm)) {
@@ -180,44 +189,48 @@ class Ftp extends ServiceBase
 		return $result;
 	}
 
-	/**
-	 * 获取当前所在FTP目录
-	 */
+    /**
+     * 获取当前所在FTP目录
+     * @return string
+     */
 	public function getPwd()
 	{
-		return @ftp_pwd($this->_conn);
+		return @ftp_pwd($this->connection);
 	}
 
-	/**
-	 * 列出FTP目录内容
-	 * @param string $path
-	 */
+    /**
+     * 列出FTP目录内容
+     * @param null $path
+     * @return array
+     */
 	public function listDir($path = null)
 	{
 		if (!$path) {
-			$path = @ftp_pwd($this->_conn);
+			$path = @ftp_pwd($this->connection);
 		}
 		
-		return @ftp_nlist($this->_conn, ocDir($path));
+		return @ftp_nlist($this->connection, ocDir($path));
 	}
 
-	/**
-	 * 改变FTP路径
-	 * @param string $path
-	 */
+    /**
+     * 改变FTP路径
+     * @param $path
+     * @return bool
+     */
 	public function chDir($path)
 	{
 		Ocara::errorReporting(E_ALL ^ E_WARNING);
-		$result = @ftp_chdir($this->_conn, $path);
+		$result = @ftp_chdir($this->connection, $path);
 		Ocara::errorReporting();
 		
 		return $result;
 	}
 
-	/**
-	 * 检查并新建不存在FTP目录
-	 * @param string $path
-	 */
+    /**
+     * 检查并新建不存在FTP目录
+     * @param $path
+     * @return bool
+     */
 	public function checkDir($path)
 	{
 		$pathArray = explode(OC_DIR_SEP, str_replace('\\', OC_DIR_SEP, $path));
@@ -227,45 +240,48 @@ class Ftp extends ServiceBase
 		
 		foreach ($pathArray as $dir) {
 			if ($dir == '.' || $dir == '..') $dir .= OC_DIR_SEP;
-			if (!@ftp_chdir($this->_conn, $dir)) {
-				$mk = @ftp_mkdir($this->_conn, $dir);
+			if (!@ftp_chdir($this->connection, $dir)) {
+				$mk = @ftp_mkdir($this->connection, $dir);
 				if (!$mk) return false;
-				if (!@ftp_chdir($this->_conn, $dir)) return false;
+				if (!@ftp_chdir($this->connection, $dir)) return false;
 			}
 		}
 		
-		@ftp_chdir($this->_conn, $pwd);
+		@ftp_chdir($this->connection, $pwd);
 		Ocara::errorReporting();
 
 		return true;
 	}
 
-	/**
-	 * 获取FTP文件大小
-	 * @param string $remoteFile
-	 */
+    /**
+     * 获取FTP文件大小
+     * @param $remoteFile
+     * @return int
+     */
 	public function getSize($remoteFile)
 	{
-		return @ftp_size($this->_conn, $remoteFile);
+		return @ftp_size($this->connection, $remoteFile);
 	}
 
-	/**
-	 * 重命名FTP文件
-	 * @param string $oldName
-	 * @param string $newname
-	 */
+    /**
+     * 重命名FTP文件
+     * @param $oldName
+     * @param $newName
+     * @return bool
+     */
 	public function rename($oldName, $newName)
 	{
-		return @ftp_rename($this->_conn, $oldName, $newName);
+		return @ftp_rename($this->connection, $oldName, $newName);
 	}
 
-	/**
-	 * 执行命令
-	 * @param string $command
-	 */
+    /**
+     * 执行命令
+     * @param $command
+     * @return bool
+     */
 	public function execute($command)
 	{
-		return @ftp_exec($this->_conn, $command);
+		return @ftp_exec($this->connection, $command);
 	}
 
 	/**
@@ -273,6 +289,6 @@ class Ftp extends ServiceBase
 	 */
 	public function close()
 	{
-		return @ftp_close($this->_conn);
+		return @ftp_close($this->connection);
 	}
 }

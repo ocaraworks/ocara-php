@@ -32,38 +32,43 @@ class SessionDB extends ServiceProvider
         }
     }
 
-	/**
-	 * session打开
-	 */
+    /**
+     * session打开
+     * @return bool
+     */
 	public function open()
 	{
 		return is_object($this->plugin) && $this->plugin instanceof ModelBase;
 	}
 
-	/**
-	 * session关闭
-	 */
+    /**
+     * session关闭
+     * @return bool
+     */
 	public function close()
 	{
 		$this->plugin = null;
 		return true;
 	}
 
-	/**
-	 * 读取session信息
-	 * @param string $id
-	 */
+    /**
+     * 读取session信息
+     * @param $id
+     * @return string
+     */
 	public function read($id)
 	{
 		$sessionData = $this->plugin->read($id);
 		return $sessionData ? stripslashes($sessionData) : OC_EMPTY;
 	}
 
-	/**
-	 * 保存session
-	 * @param string $id
-	 * @param string $data
-	 */
+    /**
+     * 保存session
+     * @param $id
+     * @param $data
+     * @return bool
+     * @throws Exception
+     */
 	public function write($id, $data)
 	{
 		$datetimeFormat = ocConfig(array('DATE_FORMAT', 'datetime'));
@@ -83,10 +88,11 @@ class SessionDB extends ServiceProvider
 		return $result === true;
 	}
 
-	/**
-	 * 销毁session
-	 * @param string $id
-	 */
+    /**
+     * 销毁session
+     * @param $id
+     * @return bool
+     */
 	public function destroy($id)
 	{
 		$this->plugin->destory($id);
@@ -95,10 +101,11 @@ class SessionDB extends ServiceProvider
 		return $result === true;
 	}
 
-	/**
-	 * Session垃圾回收
-	 * @param integer $saveTime
-	 */
+    /**
+     * Session垃圾回收
+     * @param null $saveTime
+     * @return bool
+     */
 	public function gc($saveTime = null)
 	{
 		$this->plugin->clear();
