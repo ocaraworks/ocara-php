@@ -20,7 +20,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
 	/**
 	 * PDO绑定参数类型映射
 	 */
-	protected $quoteBackList = array(
+	protected $paramTypesMap = array(
 		 'integer' => 'i',
 	     'string'  => 's',
          'binary'  => 's',

@@ -21,7 +21,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	/**
 	 * PDO绑定参数类型映射
 	 */
-	protected $_paramTypesMap = array(
+	protected $paramTypesMap = array(
 		'integer' => PDO::PARAM_INT,
 		'string'  => PDO::PARAM_STR,
         'binary'  => PDO::PARAM_LOB,

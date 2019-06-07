@@ -19,7 +19,6 @@ class FormManager extends ServiceProvider
 
     protected $route;
     protected $form;
-
     protected $forms = array();
 
     /**
@@ -137,7 +136,7 @@ class FormManager extends ServiceProvider
      */
     public static function getTokenTag()
     {
-        return '_oc_' . ocConfig(array('FORM', 'token_tag'), 'form_token_name');
+        return '_oc_' . ocConfig(array('FORM', 'token_tag'), '_form_token_name');
     }
 
     /**

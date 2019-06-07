@@ -10,8 +10,8 @@
 return array(
 	'no_upload_file' 	   => array(4550,'没有检测到要上传的文件！请检查命名是否正确，以及表单是否设置了enctype属性。'),
 	'not_exists_file' 	   => array(4551,'“%s”文件大小为空！'),
-	'invalid_filesize' 	   => array(4552,'“%s”文件超过指定大小，该类型文件大小最大允许%s！'),
-	'exceed_filesize'	   => array(4553,'“%s”文件太大无法上传，最大允许%s！'),
+	'invalid_file_size' 	   => array(4552,'“%s”文件超过指定大小，该类型文件大小最大允许%s！'),
+	'exceed_file_size'	   => array(4553,'“%s”文件太大无法上传，最大允许%s！'),
 	'forbidden_type' 	   => array(4554,'“%s”文件类型不正确，系统只允许上传%s类型的文件！'),
 	'invalid_upload_file'  => array(4555,'“%s”不是有效的可上传文件！'),
 	'empty_file'		   => array(4556,'“%s”文件大小为空或超过指定的大小！'),
