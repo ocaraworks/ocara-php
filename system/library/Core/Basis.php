@@ -96,7 +96,7 @@ abstract class Basis
 	 */
 	public function __isset($property)
 	{
-        if (!property_exists($this, $property)) {
+        if ($property != 'properties' && !property_exists($this, $property)) {
             return isset($this->properties[$property]);
         }
 
@@ -111,7 +111,7 @@ abstract class Basis
 	 */
 	public function __get($property)
 	{
-	    if (!property_exists($this, $property)) {
+	    if ($property != 'properties' && !property_exists($this, $property)) {
             if (array_key_exists($property, $this->properties)) {
                 $value = $this->properties[$property];
                 return $value;
@@ -133,7 +133,7 @@ abstract class Basis
      */
 	public function __set($property, $value)
 	{
-	    if (!property_exists($this, $property)) {
+	    if ($property != 'properties' && !property_exists($this, $property)) {
             $this->properties[$property] = $value;
             return true;
         }
@@ -149,7 +149,7 @@ abstract class Basis
      */
 	public function __unset($property)
 	{
-        if (!property_exists($this, $property)) {
+        if ($property != 'properties' && !property_exists($this, $property)) {
             if (array_key_exists($property, $this->properties)) {
                 $this->properties[$property] = null;
                 unset($this->properties[$property]);
