@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/system/library/Service/Image.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Service/Image.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Service/Models/Session.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Service/Models/Session.php" afterDir="false" />
+    <list default="true" id="895cd658-1804-4737-91ee-7162db62e63b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/library/Core/Basis.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Basis.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -13,17 +13,17 @@
   </component>
   <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
+    <execution>
+      <executable />
+    </execution>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+    <leaf>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/system/library/Service/Models/Session.php">
+        <entry file="file://$PROJECT_DIR$/system/library/Core/Basis.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="672">
-              <caret line="81" column="10" lean-forward="true" selection-start-line="81" selection-start-column="10" selection-end-line="81" selection-end-column="10" />
-              <folding>
-                <element signature="e#39#70#0#PHP" expanded="true" />
-              </folding>
+            <state relative-caret-position="182">
+              <caret line="102" column="21" lean-forward="true" selection-start-line="102" selection-start-column="21" selection-end-line="102" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -108,7 +108,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/system/library/Service/ErrorOutput.php" />
         <option value="$PROJECT_DIR$/system/library/Service/Excel.php" />
         <option value="$PROJECT_DIR$/system/library/Service/File.php" />
         <option value="$PROJECT_DIR$/system/library/Service/FileCache.php" />
@@ -159,6 +158,7 @@
         <option value="$PROJECT_DIR$/system/library/Core/FormManager.php" />
         <option value="$PROJECT_DIR$/system/library/Service/Image.php" />
         <option value="$PROJECT_DIR$/system/library/Service/Models/Session.php" />
+        <option value="$PROJECT_DIR$/system/library/Core/Basis.php" />
       </list>
     </option>
   </component>
@@ -189,12 +189,6 @@
               <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
               <item name="ocara" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
-              <item name="functions" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ocara" type="462c0819:PsiDirectoryNode" />
-              <item name="system" type="462c0819:PsiDirectoryNode" />
               <item name="library" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -202,15 +196,7 @@
               <item name="ocara" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
               <item name="library" type="462c0819:PsiDirectoryNode" />
-              <item name="Service" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ocara" type="462c0819:PsiDirectoryNode" />
-              <item name="system" type="462c0819:PsiDirectoryNode" />
-              <item name="library" type="462c0819:PsiDirectoryNode" />
-              <item name="Service" type="462c0819:PsiDirectoryNode" />
-              <item name="Models" type="462c0819:PsiDirectoryNode" />
+              <item name="Core" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -259,13 +245,13 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="30357000" />
+    <option name="totallyTimeSpent" value="30884000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2693133" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.27785236" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -453,13 +439,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="190">
           <caret line="66" column="32" selection-start-line="66" selection-start-column="32" selection-end-line="66" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/Basis.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
         </state>
       </provider>
     </entry>
@@ -672,6 +651,13 @@
           <folding>
             <element signature="e#39#70#0#PHP" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Basis.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="102" column="21" lean-forward="true" selection-start-line="102" selection-start-column="21" selection-end-line="102" selection-end-column="21" />
         </state>
       </provider>
     </entry>
