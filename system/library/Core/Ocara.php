@@ -48,12 +48,11 @@ final class Ocara
         require_once (OC_PATH . 'system/functions/utility.php');
         require_once (OC_PATH . 'system/functions/common.php');
         require_once (OC_PATH . 'system/const/basic.php');
-        require_once (OC_PATH . 'system/library/Core/Basis.php');
-        require_once (OC_PATH . 'system/library/Core/Base.php');
-        require_once (OC_PATH . 'system/library/Core/Container.php');
-        require_once (OC_PATH . 'system/library/Core/Config.php');
-        require_once (OC_PATH . 'system/library/Core/Loader.php');
-
+        require_once (OC_CORE . 'Basis.php');
+        require_once (OC_CORE . 'Base.php');
+        require_once (OC_CORE . 'Container.php');
+        require_once (OC_CORE . 'Config.php');
+        require_once (OC_CORE . 'Loader.php');
 
         $container = Container::getDefault()
             ->bindSingleton('config', '\Ocara\Core\Config')
