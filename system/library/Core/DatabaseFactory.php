@@ -35,7 +35,7 @@ class DatabaseFactory extends Base
 			$connectName = self::$defaultServer;
 		}
 
-		$database = self::_getDatabase($connectName, $master);
+		$database = self::getDatabase($connectName, $master);
 		if (is_object($database) && $database instanceof DatabaseBase) {
 			return $database;
 		}
@@ -63,7 +63,7 @@ class DatabaseFactory extends Base
      * @return mixed|null
      * @throws Exception
      */
-	private static function _getDatabase($connectName, $master = true)
+	private static function getDatabase($connectName, $master = true)
 	{
 		$object = null;
 		$config = self::getConfig($connectName);
@@ -78,7 +78,7 @@ class DatabaseFactory extends Base
 			$config['type']  = self::getDatabaseType($config);
 			$config['class'] = $config['type'];
 			$config['connect_name'] = $connectName;
-			$object = self::_createDatabase('Databases', $config);
+			$object = self::createDatabase('Databases', $config);
 		}
 
 		return $object;
@@ -127,7 +127,7 @@ class DatabaseFactory extends Base
      * @param array $config
      * @return mixed
      */
-	private static function _createDatabase($dir, $config)
+	private static function createDatabase($dir, $config)
 	{
 		$class = $config['class'] . 'Database';
 		$classFile = $dir . OC_DIR_SEP . $class . '.php';

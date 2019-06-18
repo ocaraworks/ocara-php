@@ -41,10 +41,10 @@ class StaticBuilder extends ServiceBase
 			foreach ($controller as $action => $config) {
 				if (is_array($config)) {
 					foreach ($config as $key => $value) {
-						$this->_genHtml($value, $module, $action, $key, $callback);
+						$this->genHtml($value, $module, $action, $key, $callback);
 					}
 				} elseif (is_string($config)) {
-					$this->_genHtml($config, false, $module, $action, $callback);
+					$this->genHtml($config, false, $module, $action, $callback);
 				}
 			}
 		}
@@ -62,7 +62,7 @@ class StaticBuilder extends ServiceBase
 		foreach ($data as $row) {
 			list($file, $param) = ocService()->staticPath->getStaticFile($module, $controller, $action, $row);
 			$url = ocUrl(array($module, $controller, $action), $param, false, false, false);
-			$this->_createHtml($file, $url);
+			$this->createHtml($file, $url);
 		}
 	}
 	
@@ -74,7 +74,7 @@ class StaticBuilder extends ServiceBase
 	 * @param string  $action
 	 * @param string|array  $callback
 	 */
-	private function _genHtml($params, $module, $controller, $action, $callback)
+	private function genHtml($params, $module, $controller, $action, $callback)
 	{
 		$args = preg_match_all('/{(\w+)}/i', $params, $mt) ? $mt[1] : array();
 		$args = array($module, $controller, $action, $args);
@@ -82,7 +82,7 @@ class StaticBuilder extends ServiceBase
 		$data    = $callback ? call_user_func_array($callback, $args) : null;
 		$pathMap = ocService()->staticPath->getMvcPathMap($module, $controller, $action);
 
-		$this->_genRow($pathMap, $params, $module, $controller, $action, $data);
+		$this->genRow($pathMap, $params, $module, $controller, $action, $data);
 	}
 
 	/**
@@ -94,7 +94,7 @@ class StaticBuilder extends ServiceBase
 	 * @param string $action
 	 * @param array  $data
 	 */
-	private function _genRow($mvcPathMap, $params, $module, $controller, $action, $data)
+	private function genRow($mvcPathMap, $params, $module, $controller, $action, $data)
 	{
 		$route = array($module, $controller, $action);
 
@@ -107,7 +107,7 @@ class StaticBuilder extends ServiceBase
 					list($file, $param) = $paramsPathMap;
 					if ($file = str_ireplace('{p}', $file, $mvcPathMap)) {
 						$url = ocUrl($route, $param, false, false, false);
-						$this->_createHtml($file, $url);
+						$this->createHtml($file, $url);
 					}
 				}
 			}
@@ -115,7 +115,7 @@ class StaticBuilder extends ServiceBase
 			$url  = ocUrl($route, array(), false, false, false);
 			$file = trim(str_ireplace('{p}', OC_EMPTY, $mvcPathMap), OC_DIR_SEP);
 			$file = $file. '.' . ocService()->staticPath->fileType;
-			$this->_createHtml($file, $url);
+			$this->createHtml($file, $url);
 		}
 	}
 
@@ -125,7 +125,7 @@ class StaticBuilder extends ServiceBase
      * @param string $url
      * @return bool|int
      */
-	private function _createHtml($file, $url)
+	private function createHtml($file, $url)
 	{
 		if ($file && $url) {
 			$path = $file ? $this->dir . $file : false;

@@ -95,11 +95,11 @@ class FileLog extends ServiceBase implements LogInterface
 			$this->create($logPath);
 		}
 		
-		$lastLogFile = ocDir($logPath) . $this->_getLastLogFile($logName);
+		$lastLogFile = ocDir($logPath) . $this->getLastLogFile($logName);
 		$fileInfo 	 = ocService()->file->fileInfo($lastLogFile);
 
 		if ($fileInfo && $fileInfo['size'] > $this->maxLogSize * 1024 * 1024) {
-			$lastLogFile = $this->_createLogFile($logName);
+			$lastLogFile = $this->createLogFile($logName);
 		}
 
 		return ocService()->file->appendFile($lastLogFile, "{$content}" . PHP_EOL);
@@ -116,7 +116,7 @@ class FileLog extends ServiceBase implements LogInterface
 			return ocRead($this->sysLogPath);
 		}
 		
-		$file = $this->logRoot . ocDir($logName) . $this->_getLastLogFile($logName);
+		$file = $this->logRoot . ocDir($logName) . $this->getLastLogFile($logName);
 		
 		return ocFileExists($file) ? ocRead($file) : null;
 	}
@@ -154,7 +154,7 @@ class FileLog extends ServiceBase implements LogInterface
 			return ocWrite($this->sysLogPath, OC_EMPTY);
 		}
 		
-		$path = $this->logRoot . ocDir($logName) . $this->_getLastLogFile($logName);
+		$path = $this->logRoot . ocDir($logName) . $this->getLastLogFile($logName);
 		$path = ocFileExists($path, true);
 
 		if ($path) {
@@ -170,7 +170,7 @@ class FileLog extends ServiceBase implements LogInterface
      * @param bool $create
      * @return bool|mixed|string
      */
-	protected function _getLastLogFile($logName, $create = true)
+	protected function getLastLogFile($logName, $create = true)
 	{
 		$logPath = $this->logRoot . ocDir($logName);
 		
@@ -196,7 +196,7 @@ class FileLog extends ServiceBase implements LogInterface
 			return $logName . '_' . $max . '.txt';
 		}
 		
-		return $create ? ocBasename($this->_createLogFile($logName)) : false;
+		return $create ? ocBasename($this->createLogFile($logName)) : false;
 	}
 
     /**
@@ -204,7 +204,7 @@ class FileLog extends ServiceBase implements LogInterface
      * @param string $logName
      * @return mixed
      */
-	protected function _createLogFile($logName)
+	protected function createLogFile($logName)
 	{
 		$path = $this->logRoot . ocDir($logName);
 		return ocService()->file->createFile($path . $logName . '_' . time() . '.txt');

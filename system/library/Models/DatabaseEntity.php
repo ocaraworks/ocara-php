@@ -29,9 +29,9 @@ abstract class DatabaseEntity extends DatabaseModel
      */
     public function data(array $data = array())
     {
-        $data = $this->_getSubmitData($data);
+        $data = $this->getSubmitData($data);
         if ($data) {
-            $this->_setProperty($this->filterData($data));
+            $this->setProperty($this->filterData($data));
         }
 
         return $this;
@@ -43,7 +43,7 @@ abstract class DatabaseEntity extends DatabaseModel
     public function clearData()
     {
         $this->selected = array();
-        $this->_clearProperties($this->getFieldsName());
+        $this->clearProperties($this->getFieldsName());
         return $this;
     }
 
@@ -137,7 +137,7 @@ abstract class DatabaseEntity extends DatabaseModel
     public static function select($values, $options = null, $debug = false)
     {
         $model = new static();
-        $condition = $model->_getPrimaryCondition($values);
+        $condition = $model->getPrimaryCondition($values);
 
         return $model->asEntity(self::getClass())->findRow($condition, $options, $debug);
     }
@@ -158,7 +158,7 @@ abstract class DatabaseEntity extends DatabaseModel
         $this->fire(self::EVENT_BEFORE_CREATE);
 
         if ($data) {
-            $this->_setProperty($data);
+            $this->setProperty($data);
         }
 
         $result = parent::create($this->toArray(), $debug);
@@ -169,8 +169,8 @@ abstract class DatabaseEntity extends DatabaseModel
                 $autoIncrementField = $this->autoIncrementField;
                 $this->$autoIncrementField = $this->insertId;
             }
-            $this->select($this->_mapPrimaryData($this->toArray()));
-            $this->_relateSave();
+            $this->select($this->mapPrimaryData($this->toArray()));
+            $this->relateSave();
             $this->fire(self::EVENT_AFTER_CREATE);
         }
 
@@ -210,7 +210,7 @@ abstract class DatabaseEntity extends DatabaseModel
         $result = parent::update($data, $debug);
 
         if (!$debug) {
-            $this->_relateSave();
+            $this->relateSave();
             $this->fire(self::EVENT_AFTER_UPDATE);
         }
 
@@ -267,7 +267,7 @@ abstract class DatabaseEntity extends DatabaseModel
      * @param $data
      * @return array
      */
-    protected function _mapPrimaryData($data)
+    protected function mapPrimaryData($data)
     {
         $result = array();
         foreach ($this->primaries as $field) {
@@ -282,7 +282,7 @@ abstract class DatabaseEntity extends DatabaseModel
      * @return array
      * @throws Exception
      */
-    protected function _getPrimaryCondition($condition)
+    protected function getPrimaryCondition($condition)
     {
         if (empty($this->primaries)) {
             ocService()->error->show('no_primary');
@@ -316,9 +316,9 @@ abstract class DatabaseEntity extends DatabaseModel
      * @param $alias
      * @return null|ObjectRecords
      */
-    protected function _relateFind($alias)
+    protected function relateFind($alias)
     {
-        $config = $this->_getRelateConfig($alias);
+        $config = $this->getRelateConfig($alias);
         $result = null;
 
         if ($config) {
@@ -342,14 +342,14 @@ abstract class DatabaseEntity extends DatabaseModel
      * @return bool
      * @throws Exception
      */
-    protected function _relateSave()
+    protected function relateSave()
     {
         if (!$this->relations) {
             return true;
         }
 
         foreach ($this->relations as $key => $object) {
-            $config = $this->_getRelateConfig($key);
+            $config = $this->getRelateConfig($key);
             if ($config && isset($this->$config['primaryKey'])) {
                 $data = array();
                 if ($config['joinType'] == 'hasOne' && is_object($object)) {
@@ -387,7 +387,7 @@ abstract class DatabaseEntity extends DatabaseModel
     {
         if (isset(self::$_config[$this->tag]['RELATIONS'][$key])) {
             if (!isset($this->relations[$key])) {
-                $this->relations[$key] = $this->_relateFind($key);
+                $this->relations[$key] = $this->relateFind($key);
             }
             return $this->relations[$key];
         }

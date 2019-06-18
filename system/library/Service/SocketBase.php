@@ -33,7 +33,7 @@ class SocketBase extends ServiceBase
      * @param string $connId
      * @throws Exception
      */
-	protected function _showError($errorType, $connId = 'conn')
+	protected function showSocketError($errorType, $connId = 'conn')
 	{
 		$this->error = $connId === null ? socket_last_error() : socket_last_error($this->$connId);
 		

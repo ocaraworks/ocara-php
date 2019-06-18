@@ -293,7 +293,7 @@ class ViewBase extends Base
      * @return string
      * @throws Exception
      */
-    public function _readPart($part, $template = null, $show = true)
+    public function readPart($part, $template = null, $show = true)
     {
         $part = ocForceArray($part);
         $html = array();
@@ -326,7 +326,7 @@ class ViewBase extends Base
      */
     public function showPart($part, $template = null)
     {
-        $this->_readPart($part, $template);
+        $this->readPart($part, $template);
     }
 
     /**
@@ -338,7 +338,7 @@ class ViewBase extends Base
      */
     public function getPart($part, $template = null)
     {
-        return $this->_readPart($part, $template, false);
+        return $this->readPart($part, $template, false);
     }
 
     /**
@@ -383,7 +383,7 @@ class ViewBase extends Base
             $type = end($array);
             if (in_array(strtolower(trim($type)), array('css', 'js'))) {
                 $url = $this->getUrl($type, $path, $template);
-                return $this->_wrapHtml($type, $url, $cache);
+                return $this->wrapHtml($type, $url, $cache);
             }
         }
 
@@ -638,7 +638,7 @@ class ViewBase extends Base
      * @param bool $cache
      * @return string
      */
-    private function _wrapHtml($type, $value, $cache = true)
+    private function wrapHtml($type, $value, $cache = true)
     {
         $cache = empty($cache) || ($cache && empty($this->useCache)) ? false : true;
 

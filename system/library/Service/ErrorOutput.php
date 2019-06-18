@@ -38,7 +38,7 @@ class ErrorOutput extends ServiceBase
             $error['line'] = isset($lastTrace['line']) ? $lastTrace['line'] : $error['line'];
         }
 
-        $error['file']  = trim(ocCommPath(self::_stripRootPath($error['file'])), OC_DIR_SEP);
+        $error['file']  = trim(ocCommPath(self::stripRootPath($error['file'])), OC_DIR_SEP);
         $error['trace'] = nl2br(ocCommPath($error['trace']));
 
         if (PHP_SAPI == 'cli') {
@@ -78,7 +78,7 @@ class ErrorOutput extends ServiceBase
      * @param $errorFile
      * @return mixed
      */
-    private static function _stripRootPath($errorFile)
+    protected static function stripRootPath($errorFile)
     {
         $filePath = ocCommPath(realpath($errorFile));
         $rootPath = ocCommPath(realpath(OC_ROOT));
