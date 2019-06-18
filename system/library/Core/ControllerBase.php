@@ -449,7 +449,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      * 自动进行参数验证
      * @param array $data
      */
-    public function validate(array $data = [])
+    public function validate(array $data = array())
     {
         $data = $data ? : $this->getSubmitData();
         $this->validator->validate($data);

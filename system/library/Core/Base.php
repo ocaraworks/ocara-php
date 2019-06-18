@@ -46,6 +46,7 @@ abstract class Base extends Basis
 	public function __call($name, $params)
 	{
 		$obj = $this;
+
 		while (isset($obj->plugin) && is_object($obj->plugin)) {
 			if (method_exists($obj->plugin, $name)) {
 				return call_user_func_array(array(&$obj->plugin, $name), $params);
