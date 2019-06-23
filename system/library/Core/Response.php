@@ -48,7 +48,7 @@ class Response extends Base
 
 			foreach ($data as $key => $header) {
 				if (is_string($key)) {
-					$method = '_get' . ucfirst($key);
+					$method = 'get' . ucfirst($key);
 					if (method_exists($this, $method)) {
 						$data[$key] = $this->$method();
 					} else {
@@ -129,7 +129,7 @@ class Response extends Base
 	public function getOption($name)
 	{
 		$this->prepareHeaders();
-		return $this->_getOption($name);
+		return $this->getHeaderOption($name);
 	}
 
     /**
@@ -182,7 +182,6 @@ class Response extends Base
      * 跳转到另一个控制器动作
      * @param $route
      * @param array $params
-     * @throws Exception
      */
     public function jump($route, array $params = array())
     {
@@ -214,7 +213,7 @@ class Response extends Base
 	public function prepareHeaders()
 	{
 		$data = $this->headers;
-		if ($statusCode = $this->_getOption('statusCode')) {
+		if ($statusCode = $this->getHeaderOption('statusCode')) {
 			$data['statusCode'] = $statusCode;
 		}
 
@@ -226,7 +225,7 @@ class Response extends Base
 			}
 		}
 
-		$data['contentType'] = $this->_getOption('contentType');
+		$data['contentType'] = $this->getHeaderOption('contentType');
 
 		return $data;
 	}
@@ -236,7 +235,7 @@ class Response extends Base
 	 * @param $name
 	 * @return null
 	 */
-	public function _getOption($name)
+	public function getHeaderOption($name)
 	{
 		if (isset($this->headers[$name])) {
 			return $this->headers[$name];
@@ -248,7 +247,7 @@ class Response extends Base
 	/**
 	 * 返回状态码
 	 */
-	public function _getStatusCode()
+	public function getStatusCode()
 	{
 		$result = null;
 
@@ -265,7 +264,7 @@ class Response extends Base
 	/**
 	 * 设置返回内容类型
 	 */
-	public function _getContentType()
+	public function getContentType()
 	{
 		$result = null;
 

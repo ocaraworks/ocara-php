@@ -43,7 +43,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
      */
 	public function connect()
 	{
-		$this->_connect();
+		$this->baseConnect();
 
 		if (empty($this->connection)) {
 			$this->errNo = $this->instance->connect_errno;
@@ -70,7 +70,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
      * 使用mysqli类连接
      * @throws Exception
      */
-	protected function _connect()
+	protected function baseConnect()
 	{
 		$service = ocService();
 		$host = ($this->pConnect ? 'p:' : OC_EMPTY) . $this->config['host'];
@@ -135,7 +135,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
      */
 	public function wake_up()
 	{
-		$this->_connect();
+		$this->baseConnect();
 	}
 
     /**

@@ -34,7 +34,7 @@ class CacheFactory extends Base
 			$connectName = self::$defaultServer;
 		}
 
-		$object = self::_connect($connectName, $required);
+		$object = self::baseConnect($connectName, $required);
 		if (is_object($object) && $object instanceof CacheBase) {
 			return $object;
 		}
@@ -84,7 +84,7 @@ class CacheFactory extends Base
      * @return mixed
      * @throws Exception
      */
-	private static function _connect($connectName, $required = true)
+	private static function baseConnect($connectName, $required = true)
 	{
 		$config = self::getConfig($connectName);
 		$type = ucfirst(ocConfig(array('CACHE', $connectName, 'type')));

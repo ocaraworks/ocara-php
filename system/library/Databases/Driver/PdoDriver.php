@@ -43,7 +43,7 @@ class PdoDriver extends DriverBase implements DriverInterface
      */
 	public function connect()
 	{
-		$this->_connect();
+		$this->baseConnect();
 		return $this->connection = $this->instance;
 	}
 
@@ -60,7 +60,7 @@ class PdoDriver extends DriverBase implements DriverInterface
      * 连接数据库
      * @throws Exception
      */
-	protected function _connect()
+	protected function baseConnect()
 	{
 		$limitConnect = ocConfig('DATABASE_LIMIT_CONNECT_TIMES', 3);
 
@@ -107,7 +107,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function wake_up()
 	{
-		$this->_connect();
+		$this->baseConnect();
 	}
 
     /**

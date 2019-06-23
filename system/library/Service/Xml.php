@@ -25,6 +25,7 @@ class Xml extends ServiceBase
 	 */
 	public $xmlParser;
 	public $xmlObj;
+	public $xmlPath;
 	public $xmlData;
 	public $encoding;
 
@@ -47,19 +48,19 @@ class Xml extends ServiceBase
 	public function setData($type, $xmlSource)
 	{
 		if ($type == 'file') {
-			if (!$this->_parseXml($xmlSource, 'file')) {
+			if (!$this->parseXml($xmlSource, 'file')) {
 				$this->showError('failed_xml_parse');
 			}
 			if (!pathinfo($xmlSource, PATHINFO_EXTENSION)) {
 				$xmlSource = $xmlSource . '.xml';
 			}
-			$this->xmlPath 	= $xmlSource;
-			$this->xmlObj 	= simplexml_load_file($xmlSource);
-			$this->xmlData 	= ocRead($xmlSource);
+			$this->xmlPath = $xmlSource;
+			$this->xmlObj = simplexml_load_file($xmlSource);
+			$this->xmlData = ocRead($xmlSource);
 		} elseif ($type == 'string') {
-			$this->_loadString($xmlSource);
+			$this->loadString($xmlSource);
 		} elseif ($type == 'array') {
-			$this->_loadArray($xmlSource);
+			$this->loadArray($xmlSource);
 		} else {
 			$this->showError('fault_xml_source');
 		}
@@ -142,9 +143,9 @@ class Xml extends ServiceBase
      * @param $xmlSource
      * @throws Exception
      */
-	protected function _loadString($xmlSource)
+	protected function loadString($xmlSource)
 	{
-		if (!($this->_parseXml($xmlSource, 'string'))) {
+		if (!($this->parseXml($xmlSource, 'string'))) {
 			$this->showError('failed_xml_parse');
 		}
 		
@@ -157,7 +158,7 @@ class Xml extends ServiceBase
      * @param array $xmlSource
      * @throws Exception
      */
-	protected function _loadArray(array $xmlSource)
+	protected function loadArray(array $xmlSource)
 	{
 		$root = ocGet(0, $xmlSource);
 
@@ -171,11 +172,11 @@ class Xml extends ServiceBase
 			. PHP_EOL;
 		
 		if (is_array($list = ocGet(1, $xmlSource))) {
-			$xmlData .= $this->_makeXml($list);
+			$xmlData .= $this->makeXml($list);
 		}
 		
 		$xmlData .= "</{$root}>";
-		$this->_loadString($xmlData);
+		$this->loadString($xmlData);
 	}
 
     /**
@@ -185,7 +186,7 @@ class Xml extends ServiceBase
      * @return bool|int
      * @throws Exception
      */
-	protected function _parseXml($xmlSource, $type = 'file')
+	protected function parseXml($xmlSource, $type = 'file')
 	{
 		$xmlParser = xml_parser_create($this->encoding);
 		$result = false;
@@ -215,14 +216,14 @@ class Xml extends ServiceBase
      * @param array $xmlArray
      * @return string|null
      */
-	protected function _makeXml(array $xmlArray)
+	protected function makeXml(array $xmlArray)
 	{
 		$xmlStr = null;
 		
 		foreach ($xmlArray as $xmlKey => $xmlVal) {
 			$xmlStr .= "<{$xmlKey}>";
 			if (is_array($xmlVal) && $xmlVal) {
-				$xmlStr .= "\r\n\t" . $this->_makeXml($xmlVal, $xmlStr);
+				$xmlStr .= "\r\n\t" . $this->makeXml($xmlVal, $xmlStr);
 			} else {
 				$xmlStr .= "{$xmlVal}";
 			}

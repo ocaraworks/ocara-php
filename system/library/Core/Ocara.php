@@ -11,13 +11,6 @@ namespace Ocara\Core;
 use Ocara\Core\Container;
 use Ocara\Exceptions\Exception;
 
-//根目录
-defined('OC_PATH') OR define(
-    'OC_PATH', str_replace("\\", DIRECTORY_SEPARATOR, realpath(dirname(dirname(dirname(__DIR__))))) . DIRECTORY_SEPARATOR
-);
-
-defined('OC_EXECUTE_START_TIME') OR define('OC_EXECUTE_START_TIME', microtime(true));
-
 final class Ocara
 {
 	/**
@@ -37,7 +30,7 @@ final class Ocara
 	{
 		if (self::$instance === null) {
 			self::$instance = new self();
-			self::register();
+			self::initialize();
 		}
 		return self::$instance;
 	}
@@ -45,18 +38,21 @@ final class Ocara
 	/**
 	 * 服务注册
 	 */
-	public static function register()
+	public static function initialize()
 	{
-	    ocImport(array(
-            OC_PATH . 'system/functions/utility.php',
-            OC_PATH . 'system/functions/common.php',
-            OC_PATH . 'system/const/basic.php',
-            OC_CORE . 'Basic.php',
-            OC_CORE . 'Base.php',
-            OC_CORE . 'Container.php',
-            OC_CORE . 'Config.php',
-            OC_CORE . 'Loader.php',
-        ));
+        $path = realpath(dirname(dirname(dirname(__DIR__))));
+
+        defined('OC_PATH') OR define('OC_PATH', str_replace("\\", '/', $path) . '/');
+        defined('OC_EXECUTE_START_TIME') OR define('OC_EXECUTE_START_TIME', microtime(true));
+
+        require_once (OC_PATH . 'system/functions/utility.php');
+        require_once (OC_PATH . 'system/functions/common.php');
+        require_once (OC_PATH . 'system/const/basic.php');
+        require_once (OC_CORE . 'Basis.php');
+        require_once (OC_CORE . 'Base.php');
+        require_once (OC_CORE . 'Container.php');
+        require_once (OC_CORE . 'Config.php');
+        require_once (OC_CORE . 'Loader.php');
 
         $container = Container::getDefault()
             ->bindSingleton('config', '\Ocara\Core\Config')
@@ -67,12 +63,11 @@ final class Ocara
 
         $config = $container->config;
         $loader = $container->loader;
-        $exceptionHandler = $container->exceptionHandler;
 
         spl_autoload_register(array($loader, 'autoload'));
         @ini_set('register_globals', 'Off');
         register_shutdown_function("ocShutdownHandler");
-        set_exception_handler(array($exceptionHandler, 'exceptionHandler'));
+        set_exception_handler(array($container->exceptionHandler, 'exceptionHandler'));
 	}
 
 	/**

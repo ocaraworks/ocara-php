@@ -60,7 +60,7 @@ class Container extends Basis
             $source = $name;
         }
 
-        $matter = $this->_getMatterArray($source, $params, $deps);
+        $matter = $this->getMatterArray($source, $params, $deps);
         if ($matter) {
             $this->bindSingletons[$name] = $matter;
         }
@@ -88,7 +88,7 @@ class Container extends Basis
             $source = $name;
         }
 
-        $matter = $this->_getMatterArray($source, $params, $deps);
+        $matter = $this->getMatterArray($source, $params, $deps);
         if ($matter) {
             $this->binds[$name] = $matter;
         }
@@ -137,7 +137,7 @@ class Container extends Basis
      * @param $deps
      * @return array
      */
-    protected function _getMatterArray($source, $params, $deps)
+    protected function getMatterArray($source, $params, $deps)
     {
         $matter = array(
             $source,
@@ -305,7 +305,7 @@ class Container extends Basis
 
         if (empty($matter)) return null;
 
-        $instance = $this->_getMatterInstance($matter, $params, $deps);
+        $instance = $this->getMatterInstance($matter, $params, $deps);
         if ($instance) {
             foreach ($deps as $name => $object) {
                 $method = 'set' . ucfirst($name);
@@ -328,7 +328,7 @@ class Container extends Basis
      * @throws Exception
      * @throws ReflectionException
      */
-    protected function _getMatterInstance($matter, $params, $deps)
+    protected function getMatterInstance($matter, $params, $deps)
     {
         list($source, $inputParams, $inputDeps) = $matter;
         $params = array_merge($inputParams, $params);

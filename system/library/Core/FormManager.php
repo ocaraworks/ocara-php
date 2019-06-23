@@ -15,8 +15,6 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class FormManager extends ServiceProvider
 {
-    const EVENT_CHECK_ERROR = 'checkError';
-
     protected $route;
     protected $form;
     protected $forms = array();
@@ -190,23 +188,4 @@ class FormManager extends ServiceProvider
 
         return $this->route;
     }
-
-	/**
-	 * 显示表单检测错误
-	 * @param string $errorType
-	 * @param array $params
-	 * @param array $data
-	 */
-	private function _showValidateError($errorType, $params = array(), $data = array())
-	{
-		$error['errorType'] = $errorType;
-		$error['errorInfo'] = ocService()->lang->get($errorType, $params);
-		$error['errorData'] = $data;
-
-		if ($this->event(self::EVENT_CHECK_ERROR)->get()) {
-			$this->fire(self::EVENT_CHECK_ERROR, array($error, $this->getRoute()));
-		}
-
-        ocService()->error->show($error['errorInfo']);
-	}
 }

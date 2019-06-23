@@ -10,6 +10,7 @@ namespace Ocara\Core;
 
 use \ErrorException;
 use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -45,7 +46,7 @@ class ExceptionHandler extends Base
      * @param $line
      * @param string $context
      * @return bool
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function errorHandler($level, $message, $file, $line, $context = '')
     {
@@ -83,16 +84,16 @@ class ExceptionHandler extends Base
 
     /**
      * 输出错误
-     * @param $object
-     * @param $event
      * @param $exception
-     * @throws \Ocara\Exceptions\Exception
+     * @param $event
+     * @param $object
+     * @throws Exception
      */
     public function output($exception, $event, $object)
     {
         $error = ocGetExceptionData($exception);
         if (ocService('request', true)->isAjax()) {
-            $this->_ajaxError($error);
+            $this->ajaxError($error);
         } else {
             $defaultOutput = ocConfig(array('SYSTEM_SINGLETON_SERVICE_CLASS', 'errorOutput'));
             ocService('errorOutput', $defaultOutput)->display($error);
@@ -104,7 +105,6 @@ class ExceptionHandler extends Base
      * @param $exception
      * @param $event
      * @param $object
-     * @throws \Ocara\Exceptions\Exception
      */
     public function report($exception, $event, $object)
     {
@@ -121,7 +121,7 @@ class ExceptionHandler extends Base
      * Ajax处理
      * @param $error
      */
-    protected function _ajaxError($error)
+    protected function ajaxError($error)
     {
         $message = array();
         $message['code'] = $error['code'];

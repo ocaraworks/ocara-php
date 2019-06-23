@@ -28,7 +28,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function __construct(array $data = array(), Container $container = null)
     {
-        $this->_setProperty($data);
+        $this->setProperty($data);
         $this->setContainer($container ? : new Container());
         $this->register();
         $this->init();

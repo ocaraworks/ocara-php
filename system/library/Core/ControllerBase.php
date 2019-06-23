@@ -192,7 +192,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
         }
 
         if ($actionMethod == '__action') {
-            $this->_doClassAction();
+            $this->doClassAction();
         } else {
             $this->$actionMethod();
             $this->render();
@@ -204,7 +204,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
     /**
      * 执行动作类实例
      */
-	protected function _doClassAction()
+	protected function doClassAction()
     {
         if (method_exists($this, '__action')) {
             $this->__action();
@@ -449,7 +449,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      * 自动进行参数验证
      * @param array $data
      */
-    public function validate(array $data = [])
+    public function validate(array $data = array())
     {
         $data = $data ? : $this->getSubmitData();
         $this->validator->validate($data);

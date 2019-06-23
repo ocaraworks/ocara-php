@@ -61,7 +61,7 @@ class FileCache extends ServiceBase
 		} elseif (is_array($this->data)) {
 			if ($this->format) {
 				$content = "array(\r\n";
-				$content .= $this->_writeArray($this->data);
+				$content .= $this->writeArray($this->data);
 				$content .= ")";
 			} else {
 				$content = var_export($this->data, true);
@@ -102,7 +102,7 @@ class FileCache extends ServiceBase
      * @param int $tNum
      * @return string
      */
-	protected function _writeArray($array, $tNum = 0)
+	protected function writeArray($array, $tNum = 0)
 	{
 		$tNum = $tNum + 1;
 		$tab = str_repeat("\t", $tNum);
@@ -112,13 +112,13 @@ class FileCache extends ServiceBase
 		
 		foreach ($array as $key => $value) {
 			$str .= $tab;
-			if ($this->_isAssoc($array)) {
+			if (ocAssoc($array)) {
 				$str .= "'$key' => ";
 			}
 			if (is_array($value)) {
 				$str .= "array(\r\n";
 				
-				$str .= $this->_writeArray($value, $tNum);
+				$str .= $this->writeArray($value, $tNum);
 				$str .= $tab . ')';
 				if ($index != $lastIndex) {
 					$str .= ',';
@@ -136,17 +136,5 @@ class FileCache extends ServiceBase
 		}
 		
 		return $str;
-	}
-
-    /**
-     * 内部函数-判断是否为关联数组
-     * 如果使用数字型键作关联数组，第一条记录键值必须是1而不是0
-     * 因为通常数字型数组都是从0开始的.
-     * @param $array
-     * @return bool
-     */
-	protected function _isAssoc($array)
-	{
-		return array_keys($array) !== range(0, count($array) - 1);
 	}
 }

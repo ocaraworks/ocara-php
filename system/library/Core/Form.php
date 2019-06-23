@@ -181,7 +181,7 @@ class Form extends Base
      */
 	public function lang($field, $value = null)
 	{
-		$lang = $this->_fieldConfig('lang', $field, $value);
+		$lang = $this->fieldConfig('lang', $field, $value);
 		return empty($lang) ? $field : $lang;
 	}
 
@@ -193,7 +193,7 @@ class Form extends Base
      */
 	public function map($field, $value = null)
 	{
-		return $this->_fieldConfig('map', $field, $value);
+		return $this->fieldConfig('map', $field, $value);
 	}
 
     /**
@@ -203,7 +203,7 @@ class Form extends Base
      * @param null $value
      * @return array|bool|mixed|null
      */
-	protected function _fieldConfig($type, $field, $value = null)
+	protected function fieldConfig($type, $field, $value = null)
 	{
 		$property = '_' . $type;
 		$config = $this->$property;

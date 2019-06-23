@@ -31,7 +31,7 @@ class Html extends Base
 			$attributes['checked'] = 'checked';
 		} 
 		
-		return self::_createHtmlTag('input', $name, $attributes, false);
+		return self::createHtmlTag('input', $name, $attributes, false);
 	}
 
     /**
@@ -102,7 +102,7 @@ class Html extends Base
 	public static function button($name, array $attributes = null)
 	{
         $attributes = self::parseAttributes($attributes);
-		return self::_createHtmlTag('button', $name, $attributes, false);
+		return self::createHtmlTag('button', $name, $attributes, false);
 	}
 
     /**
@@ -222,7 +222,7 @@ class Html extends Base
 		$content    = $option ? : true;
 		$attributes = $attributes && is_array($attributes) ? $attributes : array();
 		$attributes = self::parseAttributes($attributes);
-		$result     = self::_createHtmlTag('select', $name, $attributes, $content);
+		$result     = self::createHtmlTag('select', $name, $attributes, $content);
 
 		return $result;
 	}
@@ -252,7 +252,7 @@ class Html extends Base
 	{
 		if($nullText) {
 			$attrs = array('value'=> false);
-			$nullText = self::_createHtmlTag('option', false, $attrs, $nullText ? $nullText : true);
+			$nullText = self::createHtmlTag('option', false, $attrs, $nullText ? $nullText : true);
 		}
 
 		if (is_array($options)) {
@@ -292,7 +292,7 @@ class Html extends Base
 				$attrs['selected'] = 'selected';
 			}
 			$str = $str .
-				self::_createHtmlTag(
+				self::createHtmlTag(
 					'option', false, $attrs, $val ? $val : true
 				);
 		}
@@ -323,7 +323,7 @@ class Html extends Base
 		}
 
 		$content = $value ? : true;
-		$result  = self::_createHtmlTag('textarea', $name, $attributes, $content);
+		$result  = self::createHtmlTag('textarea', $name, $attributes, $content);
 
 		return $result;
 	}
@@ -336,7 +336,7 @@ class Html extends Base
      * @param bool $content
      * @return string
      */
-	private static function _createHtmlTag($type, $name, array $attributes = array(), $content = true)
+	protected static function createHtmlTag($type, $name, array $attributes = array(), $content = true)
 	{
 		$type = strtolower($type);
 
@@ -369,7 +369,7 @@ class Html extends Base
      */
 	public static function createElement($type, array $attributes = array(), $content = true)
 	{
-		return self::_createHtmlTag($type, false, $attributes, $content);
+		return self::createHtmlTag($type, false, $attributes, $content);
 	}
 
 	/**

@@ -33,10 +33,10 @@ class SocketServer extends SocketBase
 			$this->host = gethostbyname($host);
 			$this->port = $port;
 			if (!@socket_bind($this->socket, $this->host, $this->port)) {
-				$this->_showError('bind', 'conn');
+				$this->showSocketError('bind', 'conn');
 			}
 			if (!@socket_listen($this->socket)) {
-				$this->_showError('listen', 'conn');
+				$this->showSocketError('listen', 'conn');
 			}
 			return $this->socket;
 		}
@@ -56,7 +56,7 @@ class SocketServer extends SocketBase
 		$this->conn = @socket_accept($this->socket);
 	
 		if ($this->conn === false) {
-			$this->_showError('accept', null);
+			$this->showSocketError('accept', null);
 		}
 		
 		return $this->conn;
@@ -78,7 +78,7 @@ class SocketServer extends SocketBase
 		$result = @socket_read($this->conn, $length, $type);
 		
 		if ($result === false) {
-			$this->_showError('read');
+			$this->showSocketError('read');
 		}
 		
 		return $result;
@@ -101,7 +101,7 @@ class SocketServer extends SocketBase
 		$result = @socket_write($this->conn, $content, $length);
 		
 		if ($result === false) {
-			$this->_showError('write');
+			$this->showSocketError('write');
 		}
 		
 		return $result;

@@ -38,7 +38,7 @@ class SocketClient extends SocketBase
 		if (!$this->conn) {
 			$errorCode = socket_last_error();
 			$errorMsg = socket_strerror($errorCode);
-			$this->_showError('socket_error', array($errorCode, $errorMsg));
+			$this->showSocketError('socket_error', array($errorCode, $errorMsg));
 		}
 
 		return $this->socket;
@@ -60,7 +60,7 @@ class SocketClient extends SocketBase
 		$result = @socket_read($this->socket, $length, $type);
 		
 		if ($result === false) {
-			$this->_showError('read');
+			$this->showSocketError('read');
 		}
 		
 		return $result;
@@ -83,7 +83,7 @@ class SocketClient extends SocketBase
 		$result = @socket_write($this->socket, $content, $length);
 		
 		if ($result === false) {
-			$this->_showError('write');
+			$this->showSocketError('write');
 		}
 		
 		return $result;

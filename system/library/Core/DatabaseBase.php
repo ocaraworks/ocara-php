@@ -241,7 +241,7 @@ class DatabaseBase extends Sql
             $result = null;
 			if ($this->prepared && $params) {
 				$this->plugin->prepare_sql($sql);
-				$this->_bindParams($params);
+				$this->bindParams($params);
 				$result = $this->plugin->execute_sql();
 			} else {
 				$result = $this->plugin->query_sql($sql);
@@ -312,8 +312,8 @@ class DatabaseBase extends Sql
      */
     public function query($sqlData, $debug = false, $count = false, $unions = array(), $dataType = null)
     {
-        $sqlData = $this->_formatSqlData($sqlData);
-        $result = $this->_checkDebug($debug, $sqlData);
+        $sqlData = $this->formatSqlData($sqlData);
+        $result = $this->checkDebug($debug, $sqlData);
 
         if (!$result) {
             $this->executeQuery($sqlData, $count, $unions);
@@ -335,8 +335,8 @@ class DatabaseBase extends Sql
      */
     public function queryRow($sqlData, $debug = false, $count = false, $unions = array(), $dataType = null)
     {
-        $sqlData = $this->_formatSqlData($sqlData);
-        $result = $this->_checkDebug($debug, $sqlData);
+        $sqlData = $this->formatSqlData($sqlData);
+        $result = $this->checkDebug($debug, $sqlData);
 
         if (!$result) {
             $this->executeQuery($sqlData, $count, $unions);
@@ -386,7 +386,7 @@ class DatabaseBase extends Sql
      * @param $sqlData
      * @return array|string
      */
-    protected function _formatSqlData($sqlData)
+    protected function formatSqlData($sqlData)
     {
         if (is_string($sqlData)) {
             $sqlData = array($sqlData, array());
@@ -474,7 +474,7 @@ class DatabaseBase extends Sql
 		$table = $this->getTableFullname($table);
 		$sqlData = $this->getInsertSql($table, $data);
 
-        $result = $this->_checkDebug($debug, $sqlData);
+        $result = $this->checkDebug($debug, $sqlData);
         if (!$result) {
             $result = $data ? $this->execute($sqlData) : false;
             $result = $result ? $this->getInsertId() : false;
@@ -502,7 +502,7 @@ class DatabaseBase extends Sql
 		$condition = $this->parseCondition($condition);
 		$sqlData = $this->getUpdateSql($table, $data, $condition);
 
-        $result = $this->_checkDebug($debug, $sqlData);
+        $result = $this->checkDebug($debug, $sqlData);
         if (!$result) {
             $result = $data ? $this->execute($sqlData) : false;
         }
@@ -524,7 +524,7 @@ class DatabaseBase extends Sql
 		$condition = $this->parseCondition($condition);
 		$sqlData = $this->getDeleteSql($table, $condition);
 
-        $result = $this->_checkDebug($debug, $sqlData);
+        $result = $this->checkDebug($debug, $sqlData);
         if (!$result) {
             $result = $this->execute($sqlData);
         }
@@ -691,7 +691,7 @@ class DatabaseBase extends Sql
 	 * 绑定参数
 	 * @param array $params
 	 */
-	protected function _bindParams(array $params)
+	protected function bindParams(array $params)
 	{
 		$types = OC_EMPTY;
 		$data = array();
@@ -820,7 +820,7 @@ class DatabaseBase extends Sql
 	 * @param array $sqlData
 	 * @return array|bool
 	 */
-	private function _checkDebug($debug, $sqlData)
+	private function checkDebug($debug, $sqlData)
 	{
 		if ($debug) {
 			if ($debug === self::DEBUG_RETURN) {

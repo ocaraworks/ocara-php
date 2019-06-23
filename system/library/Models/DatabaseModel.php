@@ -88,8 +88,8 @@ abstract class DatabaseModel extends ModelBase
 		$this->alias = $this->alias ? $this->alias : 'a';
 		$this->tableName = empty($this->table) ? lcfirst(self::getClassName()) : $this->table;
 
-		$this->_join(false, $this->tag, $this->alias);
-		self::loadConfig();
+		$this->setJoin(false, $this->tag, $this->alias);
+		$this->loadConfig();
 
 		if ($this->primary) {
 			$this->primaries = explode(',', $this->primary);
@@ -171,8 +171,8 @@ abstract class DatabaseModel extends ModelBase
                 $this->relateShardingInfo[$relationName] = $data;
             }
         } else {
-            if (method_exists($this, '_sharding')) {
-                $this->_sharding($data);
+            if (method_exists($this, '__sharding')) {
+                $this->__sharding($data);
             }
         }
 
@@ -182,12 +182,10 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 加载配置文件
      */
-	public static function loadConfig()
+	public function loadConfig()
 	{
-	    $class = self::getClass();
-		if (empty(self::$config[$class])) {
-		    $model = new static();
-			self::$config[$class] = $model->getModelConfig();
+		if (empty(self::$config[$this->tag])) {
+			self::$config[$this->tag] = $this->getModelConfig();
 		}
 	}
 
@@ -257,10 +255,10 @@ abstract class DatabaseModel extends ModelBase
      * @param string $field
      * @return array|bool|mixed|null
      */
-	public static function getConfig($key = null, $field = null)
+	public function getConfig($key = null, $field = null)
 	{
-        self::loadConfig();
-        $tag = self::getClass();
+        $this->loadConfig();
+        $tag = $this->tag;
 
 		if (isset($key)) {
 			if ($field) {
@@ -523,7 +521,7 @@ abstract class DatabaseModel extends ModelBase
 	public function clearSql()
 	{
 		$this->sql = array();
-		$this->_join(false, $this->tableName, $this->alias);
+		$this->setJoin(false, $this->tableName, $this->alias);
 		$this->plugin = $this->master;
 		return $this;
 	}
@@ -568,7 +566,7 @@ abstract class DatabaseModel extends ModelBase
      * @return bool
      * @throws Exception
      */
-    protected function _save($data, $condition, $debug = false)
+    protected function baseSave($data, $condition, $debug = false)
     {
         $data = $this->filterData($data);
         if (empty($data)) {
@@ -630,10 +628,10 @@ abstract class DatabaseModel extends ModelBase
 		$this->connect();
 
         if (empty($data)) {
-            $data = $this->_getSubmitData($data);
+            $data = $this->getSubmitData($data);
         }
 
-        $result = $this->_save($data, false, $debug);
+        $result = $this->baseSave($data, false, $debug);
 		return $result;
 	}
 
@@ -646,16 +644,16 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function update(array $data = array(), $debug = false)
 	{
-        $condition = $this->_getCondition();
+        $condition = $this->getCondition();
 		if (empty($condition)) {
 		    ocService()->error->show('need_condition');
 		}
 
         if (empty($data)) {
-            $data = $this->_getSubmitData($data);
+            $data = $this->getSubmitData($data);
         }
 
-		$result = $this->_save($data, $condition, $debug);
+		$result = $this->baseSave($data, $condition, $debug);
 		return $result;
 	}
 
@@ -665,7 +663,7 @@ abstract class DatabaseModel extends ModelBase
      * @return mixed
      * @throws Exception
      */
-	protected function _getSubmitData($data)
+	protected function getSubmitData($data)
 	{
 		if (empty($data)) {
 			$data = ocService()->request->getPost();
@@ -685,7 +683,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function delete($debug = false)
 	{
-		$condition = $this->_getCondition();
+		$condition = $this->getCondition();
 		if (empty($condition)) {
 			ocService()->error->show('need_condition');
 		}
@@ -707,10 +705,10 @@ abstract class DatabaseModel extends ModelBase
      * @return mixed
      * @throws Exception
      */
-    protected function _getCondition()
+    protected function getCondition()
 	{
 		$this->connect();
-		$condition = $this->_genWhere();
+		$condition = $this->genWhere();
 
 		return $condition;
 	}
@@ -821,7 +819,7 @@ abstract class DatabaseModel extends ModelBase
 
         $dataType = $this->getDataType();
 
-        $result = $this->_find($condition, $option, $debug, true, false, $dataType);
+        $data = $this->baseFind($condition, $options, $debug, true, false, $dataType);
 		if ($debug === DatabaseBase::DEBUG_RETURN) return $data;
 
 		if ($data) {
@@ -842,7 +840,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function findAll($condition = null, $options = null, $debug = false)
 	{
-        $records = $this->_find($condition, $options, $debug, false, false, self::getClass());
+        $records = $this->baseFind($condition, $options, $debug, false, false, self::getClass());
 		return $records;
 	}
 
@@ -964,7 +962,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getAll($condition = null, $option = null, $debug = false)
 	{
-		return $this->_find($condition, $option, $debug, false, false, DriverBase::DATA_TYPE_ARRAY);
+		return $this->baseFind($condition, $option, $debug, false, false, DriverBase::DATA_TYPE_ARRAY);
 	}
 
     /**
@@ -977,7 +975,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getRow($condition = null, $option = null, $debug = false)
 	{
-		return $this->_find($condition, $option, $debug, true, false, DriverBase::DATA_TYPE_ARRAY);
+		return $this->baseFind($condition, $option, $debug, true, false, DriverBase::DATA_TYPE_ARRAY);
 	}
 
     /**
@@ -1015,7 +1013,7 @@ abstract class DatabaseModel extends ModelBase
 			$queryRow = false;
 		}
 
-		$result = $this->_find(false, false, $debug, $queryRow, true, DriverBase::DATA_TYPE_ARRAY);
+		$result = $this->baseFind(false, false, $debug, $queryRow, true, DriverBase::DATA_TYPE_ARRAY);
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
@@ -1073,10 +1071,10 @@ abstract class DatabaseModel extends ModelBase
      * @return array
      * @throws Exception
      */
-    protected function _find($condition, $option, $debug, $queryRow, $count = false, $dataType = null)
+    protected function baseFind($condition, $option, $debug, $queryRow, $count = false, $dataType = null)
 	{
 	    $this->pushSql($condition, $option, $queryRow);
-        $sql = $this->_genSelectSql($count);
+        $sql = $this->genSelectSql($count);
 		$cacheInfo = null;
         $cacheObj = null;
         $encodeSql = null;
@@ -1091,7 +1089,7 @@ abstract class DatabaseModel extends ModelBase
 		if ($ifCache) {
 			$encodeSql = md5($sql);
 			$cacheObj  = CacheFactory::connect($cacheConnect, $cacheRequired);
-			$cacheData = $this->_getCacheData($cacheObj, $encodeSql, $cacheObj, $cacheRequired);
+			$cacheData = $this->getCacheData($cacheObj, $encodeSql, $cacheObj, $cacheRequired);
 			if ($cacheData) return $cacheData;
 		}
 
@@ -1113,7 +1111,7 @@ abstract class DatabaseModel extends ModelBase
 		$this->clearSql();
 
 		if ($ifCache && is_object($cacheObj)) {
-			$this->_saveCacheData($cacheObj, $sql, $encodeSql, $cacheRequired, $result);
+			$this->saveCacheData($cacheObj, $sql, $encodeSql, $cacheRequired, $result);
 		}
 
 		return $result;
@@ -1168,7 +1166,7 @@ abstract class DatabaseModel extends ModelBase
      * @return mixed|null
      * @throws Exception
      */
-	public function _getCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired)
+	public function getCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired)
 	{
 		if (is_object($cacheObj)) {
 			if ($callback = ocConfig(array('EVENT', 'model', 'query', 'get_cache_data'), null)) {
@@ -1194,7 +1192,7 @@ abstract class DatabaseModel extends ModelBase
 	 * @param bool $cacheRequired
 	 * @param array $result
 	 */
-	public function _saveCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired, $result)
+	public function saveCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired, $result)
 	{
 		if ($this->event(self::EVENT_CACHE_QUERY_DATA)->get()) {
 			$params = array($cacheObj, $sql, $result, $cacheRequired);
@@ -1214,7 +1212,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function leftJoin($class, $alias = null, $on = null)
 	{
-		return $this->_join('left', $class, $alias, $on);
+		return $this->setJoin('left', $class, $alias, $on);
 	}
 
     /**
@@ -1227,7 +1225,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function rightJoin($class, $alias = null, $on = null)
 	{
-		return $this->_join('right', $class, $alias, $on);
+		return $this->setJoin('right', $class, $alias, $on);
 	}
 
     /**
@@ -1240,7 +1238,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function innerJoin($class, $alias = null, $on = null)
 	{
-		return $this->_join('inner', $class, $alias, $on);
+		return $this->setJoin('inner', $class, $alias, $on);
 	}
 
 	/**
@@ -1299,7 +1297,7 @@ abstract class DatabaseModel extends ModelBase
 	 * @param string $alias
 	 * @return $this
 	 */
-    protected function _addOn($on, $alias = null)
+    protected function addOn($on, $alias = null)
 	{
 		$this->sql['tables'][$alias]['on'] = $on;
 		return $this;
@@ -1589,9 +1587,8 @@ abstract class DatabaseModel extends ModelBase
      * 设置字段别名转换映射
      * @param $tables
      * @return array
-     * @throws Exception
      */
-	private function _getAliasFields($tables)
+	private function getAliasFields($tables)
 	{
 		$unJoined = count($tables) <= 1;
 		$transforms = array();
@@ -1624,7 +1621,7 @@ abstract class DatabaseModel extends ModelBase
 	 * @param $fields
 	 * @return bool
 	 */
-    protected function _isDefaultFields($fields)
+    protected function isDefaultFields($fields)
 	{
 		$isDefault = false;
 		if (empty($fields)) {
@@ -1651,28 +1648,28 @@ abstract class DatabaseModel extends ModelBase
      * @return mixed
      * @throws Exception
      */
-    protected function _genSelectSql($count = false)
+    protected function genSelectSql($count = false)
 	{
 		$option = ocGet('option', $this->sql, array());
 		$tables = ocGet('tables', $this->sql, array());
 		$unJoined = count($tables) <= 1;
-		$from = $this->_getFromSql($tables, $unJoined);
+		$from = $this->getFromSql($tables, $unJoined);
 
 		if ($count) {
 			$countField = ocGet('countField', $this->sql, null);
 			$isGroup = !empty($option['group']);
 			$fields = $this->plugin->getCountSql($countField, 'total', $isGroup);
 		} else {
-			$aliasFields = $this->_getAliasFields($tables);
-			if (!isset($option['fields']) || $this->_isDefaultFields($option['fields'])) {
+			$aliasFields = $this->getAliasFields($tables);
+			if (!isset($option['fields']) || $this->isDefaultFields($option['fields'])) {
 				$option['fields'][] = array($this->alias, array_keys($this->getFields()));
 			}
-			$fields = $this->_getFieldsSql($option['fields'], $aliasFields, $unJoined);
+			$fields = $this->getFieldsSql($option['fields'], $aliasFields, $unJoined);
 		}
 
-		$option['where'] = $this->_genWhere();
+		$option['where'] = $this->genWhere();
 		if (isset($option['having'])) {
-			$option['having'] = $this->_getWhereSql($option['having']);
+			$option['having'] = $this->getWhereSql($option['having']);
 		}
 
 		if (isset($option['limit'])) {
@@ -1691,13 +1688,13 @@ abstract class DatabaseModel extends ModelBase
      * @return string
      * @throws Exception
      */
-    protected function _genWhere()
+    protected function genWhere()
 	{
 		$option = ocGet('option', $this->sql, array());
 		$where = array();
 
 		if (!empty($option['where'])) {
-			$option['where'] = $this->_getWhereSql($option['where']);
+			$option['where'] = $this->getWhereSql($option['where']);
 			$where[] = array('where' => $option['where'], 'link' => 'AND');
 		}
 
@@ -1717,7 +1714,7 @@ abstract class DatabaseModel extends ModelBase
      * @return array
      * @throws Exception
      */
-    protected function _getWhereSql(array $data)
+    protected function getWhereSql(array $data)
 	{
 		$where = array();
 
@@ -1740,7 +1737,7 @@ abstract class DatabaseModel extends ModelBase
 					$condition = call_user_func_array(array($this->plugin, 'getBetweenSql'), $whereData);
 				}
 			} else {
-				$condition = $this->_getComplexWhere($whereData, $alias);
+				$condition = $this->getComplexWhere($whereData, $alias);
 			}
 			if ($condition) {
 				$where[] = array($linkSign, $condition);
@@ -1760,7 +1757,7 @@ abstract class DatabaseModel extends ModelBase
 	 * @param bool $unJoined
 	 * @return mixed
 	 */
-    protected function _getFieldsSql($fieldsData, $aliasFields, $unJoined)
+    protected function getFieldsSql($fieldsData, $aliasFields, $unJoined)
 	{
 		if (is_string($fieldsData)) {
 			return $fieldsData;
@@ -1788,7 +1785,7 @@ abstract class DatabaseModel extends ModelBase
 	 * @param bool $unJoined
 	 * @return null|string
 	 */
-    protected function _getFromSql($tables, $unJoined)
+    protected function getFromSql($tables, $unJoined)
 	{
 		$from = OC_EMPTY;
 
@@ -1848,7 +1845,7 @@ abstract class DatabaseModel extends ModelBase
      * @param $alias
      * @return null
      */
-    protected function _getComplexWhere(array $data, $alias)
+    protected function getComplexWhere(array $data, $alias)
 	{
 		$cond = null;
 		list($sign, $field, $value) = $data;
@@ -1887,7 +1884,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function union(ModelBase $model)
 	{
-		$this->_union($model, false);
+		$this->baseUnion($model, false);
 		return $this;
 	}
 
@@ -1898,7 +1895,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function unionAll(ModelBase $model)
 	{
-		$this->_union($model, true);
+		$this->baseUnion($model, true);
 		return $this;
 	}
 
@@ -1907,7 +1904,7 @@ abstract class DatabaseModel extends ModelBase
 	 * @param $model
 	 * @param bool $unionAll
 	 */
-	public function _union($model, $unionAll = false)
+	public function baseUnion($model, $unionAll = false)
 	{
 		$this->unions['models'][] = compact('model', 'unionAll');
 	}
@@ -1921,16 +1918,6 @@ abstract class DatabaseModel extends ModelBase
 		return $this->unions;
 	}
 
-	/**
-	 * 获取全表名
-	 * @param string $table
-	 * @return mixed
-	 */
-	protected function _getTable($table)
-	{
-		return empty($table) ? $this->tableName : $table;
-	}
-
     /**
      * 联接查询
      * @param $type
@@ -1940,7 +1927,7 @@ abstract class DatabaseModel extends ModelBase
      * @return $this
      * @throws Exception
      */
-    protected function _join($type, $class, $alias, $on = false)
+    protected function setJoin($type, $class, $alias, $on = false)
 	{
 		$config = array();
 		$this->connect();
@@ -1951,11 +1938,11 @@ abstract class DatabaseModel extends ModelBase
             $class = $this->tag;
 		} else {
             $shardingData = array();
-            $relateShardingInfo = $this->_getRelateShardingInfo($class);
+            $relateShardingInfo = $this->getRelateShardingInfo($class);
             if ($relateShardingInfo) {
                 list($class, $shardingData) = $relateShardingInfo;
             }
-			$config = $this->_getRelateConfig($class);
+			$config = $this->getRelateConfig($class);
 			if ($config) {
 				$alias = $alias ? : $class;
 				$class = $config['class'];
@@ -1972,9 +1959,9 @@ abstract class DatabaseModel extends ModelBase
 		$this->sql['tables'][$alias] = compact('type', 'fullname', 'class', 'config');
 
 		if ($config) {
-			$this->_addOn(null, $alias);
+			$this->addOn(null, $alias);
 		} elseif ($on) {
-			$this->_addOn($on, $alias);
+			$this->addOn($on, $alias);
 		}
 
 		return $this;
@@ -1985,7 +1972,7 @@ abstract class DatabaseModel extends ModelBase
      * @param $keyword
      * @return string
      */
-	protected function _getRelateShardingInfo($keyword)
+	protected function getRelateShardingInfo($keyword)
     {
         $relationShardingInfo = array();
 
@@ -1995,7 +1982,7 @@ abstract class DatabaseModel extends ModelBase
                 $relationShardingInfo = $this->relateShardingInfo[$relationAlias];
             } else {
                 if (array_key_exists($relationAlias, $this->relateShardingData)) {
-                    $config = $this->_getRelateConfig($relationAlias);
+                    $config = $this->getRelateConfig($relationAlias);
                     if ($config) {
                         $shardingData = $this->relateShardingData[$relationAlias];
                         $relationShardingInfo = array($config['class'], $shardingData);
@@ -2013,7 +2000,7 @@ abstract class DatabaseModel extends ModelBase
      * @param $key
      * @return array
      */
-    protected function _getRelateConfig($key)
+    protected function getRelateConfig($key)
 	{
 		if (!isset(self::$config[$this->tag]['RELATIONS'][$key])) {
 			return array();
@@ -2053,7 +2040,7 @@ abstract class DatabaseModel extends ModelBase
         if (preg_match($regExp, $name, $matches)) {
             $method = $matches[1];
             $fieldName = lcfirst($matches[6]);
-            return self::_queryDynamic($method, $fieldName, $params);
+            return self::queryDynamic($method, $fieldName, $params);
         }
 
         return parent::__callStatic($name, $params);
@@ -2066,7 +2053,7 @@ abstract class DatabaseModel extends ModelBase
      * @param $params
      * @return mixed
      */
-    protected static function _queryDynamic($method, $fieldName, array $params = array())
+    protected static function queryDynamic($method, $fieldName, array $params = array())
     {
         if (empty($params)) {
             ocService()->error->show('need_find_value');
