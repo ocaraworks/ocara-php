@@ -144,8 +144,8 @@ class Form extends Base
 	public function loadModel()
 	{
 		foreach ($this->models as $key => $model) {
-			$this->lang = array_merge($this->lang, $model->getConfig('LANG'));
-			$this->maps = array_merge($this->maps, $model->getConfig('MAPS'));
+			$this->lang = array_merge($this->lang, $model::getConfig('LANG'));
+			$this->maps = array_merge($this->maps, $model::getConfig('MAPS'));
 		}
 
 		return $this;
@@ -169,7 +169,7 @@ class Form extends Base
 	public function model($class, $alias = null)
 	{
 		$alias = $alias ? : $class;
-		$this->models[$alias] = new $class();
+		$this->models[$alias] = $class;
 		return $this;
 	}
 
@@ -221,10 +221,10 @@ class Form extends Base
 		if (isset($this->models[$fields[0]])) {
 			$model = $this->models[$fields[0]];
 		} else {
-            $model = new $fields[0]();
+            $model = $fields[0]();
 		}
 
-		$result = $model->getConfig(strtoupper($type), $field);
+		$result = $model::getConfig(strtoupper($type), $field);
 		return $result;
 	}
 

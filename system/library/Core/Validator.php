@@ -53,8 +53,8 @@ class Validator extends Base
 
         foreach ($this->models as $model) {
             if (!in_array($model, $this->ignoreModels)) {
-                $rules = $model->getConfig('RULES');
-                $lang = $model->getConfig('LANG');
+                $rules = $model::getConfig('RULES');
+                $lang = $model::getConfig('LANG');
                 $result = $this->addRule($rules)->addLang($lang);
             }
         }

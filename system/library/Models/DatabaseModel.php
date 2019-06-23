@@ -89,7 +89,7 @@ abstract class DatabaseModel extends ModelBase
 		$this->tableName = empty($this->table) ? lcfirst(self::getClassName()) : $this->table;
 
 		$this->_join(false, $this->tag, $this->alias);
-		$this->loadConfig();
+		self::loadConfig();
 
 		if ($this->primary) {
 			$this->primaries = explode(',', $this->primary);
@@ -182,10 +182,12 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 加载配置文件
      */
-	public function loadConfig()
+	public static function loadConfig()
 	{
-		if (empty(self::$config[$this->tag])) {
-			self::$config[$this->tag] = $this->getModelConfig();
+	    $class = self::getClass();
+		if (empty(self::$config[$class])) {
+		    $model = new static();
+			self::$config[$class] = $model->getModelConfig();
 		}
 	}
 
@@ -255,10 +257,10 @@ abstract class DatabaseModel extends ModelBase
      * @param string $field
      * @return array|bool|mixed|null
      */
-	public function getConfig($key = null, $field = null)
+	public static function getConfig($key = null, $field = null)
 	{
-        $this->loadConfig();
-        $tag = $this->tag;
+        self::loadConfig();
+        $tag = self::getClass();
 
 		if (isset($key)) {
 			if ($field) {
