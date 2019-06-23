@@ -80,13 +80,6 @@ abstract class Base extends Basis
      */
     public function __get($property)
     {
-        try {
-            $result = parent::__get($property);
-            return $result;
-        } catch (Exception $exception) {
-            $reason = $exception->getMessage();
-        }
-
         $reason = !empty($reason) ? : 'Not Found property';
 
         if (method_exists($this, '__none')) {
