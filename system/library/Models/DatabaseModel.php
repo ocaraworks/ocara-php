@@ -89,7 +89,7 @@ abstract class DatabaseModel extends ModelBase
 		$this->tableName = empty($this->table) ? lcfirst(self::getClassName()) : $this->table;
 
 		$this->setJoin(false, $this->tag, $this->alias);
-		$this->loadConfig();
+		self::loadConfig();
 
 		if ($this->primary) {
 			$this->primaries = explode(',', $this->primary);
@@ -182,10 +182,12 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 加载配置文件
      */
-	public function loadConfig()
+	public static function loadConfig()
 	{
-		if (empty(self::$config[$this->tag])) {
-			self::$config[$this->tag] = $this->getModelConfig();
+	    $class = self::getClass();
+		if (empty(self::$config[$class])) {
+		    $model = new static();
+			self::$config[$class] = $model->getModelConfig();
 		}
 	}
 
@@ -255,10 +257,10 @@ abstract class DatabaseModel extends ModelBase
      * @param string $field
      * @return array|bool|mixed|null
      */
-	public function getConfig($key = null, $field = null)
+	public static function getConfig($key = null, $field = null)
 	{
-        $this->loadConfig();
-        $tag = $this->tag;
+        self::loadConfig();
+        $tag = self::getClass();
 
 		if (isset($key)) {
 			if ($field) {
@@ -326,7 +328,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function mapData(array $data)
 	{
-		$config = $this->getConfig('MAP');
+		$config = self::getConfig('MAP');
 		if (!$config) return $data;
 
 		$result = array();
@@ -348,7 +350,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function mapField($field)
     {
-        $config = $this->getConfig('MAP');
+        $config = self::getConfig('MAP');
         $result = isset($config[$field]) ? $config[$field] : $field;
         return $result;
     }
@@ -503,7 +505,7 @@ abstract class DatabaseModel extends ModelBase
 			$this->loadFields();
 		}
 
-		$mapsConfig = $this->getConfig('MAPS');
+		$mapsConfig = self::getConfig('MAPS');
 		$key = isset($mapsConfig[$field]) ? $mapsConfig[$field] : $field;
 
         if (!$this->plugin->hasAlias($key)) {
@@ -1594,7 +1596,7 @@ abstract class DatabaseModel extends ModelBase
 		$transforms = array();
 
 		if ($unJoined) {
-			$map = $this->getConfig('MAPS');
+			$map = self::getConfig('MAPS');
 			if ($map) {
 				$transforms[$this->alias] = $map;
 			}
@@ -1602,11 +1604,11 @@ abstract class DatabaseModel extends ModelBase
 			$transforms = array();
 			foreach ($tables as $alias => $row) {
 				if ($alias == $this->alias) {
-					if ($map = $this->getConfig('MAPS')) {
+					if ($map = self::getConfig('MAPS')) {
 						$transforms[$this->alias] = $map;
 					}
 				} elseif (isset($this->joins[$alias])) {
-					if ($map = $this->getConfig('MAPS')) {
+					if ($map = self::getConfig('MAPS')) {
 						$transforms[$alias] = $map;
 					}
 				}
