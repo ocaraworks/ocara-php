@@ -98,6 +98,39 @@ abstract class Base extends Basis
     }
 
     /**
+     * 设置属性
+     * @param $property
+     * @param null $value
+     */
+    protected function setProperty($property, $value = null)
+    {
+        if (is_array($property)) {
+            foreach ($property as $name => $value) {
+                $this->$name = $value;
+            }
+        } else {
+            $this->$property = $value;
+        }
+    }
+
+    /**
+     * 清理属性
+     * @param array $fields
+     */
+    protected function clearProperties(array $fields = array())
+    {
+        $fields = $fields ? : array_keys($this->toArray());
+
+        foreach ($fields as $field) {
+            if (isset($this->$field)) {
+                $this->$field = null;
+            }
+        }
+
+        $this->properties = array();
+    }
+
+    /**
      * 获取日志对象
      * @param $logName
      * @return mixed

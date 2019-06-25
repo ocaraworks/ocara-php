@@ -39,39 +39,6 @@ abstract class Basis
     }
 
     /**
-     * 设置属性
-     * @param $property
-     * @param null $value
-     */
-    protected function setProperty($property, $value = null)
-    {
-        if (is_array($property)) {
-            foreach ($property as $name => $value) {
-                $this->$name = $value;
-            }
-        } else {
-            $this->$property = $value;
-        }
-    }
-
-    /**
-     * 清理属性
-     * @param array $fields
-     */
-    protected function clearProperties(array $fields = array())
-    {
-        $fields = $fields ? : array_keys($this->toArray());
-
-        foreach ($fields as $field) {
-            if (isset($this->$field)) {
-                $this->$field = null;
-            }
-        }
-
-        $this->properties = array();
-    }
-
-    /**
      * 转换成公有属性数组
      * @return array
      */
@@ -96,7 +63,7 @@ abstract class Basis
      */
     public function __isset($property)
     {
-        if ($property != 'properties' && !property_exists($this, $property)) {
+        if ($property == 'properties' || !property_exists($this, $property)) {
             return isset($this->properties[$property]);
         }
 
@@ -111,7 +78,7 @@ abstract class Basis
      */
     public function __get($property)
     {
-        if ($property != 'properties' && !property_exists($this, $property)) {
+        if ($property == 'properties' || !property_exists($this, $property)) {
             if (array_key_exists($property, $this->properties)) {
                 $value = $this->properties[$property];
                 return $value;
@@ -133,7 +100,7 @@ abstract class Basis
      */
     public function __set($property, $value)
     {
-        if ($property != 'properties' && !property_exists($this, $property)) {
+        if ($property == 'properties' || !property_exists($this, $property)) {
             $this->properties[$property] = $value;
             return true;
         }
@@ -149,7 +116,7 @@ abstract class Basis
      */
     public function __unset($property)
     {
-        if ($property != 'properties' && !property_exists($this, $property)) {
+        if ($property == 'properties' || !property_exists($this, $property)) {
             if (array_key_exists($property, $this->properties)) {
                 $this->properties[$property] = null;
                 unset($this->properties[$property]);
