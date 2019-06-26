@@ -239,8 +239,7 @@ abstract class DatabaseEntity extends BaseEntity
     /**
      * 删除
      * @param bool $debug
-     * @return bool
-     * @throws Exception
+     * @return mixed
      */
     public function delete($debug = false)
     {
