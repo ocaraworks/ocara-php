@@ -164,7 +164,7 @@ abstract class DatabaseEntity extends DatabaseModel
         $result = parent::create($this->toArray(), $debug);
 
         if (!$debug) {
-            $this->insertId = $this->plugin->getInsertId();
+            $this->insertId = $this->plugin()->getInsertId();
             if ($this->autoIncrementField) {
                 $autoIncrementField = $this->autoIncrementField;
                 $this->$autoIncrementField = $this->insertId;

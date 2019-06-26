@@ -18,7 +18,7 @@ abstract class Base extends Basis
 	 * @var $route 路由信息
 	 */
 	protected $route;
-	protected $plugin;
+    private $plugin;
     private $event;
 
     private $events = array();
@@ -145,12 +145,21 @@ abstract class Base extends Basis
 	 */
 	public function plugin()
 	{
-		if (property_exists($this, '_plugin') && is_object($this->plugin)) {
+		if (is_object($this->plugin)) {
 			return $this->plugin;
 		}
 
         ocService()->error->show('no_plugin');
 	}
+
+    /**
+     * 设置插件
+     * @param $plugin
+     */
+    public function setPlugin($plugin)
+    {
+        $this->plugin = $plugin;
+    }
 
     /**
      * 事件注册

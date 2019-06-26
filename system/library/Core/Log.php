@@ -28,8 +28,8 @@ class Log extends Base
     public function __construct($logName = null)
     {
         $this->name = $logName ? : 'common';
-        $this->plugin = ocService('fileLog', true);
-        $this->plugin->setOption(ocConfig(array('Log', 'root'), 'logs'));
+        $this->setPlugin(ocService('fileLog', true));
+        $this->plugin()->setOption(ocConfig(array('Log', 'root'), 'logs'));
     }
 
     /**
@@ -44,8 +44,8 @@ class Log extends Base
     {
         $time = date(ocConfig(array('DATE_FORMAT', 'datetime')), time());
 
-        if (!$this->plugin->has($this->name)) {
-            $this->plugin->create($this->name);
+        if (!$this->plugin()->has($this->name)) {
+            $this->plugin()->create($this->name);
         }
 
         if (!ocScalar($message)) {
@@ -61,7 +61,7 @@ class Log extends Base
         }
 
         try {
-            $this->plugin->write($this->name, $content);
+            $this->plugin()->write($this->name, $content);
         } catch (\Exception $e)
         {}
     }

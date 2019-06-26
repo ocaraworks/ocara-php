@@ -29,7 +29,7 @@ class Rest extends Base
         $this->response->setContentType(ocConfig(array('CONTROLLERS', 'rest', 'content_type'),'json'));
         $this->session->boot();
         $this->isSendApiErrorCode(true);
-        $this->plugin = $this->view;
+        $this->setPlugin($this->view);
     }
 
     /**

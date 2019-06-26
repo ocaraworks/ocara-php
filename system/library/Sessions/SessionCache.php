@@ -47,7 +47,7 @@ class SessionCache extends ServiceProvider
      */
     public function open()
     {
-		if (is_object($this->plugin)) {
+		if (is_object($this->plugin())) {
 			return true;
 		}
         return false;
@@ -69,7 +69,7 @@ class SessionCache extends ServiceProvider
      */
     public function read($id)
     {
-    	$this->plugin->get($this->prefix . $id);
+    	$this->plugin()->get($this->prefix . $id);
     	return false;
     }
 
@@ -82,7 +82,7 @@ class SessionCache extends ServiceProvider
     public function write($id, $data)
     {
         try {
-            $this->plugin->set($this->prefix . $id, $data);
+            $this->plugin()->set($this->prefix . $id, $data);
         } catch(Exception $exception) {
             ocService()->error->show($exception->getMessage());
         }
@@ -97,7 +97,7 @@ class SessionCache extends ServiceProvider
      */
     public function destroy($id)
     {
-        $this->plugin->delete($this->prefix . $id);
+        $this->plugin()->delete($this->prefix . $id);
         return true;
     }
 

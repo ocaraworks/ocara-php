@@ -21,7 +21,7 @@ class Common extends Base
     {
         $this->session->boot();
         $this->isSendApiErrorCode(false);
-        $this->plugin = $this->view;
+        $this->setPlugin($this->view);
     }
 
     /**

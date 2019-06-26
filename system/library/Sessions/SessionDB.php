@@ -27,7 +27,7 @@ class SessionDB extends ServiceProvider
         $location = ocConfig(array('SESSION', 'options', 'location'), '\Ocara\Service\Models\Session', true);
         $this->container->bindSingleton('_plugin', $location);
 
-        if (!(is_object($this->plugin) && $this->plugin instanceof ModelBase)) {
+        if (!(is_object($this->plugin()) && $this->plugin() instanceof ModelBase)) {
             ocService()->error->show('failed_db_connect');
         }
     }
@@ -38,7 +38,7 @@ class SessionDB extends ServiceProvider
      */
 	public function open()
 	{
-		return is_object($this->plugin) && $this->plugin instanceof ModelBase;
+		return is_object($this->plugin()) && $this->plugin() instanceof ModelBase;
 	}
 
     /**
@@ -47,7 +47,7 @@ class SessionDB extends ServiceProvider
      */
 	public function close()
 	{
-		$this->plugin = null;
+		$this->setPlugin(null);
 		return true;
 	}
 
@@ -58,7 +58,7 @@ class SessionDB extends ServiceProvider
      */
 	public function read($id)
 	{
-		$sessionData = $this->plugin->read($id);
+		$sessionData = $this->plugin()->read($id);
 		return $sessionData ? stripslashes($sessionData) : OC_EMPTY;
 	}
 
@@ -82,8 +82,8 @@ class SessionDB extends ServiceProvider
 			'session_data' 	  	  => stripslashes($data)
 		);
 
-		$this->plugin->write($data);
-		$result = $this->plugin->errorExists();
+		$this->plugin()->write($data);
+		$result = $this->plugin()->errorExists();
 
 		return $result === true;
 	}
@@ -95,8 +95,8 @@ class SessionDB extends ServiceProvider
      */
 	public function destroy($id)
 	{
-		$this->plugin->destory($id);
-		$result = $this->plugin->errorExists();
+		$this->plugin()->destory($id);
+		$result = $this->plugin()->errorExists();
 
 		return $result === true;
 	}
@@ -108,8 +108,8 @@ class SessionDB extends ServiceProvider
      */
 	public function gc($saveTime = null)
 	{
-		$this->plugin->clear();
-		$result = $this->plugin->errorExists();
+		$this->plugin()->clear();
+		$result = $this->plugin()->errorExists();
 
 		return $result === true;
 	}

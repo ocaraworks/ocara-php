@@ -129,7 +129,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 			return $this->query($sqlData);
 		}
 
-		return $this->plugin->select_db($name);
+		return $this->plugin()->select_db($name);
 	}
 
 	/**
