@@ -17,7 +17,6 @@ abstract class Base extends Basis
 	/**
 	 * @var $route 路由信息
 	 */
-	protected $route;
     private $plugin;
     private $event;
 
