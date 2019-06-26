@@ -1,18 +1,18 @@
 <?php
 namespace Ocara\Models;
 
+use Ocara\Core\BaseEntity;
 use Ocara\Exceptions\Exception;
 use Ocara\Iterators\Database\ObjectRecords;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-abstract class DatabaseEntity extends DatabaseModel
+abstract class DatabaseEntity extends BaseEntity
 {
-    protected $selected = array();
-    protected $changes = array();
-    protected $oldData = array();
-    protected $relations = array();
-    protected $isOrm;
+    private $selected = array();
+    private $changes = array();
+    private $oldData = array();
+    private $relations = array();
 
     const EVENT_BEFORE_CREATE = 'beforeCreate';
     const EVENT_AFTER_CREATE = 'afterCreate';
@@ -25,7 +25,6 @@ abstract class DatabaseEntity extends DatabaseModel
      * 加载数据
      * @param array $data
      * @return $this
-     * @throws Exception
      */
     public function data(array $data = array())
     {
@@ -280,7 +279,6 @@ abstract class DatabaseEntity extends DatabaseModel
      * 获取主键条件
      * @param $condition
      * @return array
-     * @throws Exception
      */
     protected function getPrimaryCondition($condition)
     {

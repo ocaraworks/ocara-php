@@ -8,10 +8,11 @@
  ************************************************************************************************/
 namespace Ocara\Models;
 
+use Ocara\Core\BaseEntity;
 use Ocara\Core\Models\CacheFactory;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-abstract class CacheEntity extends CacheModel
+abstract class CacheEntity extends BaseEntity
 {
 }
