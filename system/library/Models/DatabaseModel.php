@@ -158,6 +158,15 @@ abstract class DatabaseModel extends ModelBase
 	}
 
     /**
+     * 获取主键
+     * @return array
+     */
+	public function getPrimaries()
+    {
+        return $this->primaries;
+    }
+
+    /**
      * 执行分库分表
      * @param array $data
      * @param null $relationName
@@ -262,6 +271,7 @@ abstract class DatabaseModel extends ModelBase
         $tag = self::getClass();
 
 		if (isset($key)) {
+            $key = strtoupper($key);
 			if ($field) {
 				return ocGet(array($key, $field), self::$config[$tag]);
 			}
@@ -680,6 +690,7 @@ abstract class DatabaseModel extends ModelBase
 			ocService()->error->show('need_condition');
 		}
 
+        $this->pushTransaction();
 		$result = $this->plugin()->delete($this->tableName, $condition, $debug);
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {

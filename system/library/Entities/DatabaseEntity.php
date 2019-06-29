@@ -14,6 +14,7 @@ abstract class DatabaseEntity extends BaseEntity
     private $oldData = array();
     private $relations = array();
     private $insertId;
+    private $modelClass;
 
     const EVENT_BEFORE_CREATE = 'beforeCreate';
     const EVENT_AFTER_CREATE = 'afterCreate';
@@ -23,15 +24,23 @@ abstract class DatabaseEntity extends BaseEntity
     const EVENT_AFTER_DELETE = 'afterDelete';
 
     /**
+     * DatabaseEntity constructor.
+     */
+    public function __construct()
+    {
+        $this->setPlugin(new $this->modelClass());
+    }
+
+    /**
      * 加载数据
      * @param array $data
      * @return $this
      */
     public function data(array $data = array())
     {
-        $data = $this->getSubmitData($data);
+        $data = $this->plugin()->getSubmitData($data);
         if ($data) {
-            $this->setProperty($this->filterData($data));
+            $this->setProperty($this->plugin()->filterData($data));
         }
 
         return $this;
@@ -43,7 +52,7 @@ abstract class DatabaseEntity extends BaseEntity
     public function clearData()
     {
         $this->selected = array();
-        $this->clearProperties($this->getFieldsName());
+        $this->clearProperties($this->plugin()->getFieldsName());
         return $this;
     }
 
@@ -98,7 +107,7 @@ abstract class DatabaseEntity extends BaseEntity
         }
 
         $changes = array_fill_keys($this->changes, null);
-        return array_intersect_key($this->getProperty(), $changes);
+        return array_intersect_key($this->toArray(), $changes);
     }
 
     /**
@@ -161,21 +170,17 @@ abstract class DatabaseEntity extends BaseEntity
             $this->setProperty($data);
         }
 
-        $result = parent::create($this->toArray(), $debug);
+        $result = $this->plugin()->create($this->toArray(), $debug);
 
         if (!$debug) {
             $this->insertId = $this->plugin()->getInsertId();
-            if ($this->autoIncrementField) {
-                $autoIncrementField = $this->autoIncrementField;
+            if ($this->getAutoIncrementField()) {
+                $autoIncrementField = $this->getAutoIncrementField();
                 $this->$autoIncrementField = $this->insertId;
             }
             $this->select($this->mapPrimaryData($this->toArray()));
             $this->relateSave();
             $this->fire(self::EVENT_AFTER_CREATE);
-        }
-
-        if (!$debug && $this->relations) {
-            ocService()->transaction->commit();
         }
 
         return $result;
@@ -215,16 +220,12 @@ abstract class DatabaseEntity extends BaseEntity
         }
 
         $data = array_merge($this->getChanged(), $data);
-        call_user_func_array('ocDel', array(&$data, $this->primaries));
-        $result = parent::update($data, $debug);
+        call_user_func_array('ocDel', array(&$data, $this->getPrimaries()));
+        $result = $this->plugin()->update($data, $debug);
 
         if (!$debug) {
             $this->relateSave();
             $this->fire(self::EVENT_AFTER_UPDATE);
-        }
-
-        if (!$debug && $this->relations) {
-            ocService()->transaction->commit();
         }
 
         return $result;
@@ -257,16 +258,14 @@ abstract class DatabaseEntity extends BaseEntity
             ocService()->error->show('need_condition');
         }
 
-        $this->pushTransaction();
         $this->fire(self::EVENT_BEFORE_DELETE);
 
-        $result = parent::delete();
+        $result = $this->plugin()->delete();
 
         if (!$debug) {
             $this->fire(self::EVENT_AFTER_DELETE);
         }
 
-        ocService()->transaction->commit();
         return $result;
     }
 
@@ -278,7 +277,7 @@ abstract class DatabaseEntity extends BaseEntity
     protected function mapPrimaryData($data)
     {
         $result = array();
-        foreach ($this->primaries as $field) {
+        foreach ($this->plugin()->getPrimaries() as $field) {
             $result[$field] = array_key_exists($field, $data);
         }
         return $result;
@@ -291,7 +290,8 @@ abstract class DatabaseEntity extends BaseEntity
      */
     protected function getPrimaryCondition($condition)
     {
-        if (empty($this->primaries)) {
+        $primaries = $this->plugin()->getPrimaries();
+        if (empty($primaries)) {
             ocService()->error->show('no_primary');
         }
 
@@ -309,8 +309,8 @@ abstract class DatabaseEntity extends BaseEntity
         }
 
         $where = array();
-        if (count($this->primaries) == count($values)) {
-            $where = $this->filterData(array_combine($this->primaries, $values));
+        if (count($primaries) == count($values)) {
+            $where = $this->plugin()->filterData(array_combine($primaries, $values));
         } else {
             ocService()->error->show('fault_primary_num');
         }
@@ -392,7 +392,9 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function &__get($key)
     {
-        if (isset(self::$_config[$this->tag]['RELATIONS'][$key])) {
+        $relations = $this->plugin()->getConfig('RELATIONS');
+
+        if (isset($relations[$key])) {
             if (!isset($this->relations[$key])) {
                 $this->relations[$key] = $this->relateFind($key);
             }
@@ -411,7 +413,9 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function __set($name, $value)
     {
-        if (isset(self::$_config[$this->tag]['RELATIONS'][$name])) {
+        $relations = $this->plugin()->getConfig('RELATIONS');
+
+        if (isset($relations[$name])) {
             $this->relations[$name] = $value;
         } else {
             $oldValue = null;
