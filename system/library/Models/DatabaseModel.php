@@ -302,9 +302,9 @@ abstract class DatabaseModel extends ModelBase
         $dir = dirname($filePath) . OC_DIR_SEP;
 
         if ($this->module) {
-            list($rootPath, $subDir) = ocSeprateDir($dir, '/privates' . $location);
+            list($rootPath, $subDir) = ocSeprateDir($dir, '/privates/model/database/');
         } else {
-            list($rootPath, $subDir) = ocSeprateDir($dir, '/application' . $location);
+            list($rootPath, $subDir) = ocSeprateDir($dir, '/application//model/database/');
         }
 
         if ($this->module) {
@@ -320,15 +320,6 @@ abstract class DatabaseModel extends ModelBase
 
         return self::$configPath[$tag] = $paths;
 	}
-
-    /**
-     * 获取模型所在子目录
-     * @return array|mixed
-     */
-	public function getModelLocation()
-    {
-        return '/model/database/';
-    }
 
     /**
      * 数据字段别名映射

@@ -13,7 +13,15 @@ abstract class DatabaseEntity extends BaseEntity
     private $changes = array();
     private $oldData = array();
     private $relations = array();
+
+    /**
+     * @var int $insertId
+     */
     private $insertId;
+
+    /**
+     * @var string $modelClass
+     */
     private $modelClass;
 
     const EVENT_BEFORE_CREATE = 'beforeCreate';
@@ -65,15 +73,6 @@ abstract class DatabaseEntity extends BaseEntity
         parent::clearAll();
         $this->clearData();
         return $this;
-    }
-
-    /**
-     * 获取模型所在目录
-     * @return array|mixed
-     */
-    public function getModelLocation()
-    {
-        return '/model/entity/database/';
     }
 
     /**
