@@ -42,7 +42,6 @@ abstract class DatabaseModel extends ModelBase
     protected $slave;
     protected $database;
     protected $tableName;
-    protected $insertId;
     protected $autoIncrementField;
 
     protected $sql = array();
@@ -590,15 +589,6 @@ abstract class DatabaseModel extends ModelBase
         $result = $this->plugin()->errorExists() ? false : true;
         return $result;
     }
-
-	/**
-	 * 获取最后插入的记录ID
-	 * @return mixed
-	 */
-	public function getInsertId()
-	{
-		return $this->insertId;
-	}
 
 	/**
 	 * 预处理

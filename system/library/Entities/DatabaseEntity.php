@@ -13,6 +13,7 @@ abstract class DatabaseEntity extends BaseEntity
     private $changes = array();
     private $oldData = array();
     private $relations = array();
+    private $insertId;
 
     const EVENT_BEFORE_CREATE = 'beforeCreate';
     const EVENT_AFTER_CREATE = 'afterCreate';
@@ -178,6 +179,15 @@ abstract class DatabaseEntity extends BaseEntity
         }
 
         return $result;
+    }
+
+    /**
+     * 获取最后插入的记录ID
+     * @return mixed
+     */
+    public function getInsertId()
+    {
+        return $this->insertId;
     }
 
     /**
