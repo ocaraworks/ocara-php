@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Entities/CacheEntity.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Entities/CacheEntity.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/library/Core/ViewBase.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/ViewBase.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/resource/application/files/resource.conf.resource.ocara" beforeDir="false" afterPath="$PROJECT_DIR$/system/resource/application/files/resource.conf.resource.ocara" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,24 +18,69 @@
     </execution>
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/library/Core/Ajax.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="76" column="4" selection-start-line="76" selection-start-column="4" selection-end-line="76" selection-end-column="4" />
+            <state relative-caret-position="720">
+              <caret line="47" column="25" selection-start-line="47" selection-start-column="22" selection-end-line="47" selection-end-column="25" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/library/Core/ControllerBase.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="385">
+              <caret line="337" lean-forward="true" selection-start-line="337" selection-end-line="337" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/library/Views/Api.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="17" column="1" lean-forward="true" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/library/Views/Common.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="144">
+              <caret line="15" column="25" lean-forward="true" selection-start-line="15" selection-start-column="25" selection-end-line="15" selection-end-column="25" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/system/library/Core/ViewBase.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="452">
+              <caret line="637" lean-forward="true" selection-start-line="637" selection-end-line="637" />
               <folding>
-                <element signature="e#31#57#0#PHP" expanded="true" />
+                <element signature="e#549#569#0#PHP" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
+        <entry file="file://$PROJECT_DIR$/system/resource/application/files/resource.conf.resource.ocara">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="321" column="5" selection-start-line="321" selection-start-column="5" selection-end-line="321" selection-end-column="5" />
+            <state relative-caret-position="513">
+              <caret line="34" column="13" selection-start-line="34" selection-start-column="13" selection-end-line="34" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/resource/application/files/resource.conf.develop.ocara">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret line="57" column="44" lean-forward="true" selection-start-line="57" selection-start-column="44" selection-end-line="57" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -45,8 +88,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Entities/CacheEntity.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="560">
-              <caret line="44" lean-forward="true" selection-start-line="44" selection-end-line="44" />
+            <state relative-caret-position="648">
+              <caret line="44" selection-start-line="44" selection-end-line="44" />
             </state>
           </provider>
         </entry>
@@ -55,7 +98,7 @@
         <entry file="file://$PROJECT_DIR$/system/library/Core/BaseEntity.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="180">
-              <caret line="16" column="1" lean-forward="true" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+              <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -63,8 +106,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Core/Base.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1042">
-              <caret line="167" lean-forward="true" selection-start-line="167" selection-end-line="167" />
+            <state relative-caret-position="2898">
+              <caret line="167" selection-start-line="167" selection-end-line="167" />
             </state>
           </provider>
         </entry>
@@ -73,12 +116,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>$tag</find>
-      <find>getModels</find>
-      <find>models</find>
-      <find>loadConfig</find>
-      <find>$this-&gt;getConfig(</find>
-      <find>-&gt;getConfig</find>
       <find>none</find>
       <find>-&gt;events</find>
       <find>traits</find>
@@ -103,6 +140,12 @@
       <find>getPropery</find>
       <find>pushTransaction</find>
       <find>getModelLocation</find>
+      <find>isApi</find>
+      <find>API</find>
+      <find>is_send_error_code</find>
+      <find>return_result</find>
+      <find>return_result' =&gt; '', //API结果处理</find>
+      <find>getXmlResult</find>
     </findStrings>
     <replaceStrings>
       <replace>map</replace>
@@ -144,6 +187,8 @@
       <dir>D:\wwwroot\vendor\linyihu\ocara\system\library</dir>
       <dir>D:\web\ocara\system\library</dir>
       <dir>D:\web\ocara\system</dir>
+      <dir>D:\web\framework\ocara\system\library</dir>
+      <dir>D:\web\framework\ocara\system</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -152,7 +197,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/system/library/Service/SocketClient.php" />
         <option value="$PROJECT_DIR$/system/library/Service/SocketEmail.php" />
         <option value="$PROJECT_DIR$/system/library/Service/SocketServer.php" />
         <option value="$PROJECT_DIR$/system/library/Service/StaticBuilder.php" />
@@ -192,7 +236,6 @@
         <option value="$PROJECT_DIR$/system/library/Core/Form.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Log.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Sql.php" />
-        <option value="$PROJECT_DIR$/system/library/Core/ViewBase.php" />
         <option value="$PROJECT_DIR$/system/library/Databases/MysqliDatabase.php" />
         <option value="$PROJECT_DIR$/system/library/Models/CacheModel.php" />
         <option value="$PROJECT_DIR$/system/library/Service/Smarty.php" />
@@ -203,21 +246,22 @@
         <option value="$PROJECT_DIR$/system/library/Entities/CacheEntity.php" />
         <option value="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" />
         <option value="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" />
+        <option value="$PROJECT_DIR$/system/resource/application/files/resource.conf.resource.ocara" />
+        <option value="$PROJECT_DIR$/system/library/Core/ViewBase.php" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="85" />
-    <option name="y" value="25" />
-    <option name="width" value="1750" />
-    <option name="height" value="980" />
+    <option name="x" value="5" />
+    <option name="y" value="123" />
+    <option name="width" value="1940" />
+    <option name="height" value="1048" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -240,6 +284,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -293,17 +338,18 @@
       <workItem from="1561766272467" duration="408000" />
       <workItem from="1561771610889" duration="4229000" />
       <workItem from="1561802078738" duration="824000" />
+      <workItem from="1561824503445" duration="524000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="50571000" />
+    <option name="totallyTimeSpent" value="51095000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21879195" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22214764" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -327,42 +373,17 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/system/library/Views/Api.php</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/system/library/Core/Url.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="66" column="32" selection-start-line="66" selection-start-column="32" selection-end-line="66" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/BootstrapBase.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="21" column="36" lean-forward="true" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/DatabaseFactory.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-170">
-          <caret line="15" column="6" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/extension/library/Tools/Develop/Generate/ActionService.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="12" column="6" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/extension/library/Service/Validates/MyValidate.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="11" column="6" selection-start-line="11" selection-start-column="6" selection-end-line="11" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/DriverBase.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
@@ -523,16 +544,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/ViewBase.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="81">
-          <caret line="621" column="27" selection-start-line="621" selection-start-column="27" selection-end-line="621" selection-end-column="27" />
-          <folding>
-            <element signature="e#549#569#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Databases/MysqliDatabase.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
@@ -622,13 +633,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/ControllerBase.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="81">
-          <caret line="25" column="14" selection-start-line="25" selection-start-column="14" selection-end-line="25" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/ModelBase.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -664,40 +668,92 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/Base.php">
+    <entry file="file://$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1042">
-          <caret line="167" lean-forward="true" selection-start-line="167" selection-end-line="167" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/BaseEntity.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="16" column="1" lean-forward="true" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+        <state relative-caret-position="126">
+          <caret line="76" selection-start-line="76" selection-end-line="76" />
+          <folding>
+            <element signature="e#31#57#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
+        <state relative-caret-position="5472">
           <caret line="321" column="5" selection-start-line="321" selection-start-column="5" selection-end-line="321" selection-end-column="5" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Entities/CacheEntity.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
-          <caret line="44" lean-forward="true" selection-start-line="44" selection-end-line="44" />
+        <state relative-caret-position="648">
+          <caret line="44" selection-start-line="44" selection-end-line="44" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php">
+    <entry file="file://$PROJECT_DIR$/system/library/Core/BaseEntity.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="76" column="4" selection-start-line="76" selection-start-column="4" selection-end-line="76" selection-end-column="4" />
+        <state relative-caret-position="180">
+          <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Base.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2898">
+          <caret line="167" selection-start-line="167" selection-end-line="167" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Views/Common.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="15" column="25" lean-forward="true" selection-start-line="15" selection-start-column="25" selection-end-line="15" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/ControllerBase.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="385">
+          <caret line="337" lean-forward="true" selection-start-line="337" selection-end-line="337" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/resource/application/files/resource.conf.develop.ocara">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="57" column="44" lean-forward="true" selection-start-line="57" selection-start-column="44" selection-end-line="57" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/resource/application/files/resource.conf.resource.ocara">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="513">
+          <caret line="34" column="13" selection-start-line="34" selection-start-column="13" selection-end-line="34" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Views/Api.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="17" column="1" lean-forward="true" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Ajax.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="720">
+          <caret line="47" column="25" selection-start-line="47" selection-start-column="22" selection-end-line="47" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/ViewBase.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="452">
+          <caret line="637" lean-forward="true" selection-start-line="637" selection-end-line="637" />
           <folding>
-            <element signature="e#31#57#0#PHP" expanded="true" />
+            <element signature="e#549#569#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>

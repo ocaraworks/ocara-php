@@ -11,6 +11,7 @@ namespace Ocara\Core;
 use Ocara\Core\Base;
 use Ocara\Exceptions\Exception;
 use Ocara\Service\Interfaces\Template as TemplateInterface;
+use Ocara\Service\Xml;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -194,7 +195,6 @@ class ViewBase extends Base
      * @param string $subPath
      * @param string $template
      * @return bool|mixed|string
-     * @throws Exception
      */
     public function getViewPath($subPath = null, $template = null)
     {
@@ -291,7 +291,6 @@ class ViewBase extends Base
      * @param string $template
      * @param bool $show
      * @return string
-     * @throws Exception
      */
     public function readPart($part, $template = null, $show = true)
     {
@@ -322,7 +321,6 @@ class ViewBase extends Base
      * 显示part内容
      * @param string $part
      * @param string $template
-     * @throws Exception
      */
     public function showPart($part, $template = null)
     {
@@ -334,7 +332,6 @@ class ViewBase extends Base
      * @param string $part
      * @param string $template
      * @return string
-     * @throws Exception
      */
     public function getPart($part, $template = null)
     {
@@ -539,7 +536,7 @@ class ViewBase extends Base
     {
         $response = ocService()->response;
 
-        if ($callback = ocConfig(array('SOURCE', 'ajax', 'return_result'), null)) {
+        if ($callback = ocConfig(array('SOURCE', 'api', 'return_result'), null)) {
             $result = call_user_func_array($callback, array($result));
         }
 
@@ -568,11 +565,25 @@ class ViewBase extends Base
     }
 
     /**
+     * 获取XML结果
+     * @param $result
+     * @return mixed
+     * @throws Exception
+     */
+    private function getXmlResult($result)
+    {
+        $xmlObj = new Xml();
+        $xmlObj->setData('array', array('root', $result));
+        $xml = $xmlObj->getContent();
+
+        return $xml;
+    }
+
+    /**
      * 读取模板文件内容
      * @param string $file
      * @param bool $required
      * @return mixed|null
-     * @throws Exception
      */
     public function readTpl($file, $required = true)
     {

@@ -29,10 +29,10 @@ return array(
         ),
 
         /*
-         * AJAX相关
+         * API相关
          */
-        'ajax' => array(
-            'return_result' => '', //AJAX结果处理
+        'api' => array(
+            'return_result' => '', //API结果处理
         ),
     )
 );
