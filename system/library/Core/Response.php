@@ -191,9 +191,8 @@ class Response extends Base
     /**
      * 打开外部URL链接
      * @param $url
-     * @param bool $die
      */
-	public function redirect($url, $die = true)
+	public function redirect($url)
 	{
 		if ($url) {
 			if (!headers_sent()) {
