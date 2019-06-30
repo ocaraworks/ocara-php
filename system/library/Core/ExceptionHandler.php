@@ -93,7 +93,7 @@ class ExceptionHandler extends Base
     {
         $error = ocGetExceptionData($exception);
         if (ocService('request', true)->isAjax()) {
-            $this->ajaxError($error);
+            $this->apiError($error);
         } else {
             $defaultOutput = ocConfig(array('SYSTEM_SINGLETON_SERVICE_CLASS', 'errorOutput'));
             ocService('errorOutput', $defaultOutput)->display($error);
@@ -121,13 +121,20 @@ class ExceptionHandler extends Base
      * Ajax处理
      * @param $error
      */
-    protected function ajaxError($error)
+    protected function apiError($error)
     {
-        $message = array();
-        $message['code'] = $error['code'];
-        $message['message'] = $error['message'];
+        $message = array(
+            'status' => 'error',
+            'code' => $error['code'],
+            'message' => $error['message'],
+            'body' => ''
+        );
 
-        ocService('ajax', true)
-            ->ajaxError($message);
+        $content = ocService('api', true)->format($message);
+
+        $response = ocService('response', true);
+        $response->setStatusCode(Response::STATUS_SERVER_ERROR);
+        $response->setBody($content);
+        $response->send();
     }
 }

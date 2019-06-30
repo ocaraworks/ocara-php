@@ -13,14 +13,33 @@ use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class ResponseContent extends Base
+class Api extends Base
 {
+    /**
+     * 获取结果
+     * @param $data
+     * @param array $message
+     * @param $status
+     * @return array
+     */
+    public function getResult($data, array $message, $status)
+    {
+        $result = array(
+            'status' => $status,
+            'code' => $message['code'],
+            'message' => $message['message'],
+            'body' => $data
+        );
+
+        return $result;
+    }
+
     /**
      * 获取XML结果
      * @param $result
      * @return mixed
      */
-    private function getXmlResult($result)
+    protected function getXmlResult($result)
     {
         $xmlObj = new Xml();
         $xmlObj->setData('array', array('root', $result));

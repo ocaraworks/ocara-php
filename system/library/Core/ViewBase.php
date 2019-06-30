@@ -48,7 +48,7 @@ class ViewBase extends Base
         }
 
         $contentType = $response->getOption('contentType');
-        $content = ocService()->responseContent->format($result, $contentType);
+        $content = ocService()->api->format($result, $contentType);
 
         return $content;
     }

@@ -319,13 +319,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
             $message = $this->lang->get($message);
         }
 
-        $this->result = array(
-            'status' => $status,
-            'code' => $message['code'],
-            'message' => $message['message'],
-            'body' => $data
-        );
-
+        $this->result = $this->api->getResult($data, $message, $status);
         $this->response->setContentType($this->contentType);
 
         if (!$this->response->getOption('statusCode')) {
