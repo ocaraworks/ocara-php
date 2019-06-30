@@ -92,6 +92,7 @@ class ExceptionHandler extends Base
     public function output($exception, $event, $object)
     {
         $error = ocGetExceptionData($exception);
+
         if (ocService('request', true)->isAjax()) {
             $this->apiError($error);
         } else {
@@ -123,13 +124,7 @@ class ExceptionHandler extends Base
      */
     protected function apiError($error)
     {
-        $message = array(
-            'status' => 'error',
-            'code' => $error['code'],
-            'message' => $error['message'],
-            'body' => ''
-        );
-
+        $message = ocService()->api->getResult(OC_EMPTY, $error, 'error');
         $content = ocService('api', true)->format($message);
 
         $response = ocService('response', true);
