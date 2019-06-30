@@ -12,8 +12,4 @@ use Ocara\Core\ControllerBase;
 
 class Api extends ControllerBase
 {
-    /**
-     * @var bool $isApi
-     */
-    protected $isApi = true;
 }

@@ -13,6 +13,7 @@ use Ocara\Core\ServiceProvider;
 use Ocara\Interfaces\Controller as ControllerInterface;
 use Ocara\Core\ModelBase;
 use Ocara\Exceptions\Exception;
+use Ocara\Controllers\Api;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -105,7 +106,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
             $this->isApi = $isApi ? true : false;
         }
 
-        return $this->isApi;
+        return $this instanceof Api || $this->isApi;
     }
 
     /**
