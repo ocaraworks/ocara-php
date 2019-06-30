@@ -25,14 +25,6 @@ class Common extends Base
     }
 
     /**
-     * 获取动作执行方式
-     */
-    public function getDoWay()
-    {
-        return 'common';
-    }
-
-    /**
      * 设置AJAX返回格式（回调函数）
      * @param $result
      * @return mixed

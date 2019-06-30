@@ -33,15 +33,6 @@ class Rest extends Base
     }
 
     /**
-     * 获取动作执行方式
-     * @return string
-     */
-    public function getDoWay()
-    {
-        return 'api';
-    }
-
-    /**
      * 设置Hypermedia
      * @param array $linkInfo
      */
