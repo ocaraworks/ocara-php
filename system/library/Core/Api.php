@@ -59,7 +59,7 @@ class Api extends Base
         switch ($contentType)
         {
             case 'json':
-                $content = json_encode($result);
+                $content = json_encode($result, JSON_UNESCAPED_UNICODE);
                 break;
             case 'xml':
                 $content = $this->getXmlResult($result);

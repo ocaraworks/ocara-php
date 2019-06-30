@@ -1,19 +1,19 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   普通控制器类Rest
+ * Ocara开源框架   API普通控制器类Api
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 namespace Ocara\Controllers;
 
-use Ocara\Controllers\Api;
+use Ocara\Core\ControllerBase;
 
-class Rest extends Api
+class Api extends ControllerBase
 {
     /**
-     * @var string $controllerType
+     * @var bool $isApi
      */
-    protected static $controllerType = 'Rest';
+    protected $isApi = true;
 }
