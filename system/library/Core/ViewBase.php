@@ -18,33 +18,16 @@ defined('OC_PATH') or exit('Forbidden!');
 class ViewBase extends Base
 {
     /**
-     * 获取路由
-     * @param null $name
-     * @return array|mixed|null
-     */
-    public function getRoute($name = null)
-    {
-        $route = $this->getVar('route');
-
-        if (func_get_args()) {
-            return isset($route[$name]) ? $route[$name] : null;
-        }
-
-        return $route;
-    }
-
-    /**
      * 输出内容
      * @param $content
      */
     public function outputApi($content)
     {
-        $response = ocService()->response;
-        $response->setBody($content);
+        ocService()->response->setBody($content);
     }
 
     /**
-     * 渲染结果
+     * 渲染API结果
      * @param |null $result
      * @return mixed|void|null
      * @throws Exception
@@ -58,41 +41,15 @@ class ViewBase extends Base
         }
 
         $statusCode = $response->getOption('statusCode');
+
         if (!$statusCode && !ocConfig(array('API', 'is_send_error_code'), 0)) {
             $response->setStatusCode(Response::STATUS_OK);
             $result['statusCode'] = $response->getOption('statusCode');
         }
 
         $contentType = $response->getOption('contentType');
+        $content = ocService()->responseContent->format($result, $contentType);
 
-        switch ($contentType)
-        {
-            case 'json':
-                $content = json_encode($result);
-                break;
-            case 'xml':
-                $content = $this->getXmlResult($result);
-                break;
-            default:
-                $content = $result;
-        }
-
-        $response->setBody($content);
         return $content;
-    }
-
-    /**
-     * 获取XML结果
-     * @param $result
-     * @return mixed
-     * @throws Exception
-     */
-    private function getXmlResult($result)
-    {
-        $xmlObj = new Xml();
-        $xmlObj->setData('array', array('root', $result));
-        $xml = $xmlObj->getContent();
-
-        return $xml;
     }
 }

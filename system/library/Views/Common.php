@@ -8,12 +8,10 @@
  ************************************************************************************************/
 namespace Ocara\Views;
 
-use Ocara\Core\Response;
 use Ocara\Core\ViewBase;
 use Ocara\Exceptions\Exception;
 use Ocara\Interfaces\View as ViewInterfaces;
 use Ocara\Service\Interfaces\Template as TemplateInterface;
-use Ocara\Service\Xml;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -51,6 +49,22 @@ class Common extends ViewBase implements ViewInterfaces
     }
 
     /**
+     * 获取路由
+     * @param null $name
+     * @return array|mixed|null
+     */
+    public function getRoute($name = null)
+    {
+        $route = $this->getVar('route');
+
+        if (func_get_args()) {
+            return isset($route[$name]) ? $route[$name] : null;
+        }
+
+        return $route;
+    }
+
+    /**
      * 加载模板插件
      */
     public function loadEngine()
@@ -72,7 +86,8 @@ class Common extends ViewBase implements ViewInterfaces
      */
     public function engine()
     {
-        if (is_object($this->plugin()) && $this->plugin() instanceof TemplateInterface) {
+        $plugin = $this->plugin();
+        if (is_object($plugin) && $plugin instanceof TemplateInterface) {
             return $this->plugin();
         }
         return null;
@@ -99,19 +114,22 @@ class Common extends ViewBase implements ViewInterfaces
     public function assign($name, $value = null)
     {
         $variables = array();
+        $plugin = $this->plugin();
+
         if (is_string($name)) {
             $variables[$name] = $value;
         } elseif (is_array($name)) {
             $variables = $name;
         }
 
-        $null = $this->plugin() === null;
-        foreach ($variables as $name => $value) {
-            if ($null) {
+        if ($plugin === null) {
+            foreach ($variables as $name => $value) {
                 $this->vars[$name] = $value;
                 ocGlobal('View', $this);
-            } else {
-                $this->plugin()->set($name, $value);
+            }
+        } else {
+            foreach ($variables as $name => $value) {
+                $plugin->set($name, $value);
             }
         }
     }

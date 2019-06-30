@@ -77,6 +77,7 @@ return array(
     'SYSTEM_SINGLETON_SERVICE_CLASS' => array(
         'request' 		    => 'Ocara\Core\Request',
         'response' 		    => 'Ocara\Core\Response',
+        'ResponseContent'   => 'Ocara\Core\ResponseContent',
         'ajax'              => 'Ocara\Core\Ajax',
         'error' 		    => 'Ocara\Core\Error',
         'dispatcher'        => 'Ocara\Dispatchers\Common',

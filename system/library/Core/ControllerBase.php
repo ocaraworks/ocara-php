@@ -337,7 +337,8 @@ class ControllerBase extends serviceProvider implements ControllerInterface
         }
 
         $this->fire(self::EVENT_BEFORE_RENDER);
-        $this->view->renderApi($this->result);
+        $content = $this->view->renderApi($this->result);
+        $this->view->outputApi($content);
 
         $this->fire(self::EVENT_AFTER_RENDER);
         $this->hasRender = true;
