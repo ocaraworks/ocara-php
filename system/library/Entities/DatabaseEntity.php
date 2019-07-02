@@ -324,7 +324,7 @@ abstract class DatabaseEntity extends BaseEntity
      */
     protected function relateFind($alias)
     {
-        $config = $this->getRelateConfig($alias);
+        $config = $this->plugin()->getRelateConfig($alias);
         $result = null;
 
         if ($config) {
@@ -355,7 +355,7 @@ abstract class DatabaseEntity extends BaseEntity
         }
 
         foreach ($this->relations as $key => $object) {
-            $config = $this->getRelateConfig($key);
+            $config = $this->plugin()->getRelateConfig($key);
             if ($config && isset($this->$config['primaryKey'])) {
                 $data = array();
                 if ($config['joinType'] == 'hasOne' && is_object($object)) {

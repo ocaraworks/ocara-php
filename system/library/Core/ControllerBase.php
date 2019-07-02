@@ -313,6 +313,7 @@ class ControllerBase extends serviceProvider implements ControllerInterface
      * @param null $data
      * @param null $message
      * @param string $status
+     * @throws Exception
      */
     public function renderApi($data = null, $message = null, $status = 'success')
     {
@@ -320,12 +321,16 @@ class ControllerBase extends serviceProvider implements ControllerInterface
             $message = $this->lang->get($message);
         }
 
-        $this->result = $this->api->getResult($data, $message, $status);
         $this->response->setContentType($this->contentType);
+        $this->result = $this->api->getResult($data, $message, $status);
 
         if (!$this->response->getOption('statusCode')) {
             if ($this->result['status'] == 'success') {
-                $this->response->setStatusCode(Response::STATUS_OK);
+                $successCode = strtr(
+                    ocService()->app->getRoute('action'),
+                    ocConfig('CONTROLLERS.rest.success_code_map')
+                );
+                $this->response->setStatusCode($successCode);
             } else {
                 $this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
             }
