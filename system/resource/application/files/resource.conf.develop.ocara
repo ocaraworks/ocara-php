@@ -70,7 +70,7 @@ return array(
      * API配置
      */
     'API' => array(
-        'is_send_error_code' => 0, //API渲染时是否在HTTP头部返回HTTP错误码
+        'send_header_code' => 1, //API渲染时是否在HTTP头部返回HTTP错误码
     ),
 
     /*

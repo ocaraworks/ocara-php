@@ -55,12 +55,7 @@ class Api extends ControllerBase  implements ControllerInterface
         $this->checkForm();
         $result = null;
 
-        if ($this->request->isAjax()) {
-            if (method_exists($this, 'ajax')) {
-                $result = $this->ajax();
-            }
-            $this->render($result, false);
-        } elseif ($this->isFormSubmit() && method_exists($this, 'submit')) {
+        if ($this->isFormSubmit() && method_exists($this, 'submit')) {
             $result = $this->submit();
             $this->formManager->clearToken();
             $this->render($result, false);
@@ -96,13 +91,15 @@ class Api extends ControllerBase  implements ControllerInterface
             $message = $this->lang->get($message);
         }
 
+        $params = array($data, $message, $status);
+
         $this->response->setContentType($this->contentType);
-        $this->fire(self::EVENT_AFTER_RENDER, array($data, $message, $status));
+        $this->fire(self::EVENT_AFTER_RENDER, $params);
 
-        $content = $this->view->renderApi($this->result);
-        $this->view->outputApi($content);
+        $content = $this->view->render($this->result);
+        $this->view->output($content);
 
-        $this->fire(self::EVENT_AFTER_RENDER);
+        $this->fire(self::EVENT_AFTER_RENDER, $params);
         $this->hasRender = true;
     }
 
@@ -120,6 +117,11 @@ class Api extends ControllerBase  implements ControllerInterface
             } else {
                 $this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
             }
+        }
+
+        if (!ocConfig(array('API', 'send_header_code'), 0)) {
+            $this->response->setStatusCode(Response::STATUS_OK);
+            $this->result['status'] = $this->response->getOption('status');
         }
     }
 }

@@ -27,12 +27,5 @@ return array(
         'cache' => array(
             'get_config' => '', //获取缓存配置
         ),
-
-        /*
-         * API相关
-         */
-        'api' => array(
-            'return_result' => '', //API结果处理
-        ),
     )
 );

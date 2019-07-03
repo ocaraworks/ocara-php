@@ -166,13 +166,15 @@ class Common extends ControllerBase implements ControllerInterface
             $message = $this->lang->get($message);
         }
 
+        $params = array($data, $message, $status);
+
         $this->response->setContentType($this->contentType);
-        $this->fire(self::EVENT_BEFORE_RENDER_API, array($data, $message, $status));
+        $this->fire(self::EVENT_BEFORE_RENDER_API, $params);
 
         $content = $this->view->renderApi($this->result);
         $this->view->outputApi($content);
 
-        $this->fire(self::EVENT_AFTER_RENDER);
+        $this->fire(self::EVENT_AFTER_RENDER_API, $params);
         $this->hasRender = true;
     }
 
@@ -190,6 +192,11 @@ class Common extends ControllerBase implements ControllerInterface
             } else {
                 $this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
             }
+        }
+
+        if (!ocConfig(array('API', 'send_header_code'), 0)) {
+            $this->response->setStatusCode(Response::STATUS_OK);
+            $this->result['status'] = $this->response->getOption('status');
         }
     }
 }
