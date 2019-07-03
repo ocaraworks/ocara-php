@@ -15,6 +15,23 @@ use Ocara\Interfaces\Controller as ControllerInterface;
 
 class Api extends ControllerBase  implements ControllerInterface
 {
+    const EVENT_BEFORE_RENDER = 'beforeRender';
+    const EVENT_AFTER_RENDER = 'afterRender';
+
+    /**
+     * 注册事件
+     */
+    public function registerEvents()
+    {
+        parent::registerEvents();
+
+        $this->event(self::EVENT_BEFORE_RENDER)
+             ->setDefault(array($this, 'beforeRender'));
+
+        $this->event(self::EVENT_AFTER_RENDER)
+             ->setDefault(array($this, 'afterRender'));
+    }
+
     /**
      * 执行动作
      * @param string $actionMethod

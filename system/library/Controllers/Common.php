@@ -20,6 +20,8 @@ class Common extends ControllerBase implements ControllerInterface
      */
     protected $isApi = false;
 
+    const EVENT_BEFORE_RENDER_FILE = 'beforeRenderFile';
+    const EVENT_AFTER_RENDER_FILE = 'afterRenderFile';
     const EVENT_BEFORE_RENDER_API = 'beforeRenderApi';
     const EVENT_AFTER_RENDER_API = 'afterRenderApi';
 
@@ -30,11 +32,17 @@ class Common extends ControllerBase implements ControllerInterface
     {
         parent::registerEvents();
 
+        $this->event(self::EVENT_BEFORE_RENDER_FILE)
+             ->setDefault(array($this, 'beforeRenderFile'));
+
+        $this->event(self::EVENT_AFTER_RENDER_FILE)
+             ->setDefault(array($this, 'afterRenderFile'));
+
         $this->event(self::EVENT_BEFORE_RENDER_API)
-            ->append(array($this, 'beforeRenderApi'));
+             ->setDefault(array($this, 'beforeRenderApi'));
 
         $this->event(self::EVENT_AFTER_RENDER_API)
-            ->append(array($this, 'afterRenderApi'));
+             ->setDefault(array($this, 'afterRenderApi'));
     }
 
     /**
@@ -145,10 +153,10 @@ class Common extends ControllerBase implements ControllerInterface
             }
         }
 
-        $this->fire(self::EVENT_BEFORE_RENDER);
+        $this->fire(self::EVENT_BEFORE_RENDER_FILE);
         $content = $this->view->renderFile($file, $vars, $required);
         $this->view->outputFile($content);
-        $this->fire(self::EVENT_AFTER_RENDER);
+        $this->fire(self::EVENT_AFTER_RENDER_FILE);
 
         $this->hasRender = true;
     }

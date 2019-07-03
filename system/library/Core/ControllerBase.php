@@ -36,8 +36,6 @@ class ControllerBase extends serviceProvider
     protected static $controllerType;
 
     const EVENT_AFTER_ACTION = 'afterAction';
-    const EVENT_BEFORE_RENDER = 'beforeRender';
-    const EVENT_AFTER_RENDER = 'afterRender';
     const EVENT_AFTER_CREATE_FORM = 'afterCreateForm';
 
 	/**
@@ -86,12 +84,6 @@ class ControllerBase extends serviceProvider
 
         $this->event(self::EVENT_AFTER_ACTION)
              ->append(array($this, 'afterAction'));
-
-        $this->event(self::EVENT_BEFORE_RENDER)
-             ->append(array($this, 'beforeRender'));
-
-        $this->event(self::EVENT_AFTER_RENDER)
-             ->append(array($this, 'afterRender'));
     }
 
     /**

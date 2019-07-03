@@ -2,14 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/library/Controllers/Api.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Controllers/Api.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/library/Controllers/Common.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Controllers/Common.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/ViewBase.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/ViewBase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Views/Api.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Views/Api.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Views/Common.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Views/Common.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/resource/application/files/resource.conf.develop.ocara" beforeDir="false" afterPath="$PROJECT_DIR$/system/resource/application/files/resource.conf.develop.ocara" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/resource/application/files/resource.conf.resource.ocara" beforeDir="false" afterPath="$PROJECT_DIR$/system/resource/application/files/resource.conf.resource.ocara" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/library/Core/ControllerBase.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/ControllerBase.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,10 +27,19 @@
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/library/Controllers/Provider/Base.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="289">
+              <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Controllers/Api.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
-              <caret line="97" lean-forward="true" selection-start-line="97" selection-end-line="97" />
+            <state relative-caret-position="391">
+              <caret line="32" column="5" lean-forward="true" selection-start-line="32" selection-start-column="5" selection-end-line="32" selection-end-column="5" />
               <folding>
                 <element signature="e#6#529#0#PHP" expanded="true" />
                 <element signature="e#560#590#0#PHP" expanded="true" />
@@ -44,11 +48,23 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/library/Core/ControllerBase.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="306">
+              <caret line="87" lean-forward="true" selection-start-line="87" selection-end-line="87" />
+              <folding>
+                <element signature="e#558#589#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/library/Controllers/Common.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="638">
-              <caret line="179" lean-forward="true" selection-start-line="179" selection-end-line="179" />
+            <state relative-caret-position="578">
+              <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
               <folding>
                 <element signature="e#6#529#0#PHP" expanded="true" />
                 <element signature="e#560#590#0#PHP" expanded="true" />
@@ -61,8 +77,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>getProperty</find>
-      <find>getPropery</find>
       <find>pushTransaction</find>
       <find>getModelLocation</find>
       <find>API</find>
@@ -88,9 +102,11 @@
       <find>success_code_map</find>
       <find>getRelateConfig</find>
       <find>result</find>
-      <find>contentType</find>
       <find>return_result</find>
       <find>is_send_error_code</find>
+      <find>setApiContentType</find>
+      <find>contentType</find>
+      <find>-&gt;contentType</find>
     </findStrings>
     <replaceStrings>
       <replace>map</replace>
@@ -132,9 +148,9 @@
       <dir>D:\web\ocara\system</dir>
       <dir>D:\web\framework\ocara\system</dir>
       <dir>D:\web\framework\ocara\system\library</dir>
-      <dir>D:\wwwroot\vendor\linyihu\ocara\system\library</dir>
       <dir>D:\wwwroot\vendor\linyihu\ocara</dir>
       <dir>D:\wwwroot\vendor\linyihu\ocara\system</dir>
+      <dir>D:\wwwroot\vendor\linyihu\ocara\system\library</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -185,13 +201,13 @@
         <option value="$PROJECT_DIR$/system/library/Controllers/Provider/Rest.php" />
         <option value="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" />
         <option value="$PROJECT_DIR$/system/library/Controllers/Rest.php" />
-        <option value="$PROJECT_DIR$/system/library/Core/ControllerBase.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Event.php" />
         <option value="$PROJECT_DIR$/system/library/Core/ViewBase.php" />
         <option value="$PROJECT_DIR$/system/resource/application/files/resource.conf.resource.ocara" />
         <option value="$PROJECT_DIR$/system/resource/application/files/resource.conf.develop.ocara" />
         <option value="$PROJECT_DIR$/system/library/Views/Common.php" />
         <option value="$PROJECT_DIR$/system/library/Views/Api.php" />
+        <option value="$PROJECT_DIR$/system/library/Core/ControllerBase.php" />
         <option value="$PROJECT_DIR$/system/library/Controllers/Api.php" />
         <option value="$PROJECT_DIR$/system/library/Controllers/Common.php" />
       </list>
@@ -299,12 +315,12 @@
       <workItem from="1561905288476" duration="4648000" />
       <workItem from="1561998996384" duration="733000" />
       <workItem from="1562081199133" duration="6165000" />
-      <workItem from="1562163807671" duration="4866000" />
+      <workItem from="1562163807671" duration="5307000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="87629000" />
+    <option name="totallyTimeSpent" value="88070000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -575,13 +591,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Controllers/Provider/Common.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Controllers/Feature/Common.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -627,16 +636,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/ControllerBase.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-151">
-          <caret line="276" column="7" lean-forward="true" selection-start-line="276" selection-start-column="7" selection-end-line="276" selection-end-column="7" />
-          <folding>
-            <element signature="e#558#589#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/Event.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="723">
@@ -675,13 +674,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Controllers/Provider/Base.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="366">
-          <caret line="37" column="32" selection-start-line="37" selection-start-column="32" selection-end-line="37" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Views/Api.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="578">
@@ -702,10 +694,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Controllers/Provider/Common.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Controllers/Provider/Base.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/ControllerBase.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="87" lean-forward="true" selection-start-line="87" selection-end-line="87" />
+          <folding>
+            <element signature="e#558#589#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Controllers/Api.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="97" lean-forward="true" selection-start-line="97" selection-end-line="97" />
+        <state relative-caret-position="391">
+          <caret line="32" column="5" lean-forward="true" selection-start-line="32" selection-start-column="5" selection-end-line="32" selection-end-column="5" />
           <folding>
             <element signature="e#6#529#0#PHP" expanded="true" />
             <element signature="e#560#590#0#PHP" expanded="true" />
@@ -715,8 +731,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Controllers/Common.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="638">
-          <caret line="179" lean-forward="true" selection-start-line="179" selection-end-line="179" />
+        <state relative-caret-position="578">
+          <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
           <folding>
             <element signature="e#6#529#0#PHP" expanded="true" />
             <element signature="e#560#590#0#PHP" expanded="true" />
