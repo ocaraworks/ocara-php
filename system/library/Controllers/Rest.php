@@ -37,5 +37,10 @@ class Rest extends Api
                 $this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
             }
         }
+
+        if (!ocConfig(array('API', 'send_header_code'), 0)) {
+            $this->response->setStatusCode(Response::STATUS_OK);
+            $this->result['status'] = $this->response->getOption('status');
+        }
     }
 }

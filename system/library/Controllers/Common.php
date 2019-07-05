@@ -85,12 +85,7 @@ class Common extends ControllerBase implements ControllerInterface
         $this->checkForm();
         $result = null;
 
-        if ($this->request->isAjax()) {
-            if (method_exists($this, 'ajax')) {
-                $result = $this->ajax();
-            }
-            $this->render($result, false);
-        } elseif ($this->isFormSubmit() && method_exists($this, 'submit')) {
+        if ($this->isFormSubmit() && method_exists($this, 'submit')) {
             $result = $this->submit();
             $this->formManager->clearToken();
             $this->render($result, false);
