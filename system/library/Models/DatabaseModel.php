@@ -302,9 +302,9 @@ abstract class DatabaseModel extends ModelBase
         $dir = dirname($filePath) . OC_DIR_SEP;
 
         if ($this->module) {
-            list($rootPath, $subDir) = ocSeprateDir($dir, '/privates/model/database/');
+            list($rootPath, $subDir) = ocSeparateDir($dir, '/privates/model/database/');
         } else {
-            list($rootPath, $subDir) = ocSeprateDir($dir, '/application//model/database/');
+            list($rootPath, $subDir) = ocSeparateDir($dir, '/application//model/database/');
         }
 
         if ($this->module) {
