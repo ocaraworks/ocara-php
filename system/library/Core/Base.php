@@ -147,8 +147,6 @@ abstract class Base extends Basis
 		if (is_object($this->plugin)) {
 			return $this->plugin;
 		}
-
-        ocService()->error->show('no_plugin');
 	}
 
     /**

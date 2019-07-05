@@ -236,13 +236,13 @@ class Event extends Basis implements EventInterface
             $this->running = true;
             foreach ($handlers as $key => $row) {
                 $callback = $row['callback'];
-                if ($this->running && is_callable($callback)) {
+                if ($this->running && ocIsCallable($callback)) {
                     $results[$key] = $this->runCallback($callback, $params);
                 }
             }
         } elseif ($this->defaultHandler) {
             $this->running = true;
-            if (is_callable($this->defaultHandler)){
+            if (ocIsCallable($this->defaultHandler)){
                 $results[] = $this->runCallback($this->defaultHandler, $params);
             }
         }

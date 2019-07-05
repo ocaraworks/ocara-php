@@ -9,6 +9,7 @@
 
 defined('OC_PATH') or exit('Forbidden!');
 
+use \ReflectionMethod;
 use Ocara\Core\Container;
 use Ocara\Core\ServiceProvider;
 use Ocara\Exceptions\Exception;
@@ -408,6 +409,48 @@ function ocError($error = null, array $params = array())
     }
 
     return $error;
+}
+
+/**
+ * 是否可回调
+ * @param $callback
+ * @param bool $requirePublic
+ * @param bool $requireStatic
+ * @return bool
+ * @throws ReflectionException
+ */
+function ocIsCallable($callback, $requirePublic = true, $requireStatic = true)
+{
+    if (!is_callable($callback, true)) return false;
+    if (is_object($callback)) return true;
+
+    if (is_string($callback)) {
+        if (strstr($callback, '::')) {
+            $callback = explode('::', $callback);
+            $class = reset($callback);
+            $method = isset($callback[1]) ? $callback[1] : null;
+            if ($class && $method) {
+                if (method_exists($class, $method)) {
+                    $methodReflection = new ReflectionMethod($class, $method);
+                    if ($requireStatic && !$methodReflection->isStatic()) return false;
+                    return $requirePublic ? $methodReflection->isPublic() : true;
+                }
+            }
+        } else {
+            return function_exists($callback);
+        }
+    } elseif (is_array($callback)) {
+        $object = reset($callback);
+        $method = isset($callback[1]) ? $callback[1] : null;
+        if ($object && $method) {
+            if (method_exists($object, $method)) {
+                $methodReflection = new ReflectionMethod($object, $method);
+                return $requirePublic ? $methodReflection->isPublic() : true;
+            }
+        }
+    }
+
+    return false;
 }
 
 /**
