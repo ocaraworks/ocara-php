@@ -1031,6 +1031,7 @@ abstract class DatabaseModel extends ModelBase
 	public function pushSql($condition, $option, $queryRow)
     {
         if ($condition) $this->where($condition);
+
         if ($queryRow) {
             if (!empty($this->sql['option']['limit'])) {
                 $this->sql['option']['limit'][1] = 1;

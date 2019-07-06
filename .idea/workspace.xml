@@ -2,10 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/extension/library/Tools/Develop/Generate/ModelService.php" beforeDir="false" afterPath="$PROJECT_DIR$/extension/library/Tools/Develop/Generate/ModelService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/data/languages/zh_cn.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/data/languages/zh_cn.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/DriverBase.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/DriverBase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Databases/Driver/PdoDriver.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Databases/Driver/PdoDriver.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" afterDir="false" />
     </list>
@@ -32,8 +28,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="25" column="15" selection-start-line="25" selection-start-column="15" selection-end-line="25" selection-end-column="15" />
+            <state relative-caret-position="420">
+              <caret line="1105" lean-forward="true" selection-start-line="1105" selection-end-line="1105" />
             </state>
           </provider>
         </entry>
@@ -41,8 +37,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="535">
-              <caret line="100" lean-forward="true" selection-start-line="100" selection-end-line="100" />
+            <state relative-caret-position="444">
+              <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
               <folding>
                 <element signature="e#33#55#0#PHP" expanded="true" />
               </folding>
@@ -62,7 +58,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Core/Basis.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
+            <state relative-caret-position="986">
               <caret line="106" lean-forward="true" selection-start-line="106" selection-end-line="106" />
             </state>
           </provider>
@@ -72,12 +68,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Api</find>
-      <find>CONTROLLER_SERVICE_CLASS</find>
-      <find>static::</find>
-      <find>this-&gt;controllerType</find>
-      <find>getModuleViewPath</find>
-      <find>controllerType</find>
       <find>plugin</find>
       <find>$plugin</find>
       <find>this-&gt;plugin</find>
@@ -102,6 +92,12 @@
       <find>findRow(</find>
       <find>query(</find>
       <find>-&gt;selected</find>
+      <find>oldData</find>
+      <find>getRow</find>
+      <find>select(</find>
+      <find>getRow(</find>
+      <find>this-&gt;selected</find>
+      <find>update(</find>
     </findStrings>
     <replaceStrings>
       <replace>map</replace>
@@ -203,14 +199,14 @@
         <option value="$PROJECT_DIR$/system/library/Databases/MysqliDatabase.php" />
         <option value="$PROJECT_DIR$/system/data/languages/zh_cn.php" />
         <option value="$PROJECT_DIR$/extension/library/Tools/Develop/Generate/ModelService.php" />
-        <option value="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" />
         <option value="$PROJECT_DIR$/system/library/Databases/Driver/PdoDriver.php" />
         <option value="$PROJECT_DIR$/system/library/Core/DriverBase.php" />
+        <option value="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" />
         <option value="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="5" />
     <option name="y" value="123" />
     <option name="width" value="1940" />
@@ -321,18 +317,18 @@
       <workItem from="1562337121401" duration="11050000" />
       <workItem from="1562380949247" duration="13637000" />
       <workItem from="1562396390600" duration="172000" />
-      <workItem from="1562407923655" duration="10016000" />
+      <workItem from="1562407923655" duration="15057000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="124365000" />
+    <option name="totallyTimeSpent" value="129406000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.30472103" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.30472103" />
       <window_info id="Favorites" order="1" sideWeight="0.5014245" side_tool="true" weight="0.22214764" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49946353" weight="0.4422222" />
@@ -706,13 +702,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="25" column="15" selection-start-line="25" selection-start-column="15" selection-end-line="25" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/Base.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="468">
@@ -722,15 +711,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/Basis.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
+        <state relative-caret-position="986">
           <caret line="106" lean-forward="true" selection-start-line="106" selection-end-line="106" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="1105" lean-forward="true" selection-start-line="1105" selection-end-line="1105" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="535">
-          <caret line="100" lean-forward="true" selection-start-line="100" selection-end-line="100" />
+        <state relative-caret-position="444">
+          <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
           <folding>
             <element signature="e#33#55#0#PHP" expanded="true" />
           </folding>

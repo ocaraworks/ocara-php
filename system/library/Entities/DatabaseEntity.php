@@ -88,14 +88,14 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function data(array $data = array())
     {
-        $plugin = $this->plugin();
+        $model = $this->getModel();
 
         if (empty($data)) {
-            $data = $plugin->getSubmitData($data);
+            $data = $model->getSubmitData($data);
         }
 
         if ($data) {
-            $data = $plugin->filterData($data);
+            $data = $model->filterData($data);
             $this->setProperty($data);
         }
 
@@ -212,7 +212,7 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function create(array $data = array(), $debug = false)
     {
-        $plugin = $this->plugin();
+        $model = $this->getModel();
 
         if (!$debug && $this->relations) {
             ocService()->transaction->begin();
@@ -224,10 +224,10 @@ abstract class DatabaseEntity extends BaseEntity
             $this->setProperty($data);
         }
 
-        $result = $plugin->create($this->toArray(), $debug);
+        $result = $model->create($this->toArray(), $debug);
 
         if (!$debug) {
-            $this->insertId = $plugin->getInsertId();
+            $this->insertId = $model->getInsertId();
             if ($this->getAutoIncrementField()) {
                 $autoIncrementField = $this->getAutoIncrementField();
                 $this->$autoIncrementField = $this->insertId;
@@ -258,11 +258,13 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function update(array $data = array(), $debug = false)
     {
-        $plugin = $this->plugin();
+        $model = $this->getModel();
 
         if (empty($this->selected)) {
             ocService()->error->show('need_condition');
         }
+
+        $model->where($this->selected);
 
         if (!$debug && $this->relations) {
             ocService()->transaction->begin();
@@ -277,7 +279,7 @@ abstract class DatabaseEntity extends BaseEntity
 
         $data = array_merge($this->getChanged(), $data);
         call_user_func_array('ocDel', array(&$data, $this->getPrimaries()));
-        $result = $plugin->update($data, $debug);
+        $result = $model->update($data, $debug);
 
         if (!$debug) {
             $this->relateSave();
@@ -310,15 +312,16 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function delete($debug = false)
     {
-        $plugin = $this->plugin();
+        $model = $this->getModel();
 
         if (empty($this->selected)) {
             ocService()->error->show('need_condition');
         }
 
+        $model->where($this->selected);
         $this->fire(self::EVENT_BEFORE_DELETE);
 
-        $result = $plugin->delete();
+        $result = $model->delete();
         if (!$debug) {
             $this->fire(self::EVENT_AFTER_DELETE);
         }
@@ -350,8 +353,10 @@ abstract class DatabaseEntity extends BaseEntity
      */
     protected function getPrimaryCondition($condition)
     {
-        $plugin = $this->plugin();
-        $primaries = $plugin->getPrimaries();
+        $where = array();
+        $values = array();
+        $model = $this->getModel();
+        $primaries = $model->getPrimaries();
 
         if (empty($primaries)) {
             ocService()->error->show('no_primary');
@@ -361,7 +366,6 @@ abstract class DatabaseEntity extends BaseEntity
             ocService()->error->show('need_primary_value');
         }
 
-        $values = array();
         if (is_string($condition) || is_numeric($condition)) {
             $values = explode(',', trim($condition));
         } elseif (is_array($condition)) {
@@ -370,9 +374,8 @@ abstract class DatabaseEntity extends BaseEntity
             ocService()->error->show('fault_primary_value_format');
         }
 
-        $where = array();
         if (count($primaries) == count($values)) {
-            $where = $plugin->filterData(array_combine($primaries, $values));
+            $where = $model->filterData(array_combine($primaries, $values));
             $this->selected = $where;
         } else {
             ocService()->error->show('fault_primary_num');
@@ -388,8 +391,8 @@ abstract class DatabaseEntity extends BaseEntity
      */
     protected function relateFind($alias)
     {
-        $plugin = $this->plugin();
-        $config = $plugin->getRelateConfig($alias);
+        $model = $this->getModel();
+        $config = $model->getRelateConfig($alias);
         $result = null;
 
         if ($config) {
@@ -415,14 +418,12 @@ abstract class DatabaseEntity extends BaseEntity
      */
     protected function relateSave()
     {
-        $plugin = $this->plugin();
+        if (!$this->relations) return true;
 
-        if (!$this->relations) {
-            return true;
-        }
+        $model = $this->getModel();
 
         foreach ($this->relations as $key => $object) {
-            $config = $plugin->getRelateConfig($key);
+            $config = $model->getRelateConfig($key);
             if ($config && isset($this->$config['primaryKey'])) {
                 $data = array();
                 if ($config['joinType'] == 'hasOne' && is_object($object)) {
@@ -458,8 +459,8 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function &__get($key)
     {
-        $plugin = $this->plugin();
-        $relations = $plugin->getConfig('RELATIONS');
+        $model = $this->getModel();
+        $relations = $model->getConfig('RELATIONS');
 
         if (isset($relations[$key])) {
             if (!isset($this->relations[$key])) {
@@ -480,14 +481,14 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function __set($name, $value)
     {
-        $plugin = $this->plugin();
-        $relations = $plugin->getConfig('RELATIONS');
+        $model = $this->getModel();
+        $relations = $model->getConfig('RELATIONS');
 
         if (isset($relations[$name])) {
             $this->relations[$name] = $value;
         } else {
             $oldValue = null;
-            if ($this->selected) {
+            if ($this->selected && isset($this->$name)) {
                 if (!array_key_exists($name, $this->oldData)){
                     $oldValue = $this->$name;
                 }
