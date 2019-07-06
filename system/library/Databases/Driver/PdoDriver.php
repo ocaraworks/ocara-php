@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Databases\Driver;
 
+use Ocara\Core\BaseEntity;
 use \PDO;
 use \PDOException;
 use Ocara\Exceptions\Exception;
@@ -429,11 +430,7 @@ class PdoDriver extends DriverBase implements DriverInterface
             } else {
                 if (class_exists($dataType)) {
                     while ($row = $this->stmt->fetch(PDO::FETCH_ASSOC)) {
-                        $object = new $dataType();
-                        foreach ($row as $key => $value) {
-                            $object->$key = $value;
-                        }
-                        $result[] = $object;
+                        $result[] = $result[] = $this->load_object($dataType, $dataType);
                         if ($queryRow) break;
                     }
                 }

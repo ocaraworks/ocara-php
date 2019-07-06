@@ -1,6 +1,7 @@
 <?php
 namespace Ocara\Entities;
 
+use \ReflectionObject;
 use Ocara\Core\BaseEntity;
 use Ocara\Exceptions\Exception;
 use Ocara\Iterators\Database\ObjectRecords;
@@ -20,9 +21,9 @@ abstract class DatabaseEntity extends BaseEntity
     private $insertId;
 
     /**
-     * @var string $modelClass
+     * @var string $source
      */
-    private $modelClass;
+    private $source;
 
     const EVENT_BEFORE_CREATE = 'beforeCreate';
     const EVENT_AFTER_CREATE = 'afterCreate';
@@ -36,7 +37,48 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function __construct()
     {
-        $this->setPlugin(new $this->modelClass());
+        $this->source = $this->source();
+        $this->setModel($this->source);
+
+        if (method_exists($this, '__entity')) {
+            $this->__entity();
+        }
+    }
+
+    /**
+     * 获取模型类名
+     * @return mixed
+     */
+    public function source()
+    {}
+
+    /**
+     * 获取模型类名
+     * @return mixed
+     */
+    public function getModel()
+    {
+       return $this->plugin();
+    }
+
+    /**
+     * 修改数据来源
+     * @param $source
+     */
+    public function setModel($model)
+    {
+        if ($model) {
+            if (is_string($model)) {
+                $this->source = $model;
+                return $this->setPlugin(new $model());
+            } elseif (is_object($model)) {
+                $reflection = new ReflectionObject($model);
+                $this->source = $reflection->getName();
+                return $this->setPlugin($model);
+            }
+        }
+
+        ocService()->error->show('invalid_entity_database');
     }
 
     /**
@@ -47,10 +89,14 @@ abstract class DatabaseEntity extends BaseEntity
     public function data(array $data = array())
     {
         $plugin = $this->plugin();
-        $data = $plugin->getSubmitData($data);
+
+        if (empty($data)) {
+            $data = $plugin->getSubmitData($data);
+        }
 
         if ($data) {
-            $this->setProperty($plugin->filterData($data));
+            $data = $plugin->filterData($data);
+            $this->setProperty($data);
         }
 
         return $this;
@@ -72,7 +118,7 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function clearAll()
     {
-        parent::clearAll();
+        $this->getModel()->clearAll();
         $this->clearData();
         return $this;
     }
@@ -142,14 +188,19 @@ abstract class DatabaseEntity extends BaseEntity
      * @param $values
      * @param null $options
      * @param bool $debug
-     * @return array|DatabaseModel|null
+     * @return DatabaseEntity
      */
     public static function select($values, $options = null, $debug = false)
     {
-        $model = new static();
-        $condition = $model->getPrimaryCondition($values);
+        $entity = new static();
+        $condition = $entity->getPrimaryCondition($values);
 
-        return $model->asEntity(self::getClass())->findRow($condition, $options, $debug);
+        $data = $entity
+            ->getModel()
+            ->getRow($condition, $options, $debug);
+
+        $entity->data($data);
+        return $entity;
     }
 
     /**
@@ -268,7 +319,6 @@ abstract class DatabaseEntity extends BaseEntity
         $this->fire(self::EVENT_BEFORE_DELETE);
 
         $result = $plugin->delete();
-
         if (!$debug) {
             $this->fire(self::EVENT_AFTER_DELETE);
         }
@@ -323,6 +373,7 @@ abstract class DatabaseEntity extends BaseEntity
         $where = array();
         if (count($primaries) == count($values)) {
             $where = $plugin->filterData(array_combine($primaries, $values));
+            $this->selected = $where;
         } else {
             ocService()->error->show('fault_primary_num');
         }

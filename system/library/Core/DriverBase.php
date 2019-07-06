@@ -83,11 +83,7 @@ class DriverBase extends Base
 			} else {
                 if (class_exists($dataType)) {
                     while ($row = $this->fetch_assoc()) {
-                        $object = new $dataType();
-                        foreach ($row as $key => $value) {
-                            $object->$key = $value;
-                        }
-                        $result[] = $object;
+                        $result[] = $this->load_object($dataType, $row);
                         if ($queryRow) break;
                     }
                 }
@@ -98,6 +94,27 @@ class DriverBase extends Base
 
 		return $result;
 	}
+
+    /**
+     * 新建类对象
+     * @param $class
+     * @param $data
+     * @return mixed
+     */
+	public function load_object($class, $data)
+    {
+        $object = new $class();
+
+        if ($object instanceof BaseEntity) {
+            $object->data($data);
+        } else {
+            foreach ($data as $key => $value) {
+                $object->$key = $value;
+            }
+        }
+
+        return $object;
+    }
 
 	/**
 	 * 解析参数类型

@@ -813,23 +813,14 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function findRow($condition = false, $options = null, $debug = false)
 	{
-		$this->clearData();
-
 		if ($condition) {
 			$this->where($condition);
 		}
 
         $dataType = $this->getDataType();
+        $result = $this->baseFind($condition, $options, $debug, true, false, $dataType);
 
-        $data = $this->baseFind($condition, $options, $debug, true, false, $dataType);
-		if ($debug === DatabaseBase::DEBUG_RETURN) return $data;
-
-		if ($data) {
-			$this->data($data);
-			return $this;
-		}
-
-		return null;
+        return $result;
 	}
 
     /**

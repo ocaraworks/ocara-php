@@ -156,6 +156,13 @@ class ModelService extends BaseService
         $content .= "\r\n";
         $content .= "class {$entityName} extends {$modelBase}\r\n";
         $content .= "{\r\n";
+        $content .= "\tpublic function __entity()\r\n";
+        $content .= "\t{}\r\n";
+        $content .= "\r\n";
+        $content .= "\tpublic function defaultModel()\r\n";
+        $content .= "\t{\r\n";
+        $content .= "\t\treturn '{$modelClass}';\r\n";
+	    $content .= "\t}\r\n";
         $content .= "}";
 
         $fileService->createFile($entityPath, 'wb');

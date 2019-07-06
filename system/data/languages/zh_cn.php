@@ -50,6 +50,8 @@ return array(
 	'invalid_exception'				=> array(1902, '指定的Exception不存在或非法！'),
 	'invalid_field_name'			=> array(1903, '字段名必须是字符串。'),
 	'invalid_class_static_method' 	=> array(1904, '%s缺少静态方法%s()！请使用类对象代替类名传递。'),
+	'invalid_entity_database'       => array(1905, '实体的数据表模型不正确！'),
+    'invalid_entity_cache'          => array(1905, '实体的缓存模型不正确！'),
 
 	//必需
 	'need_condition' 				=> array(2100, '查询条件不存在或为空。'),
