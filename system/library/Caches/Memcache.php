@@ -75,7 +75,7 @@ class Memcache extends CacheBase implements CacheInterface
         $args = func_get_args();
         $expireTime = array_key_exists(2, $args) ? $args[2] : 0;
         $params = array_key_exists(3, $args) ? $args[3] : array();
-        $plugin = $this->plugin();
+        $plugin = $this->plugin(false);
 
 		if (is_object($plugin)) {
 			return $plugin->set($name, $value, $params, $expireTime);
@@ -92,7 +92,7 @@ class Memcache extends CacheBase implements CacheInterface
      */
 	public function get($name, $args = null)
 	{
-	    $plugin = $this->plugin();
+	    $plugin = $this->plugin(false);
 		if (is_object($plugin) && method_exists($plugin, 'get')) {
 			return $plugin->get($name);
 		}
