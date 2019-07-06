@@ -13,10 +13,18 @@ use Ocara\Core\Response;
 use Ocara\Exceptions\Exception;
 use Ocara\Interfaces\Controller as ControllerInterface;
 
-class Api extends ControllerBase  implements ControllerInterface
+class Api extends ControllerBase implements ControllerInterface
 {
     const EVENT_BEFORE_RENDER = 'beforeRender';
     const EVENT_AFTER_RENDER = 'afterRender';
+
+    /**
+     * 获取控制器类型
+     */
+    public static function controllerType()
+    {
+        return self::$controllerType ? ucfirst(self::$controllerType): 'Api';
+    }
 
     /**
      * 注册事件

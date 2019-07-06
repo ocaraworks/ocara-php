@@ -12,6 +12,14 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class ActionService extends BaseService
 {
+    public $tplType;
+    public $mdltype;
+    public $createview;
+    public $controllerType;
+    public $mdlname;
+    public $cname;
+    public $actionName;
+
 
 	public function __construct()
 	{
@@ -41,13 +49,13 @@ class ActionService extends BaseService
 		$count = count($actname);
 
 		if ($count >= 3) {
-			$this->mdlname    = strtolower(ocGet(0, $actname));
-			$this->cname      = strtolower(ocGet(1, $actname));
-			$this->actionName = strtolower(ocGet(2, $actname));
+			$this->mdlname    = lcfirst(ocGet(0, $actname));
+			$this->cname      = lcfirst(ocGet(1, $actname));
+			$this->actionName = lcfirst(ocGet(2, $actname));
 		} elseif ($count == 2) {
 		    $this->mdlname    = !empty($data['mdlname']) ? $data['mdlname'] : null;
-			$this->cname      = strtolower(ocGet(0, $actname));
-			$this->actionName = strtolower(ocGet(1, $actname));
+			$this->cname      = lcfirst(ocGet(0, $actname));
+			$this->actionName = lcfirst(ocGet(1, $actname));
 		} else {
             $this->showError('缺少控制器！');
 		}
@@ -128,7 +136,9 @@ class ActionService extends BaseService
         $controlClassName = 'Controller';
 		$className = $actionName . 'Action';
 
-        extract($this->getModuleRootPath($this->mdltype));
+        $pathInfo = $this->getModuleRootPath($this->mdltype);
+        $rootNamespace = $pathInfo['rootNamespace'];
+        $rootModulePath = $pathInfo['rootModulePath'];
 
 		if ($mdlname) {
             $moduleNamespace = $rootNamespace . "\\{$this->mdlname}\\controller";
@@ -173,7 +183,7 @@ class ActionService extends BaseService
 		$content  = "<?php\r\n";
 		$content .= "namespace {$actionNamespace};\r\n";
         $content .= "\r\n";
-		$content .= "use $controlNamespace\\{$controlClassName};\r\n";
+		//$content .= "use $controlNamespace\\{$controlClassName};\r\n";
 
 		$content .= "\r\n";
 		$content .= "class {$className} extends {$controlClassName}\r\n";
@@ -204,6 +214,8 @@ class ActionService extends BaseService
         $fileService->createFile($actionFile , 'wb');
         $fileService->writeFile($actionFile, $content);
 
-		$this->createview && $this->createView($actionNamespace . OC_NS_SEP . $className);
+        if ($this->controllerType == 'Common') {
+            $this->createView($actionNamespace . OC_NS_SEP . $className);
+        }
 	}
 }

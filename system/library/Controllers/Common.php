@@ -26,6 +26,14 @@ class Common extends ControllerBase implements ControllerInterface
     const EVENT_AFTER_RENDER_API = 'afterRenderApi';
 
     /**
+     * 获取控制器类型
+     */
+    public static function controllerType()
+    {
+        return self::$controllerType ? ucfirst(self::$controllerType): 'Common';
+    }
+
+    /**
      * 注册事件
      */
     public function registerEvents()

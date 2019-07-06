@@ -117,6 +117,9 @@ return array(
         'Common' => array(
             'view' => 'Ocara\Views\Common',
         ),
+        'Api' => array(
+            'view' => 'Ocara\Views\Api',
+        ),
         'Rest' => array(
             'view' => 'Ocara\Views\Api',
         ),

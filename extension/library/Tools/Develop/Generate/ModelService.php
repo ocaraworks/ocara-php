@@ -128,16 +128,16 @@ class ModelService extends BaseService
 		$content .= "{\r\n";
 
 		if ($this->_connectName != 'defaults') {
-            $content .= "\tprotected \$_connectName = '{$this->_connectName}';\r\n";
+            $content .= "\tprotected \$connectName = '{$this->_connectName}';\r\n";
         }
 
 		if ($this->_mdltype && $this->_mdlname) {
-            $content .= "\tprotected \$_module = '{$this->_mdlname}';\r\n";
+            $content .= "\tprotected \$module = '{$this->_mdlname}';\r\n";
         }
 
-		$content .= "\tprotected \$_database = '{$this->_database}';\r\n";
-		$content .= "\tprotected \$_table = '{$this->_table}';\r\n";
-		$content .= "\tprotected \$_primary = '{$this->_primaries}';\r\n";
+		$content .= "\tprotected \$database = '{$this->_database}';\r\n";
+		$content .= "\tprotected \$table = '{$this->_table}';\r\n";
+		$content .= "\tprotected \$primary = '{$this->_primaries}';\r\n";
 		$content .= "\r\n";
 		$content .= "\t/**\r\n";
 		$content .= "\t * 初始化模型\r\n";

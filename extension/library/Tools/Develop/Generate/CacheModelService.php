@@ -95,11 +95,11 @@ class CacheModelService extends BaseService
         $content .= "\r\n";
         $content .= "class {$modelName} extends {$modelBase}\r\n";
         $content .= "{\r\n";
-        $content .= "\tprotected \$_connectName = '{$this->_connectName}';\r\n";
-        $content .= "\tprotected \$_prefix = '{$this->_prefix}';\r\n";
+        $content .= "\tprotected \$connectName = '{$this->_connectName}';\r\n";
+        $content .= "\tprotected \$prefix = '{$this->_prefix}';\r\n";
 
         if ($cacheType == 'Redis') {
-            $content .= "\tprotected \$_database = '{$this->_database}';\r\n";
+            $content .= "\tprotected \$database = '{$this->_database}';\r\n";
         }
 
         $content .= "\r\n";

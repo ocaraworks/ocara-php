@@ -12,12 +12,6 @@
 </div>
 
 <div>
-    <span class="left-span">控制器类型</span>
-    <input type="radio" value="Common" name="controllerType" id="controllerType1" checked /> 普通控制器&nbsp;
-    <input type="radio" value="Rest" name="controllerType" id="controllerType2" /> Restful控制器
-</div>
-    
-<div>
 <span class="left-span">控制器名称：</span>
 <input type="text" name="cname" id="cname" />
 <span class="right-span">有模块时：模块名/控制器名。</span>

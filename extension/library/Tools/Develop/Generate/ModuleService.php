@@ -12,12 +12,16 @@ use Ocara\Core\Develop;
 
 class ModuleService extends BaseService
 {
+    protected $mdltype;
 	protected $mdlname;
+	protected $controllerType;
 
 	public function add()
 	{
         $this->mdltype = ocService()->request->getPost('mdltype');
 		$this->mdlname = ocService()->request->getPost('mdlname');
+		$this->controllerType = ocService()->request->getPost('controllerType');
+
 		$this->createModule();
 	}
 
@@ -25,7 +29,7 @@ class ModuleService extends BaseService
 	{
 		$mdlname   = ucfirst($this->mdlname);
 		$className = $mdlname . 'Module';
-		$baseController = ucfirst(ocService()->request->getPost('controllerType')) . 'Controller';
+		$baseController = ucfirst($this->controllerType) . 'Controller';
 
 		switch($this->mdltype)
         {
@@ -62,10 +66,13 @@ class ModuleService extends BaseService
         ocCheckPath($modulePath . '/services');
         ocCheckPath($modulePath . '/privates/config');
         ocCheckPath($modulePath . '/privates/lang/' . $language);
-        ocCheckPath($modulePath . '/view/defaults/layout');
-        ocCheckPath($modulePath . '/view/defaults/template');
-        ocCheckPath($modulePath . '/view/defaults/helper');
-        ocCheckPath($modulePath . '/view/defaults/part');
+
+        if ($this->controllerType == 'Common') {
+            ocCheckPath($modulePath . '/view/defaults/layout');
+            ocCheckPath($modulePath . '/view/defaults/template');
+            ocCheckPath($modulePath . '/view/defaults/helper');
+            ocCheckPath($modulePath . '/view/defaults/part');
+        }
 
 		if (empty($this->mdlname)) {
 			$this->showError('模块名称为必填信息！');

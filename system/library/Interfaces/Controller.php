@@ -23,4 +23,9 @@ interface Controller
 	 * @param string $actionMethod
 	 */
 	public function doAction($actionMethod);
+
+    /**
+     * 获取控制器类型
+     */
+    public static function controllerType();
 }

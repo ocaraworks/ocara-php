@@ -13,11 +13,10 @@ use Ocara\Core\ServiceProvider;
 use Ocara\Interfaces\Controller as ControllerInterface;
 use Ocara\Core\ModelBase;
 use Ocara\Exceptions\Exception;
-use Ocara\Controllers\Api;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class ControllerBase extends serviceProvider
+abstract class ControllerBase extends serviceProvider
 {
 	/**
 	 * @var $_provider 控制器提供者
@@ -66,7 +65,7 @@ class ControllerBase extends serviceProvider
 
         $services = array_merge(
             ocConfig(array('CONTROLLER_SERVICE_CLASS', 'All')),
-            ocConfig(array('CONTROLLER_SERVICE_CLASS', self::controllerType()), array())
+            ocConfig(array('CONTROLLER_SERVICE_CLASS', static::controllerType()), array())
         );
 
         foreach ($services as $name => $class) {
@@ -122,14 +121,6 @@ class ControllerBase extends serviceProvider
         }
 
         return $class;
-    }
-
-    /**
-     * 获取提供者类型
-     */
-	public static function controllerType()
-    {
-	    return self::$controllerType ? ucfirst(self::$controllerType): 'Common';
     }
 
     /**
