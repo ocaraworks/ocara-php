@@ -151,6 +151,8 @@ abstract class Base extends Basis
 		if ($required) {
 		    throw new Exception('no_plugin');
         }
+
+		return null;
 	}
 
     /**
