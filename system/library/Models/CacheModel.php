@@ -73,22 +73,20 @@ abstract class CacheModel extends ModelBase
      */
     public function connect($master = true)
     {
-        $this->setPlugin(null);
+        $plugin = $this->setPlugin(null);
 
         if (!$master) {
             if (!is_object($this->slave)) {
                 $this->slave = CacheFactory::create($this->connectName, false, false);
             }
-            $this->setPlugin($this->slave);
+            $plugin = $this->setPlugin($this->slave);
         }
-
-        $plugin = $this->plugin();
 
         if (!is_object($plugin)) {
             if (!is_object($this->master)) {
                 $this->master = CacheFactory::create($this->connectName);
             }
-            $this->setPlugin($this->master);
+            $plugin = $this->setPlugin($this->master);
         }
 
         if ($this->database) {

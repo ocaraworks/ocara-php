@@ -143,10 +143,10 @@ class DatabaseBase extends Sql
 		if ($exists) {
 			$this->setPlugin(self::$connects[$connectName]);
 		} else {
-			$this->setPlugin($this->getDriver($config));
-			self::$connects[$connectName] = $this->plugin();
+			$plugin = $this->setPlugin($this->getDriver($config));
+			self::$connects[$connectName] = $plugin;
 			$this->isPconnect($config['pconnect']);
-			$this->plugin()->connect();
+            $plugin->connect();
 			$this->isPrepare($config['prepare']);
 		}
 
@@ -234,6 +234,7 @@ class DatabaseBase extends Sql
 	{
 	    $plugin = $this->plugin();
 	    list($sql, $params) = $sqlData;
+
 		$this->fire(
 		    self::EVENT_BEFORE_EXECUTE_SQL,
             array($sql, date(ocConfig(array('DATE_FORMAT', 'datetime'))))
@@ -590,8 +591,10 @@ class DatabaseBase extends Sql
 	 */
 	public function beginTransaction()
 	{
+	    $plugin = $this->plugin();
 		$this->autocommit(false);
-		$result = $this->plugin()->begin_transaction();
+
+		$result = $plugin->begin_transaction();
 		return $result;
 	}
 

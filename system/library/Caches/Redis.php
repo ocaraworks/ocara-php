@@ -72,7 +72,7 @@ class Redis extends CacheBase implements CacheInterface
      */
     public function get($name, $args = null)
     {
-        $plugin = $this->plugin();
+        $plugin = $this->plugin(false);
 		if (is_object($plugin) && method_exists($plugin, 'get')) {
 			return unserialize($plugin->get($name));
 		}

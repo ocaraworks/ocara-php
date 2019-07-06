@@ -47,7 +47,7 @@ class SessionCache extends ServiceProvider
      */
     public function open()
     {
-		if (is_object($this->plugin())) {
+		if (is_object($this->plugin(false))) {
 			return true;
 		}
         return false;

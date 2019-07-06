@@ -472,6 +472,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function filterData(array $data)
 	{
+        $plugin = $this->plugin(false);
 		$result = array();
 
 		foreach ($data as $field => $value) {
@@ -484,10 +485,10 @@ abstract class DatabaseModel extends ModelBase
 		}
 
 		if ($this->fields) {
-			if (!is_object($this->plugin(false))) {
-				$this->setPlugin($this->connect());
+			if (!is_object($plugin)) {
+                $plugin = $this->setPlugin($this->connect());
 			}
-			$result = $this->plugin()->formatFieldValues($this->fields, $result);
+			$result = $plugin->formatFieldValues($this->fields, $result);
 		}
 
 		return $result;
@@ -1139,27 +1140,27 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function connect($master = true)
 	{
-		$this->setPlugin(null);
+        $plugin = $this->setPlugin(null);
 
 		if (!($master || ocGet(array('option', 'master'), $this->sql))) {
 			if (!is_object($this->slave)) {
 				$this->slave = DatabaseFactory::create($this->connectName, false, false);
 			}
-			$this->setPlugin($this->slave);
+            $plugin = $this->setPlugin($this->slave);
 		}
 
-		if (!is_object($this->plugin(false))) {
+		if (!is_object($plugin)) {
 			if (!is_object($this->master)) {
 				$this->master = DatabaseFactory::create($this->connectName);
 			}
-			$this->setPlugin($this->master);
+            $plugin = $this->setPlugin($this->master);
 		}
 
 		if ($this->database) {
-			$this->plugin()->selectDatabase($this->database);
+            $plugin->selectDatabase($this->database);
 		}
 
-		return $this->plugin();
+		return $plugin;
 	}
 
     /**
@@ -1270,15 +1271,15 @@ abstract class DatabaseModel extends ModelBase
 	public function parseField($alias, $fields)
 	{
         $plugin = $this->plugin();
-		$_field = explode(',', $fields);
+		$fieldList = explode(',', $fields);
 
-		foreach ($_field as $key => $value) {
+		foreach ($fieldList as $key => $value) {
 			$value = explode('.', ltrim($value));
 			$field = trim($value[count($value) - 1]);
-			$_field[$key] = $plugin->getFieldNameSql($field, $alias);
+            $fieldList[$key] = $plugin->getFieldNameSql($field, $alias);
 		}
 
-		return implode(',', $_field);
+		return implode(',', $fieldList);
 	}
 
 	/**

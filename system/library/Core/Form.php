@@ -272,7 +272,7 @@ class Form extends Base
      */
 	public function __call($name, $params)
 	{
-        $plugin = $this->plugin();
+        $plugin = $this->plugin(false);
 
 		if (is_object($plugin) && method_exists($plugin, $name)) {
 			$html = call_user_func_array(array(&$plugin, $name), $params);

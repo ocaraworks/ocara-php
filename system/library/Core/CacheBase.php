@@ -32,12 +32,12 @@ class CacheBase extends Base
 		$connectName = $config['connect_name'];
 		$this->setConnectName($connectName);
 
-		if (isset(self::$connects[$connectName]) && self::$connects[$connectName] instanceof CacheBase) {
-			$this->setPlugin(self::$connects[$connectName]);
-		} else {
+		if (!(isset(self::$connects[$connectName]) && self::$connects[$connectName] instanceof CacheBase)) {
 			$this->connect($config, $required);
 			self::$connects[$connectName] = $this->plugin();
 		}
+
+        $this->setPlugin(self::$connects[$connectName]);
 	}
 
 	/**

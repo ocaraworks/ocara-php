@@ -28,8 +28,8 @@ class Log extends Base
     public function __construct($logName = null)
     {
         $this->name = $logName ? : 'common';
-        $this->setPlugin(ocService('fileLog', true));
-        $this->plugin()->setOption(ocConfig(array('Log', 'root'), 'logs'));
+        $plugin = $this->setPlugin(ocService('fileLog', true));
+        $plugin->setOption(ocConfig(array('Log', 'root'), 'logs'));
     }
 
     /**

@@ -115,7 +115,7 @@ class Common extends ViewBase implements ViewInterfaces
     public function assign($name, $value = null)
     {
         $variables = array();
-        $plugin = $this->plugin();
+        $plugin = $this->plugin(false);
 
         if (is_string($name)) {
             $variables[$name] = $value;
