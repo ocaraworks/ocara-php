@@ -45,19 +45,20 @@ class Memcache extends CacheBase implements CacheInterface
      */
 	private function addServers($config, $class)
 	{
-		$servers = ocGet('servers', $config, array());
+        $plugin = $this->plugin();
+        $servers = ocGet('servers', $config, array());
 		
 		if ($class == 'Memcached') {
-			$this->plugin()->addServers($servers);
+            $plugin->addServers($servers);
 			if ($options = ocGet('options', $config, array())) {
 				foreach ($options as $key => $value) {
-					$this->plugin()->setOption($key, $value);
+                    $plugin->setOption($key, $value);
 				}
 			}
 		} else {
 			foreach ($servers as $serve) {
 				call_user_func_array(
-					array(&$this->plugin(), 'addServer'), $serve
+					array(&$plugin, 'addServer'), $serve
 				);
 			}
 		}
@@ -74,9 +75,10 @@ class Memcache extends CacheBase implements CacheInterface
         $args = func_get_args();
         $expireTime = array_key_exists(2, $args) ? $args[2] : 0;
         $params = array_key_exists(3, $args) ? $args[3] : array();
+        $plugin = $this->plugin();
 
-		if (is_object($this->plugin())) {
-			return $this->plugin()->set($name, $value, $params, $expireTime);
+		if (is_object($plugin)) {
+			return $plugin->set($name, $value, $params, $expireTime);
 		}
 
 		return false;

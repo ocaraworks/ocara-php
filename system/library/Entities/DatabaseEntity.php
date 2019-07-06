@@ -46,9 +46,11 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function data(array $data = array())
     {
-        $data = $this->plugin()->getSubmitData($data);
+        $plugin = $this->plugin();
+        $data = $plugin->getSubmitData($data);
+
         if ($data) {
-            $this->setProperty($this->plugin()->filterData($data));
+            $this->setProperty($plugin->filterData($data));
         }
 
         return $this;
@@ -159,6 +161,8 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function create(array $data = array(), $debug = false)
     {
+        $plugin = $this->plugin();
+
         if (!$debug && $this->relations) {
             ocService()->transaction->begin();
         }
@@ -169,10 +173,10 @@ abstract class DatabaseEntity extends BaseEntity
             $this->setProperty($data);
         }
 
-        $result = $this->plugin()->create($this->toArray(), $debug);
+        $result = $plugin->create($this->toArray(), $debug);
 
         if (!$debug) {
-            $this->insertId = $this->plugin()->getInsertId();
+            $this->insertId = $plugin->getInsertId();
             if ($this->getAutoIncrementField()) {
                 $autoIncrementField = $this->getAutoIncrementField();
                 $this->$autoIncrementField = $this->insertId;
@@ -203,6 +207,8 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function update(array $data = array(), $debug = false)
     {
+        $plugin = $this->plugin();
+
         if (empty($this->selected)) {
             ocService()->error->show('need_condition');
         }
@@ -220,7 +226,7 @@ abstract class DatabaseEntity extends BaseEntity
 
         $data = array_merge($this->getChanged(), $data);
         call_user_func_array('ocDel', array(&$data, $this->getPrimaries()));
-        $result = $this->plugin()->update($data, $debug);
+        $result = $plugin->update($data, $debug);
 
         if (!$debug) {
             $this->relateSave();
@@ -253,13 +259,15 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function delete($debug = false)
     {
+        $plugin = $this->plugin();
+
         if (empty($this->selected)) {
             ocService()->error->show('need_condition');
         }
 
         $this->fire(self::EVENT_BEFORE_DELETE);
 
-        $result = $this->plugin()->delete();
+        $result = $plugin->delete();
 
         if (!$debug) {
             $this->fire(self::EVENT_AFTER_DELETE);
@@ -275,10 +283,13 @@ abstract class DatabaseEntity extends BaseEntity
      */
     protected function mapPrimaryData($data)
     {
+        $plugin = $this->plugin();
         $result = array();
-        foreach ($this->plugin()->getPrimaries() as $field) {
+
+        foreach ($plugin->getPrimaries() as $field) {
             $result[$field] = array_key_exists($field, $data);
         }
+
         return $result;
     }
 
@@ -289,7 +300,9 @@ abstract class DatabaseEntity extends BaseEntity
      */
     protected function getPrimaryCondition($condition)
     {
-        $primaries = $this->plugin()->getPrimaries();
+        $plugin = $this->plugin();
+        $primaries = $plugin->getPrimaries();
+
         if (empty($primaries)) {
             ocService()->error->show('no_primary');
         }
@@ -309,7 +322,7 @@ abstract class DatabaseEntity extends BaseEntity
 
         $where = array();
         if (count($primaries) == count($values)) {
-            $where = $this->plugin()->filterData(array_combine($primaries, $values));
+            $where = $plugin->filterData(array_combine($primaries, $values));
         } else {
             ocService()->error->show('fault_primary_num');
         }
@@ -324,7 +337,8 @@ abstract class DatabaseEntity extends BaseEntity
      */
     protected function relateFind($alias)
     {
-        $config = $this->plugin()->getRelateConfig($alias);
+        $plugin = $this->plugin();
+        $config = $plugin->getRelateConfig($alias);
         $result = null;
 
         if ($config) {
@@ -350,12 +364,14 @@ abstract class DatabaseEntity extends BaseEntity
      */
     protected function relateSave()
     {
+        $plugin = $this->plugin();
+
         if (!$this->relations) {
             return true;
         }
 
         foreach ($this->relations as $key => $object) {
-            $config = $this->plugin()->getRelateConfig($key);
+            $config = $plugin->getRelateConfig($key);
             if ($config && isset($this->$config['primaryKey'])) {
                 $data = array();
                 if ($config['joinType'] == 'hasOne' && is_object($object)) {
@@ -391,7 +407,8 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function &__get($key)
     {
-        $relations = $this->plugin()->getConfig('RELATIONS');
+        $plugin = $this->plugin();
+        $relations = $plugin->getConfig('RELATIONS');
 
         if (isset($relations[$key])) {
             if (!isset($this->relations[$key])) {
@@ -412,7 +429,8 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function __set($name, $value)
     {
-        $relations = $this->plugin()->getConfig('RELATIONS');
+        $plugin = $this->plugin();
+        $relations = $plugin->getConfig('RELATIONS');
 
         if (isset($relations[$name])) {
             $this->relations[$name] = $value;

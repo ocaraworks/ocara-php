@@ -127,10 +127,11 @@ class Form extends Base
      */
 	public function begin()
 	{
+        $plugin = $this->plugin();
 		list($tokenTag, $tokenValue) = $this->tokenInfo;
-		$tokenElement = $this->plugin()->input('hidden', $tokenTag, $tokenValue);
+		$tokenElement = $plugin->input('hidden', $tokenTag, $tokenValue);
 
-		$formElement = $this->plugin()->createElement('form', $this->attributes, null);
+		$formElement = $plugin->createElement('form', $this->attributes, null);
         $begin = $formElement . PHP_EOL . "\t" . $tokenElement;
 
 		$this->loadModel();
@@ -271,8 +272,10 @@ class Form extends Base
      */
 	public function __call($name, $params)
 	{
-		if (is_object($this->plugin()) && method_exists($this->plugin(), $name)) {
-			$html = call_user_func_array(array(&$this->plugin(), $name), $params);
+        $plugin = $this->plugin();
+
+		if (is_object($plugin) && method_exists($plugin, $name)) {
+			$html = call_user_func_array(array(&$plugin, $name), $params);
 			if ($id = reset($params)) {
 				$id = is_array($id) && $id ? reset($id) : $id;
 				$this->elements[$id][] = $html;

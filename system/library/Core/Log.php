@@ -43,9 +43,10 @@ class Log extends Base
     public function write($message, array $traceInfo = array(), $type = 'info')
     {
         $time = date(ocConfig(array('DATE_FORMAT', 'datetime')), time());
+        $plugin = $this->plugin();
 
-        if (!$this->plugin()->has($this->name)) {
-            $this->plugin()->create($this->name);
+        if (!$plugin->has($this->name)) {
+            $plugin->create($this->name);
         }
 
         if (!ocScalar($message)) {
@@ -61,7 +62,7 @@ class Log extends Base
         }
 
         try {
-            $this->plugin()->write($this->name, $content);
+            $plugin->write($this->name, $content);
         } catch (\Exception $e)
         {}
     }

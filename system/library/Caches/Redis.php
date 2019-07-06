@@ -35,12 +35,12 @@ class Redis extends CacheBase implements CacheInterface
 		$port 	  = ocGet('port', $config, 6379);
 		$timeout  = ocGet('timeout', $config, false);
 		$password = ocGet('password', $config, false);
-		
-		$this->setPlugin(new Redis());
-		$this->plugin()->connect($host, $port, $timeout);
+
+        $plugin = $this->setPlugin(new Redis());
+        $plugin->connect($host, $port, $timeout);
 
 		if ($password) {
-			$auth = $this->plugin()->auth($password);
+			$auth = $plugin->auth($password);
 			if (empty($auth)) {
 				return ocService()->error->check('fault_redis_password', array(), $required);
 			}
@@ -57,9 +57,10 @@ class Redis extends CacheBase implements CacheInterface
     {
         $args = func_get_args();
         $expireTime = array_key_exists(2, $args) ? $args[2] : 0;
+        $plugin = $this->plugin();
 
-		$result = $this->plugin()->set($name, serialize($value));
-		$this->plugin()->setTimeout($name, $expireTime);
+		$result = $plugin->set($name, serialize($value));
+        $plugin->setTimeout($name, $expireTime);
 		return $result;
 	}
 
@@ -71,8 +72,9 @@ class Redis extends CacheBase implements CacheInterface
      */
     public function get($name, $args = null)
     {
-		if (is_object($this->plugin()) && method_exists($this->plugin(), 'get')) {
-			return unserialize($this->plugin()->get($name));
+        $plugin = $this->plugin();
+		if (is_object($plugin) && method_exists($plugin, 'get')) {
+			return unserialize($plugin->get($name));
 		}
 
 		return null;

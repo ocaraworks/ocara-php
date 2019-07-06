@@ -87,9 +87,9 @@ class Common extends ViewBase implements ViewInterfaces
      */
     public function engine()
     {
-        $plugin = $this->plugin();
+        $plugin = $this->plugin(false);
         if (is_object($plugin) && $plugin instanceof TemplateInterface) {
-            return $this->plugin();
+            return $plugin;
         }
         return null;
     }
@@ -143,7 +143,8 @@ class Common extends ViewBase implements ViewInterfaces
      */
     public function getVar($name = null, $default = null)
     {
-        $vars = $this->plugin() === null ? $this->vars : $this->plugin()->getVar();
+        $plugin = $this->plugin(false);
+        $vars = $plugin === null ? $this->vars : $plugin->getVar();
 
         if ($name) {
             $vars = (array)$vars;
@@ -460,12 +461,13 @@ class Common extends ViewBase implements ViewInterfaces
         }
 
         if ($this->engine()) {
+            $plugin = $this->plugin();
             $functions = ocConfig('DEFAULT_VIEW_ENGINE_FUNCTIONS');
             $functions = array_merge($functions, ocConfig('VIEW_ENGINE_FUNCTIONS', array()));
             foreach ($functions as $name) {
-                $this->plugin()->registerPlugin(array('function', $name, $name));
+                $plugin->registerPlugin(array('function', $name, $name));
             }
-            $this->plugin()->set('View', $this);
+            $plugin->set('View', $this);
         }
 
         $this->content = $this->readTpl($file, $required);

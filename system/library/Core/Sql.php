@@ -71,7 +71,7 @@ class Sql extends Base
 	public function filterName($name, $addSlashes = true)
 	{
 		if ($addSlashes) {
-			$str = $this->plugin()->real_escape_string($name);
+			$str = $plugin->real_escape_string($name);
 			if ($str) {
 				return $this->filterSql($str, false, true, true);
 			}
@@ -92,7 +92,7 @@ class Sql extends Base
 			return $mt[1];
 		} else {
 			if ($addSlashes) {
-				$str = $this->plugin()->real_escape_string($content);
+				$str = $plugin->real_escape_string($content);
 				if ($str) {
 					return $this->filterSql($str, false);
 				}
@@ -402,11 +402,12 @@ class Sql extends Base
 	 */
 	public function getLimitSql($limit)
 	{
+        $plugin = $this->plugin();
 		if (is_array($limit) && count($limit) >= 2) {
 			$limit = "{$limit[0]}, {$limit[1]}";
 		}
 
-		$str = $this->plugin()->real_escape_string($limit);
+		$str = $plugin->real_escape_string($limit);
 		if ($str) {
 			return $this->filterSql($str, false, true);
 		}
@@ -679,15 +680,14 @@ class Sql extends Base
 	 */
 	public function getValueSql($val, $ifQuote = true)
 	{
-		if (is_numeric($val)) {
-			return $val;
-		}
+        $plugin = $this->plugin();
 
-		if ($val === null) {
-			return 'NULL';
-		}
+		if (is_numeric($val)) return $val;
 
-		$str = $this->plugin()->real_escape_string($val);
+		if ($val === null) return 'NULL';
+
+		$str = $plugin->real_escape_string($val);
+
 		if ($str) {
 			$val = $this->filterSql($str, false);
 		} else {

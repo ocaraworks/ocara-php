@@ -33,7 +33,7 @@ class Smarty extends ServiceBase implements TemplateInterface
             ocService()->error->show('no_the_special_class', array('smarty'));
 		}
 
-		$this->setPlugin(new \Smarty());
+        $plugin = $this->setPlugin(new \Smarty());
 		$compileDir   = ocPath('runtime', 'smarty/cmp/');
 		$cacheDir     = ocPath('runtime', 'smarty/cache/');
 
@@ -42,19 +42,19 @@ class Smarty extends ServiceBase implements TemplateInterface
 		ocCheckPath($compileDir, $perm, true);
 		ocCheckPath($cacheDir, $perm, true);
 
-		$this->plugin()->setTemplateDir($templateDir);
-		$this->plugin()->setCompileDir($compileDir);
-		$this->plugin()->setCacheDir($cacheDir);
+        $plugin->setTemplateDir($templateDir);
+        $plugin->setCompileDir($compileDir);
+        $plugin->setCacheDir($cacheDir);
 
 		if (ocConfig(array('SMARTY', 'use_cache'), false)) {
-			$this->plugin()->cache_lifetime = 60;
-			$this->plugin()->caching = true;
+            $plugin->cache_lifetime = 60;
+            $plugin->caching = true;
 		} else {
-			$this->plugin()->caching = false;
+            $plugin->caching = false;
 		}
-	
-		$this->plugin()->left_delimiter = ocConfig(array('SMARTY', 'left_sign'));
-		$this->plugin()->right_delimiter = ocConfig(array('SMARTY', 'right_sign'));
+
+        $plugin->left_delimiter = ocConfig(array('SMARTY', 'left_sign'));
+        $plugin->right_delimiter = ocConfig(array('SMARTY', 'right_sign'));
 	}
 
     /**
@@ -83,7 +83,8 @@ class Smarty extends ServiceBase implements TemplateInterface
      */
 	public function registerObject($params)
 	{
-		call_user_func_array(array(&$this->plugin(), 'registerObject'), $params);
+        $plugin = $this->plugin();
+		call_user_func_array(array(&$plugin, 'registerObject'), $params);
 	}
 
     /**
@@ -92,6 +93,7 @@ class Smarty extends ServiceBase implements TemplateInterface
      */
 	public function registerPlugin($params)
 	{
-		call_user_func_array(array(&$this->plugin(), 'registerPlugin'), $params);
+        $plugin = $this->plugin();
+		call_user_func_array(array(&$plugin, 'registerPlugin'), $params);
 	}
 }

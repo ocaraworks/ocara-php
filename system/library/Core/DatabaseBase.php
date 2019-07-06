@@ -159,7 +159,8 @@ class DatabaseBase extends Sql
      * 是否PDO连接
      * @return bool
      */
-	public function isPdo(){
+	public function isPdo()
+    {
         return $this->plugin()->driveType() == DriverBase::DRIVE_TYPE_PDO;
     }
 
@@ -231,6 +232,7 @@ class DatabaseBase extends Sql
      */
 	public function execute(array $sqlData, $required = true)
 	{
+	    $plugin = $this->plugin();
 	    list($sql, $params) = $sqlData;
 		$this->fire(
 		    self::EVENT_BEFORE_EXECUTE_SQL,
@@ -240,16 +242,16 @@ class DatabaseBase extends Sql
 		try {
             $result = null;
 			if ($this->prepared && $params) {
-				$this->plugin()->prepare_sql($sql);
+                $plugin->prepare_sql($sql);
 				$this->bindParams($params);
-				$result = $this->plugin()->execute_sql();
+				$result = $plugin->execute_sql();
 			} else {
-				$result = $this->plugin()->query_sql($sql);
+				$result = $plugin->query_sql($sql);
 			}
 		} catch (Exception $exception) {
 			if (!$this->wakeUpTimes) {
-				if ($this->plugin()->is_not_active()) {
-					$this->plugin()->wake_up();
+				if ($plugin->is_not_active()) {
+                    $plugin->wake_up();
 				}
 				$this->wakeUpTimes++;
 				$result = call_user_func_array(array($this, __METHOD__), func_get_arg());
@@ -273,9 +275,10 @@ class DatabaseBase extends Sql
 	public function getResult($queryRow = false, $count = false, $unions = array(), $dataType = null)
     {
         $dataType = $dataType ? : DriverBase::DATA_TYPE_ARRAY;
+        $plugin = $this->plugin();
 
         if ($count) {
-            $result = $this->plugin()->get_all_result($dataType, $queryRow);
+            $result = $plugin->get_all_result($dataType, $queryRow);
             $total = 0;
             if (!empty($unions['models'])) {
                 foreach ($result as $row) {
@@ -290,7 +293,7 @@ class DatabaseBase extends Sql
             }
             $result = array(array('total' => $total));
         } else {
-            $result = $this->plugin()->get_all_result($dataType, $queryRow);
+            $result = $plugin->get_all_result($dataType, $queryRow);
         }
 
         if ($queryRow && $result && empty($debug)) {
@@ -697,6 +700,7 @@ class DatabaseBase extends Sql
 		$data = array();
 		$paramData = array();
 		$bindValues = array();
+        $plugin = $this->plugin();
 
 		foreach ($params as $row) {
 			foreach (self::$paramOptions as $option) {
@@ -713,7 +717,7 @@ class DatabaseBase extends Sql
 		foreach ($paramData as $key => &$value) {
 			$type = $this->parseParamType($value);
 			if ($this->isPdo()) {
-				$this->plugin()->bind_param($key + 1, $value, $type);
+                $plugin->bind_param($key + 1, $value, $type);
 			} else {
 				$types = $types . $type;
 				$data[] = &$value;
@@ -722,12 +726,12 @@ class DatabaseBase extends Sql
 
 		if (!$this->isPdo() && $types) {
 			array_unshift($data, $types);
-			call_user_func_array(array($this->plugin(), 'bind_param'), $data);
+			call_user_func_array(array($plugin, 'bind_param'), $data);
 		}
 
-		if ($bindValues && method_exists($this->plugin(), 'bind_value')) {
+		if ($bindValues && method_exists($plugin, 'bind_value')) {
 			foreach ($bindValues as $name => $value) {
-				$this->plugin()->bind_value($name, $value);
+                $plugin->bind_value($name, $value);
 			}
 		}
 	}
@@ -738,11 +742,12 @@ class DatabaseBase extends Sql
 	public function setError()
 	{
 		$this->error = array();
+		$plugin = $this->plugin();
 
-		if ($this->plugin()->error_no() > 0) {
-			$this->error['errorCode'] = $this->plugin()->error_no();
-			$this->error['errorMessage'] = $this->plugin()->error();
-			$this->error['errorList'] = $this->plugin()->error_list();
+		if ($plugin->error_no() > 0) {
+			$this->error['errorCode'] = $plugin->error_no();
+			$this->error['errorMessage'] = $plugin->error();
+			$this->error['errorList'] = $plugin->error_list();
 		}
 	}
 

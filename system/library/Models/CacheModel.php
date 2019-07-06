@@ -82,7 +82,9 @@ abstract class CacheModel extends ModelBase
             $this->setPlugin($this->slave);
         }
 
-        if (!is_object($this->plugin())) {
+        $plugin = $this->plugin();
+
+        if (!is_object($plugin)) {
             if (!is_object($this->master)) {
                 $this->master = CacheFactory::create($this->connectName);
             }
@@ -90,9 +92,9 @@ abstract class CacheModel extends ModelBase
         }
 
         if ($this->database) {
-            $this->plugin()->selectDatabase($this->database);
+            $plugin->selectDatabase($this->database);
         }
 
-        return $this->plugin();
+        return $plugin;
     }
 }

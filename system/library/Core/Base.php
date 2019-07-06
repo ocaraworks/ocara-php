@@ -142,11 +142,15 @@ abstract class Base extends Basis
 	/**
 	 * 获取插件
 	 */
-	public function plugin()
+	public function plugin($required = true)
 	{
 		if (is_object($this->plugin)) {
 			return $this->plugin;
 		}
+
+		if ($required) {
+		    throw new Exception('no_plugin');
+        }
 	}
 
     /**
@@ -156,6 +160,7 @@ abstract class Base extends Basis
     public function setPlugin($plugin)
     {
         $this->plugin = $plugin;
+        return $this->plugin;
     }
 
     /**
