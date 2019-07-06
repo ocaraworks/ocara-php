@@ -97,7 +97,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 			$fieldRow['isNull'] = $row['Null'] == 'NO' ? OC_FALSE : OC_TRUE;
 			$fieldRow['isPrimary'] = $row['Key'] == 'PRI' ? OC_TRUE : OC_FALSE;
 			$fieldRow['defaultValue'] = (string)$row['Default'];
-            $fieldRow['Extra'] = $row['Extra'];
+            $fieldRow['extra'] = $row['Extra'];
 			$fields['list'][$row['Field']] = $fieldRow;
 		}
 

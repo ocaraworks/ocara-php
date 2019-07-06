@@ -95,6 +95,7 @@ class ModelService extends BaseService
 		if (empty($this->_primaries)) {
 			$connect = DatabaseFactory::create($this->_connectName);
 			$fields = $connect->getFields($this->_table);
+			$fields = $fields['list'];
 			$primaryFields = array();
 			foreach ($fields as $fieldName => $fieldInfo) {
 				if ($fieldInfo['isPrimary']) {
@@ -104,19 +105,16 @@ class ModelService extends BaseService
 			if ($primaryFields) {
 				$this->_primaries = implode(',', $primaryFields);
 			}
-			if (empty($this->_primaries)) {
-				$this->showError('系统找不到该数据表的主键，请填写主键字段！');
-			}
 		}
 
         ocCheckPath($modelPath);
         if (ocFileExists($path = $modelPath .  "{$modelName}.php")) {
-            $this->showError('Model文件已存在，请先手动删除！');
+            //$this->showError('Model文件已存在，请先手动删除！');
         }
 
         ocCheckPath($entityPath);
         if (ocFileExists($entityPath = $entityPath .  "{$entityName}.php")) {
-            $this->showError('Entity文件已存在，请先手动删除！');
+            //$this->showError('Entity文件已存在，请先手动删除！');
         }
 
         //新建模型
@@ -150,11 +148,13 @@ class ModelService extends BaseService
         $fileService->writeFile($path, $content);
 
         //新建实体模型
+        $modelBase = 'DatabaseEntity';
         $content = "<?php\r\n";
         $content .= "namespace {$entityNamespace};\r\n";
-        $content .= "use {$modelClass};\r\n";
         $content .= "\r\n";
-        $content .= "class {$entityName} extends {$modelName}\r\n";
+        $content .= "use Base\\{$modelBase};\r\n";
+        $content .= "\r\n";
+        $content .= "class {$entityName} extends {$modelBase}\r\n";
         $content .= "{\r\n";
         $content .= "}";
 

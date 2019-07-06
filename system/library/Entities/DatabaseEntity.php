@@ -1,5 +1,5 @@
 <?php
-namespace Ocara\Models;
+namespace Ocara\Entities;
 
 use Ocara\Core\BaseEntity;
 use Ocara\Exceptions\Exception;

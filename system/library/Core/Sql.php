@@ -15,7 +15,6 @@ defined('OC_PATH') or exit('Forbidden!');
 class Sql extends Base
 {
 	protected $prepared;
-	protected $plugin = null;
 
 	protected $params = array();
 	protected $config = array();
@@ -70,6 +69,8 @@ class Sql extends Base
 	 */
 	public function filterName($name, $addSlashes = true)
 	{
+        $plugin = $this->plugin();
+
 		if ($addSlashes) {
 			$str = $plugin->real_escape_string($name);
 			if ($str) {
@@ -88,6 +89,8 @@ class Sql extends Base
 	 */
 	public function filterValue($content, $addSlashes = true)
 	{
+        $plugin = $this->plugin();
+
 		if ($mt = self::checkOcaraSqlTag($content)) {
 			return $mt[1];
 		} else {
@@ -403,6 +406,7 @@ class Sql extends Base
 	public function getLimitSql($limit)
 	{
         $plugin = $this->plugin();
+
 		if (is_array($limit) && count($limit) >= 2) {
 			$limit = "{$limit[0]}, {$limit[1]}";
 		}

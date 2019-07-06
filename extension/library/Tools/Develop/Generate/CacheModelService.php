@@ -81,7 +81,7 @@ class CacheModelService extends BaseService
         $modelClass = $namespace . OC_NS_SEP . $modelName;
 
 		if (empty($this->_prefix)) {
-			$this->showError('请填写表名！');
+			$this->showError('请填写前缀名！');
 		}
 
         ocCheckPath($modelPath);

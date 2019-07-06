@@ -7,6 +7,11 @@ return array(
     'DATABASE_LIMIT_CONNECT_TIMES' => 3, //连接数据库失败尝试次数
 
     /*
+     * 主键设置
+     */
+    'MODEL_REQUIRE_PRIMARY'        => 0, //数据表是否必须设置主键
+
+    /*
      * 数据库连接配置
      * 如果是大型分布式数据库，请配置回调函数动态生成配置
      */

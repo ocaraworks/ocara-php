@@ -75,7 +75,7 @@ abstract class DatabaseModel extends ModelBase
 	public function init()
 	{
 		if (self::$requirePrimary === null) {
-			$required = ocConfig('MODEL_REQUIRE_PRIMARY', true);
+			$required = ocConfig('MODEL_REQUIRE_PRIMARY', false);
 			self::$requirePrimary = $required ? true : false;
 		}
 
@@ -88,7 +88,6 @@ abstract class DatabaseModel extends ModelBase
 		$this->tableName = empty($this->table) ? lcfirst(self::getClassName()) : $this->table;
 
 		$this->setJoin(false, $this->tag, $this->alias);
-		self::loadConfig();
 
 		if ($this->primary) {
 			$this->primaries = explode(',', $this->primary);
@@ -193,6 +192,7 @@ abstract class DatabaseModel extends ModelBase
 	public static function loadConfig()
 	{
 	    $class = self::getClass();
+
 		if (empty(self::$config[$class])) {
 		    $model = new static();
 			self::$config[$class] = $model->getModelConfig();
@@ -303,18 +303,16 @@ abstract class DatabaseModel extends ModelBase
 
         if ($this->module) {
             list($rootPath, $subDir) = ocSeparateDir($dir, '/privates/model/database/');
-        } else {
-            list($rootPath, $subDir) = ocSeparateDir($dir, '/application//model/database/');
-        }
-
-        if ($this->module) {
             $modulePath = OC_MODULE_PATH ? : ocPath('modules');
-            $moduleLang = $modulePath . '/' . $this->module . '/privates/lang/' . $language . '/' . $subDir . $file;
+            $moduleLang = $modulePath . '/' . $this->module . '/privates/lang/' . $language . '/database/' . $subDir . $file;
+        } else {
+            list($rootPath, $subDir) = ocSeparateDir($dir, '/application/model/database/');
         }
 
+        $subDir = rtrim($subDir, '/');
         $paths = array(
-            'lang' => ocPath('lang', $language . OC_DIR_SEP . $subDir . $file),
-            'fields' => ocPath('fields',  $subDir . $file),
+            'lang' => ocPath('lang', ocDir($language, 'database', $subDir) . $file),
+            'fields' => ocPath('fields',  ocDir($subDir) . $file),
             'moduleLang' => $moduleLang
         );
 
@@ -2017,11 +2015,11 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function getRelateConfig($key)
 	{
-		if (!isset(self::$config[$this->tag]['RELATIONS'][$key])) {
+        $config = $this->getConfig('RELATIONS');
+
+		if (empty($config)) {
 			return array();
 		}
-
-		$config = self::$config[$this->tag]['RELATIONS'][$key];
 
 		if (count($config) < 3) {
 			ocService()->error->show('fault_relate_config');

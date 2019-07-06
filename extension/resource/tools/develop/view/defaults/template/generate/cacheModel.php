@@ -18,11 +18,6 @@
 </div>
 
 <div>
-    <span class="left-span">键名前缀</span>
-    <input type="text" value="" name="prefix" id="prefix">
-</div>
-
-<div>
 <span class="left-span">缓存连接配置名：</span>
 <input type="text" name="connect" id="connect" value="<?php echo \Ocara\Core\DatabaseFactory::getDefaultServer();?>">
 </div>
@@ -30,6 +25,11 @@
 <div>
     <span class="left-span">模型名称</span>
     <input type="text" value="" name="model" id="model">
+</div>
+
+<div>
+    <span class="left-span">键名前缀</span>
+    <input type="text" value="" name="prefix" id="prefix">
 </div>
 
 <div>

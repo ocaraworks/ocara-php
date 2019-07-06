@@ -781,12 +781,12 @@ function ocSimpleUrl($dir, $subPath)
 /**
  * 分隔目录
  * @param $filePath
- * @param $seprateDir
+ * @param $separateDir
  * @return mixed
  */
-function ocSeparateDir($filePath, $seprateDir)
+function ocSeparateDir($filePath, $separateDir)
 {
-    $rootPath = strstr($filePath, $seprateDir, true) . ocDir($seprateDir);
+    $rootPath = strstr($filePath, $separateDir, true) . ocDir($separateDir);
     $subDir = str_replace($rootPath, OC_EMPTY, $filePath) . OC_DIR_SEP;
     return array($rootPath, $subDir);
 }
