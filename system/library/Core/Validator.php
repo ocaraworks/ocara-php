@@ -102,6 +102,7 @@ class Validator extends Base
     /**
      * 绑定表单
      * @param \Ocara\Core\Form $form
+     * @return $this
      */
     public function addForm(Form $form)
     {
@@ -109,33 +110,40 @@ class Validator extends Base
         foreach ($models as $model) {
             $this->addModel($model);
         }
+        return $this;
     }
 
     /**
      * 绑定模型
      * @param $model
+     * @return $this
      */
     public function addModel($model)
     {
         $this->models[] = $model;
+        return $this;
     }
 
     /**
      * 忽略字段
      * @param $field
+     * @return $this
      */
     public function ignore($field)
     {
         $this->ignoreFields[] = $field;
+        return $this;
     }
 
     /**
-     * 忽略字段
+     * 忽略模型
      * @param $class
+     * @return $this
      */
     public function ignoreModel($class)
     {
         $this->ignoreModels[] = $class;
+        return $this;
     }
 
 	/**
