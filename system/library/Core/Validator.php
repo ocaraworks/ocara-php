@@ -80,7 +80,7 @@ class Validator extends Base
             }
         }
 
-        if ($showError) {
+        if ($this->errorExists && $showError) {
             ocService()->error->show($this->getError());
         }
 
