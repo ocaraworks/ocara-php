@@ -619,14 +619,9 @@ abstract class DatabaseModel extends ModelBase
      * @return bool
      * @throws Exception
      */
-	public function create(array $data = array(), $debug = false)
+	public function create(array $data, $debug = false)
 	{
 		$this->connect();
-
-        if (empty($data)) {
-            $data = $this->getSubmitData($data);
-        }
-
         $result = $this->baseSave($data, false, $debug);
 		return $result;
 	}
@@ -638,37 +633,15 @@ abstract class DatabaseModel extends ModelBase
      * @return bool
      * @throws Exception
      */
-	public function update(array $data = array(), $debug = false)
+	public function update(array $data, $debug = false)
 	{
         $condition = $this->getCondition();
 		if (empty($condition)) {
 		    ocService()->error->show('need_condition');
 		}
 
-        if (empty($data)) {
-            $data = $this->getSubmitData($data);
-        }
-
 		$result = $this->baseSave($data, $condition, $debug);
 		return $result;
-	}
-
-    /**
-     * 获取数据
-     * @param $data
-     * @return mixed
-     * @throws Exception
-     */
-	protected function getSubmitData($data)
-	{
-		if (empty($data)) {
-			$data = ocService()->request->getPost();
-			if ($data) {
-				$this->loadFields();
-			}
-		}
-
-		return $data;
 	}
 
     /**
