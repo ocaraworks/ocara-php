@@ -94,8 +94,8 @@ class Common extends ControllerBase implements ControllerInterface
         $result = null;
 
         if ($this->request->isAjax()) {
-            if (method_exists($this, 'ajax')) {
-                $result = $this->ajax();
+            if (method_exists($this, 'api')) {
+                $result = $this->api();
             }
             $this->render($result, false);
         } elseif ($this->isFormSubmit() && method_exists($this, 'submit')) {
