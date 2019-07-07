@@ -19,17 +19,14 @@ class FormManager extends ServiceProvider
     protected $form;
     protected $forms = array();
 
+    const EVENT_CHECK_ERROR = 'checkError';
+
     /**
      * 注册服务
      * @throws Exception
      */
 	public function register()
-	{
-		$validator = ocConfig(array('SERVICE', 'validator'), '\Ocara\Core\Validator');
-		$validate = ocConfig(array('SERVICE', 'validate'), '\Ocara\Service\Validate');
-
-		$this->container->bindSingleton('validator', $validator, array($validate));
-	}
+	{}
 
     /**
      * 注册事件
@@ -54,7 +51,7 @@ class FormManager extends ServiceProvider
             $token = $this->formToken->generate($formName, $this->route);
 
             $this->saveToken($formName, $token);
-            $form->setTokenInfo(array($this->getTokenTag(), $token));
+            $form->setTokenInfo(array($this->getTokenName(), $token));
             $this->addForm($formName, $form);
         }
 
@@ -103,7 +100,7 @@ class FormManager extends ServiceProvider
             $this->error->show('failed_validate_token');
         }
 
-		$tokens = $this->session->get($this->getTokenListTag());
+		$tokens = $this->session->get($this->getTokenSaveName());
 		$formName = array_search($requestToken, $tokens);
 
 		if ($formName === false || !$this->hasForm($formName)) {
@@ -122,7 +119,7 @@ class FormManager extends ServiceProvider
      */
 	public function checkForm($data)
 	{
-	    $requestToken = ocGet($this->getTokenTag(), $data, null);
+	    $requestToken = ocGet($this->getTokenName(), $data, null);
         $postForm = $this->getSubmitForm($requestToken);
 		return $postForm;
 	}
@@ -132,7 +129,7 @@ class FormManager extends ServiceProvider
      * @return string
      * @throws Exception
      */
-    public static function getTokenTag()
+    public static function getTokenName()
     {
         return '_oc_' . ocConfig(array('FORM', 'token_tag'), '_form_token_name');
     }
@@ -142,9 +139,9 @@ class FormManager extends ServiceProvider
      * @return string
      * @throws Exception
      */
-    public function getTokenListTag()
+    public function getTokenSaveName()
     {
-        return $this->getTokenTag() . '_list';
+        return $this->getTokenName() . '_list';
     }
 
     /**
@@ -155,7 +152,7 @@ class FormManager extends ServiceProvider
      */
     public function saveToken($formName, $token)
     {
-        ocService()->session->set(array($this->getTokenListTag(), $formName), $token);
+        ocService()->session->set(array($this->getTokenSaveName(), $formName), $token);
     }
 
 	/**
@@ -163,7 +160,7 @@ class FormManager extends ServiceProvider
 	 */
 	public function clearToken()
 	{
-        ocService()->session->delete($this->getTokenListTag());
+        ocService()->session->delete($this->getTokenSaveName());
 	}
 
     /**

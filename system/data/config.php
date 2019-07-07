@@ -88,7 +88,6 @@ return array(
         'route'			    => 'Ocara\Core\Route',
         'transaction'	    => 'Ocara\Core\Transaction',
         'pager' 		    => 'Ocara\Service\Pager',
-        'validator' 	    => 'Ocara\Service\Validator',
         'file'			    => 'Ocara\Service\File',
         'font'			    => 'Ocara\Core\Font',
         'staticPath'	    => 'Ocara\Core\StaticPath',
@@ -96,6 +95,8 @@ return array(
         'errorOutput' 	    => 'Ocara\Service\ErrorOutput',
         'fileLog'           => 'Ocara\Service\FileLog',
         'formToken'         => 'Ocara\Core\FormToken',
+        'validator' 	    => 'Ocara\Core\Validator',
+        'validate' 	        => 'Ocara\Service\Validate',
     ),
     
     /*
@@ -231,14 +232,6 @@ return array(
 
         /*应用自动加载映射*/
         'app\\' 							=> OC_ROOT . 'application/',
-    ),
-    
-    /*
-     * 服务组件配置
-     */
-    'SERVICE' => array(
-        'validator' => '\Ocara\Core\Validator',
-        'validate' => '\Ocara\Service\Validate'
     ),
 
     /*

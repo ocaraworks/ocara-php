@@ -265,6 +265,7 @@ abstract class ControllerBase extends serviceProvider
     {
         $data = $data ? : $this->getSubmitData();
         $this->validator->validate($data);
+        return $this->validator;
     }
 
     /**

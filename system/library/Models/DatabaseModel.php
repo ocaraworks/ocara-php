@@ -510,7 +510,7 @@ abstract class DatabaseModel extends ModelBase
 		$key = isset($mapsConfig[$field]) ? $mapsConfig[$field] : $field;
 
         if (!$plugin->hasAlias($key)) {
-            if (!isset($this->fields[$key]) || $key == FormManager::getTokenTag()) {
+            if (!isset($this->fields[$key])) {
                 return null;
             }
         }
