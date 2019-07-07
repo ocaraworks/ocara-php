@@ -64,8 +64,8 @@ abstract class ControllerBase extends serviceProvider
         });
 
         $services = array_merge(
-            ocConfig(array('CONTROLLER_SERVICE_CLASS', 'All')),
-            ocConfig(array('CONTROLLER_SERVICE_CLASS', static::controllerType()), array())
+            ocConfig(array('CONTROLLER_SERVICE_CLASS', 'common'), array()),
+            ocConfig(array('CONTROLLER_SERVICE_CLASS', 'special', static::controllerType()), array())
         );
 
         foreach ($services as $name => $class) {

@@ -30,14 +30,11 @@ class Validator extends Base
     protected $ignoreModels = array();
 
     /**
-     * @param object $validate
+     * Validator constructor.
      */
-    public function __construct($validate)
+    public function __construct()
     {
-        if (!is_object($validate)) {
-            $validate = new $validate();
-        }
-        $this->validate = $validate;
+        $this->validate = ocContainer()->create('validate');
     }
 
     /**

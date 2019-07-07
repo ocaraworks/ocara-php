@@ -96,7 +96,6 @@ return array(
         'fileLog'           => 'Ocara\Service\FileLog',
         'formToken'         => 'Ocara\Core\FormToken',
         'validator' 	    => 'Ocara\Core\Validator',
-        'validate' 	        => 'Ocara\Service\Validate',
     ),
     
     /*
@@ -108,24 +107,27 @@ return array(
         'form'              => 'Ocara\Core\Form',
         'html'              => 'Ocara\Core\Html',
         'formManager'       => 'Ocara\Core\FormManager',
+        'validate' 	        => 'Ocara\Service\Validate',
     ),
-    
+
     /*
      * 控制器服务类
-     */
+    */
     'CONTROLLER_SERVICE_CLASS' => array(
-        'All' => array(),
-        'Common' => array(
-            'view' => 'Ocara\Views\Common',
-        ),
-        'Api' => array(
-            'view' => 'Ocara\Views\Api',
-        ),
-        'Rest' => array(
-            'view' => 'Ocara\Views\Api',
+        'common' => array(),
+        'special' => array(
+            'Common' => array(
+                'view' => 'Ocara\Views\Common',
+            ),
+            'Api' => array(
+                'view' => 'Ocara\Views\Api',
+            ),
+            'Rest' => array(
+                'view' => 'Ocara\Views\Api',
+            ),
         ),
     ),
-    
+
     /*
      * 数据库类型映射
      */
