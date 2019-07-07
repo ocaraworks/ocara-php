@@ -55,6 +55,7 @@ class Url extends Base
 				}
 
                 $urlDir = ocCommPath(str_ireplace($documentRoot, '', $webRoot));
+                $urlDir = $urlDir == '/' ? OC_EMPTY : $urlDir;
 				$requestUri = str_ireplace($urlDir, '', OC_REQ_URI);
 				$url = trim($requestUri, OC_DIR_SEP);
 			}
