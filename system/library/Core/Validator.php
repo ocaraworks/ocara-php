@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
+use \ReflectionClass;
+use \ReflectionObject;
 use Ocara\Core\Base;
 use Ocara\Core\Form;
 use Ocara\Core\ModelBase;
@@ -113,7 +115,7 @@ class Validator extends Base
      * 绑定模型
      * @param $model
      */
-    public function addModel(ModelBase $model)
+    public function addModel($model)
     {
         $this->models[] = $model;
     }
