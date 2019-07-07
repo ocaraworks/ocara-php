@@ -12,7 +12,6 @@ use \ReflectionClass;
 use \ReflectionObject;
 use Ocara\Core\Base;
 use Ocara\Core\Form;
-use Ocara\Core\ModelBase;
 use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -42,9 +41,10 @@ class Validator extends Base
     /**
      * 表单验证
      * @param array $data
+     * @param bool $showError
      * @return bool|Validator
      */
-    public function validate(array $data)
+    public function validate(array $data, $showError = true)
     {
         $result = true;
         $rules = $this->rules;
@@ -78,6 +78,10 @@ class Validator extends Base
                 $this->setError($lang);
                 break;
             }
+        }
+
+        if ($showError) {
+            ocService()->error->show($this->getError());
         }
 
         return $result;

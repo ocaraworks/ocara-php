@@ -258,18 +258,6 @@ abstract class ControllerBase extends serviceProvider
     }
 
     /**
-     * 自动进行参数验证
-     * @param array $data
-     * @return array|mixed|自定义属性
-     */
-    public function validate(array $data = array())
-    {
-        $data = $data ? : $this->getSubmitData();
-        $this->validator->validate($data);
-        return $data;
-    }
-
-    /**
      * 获取或设置Model-静态属性保存
      * @param null $class
      * @return mixed
