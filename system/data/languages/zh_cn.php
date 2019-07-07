@@ -90,7 +90,7 @@ return array(
 	'fault_static_route'			=> array(2304, '静态生成路由配置有误，应包含{c}控制器，{a}动作，{p}查询字符串，并且以斜杠“/”或横杠“-”分隔，如：{c}/{a}-{p}。'),
 	'fault_url'						=> array(2305, '抱歉，您输入的网址有误！'),
 	'fault_primary_num'				=> array(2306, '主键与值数目不匹配。'),
-	'fault_save_data'				=> array(2307, '要保存的数据或条件字段为空，请检查是否存在该字段或别名！'),
+	'fault_save_data'				=> array(2307, '保存数据为空，请检查是否存在字段或别名！'),
 	'fault_cond_sign'				=> array(2310, '条件运算符不存在或有误！'),
 	'fault_redis_password'			=> array(2311, '缓存系统密码验证失败！'),
 	'fault_validate_callback_error' => array(2312, '表单回调验证返回数组不正确。'),
