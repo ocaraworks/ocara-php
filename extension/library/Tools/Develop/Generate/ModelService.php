@@ -159,7 +159,7 @@ class ModelService extends BaseService
         $content .= "\tpublic function __entity()\r\n";
         $content .= "\t{}\r\n";
         $content .= "\r\n";
-        $content .= "\tpublic function defaultModel()\r\n";
+        $content .= "\tpublic function source()\r\n";
         $content .= "\t{\r\n";
         $content .= "\t\treturn '{$modelClass}';\r\n";
 	    $content .= "\t}\r\n";
