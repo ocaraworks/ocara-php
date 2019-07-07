@@ -90,10 +90,6 @@ abstract class DatabaseEntity extends BaseEntity
     {
         $model = $this->getModel();
 
-        if (empty($data)) {
-            $data = $model->getSubmitData($data);
-        }
-
         if ($data) {
             $data = $model->filterData($data);
             $this->setProperty($data);
