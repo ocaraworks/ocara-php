@@ -529,16 +529,6 @@ abstract class DatabaseModel extends ModelBase
 		return $this;
 	}
 
-    /**
-     * 清理Model的SQL和ORM数据
-     * @return $this
-     */
-	public function clearAll()
-	{
-		$this->clearSql();
-		return $this;
-	}
-
 	/**
 	 * 缓存查询的数据
 	 * @param string $server

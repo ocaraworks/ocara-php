@@ -8,8 +8,8 @@
  ************************************************************************************************/
 namespace Ocara\Controllers;
 
-use Ocara\Controllers\Api;
 use Ocara\Core\Response;
+use Ocara\Exceptions\Exception;
 
 class Rest extends Api
 {
@@ -20,7 +20,10 @@ class Rest extends Api
 
     /**
      * 渲染前置事件
-     * @return mixed
+     * @param $data
+     * @param $message
+     * @param $status
+     * @throws Exception
      */
     public function beforeRender($data, $message, $status)
     {

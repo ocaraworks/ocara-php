@@ -63,7 +63,8 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 修改数据来源
-     * @param $source
+     * @param $model
+     * @return mixed
      */
     public function setModel($model)
     {
@@ -101,22 +102,28 @@ abstract class DatabaseEntity extends BaseEntity
     /**
      * 清除数据
      */
-    public function clearData()
+    public function clear()
     {
         $this->selected = array();
-        $this->clearProperties($this->plugin()->getFieldsName());
+        $fields = $this->getModel()->getFieldsName();
+        $this->clearProperties($fields);
         return $this;
     }
 
     /**
-     * 清除查询设置和数据
-     * @return $this
+     * 清理属性
+     * @param array $fields
      */
-    public function clearAll()
+    protected function clearProperties(array $fields = array())
     {
-        $this->getModel()->clearAll();
-        $this->clearData();
-        return $this;
+        $fields = $fields ? : array_keys($this->toArray());
+
+        foreach ($fields as $field) {
+            if (isset($this->$field)) {
+                $this->$field = null;
+                unset($this->$field);
+            }
+        }
     }
 
     /**

@@ -94,8 +94,7 @@ class Api extends ControllerBase implements ControllerInterface
 
     /**
      * 渲染API
-     * @param mxied $result
-     * @throws Exception
+     * @param null $result
      */
     public function render($result = null)
     {
@@ -108,7 +107,6 @@ class Api extends ControllerBase implements ControllerInterface
      * @param null $data
      * @param null $message
      * @param string $status
-     * @throws Exception
      */
     public function renderApi($data = null, $message = null, $status = 'success')
     {
@@ -130,7 +128,10 @@ class Api extends ControllerBase implements ControllerInterface
 
     /**
      * 渲染前置事件
-     * @return mixed
+     * @param $data
+     * @param $message
+     * @param $status
+     * @throws Exception
      */
     public function beforeRender($data, $message, $status)
     {

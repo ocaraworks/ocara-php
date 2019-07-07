@@ -110,7 +110,7 @@ class Container extends Basis
             return array();
         }
 
-        return $this->binds;
+        return $this->bindSingletons;
     }
 
     /**

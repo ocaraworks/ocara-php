@@ -126,7 +126,7 @@ class Common extends ControllerBase implements ControllerInterface
 
     /**
      * 渲染API
-     * @param $result
+     * @param null $result
      * @param bool $userDefault
      */
     public function render($result = null, $userDefault = true)
@@ -174,7 +174,6 @@ class Common extends ControllerBase implements ControllerInterface
      * @param null $data
      * @param null $message
      * @param string $status
-     * @throws Exception
      */
     public function renderApi($data = null, $message = null, $status = 'success')
     {
@@ -196,7 +195,10 @@ class Common extends ControllerBase implements ControllerInterface
 
     /**
      * 渲染前置事件
-     * @return mixed
+     * @param $data
+     * @param $message
+     * @param $status
+     * @throws Exception
      */
     public function beforeRenderApi($data, $message, $status)
     {

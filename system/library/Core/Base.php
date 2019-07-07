@@ -14,9 +14,6 @@ defined('OC_PATH') or exit('Forbidden!');
 
 abstract class Base extends Basis
 {
-	/**
-	 * @var $route 路由信息
-	 */
     private $plugin;
     private $event;
 
@@ -86,7 +83,7 @@ abstract class Base extends Basis
             $reason = $exception->getMessage();
         }
 
-        $reason = !empty($reason) ? : 'Not Found property';
+        $reason = !empty($reason) ? $reason : 'Not Found property';
 
         if (method_exists($this, '__none')) {
             $value = $this->__none($property, $reason);
@@ -113,23 +110,6 @@ abstract class Base extends Basis
     }
 
     /**
-     * 清理属性
-     * @param array $fields
-     */
-    protected function clearProperties(array $fields = array())
-    {
-        $fields = $fields ? : array_keys($this->toArray());
-
-        foreach ($fields as $field) {
-            if (isset($this->$field)) {
-                $this->$field = null;
-            }
-        }
-
-        $this->properties = array();
-    }
-
-    /**
      * 获取日志对象
      * @param $logName
      * @return mixed
@@ -139,9 +119,11 @@ abstract class Base extends Basis
 		return ocContainer()->create('log', array($logName));
 	}
 
-	/**
-	 * 获取插件
-	 */
+    /**
+     * 获取插件
+     * @param bool $required
+     * @return object|null
+     */
 	public function plugin($required = true)
 	{
 		if (is_object($this->plugin)) {
@@ -158,6 +140,7 @@ abstract class Base extends Basis
     /**
      * 设置插件
      * @param $plugin
+     * @return mixed
      */
     public function setPlugin($plugin)
     {
