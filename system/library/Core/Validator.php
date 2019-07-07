@@ -34,7 +34,7 @@ class Validator extends Base
      */
     public function __construct()
     {
-        $this->validate = ocContainer()->create('validate');
+        $this->validate = ocService()->createService('validate');
     }
 
     /**
@@ -166,7 +166,7 @@ class Validator extends Base
 		}
 
 		$validates = array_map('trim', $validates);
-		$count     = count($value);
+		$count = count($value);
 
 		foreach ($validates as $validate) {
 			$params = array();
