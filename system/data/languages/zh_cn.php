@@ -124,7 +124,7 @@ return array(
 	'not_exists_template'			=> array(2418, '指定的模板目录%s不存在'),
 	'not_exists_http_content_type'	=> array(2419, 'HTTP返回类型不正确'),
 	'not_exists_http_status'		=> array(2420, 'HTTP状态码不正确。'),
-	'no_exists_const'				=> array(2421, '缺少常量'),
+	'not_exists_const'				=> array(2421, '缺少常量'),
 	'not_exists_dependence_set' 	=> array(2422, '依赖不存在'),
     'not_exists_find_field'         => array(2423, '查询字段不存在！'),
 
