@@ -208,7 +208,7 @@ abstract class DatabaseModel extends ModelBase
         $paths = $this->getConfigPath();
 
         $modelConfig = array(
-            'MAPS' => $this->fieldMaps() ? : array(),
+            'MAPS' => $this->fieldsMap() ? : array(),
             'RELATIONS' => $this->relations() ? : array(),
             'RULES' => $this->rules() ? : array(),
             'LANG' => array()
@@ -236,7 +236,7 @@ abstract class DatabaseModel extends ModelBase
      * 数据表字段别名映射
      * @return array
      */
-	public function fieldMaps()
+	public function fieldsMap()
     {
         return array();
     }

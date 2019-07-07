@@ -141,6 +141,26 @@ class ModelService extends BaseService
 		$content .= "\t * 初始化模型\r\n";
 		$content .= "\t */\r\n";
 		$content .= "\tpublic function __model()\r\n\t{}\r\n";
+        $content .= "\r\n";
+        $content .= "\t/**\r\n";
+        $content .= "\t * 字段别名映射配置\r\n";
+        $content .= "\t */\r\n";
+        $content .= "\tpublic function fieldsMap()\r\n\t{}\r\n";
+        $content .= "\r\n";
+        $content .= "\t/**\r\n";
+        $content .= "\t * 表间关联配置\r\n";
+        $content .= "\t */\r\n";
+        $content .= "\tpublic function relations()\r\n\t{}\r\n";
+        $content .= "\r\n";
+        $content .= "\t/**\r\n";
+        $content .= "\t * 字段验证配置\r\n";
+        $content .= "\t */\r\n";
+        $content .= "\tpublic function rules()\r\n\t{}\r\n";
+        $content .= "\r\n";
+        $content .= "\t/**\r\n";
+        $content .= "\t * 查询结果行过滤\r\n";
+        $content .= "\t */\r\n";
+        $content .= "\tpublic function rowFilters()\r\n\t{}\r\n";
 		$content .= "}";
 
         $fileService = ocService()->file;
