@@ -11,7 +11,6 @@ defined('OC_PATH') or exit('Forbidden!');
 abstract class DatabaseEntity extends BaseEntity
 {
     private $selected = array();
-    private $changes = array();
     private $oldData = array();
     private $relations = array();
 
@@ -137,40 +136,9 @@ abstract class DatabaseEntity extends BaseEntity
             if (array_key_exists($key, $this->oldData)){
                 return $this->oldData[$key];
             }
-            ocService()->error->show('no_old_field');
+            return null;
         }
         return $this->oldData;
-    }
-
-    /**
-     * 获取新值
-     * @param null $key
-     * @return array|mixed
-     */
-    public function getChanged($key = null)
-    {
-        if (func_num_args()) {
-            if (in_array($key, $this->changes)) {
-                return $this->changes[$key];
-            }
-            ocService()->error->show('no_changed_field');
-        }
-
-        $changes = array_fill_keys($this->changes, null);
-        return array_intersect_key($this->toArray(), $changes);
-    }
-
-    /**
-     * 是否赋新值
-     * @param string $key
-     * @return bool
-     */
-    public function hasChanged($key = null)
-    {
-        if (func_num_args()) {
-            return in_array($key, $this->changes);
-        }
-        return !empty($this->changes);
     }
 
     /**
@@ -184,6 +152,54 @@ abstract class DatabaseEntity extends BaseEntity
             return in_array($key, $this->oldData);
         }
         return !empty($this->oldData);
+    }
+
+    /**
+     * 获取新值
+     * @param null $key
+     * @return array|mixed
+     */
+    public function getChanged($key = null)
+    {
+        if (func_num_args()) {
+            return $this->hasChanged($key) ? $this->$key : null;
+        }
+
+        $data = $this->toArray();
+        $changes = array_diff_key($data, $this->oldData);
+
+        foreach ($this->oldData as $key => $value) {
+            if (isset($this->$key)) {
+                $dataValue = $data[$key];
+                if ($value && $value != $dataValue || $value !== $dataValue) {
+                    $changes[$key] = $data[$key];
+                }
+            }
+        }
+
+        return $changes;
+    }
+
+    /**
+     * 是否赋新值
+     * @param string $key
+     * @return bool
+     */
+    public function hasChanged($key = null)
+    {
+        if (func_num_args()) {
+            if (array_key_exists($key, $this->oldData)) {
+                $value = $this->oldData[$key];
+                if (isset($this->$key)) {
+                    $dataValue = $this->$key;
+                    return $value && $value != $dataValue || $value !== $dataValue;
+                }
+            }
+            return false;
+        }
+
+        $changes = $this->getChanged();
+        return !empty($changes);
     }
 
     /**
@@ -275,11 +291,6 @@ abstract class DatabaseEntity extends BaseEntity
 
         $this->fire(self::EVENT_BEFORE_CREATE);
 
-        if ($data){
-            $oldData = array_intersect_key($this->toArray(), array_diff_key($data, $this->oldData));
-            $this->oldData = array_merge($this->oldData, $oldData);
-        }
-
         $data = array_merge($this->getChanged(), $data);
         call_user_func_array('ocDel', array(&$data, $this->getPrimaries()));
         $result = $model->update($data, $debug);
@@ -306,6 +317,14 @@ abstract class DatabaseEntity extends BaseEntity
         } else {
             return $this->create($data, $debug);
         }
+    }
+
+    /**
+     * 保存旧值
+     */
+    public function saveOld()
+    {
+        $this->oldData = array_merge($this->oldData, $this->toArray());
     }
 
     /**
@@ -490,17 +509,7 @@ abstract class DatabaseEntity extends BaseEntity
         if (isset($relations[$name])) {
             $this->relations[$name] = $value;
         } else {
-            $oldValue = null;
-            if ($this->selected && isset($this->$name)) {
-                if (!array_key_exists($name, $this->oldData)){
-                    $oldValue = $this->$name;
-                }
-            }
             parent::__set($name, $value);
-            if ($this->selected && isset($this->$name)) {
-                $this->changes[] = $name;
-                $this->oldData[$name] = $oldValue;
-            }
         }
     }
 }
