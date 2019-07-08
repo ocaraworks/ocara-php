@@ -166,7 +166,7 @@ abstract class DatabaseEntity extends BaseEntity
         }
 
         $data = $this->toArray();
-        $changes = array_diff_key($data, $this->oldData);
+        $changes = array();
 
         foreach ($this->oldData as $key => $value) {
             if (isset($this->$key)) {
