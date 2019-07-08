@@ -93,6 +93,9 @@ abstract class DatabaseEntity extends BaseEntity
         if ($data) {
             $data = $model->filterData($data);
             $this->setProperty($data);
+            if ($this->selected) {
+                $this->replaceOld($data);
+            }
         }
 
         return $this;
@@ -220,8 +223,6 @@ abstract class DatabaseEntity extends BaseEntity
             ->getRow($condition, $options, $debug);
 
         $entity->data($data);
-        $entity->replaceOld($data);
-
         return $entity;
     }
 
