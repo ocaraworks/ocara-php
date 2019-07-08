@@ -104,6 +104,7 @@ abstract class DatabaseEntity extends BaseEntity
     public function clear()
     {
         $this->selected = array();
+        $this->oldData = array();
         $fields = $this->getModel()->getFieldsName();
         $this->clearProperties($fields);
         return $this;
@@ -219,6 +220,8 @@ abstract class DatabaseEntity extends BaseEntity
             ->getRow($condition, $options, $debug);
 
         $entity->data($data);
+        $entity->replaceOld($data);
+
         return $entity;
     }
 
@@ -321,10 +324,16 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 保存旧值
+     * @param null $key
+     * @param $value
      */
-    public function saveOld()
+    public function replaceOld($key, $value = null)
     {
-        $this->oldData = array_merge($this->oldData, $this->toArray());
+        if (is_array($key)) {
+            $this->oldData = $key;
+        } else {
+            $this->oldData[$key] = $value;
+        }
     }
 
     /**
