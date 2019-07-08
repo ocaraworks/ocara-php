@@ -86,7 +86,7 @@ abstract class DatabaseEntity extends BaseEntity
      * @param array $data
      * @return $this
      */
-    public function data(array $data = array())
+    public function data(array $data)
     {
         $model = $this->getModel();
 
@@ -324,8 +324,9 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 保存旧值
-     * @param null $key
-     * @param $value
+     * @param $key
+     * @param null $value
+     * @return $this
      */
     public function replaceOld($key, $value = null)
     {
@@ -334,6 +335,7 @@ abstract class DatabaseEntity extends BaseEntity
         } else {
             $this->oldData[$key] = $value;
         }
+        return $this;
     }
 
     /**
