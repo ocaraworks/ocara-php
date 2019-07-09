@@ -67,6 +67,7 @@ class Validator extends Base
 
         $skipFields = array_fill_keys($this->skipFields, null);
         $rules = array_intersect_key($rules, $skipFields);
+        $lang = array_intersect_key($lang, $skipFields);
 
         foreach ($rules as $field => $rule) {
             if (is_string($rule)) $rule = array('common' => $rule);
