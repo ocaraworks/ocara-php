@@ -70,7 +70,9 @@ class Validator extends Base
         $lang = array_intersect_key($lang, $skipFields);
 
         foreach ($rules as $field => $rule) {
-            if (is_string($rule)) $rule = array('common' => $rule);
+            if (is_string($rule)) {
+                $rule = array('common' => $rule);
+            }
 
             $value = ocGet($field, $data);
             $value = $value === null ? OC_EMPTY : $value;
