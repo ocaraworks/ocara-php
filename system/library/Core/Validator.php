@@ -48,28 +48,9 @@ class Validator extends Base
     public function validate(array $data, $showError = true)
     {
         $result = true;
-        $rules = $this->rules;
-        $lang = array_merge(ocService()->lang->get(), $this->lang);
+        $rules = $this->getModelFieldsRules();
 
-        foreach ($this->models as $model) {
-            if (!in_array($model, $this->skipModels)) {
-                $rules = $model::getConfig('RULES');
-                $lang = $model::getConfig('LANG');
-                if (!empty($this->skipModelFields[$model])) {
-                    $skipFields = array_fill_keys($this->skipModelFields[$model], null);
-                    $rules = array_intersect_key($rules, $skipFields);
-                    $lang = array_intersect_key($lang, $skipFields);
-                }
-                $this->addRule($rules)
-                     ->addLang($lang);
-            }
-        }
-
-        $skipFields = array_fill_keys($this->skipFields, null);
-        $rules = array_intersect_key($rules, $skipFields);
-        $lang = array_intersect_key($lang, $skipFields);
-
-        foreach ($rules as $field => $rule) {
+        foreach ($rules['rules'] as $field => $rule) {
             if (is_string($rule)) {
                 $rule = array('common' => $rule);
             }
@@ -87,7 +68,7 @@ class Validator extends Base
             }
 
             if (!$result) {
-                $this->setError($lang);
+                $this->setError($rules['lang']);
                 break;
             }
         }
@@ -97,6 +78,38 @@ class Validator extends Base
         }
 
         return $result;
+    }
+
+    /**
+     * 获取字段验证规则
+     */
+    protected function getModelFieldsRules()
+    {
+        $rules = array();
+        $lang = array();
+
+        foreach ($this->models as $model) {
+            if (!in_array($model, $this->skipModels)) {
+                $modelRules = $model::getConfig('RULES');
+                $modelLang = $model::getConfig('LANG');
+                if (!empty($this->skipModelFields[$model])) {
+                    $skipFields = array_fill_keys($this->skipModelFields[$model], null);
+                    $modelRules = array_intersect_key($modelRules, $skipFields);
+                    $modelLang = array_intersect_key($modelLang, $skipFields);
+                }
+                $rules = array_merge($rules, $modelRules);
+                $lang = array_merge($rules, $modelLang);
+            }
+        }
+
+        $rules = array_merge($this->rules, $rules);
+        $lang = array_merge(ocService()->lang->get(), $this->lang, $lang);
+
+        $skipFields = array_fill_keys($this->skipFields, null);
+        $rules = array_intersect_key($rules, $skipFields);
+        $lang = array_intersect_key($lang, $skipFields);
+
+        return compact('rules', 'lang');
     }
 
     /**

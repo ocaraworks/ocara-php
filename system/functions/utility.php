@@ -293,6 +293,19 @@ function ocDel(array &$data, $key)
 }
 
 /**
+ * 获取交集
+ * @param $data
+ * @param $keys
+ * @return array
+ */
+function ocIntersectKey($data, $keys)
+{
+    $keysData = array_fill_keys($keys, null);
+    $data = array_intersect_key($data, $keysData);
+    return $data;
+}
+
+/**
  * 获取异常错误数据
  * @param $exception
  * @return array
