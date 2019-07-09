@@ -94,10 +94,8 @@ class Validator extends Base
                 $modelLang = $model::mapData($model::getConfig('LANG'));
                 if (!empty($this->skipModelFields[$model])) {
                     $skipFields = array_fill_keys($this->skipModelFields[$model], null);
-                    if ($skipFields) {
-                        $modelRules = array_intersect_key($modelRules, $skipFields);
-                        $modelLang = array_intersect_key($modelLang, $skipFields);
-                    }
+                    $modelRules = array_diff_key($modelRules, $skipFields);
+                    $modelLang = array_diff_key($modelLang, $skipFields);
                 }
                 $rules = array_merge($rules, $modelRules);
                 $lang = array_merge($lang, $modelLang);
@@ -108,10 +106,8 @@ class Validator extends Base
         $lang = array_merge(ocService()->lang->get(), $this->lang, $lang);
 
         $skipFields = array_fill_keys($this->skipFields, null);
-        if ($skipFields) {
-            $rules = array_intersect_key($rules, $skipFields);
-            $lang = array_intersect_key($lang, $skipFields);
-        }
+        $rules = array_diff_key($rules, $skipFields);
+        $lang = array_diff_key($lang, $skipFields);
 
         return compact('rules', 'lang');
     }
