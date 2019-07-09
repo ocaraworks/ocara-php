@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Core\Base;
 use Ocara\Exceptions\Exception;
 
@@ -17,14 +18,6 @@ class ServiceBase extends Base
 {
 	private static $lang = null;
 	private $error;
-
-	public function __construct()
-    {
-        if (self::$lang === null) {
-            $reflection = new \ReflectionObject($this);
-            self::loadLanguage($reflection->getFileName());
-        }
-    }
 
     /**
 	 * 加载语言文件
@@ -47,15 +40,21 @@ class ServiceBase extends Base
 		}
 	}
 
-	/**
-	 * 获取语言配置信息
-	 * @param string $key
-	 * @param array $params
-	 * @return array
-	 */
+    /**
+     * 获取语言配置信息
+     * @param $key
+     * @param array $params
+     * @return array
+     * @throws ReflectionException
+     */
 	public static function getLanguage($key, array $params = array())
 	{				
 		$class = self::getClass();
+
+        if (!isset(self::$lang[$class])) {
+            $reflection = new \ReflectionClass($class);
+            self::loadLanguage($reflection->getFileName());
+        }
 
 		if ($class && array_key_exists($class, self::$lang)) {
 			$languages = self::$lang[$class];
@@ -93,6 +92,7 @@ class ServiceBase extends Base
      * @param string $key
      * @param array $params
      * @return mixed
+     * @throws ReflectionException
      */
 	public static function getMessage($key, array $params = array())
 	{
@@ -100,12 +100,13 @@ class ServiceBase extends Base
 		return $language['message'];
 	}
 
-	/**
-	 * 显示错误信息
-	 * @param string $error
-	 * @param array $params
-	 * @throws Exception
-	 */
+    /**
+     * 显示错误信息
+     * @param string $error
+     * @param array $params
+     * @throws Exception
+     * @throws ReflectionException
+     */
 	public static function showError($error, array $params = array())
 	{
 		$error = self::getLanguage($error, $params);
@@ -131,12 +132,13 @@ class ServiceBase extends Base
 		return $this->error;
 	}
 
-	/**
-	 * 设置错误信息
-	 * @param string $name
-	 * @param array $params
-	 * @return bool
-	 */
+    /**
+     * 设置错误信息
+     * @param string $name
+     * @param array $params
+     * @return bool
+     * @throws ReflectionException
+     */
 	protected function setError($name, array $params = array())
 	{
 		$this->error = self::getLanguage($name, $params);

@@ -265,10 +265,7 @@ abstract class ControllerBase extends serviceProvider
     public function model($class = null)
     {
         if (empty($class)) {
-            $class = '\app\dal\model\\'
-                . DatabaseFactory::getDefaultServer()
-                . OC_NS_SEP
-                . ucfirst($this->getRoute('controller'));
+            $class = 'app\model\database\\' . ucfirst($this->getRoute('controller'));
         }
 
         if (isset($this->models[$class])) {

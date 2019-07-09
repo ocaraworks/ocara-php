@@ -23,7 +23,6 @@ class FormManager extends ServiceProvider
 
     /**
      * 注册服务
-     * @throws Exception
      */
 	public function register()
 	{}
