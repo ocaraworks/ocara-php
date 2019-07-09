@@ -301,7 +301,9 @@ function ocDel(array &$data, $key)
 function ocIntersectKey($data, $keys)
 {
     $keysData = array_fill_keys($keys, null);
-    $data = array_intersect_key($data, $keysData);
+    if ($keysData) {
+        $data = array_intersect_key($data, $keysData);
+    }
     return $data;
 }
 

@@ -326,7 +326,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public static function mapData(array $data)
 	{
-		$config = self::getConfig('MAP');
+		$config = self::getConfig('MAPS');
 		if (!$config) return $data;
 
 		$result = array();
@@ -348,7 +348,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public static function mapField($field)
     {
-        $config = self::getConfig('MAP');
+        $config = self::getConfig('MAPS');
         $result = isset($config[$field]) ? $config[$field] : $field;
         return $result;
     }

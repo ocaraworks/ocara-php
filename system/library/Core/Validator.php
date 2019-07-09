@@ -90,15 +90,17 @@ class Validator extends Base
 
         foreach ($this->models as $model) {
             if (!in_array($model, $this->skipModels)) {
-                $modelRules = $model::getConfig('RULES');
-                $modelLang = $model::getConfig('LANG');
+                $modelRules = $model::mapData($model::getConfig('RULES'));
+                $modelLang = $model::mapData($model::getConfig('LANG'));
                 if (!empty($this->skipModelFields[$model])) {
                     $skipFields = array_fill_keys($this->skipModelFields[$model], null);
-                    $modelRules = array_intersect_key($modelRules, $skipFields);
-                    $modelLang = array_intersect_key($modelLang, $skipFields);
+                    if ($skipFields) {
+                        $modelRules = array_intersect_key($modelRules, $skipFields);
+                        $modelLang = array_intersect_key($modelLang, $skipFields);
+                    }
                 }
                 $rules = array_merge($rules, $modelRules);
-                $lang = array_merge($rules, $modelLang);
+                $lang = array_merge($lang, $modelLang);
             }
         }
 
@@ -106,8 +108,10 @@ class Validator extends Base
         $lang = array_merge(ocService()->lang->get(), $this->lang, $lang);
 
         $skipFields = array_fill_keys($this->skipFields, null);
-        $rules = array_intersect_key($rules, $skipFields);
-        $lang = array_intersect_key($lang, $skipFields);
+        if ($skipFields) {
+            $rules = array_intersect_key($rules, $skipFields);
+            $lang = array_intersect_key($lang, $skipFields);
+        }
 
         return compact('rules', 'lang');
     }
