@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/library/Core/Validator.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Validator.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,11 +25,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/library/Core/Validator.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="467">
-              <caret line="59" lean-forward="true" selection-start-line="59" selection-end-line="59" />
+            <state relative-caret-position="459">
+              <caret line="153" column="8" lean-forward="true" selection-start-line="153" selection-start-column="8" selection-end-line="153" selection-end-column="8" />
               <folding>
                 <element signature="e#556#577#0#PHP" expanded="true" />
               </folding>
@@ -37,11 +37,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="342" lean-forward="true" selection-start-line="342" selection-end-line="342" />
+            <state relative-caret-position="5253">
+              <caret line="326" column="34" selection-start-line="326" selection-start-column="27" selection-end-line="326" selection-end-column="34" />
             </state>
           </provider>
         </entry>
@@ -49,7 +49,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
+            <state relative-caret-position="1632">
               <caret line="99" lean-forward="true" selection-start-line="99" selection-end-line="99" />
               <folding>
                 <element signature="e#33#55#0#PHP" expanded="true" />
@@ -61,7 +61,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Core/Form.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-824">
+            <state relative-caret-position="2431">
               <caret line="150" lean-forward="true" selection-start-line="150" selection-end-line="150" />
             </state>
           </provider>
@@ -71,8 +71,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>validator</find>
-      <find>rowFilter</find>
       <find>fieldMaps</find>
       <find>this-&gt;validate</find>
       <find>clearProperties</find>
@@ -98,13 +96,13 @@
       <find>pushOld</find>
       <find>initOld</find>
       <find>replaceOld</find>
-      <find>filterData</find>
       <find>mapData(</find>
       <find>mapField(</find>
+      <find>filterData</find>
+      <find>ignoreFields</find>
+      <find>ignoreModel</find>
     </findStrings>
     <replaceStrings>
-      <replace>map</replace>
-      <replace>$maps</replace>
       <replace>data</replace>
       <replace>connection</replace>
       <replace>password</replace>
@@ -133,6 +131,8 @@
       <replace>self::getClass()</replace>
       <replace>$class</replace>
       <replace>self::getConfig(</replace>
+      <replace>skipFields</replace>
+      <replace>skipModel</replace>
     </replaceStrings>
     <dirStrings>
       <dir>D:\wwwroot\vendor\linyihu\ocara\system\functions</dir>
@@ -202,10 +202,10 @@
         <option value="$PROJECT_DIR$/system/library/Core/Base.php" />
         <option value="$PROJECT_DIR$/system/data/config.php" />
         <option value="$PROJECT_DIR$/system/library/Core/ControllerBase.php" />
-        <option value="$PROJECT_DIR$/system/library/Core/Validator.php" />
         <option value="$PROJECT_DIR$/system/data/languages/zh_cn.php" />
         <option value="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" />
         <option value="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" />
+        <option value="$PROJECT_DIR$/system/library/Core/Validator.php" />
       </list>
     </option>
   </component>
@@ -316,18 +316,19 @@
       <workItem from="1562407923655" duration="16379000" />
       <workItem from="1562465314802" duration="6776000" />
       <workItem from="1562481764000" duration="10566000" />
-      <workItem from="1562594936877" duration="6464000" />
+      <workItem from="1562594936877" duration="7062000" />
+      <workItem from="1562680239657" duration="2052000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="154534000" />
+    <option name="totallyTimeSpent" value="157184000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.31759655" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.32188842" />
       <window_info id="Favorites" order="1" sideWeight="0.5014245" side_tool="true" weight="0.22214764" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49946353" weight="0.4422222" />
@@ -697,27 +698,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/Form.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-824">
-          <caret line="150" lean-forward="true" selection-start-line="150" selection-end-line="150" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="99" lean-forward="true" selection-start-line="99" selection-end-line="99" />
-          <folding>
-            <element signature="e#33#55#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/Validator.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="467">
-          <caret line="59" lean-forward="true" selection-start-line="59" selection-end-line="59" />
+        <state relative-caret-position="459">
+          <caret line="153" column="8" lean-forward="true" selection-start-line="153" selection-start-column="8" selection-end-line="153" selection-end-column="8" />
           <folding>
             <element signature="e#556#577#0#PHP" expanded="true" />
           </folding>
@@ -726,8 +710,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="342" lean-forward="true" selection-start-line="342" selection-end-line="342" />
+        <state relative-caret-position="5253">
+          <caret line="326" column="34" selection-start-line="326" selection-start-column="27" selection-end-line="326" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1632">
+          <caret line="99" lean-forward="true" selection-start-line="99" selection-end-line="99" />
+          <folding>
+            <element signature="e#33#55#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Form.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2431">
+          <caret line="150" lean-forward="true" selection-start-line="150" selection-end-line="150" />
         </state>
       </provider>
     </entry>

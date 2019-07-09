@@ -27,8 +27,9 @@ class Validator extends Base
     protected $rules = array();
     protected $lang = array();
     protected $models = array();
-    protected $ignoreFields = array();
-    protected $ignoreModels = array();
+    protected $skipFields = array();
+    protected $skipModelFields = array();
+    protected $skipModels = array();
 
     /**
      * Validator constructor.
@@ -51,15 +52,23 @@ class Validator extends Base
         $lang = array_merge(ocService()->lang->get(), $this->lang);
 
         foreach ($this->models as $model) {
-            if (!in_array($model, $this->ignoreModels)) {
+            if (!in_array($model, $this->skipModels)) {
                 $rules = $model::getConfig('RULES');
                 $lang = $model::getConfig('LANG');
-                $result = $this->addRule($rules)->addLang($lang);
+                if (!empty($this->skipModelFields[$model])) {
+                    $skipFields = array_fill_keys($this->skipModelFields[$model], null);
+                    $rules = array_intersect_key($rules, $skipFields);
+                    $lang = array_intersect_key($lang, $skipFields);
+                }
+                $this->addRule($rules)
+                     ->addLang($lang);
             }
         }
 
+        $skipFields = array_fill_keys($this->skipFields, null);
+        $rules = array_intersect_key($rules, $skipFields);
+
         foreach ($rules as $field => $rule) {
-            if (in_array($field, $this->ignoreFields) || empty($rule)) continue;
             if (is_string($rule)) $rule = array('common' => $rule);
 
             $value = ocGet($field, $data);
@@ -129,13 +138,20 @@ class Validator extends Base
     }
 
     /**
-     * 忽略字段
+     * 跳过字段规则
      * @param $field
+     * @param null $modelClass
      * @return $this
      */
-    public function ignore($field)
+    public function skip($field, $modelClass = null)
     {
-        $this->ignoreFields[] = $field;
+        if ($modelClass) {
+            $modelClass = trim($modelClass, OC_NS_SEP);
+            $this->skipModelFields[$modelClass] = $field;
+        } else {
+            $this->skipFields[] = $field;
+        }
+
         return $this;
     }
 
@@ -144,9 +160,9 @@ class Validator extends Base
      * @param $class
      * @return $this
      */
-    public function ignoreModel($class)
+    public function skipModel($class)
     {
-        $this->ignoreModels[] = $class;
+        $this->skipModels[] = $class;
         return $this;
     }
 
