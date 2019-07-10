@@ -110,7 +110,7 @@ class Api extends ControllerBase implements ControllerInterface
      */
     public function renderApi($data = null, $message = null, $status = 'success')
     {
-        if (is_string($message)) {
+        if (!is_array($message)) {
             $message = $this->lang->get($message);
         }
 

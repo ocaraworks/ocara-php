@@ -97,7 +97,8 @@ class Common extends ControllerBase implements ControllerInterface
             if (method_exists($this, 'api')) {
                 $result = $this->api();
             }
-            $this->render($result, false);
+            $this->isApi(true);
+            $this->render($result);
         } elseif ($this->isFormSubmit() && method_exists($this, 'submit')) {
             $result = $this->submit();
             $this->formManager->clearToken();
@@ -121,22 +122,22 @@ class Common extends ControllerBase implements ControllerInterface
             $this->isApi = $isApi ? true : false;
         }
 
-        return $this instanceof Api || $this->isApi;
+        return $this->isApi;
     }
 
     /**
      * 渲染API
      * @param null $result
-     * @param bool $userDefault
+     * @param bool $useDefault
      */
-    public function render($result = null, $userDefault = true)
+    public function render($result = null, $useDefault = true)
     {
         if ($this->hasRender()) return;
 
         if ($this->isApi()){
             $this->renderApi($result);
         } else {
-            if ($userDefault) {
+            if ($useDefault) {
                 $this->renderFile();
             } else {
                 $this->response->setBody($result);
@@ -172,12 +173,12 @@ class Common extends ControllerBase implements ControllerInterface
     /**
      * 渲染API数据
      * @param null $data
-     * @param null $message
+     * @param string $message
      * @param string $status
      */
-    public function renderApi($data = null, $message = null, $status = 'success')
+    public function renderApi($data = null, $message = OC_EMPTY, $status = 'success')
     {
-        if (is_string($message)) {
+        if (!is_array($message)) {
             $message = $this->lang->get($message);
         }
 
@@ -214,7 +215,7 @@ class Common extends ControllerBase implements ControllerInterface
 
         if (!ocConfig(array('API', 'send_header_code'), 0)) {
             $this->response->setStatusCode(Response::STATUS_OK);
-            $this->result['status'] = $this->response->getOption('status');
+            $this->result['status'] = $this->response->getOption('statusCode');
         }
     }
 }

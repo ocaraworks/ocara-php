@@ -56,10 +56,15 @@ class Api extends Base
      */
 	public function format($result, $contentType)
 	{
+
         switch ($contentType)
         {
             case 'json':
-                $content = json_encode($result, JSON_UNESCAPED_UNICODE);
+                if (defined('JSON_UNESCAPED_UNICODE')) {
+                    $content = json_encode($result, JSON_UNESCAPED_UNICODE);
+                } else {
+                    $content = json_encode($result);
+                }
                 break;
             case 'xml':
                 $content = $this->getXmlResult($result);
