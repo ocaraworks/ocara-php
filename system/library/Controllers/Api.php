@@ -147,7 +147,7 @@ class Api extends ControllerBase implements ControllerInterface
 
         if (!ocConfig(array('API', 'send_header_code'), 0)) {
             $this->response->setStatusCode(Response::STATUS_OK);
-            $this->result['status'] = $this->response->getOption('status');
+            $this->result['status'] = $this->response->getOption('statusCode');
         }
     }
 }
