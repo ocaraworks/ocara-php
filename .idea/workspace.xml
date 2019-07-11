@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/functions/common.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/functions/common.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/Container.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Container.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/Loader.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Loader.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/Log.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Log.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/ServiceBase.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/ServiceBase.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/library/Exceptions/ReflectionException.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Exceptions/ReflectionException.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Service/Validate.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Service/Validate.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -274,9 +267,9 @@
         <option value="$PROJECT_DIR$/system/library/Core/Loader.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Log.php" />
         <option value="$PROJECT_DIR$/system/library/Core/ServiceBase.php" />
-        <option value="$PROJECT_DIR$/system/library/Exceptions/ReflectionException.php" />
         <option value="$PROJECT_DIR$/system/library/Service/Validate.php" />
         <option value="$PROJECT_DIR$/system/functions/common.php" />
+        <option value="$PROJECT_DIR$/system/library/Exceptions/ReflectionException.php" />
       </list>
     </option>
   </component>
@@ -392,21 +385,21 @@
       <workItem from="1562594936877" duration="7062000" />
       <workItem from="1562680239657" duration="8568000" />
       <workItem from="1562766645796" duration="4933000" />
-      <workItem from="1562854863821" duration="2355000" />
+      <workItem from="1562854863821" duration="2404000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="170988000" />
+    <option name="totallyTimeSpent" value="171037000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.33208156" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.33208156" />
       <window_info id="Favorites" order="1" sideWeight="0.5014245" side_tool="true" weight="0.22214764" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49946353" visible="true" weight="0.4422222" />
+      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49946353" weight="0.4422222" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
