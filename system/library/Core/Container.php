@@ -8,9 +8,10 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
-use Ocara\Core\Basis;
+use \ReflectionClass;
+use \ReflectionMethod;
 use Ocara\Exceptions\Exception;
-use \ReflectionException;
+use Ocara\Core\Basis;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -153,9 +154,8 @@ class Container extends Basis
      * @param null $name
      * @param array $params
      * @param array $deps
-     * @return array|mixed|object|自定义属性|null
+     * @return array|mixed|object|自定义属性|void|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function get($name = null, array $params = array(), array $deps = array())
     {
@@ -257,9 +257,8 @@ class Container extends Basis
      * @param $name
      * @param array $params
      * @param array $deps
-     * @return array|mixed|object|null
+     * @return array|mixed|object|void|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function create($name, array $params = array(), array $deps = array())
     {
@@ -278,9 +277,8 @@ class Container extends Basis
      * @param $name
      * @param array $params
      * @param array $deps
-     * @return array|mixed|object|null
+     * @return array|mixed|object|void|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function make($name, array $params = array(), array $deps = array())
     {
@@ -326,7 +324,6 @@ class Container extends Basis
      * @param $deps
      * @return array|mixed|object|null
      * @throws Exception
-     * @throws ReflectionException
      */
     protected function getMatterInstance($matter, $params, $deps)
     {
@@ -338,8 +335,13 @@ class Container extends Basis
             $source = array_values($source);
             list($sourceClass, $sourceMethod) = $source;
             if (is_string($sourceClass)) {
-                $methodReflection = new \ReflectionMethod($sourceClass, $sourceMethod);
-                if (!$methodReflection->isStatic()) {
+                try {
+                    $methodReflection = new ReflectionMethod($sourceClass, $sourceMethod);
+                    $isStatic = $methodReflection->isStatic();
+                } catch (\Exception $exception) {
+                    throw new Exception($exception->getMessage(), $exception->getCode());
+                }
+                if (!$isStatic) {
                     throw new Exception("invalid_class_static_method", $source);
                 }
             }
@@ -358,16 +360,20 @@ class Container extends Basis
             if (function_exists($source)) {
                 $instance = call_user_func_array($source, $params);
             } else {
-                $reflection = new \ReflectionClass($source);
-                if (!$reflection->isInstantiable()) {
-                    throw new Exception("cannot_instance.");
-                }
-                $constructor = $reflection->getConstructor();
-                if ($constructor === null) {
-                    $instance = new $source();
-                } else {
-                    $dependencies = $this->getDependencies($constructor->getParameters(), $params);
-                    $instance = $reflection->newInstanceArgs($dependencies);
+                try {
+                    $reflection = new ReflectionClass($source);
+                    if (!$reflection->isInstantiable()) {
+                        throw new Exception("cannot_instance.");
+                    }
+                    $constructor = $reflection->getConstructor();
+                    if ($constructor === null) {
+                        $instance = new $source();
+                    } else {
+                        $dependencies = $this->getDependencies($constructor->getParameters(), $params);
+                        $instance = $reflection->newInstanceArgs($dependencies);
+                    }
+                } catch (\Exception $exception) {
+                    throw new Exception($exception->getMessage(), $exception->getCode());
                 }
             }
         }
@@ -381,7 +387,6 @@ class Container extends Basis
      * @param $params
      * @return array
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getDependencies($args, $params)
     {
@@ -421,11 +426,10 @@ class Container extends Basis
     }
 
     /**
-     * 魔术方法-获取自定义属性
+     * 魔术方法-获取无法访问的属性
      * @param string $property
-     * @return array|mixed|object|自定义属性|null
+     * @return array|mixed|object|自定义属性|void|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function __get($property)
     {

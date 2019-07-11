@@ -8,7 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
-use \ReflectionException;
+use \ReflectionClass;
 use Ocara\Core\Base;
 use Ocara\Exceptions\Exception;
 
@@ -45,15 +45,20 @@ class ServiceBase extends Base
      * @param $key
      * @param array $params
      * @return array
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function getLanguage($key, array $params = array())
 	{				
 		$class = self::getClass();
 
         if (!isset(self::$lang[$class])) {
-            $reflection = new \ReflectionClass($class);
-            self::loadLanguage($reflection->getFileName());
+            try {
+                $reflection = new ReflectionClass($class);
+                $fileName = $reflection->getFileName();
+            } catch (\Exception $exception) {
+                throw new Exception($exception->getMessage(), $exception->getCode());
+            }
+            self::loadLanguage($fileName);
         }
 
 		if ($class && array_key_exists($class, self::$lang)) {
@@ -89,10 +94,10 @@ class ServiceBase extends Base
 
     /**
      * 获取语言内容
-     * @param string $key
+     * @param $key
      * @param array $params
      * @return mixed
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function getMessage($key, array $params = array())
 	{
@@ -102,10 +107,9 @@ class ServiceBase extends Base
 
     /**
      * 显示错误信息
-     * @param string $error
+     * @param $error
      * @param array $params
      * @throws Exception
-     * @throws ReflectionException
      */
 	public static function showError($error, array $params = array())
 	{
@@ -134,10 +138,10 @@ class ServiceBase extends Base
 
     /**
      * 设置错误信息
-     * @param string $name
+     * @param $name
      * @param array $params
      * @return bool
-     * @throws ReflectionException
+     * @throws Exception
      */
 	protected function setError($name, array $params = array())
 	{

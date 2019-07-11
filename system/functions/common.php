@@ -7,6 +7,8 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
+use Ocara\Exceptions\Exception;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 /**
@@ -124,16 +126,20 @@ function ocCheckPath($path, $perm = null, $required = false)
 
 /**
  * 新建类实例
- * @param string $name
+ * @param $name
  * @param array $params
  * @return object
- * @throws ReflectionException
+ * @throws Exception
  */
 function ocClass($name, array $params = array())
 {
 	if ($params) {
-		$reflection = new ReflectionClass($name);
-		$object = $reflection->newInstanceArgs($params);
+	    try {
+            $reflection = new ReflectionClass($name);
+            $object = $reflection->newInstanceArgs($params);
+        } catch (\Exception $exception) {
+	        throw new Exception($exception->getMessage(), $exception->getCode());
+        }
 	} else {
 		$object = new $name();
 	}
@@ -150,7 +156,7 @@ function ocClassExists($class)
 {
 	try {
 		$result = class_exists($class);
-	} catch (\Exception $e) {
+	} catch (\Exception $exception) {
 		return false;
 	}
 
@@ -159,8 +165,8 @@ function ocClassExists($class)
 
 /**
  * 加载函数库文件
- * @param string $filePath
- * @throws \Ocara\Exceptions\Exception
+ * @param $filePath
+ * @throws Exception
  */
 function ocFunc($filePath)
 {

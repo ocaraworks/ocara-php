@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
+use Ocara\Exceptions\Exception;
 use \ReflectionClass;
 use Ocara\Core\Basis;
 use Ocara\Core\Container;
@@ -71,7 +72,7 @@ class Loader extends Basis
      * 自动加载类
      * @param $class
      * @return bool
-     * @throws \ReflectionException
+     * @throws Exception
      */
     public function autoload($class)
     {
@@ -105,8 +106,12 @@ class Loader extends Basis
             } elseif (is_array($func)) {
                 $className = reset($func);
                 if (is_object($className)) {
-                    $reflection = new ReflectionClass($className);
-                    $className = $reflection->getName();
+                    try {
+                        $reflection = new ReflectionClass($className);
+                        $className = $reflection->getName();
+                    } catch (\Exception $exception) {
+                        throw new Exception($exception->getMessage(), $exception->getCode());
+                    }
                 }
                 if ($className === __CLASS__) continue;
                 call_user_func_array($func, array($class));

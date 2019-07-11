@@ -10,7 +10,7 @@ namespace Ocara\Service;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-use \ReflectionException;
+use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceBase;
 
 class Validate extends ServiceBase
@@ -19,7 +19,7 @@ class Validate extends ServiceBase
      * 不能为非0的空值
      * @param $value
      * @return array|bool
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function unempty($value)
 	{
@@ -32,7 +32,7 @@ class Validate extends ServiceBase
      * 标准命名方式
      * @param $value
      * @return array|false|int
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function standardName($value)
 	{
@@ -46,7 +46,7 @@ class Validate extends ServiceBase
      * @param $value
      * @param int $length
      * @return array|bool
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function maxLength($value, $length = 0)
 	{
@@ -60,7 +60,7 @@ class Validate extends ServiceBase
      * @param $value
      * @param int $length
      * @return array|bool
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function minLength($value, $length = 0)
 	{
@@ -75,7 +75,7 @@ class Validate extends ServiceBase
      * @param int $min
      * @param int $max
      * @return array|bool
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function betweenLength($value, $min = 0, $max = 1)
 	{
@@ -89,7 +89,7 @@ class Validate extends ServiceBase
      * email验证
      * @param $value
      * @return array|mixed
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function email($value)
 	{
@@ -102,7 +102,7 @@ class Validate extends ServiceBase
      * IP验证
      * @param $value
      * @return array|mixed
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function ip($value)
 	{
@@ -115,7 +115,7 @@ class Validate extends ServiceBase
      * URL验证
      * @param $value
      * @return array|mixed
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function url($value)
 	{
@@ -129,7 +129,7 @@ class Validate extends ServiceBase
      * @param $value
      * @param string $expression
      * @return array|false|int
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function regExp($value, $expression = '')
 	{
@@ -142,7 +142,7 @@ class Validate extends ServiceBase
      * 身份证验证
      * @param $value
      * @return array|false|int
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function idCard($value)
 	{
@@ -155,7 +155,7 @@ class Validate extends ServiceBase
      * 验证手机号码
      * @param $value
      * @return array|false|int
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function mobileTel($value)
 	{
@@ -168,7 +168,7 @@ class Validate extends ServiceBase
      * 验证是否全部是中文
      * @param $value
      * @return array|false|int
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function chinese($value)
 	{
@@ -181,7 +181,7 @@ class Validate extends ServiceBase
      * 验证是否含有中文
      * @param $value
      * @return array|bool
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function noneChinese($value)
 	{
@@ -194,7 +194,7 @@ class Validate extends ServiceBase
      * 验证邮政编码
      * @param $value
      * @return array|bool
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function postNum($value)
 	{
@@ -209,7 +209,7 @@ class Validate extends ServiceBase
      * @param $error
      * @param array $params
      * @return array
-     * @throws ReflectionException
+     * @throws Exception
      */
 	public static function validate($expression, $error, array $params = array())
 	{

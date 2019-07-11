@@ -10,7 +10,6 @@ namespace Ocara\Core;
 
 use Ocara\Core\Base;
 use \ReflectionClass;
-use \ReflectionException;
 use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -38,7 +37,6 @@ class Log extends Base
      * @param array $traceInfo
      * @param string $type
      * @throws Exception
-     * @throws ReflectionException
      */
     public function write($message, array $traceInfo = array(), $type = 'info')
     {
@@ -72,7 +70,6 @@ class Log extends Base
      * @param $content
      * @param array $traceInfo
      * @throws Exception
-     * @throws ReflectionException
      */
     public function info($content, array $traceInfo = array())
     {
@@ -84,7 +81,6 @@ class Log extends Base
      * @param $content
      * @param array $traceInfo
      * @throws Exception
-     * @throws ReflectionException
      */
     public function debug($content, array $traceInfo = array())
     {
@@ -96,7 +92,6 @@ class Log extends Base
      * @param $content
      * @param array $traceInfo
      * @throws Exception
-     * @throws ReflectionException
      */
     public function error($content, array $traceInfo = array())
     {
@@ -108,7 +103,6 @@ class Log extends Base
      * @param $content
      * @param array $traceData
      * @throws Exception
-     * @throws ReflectionException
      */
     public function warning($content, array $traceData = array())
     {
@@ -119,7 +113,7 @@ class Log extends Base
      * 获取Trace字符串
      * @param array $traceInfo
      * @return string
-     * @throws ReflectionException
+     * @throws Exception
      */
     public static function getTraceString(array $traceInfo)
     {
@@ -145,7 +139,7 @@ class Log extends Base
      * @param $format
      * @param $row
      * @return string
-     * @throws ReflectionException
+     * @throws Exception
      */
     private static function getTraceRow($index, $format, $row)
     {
@@ -174,7 +168,7 @@ class Log extends Base
      * 获取Trace参数字符串
      * @param array $args
      * @return string
-     * @throws ReflectionException
+     * @throws Exception
      */
     private static function getTraceArgs(array $args)
     {
@@ -190,8 +184,12 @@ class Log extends Base
                 } elseif ($type == 'resource')  {
                     $value = get_resource_type($value);
                 } elseif ($type == 'object') {
-                    $reflection = new ReflectionClass($value);
-                    $value = $reflection->getName();
+                    try {
+                        $reflection = new ReflectionClass($value);
+                        $value = $reflection->getName();
+                    } catch (\Exception $exception) {
+                        throw new Exception($exception->getMessage(), $exception->getCode());
+                    }
                     $value = "Object($value)";
                 } else {
                     $value = $type;
