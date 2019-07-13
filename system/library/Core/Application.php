@@ -19,7 +19,7 @@ class Application extends Base
 {
     private $language;
     private $bootstrap;
-    private $route;
+    private $route = array();
 
     /**
      * 启动前
@@ -121,6 +121,18 @@ class Application extends Base
     }
 
     /**
+     * 执行测试
+     * @param $route
+     * @return mixed
+     */
+    public function runTest($route = array())
+    {
+        $newRoute = $this->formatRoute($route);
+        $result = $this->bootstrap->start($newRoute);
+        return $result;
+    }
+
+    /**
      * 解析路由
      * @return array
      */
@@ -151,7 +163,7 @@ class Application extends Base
             return isset($this->route[$name]) ? $this->route[$name] : null;
         }
 
-        return $this->route;
+        return $this->route ? : array();
     }
 
     /**
@@ -160,7 +172,7 @@ class Application extends Base
      */
     public function setRoute($route)
     {
-        $this->route = $route;
+        $this->route = $route ? : array();
     }
 
     /**
@@ -170,7 +182,10 @@ class Application extends Base
      */
     public function formatRoute($route)
     {
+        $isModule = false;
+
         if (is_string($route)) {
+            if ($route{0} == OC_DIR_SEP) $isModule = true;
             $routeStr = trim(ocCommPath($route), OC_DIR_SEP);
             $routeData = explode(OC_DIR_SEP, $routeStr);
         } elseif (is_array($route)) {
@@ -182,7 +197,7 @@ class Application extends Base
         switch (count($routeData)) {
             case 2:
                 list($controller, $action) = $routeData;
-                if ($route{0} != OC_DIR_SEP && isset($this->route['module'])) {
+                if (!$isModule && isset($this->route['module'])) {
                     $module = $this->route['module'];
                 }  else {
                     $module = OC_EMPTY;
@@ -190,6 +205,17 @@ class Application extends Base
                 break;
             case 3:
                 list($module, $controller, $action) = $routeData;
+                break;
+            case 1:
+                if ($isModule) {
+                    $module = $routeData[0];
+                    $controller = OC_EMPTY;
+                    $action = OC_EMPTY;
+                } else {
+                    $module = OC_EMPTY;
+                    $controller = ocGet('controller', $this->route, OC_EMPTY);
+                    $action = $routeData[0];
+                }
                 break;
             default:
                 return array();

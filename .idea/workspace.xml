@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/system/library/Core/Validator.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Validator.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/library/Bootstraps/Test.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Bootstraps/Test.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/library/Core/Application.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Application.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,20 +24,7 @@
     </favorites_list>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/system/library/Core/Validator.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="240" column="9" lean-forward="true" selection-start-line="240" selection-start-column="9" selection-end-line="240" selection-end-column="9" />
-              <folding>
-                <element signature="e#556#577#0#PHP" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375" />
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -199,17 +187,6 @@
               <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
               <item name="ocara" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ocara" type="462c0819:PsiDirectoryNode" />
-              <item name="system" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ocara" type="462c0819:PsiDirectoryNode" />
-              <item name="system" type="462c0819:PsiDirectoryNode" />
-              <item name="library" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -289,12 +266,12 @@
       <workItem from="1562979594459" duration="15845000" />
       <workItem from="1563003951040" duration="103000" />
       <workItem from="1563004077569" duration="379000" />
-      <workItem from="1563007075575" duration="3593000" />
+      <workItem from="1563007075575" duration="4957000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="194335000" />
+    <option name="totallyTimeSpent" value="195699000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -712,8 +689,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/Validator.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="240" column="9" lean-forward="true" selection-start-line="240" selection-start-column="9" selection-end-line="240" selection-end-column="9" />
+        <state relative-caret-position="1539">
+          <caret line="341" lean-forward="true" selection-start-line="341" selection-end-line="341" />
           <folding>
             <element signature="e#556#577#0#PHP" expanded="true" />
           </folding>

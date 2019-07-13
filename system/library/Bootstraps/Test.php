@@ -23,5 +23,11 @@ class Test extends BootstrapBase implements BootstrapInterface
      */
     public function start($route = array())
     {
+        $service = ocService();
+
+        if (!empty($route['module'])) {
+            $service->config->loadModuleConfig($route);
+            $service->lang->loadModuleConfig($route);
+        }
     }
 }
