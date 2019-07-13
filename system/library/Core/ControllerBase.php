@@ -43,7 +43,9 @@ abstract class ControllerBase extends serviceProvider
 	public function initialize()
 	{
         $this->bindEvents($this);
-        $this->session->boot();
+
+        if (!in_array(PHP_SAPI, array('cli'))) $this->session->boot();
+
         $this->formManager->setRoute($this->getRoute());
         $this->setPlugin($this->view);
 

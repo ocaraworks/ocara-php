@@ -61,8 +61,6 @@ class Config extends Basis
         if (empty($this->data)) {
             throw new Exception('Lost config : $CONF.');
         }
-
-        ocService()->app->setLanguage($this->get('LANGUAGE', 'zh_cn'));
     }
 
     /**

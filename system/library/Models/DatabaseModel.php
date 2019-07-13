@@ -65,14 +65,14 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function __construct(array $data = array())
 	{
-		$this->init();
+		$this->initialize();
 		if ($data) $this->data($data);
 	}
 
 	/**
 	 * 初始化
 	 */
-	public function init()
+	public function initialize()
 	{
 		if (self::$requirePrimary === null) {
 			$required = ocConfig('MODEL_REQUIRE_PRIMARY', false);

@@ -33,7 +33,7 @@ class Common extends BootstrapBase implements BootstrapInterface
      * @param null $moduleNamespace
      * @return mixed
      */
-    public function start($route, $params = array(), $moduleNamespace = null)
+    public function start($route = array(), $params = array(), $moduleNamespace = null)
     {
         $service = ocService();
         $moduleNamespace = $moduleNamespace ? : OC_MODULE_NAMESPACE;

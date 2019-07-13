@@ -19,10 +19,10 @@ interface Bootstrap
 	 */
 	public function init();
 
-	/**
-	 * 动作开始
-	 * @param array|string $route
-	 * @throws Exception\Exception
-	 */
-	public function start($route);
+    /**
+     * 开发启动
+     * @param array $route
+     * @return mixed
+     */
+	public function start($route = array());
 }

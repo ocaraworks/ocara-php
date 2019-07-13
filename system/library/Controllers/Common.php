@@ -90,13 +90,9 @@ class Common extends ControllerBase implements ControllerInterface
             $this->registerForms();
         }
 
-
-        $result = null;
         if ($this->request->isAjax()) {
             $this->checkForm();
-            if (method_exists($this, 'api')) {
-                $result = $this->api();
-            }
+            $result = method_exists($this, 'api') ? $this->api() : null;
             $this->isApi(true);
             $this->render($result);
         } elseif ($this->isFormSubmit() && method_exists($this, 'submit')) {

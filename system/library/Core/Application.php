@@ -15,11 +15,37 @@ defined('OC_PATH') or exit('Forbidden');
 use Ocara\Core\ServiceProvider;
 use Ocara\Exceptions\Exception;
 
-class Application extends Basis
+class Application extends Base
 {
     private $language;
     private $bootstrap;
     private $route;
+
+    /**
+     * 启动前
+     * @throws Exception
+     */
+    public function __construct()
+    {
+        //initialize global config
+        ocContainer()->config->loadGlobalConfig();
+        $this->setLanguage(ocContainer()->config->get('LANGUAGE', 'zh_cn'));
+
+        //error report
+        error_reporting($this->errorReporting());
+
+        //append module namespace
+        if (OC_MODULE_NAMESPACE && OC_MODULE_PATH) {
+            ocContainer()->loader->registerNamespace(OC_MODULE_NAMESPACE, OC_MODULE_PATH);
+        }
+
+        //initialize default service provider
+        $providerClass = ocConfig('DEFAULT_PROVIDER', 'Ocara\Providers\Main');
+        $provider = new $providerClass(array(), ocContainer());
+
+        ServiceProvider::setDefault($provider);
+        ocImport(array(OC_SYS . 'const/config.php'));
+    }
 
     /**
      * 获取语言
@@ -67,27 +93,10 @@ class Application extends Basis
      * 获取或设置启动器
      * @param null $bootstrap
      * @return mixed
-     * @throws Exception
      */
     public function bootstrap($bootstrap = null)
     {
         if (func_num_args()) {
-            //initialize global config
-            ocContainer()->config->loadGlobalConfig();
-            error_reporting($this->errorReporting());
-
-            //append module namespace
-            if (OC_MODULE_NAMESPACE && OC_MODULE_PATH) {
-                ocContainer()->loader->registerNamespace(OC_MODULE_NAMESPACE, OC_MODULE_PATH);
-            }
-
-            //initialize default service provider
-            $providerClass = ocConfig('DEFAULT_PROVIDER', 'Ocara\Providers\Main');
-            $provider = new $providerClass(array(), ocContainer());
-
-            ServiceProvider::setDefault($provider);
-            ocImport(array(OC_SYS . 'const/config.php'));
-
             $bootstrap = $bootstrap ? : 'Ocara\Bootstraps\Common';
             $this->bootstrap = new $bootstrap();
             $this->bootstrap->init();

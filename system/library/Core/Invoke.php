@@ -51,6 +51,7 @@ final class Invoke
      * @param $route
      * @param array $params
      * @param string $requestMethod
+     * @return mixed
      */
 	public static function run($route, $params = array(), $requestMethod = 'GET')
     {
@@ -70,5 +71,6 @@ final class Invoke
 
         $application->setRoute($route);
         $result = $application->run($route);
+        return $result;
     }
 }

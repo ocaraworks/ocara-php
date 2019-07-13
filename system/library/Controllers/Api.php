@@ -78,7 +78,6 @@ class Api extends ControllerBase implements ControllerInterface
         }
 
         $this->checkForm();
-        $result = null;
 
         if ($this->isFormSubmit() && method_exists($this, 'submit')) {
             $result = $this->submit();
