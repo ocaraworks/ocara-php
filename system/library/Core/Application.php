@@ -88,7 +88,7 @@ class Application extends Basis
             ServiceProvider::setDefault($provider);
             ocImport(array(OC_SYS . 'const/config.php'));
 
-            $bootstrap = $bootstrap ? : '\Ocara\Core\Bootstraps\Common';
+            $bootstrap = $bootstrap ? : 'Ocara\Bootstraps\Common';
             $this->bootstrap = new $bootstrap();
             $this->bootstrap->init();
         }

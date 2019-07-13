@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ocara.iml" filepath="$PROJECT_DIR$/.idea/ocara.iml" />
+      <module fileurl="file://E:/web/woms/.idea/woms.iml" filepath="E:/web/woms/.idea/woms.iml" />
     </modules>
   </component>
 </project>

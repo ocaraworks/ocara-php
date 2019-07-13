@@ -27,10 +27,8 @@ final class Invoke
      * @param string $bootstrap
      * @throws Exception
      */
-	public function init($bootstrap = null)
+	public static function init($bootstrap = null)
 	{
-        defined('OC_ROOT') OR die('forbidden');
-
         defined('OC_EXECUTE_START_TIME') OR define('OC_EXECUTE_START_TIME', microtime(true));
         defined('OC_PATH') OR define('OC_PATH', self::getCommPath(realpath(dirname(dirname(dirname(__DIR__))))) . '/');
         defined('OC_INVOKE') OR define('OC_INVOKE', true);
@@ -62,9 +60,15 @@ final class Invoke
             }
         }
 
-        $app = ocService()->app;
-        $route = $app->formatRoute($route);
-        $app->setRoute($route);
-        $app->bootstrap()->start($app->getRoute());
+        if (empty($bootstrap)) {
+            $bootstrap = defined('OC_BOOTSTRAP') ? OC_BOOTSTRAP : 'Ocara\Bootstraps\Common';
+        }
+
+        $application = ocContainer()->app;
+        $application->bootstrap($bootstrap);
+        $route = $application->formatRoute($route);
+
+        $application->setRoute($route);
+        $result = $application->run($route);
     }
 }
