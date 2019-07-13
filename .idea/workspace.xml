@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/system/library/Core/FormManager.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/FormManager.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/functions/utility.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/functions/utility.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,11 +33,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Core/FormManager.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="556">
-              <caret line="207" lean-forward="true" selection-start-line="207" selection-end-line="207" />
+            <state relative-caret-position="478">
+              <caret line="205" column="39" selection-start-line="205" selection-start-column="34" selection-end-line="205" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -45,8 +45,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Core/Session.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="55" lean-forward="true" selection-start-line="55" selection-end-line="55" />
+            <state relative-caret-position="476">
+              <caret line="110" column="9" lean-forward="true" selection-start-line="110" selection-start-column="9" selection-end-line="110" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/system/functions/utility.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="578">
+              <caret line="259" lean-forward="true" selection-start-line="259" selection-end-line="259" />
+              <folding>
+                <element signature="e#570#592#0#PHP" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -215,7 +227,6 @@
         <option value="$PROJECT_DIR$/system/data/config.php" />
         <option value="$PROJECT_DIR$/system/data/languages/zh_cn.php" />
         <option value="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" />
-        <option value="$PROJECT_DIR$/system/functions/utility.php" />
         <option value="$PROJECT_DIR$/system/library/Service/Pager.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Api.php" />
         <option value="$PROJECT_DIR$/system/library/Views/Common.php" />
@@ -234,6 +245,7 @@
         <option value="$PROJECT_DIR$/system/library/Controllers/Common.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Form.php" />
         <option value="$PROJECT_DIR$/system/library/Core/FormManager.php" />
+        <option value="$PROJECT_DIR$/system/functions/utility.php" />
       </list>
     </option>
   </component>
@@ -350,18 +362,18 @@
       <workItem from="1562680239657" duration="8568000" />
       <workItem from="1562766645796" duration="4933000" />
       <workItem from="1562854863821" duration="5782000" />
-      <workItem from="1562979594459" duration="9418000" />
+      <workItem from="1562979594459" duration="9638000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="183833000" />
+    <option name="totallyTimeSpent" value="184053000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.33744636" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.33744636" />
       <window_info id="Favorites" order="1" sideWeight="0.5014245" side_tool="true" weight="0.22214764" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49946353" weight="0.4422222" />
@@ -588,16 +600,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/functions/utility.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="477" column="9" selection-start-line="477" selection-start-column="9" selection-end-line="477" selection-end-column="9" />
-          <folding>
-            <element signature="e#570#592#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Controllers/Api.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="349">
@@ -743,13 +745,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/Session.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="55" lean-forward="true" selection-start-line="55" selection-end-line="55" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-170">
@@ -773,8 +768,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/FormManager.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="556">
-          <caret line="207" lean-forward="true" selection-start-line="207" selection-end-line="207" />
+        <state relative-caret-position="478">
+          <caret line="205" column="39" selection-start-line="205" selection-start-column="34" selection-end-line="205" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Session.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="110" column="9" lean-forward="true" selection-start-line="110" selection-start-column="9" selection-end-line="110" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/functions/utility.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="259" lean-forward="true" selection-start-line="259" selection-end-line="259" />
+          <folding>
+            <element signature="e#570#592#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
