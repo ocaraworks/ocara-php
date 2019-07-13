@@ -95,7 +95,7 @@ class FormManager extends ServiceProvider
         foreach ($this->forms as $form) {
             $formName = $form->getName();
             $token = $this->formToken->generate($formName, $this->route);
-            $this->saveFormToken($formName, $token);
+            $this->saveToken($formName, $token);
             $form->setToken(array(
                 'name' => $this->getTokenName(),
                 'value' => $token
@@ -201,7 +201,7 @@ class FormManager extends ServiceProvider
      * @param $token
      * @throws Exception
      */
-    public function saveFormToken($formName, $token)
+    public function saveToken($formName, $token)
     {
         ocService()->session->set(array($this->getTokenSaveName(), $formName), $token);
     }
