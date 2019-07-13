@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Controllers/Common.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Controllers/Common.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/ControllerBase.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/ControllerBase.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/library/Core/Form.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Form.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/library/Core/FormManager.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/FormManager.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/Validator.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Validator.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -29,20 +25,29 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/library/Core/Form.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="318">
-              <caret line="138" column="9" lean-forward="true" selection-start-line="138" selection-start-column="9" selection-end-line="138" selection-end-column="9" />
+            <state relative-caret-position="488">
+              <caret line="131" lean-forward="true" selection-start-line="131" selection-end-line="131" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Core/FormManager.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="365">
-              <caret line="105" column="7" lean-forward="true" selection-start-line="105" selection-start-column="7" selection-end-line="105" selection-end-column="7" />
+            <state relative-caret-position="485">
+              <caret line="215" column="5" lean-forward="true" selection-start-line="215" selection-start-column="5" selection-end-line="215" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/library/Core/Session.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1190">
+              <caret line="15" column="6" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -59,8 +64,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="617" lean-forward="true" selection-start-line="617" selection-end-line="617" />
+            <state relative-caret-position="340">
+              <caret line="697" lean-forward="true" selection-start-line="697" selection-end-line="697" />
             </state>
           </provider>
         </entry>
@@ -80,8 +85,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Controllers/Common.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="108" column="12" selection-start-line="108" selection-start-column="12" selection-end-line="108" selection-end-column="12" />
+            <state relative-caret-position="204">
+              <caret line="114" lean-forward="true" selection-start-line="114" selection-end-line="114" />
               <folding>
                 <element signature="e#6#529#0#PHP" expanded="true" />
                 <element signature="e#560#590#0#PHP" expanded="true" />
@@ -94,8 +99,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>oldData</find>
-      <find>changes</find>
       <find>pushOld</find>
       <find>initOld</find>
       <find>replaceOld</find>
@@ -123,6 +126,8 @@
       <find>-&gt;sign</find>
       <find>tokenName</find>
       <find>tokenValue</find>
+      <find>setTokenInfo</find>
+      <find>getTokenInfo</find>
       <find>tokenInfo</find>
     </findStrings>
     <replaceStrings>
@@ -169,8 +174,8 @@
       <dir>D:\wwwroot\vendor\linyihu\ocara</dir>
       <dir>D:\wwwroot\vendor\linyihu\ocara\system\library\Service</dir>
       <dir>D:\wwwroot\vendor\linyihu\ocara\extension</dir>
-      <dir>D:\wwwroot\vendor\linyihu\ocara\system</dir>
       <dir>D:\wwwroot\vendor\linyihu\ocara\system\library</dir>
+      <dir>D:\wwwroot\vendor\linyihu\ocara\system</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -228,8 +233,8 @@
         <option value="$PROJECT_DIR$/system/library/Core/Validator.php" />
         <option value="$PROJECT_DIR$/system/library/Core/ControllerBase.php" />
         <option value="$PROJECT_DIR$/system/library/Controllers/Common.php" />
-        <option value="$PROJECT_DIR$/system/library/Core/Form.php" />
         <option value="$PROJECT_DIR$/system/library/Core/FormManager.php" />
+        <option value="$PROJECT_DIR$/system/library/Core/Form.php" />
       </list>
     </option>
   </component>
@@ -261,6 +266,13 @@
               <item name="ocara" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
               <item name="library" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ocara" type="462c0819:PsiDirectoryNode" />
+              <item name="system" type="462c0819:PsiDirectoryNode" />
+              <item name="library" type="462c0819:PsiDirectoryNode" />
+              <item name="Core" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -339,12 +351,12 @@
       <workItem from="1562680239657" duration="8568000" />
       <workItem from="1562766645796" duration="4933000" />
       <workItem from="1562854863821" duration="5782000" />
-      <workItem from="1562979594459" duration="8647000" />
+      <workItem from="1562979594459" duration="9209000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="183062000" />
+    <option name="totallyTimeSpent" value="183624000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -375,16 +387,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/system/library/Controllers/Rest.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
-          <folding>
-            <element signature="e#558#582#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Dispatchers/Common.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="536">
@@ -721,20 +723,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/FormToken.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="34" lean-forward="true" selection-start-line="34" selection-end-line="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="617" lean-forward="true" selection-start-line="617" selection-end-line="617" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/ControllerBase.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-365">
@@ -745,10 +733,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Session.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1190">
+          <caret line="15" column="6" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/FormToken.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="34" lean-forward="true" selection-start-line="34" selection-end-line="34" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Controllers/Common.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="108" column="12" selection-start-line="108" selection-start-column="12" selection-end-line="108" selection-end-column="12" />
+        <state relative-caret-position="204">
+          <caret line="114" lean-forward="true" selection-start-line="114" selection-end-line="114" />
           <folding>
             <element signature="e#6#529#0#PHP" expanded="true" />
             <element signature="e#560#590#0#PHP" expanded="true" />
@@ -756,17 +758,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/Form.php">
+    <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="318">
-          <caret line="138" column="9" lean-forward="true" selection-start-line="138" selection-start-column="9" selection-end-line="138" selection-end-column="9" />
+        <state relative-caret-position="340">
+          <caret line="697" lean-forward="true" selection-start-line="697" selection-end-line="697" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/FormManager.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="365">
-          <caret line="105" column="7" lean-forward="true" selection-start-line="105" selection-start-column="7" selection-end-line="105" selection-end-column="7" />
+        <state relative-caret-position="485">
+          <caret line="215" column="5" lean-forward="true" selection-start-line="215" selection-start-column="5" selection-end-line="215" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Form.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="488">
+          <caret line="131" lean-forward="true" selection-start-line="131" selection-end-line="131" />
         </state>
       </provider>
     </entry>

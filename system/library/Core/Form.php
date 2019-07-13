@@ -104,21 +104,30 @@ class Form extends Base
 	}
 
     /**
-     * 设置Token信息
+     * 设置表单令牌
      * @param array $tokenInfo
      */
-	public function setTokenInfo(array $tokenInfo)
+	public function setToken(array $tokenInfo)
 	{
 		$this->tokenInfo = $tokenInfo;
 	}
 
     /**
-     * 获取Token信息
+     * 获取表单令牌
      * @return mixed
      */
-	public function getTokenInfo()
+	public function getToken()
     {
         return $this->tokenInfo;
+    }
+
+    /**
+     * 删除表单令牌
+     * @return mixed
+     */
+    public function deleteToken()
+    {
+        return $this->tokenInfo = null;
     }
 
     /**

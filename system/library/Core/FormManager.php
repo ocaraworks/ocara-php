@@ -87,7 +87,7 @@ class FormManager extends ServiceProvider
     }
 
     /**
-     * 保存令牌
+     * 保存表单令牌
      * @throws Exception
      */
     public function bindToken()
@@ -96,11 +96,47 @@ class FormManager extends ServiceProvider
             $formName = $form->getName();
             $token = $this->formToken->generate($formName, $this->route);
             $this->saveFormToken($formName, $token);
-            $form->setTokenInfo(array(
+            $form->setToken(array(
                 'name' => $this->getTokenName(),
                 'value' => $token
             ));
         }
+    }
+
+    /**
+     * 清理表单令牌
+     * @param string $formName
+     * @throws Exception
+     */
+    public function clearToken($formName = null)
+    {
+        if (func_num_args()) {
+            if ($formName) {
+                ocService()->session->delete(array($this->getTokenSaveName(), $formName));
+            }
+        } else {
+            ocService()->session->delete($this->getTokenSaveName());
+        }
+    }
+
+    /**
+     * 获取表单令牌
+     * @param string $formName
+     * @return array|mixed|null
+     */
+    public function getToken($formName = null)
+    {
+        if (func_num_args()) {
+            $result = $this->hasForm($formName) ? $this->forms[$formName] : null;
+        } else {
+            $result = array();
+            foreach ($this->forms as $form) {
+                $tokenInfo = $form->getToken();
+                $result[$tokenInfo['name']] = $tokenInfo['value'];
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -168,27 +204,6 @@ class FormManager extends ServiceProvider
     public function saveFormToken($formName, $token)
     {
         ocService()->session->set(array($this->getTokenSaveName(), $formName), $token);
-    }
-
-	/**
-	 * 清理Token
-	 */
-	public function clearToken()
-	{
-        ocService()->session->delete($this->getTokenSaveName());
-	}
-
-    /**
-     * 获取所有表单令牌
-     */
-	public function getTokens()
-    {
-        $result = array();
-        foreach ($this->forms as $form) {
-           $tokenInfo = $form->getTokenInfo();
-           $result[$tokenInfo['name']] = $tokenInfo['value'];
-        }
-        return $result;
     }
 
     /**
