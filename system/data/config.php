@@ -18,9 +18,11 @@ return array(
     'DEV_SIGN' 				=> '',
     'ROUTE_PARAM_NAME'	    => '_route', //路由参数名称
     
-    'DEFAULT_CONTROLLER' 		=> 'home', //默认控制器
-    'DEFAULT_ACTION' 			=> 'index', //默认动作
-    'COOKIE_DOMAIN' 			=> '',
+    'DEFAULT_CONTROLLER' 	=> 'home', //默认控制器
+    'DEFAULT_ACTION' 		=> 'index', //默认动作
+    'COOKIE_DOMAIN' 		=> '',
+
+    'API_CONTENT_TYPE'      => 'json', //API默认返回格式
 
     /*
      * 时间格式设置

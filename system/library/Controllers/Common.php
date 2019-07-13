@@ -9,6 +9,7 @@
 namespace Ocara\Controllers;
 
 use Ocara\Core\ControllerBase;
+use Ocara\Core\Event;
 use Ocara\Core\Response;
 use Ocara\Exceptions\Exception;
 use Ocara\Interfaces\Controller as ControllerInterface;
@@ -151,6 +152,7 @@ class Common extends ControllerBase implements ControllerInterface
      */
     public function renderFile($file = null, array $vars = array(), $required = true)
     {
+        $this->view->assign('route', $this->getRoute());
         $this->response->setContentType($this->contentType);
 
         if (empty($file)) {
@@ -170,19 +172,23 @@ class Common extends ControllerBase implements ControllerInterface
 
     /**
      * 渲染API数据
-     * @param null $data
+     * @param mixed $data
      * @param string $message
      * @param string $status
+     * @throws Exception
      */
     public function renderApi($data = null, $message = OC_EMPTY, $status = 'success')
     {
+        $this->result = $data;
+
         if (!is_array($message)) {
             $message = $this->lang->get($message);
         }
 
-        $params = array($data, $message, $status);
+        $params = array($message, $status);
+        $contentType = $this->contentType ? : ocConfig('API_CONTENT_TYPE');
 
-        $this->response->setContentType($this->contentType);
+        $this->response->setContentType($contentType);
         $this->fire(self::EVENT_BEFORE_RENDER_API, $params);
 
         $content = $this->view->renderApi($this->result);
@@ -194,14 +200,13 @@ class Common extends ControllerBase implements ControllerInterface
 
     /**
      * 渲染前置事件
-     * @param $data
      * @param $message
      * @param $status
      * @throws Exception
      */
-    public function beforeRenderApi($data, $message, $status)
+    public function beforeRenderApi($message, $status)
     {
-        $this->result = $this->api->getResult($data, $message, $status);
+        $this->result = $this->api->getResult($this->result, $message, $status);
 
         if (!$this->response->getOption('statusCode')) {
             if ($this->result['status'] == 'success') {
@@ -215,5 +220,17 @@ class Common extends ControllerBase implements ControllerInterface
             $this->response->setStatusCode(Response::STATUS_OK);
             $this->result['status'] = $this->response->getOption('statusCode');
         }
+    }
+
+
+    /**
+     * 新建表单后处理
+     * @param $name
+     * @param $form
+     * @param Event $event
+     */
+    public function afterCreateForm($name, $form, Event $event = null)
+    {
+        $this->view->assign($name, $form);
     }
 }

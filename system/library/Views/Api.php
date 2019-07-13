@@ -28,9 +28,8 @@ class Api extends ViewBase implements ViewInterfaces
 
     /**
      * 渲染API结果
-     * @param |null $result
-     * @return mixed|void|null
-     * @throws Exception
+     * @param $result
+     * @return mixed
      */
     public function render($result)
     {

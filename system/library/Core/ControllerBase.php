@@ -49,8 +49,6 @@ abstract class ControllerBase extends serviceProvider
         $this->formManager->setRoute($this->getRoute());
         $this->setPlugin($this->view);
 
-        $this->view->assign('route', $this->getRoute());
-
 		method_exists($this, '__start') && $this->__start();
 		method_exists($this, '__module') && $this->__module();
 		method_exists($this, '__control') && $this->__control();
@@ -221,17 +219,6 @@ abstract class ControllerBase extends serviceProvider
         }
 
         return $form;
-    }
-
-    /**
-     * 新建表单后处理
-     * @param $name
-     * @param $form
-     * @param Event $event
-     */
-    public function afterCreateForm($name, $form, Event $event = null)
-    {
-        $this->view->assign($name, $form);
     }
 
     /**

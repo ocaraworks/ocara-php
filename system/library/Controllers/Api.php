@@ -84,16 +84,18 @@ class Api extends ControllerBase implements ControllerInterface
             $this->formManager->clearToken();
             $this->render($result, false);
         } else {
+            $result = null;
             if (method_exists($this, 'display')) {
-                $this->display();
+                $result = $this->display();
             }
-            $this->render();
+            $this->render($result);
         }
     }
 
     /**
      * 渲染API
      * @param null $result
+     * @throws Exception
      */
     public function render($result = null)
     {
@@ -106,16 +108,20 @@ class Api extends ControllerBase implements ControllerInterface
      * @param null $data
      * @param null $message
      * @param string $status
+     * @throws Exception
      */
     public function renderApi($data = null, $message = null, $status = 'success')
     {
+        $this->result = $data;
+
         if (!is_array($message)) {
             $message = $this->lang->get($message);
         }
 
-        $params = array($data, $message, $status);
+        $params = array($message, $status);
+        $contentType = $this->contentType ? : ocConfig('API_CONTENT_TYPE');
 
-        $this->response->setContentType($this->contentType);
+        $this->response->setContentType($contentType);
         $this->fire(self::EVENT_AFTER_RENDER, $params);
 
         $content = $this->view->render($this->result);
@@ -127,14 +133,13 @@ class Api extends ControllerBase implements ControllerInterface
 
     /**
      * 渲染前置事件
-     * @param $data
      * @param $message
      * @param $status
      * @throws Exception
      */
-    public function beforeRender($data, $message, $status)
+    public function beforeRender($message, $status)
     {
-        $this->result = $this->api->getResult($data, $message, $status);
+        $this->result = $this->api->getResult($this->result, $message, $status);
 
         if (!$this->response->getOption('statusCode')) {
             if ($this->result['status'] == 'success') {
