@@ -234,7 +234,6 @@ class Validator extends Base
 				$args  = array_merge(array($val), $params);
 				$error = call_user_func_array(array(&$this->validate, $method), $args);
 				if ($error) {
-				    print_r($field);die;
 					$this->prepareError($error, $field, $val, $i, $params);
 					return false;
 				}

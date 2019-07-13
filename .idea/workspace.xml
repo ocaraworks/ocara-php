@@ -2,19 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/system/library/Bootstraps/Test.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Bootstraps/Common.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Bootstraps/Common.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Controllers/Api.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Controllers/Api.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Controllers/Common.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Controllers/Common.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/Application.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Application.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/Config.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Config.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/ControllerBase.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/ControllerBase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/Event.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Event.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/Invoke.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Invoke.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/Ocara.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Ocara.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Interfaces/Bootstrap.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Interfaces/Bootstrap.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/library/Core/Validator.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Validator.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -36,50 +24,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/system/library/Bootstraps/Test.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="26" column="1" lean-forward="true" selection-start-line="26" selection-start-column="1" selection-end-line="26" selection-end-column="1" />
-              <folding>
-                <element signature="e#127#158#0#PHP" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/system/library/Core/BootstrapBase.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/system/library/Core/Application.php">
+        <entry file="file://$PROJECT_DIR$/system/library/Core/Validator.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="197">
-              <caret line="21" column="19" selection-start-line="21" selection-start-column="19" selection-end-line="21" selection-end-column="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/system/library/Core/Ocara.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="332">
-              <caret line="93" selection-start-line="93" selection-end-line="94" selection-end-column="44" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/system/library/Bootstraps/Common.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="35" column="42" selection-start-line="35" selection-start-column="42" selection-end-line="35" selection-end-column="42" />
+            <state relative-caret-position="357">
+              <caret line="240" column="9" lean-forward="true" selection-start-line="240" selection-start-column="9" selection-end-line="240" selection-end-column="9" />
+              <folding>
+                <element signature="e#556#577#0#PHP" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -92,7 +44,6 @@
       <find>ignoreFields</find>
       <find>array_fill_keys</find>
       <find>ignoreModel</find>
-      <find>print_r</find>
       <find>__construct</find>
       <find>getLanguage</find>
       <find>self::getMessage</find>
@@ -118,6 +69,7 @@
       <find>ocConfig</find>
       <find>ocParseKey(</find>
       <find>EVENT_BEFORE_BOOTSTRAP</find>
+      <find>print_r</find>
     </findStrings>
     <replaceStrings>
       <replace>data</replace>
@@ -162,9 +114,9 @@
       <dir>D:\wwwroot\vendor\linyihu\ocara</dir>
       <dir>D:\wwwroot\vendor\linyihu\ocara\system\library\Service</dir>
       <dir>D:\wwwroot\vendor\linyihu\ocara\extension</dir>
-      <dir>D:\wwwroot\vendor\linyihu\ocara\system\library</dir>
       <dir>D:\wwwroot\vendor\linyihu\ocara\system\functions</dir>
       <dir>D:\wwwroot\vendor\linyihu\ocara\system</dir>
+      <dir>D:\wwwroot\vendor\linyihu\ocara\system\library</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -212,7 +164,6 @@
         <option value="$PROJECT_DIR$/system/functions/common.php" />
         <option value="$PROJECT_DIR$/system/library/Exceptions/ReflectionException.php" />
         <option value="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" />
-        <option value="$PROJECT_DIR$/system/library/Core/Validator.php" />
         <option value="$PROJECT_DIR$/system/library/Core/ControllerBase.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Form.php" />
         <option value="$PROJECT_DIR$/system/library/Core/FormManager.php" />
@@ -224,6 +175,7 @@
         <option value="$PROJECT_DIR$/system/library/Bootstraps/Test.php" />
         <option value="$PROJECT_DIR$/system/library/Bootstraps/Common.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Application.php" />
+        <option value="$PROJECT_DIR$/system/library/Core/Validator.php" />
       </list>
     </option>
   </component>
@@ -257,13 +209,6 @@
               <item name="ocara" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
               <item name="library" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ocara" type="462c0819:PsiDirectoryNode" />
-              <item name="system" type="462c0819:PsiDirectoryNode" />
-              <item name="library" type="462c0819:PsiDirectoryNode" />
-              <item name="Bootstraps" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -344,12 +289,12 @@
       <workItem from="1562979594459" duration="15845000" />
       <workItem from="1563003951040" duration="103000" />
       <workItem from="1563004077569" duration="379000" />
-      <workItem from="1563007075575" duration="2625000" />
+      <workItem from="1563007075575" duration="3593000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="193367000" />
+    <option name="totallyTimeSpent" value="194335000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -622,16 +567,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/Validator.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="74" lean-forward="true" selection-start-line="74" selection-end-line="74" />
-          <folding>
-            <element signature="e#556#577#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/ControllerBase.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-365">
@@ -747,17 +682,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/Ocara.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="93" selection-start-line="93" selection-end-line="94" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Bootstraps/Common.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="476">
           <caret line="35" column="42" selection-start-line="35" selection-start-column="42" selection-end-line="35" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Application.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="21" column="19" selection-start-line="21" selection-start-column="19" selection-end-line="21" selection-end-column="19" />
         </state>
       </provider>
     </entry>
@@ -768,10 +703,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/Application.php">
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Ocara.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="21" column="19" selection-start-line="21" selection-start-column="19" selection-end-line="21" selection-end-column="19" />
+        <state relative-caret-position="332">
+          <caret line="94" selection-start-line="94" selection-end-line="95" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Validator.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="240" column="9" lean-forward="true" selection-start-line="240" selection-start-column="9" selection-end-line="240" selection-end-column="9" />
+          <folding>
+            <element signature="e#556#577#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
