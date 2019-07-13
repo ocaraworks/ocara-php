@@ -48,22 +48,22 @@ class Validator extends Base
     public function validate(array $data, $showError = true)
     {
         $result = true;
-        $rules = $this->getModelFieldsRules();
+        $rules = $this->getModelFieldsRules($data);
 
         foreach ($rules['rules'] as $field => $rule) {
             if (is_string($rule)) {
                 $rule = array('common' => $rule);
             }
 
-            $value = ocGet($field, $data);
+            $value = ocGet($field, $rules['data']);
             $value = $value === null ? OC_EMPTY : $value;
             $value = (array)$value;
 
-            if (isset($rule['common']) && $rule['common'] && is_string($rule['common'])) {
+            if (!empty($rule['common']) && is_string($rule['common'])) {
                 $result = $this->common($field, $value, $rule['common']);
-            } elseif (isset($rule['expression']) && $rule['expression'] && is_string($rule['expression'])) {
+            } elseif (!empty($rule['expression']) && is_string($rule['expression'])) {
                 $result = $this->expression($field, $value, $rule['expression']);
-            } elseif (isset($rule['callback']) && $rule['callback'] && is_string($rule['callback'])) {
+            } elseif (!empty($rule['callback']) && is_string($rule['callback'])) {
                 $result = $this->callback($field, $value, $rule['callback']);
             }
 
@@ -82,8 +82,10 @@ class Validator extends Base
 
     /**
      * 获取字段验证规则
+     * @param $data
+     * @return array
      */
-    protected function getModelFieldsRules()
+    protected function getModelFieldsRules($data)
     {
         $rules = array();
         $lang = array();
@@ -92,6 +94,7 @@ class Validator extends Base
             if (!in_array($model, $this->skipModels)) {
                 $modelRules = $model::mapData($model::getConfig('RULES'));
                 $modelLang = $model::mapData($model::getConfig('LANG'));
+                $data = $model::mapData($data);
                 if (!empty($this->skipModelFields[$model])) {
                     $skipFields = array_fill_keys($this->skipModelFields[$model], null);
                     $modelRules = array_diff_key($modelRules, $skipFields);
@@ -109,7 +112,7 @@ class Validator extends Base
         $rules = array_diff_key($rules, $skipFields);
         $lang = array_diff_key($lang, $skipFields);
 
-        return compact('rules', 'lang');
+        return compact('rules', 'lang', 'data');
     }
 
     /**
@@ -231,6 +234,7 @@ class Validator extends Base
 				$args  = array_merge(array($val), $params);
 				$error = call_user_func_array(array(&$this->validate, $method), $args);
 				if ($error) {
+				    print_r($field);die;
 					$this->prepareError($error, $field, $val, $i, $params);
 					return false;
 				}

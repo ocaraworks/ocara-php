@@ -98,7 +98,7 @@ abstract class ControllerBase extends serviceProvider
         if (isset($providers[$controllerType])) {
             $class = $providers[$controllerType];
         } else {
-            $class = "\\Ocara\\Controllers\\{$controllerType}";
+            $class = "Ocara\\Controllers\\{$controllerType}";
         }
 
         return $class;
@@ -117,7 +117,7 @@ abstract class ControllerBase extends serviceProvider
         if (isset($features[$controllerType])) {
             $class = $features[$controllerType];
         } else {
-            $class = "\\Ocara\\Controllers\\Feature\\{$controllerType}";
+            $class = "Ocara\\Controllers\\Feature\\{$controllerType}";
         }
 
         return $class;
@@ -251,10 +251,11 @@ abstract class ControllerBase extends serviceProvider
     public function checkForm()
     {
         $this->isFormSubmit();
+
         if (!($this->isFormSubmit && $this->checkForm && $this->formManager->getForm()))
             return true;
 
-        return $this->formManager->checkForm();
+        return $this->formManager->checkForm($this->getSubmitData());
     }
 
     /**

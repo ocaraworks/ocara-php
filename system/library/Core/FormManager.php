@@ -47,10 +47,6 @@ class FormManager extends ServiceProvider
 	{
 	    if (!$this->hasForm($formName)) {
             $form = $this->createService('form', array($formName));
-            $token = $this->formToken->generate($formName, $this->route);
-
-            $this->saveToken($formName, $token);
-            $form->setTokenInfo(array($this->getTokenName(), $token));
             $this->addForm($formName, $form);
         }
 
@@ -64,7 +60,10 @@ class FormManager extends ServiceProvider
      */
 	public function getForm($name = null)
     {
-        return array_key_exists($name, $this->forms) ? $this->forms[$name] : null;
+        if (func_get_args()) {
+            return array_key_exists($name, $this->forms) ? $this->forms[$name] : null;
+        }
+        return $this->forms;
     }
 
     /**
@@ -88,6 +87,23 @@ class FormManager extends ServiceProvider
     }
 
     /**
+     * 保存令牌
+     * @throws Exception
+     */
+    public function bindToken()
+    {
+        foreach ($this->forms as $form) {
+            $formName = $form->getName();
+            $token = $this->formToken->generate($formName, $this->route);
+            $this->saveFormToken($formName, $token);
+            $form->setTokenInfo(array(
+                'name' => $this->getTokenName(),
+                'value' => $token
+            ));
+        }
+    }
+
+    /**
      * 获取提交的表单
      * @param $requestToken
      * @return mixed
@@ -99,7 +115,7 @@ class FormManager extends ServiceProvider
             $this->error->show('failed_validate_token');
         }
 
-		$tokens = $this->session->get($this->getTokenSaveName());
+		$tokens = $this->session->get($this->getTokenSaveName()) ? : array();
 		$formName = array_search($requestToken, $tokens);
 
 		if ($formName === false || !$this->hasForm($formName)) {
@@ -149,7 +165,7 @@ class FormManager extends ServiceProvider
      * @param $token
      * @throws Exception
      */
-    public function saveToken($formName, $token)
+    public function saveFormToken($formName, $token)
     {
         ocService()->session->set(array($this->getTokenSaveName(), $formName), $token);
     }
@@ -161,6 +177,19 @@ class FormManager extends ServiceProvider
 	{
         ocService()->session->delete($this->getTokenSaveName());
 	}
+
+    /**
+     * 获取所有表单令牌
+     */
+	public function getTokens()
+    {
+        $result = array();
+        foreach ($this->forms as $form) {
+           $tokenInfo = $form->getTokenInfo();
+           $result[$tokenInfo['name']] = $tokenInfo['value'];
+        }
+        return $result;
+    }
 
     /**
      * 设置路由

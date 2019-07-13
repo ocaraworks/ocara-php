@@ -22,7 +22,7 @@ class Form extends Base
 	 */
 	protected $plugin = null;
 
-	private $sign;
+	private $name;
 	private $tokenInfo;
 
 	private $models = array();
@@ -37,7 +37,7 @@ class Form extends Base
 	 */
 	public function __construct($name)
 	{
-		$this->sign = $name;
+		$this->name = $name;
 		$this->setPlugin(ocService()->html);
 
 		$this->init();
@@ -52,8 +52,8 @@ class Form extends Base
 	public function init($action = null, array $attributes = array())
 	{
 		$this->attributes = array(
-			'id'     => $this->sign,
-			'name'   => $this->sign,
+			'id'     => $this->name,
+			'name'   => $this->name,
 			'action' => $action ? : '#',
 		);
 
@@ -98,9 +98,9 @@ class Form extends Base
      * 获取表单标识
      * @return string
      */
-	public function getSign()
+	public function getName()
 	{
-		return $this->sign;
+		return $this->name;
 	}
 
     /**
@@ -128,8 +128,15 @@ class Form extends Base
 	public function begin()
 	{
         $plugin = $this->plugin();
-		list($tokenTag, $tokenValue) = $this->tokenInfo;
-		$tokenElement = $plugin->input('hidden', $tokenTag, $tokenValue);
+        $tokenElement = null;
+
+        if ($this->tokenInfo) {
+            $tokenElement = $plugin->input(
+                'hidden',
+                $this->tokenInfo['name'],
+                $this->tokenInfo['value']
+            );
+        }
 
 		$formElement = $plugin->createElement('form', $this->attributes, null);
         $begin = $formElement . PHP_EOL . "\t" . $tokenElement;
