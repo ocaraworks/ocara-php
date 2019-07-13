@@ -253,7 +253,7 @@ function ocDel(array &$data, $key)
 {
     $result = array();
 
-    if (func_num_args() > 2) {
+    if (func_num_args() >= 2) {
         $key = func_get_args();
         array_shift($key);
     }
