@@ -43,6 +43,7 @@ class Api extends ControllerBase implements ControllerInterface
     /**
      * 执行动作
      * @param string $actionMethod
+     * @throws Exception
      */
     public function doAction($actionMethod)
     {

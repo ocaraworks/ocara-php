@@ -57,6 +57,7 @@ class Common extends ControllerBase implements ControllerInterface
     /**
      * 执行动作
      * @param string $actionMethod
+     * @throws Exception
      */
     public function doAction($actionMethod)
     {
@@ -126,8 +127,9 @@ class Common extends ControllerBase implements ControllerInterface
 
     /**
      * 渲染API
-     * @param null $result
+     * @param mixed $result
      * @param bool $useDefault
+     * @throws Exception
      */
     public function render($result = null, $useDefault = true)
     {
@@ -221,7 +223,6 @@ class Common extends ControllerBase implements ControllerInterface
             $this->result['status'] = $this->response->getOption('statusCode');
         }
     }
-
 
     /**
      * 新建表单后处理
