@@ -576,7 +576,7 @@ abstract class DatabaseModel extends ModelBase
         } else {
             $autoIncrementField = $this->getAutoIncrementField();
             if (!in_array($autoIncrementField, $this->primaries)) {
-                if (array_diff_key($this->primaries, $data)) {
+                if (array_diff_key($this->primaries, array_keys($data))) {
                     ocService()->error->show('need_create_primary_data');
                 }
             }
