@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/system/data/languages/zh_cn.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/data/languages/zh_cn.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/ControllerBase.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/ControllerBase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Databases/Driver/MysqliDriver.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Databases/Driver/MysqliDriver.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Databases/MysqliDatabase.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Databases/MysqliDatabase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" afterDir="false" />
-    </list>
+    <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
