@@ -294,8 +294,9 @@ abstract class DatabaseEntity extends BaseEntity
         }
 
         $this->fire(self::EVENT_BEFORE_CREATE);
-
         $data = array_merge($this->getChanged(), $data);
+        if (empty($data)) return false;
+
         call_user_func_array('ocDel', array(&$data, $this->getPrimaries()));
         $result = $model->update($data, $debug);
 
