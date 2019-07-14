@@ -779,10 +779,7 @@ abstract class DatabaseModel extends ModelBase
 		if ($condition) {
 			$this->where($condition);
 		}
-
-        $dataType = $this->getDataType();
-        $result = $this->baseFind($condition, $options, $debug, true, false, $dataType);
-
+        $result = $this->baseFind($condition, $options, $debug, true, false);
         return $result;
 	}
 
@@ -796,7 +793,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function findAll($condition = null, $options = null, $debug = false)
 	{
-        $records = $this->baseFind($condition, $options, $debug, false, false, self::getClass());
+        $records = $this->baseFind($condition, $options, $debug, false, false);
 		return $records;
 	}
 
@@ -918,7 +915,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getAll($condition = null, $option = null, $debug = false)
 	{
-		return $this->baseFind($condition, $option, $debug, false, false, DriverBase::DATA_TYPE_ARRAY);
+		return $this->baseFind($condition, $option, $debug, false, false);
 	}
 
     /**
@@ -931,7 +928,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getRow($condition = null, $option = null, $debug = false)
 	{
-		return $this->baseFind($condition, $option, $debug, true, false, DriverBase::DATA_TYPE_ARRAY);
+		return $this->baseFind($condition, $option, $debug, true, false);
 	}
 
     /**
@@ -969,7 +966,7 @@ abstract class DatabaseModel extends ModelBase
 			$queryRow = false;
 		}
 
-		$result = $this->baseFind(false, false, $debug, $queryRow, true, DriverBase::DATA_TYPE_ARRAY);
+		$result = $this->baseFind(false, false, $debug, $queryRow, true);
 
 		if ($debug === DatabaseBase::DEBUG_RETURN) {
 			return $result;
@@ -1052,7 +1049,7 @@ abstract class DatabaseModel extends ModelBase
 			if ($cacheData) return $cacheData;
 		}
 
-        $dataType = $dataType ? : $this->getDataType();
+        $dataType = $dataType ? : ($this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY);
 		if ($queryRow) {
             $result = $plugin->queryRow($sql, $debug, $count, $this->unions, $dataType);
 		} else {
