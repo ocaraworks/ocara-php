@@ -240,7 +240,6 @@ abstract class ControllerBase extends serviceProvider
     public function checkForm()
     {
         $this->isFormSubmit();
-
         if (!($this->isFormSubmit && $this->checkForm && $this->formManager->getForm()))
             return true;
 

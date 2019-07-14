@@ -66,6 +66,7 @@ return array(
 	'need_string_table_name'		=> array(2109, '联接表名必须是字符串。'),
 	'need_primary_value'			=> array(2110, '主键数据不能为空。'),
     'need_find_value'               => array(2111, '查询字段值不能为空！'),
+	'need_create_primary_data'      => array(2112, '缺少主键无法添加记录！'),
 
 	//失败
 	'failed_db_init'				=> array(2200, '数据库初始化失败。'),

@@ -99,6 +99,9 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 			$fieldRow['defaultValue'] = (string)$row['Default'];
             $fieldRow['extra'] = $row['Extra'];
 			$fields['list'][$row['Field']] = $fieldRow;
+			if ($row['Extra'] == 'auto_increment') {
+			    $fields['autoIncrementField'] = $fieldRow['name'];
+            }
 		}
 
 		return $fields;

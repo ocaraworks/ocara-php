@@ -563,6 +563,7 @@ abstract class DatabaseModel extends ModelBase
     {
         $plugin = $this->plugin();
         $data = $this->filterData($data);
+        $this->loadFields();
 
         if (empty($data)) {
             ocService()->error->show('fault_save_data');
@@ -573,6 +574,12 @@ abstract class DatabaseModel extends ModelBase
         if ($condition) {
             $result = $plugin->update($this->tableName, $data, $condition, $debug);
         } else {
+            $autoIncrementField = $this->getAutoIncrementField();
+            if (!in_array($autoIncrementField, $this->primaries)) {
+                if (array_diff_key($this->primaries, $data)) {
+                    ocService()->error->show('need_create_primary_data');
+                }
+            }
             $result = $plugin->insert($this->tableName, $data, $debug);
         }
 
@@ -1965,21 +1972,27 @@ abstract class DatabaseModel extends ModelBase
      * @param $key
      * @return array
      */
-    protected function getRelateConfig($key)
+    public function getRelateConfig($key)
 	{
-        $config = $this->getConfig('RELATIONS');
+        $relations = $this->getConfig('RELATIONS');
 
-		if (empty($config)) {
+		if (empty($relations[$key])) {
 			return array();
 		}
 
+		$config = $relations[$key];
 		if (count($config) < 3) {
 			ocService()->error->show('fault_relate_config');
 		}
 
 		list($joinType, $class, $joinOn) = $config;
 		$condition = isset($config[3]) ? $config[3]: null;
-		$joinOn = array_map('trim', explode(',', $joinOn));
+
+		if (!is_array($joinOn)) {
+            $joinOn = explode(',', $joinOn);
+        }
+
+		$joinOn = array_map('trim', $joinOn);
 
 		if (isset($joinOn[1])) {
 			list($primaryKey, $foreignKey) = $joinOn;
@@ -1988,7 +2001,6 @@ abstract class DatabaseModel extends ModelBase
 		}
 
 		$config = compact('joinType', 'class', 'primaryKey', 'foreignKey', 'condition');
-
 		return $config;
 	}
 

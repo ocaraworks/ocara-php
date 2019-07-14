@@ -13,6 +13,7 @@ abstract class DatabaseEntity extends BaseEntity
     private $selected = array();
     private $oldData = array();
     private $relations = array();
+    private $changes = array();
 
     /**
      * @var int $insertId
@@ -169,12 +170,11 @@ abstract class DatabaseEntity extends BaseEntity
             return $this->hasChanged($key) ? $this->$key : null;
         }
 
-        $data = $this->toArray();
-        $changes = array();
+        $changes = $this->changes;
 
         foreach ($this->oldData as $key => $value) {
             if (isset($this->$key)) {
-                $dataValue = $data[$key];
+                $dataValue = $this->$key;
                 if ($value && $value != $dataValue || $value !== $dataValue) {
                     $changes[$key] = $data[$key];
                 }
@@ -192,6 +192,7 @@ abstract class DatabaseEntity extends BaseEntity
     public function hasChanged($key = null)
     {
         if (func_num_args()) {
+            if (array_key_exists($key, $this->changes)) return true;
             if (array_key_exists($key, $this->oldData)) {
                 $value = $this->oldData[$key];
                 if (isset($this->$key)) {
@@ -251,11 +252,14 @@ abstract class DatabaseEntity extends BaseEntity
 
         if (!$debug) {
             $this->insertId = $model->getInsertId();
-            if ($this->getAutoIncrementField()) {
-                $autoIncrementField = $this->getAutoIncrementField();
+            $autoIncrementField = $this->getModel()->getAutoIncrementField();
+            if ($autoIncrementField) {
                 $this->$autoIncrementField = $this->insertId;
             }
-            $this->select($this->mapPrimaryData($this->toArray()));
+
+            $condition = $this->mapPrimaryData($this->toArray());
+            $data = $this->getRow($condition);
+            $this->data($data);
             $this->relateSave();
             $this->fire(self::EVENT_AFTER_CREATE);
         }
@@ -375,7 +379,7 @@ abstract class DatabaseEntity extends BaseEntity
         $result = array();
 
         foreach ($plugin->getPrimaries() as $field) {
-            $result[$field] = array_key_exists($field, $data);
+            $result[$field] = array_key_exists($field, $data) ? $data[$field] : null;
         }
 
         return $result;
@@ -470,7 +474,7 @@ abstract class DatabaseEntity extends BaseEntity
                         $data = $object;
                     }
                 }
-                foreach ($data as &$entity) {
+                foreach ($data as $key => $entity) {
                     if ($entity->hasChanged() && is_object($entity) && $entity instanceof DatabaseEntity) {
                         $entity->$config['foreignKey'] = $this->$config['primaryKey'];
                         if ($config['condition']) {
@@ -480,6 +484,7 @@ abstract class DatabaseEntity extends BaseEntity
                         }
                         $entity->save();
                     }
+                    $data[$key] = $entity;
                 }
             }
         }
@@ -504,7 +509,8 @@ abstract class DatabaseEntity extends BaseEntity
             return $this->relations[$key];
         }
 
-        return parent::__get($key);
+        $result = parent::__get($key);
+        return $result;
     }
 
     /**
@@ -523,6 +529,7 @@ abstract class DatabaseEntity extends BaseEntity
             $this->relations[$name] = $value;
         } else {
             parent::__set($name, $value);
+            $this->changes[$name] = $value;
         }
     }
 }

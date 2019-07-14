@@ -206,7 +206,11 @@ class MysqliDriver extends DriverBase implements DriverInterface
      */
 	public function begin_transaction()
 	{
-		return $this->connection->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+	    if (method_exists($this->connection, 'begin_transaction')) {
+            return $this->connection->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+        } else {
+	        return $this->query('start transaction');
+        }
 	}
 
     /**
@@ -234,7 +238,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
 	 */
 	public function autocommit($autocommit = true)
 	{
-		return $this->connection->setAttribute(\PDO::ATTR_AUTOCOMMIT, $autocommit);
+		return $this->connection->autocommit($autocommit);
 	}
 
     /**
