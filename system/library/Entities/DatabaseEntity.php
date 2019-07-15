@@ -176,7 +176,7 @@ abstract class DatabaseEntity extends BaseEntity
             if (isset($this->$key)) {
                 $dataValue = $this->$key;
                 if ($value && $value != $dataValue || $value !== $dataValue) {
-                    $changes[$key] = $data[$key];
+                    $changes[$key] = $dataValue;
                 }
             }
         }
@@ -440,10 +440,9 @@ abstract class DatabaseEntity extends BaseEntity
                 $result = $config['class']::build()
                     ->where($where)
                     ->where($config['condition'])
-                    ->findRow();
+                    ->selectOne();
             } elseif ($config['joinType'] == 'hasMany') {
                 $result = new ObjectRecords($config['class'], array($where, $config['condition']));
-                $result->setLimit(0, 0, 1);
             }
         }
 
@@ -500,9 +499,9 @@ abstract class DatabaseEntity extends BaseEntity
     public function &__get($key)
     {
         $model = $this->getModel();
-        $relations = $model->getConfig('RELATIONS');
+        $config = $model->getConfig('RELATIONS');
 
-        if (isset($relations[$key])) {
+        if (isset($config[$key])) {
             if (!isset($this->relations[$key])) {
                 $this->relations[$key] = $this->relateFind($key);
             }

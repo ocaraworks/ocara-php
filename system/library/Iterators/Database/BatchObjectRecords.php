@@ -21,7 +21,7 @@ class BatchObjectRecords implements Iterator
     protected $times = 0;
     protected $offset = 0;
     protected $data = array();
-    protected $rows = 0;
+    protected $limitRows = 0;
 
     /**
      * 初始化
@@ -29,18 +29,18 @@ class BatchObjectRecords implements Iterator
      * @param string $model
      * @param string $entity
      * @param integer $offset
-     * @param integer $rows
+     * @param integer $limitRows
      * @param array $sql
      * @param bool $debug
      */
-    public function __construct($model, $entity, $offset, $rows, array $sql, $debug = false)
+    public function __construct($model, $entity, $offset, $limitRows, array $sql, $debug = false)
     {
         $this->model = $model;
         $this->entity = $entity;
         $this->offset = $offset;
         $this->sql = $sql;
         $this->debug = $debug;
-        $this->rows = $rows;
+        $this->limitRows = $limitRows;
     }
 
     /**
@@ -85,7 +85,7 @@ class BatchObjectRecords implements Iterator
     function next()
     {
         $this->position++;
-        if ($this->position == $this->rows) {
+        if ($this->position == $this->limitRows) {
             $this->times++;
             $this->rewind();
         }
@@ -97,7 +97,8 @@ class BatchObjectRecords implements Iterator
      */
     function valid()
     {
-        $isValid = $this->position < $this->rows && array_key_exists($this->key(), $this->data);
+        $position = $this->key();
+        $isValid = $position < $this->limitRows && array_key_exists($position, $this->data);
         return $isValid;
     }
 
@@ -109,12 +110,12 @@ class BatchObjectRecords implements Iterator
     {
         $model = new $this->model();
         $model->setSql($this->sql);
-        $model->limit($this->offset, $this->rows);
+        $model->limit($this->offset, $this->limitRows);
 
         $list = $model->getAll(null, null, $this->debug);
 
         $this->data = $list['data'];
-        $this->offset += $this->rows;
+        $this->offset += $this->limitRows;
         $this->times++;
     }
 }

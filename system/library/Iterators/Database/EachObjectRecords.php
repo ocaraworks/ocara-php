@@ -96,7 +96,7 @@ class EachObjectRecords implements Iterator
         $result = $model
             ->limit($this->offset, 1)
             ->asEntity($this->entity)
-            ->findRow(null, null, $this->debug);
+            ->getRow(null, null, $this->debug);
 
         $this->offset += 1;
         return $result;

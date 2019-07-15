@@ -86,6 +86,7 @@ class ModelService extends BaseService
         $entityNamespace = $entityRootNamespace;
 		$modelName = ucfirst($this->_model);
         $entityName = ucfirst($this->_model) . 'Entity';
+        $entityclass = $entityNamespace . OC_NS_SEP . $entityName;
         $modelClass = $namespace . OC_NS_SEP . $modelName;
 
 		if (empty($this->_table)) {
@@ -136,6 +137,7 @@ class ModelService extends BaseService
 		$content .= "\tprotected \$database = '{$this->_database}';\r\n";
 		$content .= "\tprotected \$table = '{$this->_table}';\r\n";
 		$content .= "\tprotected \$primary = '{$this->_primaries}';\r\n";
+        $content .= "\tprotected \$entity = '{$entityclass}';\r\n";
 		$content .= "\r\n";
 		$content .= "\t/**\r\n";
 		$content .= "\t * 初始化模型\r\n";

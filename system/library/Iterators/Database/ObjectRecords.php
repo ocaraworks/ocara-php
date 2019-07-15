@@ -16,7 +16,7 @@ class ObjectRecords implements Iterator
     private $debug;
     private $position = 0;
     private $length = 0;
-    private $data = array();
+    private $conditions;
 
     /**
      * 初始化
@@ -25,12 +25,11 @@ class ObjectRecords implements Iterator
      * @param array $data
      * @param bool $debug
      */
-    public function __construct($model, array $data, $debug = false)
+    public function __construct($model, array $conditions = array(), $debug = false)
     {
         $this->model = $model;
         $this->debug = $debug;
-        $this->data = $data;
-        $this->length = count($data);
+        $this->conditions = $conditions;
     }
 
     /**
@@ -47,11 +46,14 @@ class ObjectRecords implements Iterator
      */
     function current()
     {
-        $data = $this->data[$this->key()];
-        $class = $this->model;
+        $model = new $this->model();
+        $result = $model
+            ->asEntity()
+            ->getRow();
 
-        $model = new $class();
-        $result = $model->data($data);
+        if (empty($result)) {
+            $this->length = $this->key();
+        }
 
         return $result;
     }
@@ -79,7 +81,15 @@ class ObjectRecords implements Iterator
      */
     function valid()
     {
-        $isValid = array_key_exists($this->key(), $this->data);
+        if (!isset($this->length)) {
+            $model = new $this->model();
+            foreach ($this->conditions as $condition) {
+                $model->where($condition);
+            }
+            $this->length = $model->getTotal();
+        }
+
+        $isValid = $this->key() < $this->length;
         return $isValid;
     }
 

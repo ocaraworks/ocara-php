@@ -17,7 +17,6 @@ use Ocara\Core\FormToken;
 use Ocara\Core\DatabaseFactory;
 use Ocara\Core\DatabaseBase;
 use Ocara\Core\ModelBase;
-use Ocara\Iterators\Database\ObjectRecords;
 use Ocara\Iterators\Database\BatchObjectRecords;
 use Ocara\Iterators\Database\EachObjectRecords;
 
@@ -34,6 +33,7 @@ abstract class DatabaseModel extends ModelBase
 	protected $primary;
 	protected $table;
 	protected $alias;
+    protected $entity;
     protected $module;
     protected $connectName = 'defaults';
 
@@ -781,12 +781,11 @@ abstract class DatabaseModel extends ModelBase
      * @return $this|array|null
      * @throws Exception
      */
-	public function findRow($condition = false, $options = null, $debug = false)
+	public function selectOne($condition = false, $options = null, $debug = false)
 	{
-		if ($condition) {
-			$this->where($condition);
-		}
-        $result = $this->baseFind($condition, $options, $debug, true, false);
+        $result = $this
+            ->asEntity()
+            ->baseFind($condition, $options, $debug, true);
         return $result;
 	}
 
@@ -798,9 +797,11 @@ abstract class DatabaseModel extends ModelBase
      * @return array
      * @throws Exception
      */
-	public function findAll($condition = null, $options = null, $debug = false)
+	public function selectAll($condition = null, $options = null, $debug = false)
 	{
-        $records = $this->baseFind($condition, $options, $debug, false, false);
+        $records = $this
+            ->asEntity()
+            ->baseFind($condition, $options, $debug, false);
 		return $records;
 	}
 
@@ -832,7 +833,7 @@ abstract class DatabaseModel extends ModelBase
     public function asEntity($entityClass = null)
     {
         if (empty($entityClass)) {
-            $entityClass = ocNamespace(__NAMESPACE__, 'entities',  __CLASS__ . 'Entity');
+            $entityClass = $this->getDefaultEntityClass();
         }
         $this->sql['option']['dataType'] = $entityClass;
         return $this;
@@ -852,19 +853,19 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 选择多条记录
      * @param integer $offset
-     * @param integer $rows
+     * @param integer $limitRows
      * @param bool $debug
      * @return BatchObjectRecords
      */
-    public function batch($offset, $rows = null, $debug = false)
+    public function batch($offset, $limitRows = null, $debug = false)
     {
-        if (!isset($limit)) {
-            $rows = $offset;
+        if (!isset($limitRows)) {
+            $limitRows = $offset;
             $offset = 0;
         }
 
         $sql = $this->sql ? : array();
-        $records = new BatchObjectRecords(self::getClass(), $this->getEntityClass(), $offset, $rows, $sql, $debug);
+        $records = new BatchObjectRecords(self::getClass(), $this->getEntityClass(), $offset, $limitRows, $sql, $debug);
 
         return $records;
     }
@@ -884,6 +885,18 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
+     * 获取默认实体类
+     * @return string
+     */
+    public function getDefaultEntityClass()
+    {
+        if (empty($this->entity)) {
+            ocService()->error->show('need_entity_class');
+        }
+        return $this->entity;
+    }
+
+    /**
      * 获取实体类
      * @return bool
      */
@@ -899,14 +912,7 @@ abstract class DatabaseModel extends ModelBase
         }
 
         if (!$entityClass) {
-            $class = self::getClass();
-            if (substr($class, -6) == 'Entity') {
-                $entityClass = $class;
-            }
-        }
-
-        if (!$entityClass) {
-            $entityClass = ocNamespace(__NAMESPACE__, 'entities',  __CLASS__ . 'Entity');
+            $entityClass = $this->getDefaultEntityClass();
         }
 
         return $entityClass;
@@ -957,7 +963,8 @@ abstract class DatabaseModel extends ModelBase
 		}
 
 		$row = (array)$row;
-		return isset($row[$field]) ? $row[$field] : OC_EMPTY;
+		$result = isset($row[$field]) ? $row[$field] : OC_EMPTY;
+		return $result;
 	}
 
     /**
@@ -1057,6 +1064,7 @@ abstract class DatabaseModel extends ModelBase
 		}
 
         $dataType = $dataType ? : ($this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY);
+
 		if ($queryRow) {
             $result = $plugin->queryRow($sql, $debug, $count, $this->unions, $dataType);
 		} else {

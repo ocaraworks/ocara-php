@@ -67,6 +67,7 @@ return array(
 	'need_primary_value'			=> array(2110, '主键数据不能为空。'),
     'need_find_value'               => array(2111, '查询字段值不能为空！'),
 	'need_create_primary_data'      => array(2112, '缺少主键数据无法添加记录！'),
+	'need_entity_class'             => array(2113, '缺少实体类'),
 
 	//失败
 	'failed_db_init'				=> array(2200, '数据库初始化失败。'),
