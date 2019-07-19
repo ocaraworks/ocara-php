@@ -559,8 +559,9 @@ abstract class DatabaseModel extends ModelBase
      * @return bool
      * @throws Exception
      */
-    protected function baseSave($data, $condition, $debug = false)
+    public function baseSave($data, $condition, $debug = false)
     {
+        $this->connect();
         $plugin = $this->plugin();
         $data = $this->filterData($data);
         $this->loadFields();
@@ -613,33 +614,65 @@ abstract class DatabaseModel extends ModelBase
      * 新建记录
      * @param array $data
      * @param bool $debug
-     * @return bool
-     * @throws Exception
+     * @return mixed
      */
 	public function create(array $data, $debug = false)
 	{
-		$this->connect();
-        $result = $this->baseSave($data, false, $debug);
+	    $entityClass = $this->getEntityClass();
+        $entity = new $entityClass();
+        $entity->data($data);
+        $result = $entity->create($debug);
 		return $result;
 	}
 
     /**
-     * 更新记录
+     * 批量更新记录
      * @param array $data
+     * @param int $entityBatch
      * @param bool $debug
-     * @return bool
      * @throws Exception
      */
-	public function update(array $data, $debug = false)
+	public function update(array $data, $entityBatch = 1000, $debug = false)
 	{
         $condition = $this->getCondition();
 		if (empty($condition)) {
 		    ocService()->error->show('need_condition');
 		}
 
-		$result = $this->baseSave($data, $condition, $debug);
-		return $result;
+		if ($entityBatch) {
+		    foreach ($this->batch($entityBatch) as $entityList) {
+		        foreach ($entityList as $entity) {
+                    $entity->data($data)->update(array(), $debug);
+                }
+            }
+        } else {
+            $this->baseSave($data, $condition, $debug);
+        }
 	}
+
+    /**
+     * 批量删除记录
+     * @param int $entityBatch
+     * @param bool $debug
+     * @throws Exception
+     */
+    public function delete($entityBatch = 1000, $debug = false)
+    {
+        $condition = $this->getCondition();
+        if (empty($condition)) {
+            ocService()->error->show('need_condition');
+        }
+
+        if ($entityBatch) {
+            foreach ($this->batch($entityBatch) as $entityList) {
+                foreach ($entityList as $entity) {
+                    $entity->delete($debug);
+                }
+            }
+        } else {
+            $this->baseDelete($debug);
+        }
+    }
 
     /**
      * 删除记录
@@ -647,7 +680,7 @@ abstract class DatabaseModel extends ModelBase
      * @return bool
      * @throws Exception
      */
-	public function delete($debug = false)
+	public function baseDelete($debug = false)
 	{
 	    $plugin = $this->plugin();
 		$condition = $this->getCondition();
@@ -865,7 +898,9 @@ abstract class DatabaseModel extends ModelBase
         }
 
         $sql = $this->sql ? : array();
-        $records = new BatchObjectRecords(self::getClass(), $this->getEntityClass(), $offset, $limitRows, $sql, $debug);
+        $records = new BatchObjectRecords(
+            self::getClass(), $this->getEntityClass(), $offset, $limitRows, $sql, $debug
+        );
 
         return $records;
     }
@@ -879,8 +914,9 @@ abstract class DatabaseModel extends ModelBase
     public function each($offset = 0, $debug = false)
     {
         $sql = $this->sql ? : array();
-        $records = new EachObjectRecords(self::getClass(), $this->getEntityClass(), $offset, $sql, $debug);
-
+        $records = new EachObjectRecords(
+            self::getClass(), $this->getEntityClass(), $offset, $sql, $debug
+        );
         return $records;
     }
 

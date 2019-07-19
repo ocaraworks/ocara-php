@@ -8,10 +8,6 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
-use Ocara\Core\DatabaseFactory;
-use Ocara\Core\ServiceProvider;
-use Ocara\Interfaces\Controller as ControllerInterface;
-use Ocara\Core\ModelBase;
 use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');

@@ -208,7 +208,7 @@ abstract class DatabaseEntity extends BaseEntity
     }
 
     /**
-     * 选择记录
+     * 从数据库选择记录
      * @param $values
      * @param null $options
      * @param bool $debug
@@ -224,6 +224,28 @@ abstract class DatabaseEntity extends BaseEntity
             ->getRow($condition, $options, $debug);
 
         $entity->data($data);
+        return $entity;
+    }
+
+    /**
+     * 以数据选择记录
+     * @param $data
+     * @return DatabaseEntity
+     */
+    public static function selectFrom($data)
+    {
+        $primaries = array_fill_keys($data, null);
+
+        if (array_diff_key($primaries, $data)) {
+            ocService()->error->show('need_primary_values');
+        }
+
+        $entity = new static();
+        $entity->data($data);
+
+        $primaries = array_intersect_key($data, $primaries);
+        $entity->getPrimaryCondition($primaries);
+
         return $entity;
     }
 
@@ -248,7 +270,7 @@ abstract class DatabaseEntity extends BaseEntity
             $this->setProperty($data);
         }
 
-        $result = $model->create($this->toArray(), $debug);
+        $result = $model->baseSave($this->toArray(), null, $debug);
 
         if (!$debug) {
             $this->insertId = $model->getInsertId();
@@ -291,8 +313,6 @@ abstract class DatabaseEntity extends BaseEntity
             ocService()->error->show('need_condition');
         }
 
-        $model->where($this->selected);
-
         if (!$debug && $this->relations) {
             ocService()->transaction->begin();
         }
@@ -302,7 +322,7 @@ abstract class DatabaseEntity extends BaseEntity
         if (empty($data)) return false;
 
         call_user_func_array('ocDel', array(&$data, $this->getPrimaries()));
-        $result = $model->update($data, $debug);
+        $result = $model->baseSave($data, $this->selected, $debug);
 
         if (!$debug) {
             $this->relateSave();
