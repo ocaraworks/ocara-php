@@ -948,7 +948,7 @@ abstract class DatabaseModel extends ModelBase
     {
         $entityClass = OC_EMPTY;
 
-        if ($this->sql['option']['dataType']) {
+        if (!empty($this->sql['option']['dataType'])) {
             $simpleDataTypes = array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT);
             if (!in_array($this->sql['option']['dataType'], $simpleDataTypes)) {
                 $entityClass = $this->sql['option']['dataType'];

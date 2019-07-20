@@ -378,7 +378,7 @@ abstract class DatabaseEntity extends BaseEntity
         $model->where($this->selected);
         $this->fire(self::EVENT_BEFORE_DELETE);
 
-        $result = $model->delete();
+        $result = $model->baseDelete($debug);
         if (!$debug) {
             $this->fire(self::EVENT_AFTER_DELETE);
         }
