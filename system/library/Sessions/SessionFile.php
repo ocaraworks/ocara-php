@@ -80,7 +80,7 @@ class SessionFile extends ServiceProvider
     		}
     	}
 
-    	return false;
+    	return OC_EMPTY;
     }
 
     /**

@@ -9,7 +9,6 @@
 
 defined('OC_PATH') or exit('Forbidden!');
 
-use \ReflectionMethod;
 use Ocara\Core\Container;
 use Ocara\Core\ServiceProvider;
 use Ocara\Exceptions\Exception;
@@ -368,7 +367,7 @@ function ocService($name = null, $getDefault = false)
 
 /**
  * 获取默认容器
- * @return mixed\
+ * @return mixed
  */
 function ocContainer()
 {

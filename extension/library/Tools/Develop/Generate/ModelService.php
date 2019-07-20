@@ -134,10 +134,10 @@ class ModelService extends BaseService
             $content .= "\tprotected \$module = '{$this->_mdlname}';\r\n";
         }
 
-		$content .= "\tprotected \$database = '{$this->_database}';\r\n";
-		$content .= "\tprotected \$table = '{$this->_table}';\r\n";
-		$content .= "\tprotected \$primary = '{$this->_primaries}';\r\n";
-        $content .= "\tprotected \$entity = '{$entityclass}';\r\n";
+		$content .= "\tprotected static \$database = '{$this->_database}';\r\n";
+		$content .= "\tprotected static \$table = '{$this->_table}';\r\n";
+		$content .= "\tprotected static \$primary = '{$this->_primaries}';\r\n";
+        $content .= "\tprotected static \$entity = '{$entityclass}';\r\n";
 		$content .= "\r\n";
 		$content .= "\t/**\r\n";
 		$content .= "\t * 初始化模型\r\n";
@@ -181,7 +181,7 @@ class ModelService extends BaseService
         $content .= "\tpublic function __entity()\r\n";
         $content .= "\t{}\r\n";
         $content .= "\r\n";
-        $content .= "\tpublic function source()\r\n";
+        $content .= "\tpublic static function source()\r\n";
         $content .= "\t{\r\n";
         $content .= "\t\treturn '{$modelClass}';\r\n";
 	    $content .= "\t}\r\n";

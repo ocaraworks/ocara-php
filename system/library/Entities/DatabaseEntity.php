@@ -37,7 +37,7 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function __construct()
     {
-        $this->source = $this->source();
+        $this->source = self::getModelClass();
         $this->setModel($this->source);
 
         if (method_exists($this, '__entity')) {
@@ -49,7 +49,7 @@ abstract class DatabaseEntity extends BaseEntity
      * 获取模型类名
      * @return mixed
      */
-    public function source()
+    public static function source()
     {}
 
     /**
@@ -232,21 +232,19 @@ abstract class DatabaseEntity extends BaseEntity
      * @param $data
      * @return DatabaseEntity
      */
-    public static function selectFrom($data)
+    public function selectFrom($data)
     {
-        $primaries = array_fill_keys($data, null);
+        $model = static::getModelClass();
+        $primaries = array_fill_keys($model::getPrimaries(), null);
 
         if (array_diff_key($primaries, $data)) {
             ocService()->error->show('need_primary_values');
         }
 
-        $entity = new static();
-        $entity->data($data);
+        $this->getPrimaryCondition(array_intersect_key($data, $primaries));
+        $this->data($data);
 
-        $primaries = array_intersect_key($data, $primaries);
-        $entity->getPrimaryCondition($primaries);
-
-        return $entity;
+        return $this;
     }
 
     /**
@@ -279,7 +277,7 @@ abstract class DatabaseEntity extends BaseEntity
                 $this->$autoIncrementField = $this->insertId;
             }
 
-            $condition = $this->mapPrimaryData($this->toArray());
+            $condition = self::mapPrimary($this->toArray());
             $data = $this->getRow($condition);
             $this->data($data);
             $this->relateSave();
@@ -321,7 +319,7 @@ abstract class DatabaseEntity extends BaseEntity
         $data = array_merge($this->getChanged(), $data);
         if (empty($data)) return false;
 
-        call_user_func_array('ocDel', array(&$data, $this->getPrimaries()));
+        call_user_func_array('ocDel', array(&$data, $model::getPrimaries()));
         $result = $model->baseSave($data, $this->selected, $debug);
 
         if (!$debug) {
@@ -389,19 +387,15 @@ abstract class DatabaseEntity extends BaseEntity
     }
 
     /**
-     * 赋值主键
+     * 主键映射
      * @param $data
      * @return array
      */
-    protected function mapPrimaryData($data)
+    protected static function mapPrimary($data)
     {
-        $plugin = $this->plugin();
-        $result = array();
-
-        foreach ($plugin->getPrimaries() as $field) {
-            $result[$field] = array_key_exists($field, $data) ? $data[$field] : null;
-        }
-
+        $model = self::getModelClass();
+        $primaries = array_fill_keys($model::getPrimaries(), null);
+        $result = array_merge($primaries, array_intersect_key($data, $primaries));
         return $result;
     }
 
@@ -414,8 +408,8 @@ abstract class DatabaseEntity extends BaseEntity
     {
         $where = array();
         $values = array();
-        $model = $this->getModel();
-        $primaries = $model->getPrimaries();
+        $model = self::getModelClass();
+        $primaries = $model::getPrimaries();
 
         if (empty($primaries)) {
             ocService()->error->show('no_primary');
@@ -427,20 +421,30 @@ abstract class DatabaseEntity extends BaseEntity
 
         if (is_string($condition) || is_numeric($condition)) {
             $values = explode(',', trim($condition));
+            $where = array_combine($primaries, $values);
         } elseif (is_array($condition)) {
-            $values = $condition;
+            $values = array_values($condition);
+            $where = $condition;
         } else {
             ocService()->error->show('fault_primary_value_format');
         }
 
         if (count($primaries) == count($values)) {
-            $where = $model->filterData(array_combine($primaries, $values));
             $this->selected = $where;
         } else {
             ocService()->error->show('fault_primary_num');
         }
 
         return $where;
+    }
+
+    /**
+     * 获取模型类
+     * @return mixed
+     */
+    public static function getModelClass()
+    {
+        return static::source();
     }
 
     /**

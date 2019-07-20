@@ -29,24 +29,26 @@ abstract class DatabaseModel extends ModelBase
 	 * @var @primary 主键字段列表
 	 * @var $primaries 主键字段数组
 	 */
-	protected $plugin;
-	protected $primary;
-	protected $table;
-	protected $alias;
-    protected $entity;
+	protected static $primary;
+	protected static $table;
+    protected static $entity;
+    protected static $database;
+
+    protected $plugin;
+    protected $alias;
     protected $module;
     protected $connectName = 'defaults';
 
     protected $tag;
     protected $master;
     protected $slave;
-    protected $database;
+    protected $databaseName;
     protected $tableName;
     protected $autoIncrementField;
 
+    protected $primaries = array();
     protected $sql = array();
     protected $fields = array();
-    protected $primaries = array();
     protected $joins = array();
     protected $unions = array();
     protected $relateShardingData = array();
@@ -79,19 +81,18 @@ abstract class DatabaseModel extends ModelBase
 			self::$requirePrimary = $required ? true : false;
 		}
 
-		if (self::$requirePrimary && empty($this->primary)) {
+		if (self::$requirePrimary && !static::$primary) {
 			ocService()->error->show('no_primaries');
 		}
 
 		$this->tag = self::getClass();
 		$this->alias = $this->alias ? $this->alias : 'a';
-		$this->tableName = empty($this->table) ? lcfirst(self::getClassName()) : $this->table;
+
+		$this->tableName = static::$table ?: lcfirst(self::getClassName());
+        $this->databaseName = static::$database ?: null;
+        $this->primaries = static::getPrimaries();
 
 		$this->setJoin(false, $this->tag, $this->alias);
-
-		if ($this->primary) {
-			$this->primaries = explode(',', $this->primary);
-		}
 
 		if (method_exists($this, '__start')) $this->__start();
 		if (method_exists($this, '__model')) $this->__model();
@@ -151,18 +152,27 @@ abstract class DatabaseModel extends ModelBase
 	 * 获取当前数据库
 	 * @return mixed
 	 */
-	public function getDatabase()
+	public static function getDatabase()
 	{
-		return $this->database;
+		return static::$database;
 	}
+
+    /**
+     * 获取当前数据库名称
+     * @return mixed
+     */
+	public function getDatabaseName()
+    {
+        return $this->databaseName;
+    }
 
     /**
      * 获取主键
      * @return array
      */
-	public function getPrimaries()
+	public static function getPrimaries()
     {
-        return $this->primaries;
+        return static::$primary ? explode(',', static::$primary) : array();
     }
 
     /**
@@ -374,7 +384,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function selectDatabase($name)
 	{
-		$this->database = $name;
+		$this->databaseName = $name;
 	}
 
 	/**
@@ -384,13 +394,11 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function selectTable($name, $primary = null)
 	{
-		$this->table = $name;
 		$this->tableName = $name;
 
 		if ($primary) {
-			$this->primary = $primary;
-			if ($this->primary) {
-				$this->primaries = explode(',', $this->primary);
+			if ($primary) {
+				$this->primaries = explode(',', $primary);
 			}
 		}
 
@@ -866,7 +874,7 @@ abstract class DatabaseModel extends ModelBase
     public function asEntity($entityClass = null)
     {
         if (empty($entityClass)) {
-            $entityClass = $this->getDefaultEntityClass();
+            $entityClass = self::getDefaultEntityClass();
         }
         $this->sql['option']['dataType'] = $entityClass;
         return $this;
@@ -924,12 +932,12 @@ abstract class DatabaseModel extends ModelBase
      * 获取默认实体类
      * @return string
      */
-    public function getDefaultEntityClass()
+    public static function getDefaultEntityClass()
     {
-        if (empty($this->entity)) {
+        if (empty(static::$entity)) {
             ocService()->error->show('need_entity_class');
         }
-        return $this->entity;
+        return static::$entity;
     }
 
     /**
@@ -948,7 +956,7 @@ abstract class DatabaseModel extends ModelBase
         }
 
         if (!$entityClass) {
-            $entityClass = $this->getDefaultEntityClass();
+            $entityClass = self::getDefaultEntityClass();
         }
 
         return $entityClass;
@@ -1157,8 +1165,8 @@ abstract class DatabaseModel extends ModelBase
             $plugin = $this->setPlugin($this->master);
 		}
 
-		if ($this->database) {
-            $plugin->selectDatabase($this->database);
+		if ($this->databaseName) {
+            $plugin->selectDatabase($this->databaseName);
 		}
 
 		return $plugin;
@@ -1888,9 +1896,9 @@ abstract class DatabaseModel extends ModelBase
 	 * 获取表名
 	 * @return mixed
 	 */
-	protected function getTable()
+	public static function getTable()
 	{
-		return $this->table;
+		return static::$table;
 	}
 
 	/**
