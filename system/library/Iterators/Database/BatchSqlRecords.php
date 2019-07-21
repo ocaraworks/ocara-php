@@ -19,7 +19,6 @@ class BatchSqlRecords implements Iterator
     protected $debug;
 
     protected $position = 0;
-    protected $times = 0;
     protected $offset = 0;
     protected $batchLimit = 0;
     protected $totalLimit = 0;
@@ -62,8 +61,8 @@ class BatchSqlRecords implements Iterator
      */
     function rewind()
     {
-        $this->getResult();
         $this->position = 0;
+        $this->getResult();
     }
 
     /**
@@ -98,22 +97,21 @@ class BatchSqlRecords implements Iterator
         if ($this->totalPage > 0) {
             if ($this->position < $this->totalPage) {
                 $this->position++;
+                $this->getResult();
             }
         } else {
             $this->position++;
+            $this->getResult();
         }
     }
 
     /**
      * 检测合法性
-     * @return bool
+     * @return bool|void
      */
     function valid()
     {
-        if (!$this->data) return false;
-        $position = $this->key();
-        $isValid = $position < $this->batchLimit && array_key_exists($position, $this->data);
-        return $isValid;
+        $this->data ? true : false;
     }
 
     /**
@@ -122,14 +120,16 @@ class BatchSqlRecords implements Iterator
      */
     public function getResult()
     {
+        $this->offset = $this->position * $this->batchLimit;
+
         $model = new $this->model();
         $model->setSql($this->sql);
         $model->limit($this->offset, $this->batchLimit);
 
-        if (!$this->isEntity) $model->setDataType($this->dataType);
+        if (!$this->isEntity) {
+            $model->setDataType($this->dataType);
+        }
 
         $this->data = $model->getAll(null, null, $this->debug);
-        $this->offset += $this->batchLimit;
-        $this->times++;
     }
 }

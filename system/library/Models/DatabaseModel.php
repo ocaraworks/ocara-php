@@ -918,17 +918,16 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 选择多条记录
-     * @param int $offset
      * @param bool $debug
      * @return EachSqlRecords
      */
-    public function each($offset = 0, $debug = false)
+    public function each($debug = false)
     {
         $sql = $this->sql ? : array();
         $dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
 
         $records = new EachSqlRecords(
-            self::getClass(), $dataType, $offset, $sql, $debug
+            self::getClass(), $dataType, $sql, $debug
         );
 
         return $records;

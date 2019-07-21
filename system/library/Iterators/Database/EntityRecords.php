@@ -44,9 +44,8 @@ class EntityRecords implements Iterator
      */
     function current()
     {
-        $data = $this->data[$this->key()];
         $entity = new $this->entity();
-        $entity->selectFrom($data);
+        $entity->selectFrom($this->data[$this->key()]);
         return $entity;
     }
 
@@ -73,6 +72,7 @@ class EntityRecords implements Iterator
      */
     function valid()
     {
-        return $this->length && $this->key() <= $this->length;
+        $position = $this->key();
+        return $this->length && $position < $this->length && !empty($this->data[$position]);
     }
 }

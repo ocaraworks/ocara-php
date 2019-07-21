@@ -4,7 +4,7 @@ namespace Ocara\Entities;
 use \ReflectionObject;
 use Ocara\Core\BaseEntity;
 use Ocara\Exceptions\Exception;
-use Ocara\Iterators\Database\ObjectConditionRecords;
+use Ocara\Iterators\Database\EachConditionRecords;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -463,7 +463,7 @@ abstract class DatabaseEntity extends BaseEntity
                     ->where($config['condition'])
                     ->selectOne();
             } elseif ($config['joinType'] == 'hasMany') {
-                $result = new ObjectConditionRecords($config['class'], array($where, $config['condition']));
+                $result = new EachConditionRecords($config['class'], array($where, $config['condition']));
             }
         }
 

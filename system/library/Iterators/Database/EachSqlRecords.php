@@ -16,7 +16,7 @@ class EachSqlRecords implements Iterator
     protected $model;
     protected $dataType;
     protected $debug;
-    protected $result;
+    protected $data;
 
     protected $position = 0;
     protected $offset = 0;
@@ -28,17 +28,14 @@ class EachSqlRecords implements Iterator
      * EachSqlRecords constructor.
      * @param string $model
      * @param string $dataType
-     * @param integer $offset
      * @param array $sql
      * @param bool $debug
      */
-    public function __construct($model, $dataType, $offset, array $sql, $debug = false)
+    public function __construct($model, $dataType, array $sql, $debug = false)
     {
         $this->model = $model;
-        $this->dataType = $dataType;
         $this->sql = $sql;
         $this->debug = $debug;
-        $this->offset = $offset ? : 0;
         $this->dataType = $dataType ?: DriverBase::DATA_TYPE_ARRAY;
     }
 
@@ -48,6 +45,7 @@ class EachSqlRecords implements Iterator
     function rewind()
     {
         $this->position = 0;
+        $this->getResult();
     }
 
     /**
@@ -56,7 +54,7 @@ class EachSqlRecords implements Iterator
      */
     function current()
     {
-        return $this->result;
+        return $this->data;
     }
 
     /**
@@ -74,6 +72,7 @@ class EachSqlRecords implements Iterator
     function next()
     {
         $this->position++;
+        $this->data = $this->getResult();
     }
 
     /**
@@ -82,8 +81,7 @@ class EachSqlRecords implements Iterator
      */
     function valid()
     {
-        $this->result = $this->getResult();
-        return $this->result ? true : false;
+        return $this->data ? true : false;
     }
 
     /**
@@ -92,6 +90,8 @@ class EachSqlRecords implements Iterator
      */
     public function getResult()
     {
+        $this->offset = $this->position * 1;
+
         $model = new $this->model();
         $model->setSql($this->sql);
 
@@ -100,7 +100,6 @@ class EachSqlRecords implements Iterator
             ->setDataType($this->dataType)
             ->getRow(null, null, $this->debug);
 
-        $this->offset += 1;
         return $result;
     }
 }

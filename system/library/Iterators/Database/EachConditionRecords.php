@@ -9,27 +9,34 @@
 namespace Ocara\Iterators\Database;
 
 use \Iterator;
+use Ocara\Core\DriverBase;
 
-class ObjectConditionRecords implements Iterator
+class EachConditionRecords implements Iterator
 {
-    private $model;
-    private $debug;
-    private $position = 0;
-    private $length = 0;
-    private $conditions;
+    protected $model;
+    protected $dataType;
+    protected $debug;
+    protected $data;
+
+    protected $position = 0;
+    protected $offset = 0;
+
+    protected $condition = array();
 
     /**
      * 初始化
-     * ObjectRecords constructor.
-     * @param $model
-     * @param array $conditions
+     * EachSqlRecords constructor.
+     * @param string $model
+     * @param string $dataType
+     * @param array $condition
      * @param bool $debug
      */
-    public function __construct($model, array $conditions = array(), $debug = false)
+    public function __construct($model, $dataType, array $condition, $debug = false)
     {
         $this->model = $model;
+        $this->condition = $condition;
         $this->debug = $debug;
-        $this->conditions = $conditions;
+        $this->dataType = $dataType ?: DriverBase::DATA_TYPE_ARRAY;
     }
 
     /**
@@ -37,7 +44,8 @@ class ObjectConditionRecords implements Iterator
      */
     function rewind()
     {
-         $this->position = 0;
+        $this->position = 0;
+        $this->getResult();
     }
 
     /**
@@ -46,16 +54,7 @@ class ObjectConditionRecords implements Iterator
      */
     function current()
     {
-        $model = new $this->model();
-        $result = $model
-            ->asEntity()
-            ->getRow();
-
-        if (empty($result)) {
-            $this->length = $this->key();
-        }
-
-        return $result;
+        return $this->data;
     }
 
     /**
@@ -73,6 +72,7 @@ class ObjectConditionRecords implements Iterator
     function next()
     {
         $this->position++;
+        $this->data = $this->getResult();
     }
 
     /**
@@ -81,24 +81,27 @@ class ObjectConditionRecords implements Iterator
      */
     function valid()
     {
-        if (!isset($this->length)) {
-            $model = new $this->model();
-            foreach ($this->conditions as $condition) {
-                $model->where($condition);
-            }
-            $this->length = $model->getTotal();
-        }
-
-        $isValid = $this->key() < $this->length;
-        return $isValid;
+        return $this->data ? true : false;
     }
 
     /**
-     * 转换成数组
-     * @return array
+     * 获取记录结果
+     * @return mixed
      */
-    public function toArray()
+    public function getResult()
     {
-        return $this->data;
+        $this->offset = $this->position * 1;
+        $model = new $this->model();
+
+        foreach ($this->conditions as $condition) {
+            $model->where($condition);
+        }
+
+        $result = $model
+            ->limit($this->offset, 1)
+            ->setDataType($this->dataType)
+            ->getRow(null, null, $this->debug);
+
+        return $result;
     }
 }
