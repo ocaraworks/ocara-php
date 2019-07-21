@@ -1,7 +1,7 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   数据库结果对象迭代器\Ocara\Iterators\Database\ObjectRecords
+ * Ocara开源框架   数据库结果对象迭代器\Ocara\Iterators\Database\EachQueryRecords
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
@@ -11,7 +11,7 @@ namespace Ocara\Iterators\Database;
 use \Iterator;
 use Ocara\Core\DriverBase;
 
-class EachConditionRecords implements Iterator
+class EachQueryRecords implements Iterator
 {
     protected $model;
     protected $dataType;
@@ -21,20 +21,20 @@ class EachConditionRecords implements Iterator
     protected $position = 0;
     protected $offset = 0;
 
-    protected $condition = array();
+    protected $sql = array();
 
     /**
      * 初始化
-     * EachSqlRecords constructor.
+     * EachQueryRecords constructor.
      * @param string $model
      * @param string $dataType
-     * @param array $condition
+     * @param array $sql
      * @param bool $debug
      */
-    public function __construct($model, $dataType, array $condition, $debug = false)
+    public function __construct($model, $dataType, array $sql, $debug = false)
     {
         $this->model = $model;
-        $this->condition = $condition;
+        $this->sql = $sql;
         $this->debug = $debug;
         $this->dataType = $dataType ?: DriverBase::DATA_TYPE_ARRAY;
     }
@@ -91,11 +91,9 @@ class EachConditionRecords implements Iterator
     public function getResult()
     {
         $this->offset = $this->position * 1;
-        $model = new $this->model();
 
-        foreach ($this->conditions as $condition) {
-            $model->where($condition);
-        }
+        $model = new $this->model();
+        $model->setSql($this->sql);
 
         $result = $model
             ->limit($this->offset, 1)

@@ -10,7 +10,7 @@ namespace Ocara\Models;
 
 use Ocara\Core\DriverBase;
 use Ocara\Core\FormManager;
-use Ocara\Iterators\Database\BatchSqlRecords;
+use Ocara\Iterators\Database\BatchQueryRecords;
 use \ReflectionObject;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\CacheFactory;
@@ -18,7 +18,7 @@ use Ocara\Core\FormToken;
 use Ocara\Core\DatabaseFactory;
 use Ocara\Core\DatabaseBase;
 use Ocara\Core\ModelBase;
-use Ocara\Iterators\Database\EachSqlRecords;
+use Ocara\Iterators\Database\EachQueryRecords;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -902,14 +902,14 @@ abstract class DatabaseModel extends ModelBase
      * @param integer $batchLimit
      * @param integer $totalLimit
      * @param bool $debug
-     * @return BatchSqlRecords
+     * @return BatchQueryRecords
      */
     public function batch($batchLimit, $totalLimit = 0, $debug = false)
     {
         $sql = $this->sql ? : array();
         $dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
 
-        $records = new BatchSqlRecords(
+        $records = new BatchQueryRecords(
             self::getClass(), $dataType, $sql, $batchLimit, $totalLimit, $debug
         );
 
@@ -919,14 +919,14 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 选择多条记录
      * @param bool $debug
-     * @return EachSqlRecords
+     * @return EachQueryRecords
      */
     public function each($debug = false)
     {
         $sql = $this->sql ? : array();
         $dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
 
-        $records = new EachSqlRecords(
+        $records = new EachQueryRecords(
             self::getClass(), $dataType, $sql, $debug
         );
 

@@ -1,7 +1,7 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   数据库结果对象迭代器\Ocara\Iterators\Database\BatchSqlRecords
+ * Ocara开源框架   数据库结果对象迭代器\Ocara\Iterators\Database\BatchQueryRecords
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
@@ -11,7 +11,7 @@ namespace Ocara\Iterators\Database;
 use \Iterator;
 use Ocara\Core\DriverBase;
 
-class BatchSqlRecords implements Iterator
+class BatchQueryRecords implements Iterator
 {
     protected $model;
     protected $dataType;
@@ -29,7 +29,7 @@ class BatchSqlRecords implements Iterator
 
     /**
      * 初始化
-     * BatchSqlRecords constructor.
+     * BatchQueryRecords constructor.
      * @param $model
      * @param $dataType
      * @param array $sql
