@@ -624,12 +624,11 @@ abstract class DatabaseModel extends ModelBase
      * @param bool $debug
      * @return mixed
      */
-	public function create(array $data, $debug = false)
+	public function  create(array $data, $debug = false)
 	{
 	    $entityClass = $this->getEntityClass();
         $entity = new $entityClass();
-        $entity->data($data);
-        $result = $entity->create($debug);
+        $result = $entity->create($data, $debug);
 		return $result;
 	}
 
@@ -648,10 +647,9 @@ abstract class DatabaseModel extends ModelBase
 		}
 
 		if ($entityBatch) {
-		    foreach ($this->batch($entityBatch) as $entityList) {
-		        foreach ($entityList as $entity) {
-                    $entity->data($data)->update(array(), $debug);
-                }
+		    foreach ($this->batch($entityBatch) as $entity) {
+                $entity->data($data);
+                $entity->update(array(), $debug);
             }
         } else {
             $this->baseSave($data, $condition, $debug);
@@ -672,10 +670,8 @@ abstract class DatabaseModel extends ModelBase
         }
 
         if ($entityBatch) {
-            foreach ($this->batch($entityBatch) as $entityList) {
-                foreach ($entityList as $entity) {
-                    $entity->delete($debug);
-                }
+            foreach ($this->batch($entityBatch) as $entity) {
+                $entity->delete($debug);
             }
         } else {
             $this->baseDelete($debug);

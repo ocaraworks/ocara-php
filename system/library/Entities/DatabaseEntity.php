@@ -89,10 +89,7 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function data(array $data)
     {
-        $model = $this->getModel();
-
         if ($data) {
-            $data = $model->filterData($data);
             $this->setProperty($data);
             if ($this->selected) {
                 $this->replaceOld($data);

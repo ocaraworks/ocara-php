@@ -58,13 +58,13 @@ class BatchObjectRecords implements Iterator
      */
     function current()
     {
+        $result = null;
         $data = $this->data[$this->key()];
 
-        if (is_array($data)) {
+        if ($data) {
             $entity = new $this->entity();
-            $result = $entity->data($data);
-        } else {
-            $result = $data;
+            $entity->selectFrom($data);
+            $result = $entity;
         }
 
         return $result;
@@ -112,9 +112,7 @@ class BatchObjectRecords implements Iterator
         $model->setSql($this->sql);
         $model->limit($this->offset, $this->limitRows);
 
-        $list = $model->getAll(null, null, $this->debug);
-
-        $this->data = $list['data'];
+        $this->data = $model->getAll(null, null, $this->debug);
         $this->offset += $this->limitRows;
         $this->times++;
     }
