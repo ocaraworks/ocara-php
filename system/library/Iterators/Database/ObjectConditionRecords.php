@@ -10,7 +10,7 @@ namespace Ocara\Iterators\Database;
 
 use \Iterator;
 
-class ObjectRecords implements Iterator
+class ObjectConditionRecords implements Iterator
 {
     private $model;
     private $debug;
@@ -22,7 +22,7 @@ class ObjectRecords implements Iterator
      * 初始化
      * ObjectRecords constructor.
      * @param $model
-     * @param array $data
+     * @param array $conditions
      * @param bool $debug
      */
     public function __construct($model, array $conditions = array(), $debug = false)

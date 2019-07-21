@@ -1,7 +1,7 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   数据库结果对象迭代器\Ocara\Iterators\Database\BatchObjectRecords
+ * Ocara开源框架   数据库结果对象迭代器\Ocara\Iterators\Database\EachSqlRecords
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
@@ -9,38 +9,37 @@
 namespace Ocara\Iterators\Database;
 
 use \Iterator;
+use Ocara\Core\DriverBase;
 
-class BatchObjectRecords implements Iterator
+class EachSqlRecords implements Iterator
 {
     protected $model;
-    protected $entity;
-    protected $sql = array();
+    protected $dataType;
     protected $debug;
+    protected $result;
 
     protected $position = 0;
-    protected $times = 0;
     protected $offset = 0;
-    protected $data = array();
-    protected $limitRows = 0;
+
+    protected $sql = array();
 
     /**
      * 初始化
-     * BatchObjectRecords constructor.
+     * EachSqlRecords constructor.
      * @param string $model
-     * @param string $entity
+     * @param string $dataType
      * @param integer $offset
-     * @param integer $limitRows
      * @param array $sql
      * @param bool $debug
      */
-    public function __construct($model, $entity, $offset, $limitRows, array $sql, $debug = false)
+    public function __construct($model, $dataType, $offset, array $sql, $debug = false)
     {
         $this->model = $model;
-        $this->entity = $entity;
-        $this->offset = $offset;
+        $this->dataType = $dataType;
         $this->sql = $sql;
         $this->debug = $debug;
-        $this->limitRows = $limitRows;
+        $this->offset = $offset ? : 0;
+        $this->dataType = $dataType ?: DriverBase::DATA_TYPE_ARRAY;
     }
 
     /**
@@ -48,7 +47,6 @@ class BatchObjectRecords implements Iterator
      */
     function rewind()
     {
-        $this->getResult();
         $this->position = 0;
     }
 
@@ -58,16 +56,7 @@ class BatchObjectRecords implements Iterator
      */
     function current()
     {
-        $result = null;
-        $data = $this->data[$this->key()];
-
-        if ($data) {
-            $entity = new $this->entity();
-            $entity->selectFrom($data);
-            $result = $entity;
-        }
-
-        return $result;
+        return $this->result;
     }
 
     /**
@@ -85,10 +74,6 @@ class BatchObjectRecords implements Iterator
     function next()
     {
         $this->position++;
-        if ($this->position == $this->limitRows) {
-            $this->times++;
-            $this->rewind();
-        }
     }
 
     /**
@@ -97,9 +82,8 @@ class BatchObjectRecords implements Iterator
      */
     function valid()
     {
-        $position = $this->key();
-        $isValid = $position < $this->limitRows && array_key_exists($position, $this->data);
-        return $isValid;
+        $this->result = $this->getResult();
+        return $this->result ? true : false;
     }
 
     /**
@@ -110,10 +94,13 @@ class BatchObjectRecords implements Iterator
     {
         $model = new $this->model();
         $model->setSql($this->sql);
-        $model->limit($this->offset, $this->limitRows);
 
-        $this->data = $model->getAll(null, null, $this->debug);
-        $this->offset += $this->limitRows;
-        $this->times++;
+        $result = $model
+            ->limit($this->offset, 1)
+            ->setDataType($this->dataType)
+            ->getRow(null, null, $this->debug);
+
+        $this->offset += 1;
+        return $result;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   数据库结果对象迭代器\Ocara\Iterators\Database\EachObjectRecords
+ * Ocara开源框架   数据库结果对象迭代器\Ocara\Iterators\Database\BatchSqlRecords
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
@@ -9,35 +9,44 @@
 namespace Ocara\Iterators\Database;
 
 use \Iterator;
+use Ocara\Core\DriverBase;
 
-class EachObjectRecords implements Iterator
+class BatchSqlRecords implements Iterator
 {
     protected $model;
-    protected $entity;
+    protected $dataType;
+    protected $isEntity;
     protected $debug;
-    protected $result;
 
     protected $position = 0;
+    protected $times = 0;
     protected $offset = 0;
+    protected $limitRows = 0;
 
+    protected $data = array();
     protected $sql = array();
 
     /**
      * 初始化
-     * EachObjectRecords constructor.
+     * BatchSqlRecords constructor.
      * @param string $model
-     * @param string $entity
+     * @param int|string $dataType
      * @param integer $offset
+     * @param integer $limitRows
      * @param array $sql
      * @param bool $debug
      */
-    public function __construct($model, $entity, $offset, array $sql, $debug = false)
+    public function __construct($model, $dataType, $offset, $limitRows, array $sql, $debug = false)
     {
         $this->model = $model;
-        $this->entity = $entity;
+        $this->offset = $offset;
         $this->sql = $sql;
         $this->debug = $debug;
-        $this->offset = $offset ? : 0;
+        $this->limitRows = $limitRows;
+
+        $this->dataType = $dataType ?: DriverBase::DATA_TYPE_ARRAY;
+        $simpleType = array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT);
+        $this->isEntity = !in_array($this->dataType, $simpleType);
     }
 
     /**
@@ -45,6 +54,7 @@ class EachObjectRecords implements Iterator
      */
     function rewind()
     {
+        $this->getResult();
         $this->position = 0;
     }
 
@@ -54,7 +64,13 @@ class EachObjectRecords implements Iterator
      */
     function current()
     {
-        return $this->result;
+        $data = $this->data[$this->key()];
+
+        if ($this->isEntity) {
+            $data = new EntityRecords($data, $this->dataType);
+        }
+
+        return $data;
     }
 
     /**
@@ -71,7 +87,12 @@ class EachObjectRecords implements Iterator
      */
     function next()
     {
-        $this->position++;
+        if ($this->position == $this->limitRows) {
+            $this->times++;
+            $this->rewind();
+        } else {
+            $this->position++;
+        }
     }
 
     /**
@@ -80,8 +101,10 @@ class EachObjectRecords implements Iterator
      */
     function valid()
     {
-        $this->result = $this->getResult();
-        return $this->result ? true : false;
+        if (!$this->data) return false;
+        $position = $this->key();
+        $isValid = $position < $this->limitRows && array_key_exists($position, $this->data);
+        return $isValid;
     }
 
     /**
@@ -92,13 +115,12 @@ class EachObjectRecords implements Iterator
     {
         $model = new $this->model();
         $model->setSql($this->sql);
+        $model->limit($this->offset, $this->limitRows);
 
-        $result = $model
-            ->limit($this->offset, 1)
-            ->asEntity($this->entity)
-            ->getRow(null, null, $this->debug);
+        if (!$this->isEntity) $model->asObject();
 
-        $this->offset += 1;
-        return $result;
+        $this->data = $model->getAll(null, null, $this->debug);
+        $this->offset += $this->limitRows;
+        $this->times++;
     }
 }

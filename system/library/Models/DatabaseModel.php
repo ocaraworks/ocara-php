@@ -10,6 +10,7 @@ namespace Ocara\Models;
 
 use Ocara\Core\DriverBase;
 use Ocara\Core\FormManager;
+use Ocara\Iterators\Database\BatchSqlRecords;
 use \ReflectionObject;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\CacheFactory;
@@ -17,8 +18,7 @@ use Ocara\Core\FormToken;
 use Ocara\Core\DatabaseFactory;
 use Ocara\Core\DatabaseBase;
 use Ocara\Core\ModelBase;
-use Ocara\Iterators\Database\BatchObjectRecords;
-use Ocara\Iterators\Database\EachObjectRecords;
+use Ocara\Iterators\Database\EachSqlRecords;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -635,21 +635,23 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 批量更新记录
      * @param array $data
-     * @param int $entityBatch
+     * @param int $batchLimit
      * @param bool $debug
      * @throws Exception
      */
-	public function update(array $data, $entityBatch = 1000, $debug = false)
+	public function update(array $data, $batchLimit = 1000, $debug = false)
 	{
         $condition = $this->getCondition();
 		if (empty($condition)) {
 		    ocService()->error->show('need_condition');
 		}
 
-		if ($entityBatch) {
-		    foreach ($this->batch($entityBatch) as $entity) {
-                $entity->data($data);
-                $entity->update(array(), $debug);
+		if ($batchLimit) {
+		    foreach ($this->batch($batchLimit) as $entityList) {
+		        foreach ($entityList as $entity) {
+                    $entity->data($data);
+                    $entity->update(array(), $debug);
+                }
             }
         } else {
             $this->baseSave($data, $condition, $debug);
@@ -658,20 +660,22 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 批量删除记录
-     * @param int $entityBatch
+     * @param int $batchLimit
      * @param bool $debug
      * @throws Exception
      */
-    public function delete($entityBatch = 1000, $debug = false)
+    public function delete($batchLimit = 1000, $debug = false)
     {
         $condition = $this->getCondition();
         if (empty($condition)) {
             ocService()->error->show('need_condition');
         }
 
-        if ($entityBatch) {
-            foreach ($this->batch($entityBatch) as $entity) {
-                $entity->delete($debug);
+        if ($batchLimit) {
+            foreach ($this->batch($batchLimit) as $entityList) {
+                foreach ($entityList as $entity) {
+                    $entity->delete($debug);
+                }
             }
         } else {
             $this->baseDelete($debug);
@@ -731,7 +735,7 @@ abstract class DatabaseModel extends ModelBase
 
 		if ($sql) {
 			$sqlData = $plugin->getSqlData($sql);
-			$dataType = $this->sql['option']['dataType'] ? : DriverBase::DATA_TYPE_ARRAY;
+			$dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
 			return $this
                 ->connect(false)
                 ->query($sqlData, $debug, false, array(), $dataType);
@@ -753,7 +757,7 @@ abstract class DatabaseModel extends ModelBase
 
 		if ($sql) {
 			$sqlData = $plugin->getSqlData($sql);
-            $dataType = $this->sql['option']['dataType'] ? : DriverBase::DATA_TYPE_ARRAY;
+            $dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
 			return $this
                 ->connect(false)
                 ->query($sqlData, $debug, false, array(), $dataType);
@@ -848,8 +852,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function asArray()
     {
-        $this->sql['option']['dataType'] = DriverBase::DATA_TYPE_ARRAY;
-        return $this;
+        return $this->setDataType(DriverBase::DATA_TYPE_ARRAY);
     }
 
     /**
@@ -858,8 +861,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function asObject()
     {
-        $this->sql['option']['dataType'] = DriverBase::DATA_TYPE_OBJECT;
-        return $this;
+        return $this->setDataType(DriverBase::DATA_TYPE_OBJECT);
     }
 
     /**
@@ -872,19 +874,27 @@ abstract class DatabaseModel extends ModelBase
         if (empty($entityClass)) {
             $entityClass = self::getDefaultEntityClass();
         }
-        $this->sql['option']['dataType'] = $entityClass;
+        return $this->setDataType($entityClass);
+    }
+
+    /**
+     * 设置返回数据类型
+     * @param $dataType
+     * @return $this
+     */
+    public function setDataType($dataType)
+    {
+        $this->sql['option']['dataType'] = $dataType;
         return $this;
     }
 
     /**
      * 获取当前返回数据类型
-     * @param null $default
      * @return array|bool|mixed|null
      */
-    public function getDataType($default = null)
+    public function getDataType()
     {
-        $default = $default ? : DriverBase::DATA_TYPE_ARRAY;
-        return ocGet(array('option', 'dataType'), $this->sql, $default);
+        return ocGet(array('option', 'dataType'), $this->sql, null);
     }
 
     /**
@@ -892,7 +902,7 @@ abstract class DatabaseModel extends ModelBase
      * @param integer $offset
      * @param integer $limitRows
      * @param bool $debug
-     * @return BatchObjectRecords
+     * @return BatchSqlRecords
      */
     public function batch($offset, $limitRows = null, $debug = false)
     {
@@ -902,7 +912,7 @@ abstract class DatabaseModel extends ModelBase
         }
 
         $sql = $this->sql ? : array();
-        $records = new BatchObjectRecords(
+        $records = new BatchSqlRecords(
             self::getClass(), $this->getEntityClass(), $offset, $limitRows, $sql, $debug
         );
 
@@ -913,12 +923,12 @@ abstract class DatabaseModel extends ModelBase
      * 选择多条记录
      * @param int $offset
      * @param bool $debug
-     * @return EachObjectRecords
+     * @return EachSqlRecords
      */
     public function each($offset = 0, $debug = false)
     {
         $sql = $this->sql ? : array();
-        $records = new EachObjectRecords(
+        $records = new EachSqlRecords(
             self::getClass(), $this->getEntityClass(), $offset, $sql, $debug
         );
         return $records;
@@ -943,11 +953,12 @@ abstract class DatabaseModel extends ModelBase
     public function getEntityClass()
     {
         $entityClass = OC_EMPTY;
+        $dataType = $this->getDataType();
 
-        if (!empty($this->sql['option']['dataType'])) {
+        if (!empty($dataType)) {
             $simpleDataTypes = array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT);
-            if (!in_array($this->sql['option']['dataType'], $simpleDataTypes)) {
-                $entityClass = $this->sql['option']['dataType'];
+            if (!in_array($dataType, $simpleDataTypes)) {
+                $entityClass = $dataType;
             }
         }
 
