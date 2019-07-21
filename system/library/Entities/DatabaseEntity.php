@@ -1,6 +1,7 @@
 <?php
 namespace Ocara\Entities;
 
+use Ocara\Iterators\Database\EachQueryRecords;
 use \ReflectionObject;
 use Ocara\Core\BaseEntity;
 use Ocara\Exceptions\Exception;
@@ -446,7 +447,7 @@ abstract class DatabaseEntity extends BaseEntity
     /**
      * 关联查询
      * @param $alias
-     * @return null|ObjectRecords
+     * @return null|entity|EachQueryRecords
      */
     protected function relateFind($alias)
     {
