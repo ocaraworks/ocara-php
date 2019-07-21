@@ -899,21 +899,18 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 选择多条记录
-     * @param integer $offset
-     * @param integer $limitRows
+     * @param integer $batchLimit
+     * @param integer $totalLimit
      * @param bool $debug
      * @return BatchSqlRecords
      */
-    public function batch($offset, $limitRows = null, $debug = false)
+    public function batch($batchLimit, $totalLimit = 0, $debug = false)
     {
-        if (!isset($limitRows)) {
-            $limitRows = $offset;
-            $offset = 0;
-        }
-
         $sql = $this->sql ? : array();
+        $dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
+
         $records = new BatchSqlRecords(
-            self::getClass(), $this->getEntityClass(), $offset, $limitRows, $sql, $debug
+            self::getClass(), $dataType, $sql, $batchLimit, $totalLimit, $debug
         );
 
         return $records;
@@ -928,9 +925,12 @@ abstract class DatabaseModel extends ModelBase
     public function each($offset = 0, $debug = false)
     {
         $sql = $this->sql ? : array();
+        $dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
+
         $records = new EachSqlRecords(
-            self::getClass(), $this->getEntityClass(), $offset, $sql, $debug
+            self::getClass(), $dataType, $offset, $sql, $debug
         );
+
         return $records;
     }
 

@@ -21,7 +21,9 @@ class BatchSqlRecords implements Iterator
     protected $position = 0;
     protected $times = 0;
     protected $offset = 0;
-    protected $limitRows = 0;
+    protected $batchLimit = 0;
+    protected $totalLimit = 0;
+    protected $totalPage = 0;
 
     protected $data = array();
     protected $sql = array();
@@ -29,24 +31,30 @@ class BatchSqlRecords implements Iterator
     /**
      * 初始化
      * BatchSqlRecords constructor.
-     * @param string $model
-     * @param int|string $dataType
-     * @param integer $offset
-     * @param integer $limitRows
+     * @param $model
+     * @param $dataType
      * @param array $sql
+     * @param $batchLimit
+     * @param int $totalLimit
      * @param bool $debug
      */
-    public function __construct($model, $dataType, $offset, $limitRows, array $sql, $debug = false)
+    public function __construct($model, $dataType, array $sql, $batchLimit, $totalLimit = 0, $debug = false)
     {
         $this->model = $model;
-        $this->offset = $offset;
+        $this->offset = 0;
         $this->sql = $sql;
         $this->debug = $debug;
-        $this->limitRows = $limitRows;
 
+        $this->batchLimit = $batchLimit;
+        $this->totalLimit = $totalLimit;
+
+        $this->totalPage = $totalLimit > 0 ? ceil($totalLimit / $batchLimit) : 0;
         $this->dataType = $dataType ?: DriverBase::DATA_TYPE_ARRAY;
-        $simpleType = array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT);
-        $this->isEntity = !in_array($this->dataType, $simpleType);
+
+        $this->isEntity = !in_array(
+            $this->dataType,
+            array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT)
+        );
     }
 
     /**
@@ -64,7 +72,7 @@ class BatchSqlRecords implements Iterator
      */
     function current()
     {
-        $data = $this->data[$this->key()];
+        $data = $this->data;
 
         if ($this->isEntity) {
             $data = new EntityRecords($data, $this->dataType);
@@ -87,9 +95,10 @@ class BatchSqlRecords implements Iterator
      */
     function next()
     {
-        if ($this->position == $this->limitRows) {
-            $this->times++;
-            $this->rewind();
+        if ($this->totalPage > 0) {
+            if ($this->position < $this->totalPage) {
+                $this->position++;
+            }
         } else {
             $this->position++;
         }
@@ -103,7 +112,7 @@ class BatchSqlRecords implements Iterator
     {
         if (!$this->data) return false;
         $position = $this->key();
-        $isValid = $position < $this->limitRows && array_key_exists($position, $this->data);
+        $isValid = $position < $this->batchLimit && array_key_exists($position, $this->data);
         return $isValid;
     }
 
@@ -115,12 +124,12 @@ class BatchSqlRecords implements Iterator
     {
         $model = new $this->model();
         $model->setSql($this->sql);
-        $model->limit($this->offset, $this->limitRows);
+        $model->limit($this->offset, $this->batchLimit);
 
-        if (!$this->isEntity) $model->asObject();
+        if (!$this->isEntity) $model->setDataType($this->dataType);
 
         $this->data = $model->getAll(null, null, $this->debug);
-        $this->offset += $this->limitRows;
+        $this->offset += $this->batchLimit;
         $this->times++;
     }
 }

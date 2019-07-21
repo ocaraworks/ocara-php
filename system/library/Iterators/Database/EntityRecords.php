@@ -23,7 +23,7 @@ class EntityRecords implements Iterator
      * @param $data
      * @param $entity
      */
-    public function __construct($data, BaseEntity $entity)
+    public function __construct($data, $entity)
     {
         $this->data = $data;
         $this->entity = $entity;
