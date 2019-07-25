@@ -593,9 +593,7 @@ abstract class DatabaseModel extends ModelBase
         }
 
         $this->clearSql();
-
         if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
-
         $result = $plugin->errorExists() ? false : true;
         return $result;
     }
@@ -641,20 +639,18 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function update(array $data, $batchLimit = 1000, $debug = false)
 	{
+        $batchLimit = $batchLimit ?: 1000;
         $condition = $this->getCondition();
+
 		if (empty($condition)) {
 		    ocService()->error->show('need_condition');
 		}
 
-		if ($batchLimit) {
-		    foreach ($this->batch($batchLimit) as $entityList) {
-		        foreach ($entityList as $entity) {
-                    $entity->data($data);
-                    $entity->update(array(), $debug);
-                }
+        foreach ($this->batch($batchLimit) as $entityList) {
+            foreach ($entityList as $entity) {
+                $entity->data($data);
+                $entity->update(array(), $debug);
             }
-        } else {
-            $this->baseSave($data, $condition, $debug);
         }
 	}
 
@@ -666,19 +662,16 @@ abstract class DatabaseModel extends ModelBase
      */
     public function delete($batchLimit = 1000, $debug = false)
     {
+        $batchLimit = $batchLimit ?: 1000;
         $condition = $this->getCondition();
         if (empty($condition)) {
             ocService()->error->show('need_condition');
         }
 
-        if ($batchLimit) {
-            foreach ($this->batch($batchLimit) as $entityList) {
-                foreach ($entityList as $entity) {
-                    $entity->delete($debug);
-                }
+        foreach ($this->batch($batchLimit) as $entityList) {
+            foreach ($entityList as $entity) {
+                $entity->delete($debug);
             }
-        } else {
-            $this->baseDelete($debug);
         }
     }
 
