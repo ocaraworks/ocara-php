@@ -664,6 +664,7 @@ abstract class DatabaseModel extends ModelBase
     {
         $batchLimit = $batchLimit ?: 1000;
         $condition = $this->getCondition();
+
         if (empty($condition)) {
             ocService()->error->show('need_condition');
         }
@@ -697,7 +698,6 @@ abstract class DatabaseModel extends ModelBase
 		}
 
 		$this->clearSql();
-
 		$result = $plugin->errorExists() ? false : true;
 		return $result;
 	}

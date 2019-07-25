@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -31,8 +30,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="649" lean-forward="true" selection-start-line="649" selection-end-line="649" />
+            <state relative-caret-position="450">
+              <caret line="701" column="23" lean-forward="true" selection-start-line="701" selection-start-column="23" selection-end-line="701" selection-end-column="23" />
               <folding>
                 <element signature="e#557#583#0#PHP" expanded="true" />
               </folding>
@@ -311,12 +310,12 @@
       <workItem from="1563583015747" duration="8971000" />
       <workItem from="1563689710468" duration="6198000" />
       <workItem from="1563727892806" duration="4188000" />
-      <workItem from="1564066496747" duration="98000" />
+      <workItem from="1564066496747" duration="298000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="233409000" />
+    <option name="totallyTimeSpent" value="233609000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -741,8 +740,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="649" lean-forward="true" selection-start-line="649" selection-end-line="649" />
+        <state relative-caret-position="450">
+          <caret line="701" column="23" lean-forward="true" selection-start-line="701" selection-start-column="23" selection-end-line="701" selection-end-column="23" />
           <folding>
             <element signature="e#557#583#0#PHP" expanded="true" />
           </folding>
