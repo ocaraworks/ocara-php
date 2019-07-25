@@ -120,15 +120,18 @@ class BatchQueryRecords implements Iterator
      */
     public function getResult()
     {
+        $tempDataType = DriverBase::DATA_TYPE_ARRAY;
         $this->offset = $this->position * $this->batchLimit;
 
-        $model = new $this->model();
-        $model->setSql($this->sql);
-        $model->limit($this->offset, $this->batchLimit);
-
-        if (!$this->isEntity) {
-            $model->setDataType($this->dataType);
+        if ($this->dataType == DriverBase::DATA_TYPE_OBJECT) {
+            $tempDataType = DriverBase::DATA_TYPE_OBJECT;
         }
+
+        $model = new $this->model();
+
+        $model->setSql($this->sql)
+              ->setDataType($tempDataType)
+              ->limit($this->offset, $this->batchLimit);
 
         $this->data = $model->getAll(null, null, $this->debug);
     }

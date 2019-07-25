@@ -646,7 +646,9 @@ abstract class DatabaseModel extends ModelBase
 		    ocService()->error->show('need_condition');
 		}
 
-        foreach ($this->batch($batchLimit) as $entityList) {
+        $batchData = $this->asEntity()->batch($batchLimit);
+
+        foreach ($batchData as $entityList) {
             foreach ($entityList as $entity) {
                 $entity->data($data);
                 $entity->update(array(), $debug);
@@ -669,7 +671,9 @@ abstract class DatabaseModel extends ModelBase
             ocService()->error->show('need_condition');
         }
 
-        foreach ($this->batch($batchLimit) as $entityList) {
+        $batchData = $this->asEntity()->batch($batchLimit);
+
+        foreach ($batchData as $entityList) {
             foreach ($entityList as $entity) {
                 $entity->delete($debug);
             }
@@ -768,13 +772,15 @@ abstract class DatabaseModel extends ModelBase
 		return $this->sql;
 	}
 
-	/**
-	 * 设置SQL
-	 * @param $sql
-	 */
+    /**
+     * 设置SQL
+     * @param $sql
+     * @return $this
+     */
 	public function setSql($sql)
 	{
 		$this->sql = $sql;
+		return $this;
 	}
 
     /**
