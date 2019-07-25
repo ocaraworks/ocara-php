@@ -14,7 +14,6 @@ use Ocara\Core\DriverBase;
 class EachQueryRecords implements Iterator
 {
     protected $model;
-    protected $dataType;
     protected $debug;
     protected $data;
 
@@ -27,16 +26,12 @@ class EachQueryRecords implements Iterator
      * 初始化
      * EachQueryRecords constructor.
      * @param string $model
-     * @param string $dataType
-     * @param array $sql
      * @param bool $debug
      */
-    public function __construct($model, $dataType, array $sql, $debug = false)
+    public function __construct($model, $debug = false)
     {
         $this->model = $model;
-        $this->sql = $sql;
         $this->debug = $debug;
-        $this->dataType = $dataType ?: DriverBase::DATA_TYPE_ARRAY;
     }
 
     /**
@@ -91,12 +86,9 @@ class EachQueryRecords implements Iterator
     public function getResult()
     {
         $this->offset = $this->position * 1;
-        $model = new $this->model();
 
-        $result = $model
-            ->setSql($this->sql)
+        $result = $this->model
             ->limit($this->offset, 1)
-            ->setDataType($this->dataType)
             ->getRow(null, null, $this->debug);
 
         return $result;

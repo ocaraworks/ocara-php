@@ -25,30 +25,27 @@ class BatchQueryRecords implements Iterator
     protected $totalPage = 0;
 
     protected $data = array();
-    protected $sql = array();
 
     /**
      * 初始化
      * BatchQueryRecords constructor.
      * @param $model
      * @param $dataType
-     * @param array $sql
      * @param $batchLimit
      * @param int $totalLimit
      * @param bool $debug
      */
-    public function __construct($model, $dataType, array $sql, $batchLimit, $totalLimit = 0, $debug = false)
+    public function __construct($model, $batchLimit, $totalLimit = 0, $debug = false)
     {
         $this->model = $model;
         $this->offset = 0;
-        $this->sql = $sql;
         $this->debug = $debug;
 
         $this->batchLimit = $batchLimit;
         $this->totalLimit = $totalLimit;
 
         $this->totalPage = $totalLimit > 0 ? ceil($totalLimit / $batchLimit) : 0;
-        $this->dataType = $dataType ?: DriverBase::DATA_TYPE_ARRAY;
+        $this->dataType = $model->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
 
         $this->isEntity = !in_array(
             $this->dataType,
@@ -127,11 +124,10 @@ class BatchQueryRecords implements Iterator
             $tempDataType = DriverBase::DATA_TYPE_OBJECT;
         }
 
-        $model = new $this->model();
-        $model->setSql($this->sql)
-              ->setDataType($tempDataType)
-              ->limit($this->offset, $this->batchLimit);
+        $this->model
+            ->setDataType($tempDataType)
+            ->limit($this->offset, $this->batchLimit);
 
-        $this->data = $model->getAll(null, null, $this->debug);
+        $this->data = $this->model->getAll(null, null, $this->debug);
     }
 }

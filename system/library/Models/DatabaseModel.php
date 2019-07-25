@@ -45,6 +45,7 @@ abstract class DatabaseModel extends ModelBase
     protected $databaseName;
     protected $tableName;
     protected $autoIncrementField;
+    protected $isClear = true;
 
     protected $primaries = array();
     protected $sql = array();
@@ -529,11 +530,17 @@ abstract class DatabaseModel extends ModelBase
 	/**
 	 * 清理SQL
 	 */
-	public function clearSql()
+	public function clearSql($isClear = true)
 	{
-		$this->sql = array();
-		$this->setJoin(false, $this->tableName, $this->alias);
-		$this->setPlugin($this->master);
+	    if (func_num_args()) {
+	        $this->isClear = $isClear ? true : false;
+        } else {
+	        if ($this->isClear) {
+                $this->sql = array();
+                $this->setJoin(false, $this->tableName, $this->alias);
+                $this->setPlugin($this->master);
+            }
+        }
 		return $this;
 	}
 
@@ -646,7 +653,12 @@ abstract class DatabaseModel extends ModelBase
 		    ocService()->error->show('need_condition');
 		}
 
-        $batchData = $this->asEntity()->batch($batchLimit);
+		$dataType = $this->getDataType();
+		if (!$dataType || in_array($dataType, array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT))) {
+		    $this->asEntity();
+        }
+
+        $batchData = $this->batch($batchLimit);
 
         foreach ($batchData as $entityList) {
             foreach ($entityList as $entity) {
@@ -671,7 +683,12 @@ abstract class DatabaseModel extends ModelBase
             ocService()->error->show('need_condition');
         }
 
-        $batchData = $this->asEntity()->batch($batchLimit);
+        $dataType = $this->getDataType();
+        if (!$dataType || in_array($dataType, array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT))) {
+            $this->asEntity();
+        }
+
+        $batchData = $this->batch($batchLimit);
 
         foreach ($batchData as $entityList) {
             foreach ($entityList as $entity) {
@@ -906,12 +923,13 @@ abstract class DatabaseModel extends ModelBase
     public function batch($batchLimit, $totalLimit = 0, $debug = false)
     {
         $sql = $this->sql ? : array();
-        $dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
+        $model = new static();
 
-        $records = new BatchQueryRecords(
-            self::getClass(), $dataType, $sql, $batchLimit, $totalLimit, $debug
-        );
+        $model->setSql($sql);
+        $model->clearSql(false);
+        $this->clearSql();
 
+        $records = new BatchQueryRecords($model, $batchLimit, $totalLimit, $debug);
         return $records;
     }
 
@@ -923,12 +941,13 @@ abstract class DatabaseModel extends ModelBase
     public function each($debug = false)
     {
         $sql = $this->sql ? : array();
-        $dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
+        $model = new static();
 
-        $records = new EachQueryRecords(
-            self::getClass(), $dataType, $sql, $debug
-        );
+        $model->setSql($sql);
+        $model->clearSql(false);
+        $this->clearSql();
 
+        $records = new EachQueryRecords($model, $debug);
         return $records;
     }
 

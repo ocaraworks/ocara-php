@@ -456,6 +456,9 @@ abstract class DatabaseEntity extends BaseEntity
         $result = null;
 
         if ($config) {
+            if (!isset($this->$config['primaryKey'])) {
+                ocService()->error->show('no_relate_primary_key');
+            }
             $where = array($config['foreignKey'] => $this->$config['primaryKey']);
             if (in_array($config['joinType'], array('hasOne','belongsTo'))) {
                 $result = $config['class']::build()

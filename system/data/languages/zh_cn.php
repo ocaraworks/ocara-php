@@ -162,6 +162,7 @@ return array(
 	'no_old_field'                  => array(2529, '找不到旧值。'),
     'no_changed_field'              => array(2530, '找不到已改变值。'),
     'no_curl_extension' 			=> array(2531, '找不到Curl扩展，并且没有开启allow_url_open！'),
+	'no_relate_primary_key'         => array(2532, '关联主键不存在或为null！'),
 
 	//已存在
 	'exists_dir'		    		=> array(2601, '已存在同名的目录。'),
