@@ -91,7 +91,6 @@ class EachQueryRecords implements Iterator
     public function getResult()
     {
         $this->offset = $this->position * 1;
-
         $model = new $this->model();
 
         $result = $model

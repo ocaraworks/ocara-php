@@ -128,7 +128,6 @@ class BatchQueryRecords implements Iterator
         }
 
         $model = new $this->model();
-
         $model->setSql($this->sql)
               ->setDataType($tempDataType)
               ->limit($this->offset, $this->batchLimit);
