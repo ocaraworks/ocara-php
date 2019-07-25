@@ -93,9 +93,9 @@ class EachQueryRecords implements Iterator
         $this->offset = $this->position * 1;
 
         $model = new $this->model();
-        $model->setSql($this->sql);
 
         $result = $model
+            ->setSql($this->sql)
             ->limit($this->offset, 1)
             ->setDataType($this->dataType)
             ->getRow(null, null, $this->debug);

@@ -111,7 +111,7 @@ class BatchQueryRecords implements Iterator
      */
     function valid()
     {
-        $this->data ? true : false;
+        return $this->data ? true : false;
     }
 
     /**

@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/library/Iterators/Database/BatchQueryRecords.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Iterators/Database/BatchQueryRecords.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/library/Iterators/Database/EachQueryRecords.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Iterators/Database/EachQueryRecords.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,8 +32,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="475">
-              <caret line="793" column="26" lean-forward="true" selection-start-line="793" selection-start-column="26" selection-end-line="793" selection-end-column="26" />
+            <state relative-caret-position="14166">
+              <caret line="793" column="26" selection-start-line="793" selection-start-column="26" selection-end-line="793" selection-end-column="26" />
               <folding>
                 <element signature="e#557#583#0#PHP" expanded="true" />
               </folding>
@@ -40,11 +41,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Iterators/Database/BatchQueryRecords.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="524">
-              <caret line="137" column="1" lean-forward="true" selection-start-line="137" selection-start-column="1" selection-end-line="137" selection-end-column="1" />
+            <state relative-caret-position="470">
+              <caret line="134" lean-forward="true" selection-start-line="134" selection-end-line="134" />
             </state>
           </provider>
         </entry>
@@ -52,17 +53,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Iterators/Database/EntityRecords.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="344">
-              <caret line="67" lean-forward="true" selection-start-line="67" selection-end-line="67" />
+            <state relative-caret-position="1080">
+              <caret line="67" selection-start-line="67" selection-end-line="67" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/library/Iterators/Database/EachQueryRecords.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="96" lean-forward="true" selection-start-line="96" selection-end-line="96" />
+            <state relative-caret-position="416">
+              <caret line="97" column="14" selection-start-line="97" selection-start-column="14" selection-end-line="97" selection-end-column="14" />
             </state>
           </provider>
         </entry>
@@ -70,7 +71,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1152">
+            <state relative-caret-position="8118">
               <caret line="451" column="40" selection-start-line="451" selection-start-column="34" selection-end-line="451" selection-end-column="40" />
               <folding>
                 <element signature="e#33#79#0#PHP" expanded="true" />
@@ -169,7 +170,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/system/library/Databases/MysqliDatabase.php" />
         <option value="$PROJECT_DIR$/system/library/Databases/Driver/PdoDriver.php" />
         <option value="$PROJECT_DIR$/system/library/Dispatchers/Common.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Ocara.php" />
@@ -220,10 +220,11 @@
         <option value="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" />
         <option value="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" />
         <option value="$PROJECT_DIR$/system/library/Iterators/Database/BatchQueryRecords.php" />
+        <option value="$PROJECT_DIR$/system/library/Iterators/Database/EachQueryRecords.php" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="5" />
     <option name="y" value="120" />
     <option name="width" value="1940" />
@@ -368,11 +369,12 @@
       <workItem from="1563689710468" duration="6198000" />
       <workItem from="1563727892806" duration="4188000" />
       <workItem from="1564066496747" duration="2213000" />
+      <workItem from="1564071071910" duration="348000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="235524000" />
+    <option name="totallyTimeSpent" value="235872000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -387,7 +389,7 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.22684564" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.23020135" />
       <window_info id="Favorites" order="1" sideWeight="0.5014245" side_tool="true" weight="0.22214764" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49946353" weight="0.4422222" />
@@ -758,9 +760,26 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Iterators/Database/EachConditionRecords.php" />
+    <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="14166">
+          <caret line="793" column="26" selection-start-line="793" selection-start-column="26" selection-end-line="793" selection-end-column="26" />
+          <folding>
+            <element signature="e#557#583#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Iterators/Database/EntityRecords.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1080">
+          <caret line="67" selection-start-line="67" selection-end-line="67" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1152">
+        <state relative-caret-position="8118">
           <caret line="451" column="40" selection-start-line="451" selection-start-column="34" selection-end-line="451" selection-end-column="40" />
           <folding>
             <element signature="e#33#79#0#PHP" expanded="true" />
@@ -768,34 +787,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Iterators/Database/EachQueryRecords.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="96" lean-forward="true" selection-start-line="96" selection-end-line="96" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Iterators/Database/EntityRecords.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="67" lean-forward="true" selection-start-line="67" selection-end-line="67" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="793" column="26" lean-forward="true" selection-start-line="793" selection-start-column="26" selection-end-line="793" selection-end-column="26" />
-          <folding>
-            <element signature="e#557#583#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Iterators/Database/BatchQueryRecords.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="524">
-          <caret line="137" column="1" lean-forward="true" selection-start-line="137" selection-start-column="1" selection-end-line="137" selection-end-column="1" />
+        <state relative-caret-position="470">
+          <caret line="134" lean-forward="true" selection-start-line="134" selection-end-line="134" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Iterators/Database/EachQueryRecords.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="416">
+          <caret line="97" column="14" selection-start-line="97" selection-start-column="14" selection-end-line="97" selection-end-column="14" />
         </state>
       </provider>
     </entry>
