@@ -31,8 +31,8 @@ class Response extends Base
 	const STATUS_SERVICE_UNAVAILABLE = 503;
 
     protected $headers = array();
+    protected $isSend = false;
     protected $body;
-    protected $isSend;
 
     /**
      * 发送头部信息
@@ -76,11 +76,15 @@ class Response extends Base
 
     /**
      * 是否已发送
-     * @param $isSend
+     * @param null $isSend
+     * @return bool
      */
-    public function isSend($isSend)
+    public function isSend($isSend = null)
     {
-        $this->isSend = $isSend ? true : false;
+        if (func_num_args()) {
+            $this->isSend = $isSend ? true : false;
+        }
+        return $this->isSend;
     }
 
     /**
@@ -196,8 +200,9 @@ class Response extends Base
 	{
 		if ($url) {
 			if (!headers_sent()) {
-				header_remove('location');
-				header('location:' . $url);
+				header_remove('Location');
+				header('Location:' . $url);
+				$this->isSend(true);
 			}
 		} else {
             ocService('error', true)->show('not_null', array('url'));
