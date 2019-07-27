@@ -79,7 +79,7 @@ class Response extends Base
      */
     public function stop()
     {
-        $this->isSend(false);
+        $this->isSend(true);
     }
 
     /**
@@ -87,7 +87,7 @@ class Response extends Base
      */
     public function open()
     {
-        $this->isSend(true);
+        $this->isSend(false);
     }
 
     /**
