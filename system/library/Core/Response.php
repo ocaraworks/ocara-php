@@ -32,6 +32,7 @@ class Response extends Base
 
     protected $headers = array();
     protected $isSend = false;
+    protected $isSendHeaders = false;
     protected $body;
 
     /**
@@ -41,7 +42,7 @@ class Response extends Base
      */
 	public function sendHeaders(array $data = array())
 	{
-		if (!$this->isSendHeader()) {
+		if (!headers_sent()) {
 			if (empty($data)) {
 				$data = $this->prepareHeaders();
 			}
@@ -57,6 +58,8 @@ class Response extends Base
 				}
 				header($data[$key]);
 			}
+
+			$this->isSendHeaders = true;
 		}
 	}
 
@@ -107,9 +110,9 @@ class Response extends Base
      * 是发已发送头部
      * @return bool
      */
-    public function isSendHeader()
+    public function isSendHeaders()
     {
-        return headers_sent();
+        return $this->isSendHeaders;
     }
 
     /**
@@ -244,7 +247,7 @@ class Response extends Base
 	public function redirect($url)
 	{
 		if ($url) {
-			if (!$this->isSendHeader()) {
+			if (!headers_sent()) {
 				$this->remove('Location');
 				$this->setOption('Location', $url);
 				$this->sendHeaders();
