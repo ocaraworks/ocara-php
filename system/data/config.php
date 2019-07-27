@@ -110,6 +110,7 @@ return array(
         'html'              => 'Ocara\Core\Html',
         'formManager'       => 'Ocara\Core\FormManager',
         'validate' 	        => 'Ocara\Service\Validate',
+        'auth'              => 'Ocara\Service\Auth',
     ),
 
     /*
