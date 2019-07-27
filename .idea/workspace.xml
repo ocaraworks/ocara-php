@@ -31,8 +31,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/library/Core/Response.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="238" column="30" selection-start-line="238" selection-start-column="30" selection-end-line="238" selection-end-column="30" />
+            <state relative-caret-position="167">
+              <caret line="100" column="35" selection-start-line="100" selection-start-column="35" selection-end-line="100" selection-end-column="35" />
             </state>
           </provider>
         </entry>
@@ -40,8 +40,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Controllers/Common.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="612">
-              <caret line="147" lean-forward="true" selection-start-line="147" selection-end-line="147" />
+            <state relative-caret-position="113">
+              <caret line="135" column="57" selection-start-line="135" selection-start-column="57" selection-end-line="135" selection-end-column="57" />
               <folding>
                 <element signature="e#6#529#0#PHP" expanded="true" />
                 <element signature="e#560#590#0#PHP" expanded="true" />
@@ -50,11 +50,19 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/library/Core/Container.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="290">
+              <caret line="426" lean-forward="true" selection-start-line="426" selection-end-line="426" />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>getDatabase(</find>
       <find>-&gt;database</find>
       <find>this-&gt;primaries</find>
       <find>self::$</find>
@@ -84,6 +92,7 @@
       <find>headers_sent</find>
       <find>isSend(</find>
       <find>isSendHeader</find>
+      <find>isSend</find>
     </findStrings>
     <replaceStrings>
       <replace>data</replace>
@@ -133,6 +142,7 @@
       <dir>D:\wwwroot\vendor\linyihu\ocara\system</dir>
       <dir>D:\web\framework\vendor\linyihu\ocara\system</dir>
       <dir>D:\web\framework\vendor\linyihu\ocara</dir>
+      <dir>D:\web\framework\vendor\linyihu\ocara\system\library</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -332,12 +342,12 @@
       <workItem from="1564071071910" duration="348000" />
       <workItem from="1564157599760" duration="4241000" />
       <workItem from="1564194604594" duration="3449000" />
-      <workItem from="1564203915754" duration="3752000" />
+      <workItem from="1564203915754" duration="4157000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="247914000" />
+    <option name="totallyTimeSpent" value="248319000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -352,10 +362,10 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.24026845" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.24026845" />
       <window_info id="Favorites" order="1" sideWeight="0.5014245" side_tool="true" weight="0.22214764" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49946353" weight="0.44159544" />
+      <window_info active="true" anchor="bottom" id="Find" order="1" sideWeight="0.49946353" visible="true" weight="0.44159544" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -377,16 +387,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/system/library/Service/Validate.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-731">
-          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
-          <folding>
-            <element signature="e#600#631#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/ServiceBase.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="578">
@@ -737,10 +737,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Container.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="290">
+          <caret line="426" lean-forward="true" selection-start-line="426" selection-end-line="426" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Controllers/Common.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="147" lean-forward="true" selection-start-line="147" selection-end-line="147" />
+        <state relative-caret-position="113">
+          <caret line="135" column="57" selection-start-line="135" selection-start-column="57" selection-end-line="135" selection-end-column="57" />
           <folding>
             <element signature="e#6#529#0#PHP" expanded="true" />
             <element signature="e#560#590#0#PHP" expanded="true" />
@@ -750,8 +757,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/Response.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="238" column="30" selection-start-line="238" selection-start-column="30" selection-end-line="238" selection-end-column="30" />
+        <state relative-caret-position="167">
+          <caret line="100" column="35" selection-start-line="100" selection-start-column="35" selection-end-line="100" selection-end-column="35" />
         </state>
       </provider>
     </entry>

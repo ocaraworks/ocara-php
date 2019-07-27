@@ -31,7 +31,7 @@ class Response extends Base
 	const STATUS_SERVICE_UNAVAILABLE = 503;
 
     protected $headers = array();
-    protected $isSend = false;
+    protected $isSent = false;
     protected $body;
 
     /**
@@ -66,10 +66,10 @@ class Response extends Base
      */
 	public function send($stop = true)
     {
-        if (!$this->isSend) {
+        if (!$this->isSent) {
             echo $this->body;
             if ($stop){
-                $this->isSend = true;
+                $this->isSent = true;
             }
         }
     }
@@ -79,7 +79,7 @@ class Response extends Base
      */
     public function stop()
     {
-        $this->isSend(true);
+        $this->isSent(true);
     }
 
     /**
@@ -87,20 +87,20 @@ class Response extends Base
      */
     public function open()
     {
-        $this->isSend(false);
+        $this->isSent(false);
     }
 
     /**
      * 是否已发送
-     * @param null $isSend
+     * @param null $isSent
      * @return bool
      */
-    public function isSend($isSend = null)
+    public function isSent($isSent = null)
     {
         if (func_num_args()) {
-            $this->isSend = $isSend ? true : false;
+            $this->isSent = $isSent ? true : false;
         }
-        return $this->isSend;
+        return $this->isSent;
     }
 
     /**
