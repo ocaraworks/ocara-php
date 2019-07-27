@@ -32,7 +32,6 @@ class Response extends Base
 
     protected $headers = array();
     protected $isSend = false;
-    protected $isSendHeaders = false;
     protected $body;
 
     /**
@@ -58,8 +57,6 @@ class Response extends Base
 				}
 				header($data[$key]);
 			}
-
-			$this->isSendHeaders = true;
 		}
 	}
 
@@ -104,15 +101,6 @@ class Response extends Base
             $this->isSend = $isSend ? true : false;
         }
         return $this->isSend;
-    }
-
-    /**
-     * 是发已发送头部
-     * @return bool
-     */
-    public function isSendHeaders()
-    {
-        return $this->isSendHeaders;
     }
 
     /**
