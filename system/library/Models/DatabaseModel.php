@@ -653,18 +653,22 @@ abstract class DatabaseModel extends ModelBase
 		    ocService()->error->show('need_condition');
 		}
 
-		$dataType = $this->getDataType();
-		if (!$dataType || in_array($dataType, array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT))) {
-		    $this->asEntity();
-        }
-
-        $batchData = $this->batch($batchLimit);
-
-        foreach ($batchData as $entityList) {
-            foreach ($entityList as $entity) {
-                $entity->data($data);
-                $entity->update(array(), $debug);
+		if ($batchLimit) {
+            $dataType = $this->getDataType();
+            if (!$dataType || in_array($dataType, array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT))) {
+                $this->asEntity();
             }
+
+            $batchData = $this->batch($batchLimit);
+
+            foreach ($batchData as $entityList) {
+                foreach ($entityList as $entity) {
+                    $entity->data($data);
+                    $entity->update(array(), $debug);
+                }
+            }
+        } else {
+		    $this->baseSave($data, $debug);
         }
 	}
 
@@ -683,17 +687,21 @@ abstract class DatabaseModel extends ModelBase
             ocService()->error->show('need_condition');
         }
 
-        $dataType = $this->getDataType();
-        if (!$dataType || in_array($dataType, array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT))) {
-            $this->asEntity();
-        }
-
-        $batchData = $this->batch($batchLimit);
-
-        foreach ($batchData as $entityList) {
-            foreach ($entityList as $entity) {
-                $entity->delete($debug);
+        if ($batchLimit) {
+            $dataType = $this->getDataType();
+            if (!$dataType || in_array($dataType, array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT))) {
+                $this->asEntity();
             }
+
+            $batchData = $this->batch($batchLimit);
+
+            foreach ($batchData as $entityList) {
+                foreach ($entityList as $entity) {
+                    $entity->delete($debug);
+                }
+            }
+        } else {
+            $this->baseDelete($debug);
         }
     }
 
