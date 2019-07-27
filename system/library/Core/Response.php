@@ -236,6 +236,7 @@ class Response extends Base
 			if (!headers_sent()) {
 				$this->remove('Location');
 				$this->setOption('Location', $url);
+				$this->stop();
 			}
 		} else {
             ocService('error', true)->show('not_null', array('url'));
