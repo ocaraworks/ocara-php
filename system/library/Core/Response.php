@@ -41,7 +41,7 @@ class Response extends Base
      */
 	public function sendHeaders(array $data = array())
 	{
-		if (!headers_sent()) {
+		if (!$this->isSendHeader()) {
 			if (empty($data)) {
 				$data = $this->prepareHeaders();
 			}
@@ -64,7 +64,7 @@ class Response extends Base
      * 发送响应数据
      * @param bool $stop
      */
-	public function send($stop = false)
+	public function send($stop = true)
     {
         if (!$this->isSend) {
             echo $this->body;
@@ -72,6 +72,22 @@ class Response extends Base
                 $this->isSend = true;
             }
         }
+    }
+
+    /**
+     * 停止响应
+     */
+    public function stop()
+    {
+        $this->isSend(false);
+    }
+
+    /**
+     * 开启响应
+     */
+    public function open()
+    {
+        $this->isSend(true);
     }
 
     /**
@@ -85,6 +101,15 @@ class Response extends Base
             $this->isSend = $isSend ? true : false;
         }
         return $this->isSend;
+    }
+
+    /**
+     * 是发已发送头部
+     * @return bool
+     */
+    public function isSendHeader()
+    {
+        return headers_sent();
     }
 
     /**
@@ -137,6 +162,24 @@ class Response extends Base
 	}
 
     /**
+     * 移除头部信息项
+     * @param $name
+     */
+    public function deleteOption($name)
+    {
+        ocDel($this->headers, $name);
+    }
+
+    /**
+     * 移除已发送头部
+     * @param $name
+     */
+    public function remove($name)
+    {
+        header_remove($name);;
+    }
+
+    /**
      * 设置状态
      * @param $code
      * @throws Exception
@@ -186,6 +229,7 @@ class Response extends Base
      * 跳转到另一个控制器动作
      * @param $route
      * @param array $params
+     * @throws Exception
      */
     public function jump($route, array $params = array())
     {
@@ -195,14 +239,16 @@ class Response extends Base
     /**
      * 打开外部URL链接
      * @param $url
+     * @throws Exception
      */
 	public function redirect($url)
 	{
 		if ($url) {
-			if (!headers_sent()) {
-				header_remove('Location');
-				header('Location:' . $url);
-				$this->isSend(true);
+			if (!$this->isSendHeader()) {
+				$this->remove('Location');
+				$this->setOption('Location', $url);
+				$this->sendHeaders();
+				$this->stop();
 			}
 		} else {
             ocService('error', true)->show('not_null', array('url'));
@@ -230,7 +276,6 @@ class Response extends Base
 		}
 
 		$data['contentType'] = $this->getHeaderOption('contentType');
-
 		return $data;
 	}
 
