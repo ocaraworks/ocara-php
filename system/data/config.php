@@ -205,6 +205,7 @@ return array(
             'sessions'      => 'data/runtime',
 
             'library'	    => '',
+            'functions'	    => '',
             'pass'			=> '',
     
             'attachments' 	=> 'public',
@@ -220,6 +221,7 @@ return array(
             'images'  	  	=> 'src',
             'js'  		  	=> 'src',
             'static'  	  	=> '',
+            'function'      => 'functions'
         ),
     ),
     

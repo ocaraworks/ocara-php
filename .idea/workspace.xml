@@ -28,11 +28,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Core/Error.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-412">
-              <caret line="27" column="55" lean-forward="true" selection-start-line="27" selection-start-column="55" selection-end-line="27" selection-end-column="55" />
+            <state relative-caret-position="-306">
+              <caret line="27" column="55" selection-start-line="27" selection-start-column="55" selection-end-line="27" selection-end-column="55" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/system/data/config.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="450">
+              <caret line="226" column="4" lean-forward="true" selection-start-line="226" selection-start-column="4" selection-end-line="226" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -144,7 +153,6 @@
         <option value="$PROJECT_DIR$/system/library/Bootstraps/Test.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Validator.php" />
         <option value="$PROJECT_DIR$/system/library/Views/Api.php" />
-        <option value="$PROJECT_DIR$/system/data/config.php" />
         <option value="$PROJECT_DIR$/system/library/Core/ControllerBase.php" />
         <option value="$PROJECT_DIR$/system/library/Core/DriverBase.php" />
         <option value="$PROJECT_DIR$/system/library/Sessions/SessionFile.php" />
@@ -180,6 +188,7 @@
         <option value="$PROJECT_DIR$/system/library/Core/Application.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Config.php" />
         <option value="$PROJECT_DIR$/system/library/Dispatchers/Common.php" />
+        <option value="$PROJECT_DIR$/system/data/config.php" />
       </list>
     </option>
   </component>
@@ -211,14 +220,13 @@
               <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
               <item name="ocara" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
-              <item name="library" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
               <item name="ocara" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
               <item name="library" type="462c0819:PsiDirectoryNode" />
-              <item name="Core" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
@@ -321,12 +329,13 @@
       <workItem from="1564157599760" duration="4241000" />
       <workItem from="1564194604594" duration="3449000" />
       <workItem from="1564203915754" duration="4727000" />
-      <workItem from="1564210469166" duration="4453000" />
+      <workItem from="1564210469166" duration="4587000" />
+      <workItem from="1564505185105" duration="41000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="253342000" />
+    <option name="totallyTimeSpent" value="253517000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -341,7 +350,7 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.24362417" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.24697986" />
       <window_info id="Favorites" order="1" sideWeight="0.5014245" side_tool="true" weight="0.22214764" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49946353" weight="0.44159544" />
@@ -446,13 +455,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="17" column="35" selection-start-line="17" selection-start-column="35" selection-end-line="17" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/data/config.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="64" column="4" selection-start-line="64" selection-start-column="4" selection-end-line="64" selection-end-column="4" />
         </state>
       </provider>
     </entry>
@@ -729,8 +731,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/Error.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-412">
-          <caret line="27" column="55" lean-forward="true" selection-start-line="27" selection-start-column="55" selection-end-line="27" selection-end-column="55" />
+        <state relative-caret-position="-306">
+          <caret line="27" column="55" selection-start-line="27" selection-start-column="55" selection-end-line="27" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/data/config.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="226" column="4" lean-forward="true" selection-start-line="226" selection-start-column="4" selection-end-line="226" selection-end-column="4" />
         </state>
       </provider>
     </entry>
