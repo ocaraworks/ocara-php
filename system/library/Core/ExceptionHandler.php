@@ -79,7 +79,8 @@ class ExceptionHandler extends Base
         $this->fire(self::EVENT_OUTPUT, array($exception));
         $this->fire(self::EVENT_AFTER_OUTPUT, array($exception));
 
-        $response->send(true);
+        $response->sendHeaders();
+        $response->send();
     }
 
     /**

@@ -69,7 +69,7 @@ class Response extends Base
         if (!$this->isSent) {
             echo $this->body;
             if ($stop){
-                $this->isSent = true;
+                $this->stop();
             }
         }
     }

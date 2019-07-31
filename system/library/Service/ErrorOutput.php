@@ -59,8 +59,6 @@ class ErrorOutput extends ServiceBase
 
         $response = ocService('response', true);
         $response->setBody($content);
-
-        $response->sendHeaders();
     }
 
     /**
