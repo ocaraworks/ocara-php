@@ -201,6 +201,7 @@ class Response extends Base
      * 跳转到另一个控制器动作
      * @param $route
      * @param array $params
+     * @throws Exception
      */
     public function jump($route, array $params = array())
     {
@@ -210,6 +211,7 @@ class Response extends Base
     /**
      * 打开外部URL链接
      * @param $url
+     * @throws Exception
      */
 	public function redirect($url)
 	{
@@ -217,11 +219,28 @@ class Response extends Base
 			if (!headers_sent()) {
 				$this->remove('Location');
 				$this->setOption('Location', $url);
+				$this->send();
 			}
 		} else {
             ocService('error', true)->show('not_null', array('url'));
 		}
 	}
+
+    /**
+     * 停止
+     */
+	public function stop()
+    {
+        $this->isSent = true;
+    }
+
+    /**
+     * 打开
+     */
+    public function open()
+    {
+        $this->isSent = false;
+    }
 
     /**
      * 获取要发送的头数据
