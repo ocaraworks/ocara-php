@@ -31,7 +31,6 @@ class Response extends Base
 	const STATUS_SERVICE_UNAVAILABLE = 503;
 
     protected $headers = array();
-    protected $isSent = false;
     protected $body;
 
     /**
@@ -62,45 +61,14 @@ class Response extends Base
 
     /**
      * 发送响应数据
-     * @param bool $stop
+     * @throws Exception
      */
-	public function send($stop = true)
+	public function send()
     {
-        if (!$this->isSent) {
+        if (!headers_sent()) {
+            $this->sendHeaders();
             echo $this->body;
-            if ($stop){
-                $this->stop();
-            }
         }
-    }
-
-    /**
-     * 停止响应
-     */
-    public function stop()
-    {
-        $this->isSent(true);
-    }
-
-    /**
-     * 开启响应
-     */
-    public function open()
-    {
-        $this->isSent(false);
-    }
-
-    /**
-     * 是否已发送
-     * @param null $isSent
-     * @return bool
-     */
-    public function isSent($isSent = null)
-    {
-        if (func_num_args()) {
-            $this->isSent = $isSent ? true : false;
-        }
-        return $this->isSent;
     }
 
     /**
@@ -109,7 +77,9 @@ class Response extends Base
      */
     public function setBody($body)
     {
-        $this->body = $body;
+        if (!$this->body) {
+            $this->body = $body;
+        }
     }
 
     /**
@@ -236,7 +206,6 @@ class Response extends Base
 			if (!headers_sent()) {
 				$this->remove('Location');
 				$this->setOption('Location', $url);
-				$this->stop();
 			}
 		} else {
             ocService('error', true)->show('not_null', array('url'));

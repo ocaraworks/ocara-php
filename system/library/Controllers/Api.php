@@ -100,7 +100,7 @@ class Api extends ControllerBase implements ControllerInterface
      */
     public function render($result = null)
     {
-        if ($this->hasRender() || $this->response->isSent()) return;
+        if ($this->hasRender()) return;
         $this->renderApi($result);
     }
 

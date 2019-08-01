@@ -133,7 +133,7 @@ class Common extends ControllerBase implements ControllerInterface
      */
     public function render($result = null, $useDefault = true)
     {
-        if ($this->hasRender() || $this->response->isSent()) return;
+        if ($this->hasRender()) return;
 
         if ($this->isApi()){
             $this->renderApi($result);

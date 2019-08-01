@@ -40,8 +40,6 @@ class Common extends BootstrapBase implements BootstrapInterface
         $this->fire(self::EVENT_BEFORE_DISPATCH);
 
         $service->dispatcher->dispatch($route, $moduleNamespace, $params);
-        $service->response->sendHeaders();
-
         return $service->response->send();
     }
 
