@@ -31,6 +31,7 @@ class Response extends Base
 	const STATUS_SERVICE_UNAVAILABLE = 503;
 
     protected $headers = array();
+    protected $isSent = false;
     protected $body;
 
     /**
@@ -68,7 +69,17 @@ class Response extends Base
         if (!headers_sent()) {
             $this->sendHeaders();
             echo $this->body;
+            $this->isSent = true;
         }
+    }
+
+    /**
+     * 是否已发送
+     * @return bool
+     */
+    public function isSent()
+    {
+        return $this->isSent;
     }
 
     /**
