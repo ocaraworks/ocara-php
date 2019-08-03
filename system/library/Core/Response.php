@@ -64,10 +64,12 @@ class Response extends Base
      * 发送响应数据
      * @throws Exception
      */
-	public function send()
+	public function send($sendHeaders = true)
     {
-        if (!headers_sent()) {
+        if ($sendHeaders) {
             $this->sendHeaders();
+        }
+        if (!headers_sent()) {
             echo $this->body;
             $this->isSent = true;
         }
