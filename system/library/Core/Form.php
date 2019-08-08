@@ -222,7 +222,7 @@ class Form extends Base
      */
 	protected function fieldConfig($type, $field, $value = null)
 	{
-		$property = '_' . $type;
+		$property = $type;
 		$config = $this->$property;
 
 		if (isset($value)) {
