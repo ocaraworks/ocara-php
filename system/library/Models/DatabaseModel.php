@@ -601,6 +601,7 @@ abstract class DatabaseModel extends ModelBase
 
         $this->clearSql();
         if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
+
         $result = $plugin->errorExists() ? false : true;
         return $result;
     }
@@ -629,7 +630,7 @@ abstract class DatabaseModel extends ModelBase
      * @param bool $debug
      * @return mixed
      */
-	public function  create(array $data, $debug = false)
+	public function create(array $data, $debug = false)
 	{
 	    $entityClass = $this->getEntityClass();
         $entity = new $entityClass();

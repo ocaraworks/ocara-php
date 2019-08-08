@@ -54,35 +54,34 @@ class DatabaseBase extends Sql
 	{
 		$options = array(
 			'host', 'port', 'type', 'class', 'pconnect',
-			'name', 'username', 'prefix', 'charset',
-			'timeout', 'socket', 'options', 'keywords', 'isPdo'
+			'name', 'username', 'prefix', 'charset', 'isPdo',
+			'timeout', 'socket', 'options', 'keywords', 'prepare'
 		);
 
-		$values = array_fill(0, count($options), OC_EMPTY);
+		$values = array_fill_keys($options, OC_EMPTY);
 		$config = array_merge(array_combine($options, $values), $config);
 		$config['name'] = ocDel($config, 'name');
 
-		if (empty($config['charset'])) {
+		if (!$config['charset']) {
 			$config['charset'] = 'utf8';
 		}
-		if (empty($config['socket'])) {
+		if (!$config['socket']) {
 			$config['socket'] = null;
 		}
-		if (empty($config['options'])) {
+		if (!$config['options']) {
 			$config['options'] = array();
 		}
-
-		if (!isset($config['prepare'])) {
+		if (!$config['prepare']) {
 			$config['prepare'] = true;
 		}
-		if (!isset($config['pconnect'])) {
+		if (!$config['pconnect']) {
 			$config['pconnect'] = false;
 		}
-		if (!isset($config['isPdo'])) {
+		if (!$config['isPdo']) {
 			$config['isPdo'] = true;
 		}
 
-		if (empty($config['keywords'])) {
+		if (!$config['keywords']) {
 			$config['keywords'] = array();
 		} else {
 			$keywords = explode(',', $config['keywords']);
@@ -148,10 +147,7 @@ class DatabaseBase extends Sql
 			$this->isPconnect($config['pconnect']);
             $plugin->connect();
 			$this->isPrepare($config['prepare']);
-		}
-
-		if (!$exists) {
-			$this->setCharset($config['charset']);
+            $this->setCharset($config['charset']);
 		}
 	}
 

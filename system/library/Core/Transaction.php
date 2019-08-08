@@ -19,11 +19,11 @@ class Transaction extends Base
 
 	/**
 	 * 推入数据库
-	 * @param ModelBase $database
+	 * @param $database
 	 */
 	public function push($database)
 	{
-		if (self::hasBegan()) {
+		if ($this->hasBegan()) {
 			$key = $database->getConnectName();
 			if (!isset($this->list[$key])) {
 				$database->beginTransaction();
@@ -67,7 +67,7 @@ class Transaction extends Base
 	public function commit()
 	{
 		if ($this->count == 1) {
-			self::commitAll();
+            $this->commitAll();
 			$this->count = 0;
 			$this->list = array();
 		} elseif ($this->count > 1) {
@@ -82,7 +82,7 @@ class Transaction extends Base
 	{
 		if ($this->count > 0) {
 			$this->count = 0;
-			self::rollbackAll();
+			$this->rollbackAll();
 			$this->list = array();
 		}
 	}
