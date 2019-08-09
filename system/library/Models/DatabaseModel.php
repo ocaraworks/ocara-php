@@ -1324,6 +1324,17 @@ abstract class DatabaseModel extends ModelBase
 		return implode(',', $fieldList);
 	}
 
+    /**
+     * 设置别名
+     * @param $alias
+     * @return $this
+     */
+	public function alias($alias)
+    {
+        $this->alias = $alias;
+        return $this;
+    }
+
 	/**
 	 * 附加字段
 	 * @param string|array $fields
