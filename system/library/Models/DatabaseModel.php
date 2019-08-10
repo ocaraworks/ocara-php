@@ -1451,7 +1451,7 @@ abstract class DatabaseModel extends ModelBase
 	public function moreWhere($where, $link = null)
 	{
 		$link = $link ? : 'AND';
-		$this->sql['option']['mWhere'][] = compact('where', 'link');
+		$this->sql['option']['moreWhere'][] = compact('where', 'link');
 		return $this;
 	}
 
@@ -1755,8 +1755,8 @@ abstract class DatabaseModel extends ModelBase
 			$where[] = array('where' => $option['where'], 'link' => 'AND');
 		}
 
-		if (!empty($option['mWhere'])) {
-			foreach ($option['mWhere'] as $row) {
+		if (!empty($option['moreWhere'])) {
+			foreach ($option['moreWhere'] as $row) {
 				$row['where'] = $plugin->parseCondition($row['where']);
 				$where[] = $row;
 			}
