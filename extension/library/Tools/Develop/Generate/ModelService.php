@@ -42,7 +42,7 @@ class ModelService extends BaseService
             $this->_model = ocHump($this->_table);
         }
 
-        $this->_database = ocService()->request->getPost('database', ocConfig('DATABASE.'.$defaultServer.'.name'));
+        $this->_database = ocService()->request->getPost('database');
         $this->createDatabaseModel();
 	}
 
@@ -134,7 +134,10 @@ class ModelService extends BaseService
             $content .= "\tprotected \$module = '{$this->_mdlname}';\r\n";
         }
 
-		$content .= "\tprotected static \$database = '{$this->_database}';\r\n";
+		if ($this->_database) {
+            $content .= "\tprotected static \$database = '{$this->_database}';\r\n";
+        }
+
 		$content .= "\tprotected static \$table = '{$this->_table}';\r\n";
 		$content .= "\tprotected static \$primary = '{$this->_primaries}';\r\n";
         $content .= "\tprotected static \$entity = '{$entityclass}';\r\n";
