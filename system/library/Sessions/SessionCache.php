@@ -83,7 +83,7 @@ class SessionCache extends ServiceProvider
     {
         try {
             $this->plugin()->set($this->prefix . $id, $data);
-        } catch(Exception $exception) {
+        } catch(\Exception $exception) {
             ocService()->error->show($exception->getMessage());
         }
 

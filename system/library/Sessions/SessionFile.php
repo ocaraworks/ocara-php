@@ -93,7 +93,7 @@ class SessionFile extends ServiceProvider
     {
         try {
             ocWrite("{$this->savePath}/sess_$id", stripslashes($data));
-        } catch(Exception $exception) {
+        } catch(\Exception $exception) {
             ocService()->error->show($exception->getMessage());
         }
 
