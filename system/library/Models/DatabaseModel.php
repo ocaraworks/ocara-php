@@ -9,13 +9,13 @@
 namespace Ocara\Models;
 
 use Ocara\Core\DriverBase;
-use Ocara\Iterators\Database\BatchQueryRecords;
 use \ReflectionObject;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\CacheFactory;
 use Ocara\Core\DatabaseFactory;
 use Ocara\Core\DatabaseBase;
 use Ocara\Core\ModelBase;
+use Ocara\Iterators\Database\BatchQueryRecords;
 use Ocara\Iterators\Database\EachQueryRecords;
 
 defined('OC_PATH') or exit('Forbidden!');

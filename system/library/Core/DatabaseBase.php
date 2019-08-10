@@ -164,7 +164,6 @@ class DatabaseBase extends Sql
      * 获取数据库驱动类
      * @param array $data
      * @return mixed
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function getDriver(array $data)
 	{
