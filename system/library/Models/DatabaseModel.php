@@ -1625,7 +1625,7 @@ abstract class DatabaseModel extends ModelBase
      * @param $tables
      * @return array
      */
-	private function getAliasFields($tables, $mainAlias)
+	private function getAliasFields($tables, $currentAlias)
 	{
 		$unJoined = count($tables) <= 1;
 		$transforms = array();
@@ -1633,14 +1633,14 @@ abstract class DatabaseModel extends ModelBase
 		if ($unJoined) {
 			$map = self::getConfig('MAPS');
 			if ($map) {
-				$transforms[$mainAlias] = $map;
+				$transforms[$currentAlias] = $map;
 			}
 		} else {
 			$transforms = array();
 			foreach ($tables as $alias => $row) {
-				if ($alias == $mainAlias) {
+				if ($alias == $currentAlias) {
 					if ($map = self::getConfig('MAPS')) {
-						$transforms[$mainAlias] = $map;
+						$transforms[$currentAlias] = $map;
 					}
 				} elseif (isset($this->joins[$alias])) {
 					if ($map = self::getConfig('MAPS')) {
@@ -1685,8 +1685,8 @@ abstract class DatabaseModel extends ModelBase
      */
 	protected function getCurrentAlias()
     {
-        $mainAlias = !empty($this->sql['alias']) ? $this->sql['alias'] : ($this->alias ?: 'a');
-        return $mainAlias;
+        $currentAlias = !empty($this->sql['alias']) ? $this->sql['alias'] : ($this->alias ?: 'a');
+        return $currentAlias;
     }
 
     /**
@@ -1697,8 +1697,8 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function genSelectSql($count = false)
 	{
-        $mainAlias = $this->getCurrentAlias();
-	    $this->setJoin(false, $this->tag, $mainAlias);
+        $currentAlias = $this->getCurrentAlias();
+	    $this->setJoin(false, $this->tag, $currentAlias);
 
         $plugin = $this->plugin();
 		$option = ocGet('option', $this->sql, array());
@@ -1711,9 +1711,9 @@ abstract class DatabaseModel extends ModelBase
 			$isGroup = !empty($option['group']);
 			$fields = $plugin->getCountSql($countField, 'total', $isGroup);
 		} else {
-			$aliasFields = $this->getAliasFields($tables, $mainAlias);
+			$aliasFields = $this->getAliasFields($tables, $currentAlias);
 			if (!isset($option['fields']) || $this->isDefaultFields($option['fields'])) {
-				$option['fields'][] = array($mainAlias, array_keys($this->getFields()));
+				$option['fields'][] = array($currentAlias, array_keys($this->getFields()));
 			}
 
 			$fields = $this->getFieldsSql($option['fields'], $aliasFields, $unJoined);
@@ -1813,7 +1813,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
     protected function getFieldsSql($fieldsData, $aliasFields, $unJoined)
 	{
-        $mainAlias = $this->getCurrentAlias();
+        $currentAlias = $this->getCurrentAlias();
         $plugin = $this->plugin();
 
 		if (is_string($fieldsData)) {
@@ -1829,10 +1829,10 @@ abstract class DatabaseModel extends ModelBase
 			}
 			$alias = $unJoined ? false : $alias;
 			$fieldData = (array)$fieldData;
-			$fields[] = $plugin->getFieldsSql($fieldData, $aliasFields, $mainAlias, $alias);
+			$fields[] = $plugin->getFieldsSql($fieldData, $aliasFields, $currentAlias, $alias);
 		}
 
-		$sql = $plugin->combineFieldsSql($fields, $aliasFields, $unJoined, $mainAlias);
+		$sql = $plugin->combineFieldsSql($fields, $aliasFields, $unJoined, $currentAlias);
 		return $sql;
 	}
 

@@ -48,7 +48,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="33">
+            <state relative-caret-position="15">
               <caret line="1690" lean-forward="true" selection-start-line="1690" selection-end-line="1690" />
               <folding>
                 <element signature="e#557#583#0#PHP" expanded="true" />
@@ -61,7 +61,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>create(</find>
       <find>no_special_action</find>
       <find>set_ex</find>
       <find>33`</find>
@@ -91,9 +90,9 @@
       <find>this-&gt;alias</find>
       <find>mainAlias</find>
       <find>selectTable(</find>
+      <find>$mainAlias</find>
     </findStrings>
     <replaceStrings>
-      <replace>data</replace>
       <replace>connection</replace>
       <replace>password</replace>
       <replace>dir</replace>
@@ -123,6 +122,7 @@
       <replace>self::getConfig(</replace>
       <replace>skipFields</replace>
       <replace>skipModel</replace>
+      <replace>$currentAlias</replace>
     </replaceStrings>
     <dirStrings>
       <dir>D:\web\ocara\system\library\Core</dir>
@@ -351,12 +351,12 @@
       <workItem from="1564898876039" duration="53000" />
       <workItem from="1565282704674" duration="1973000" />
       <workItem from="1565362804687" duration="751000" />
-      <workItem from="1565424893905" duration="1272000" />
+      <workItem from="1565424893905" duration="1351000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="277137000" />
+    <option name="totallyTimeSpent" value="277216000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -749,7 +749,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="33">
+        <state relative-caret-position="15">
           <caret line="1690" lean-forward="true" selection-start-line="1690" selection-end-line="1690" />
           <folding>
             <element signature="e#557#583#0#PHP" expanded="true" />
