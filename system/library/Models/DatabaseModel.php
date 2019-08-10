@@ -1304,26 +1304,6 @@ abstract class DatabaseModel extends ModelBase
 		return $on;
 	}
 
-	/**
-	 * 解析fields参数
-	 * @param string $alias
-	 * @param array $fields
-	 * @return string
-	 */
-	public function parseField($alias, $fields)
-	{
-        $plugin = $this->plugin();
-		$fieldList = explode(',', $fields);
-
-		foreach ($fieldList as $key => $value) {
-			$value = explode('.', ltrim($value));
-			$field = trim($value[count($value) - 1]);
-            $fieldList[$key] = $plugin->getFieldNameSql($field, $alias);
-		}
-
-		return implode(',', $fieldList);
-	}
-
     /**
      * 设置别名
      * @param $alias

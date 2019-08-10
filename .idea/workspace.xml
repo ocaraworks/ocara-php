@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/system/library/Sessions/SessionCache.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Sessions/SessionCache.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Sessions/SessionFile.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Sessions/SessionFile.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -13,6 +12,9 @@
   </component>
   <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
+    <execution>
+      <executable />
+    </execution>
   </component>
   <component name="FavoritesManager">
     <favorites_list name="ocara">
@@ -24,15 +26,33 @@
     </favorites_list>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="569">
-              <caret line="2027" lean-forward="true" selection-start-line="2027" selection-end-line="2027" />
+            <state relative-caret-position="61">
+              <caret line="1304" column="5" selection-start-line="1304" selection-start-column="5" selection-end-line="1304" selection-end-column="5" />
               <folding>
                 <element signature="e#557#583#0#PHP" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/library/Interfaces/Sql.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="189" column="20" selection-start-line="189" selection-start-column="20" selection-end-line="189" selection-end-column="20" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/library/Core/Sql.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="216">
+              <caret line="285" column="31" selection-start-line="285" selection-start-column="31" selection-end-line="285" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -161,7 +181,6 @@
         <option value="$PROJECT_DIR$/system/library/Iterators/Database/BatchQueryRecords.php" />
         <option value="$PROJECT_DIR$/system/library/Iterators/Database/EachQueryRecords.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Error.php" />
-        <option value="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Base.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Container.php" />
         <option value="$PROJECT_DIR$/system/library/Providers/Main.php" />
@@ -181,6 +200,7 @@
         <option value="$PROJECT_DIR$/system/library/Views/Common.php" />
         <option value="$PROJECT_DIR$/system/library/Sessions/SessionCache.php" />
         <option value="$PROJECT_DIR$/system/library/Sessions/SessionFile.php" />
+        <option value="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" />
       </list>
     </option>
   </component>
@@ -221,6 +241,10 @@
               <item name="system" type="462c0819:PsiDirectoryNode" />
               <item name="library" type="462c0819:PsiDirectoryNode" />
               <item name="Models" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="bcb0276e:PhpExternalLibrariesNodePatcher$PatchedExternalLibrariesNode" />
             </path>
           </expand>
           <select />
@@ -331,7 +355,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="275144000" />
+    <option name="totallyTimeSpent" value="275214000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -343,10 +367,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.23390558" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.2818792" />
       <window_info id="Favorites" order="1" sideWeight="0.5014245" side_tool="true" weight="0.22214764" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49946353" weight="0.44159544" />
@@ -724,8 +748,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="569">
-          <caret line="2027" lean-forward="true" selection-start-line="2027" selection-end-line="2027" />
+        <state relative-caret-position="61">
+          <caret line="1304" column="5" selection-start-line="1304" selection-start-column="5" selection-end-line="1304" selection-end-column="5" />
           <folding>
             <element signature="e#557#583#0#PHP" expanded="true" />
           </folding>
