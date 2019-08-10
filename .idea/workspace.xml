@@ -48,8 +48,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1690" lean-forward="true" selection-start-line="1690" selection-end-line="1690" />
+            <state relative-caret-position="313">
+              <caret line="395" column="5" lean-forward="true" selection-start-line="395" selection-start-column="5" selection-end-line="395" selection-end-column="5" />
               <folding>
                 <element signature="e#557#583#0#PHP" expanded="true" />
               </folding>
@@ -61,7 +61,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>no_special_action</find>
       <find>set_ex</find>
       <find>33`</find>
       <find>33</find>
@@ -91,6 +90,7 @@
       <find>mainAlias</find>
       <find>selectTable(</find>
       <find>$mainAlias</find>
+      <find>fullname</find>
     </findStrings>
     <replaceStrings>
       <replace>connection</replace>
@@ -351,12 +351,12 @@
       <workItem from="1564898876039" duration="53000" />
       <workItem from="1565282704674" duration="1973000" />
       <workItem from="1565362804687" duration="751000" />
-      <workItem from="1565424893905" duration="1351000" />
+      <workItem from="1565424893905" duration="1551000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="277216000" />
+    <option name="totallyTimeSpent" value="277416000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -371,7 +371,7 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.28590605" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.28590605" />
       <window_info id="Favorites" order="1" sideWeight="0.5014245" side_tool="true" weight="0.22214764" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49946353" weight="0.44159544" />
@@ -749,8 +749,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1690" lean-forward="true" selection-start-line="1690" selection-end-line="1690" />
+        <state relative-caret-position="313">
+          <caret line="395" column="5" lean-forward="true" selection-start-line="395" selection-start-column="5" selection-end-line="395" selection-end-column="5" />
           <folding>
             <element signature="e#557#583#0#PHP" expanded="true" />
           </folding>

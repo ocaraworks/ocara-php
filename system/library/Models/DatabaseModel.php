@@ -390,14 +390,9 @@ abstract class DatabaseModel extends ModelBase
 	public function selectTable($name, $primary = null)
 	{
 		$this->tableName = $name;
-
-		if ($primary) {
-			if ($primary) {
-				$this->primaries = explode(',', $primary);
-			}
-		}
-
-		$this->sql['tables'][$this->alias]['fullname'] = $this->getTableName();
+        if ($primary) {
+            $this->primaries = explode(',', $primary);
+        }
 	}
 
     /**
