@@ -27,18 +27,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="61">
-              <caret line="1304" column="5" selection-start-line="1304" selection-start-column="5" selection-end-line="1304" selection-end-column="5" />
-              <folding>
-                <element signature="e#557#583#0#PHP" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Interfaces/Sql.php">
           <provider selected="true" editor-type-id="text-editor">
@@ -57,19 +45,22 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="306">
+              <caret line="90" lean-forward="true" selection-start-line="90" selection-end-line="90" />
+              <folding>
+                <element signature="e#557#583#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>setDt</find>
-      <find>setSql</find>
-      <find>jump</find>
-      <find>j</find>
-      <find>rendFile</find>
-      <find>send(</find>
-      <find>headers_sent</find>
-      <find>isSend(</find>
-      <find>isSendHeader</find>
       <find>isSend</find>
       <find>setName</find>
       <find>update(</find>
@@ -91,6 +82,15 @@
       <find>run(</find>
       <find>formatRoute</find>
       <find>rowFilters</find>
+      <find>parseField</find>
+      <find>parseField(</find>
+      <find>FormToken</find>
+      <find>FormManager</find>
+      <find>getAliasFields(</find>
+      <find>$alias</find>
+      <find>[$alias]</find>
+      <find>-&gt;sql['tables']</find>
+      <find>alias(</find>
     </findStrings>
     <replaceStrings>
       <replace>data</replace>
@@ -139,9 +139,9 @@
       <dir>D:\wwwroot\vendor\linyihu\ocara\system\library</dir>
       <dir>D:\wwwroot\vendor\linyihu\ocara\system</dir>
       <dir>D:\web\framework\vendor\linyihu\ocara\system\library</dir>
-      <dir>D:\web\framework\vendor\linyihu\ocara</dir>
       <dir>D:\web\framework\vendor\linyihu\ocara\system\library\Core</dir>
       <dir>D:\web\framework\vendor\linyihu\ocara\system</dir>
+      <dir>D:\web\framework\vendor\linyihu\ocara</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -355,7 +355,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="275214000" />
+    <option name="totallyTimeSpent" value="275760000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -395,13 +395,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/system/library/Databases/MysqliDatabase.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Databases/Driver/MysqliDriver.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -746,10 +739,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Interfaces/Sql.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="189" column="20" selection-start-line="189" selection-start-column="20" selection-end-line="189" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="61">
-          <caret line="1304" column="5" selection-start-line="1304" selection-start-column="5" selection-end-line="1304" selection-end-column="5" />
+        <state relative-caret-position="306">
+          <caret line="90" lean-forward="true" selection-start-line="90" selection-end-line="90" />
           <folding>
             <element signature="e#557#583#0#PHP" expanded="true" />
           </folding>

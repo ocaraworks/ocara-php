@@ -9,12 +9,10 @@
 namespace Ocara\Models;
 
 use Ocara\Core\DriverBase;
-use Ocara\Core\FormManager;
 use Ocara\Iterators\Database\BatchQueryRecords;
 use \ReflectionObject;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\CacheFactory;
-use Ocara\Core\FormToken;
 use Ocara\Core\DatabaseFactory;
 use Ocara\Core\DatabaseBase;
 use Ocara\Core\ModelBase;
@@ -87,13 +85,9 @@ abstract class DatabaseModel extends ModelBase
 		}
 
 		$this->tag = self::getClass();
-		$this->alias = $this->alias ? $this->alias : 'a';
-
 		$this->tableName = static::$table ?: lcfirst(self::getClassName());
         $this->databaseName = static::$database ?: null;
         $this->primaries = static::getPrimaries();
-
-		$this->setJoin(false, $this->tag, $this->alias);
 
 		if (method_exists($this, '__start')) $this->__start();
 		if (method_exists($this, '__model')) $this->__model();
@@ -1311,7 +1305,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function alias($alias)
     {
-        $this->alias = $alias;
+        $this->sql['alias'] = $alias;
         return $this;
     }
 
@@ -1690,6 +1684,9 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function genSelectSql($count = false)
 	{
+	    $mainAlias = !empty($this->sql['alias']) ? $this->sql['alias'] : ($this->alias ?: 'a');
+        $this->setJoin(false, $this->tag, $mainAlias);
+
         $plugin = $this->plugin();
 		$option = ocGet('option', $this->sql, array());
 		$tables = ocGet('tables', $this->sql, array());
