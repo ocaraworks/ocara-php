@@ -1848,10 +1848,12 @@ abstract class DatabaseModel extends ModelBase
 
 			if (empty($fullname)) continue;
 			if ($unJoined) $alias = null;
-			if ($config) {
+			if (!$on && $config) {
 				$on = $this->getJoinOnSql($alias, $config);
 			}
-			$on = $this->parseJoinOnSql($alias, $on);
+			if ($on) {
+                $on = $this->parseJoinOnSql($alias, $on);
+            }
 			$fullname = $plugin->getTableFullname($fullname, $this->getDatabaseName());
 			$from = $from . $plugin->getJoinSql($type, $fullname, $alias, $on);
 		}
@@ -2013,11 +2015,11 @@ abstract class DatabaseModel extends ModelBase
             $this->sql['tables'][$alias] = compact('type', 'fullname', 'class', 'config');
 		}
 
-		if ($config) {
-			$this->addOn(null, $alias);
-		} elseif ($on) {
-			$this->addOn($on, $alias);
-		}
+		if ($on) {
+            $this->addOn($on, $alias);
+        } elseif($config) {
+            $this->addOn(null, $alias);
+        }
 
 		return $this;
 	}

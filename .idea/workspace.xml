@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/system/library/Core/DatabaseBase.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/DatabaseBase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/Sql.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Sql.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -32,8 +30,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="1853" column="53" selection-start-line="1853" selection-start-column="53" selection-end-line="1853" selection-end-column="53" />
+            <state relative-caret-position="349">
+              <caret line="1856" column="12" selection-start-line="1856" selection-start-column="12" selection-end-line="1856" selection-end-column="12" />
               <folding>
                 <element signature="e#557#583#0#PHP" expanded="true" />
               </folding>
@@ -372,12 +370,12 @@
       <workItem from="1565282704674" duration="1973000" />
       <workItem from="1565362804687" duration="751000" />
       <workItem from="1565424893905" duration="1809000" />
-      <workItem from="1565427342046" duration="3061000" />
+      <workItem from="1565427342046" duration="3494000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="280735000" />
+    <option name="totallyTimeSpent" value="281168000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -779,8 +777,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="1853" column="53" selection-start-line="1853" selection-start-column="53" selection-end-line="1853" selection-end-column="53" />
+        <state relative-caret-position="349">
+          <caret line="1856" column="12" selection-start-line="1856" selection-start-column="12" selection-end-line="1856" selection-end-column="12" />
           <folding>
             <element signature="e#557#583#0#PHP" expanded="true" />
           </folding>
