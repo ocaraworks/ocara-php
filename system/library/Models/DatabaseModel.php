@@ -1341,7 +1341,6 @@ abstract class DatabaseModel extends ModelBase
 	 * @param string $value1
 	 * @param string $value2
 	 * @param string $alias
-	 * @param string $linkSign
 	 * @return $this
 	 */
 	public function between($field, $value1, $value2, $alias = null)
@@ -1372,7 +1371,6 @@ abstract class DatabaseModel extends ModelBase
 	 * 添加条件
 	 * @param array $where
 	 * @param string $alias
-	 * @param string $linkSign
 	 * @return $this
 	 */
 	public function where($where, $alias = null)

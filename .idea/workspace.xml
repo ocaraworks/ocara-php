@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -27,7 +26,20 @@
     </favorites_list>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-263">
+              <caret line="1352" lean-forward="true" selection-start-line="1352" selection-end-line="1352" />
+              <folding>
+                <element signature="e#557#583#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -169,8 +181,8 @@
         <option value="$PROJECT_DIR$/extension/library/Tools/Develop/Generate/ModelService.php" />
         <option value="$PROJECT_DIR$/system/library/Core/DatabaseBase.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Sql.php" />
-        <option value="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" />
         <option value="$PROJECT_DIR$/system/library/Databases/Driver/PdoDriver.php" />
+        <option value="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" />
       </list>
     </option>
   </component>
@@ -334,12 +346,12 @@
       <workItem from="1565362804687" duration="751000" />
       <workItem from="1565424893905" duration="1809000" />
       <workItem from="1565427342046" duration="4071000" />
-      <workItem from="1565450619552" duration="784000" />
+      <workItem from="1565450619552" duration="1134000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="282529000" />
+    <option name="totallyTimeSpent" value="282879000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -351,10 +363,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="7" />
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4985755" weight="0.29395974" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.29395974" />
       <window_info id="Favorites" order="1" sideWeight="0.5014245" side_tool="true" weight="0.22214764" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49946353" weight="0.44159544" />
@@ -762,8 +774,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="349">
-          <caret line="1856" column="12" selection-start-line="1856" selection-start-column="12" selection-end-line="1856" selection-end-column="12" />
+        <state relative-caret-position="-263">
+          <caret line="1352" lean-forward="true" selection-start-line="1352" selection-end-line="1352" />
           <folding>
             <element signature="e#557#583#0#PHP" expanded="true" />
           </folding>
