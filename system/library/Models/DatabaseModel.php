@@ -1851,10 +1851,9 @@ abstract class DatabaseModel extends ModelBase
 			if ($config) {
 				$on = $this->getJoinOnSql($alias, $config);
 			}
-
 			$on = $this->parseJoinOnSql($alias, $on);
-			$fullname = $plugin->getTableFullname($fullname);
-			$from = $from . $plugin->getJoinSql($type, $fullname, $alias, $on, $this->getDatabaseName());
+			$fullname = $plugin->getTableFullname($fullname, $this->getDatabaseName());
+			$from = $from . $plugin->getJoinSql($type, $fullname, $alias, $on);
 		}
 
 		return $from;
@@ -1873,7 +1872,7 @@ abstract class DatabaseModel extends ModelBase
 
 		if ($config) {
 			$foreignField = $plugin->getFieldNameSql($config['foreignKey'], $alias);
-			$primaryField = $plugin->getFieldNameSql($config['primaryKey'], $this->alias);
+			$primaryField = $plugin->getFieldNameSql($config['primaryKey'], $this->getCurrentAlias());
 			$where = array($foreignField => ocSql($primaryField));
 			$condition[] = array('AND', $plugin->parseCondition($where, 'AND', null, $alias));
 			if (is_array($config['condition'])) {
@@ -1991,6 +1990,8 @@ abstract class DatabaseModel extends ModelBase
             $fullname = $this->getTableName();
             $alias = $alias ?: $fullname;
             $class = $this->tag;
+            $tables = array($alias => compact('type', 'fullname', 'class', 'config'));
+            $this->sql['tables'] = array_merge($tables, $this->sql['tables']);
 		} else {
             $shardingData = array();
             $relateShardingInfo = $this->getRelateShardingInfo($class);
@@ -2009,9 +2010,8 @@ abstract class DatabaseModel extends ModelBase
             $fullname = $model->getTableName();
 			$alias = $alias ?: $fullname;
 			$this->joins[$alias] = $model;
+            $this->sql['tables'][$alias] = compact('type', 'fullname', 'class', 'config');
 		}
-
-		$this->sql['tables'][$alias] = compact('type', 'fullname', 'class', 'config');
 
 		if ($config) {
 			$this->addOn(null, $alias);

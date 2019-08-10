@@ -531,12 +531,13 @@ class DatabaseBase extends Sql
 		return $result;
 	}
 
-	/**
-	 * 获取表全名
-	 * @param string $table
-	 * @return string
-	 */
-	public function getTableFullname($table)
+    /**
+     * 获取表全名
+     * @param $table
+     * @param null $database
+     * @return mixed|string
+     */
+	public function getTableFullname($table, $database = null)
 	{
 		if (preg_match('/^' . OC_SQL_TAG . '(.*)$/i', $table, $mt)) {
 			return $mt[1];
@@ -546,7 +547,7 @@ class DatabaseBase extends Sql
 			$databaseName = $mt[1];
 			$table = $mt[2];
 		} else {
-			$databaseName = $this->config['name'];
+			$databaseName = $database ?: $this->config['name'];
 			if ($this->config['prefix']) {
 				$table = $this->config['prefix'] . $table;
 			}
