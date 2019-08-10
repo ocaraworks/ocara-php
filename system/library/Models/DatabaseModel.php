@@ -1679,7 +1679,11 @@ abstract class DatabaseModel extends ModelBase
 		return $isDefault;
 	}
 
-	protected function getMainAlias()
+    /**
+     * 获取当前表别名
+     * @return mixed|string
+     */
+	protected function getCurrentAlias()
     {
         $mainAlias = !empty($this->sql['alias']) ? $this->sql['alias'] : ($this->alias ?: 'a');
         return $mainAlias;
@@ -1693,7 +1697,7 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function genSelectSql($count = false)
 	{
-        $mainAlias = $this->getMainAlias();
+        $mainAlias = $this->getCurrentAlias();
 	    $this->setJoin(false, $this->tag, $mainAlias);
 
         $plugin = $this->plugin();
@@ -1809,7 +1813,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
     protected function getFieldsSql($fieldsData, $aliasFields, $unJoined)
 	{
-        $mainAlias = $this->getMainAlias();
+        $mainAlias = $this->getCurrentAlias();
         $plugin = $this->plugin();
 
 		if (is_string($fieldsData)) {
