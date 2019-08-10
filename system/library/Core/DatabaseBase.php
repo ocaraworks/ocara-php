@@ -21,8 +21,6 @@ class DatabaseBase extends Sql
 	 */
 	const DEBUG_NO = 0; //非调试
 	const DEBUG_RETURN = 1; //返回调试内容
-	const DEBUG_PRINT = 2; //用print_r()打印调试信息
-	const DEBUG_DUMP = 3; //用var_dump()打印调试信息
 
     const EVENT_BEFORE_EXECUTE_SQL = 'beforeExecuteSql';
     const EVENT_AFTER_EXECUTE_SQL = 'afterExecuteSql';
@@ -826,27 +824,6 @@ class DatabaseBase extends Sql
 	 */
 	private function checkDebug($debug, $sqlData)
 	{
-		if ($debug) {
-			if ($debug === self::DEBUG_RETURN) {
-				return $sqlData;
-			}
-
-			if ($debug === self::DEBUG_PRINT || $debug === self::DEBUG_DUMP) {
-				if (OC_SYS_MODEL == 'develop') {
-					if ($debug === self::DEBUG_DUMP) {
-						var_dump($sqlData);
-					} else {
-						print_r($sqlData);
-					}
-				} else {
-					$this->showError('invalid_debug');
-				}
-			} else {
-				$this->showError('fault_debug_param');
-			}
-            return $sqlData;
-		}
-		
-		return false;
+		return $debug === self::DEBUG_RETURN ? $sqlData : false;
 	}
 }
