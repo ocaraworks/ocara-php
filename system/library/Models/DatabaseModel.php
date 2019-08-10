@@ -1344,9 +1344,9 @@ abstract class DatabaseModel extends ModelBase
 	 * @param string $linkSign
 	 * @return $this
 	 */
-	public function between($field, $value1, $value2, $alias = null, $linkSign = 'AND')
+	public function between($field, $value1, $value2, $alias = null)
 	{
-		$where = array($alias, 'between', array($field, $value1, $value2), $linkSign);
+		$where = array($alias, 'between', array($field, $value1, $value2), 'AND');
 		$this->sql['option']['where'][] = $where;
 
 		return $this;
@@ -1362,8 +1362,10 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function orBetween($field, $value1, $value2, $alias = null)
 	{
-		$this->between($field, $value1, $value2, $alias, 'OR');
-		return $this;
+        $where = array($alias, 'between', array($field, $value1, $value2), 'OR');
+        $this->sql['option']['where'][] = $where;
+
+        return $this;
 	}
 
 	/**
@@ -1373,10 +1375,10 @@ abstract class DatabaseModel extends ModelBase
 	 * @param string $linkSign
 	 * @return $this
 	 */
-	public function where($where, $alias = null, $linkSign = 'AND')
+	public function where($where, $alias = null)
 	{
 		if (!ocEmpty($where)) {
-			$where = array($alias, 'where', $where, $linkSign);
+			$where = array($alias, 'where', $where, 'AND');
 			$this->sql['option']['where'][] = $where;
 		}
 
@@ -1391,8 +1393,12 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function orWhere($where, $alias = null)
 	{
-		$this->where($where, $alias, 'OR');
-		return $this;
+        if (!ocEmpty($where)) {
+            $where = array($alias, 'where', $where, 'OR');
+            $this->sql['option']['where'][] = $where;
+        }
+
+        return $this;
 	}
 
 	/**
