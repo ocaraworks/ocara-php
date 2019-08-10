@@ -1854,7 +1854,7 @@ abstract class DatabaseModel extends ModelBase
 
 			$on = $this->parseJoinOnSql($alias, $on);
 			$fullname = $plugin->getTableFullname($fullname);
-			$from = $from . $plugin->getJoinSql($type, $fullname, $alias, $on);
+			$from = $from . $plugin->getJoinSql($type, $fullname, $alias, $on, $this->getDatabaseName());
 		}
 
 		return $from;

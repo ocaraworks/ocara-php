@@ -362,20 +362,22 @@ class Sql extends Base
 		return "SHOW FULL FIELDS FROM {$table}";
 	}
 
-	/**
-	 * 获取联接语句
-	 * @param $type
-	 * @param $table
-	 * @param $alias
-	 * @param $on
-	 * @return string
-	 */
-	public function getJoinSql($type, $table, $alias, $on)
+    /**
+     * 获取联接语句
+     * @param $type
+     * @param $table
+     * @param $alias
+     * @param $on
+     * @param null $database
+     * @return string
+     */
+	public function getJoinSql($type, $table, $alias, $on, $database = null)
 	{
 		$type  = strtoupper($type ? $type . ' JOIN ' : false);
 		$alias = $this->filterName($alias);
 		$on    = $this->parseCondition($on);
 		$data  = $this->wrapSign(array($type, $alias, $on));
+		$table = $database ? $database . '.' . $table: $table;
 		$sql   = $data[0] . $table;
 
 		if ($data[1]) {
