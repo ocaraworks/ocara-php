@@ -1484,21 +1484,21 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * AND分组条件
-     * @param $having
+     * @param $where
      * @param null $sign
      * @param null $value
      * @return $this
      */
-	public function having($having, $sign = null, $value = null)
+	public function having($where, $sign = null, $value = null)
 	{
         if (func_num_args() < 3) {
-            if (!ocEmpty($having)) {
-                $having = array(false, 'where', $having, 'AND');
-                $this->sql['option']['having'][] = $having;
+            if (!ocEmpty($where)) {
+                $where = array(false, 'where', $where, 'AND');
+                $this->sql['option']['having'][] = $where;
             }
         } else {
             $sign = 'AND/' . $sign;
-            $this->complexWhere('having', $sign, $having, $value, false);
+            $this->complexWhere('having', $sign, $where, $value, false);
         }
 
 		return $this;
@@ -1506,21 +1506,21 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * OR分组条件
-     * @param $having
+     * @param $where
      * @param null $sign
      * @param null $value
      * @return $this
      */
-	public function orHaving($having, $sign = null, $value = null)
+	public function orHaving($where, $sign = null, $value = null)
 	{
         if (func_num_args() < 3) {
-            if (!ocEmpty($having)) {
-                $having = array(false, 'where', $having, 'OR');
-                $this->sql['option']['having'][] = $having;
+            if (!ocEmpty($where)) {
+                $where = array(false, 'where', $where, 'OR');
+                $this->sql['option']['having'][] = $where;
             }
         } else {
             $sign = 'OR/' . $sign;
-            $this->complexWhere('having', $sign, $having, $value, false);
+            $this->complexWhere('having', $sign, $where, $value, false);
         }
 
 		return $this;
