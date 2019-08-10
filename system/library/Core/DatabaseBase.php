@@ -830,12 +830,13 @@ class DatabaseBase extends Sql
 			if ($debug === self::DEBUG_RETURN) {
 				return $sqlData;
 			}
+
 			if ($debug === self::DEBUG_PRINT || $debug === self::DEBUG_DUMP) {
 				if (OC_SYS_MODEL == 'develop') {
 					if ($debug === self::DEBUG_DUMP) {
-						ocDump($sqlData);
+						var_dump($sqlData);
 					} else {
-						ocPrint($sqlData);
+						print_r($sqlData);
 					}
 				} else {
 					$this->showError('invalid_debug');
@@ -843,6 +844,7 @@ class DatabaseBase extends Sql
 			} else {
 				$this->showError('fault_debug_param');
 			}
+            return $sqlData;
 		}
 		
 		return false;
