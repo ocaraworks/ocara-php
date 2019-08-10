@@ -521,9 +521,12 @@ abstract class DatabaseModel extends ModelBase
 		return $key;
 	}
 
-	/**
-	 * 清理SQL
-	 */
+    /**
+     * 清理SQL
+     * @param bool $isClear
+     * @return $this
+     * @throws Exception
+     */
 	public function clearSql($isClear = true)
 	{
 	    if (func_num_args()) {
@@ -531,7 +534,6 @@ abstract class DatabaseModel extends ModelBase
         } else {
 	        if ($this->isClear) {
                 $this->sql = array();
-                $this->setJoin(false, $this->tableName, $this->alias);
                 $this->setPlugin($this->master);
             }
         }
@@ -1112,6 +1114,7 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function baseFind($condition, $option, $debug, $queryRow, $count = false, $dataType = null)
 	{
+        $this->connect();
         $plugin = $this->plugin();
         $cacheInfo = null;
         $cacheObj = null;
@@ -1622,7 +1625,7 @@ abstract class DatabaseModel extends ModelBase
      * @param $tables
      * @return array
      */
-	private function getAliasFields($tables)
+	private function getAliasFields($tables, $mainAlias)
 	{
 		$unJoined = count($tables) <= 1;
 		$transforms = array();
@@ -1630,14 +1633,14 @@ abstract class DatabaseModel extends ModelBase
 		if ($unJoined) {
 			$map = self::getConfig('MAPS');
 			if ($map) {
-				$transforms[$this->alias] = $map;
+				$transforms[$mainAlias] = $map;
 			}
 		} else {
 			$transforms = array();
 			foreach ($tables as $alias => $row) {
-				if ($alias == $this->alias) {
+				if ($alias == $mainAlias) {
 					if ($map = self::getConfig('MAPS')) {
-						$transforms[$this->alias] = $map;
+						$transforms[$mainAlias] = $map;
 					}
 				} elseif (isset($this->joins[$alias])) {
 					if ($map = self::getConfig('MAPS')) {
@@ -1676,6 +1679,12 @@ abstract class DatabaseModel extends ModelBase
 		return $isDefault;
 	}
 
+	protected function getMainAlias()
+    {
+        $mainAlias = !empty($this->sql['alias']) ? $this->sql['alias'] : ($this->alias ?: 'a');
+        return $mainAlias;
+    }
+
     /**
      * 生成查询Sql
      * @param bool $count
@@ -1684,8 +1693,8 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function genSelectSql($count = false)
 	{
-	    $mainAlias = !empty($this->sql['alias']) ? $this->sql['alias'] : ($this->alias ?: 'a');
-        $this->setJoin(false, $this->tag, $mainAlias);
+        $mainAlias = $this->getMainAlias();
+	    $this->setJoin(false, $this->tag, $mainAlias);
 
         $plugin = $this->plugin();
 		$option = ocGet('option', $this->sql, array());
@@ -1698,10 +1707,11 @@ abstract class DatabaseModel extends ModelBase
 			$isGroup = !empty($option['group']);
 			$fields = $plugin->getCountSql($countField, 'total', $isGroup);
 		} else {
-			$aliasFields = $this->getAliasFields($tables);
+			$aliasFields = $this->getAliasFields($tables, $mainAlias);
 			if (!isset($option['fields']) || $this->isDefaultFields($option['fields'])) {
-				$option['fields'][] = array($this->alias, array_keys($this->getFields()));
+				$option['fields'][] = array($mainAlias, array_keys($this->getFields()));
 			}
+
 			$fields = $this->getFieldsSql($option['fields'], $aliasFields, $unJoined);
 		}
 
@@ -1799,6 +1809,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
     protected function getFieldsSql($fieldsData, $aliasFields, $unJoined)
 	{
+        $mainAlias = $this->getMainAlias();
         $plugin = $this->plugin();
 
 		if (is_string($fieldsData)) {
@@ -1814,10 +1825,10 @@ abstract class DatabaseModel extends ModelBase
 			}
 			$alias = $unJoined ? false : $alias;
 			$fieldData = (array)$fieldData;
-			$fields[] = $plugin->getFieldsSql($fieldData, $aliasFields, $this->alias, $alias);
+			$fields[] = $plugin->getFieldsSql($fieldData, $aliasFields, $mainAlias, $alias);
 		}
 
-		$sql = $plugin->combineFieldsSql($fields, $aliasFields, $unJoined, $this->alias);
+		$sql = $plugin->combineFieldsSql($fields, $aliasFields, $unJoined, $mainAlias);
 		return $sql;
 	}
 
@@ -1978,8 +1989,8 @@ abstract class DatabaseModel extends ModelBase
 		$this->connect();
 
 		if ($type == false) {
-			$alias = $this->alias;
             $fullname = $this->getTableName();
+            $alias = $alias ?: $fullname;
             $class = $this->tag;
 		} else {
             $shardingData = array();
@@ -1997,7 +2008,7 @@ abstract class DatabaseModel extends ModelBase
                 $model->sharding($shardingData);
             }
             $fullname = $model->getTableName();
-			$alias = $alias ? : $fullname;
+			$alias = $alias ?: $fullname;
 			$this->joins[$alias] = $model;
 		}
 
