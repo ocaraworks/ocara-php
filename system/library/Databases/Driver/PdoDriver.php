@@ -430,7 +430,7 @@ class PdoDriver extends DriverBase implements DriverInterface
             } else {
                 if (class_exists($dataType)) {
                     while ($row = $this->stmt->fetch(PDO::FETCH_ASSOC)) {
-                        $result[] = $result[] = $this->load_object($dataType, $row);
+                        $result[] = $this->load_object($dataType, $row);
                         if ($queryRow) break;
                     }
                 }
