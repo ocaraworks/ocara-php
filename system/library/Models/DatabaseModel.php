@@ -1662,6 +1662,15 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
+     * 获取最后执行的SQL
+     */
+    public function getLastSql()
+    {
+        $plugin = $this->plugin(false);
+        return $plugin ? $this->plugin()->getLastSql() : null;
+    }
+
+    /**
      * 生成查询Sql
      * @param bool $count
      * @return mixed

@@ -30,6 +30,7 @@ class DatabaseBase extends Sql
 	protected $connectName;
 	protected $wakeUpTimes = 0;
 	protected $pConnect;
+	protected $lastSql;
 
 	private $error = array();
 	private static $connects = array();
@@ -250,6 +251,7 @@ class DatabaseBase extends Sql
             ocService()->error->show($exception->getMessage());
 		}
 
+        $this->lastSql = $sqlData;
         $result = $this->checkError($result, array($sql, $params), $required);
 		return $result;
 	}
@@ -327,6 +329,15 @@ class DatabaseBase extends Sql
         $result = $this->getResult(true, $count, $unions, $dataType);
 
         return $result;
+    }
+
+    /**
+     * 获取最后执行的SQL
+     * @return mixed
+     */
+    public function getLastSql()
+    {
+        return $this->lastSql;
     }
 
     /**
