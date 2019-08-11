@@ -44,7 +44,6 @@ class DatabaseBase extends Sql
      * 初始化方法
      * DatabaseBase constructor.
      * @param array $config
-     * @throws Exception
      */
 	public function __construct(array $config)
 	{
