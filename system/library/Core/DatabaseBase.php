@@ -290,7 +290,7 @@ class DatabaseBase extends Sql
             $result = $plugin->get_all_result($dataType, $queryRow);
         }
 
-        if ($queryRow && $result && empty($debug)) {
+        if ($queryRow && $result) {
             $result = reset($result);
         }
 
@@ -300,22 +300,17 @@ class DatabaseBase extends Sql
     /**
      * 查询多行记录
      * @param string|array $sqlData
-     * @param bool $debug
      * @param bool $count
      * @param array $unions
      * @param null $dataType
      * @return array|bool|mixed
      * @throws \Ocara\Exceptions\Exception
      */
-    public function query($sqlData, $debug = false, $count = false, $unions = array(), $dataType = null)
+    public function query($sqlData,  $count = false, $unions = array(), $dataType = null)
     {
         $sqlData = $this->formatSqlData($sqlData);
-        $result = $this->checkDebug($debug, $sqlData);
-
-        if (!$result) {
-            $this->executeQuery($sqlData, $count, $unions);
-            $result = $this->getResult(false, $count, $unions, $dataType);
-        }
+        $this->executeQuery($sqlData, $count, $unions);
+        $result = $this->getResult(false, $count, $unions, $dataType);
 
         return $result;
     }
@@ -323,22 +318,17 @@ class DatabaseBase extends Sql
     /**
      * 查询一行
      * @param string|array $sqlData
-     * @param bool $debug
      * @param bool $count
      * @param array $unions
      * @param null $dataType
      * @return array|bool|mixed
      * @throws \Ocara\Exceptions\Exception
      */
-    public function queryRow($sqlData, $debug = false, $count = false, $unions = array(), $dataType = null)
+    public function queryRow($sqlData, $count = false, $unions = array(), $dataType = null)
     {
         $sqlData = $this->formatSqlData($sqlData);
-        $result = $this->checkDebug($debug, $sqlData);
-
-        if (!$result) {
-            $this->executeQuery($sqlData, $count, $unions);
-            $result = $this->getResult(true, $count, $unions, $dataType);
-        }
+        $this->executeQuery($sqlData, $count, $unions);
+        $result = $this->getResult(true, $count, $unions, $dataType);
 
         return $result;
     }
@@ -423,14 +413,13 @@ class DatabaseBase extends Sql
     /**
      * 获取最后一次插入记录的自增ID
      * @param string $sql
-     * @param bool $debug
      * @return bool|mixed
      * @throws \Ocara\Exceptions\Exception
      */
-	public function getInsertId($sql = null, $debug = false)
+	public function getInsertId($sql = null)
 	{
 		if (empty($sql)) $sql = $this->getLastIdSql();
-		$result = $this->queryRow($sql, $debug);
+		$result = $this->queryRow($sql);
 		return $result ? $result['id'] : false;
 	}
 
@@ -458,11 +447,10 @@ class DatabaseBase extends Sql
      * 插入记录
      * @param string $table
      * @param array $data
-     * @param bool $debug
      * @return array|bool|mixed|void
      * @throws \Ocara\Exceptions\Exception
      */
-	public function insert($table, array $data = array(), $debug = false)
+	public function insert($table, array $data = array())
 	{
 		if (empty($data)) {
 			$this->showError('fault_save_data');
@@ -470,12 +458,8 @@ class DatabaseBase extends Sql
 
 		$table = $this->getTableFullname($table);
 		$sqlData = $this->getInsertSql($table, $data);
-
-        $result = $this->checkDebug($debug, $sqlData);
-        if (!$result) {
-            $result = $data ? $this->execute($sqlData) : false;
-            $result = $result ? $this->getInsertId() : false;
-        }
+        $result = $data ? $this->execute($sqlData) : false;
+        $result = $result ? $this->getInsertId() : false;
 
 		return $result;
 	}
@@ -485,11 +469,10 @@ class DatabaseBase extends Sql
      * @param string $table
      * @param null $data
      * @param null $condition
-     * @param bool $debug
      * @return array|bool|mixed|void
      * @throws \Ocara\Exceptions\Exception
      */
-	public function update($table, $data = null, $condition = null, $debug = false)
+	public function update($table, $data = null, $condition = null)
 	{
 		if (empty($data)) {
 			$this->showError('fault_save_data');
@@ -498,11 +481,7 @@ class DatabaseBase extends Sql
 		$table = $this->getTableFullname($table);
 		$condition = $this->parseCondition($condition);
 		$sqlData = $this->getUpdateSql($table, $data, $condition);
-
-        $result = $this->checkDebug($debug, $sqlData);
-        if (!$result) {
-            $result = $data ? $this->execute($sqlData) : false;
-        }
+		$result = $data ? $this->execute($sqlData) : false;
 
 		return $result;
 	}
@@ -511,20 +490,15 @@ class DatabaseBase extends Sql
      * 删除记录
      * @param string $table
      * @param $condition
-     * @param bool $debug
      * @return array|bool|mixed|void
      * @throws \Ocara\Exceptions\Exception
      */
-	public function delete($table, $condition, $debug = false)
+	public function delete($table, $condition)
 	{
 		$table = $this->getTableFullname($table);
 		$condition = $this->parseCondition($condition);
 		$sqlData = $this->getDeleteSql($table, $condition);
-
-        $result = $this->checkDebug($debug, $sqlData);
-        if (!$result) {
-            $result = $this->execute($sqlData);
-        }
+		$result = $this->execute($sqlData);
 
 		return $result;
 	}
@@ -814,16 +788,5 @@ class DatabaseBase extends Sql
 		}
 
 		return $ret;
-	}
-
-	/**
-	 * debug参数检查
-	 * @param bool $debug
-	 * @param array $sqlData
-	 * @return array|bool
-	 */
-	private function checkDebug($debug, $sqlData)
-	{
-		return $debug === self::DEBUG_RETURN ? $sqlData : false;
 	}
 }

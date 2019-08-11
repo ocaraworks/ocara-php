@@ -561,11 +561,10 @@ abstract class DatabaseModel extends ModelBase
      * 保存记录
      * @param $data
      * @param $condition
-     * @param bool $debug
      * @return bool
      * @throws Exception
      */
-    public function baseSave($data, $condition, $debug = false)
+    public function baseSave($data, $condition)
     {
         $this->connect();
         $plugin = $this->plugin();
@@ -579,7 +578,7 @@ abstract class DatabaseModel extends ModelBase
         $this->pushTransaction();
 
         if ($condition) {
-            $result = $plugin->update($this->tableName, $data, $condition, $debug);
+            $result = $plugin->update($this->tableName, $data, $condition);
         } else {
             $autoIncrementField = $this->getAutoIncrementField();
             if (!in_array($autoIncrementField, $this->primaries)) {
@@ -587,13 +586,10 @@ abstract class DatabaseModel extends ModelBase
                     ocService()->error->show('need_create_primary_data');
                 }
             }
-            $result = $plugin->insert($this->tableName, $data, $debug);
+            $result = $plugin->insert($this->tableName, $data);
         }
 
         $this->clearSql();
-        if ($debug === DatabaseBase::DEBUG_RETURN) return $result;
-
-        $result = $plugin->errorExists() ? false : true;
         return $result;
     }
 
@@ -618,14 +614,13 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 新建记录
      * @param array $data
-     * @param bool $debug
      * @return mixed
      */
-	public function create(array $data, $debug = false)
+	public function create(array $data)
 	{
 	    $entityClass = $this->getEntityClass();
         $entity = new $entityClass();
-        $result = $entity->create($data, $debug);
+        $result = $entity->create($data);
 		return $result;
 	}
 
@@ -633,10 +628,9 @@ abstract class DatabaseModel extends ModelBase
      * 批量更新记录
      * @param array $data
      * @param int $batchLimit
-     * @param bool $debug
      * @throws Exception
      */
-	public function update(array $data, $batchLimit = 1000, $debug = false)
+	public function update(array $data, $batchLimit = 1000)
 	{
         $batchLimit = $batchLimit ?: 1000;
         $condition = $this->getCondition();
@@ -656,21 +650,20 @@ abstract class DatabaseModel extends ModelBase
             foreach ($batchData as $entityList) {
                 foreach ($entityList as $entity) {
                     $entity->data($data);
-                    $entity->update(array(), $debug);
+                    $entity->update();
                 }
             }
         } else {
-		    $this->baseSave($data, $debug);
+		    $this->baseSave($data);
         }
 	}
 
     /**
      * 批量删除记录
      * @param int $batchLimit
-     * @param bool $debug
      * @throws Exception
      */
-    public function delete($batchLimit = 1000, $debug = false)
+    public function delete($batchLimit = 1000)
     {
         $batchLimit = $batchLimit ?: 1000;
         $condition = $this->getCondition();
@@ -689,21 +682,20 @@ abstract class DatabaseModel extends ModelBase
 
             foreach ($batchData as $entityList) {
                 foreach ($entityList as $entity) {
-                    $entity->delete($debug);
+                    $entity->delete();
                 }
             }
         } else {
-            $this->baseDelete($debug);
+            $this->baseDelete();
         }
     }
 
     /**
      * 删除记录
-     * @param bool $debug
      * @return bool
      * @throws Exception
      */
-	public function baseDelete($debug = false)
+	public function baseDelete()
 	{
 	    $plugin = $this->plugin();
 		$condition = $this->getCondition();
@@ -712,14 +704,9 @@ abstract class DatabaseModel extends ModelBase
 		}
 
         $this->pushTransaction();
-		$result = $plugin->delete($this->tableName, $condition, $debug);
-
-		if ($debug === DatabaseBase::DEBUG_RETURN) {
-			return $result;
-		}
+		$result = $plugin->delete($this->tableName, $condition);
 
 		$this->clearSql();
-		$result = $plugin->errorExists() ? false : true;
 		return $result;
 	}
 
@@ -739,11 +726,10 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 用SQL语句获取多条记录
      * @param $sql
-     * @param bool $debug
      * @return bool
      * @throws Exception
      */
-	public function query($sql, $debug = false)
+	public function query($sql)
 	{
         $plugin = $this->plugin();
 
@@ -752,7 +738,7 @@ abstract class DatabaseModel extends ModelBase
 			$dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
 			return $this
                 ->connect(false)
-                ->query($sqlData, $debug, false, array(), $dataType);
+                ->query($sqlData, false, array(), $dataType);
 		}
 
 		return false;
@@ -761,11 +747,10 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 用SQL语句获取一条记录
      * @param $sql
-     * @param bool $debug
      * @return bool
      * @throws Exception
      */
-	public function queryRow($sql, $debug = false)
+	public function queryRow($sql)
 	{
         $plugin = $this->plugin();
 
@@ -774,7 +759,7 @@ abstract class DatabaseModel extends ModelBase
             $dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
 			return $this
                 ->connect(false)
-                ->query($sqlData, $debug, false, array(), $dataType);
+                ->query($sqlData, false, array(), $dataType);
 		}
 
 		return false;
@@ -834,15 +819,14 @@ abstract class DatabaseModel extends ModelBase
      * 按条件选择首行
      * @param bool $condition
      * @param null $options
-     * @param bool $debug
      * @return $this|array|null
      * @throws Exception
      */
-	public function selectOne($condition = false, $options = null, $debug = false)
+	public function selectOne($condition = false, $options = null)
 	{
         $result = $this
             ->asEntity()
-            ->baseFind($condition, $options, $debug, true);
+            ->baseFind($condition, $options, true);
         return $result;
 	}
 
@@ -850,15 +834,14 @@ abstract class DatabaseModel extends ModelBase
      * 选择多条记录
      * @param null $condition
      * @param null $options
-     * @param bool $debug
      * @return array
      * @throws Exception
      */
-	public function selectAll($condition = null, $options = null, $debug = false)
+	public function selectAll($condition = null, $options = null)
 	{
         $records = $this
             ->asEntity()
-            ->baseFind($condition, $options, $debug, false);
+            ->baseFind($condition, $options, false);
 		return $records;
 	}
 
@@ -915,12 +898,12 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 选择多条记录
-     * @param integer $batchLimit
-     * @param integer $totalLimit
-     * @param bool $debug
+     * @param int $batchLimit
+     * @param int $totalLimit
      * @return BatchQueryRecords
+     * @throws Exception
      */
-    public function batch($batchLimit, $totalLimit = 0, $debug = false)
+    public function batch($batchLimit, $totalLimit = 0)
     {
         $sql = $this->sql ? : array();
         $model = new static();
@@ -929,16 +912,16 @@ abstract class DatabaseModel extends ModelBase
         $model->clearSql(false);
         $this->clearSql();
 
-        $records = new BatchQueryRecords($model, $batchLimit, $totalLimit, $debug);
+        $records = new BatchQueryRecords($model, $batchLimit, $totalLimit);
         return $records;
     }
 
     /**
      * 选择多条记录
-     * @param bool $debug
      * @return EachQueryRecords
+     * @throws Exception
      */
-    public function each($debug = false)
+    public function each()
     {
         $sql = $this->sql ? : array();
         $model = new static();
@@ -947,7 +930,7 @@ abstract class DatabaseModel extends ModelBase
         $model->clearSql(false);
         $this->clearSql();
 
-        $records = new EachQueryRecords($model, $debug);
+        $records = new EachQueryRecords($model);
         return $records;
     }
 
@@ -990,41 +973,36 @@ abstract class DatabaseModel extends ModelBase
      * 查询多条记录
      * @param mixed $condition
      * @param mixed $option
-     * @param bool $debug
      * @return array
      * @throws Exception
      */
-	public function getAll($condition = null, $option = null, $debug = false)
+	public function getAll($condition = null, $option = null)
 	{
-		return $this->baseFind($condition, $option, $debug, false, false);
+		return $this->baseFind($condition, $option, false, false);
 	}
 
     /**
      * 查询一条记录
      * @param mixed $condition
      * @param mixed $option
-     * @param bool $debug
      * @return array
      * @throws Exception
      */
-	public function getRow($condition = null, $option = null, $debug = false)
+	public function getRow($condition = null, $option = null)
 	{
-		return $this->baseFind($condition, $option, $debug, true, false);
+		return $this->baseFind($condition, $option, true, false);
 	}
 
     /**
      * 获取某个字段值
      * @param string $field
      * @param bool $condition
-     * @param bool $debug
      * @return array|mixed|string|null
      * @throws Exception
      */
-	public function getValue($field, $condition = false, $debug = false)
+	public function getValue($field, $condition = false)
 	{
-		$row = $this->getRow($condition, $field, $debug);
-
-		if ($debug === DatabaseBase::DEBUG_RETURN) return $row;
+		$row = $this->getRow($condition, $field);
 
 		if (is_object($row)) {
 			return property_exists($row, $field) ? $row->$field : null;
@@ -1037,22 +1015,17 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 查询总数
-     * @param bool $debug
      * @return array|int|mixed
      * @throws Exception
      */
-	public function getTotal($debug = false)
+	public function getTotal()
 	{
 		$queryRow = true;
 		if ($this->unions || !empty($this->sql['option']['group'])) {
 			$queryRow = false;
 		}
 
-		$result = $this->baseFind(false, false, $debug, $queryRow, true);
-
-		if ($debug === DatabaseBase::DEBUG_RETURN) {
-			return $result;
-		}
+		$result = $this->baseFind(false, false, $queryRow, true);
 
 		if ($result) {
 			if (!$queryRow) {
@@ -1100,14 +1073,13 @@ abstract class DatabaseModel extends ModelBase
      * 查询数据
      * @param mixed $condition
      * @param mixed $option
-     * @param bool $debug
      * @param bool $queryRow
      * @param bool $count
      * @param null $dataType
      * @return array
      * @throws Exception
      */
-    protected function baseFind($condition, $option, $debug, $queryRow, $count = false, $dataType = null)
+    protected function baseFind($condition, $option, $queryRow, $count = false, $dataType = null)
 	{
         $this->connect();
         $plugin = $this->plugin();
@@ -1123,7 +1095,7 @@ abstract class DatabaseModel extends ModelBase
 		}
 
 		list($cacheConnect, $cacheRequired) = $cacheInfo;
-		$ifCache = empty($debug) && $cacheConnect;
+		$ifCache = $cacheConnect;
 
 		if ($ifCache) {
 			$encodeSql = md5($sql);
@@ -1135,17 +1107,13 @@ abstract class DatabaseModel extends ModelBase
         $dataType = $dataType ? : ($this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY);
 
 		if ($queryRow) {
-            $result = $plugin->queryRow($sql, $debug, $count, $this->unions, $dataType);
+            $result = $plugin->queryRow($sql, $count, $this->unions, $dataType);
 		} else {
-            $result = $plugin->query($sql, $debug, $count, $this->unions, $dataType);
-		}
-
-		if ($debug === DatabaseBase::DEBUG_RETURN) {
-			return $result;
+            $result = $plugin->query($sql, $count, $this->unions, $dataType);
 		}
 
 		if (!$count && !$queryRow && $this->isPage()) {
-			$result = array('total' => $this->getTotal($debug), 'data'	=> $result);
+			$result = array('total' => $this->getTotal(), 'data'	=> $result);
 		}
 
 		$this->clearSql();

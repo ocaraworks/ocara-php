@@ -16,7 +16,6 @@ class BatchQueryRecords implements Iterator
     protected $model;
     protected $dataType;
     protected $isEntity;
-    protected $debug;
 
     protected $position = 0;
     protected $offset = 0;
@@ -30,16 +29,13 @@ class BatchQueryRecords implements Iterator
      * 初始化
      * BatchQueryRecords constructor.
      * @param $model
-     * @param $dataType
      * @param $batchLimit
      * @param int $totalLimit
-     * @param bool $debug
      */
-    public function __construct($model, $batchLimit, $totalLimit = 0, $debug = false)
+    public function __construct($model, $batchLimit, $totalLimit = 0)
     {
         $this->model = $model;
         $this->offset = 0;
-        $this->debug = $debug;
 
         $this->batchLimit = $batchLimit;
         $this->totalLimit = $totalLimit;
@@ -128,6 +124,6 @@ class BatchQueryRecords implements Iterator
             ->setDataType($tempDataType)
             ->limit($this->offset, $this->batchLimit);
 
-        $this->data = $this->model->getAll(null, null, $this->debug);
+        $this->data = $this->model->getAll();
     }
 }

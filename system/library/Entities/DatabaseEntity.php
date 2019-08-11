@@ -208,17 +208,16 @@ abstract class DatabaseEntity extends BaseEntity
      * 从数据库选择记录
      * @param $values
      * @param null $options
-     * @param bool $debug
      * @return DatabaseEntity
      */
-    public static function select($values, $options = null, $debug = false)
+    public static function select($values, $options = null)
     {
         $entity = new static();
         $condition = $entity->getPrimaryCondition($values);
 
         $data = $entity
             ->getModel()
-            ->getRow($condition, $options, $debug);
+            ->getRow($condition, $options);
 
         $entity->data($data);
         return $entity;
@@ -247,15 +246,14 @@ abstract class DatabaseEntity extends BaseEntity
     /**
      * 新建
      * @param array $data
-     * @param bool $debug
      * @return bool
      * @throws Exception
      */
-    public function create(array $data = array(), $debug = false)
+    public function create(array $data = array())
     {
         $model = $this->getModel();
 
-        if (!$debug && $this->relations) {
+        if ($this->relations) {
             ocService()->transaction->begin();
         }
 
@@ -265,21 +263,20 @@ abstract class DatabaseEntity extends BaseEntity
             $this->setProperty($data);
         }
 
-        $result = $model->baseSave($this->toArray(), null, $debug);
+        $result = $model->baseSave($this->toArray(), null);
+        $this->insertId = $model->getInsertId();
+        $autoIncrementField = $this->getModel()->getAutoIncrementField();
 
-        if (!$debug) {
-            $this->insertId = $model->getInsertId();
-            $autoIncrementField = $this->getModel()->getAutoIncrementField();
-            if ($autoIncrementField) {
-                $this->$autoIncrementField = $this->insertId;
-            }
-
-            $condition = self::mapPrimary($this->toArray());
-            $data = $this->getRow($condition);
-            $this->data($data);
-            $this->relateSave();
-            $this->fire(self::EVENT_AFTER_CREATE);
+        if ($autoIncrementField) {
+            $this->$autoIncrementField = $this->insertId;
         }
+
+        $condition = self::mapPrimary($this->toArray());
+        $data = $this->getRow($condition);
+
+        $this->data($data);
+        $this->relateSave();
+        $this->fire(self::EVENT_AFTER_CREATE);
 
         return $result;
     }
@@ -296,11 +293,10 @@ abstract class DatabaseEntity extends BaseEntity
     /**
      * 更新
      * @param array $data
-     * @param bool $debug
      * @return bool
      * @throws Exception
      */
-    public function update(array $data = array(), $debug = false)
+    public function update(array $data = array())
     {
         $model = $this->getModel();
 
@@ -308,7 +304,7 @@ abstract class DatabaseEntity extends BaseEntity
             ocService()->error->show('need_condition');
         }
 
-        if (!$debug && $this->relations) {
+        if ($this->relations) {
             ocService()->transaction->begin();
         }
 
@@ -317,12 +313,10 @@ abstract class DatabaseEntity extends BaseEntity
         if (empty($data)) return false;
 
         call_user_func_array('ocDel', array(&$data, $model::getPrimaries()));
-        $result = $model->baseSave($data, $this->selected, $debug);
+        $result = $model->baseSave($data, $this->selected);
 
-        if (!$debug) {
-            $this->relateSave();
-            $this->fire(self::EVENT_AFTER_UPDATE);
-        }
+        $this->relateSave();
+        $this->fire(self::EVENT_AFTER_UPDATE);
 
         return $result;
     }
@@ -330,16 +324,15 @@ abstract class DatabaseEntity extends BaseEntity
     /**
      * 保存
      * @param array $data
-     * @param bool $debug
      * @return bool
      * @throws Exception
      */
-    public function save(array $data = array(), $debug = false)
+    public function save(array $data = array())
     {
         if ($this->selected) {
-            return $this->update($data, $debug);
+            return $this->update($data);
         } else {
-            return $this->create($data, $debug);
+            return $this->create($data);
         }
     }
 
@@ -361,10 +354,9 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 删除
-     * @param bool $debug
      * @return mixed
      */
-    public function delete($debug = false)
+    public function delete()
     {
         $model = $this->getModel();
 
@@ -375,10 +367,8 @@ abstract class DatabaseEntity extends BaseEntity
         $model->where($this->selected);
         $this->fire(self::EVENT_BEFORE_DELETE);
 
-        $result = $model->baseDelete($debug);
-        if (!$debug) {
-            $this->fire(self::EVENT_AFTER_DELETE);
-        }
+        $result = $model->baseDelete();
+        $this->fire(self::EVENT_AFTER_DELETE);
 
         return $result;
     }

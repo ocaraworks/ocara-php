@@ -14,7 +14,6 @@ use Ocara\Core\DriverBase;
 class EachQueryRecords implements Iterator
 {
     protected $model;
-    protected $debug;
     protected $data;
 
     protected $position = 0;
@@ -26,12 +25,10 @@ class EachQueryRecords implements Iterator
      * 初始化
      * EachQueryRecords constructor.
      * @param string $model
-     * @param bool $debug
      */
-    public function __construct($model, $debug = false)
+    public function __construct($model)
     {
         $this->model = $model;
-        $this->debug = $debug;
     }
 
     /**
@@ -89,7 +86,7 @@ class EachQueryRecords implements Iterator
 
         $result = $this->model
             ->limit($this->offset, 1)
-            ->getRow(null, null, $this->debug);
+            ->getRow();
 
         return $result;
     }
