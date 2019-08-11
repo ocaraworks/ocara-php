@@ -8,9 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
-use \Exception;
-use Ocara\Core\Sql;
-use Ocara\Core\DriverBase;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -46,7 +44,7 @@ class DatabaseBase extends Sql
      * 初始化方法
      * DatabaseBase constructor.
      * @param array $config
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public function __construct(array $config)
 	{
@@ -96,7 +94,7 @@ class DatabaseBase extends Sql
 
     /**
      * 注册事件
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function registerEvents()
     {
@@ -128,7 +126,6 @@ class DatabaseBase extends Sql
     /**
      * 初始化设置
      * @param array $config
-     * @throws \Ocara\Exceptions\Exception
      */
 	public function init(array $config)
 	{
@@ -220,8 +217,8 @@ class DatabaseBase extends Sql
      * 执行SQL语句
      * @param array $sqlData
      * @param bool $required
-     * @return mixed|void
-     * @throws \Ocara\Exceptions\Exception
+     * @return mixed|void|null
+     * @throws Exception
      */
 	public function execute(array $sqlData, $required = true)
 	{
@@ -242,7 +239,7 @@ class DatabaseBase extends Sql
 			} else {
 				$result = $plugin->query_sql($sql);
 			}
-		} catch (Exception $exception) {
+		} catch (\Exception $exception) {
 			if (!$this->wakeUpTimes) {
 				if ($plugin->is_not_active()) {
                     $plugin->wake_up();
@@ -303,10 +300,10 @@ class DatabaseBase extends Sql
      * @param bool $count
      * @param array $unions
      * @param null $dataType
-     * @return array|bool|mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @return array|mixed
+     * @throws Exception
      */
-    public function query($sqlData,  $count = false, $unions = array(), $dataType = null)
+    public function query($sqlData, $count = false, $unions = array(), $dataType = null)
     {
         $sqlData = $this->formatSqlData($sqlData);
         $this->executeQuery($sqlData, $count, $unions);
@@ -321,8 +318,8 @@ class DatabaseBase extends Sql
      * @param bool $count
      * @param array $unions
      * @param null $dataType
-     * @return array|bool|mixed
-     * @throws \Ocara\Exceptions\Exception
+     * @return array|mixed
+     * @throws Exception
      */
     public function queryRow($sqlData, $count = false, $unions = array(), $dataType = null)
     {
@@ -338,8 +335,8 @@ class DatabaseBase extends Sql
      * @param string|array $sqlData
      * @param bool $count
      * @param array $unions
-     * @return mixed|void
-     * @throws \Ocara\Exceptions\Exception
+     * @return mixed|void|null
+     * @throws Exception
      */
     protected function executeQuery($sqlData, $count = false, $unions = array())
     {
@@ -445,10 +442,10 @@ class DatabaseBase extends Sql
 
     /**
      * 插入记录
-     * @param string $table
+     * @param $table
      * @param array $data
-     * @return array|bool|mixed|void
-     * @throws \Ocara\Exceptions\Exception
+     * @return bool|mixed|void|null
+     * @throws Exception
      */
 	public function insert($table, array $data = array())
 	{
@@ -466,11 +463,11 @@ class DatabaseBase extends Sql
 
     /**
      * 更新记录
-     * @param string $table
+     * @param $table
      * @param null $data
      * @param null $condition
-     * @return array|bool|mixed|void
-     * @throws \Ocara\Exceptions\Exception
+     * @return bool|mixed|void|null
+     * @throws Exception
      */
 	public function update($table, $data = null, $condition = null)
 	{
@@ -488,10 +485,10 @@ class DatabaseBase extends Sql
 
     /**
      * 删除记录
-     * @param string $table
+     * @param $table
      * @param $condition
-     * @return array|bool|mixed|void
-     * @throws \Ocara\Exceptions\Exception
+     * @return mixed|void|null
+     * @throws Exception
      */
 	public function delete($table, $condition)
 	{
@@ -769,7 +766,7 @@ class DatabaseBase extends Sql
      * @param $ret
      * @param $sqlData
      * @param bool $required
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public function checkError($ret, $sqlData, $required = true)
 	{

@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/library/Core/DatabaseBase.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/DatabaseBase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Iterators/Database/BatchQueryRecords.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Iterators/Database/BatchQueryRecords.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Iterators/Database/EachQueryRecords.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Iterators/Database/EachQueryRecords.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,8 +30,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="377" column="19" lean-forward="true" selection-start-line="377" selection-start-column="19" selection-end-line="377" selection-end-column="19" />
+            <state relative-caret-position="170">
+              <caret line="374" lean-forward="true" selection-start-line="374" selection-end-line="374" />
               <folding>
                 <element signature="e#33#79#0#PHP" expanded="true" />
               </folding>
@@ -45,10 +40,28 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/system/library/Core/DatabaseBase.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret lean-forward="true" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/library/Iterators/Database/BatchQueryRecords.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="455">
-              <caret line="126" column="43" selection-start-line="126" selection-start-column="43" selection-end-line="126" selection-end-column="43" />
+            <state relative-caret-position="275">
+              <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/library/Core/Log.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="459">
+              <caret line="99" lean-forward="true" selection-start-line="99" selection-end-line="99" />
             </state>
           </provider>
         </entry>
@@ -66,7 +79,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>this-&gt;alias</find>
       <find>mainAlias</find>
       <find>selectTable(</find>
       <find>$mainAlias</find>
@@ -96,6 +108,7 @@
       <find>checkDebug</find>
       <find>$debug</find>
       <find>debug</find>
+      <find>Exception</find>
     </findStrings>
     <replaceStrings>
       <replace>password</replace>
@@ -145,9 +158,9 @@
       <dir>D:\wwwroot\vendor\linyihu\ocara\system</dir>
       <dir>D:\web\framework\vendor\linyihu\ocara\system\library\Core</dir>
       <dir>D:\web\framework\vendor\linyihu\ocara</dir>
-      <dir>D:\web\framework\vendor\linyihu\ocara\system\library</dir>
       <dir>D:\web\framework\vendor\linyihu\ocara\system</dir>
       <dir>D:\web\framework\vendor\linyihu\ocara\system\library\Iterators\Database</dir>
+      <dir>D:\web\framework\vendor\linyihu\ocara\system\library</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -203,14 +216,14 @@
         <option value="$PROJECT_DIR$/system/library/Core/Sql.php" />
         <option value="$PROJECT_DIR$/system/library/Databases/Driver/PdoDriver.php" />
         <option value="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" />
-        <option value="$PROJECT_DIR$/system/library/Core/DatabaseBase.php" />
         <option value="$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php" />
         <option value="$PROJECT_DIR$/system/library/Iterators/Database/EachQueryRecords.php" />
         <option value="$PROJECT_DIR$/system/library/Iterators/Database/BatchQueryRecords.php" />
+        <option value="$PROJECT_DIR$/system/library/Core/DatabaseBase.php" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="5" />
     <option name="y" value="120" />
     <option name="width" value="1940" />
@@ -257,22 +270,7 @@
               <item name="ocara" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
               <item name="library" type="462c0819:PsiDirectoryNode" />
-              <item name="Iterators" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ocara" type="462c0819:PsiDirectoryNode" />
-              <item name="system" type="462c0819:PsiDirectoryNode" />
-              <item name="library" type="462c0819:PsiDirectoryNode" />
-              <item name="Iterators" type="462c0819:PsiDirectoryNode" />
-              <item name="Database" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ocara" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ocara" type="462c0819:PsiDirectoryNode" />
-              <item name="system" type="462c0819:PsiDirectoryNode" />
-              <item name="library" type="462c0819:PsiDirectoryNode" />
-              <item name="Models" type="462c0819:PsiDirectoryNode" />
+              <item name="Core" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -384,12 +382,12 @@
       <workItem from="1565450619552" duration="5169000" />
       <workItem from="1565505074467" duration="595000" />
       <workItem from="1565534556988" duration="890000" />
-      <workItem from="1565543408144" duration="864000" />
+      <workItem from="1565543408144" duration="1982000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="289263000" />
+    <option name="totallyTimeSpent" value="290381000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -429,13 +427,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/system/library/Models/CacheModel.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="16" column="15" selection-start-line="16" selection-start-column="15" selection-end-line="16" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Iterators/Database/EachConditionRecords.php" />
     <entry file="file://$PROJECT_DIR$/system/library/Iterators/Database/EntityRecords.php">
       <provider selected="true" editor-type-id="text-editor">
@@ -758,29 +749,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/DatabaseBase.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1212">
-          <caret line="504" lean-forward="true" selection-start-line="504" selection-end-line="504" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="113">
           <caret line="1115" column="55" selection-start-line="1115" selection-start-column="55" selection-end-line="1115" selection-end-column="55" />
           <folding>
             <element signature="e#557#583#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="377" column="19" lean-forward="true" selection-start-line="377" selection-start-column="19" selection-end-line="377" selection-end-column="19" />
-          <folding>
-            <element signature="e#33#79#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -794,8 +768,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Iterators/Database/BatchQueryRecords.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="455">
-          <caret line="126" column="43" selection-start-line="126" selection-start-column="43" selection-end-line="126" selection-end-column="43" />
+        <state relative-caret-position="275">
+          <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Log.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="99" lean-forward="true" selection-start-line="99" selection-end-line="99" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Entities/DatabaseEntity.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="374" lean-forward="true" selection-start-line="374" selection-end-line="374" />
+          <folding>
+            <element signature="e#33#79#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/DatabaseBase.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret lean-forward="true" />
         </state>
       </provider>
     </entry>
