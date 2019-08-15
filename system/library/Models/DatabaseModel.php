@@ -377,7 +377,7 @@ abstract class DatabaseModel extends ModelBase
 	 * 切换数据库
 	 * @param string $name
 	 */
-	public function selectDatabase($name)
+	public function setDatabase($name)
 	{
 		$this->databaseName = $name;
 	}
@@ -468,7 +468,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function filterData(array $data)
 	{
-        $plugin = $this->plugin(false);
+        $plugin = $this->connect();
 		$result = array();
 
 		foreach ($data as $field => $value) {
@@ -481,9 +481,6 @@ abstract class DatabaseModel extends ModelBase
 		}
 
 		if ($this->fields) {
-			if (!is_object($plugin)) {
-                $plugin = $this->setPlugin($this->connect());
-			}
 			$result = $plugin->formatFieldValues($this->fields, $result);
 		}
 
@@ -498,7 +495,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function filterField($field)
 	{
-	    $plugin = $this->plugin();
+	    $plugin = $this->connect();
 
 		if (!$this->fields) {
 			$this->loadFields();
@@ -529,7 +526,6 @@ abstract class DatabaseModel extends ModelBase
         } else {
 	        if ($this->isClear) {
                 $this->sql = array();
-                $this->setPlugin($this->master);
             }
         }
 		return $this;
@@ -566,8 +562,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function baseSave($data, $condition)
     {
-        $this->connect();
-        $plugin = $this->plugin();
+        $plugin = $this->connect();
         $data = $this->filterData($data);
         $this->loadFields();
 
@@ -607,7 +602,6 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function pushTransaction()
     {
-	    $this->connect();
         ocService()->transaction->push($this->plugin());
     }
 
@@ -697,8 +691,9 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function baseDelete()
 	{
-	    $plugin = $this->plugin();
+	    $plugin = $this->connect();
 		$condition = $this->getCondition();
+
 		if (empty($condition)) {
 			ocService()->error->show('need_condition');
 		}
@@ -731,14 +726,12 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function query($sql)
 	{
-        $plugin = $this->plugin();
+        $plugin = $this->connect();
 
 		if ($sql) {
 			$sqlData = $plugin->getSqlData($sql);
 			$dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
-			return $this
-                ->connect(false)
-                ->query($sqlData, false, array(), $dataType);
+			return $plugin->query($sqlData, false, array(), $dataType);
 		}
 
 		return false;
@@ -752,14 +745,12 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function queryRow($sql)
 	{
-        $plugin = $this->plugin();
+        $plugin = $this->connect();
 
 		if ($sql) {
 			$sqlData = $plugin->getSqlData($sql);
             $dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
-			return $this
-                ->connect(false)
-                ->query($sqlData, false, array(), $dataType);
+			return $plugin->query($sqlData, false, array(), $dataType);
 		}
 
 		return false;
@@ -1081,8 +1072,7 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function baseFind($condition, $option, $queryRow, $count = false, $dataType = null)
 	{
-        $this->connect();
-        $plugin = $this->plugin();
+        $plugin = $this->connect(false);
         $cacheInfo = null;
         $cacheObj = null;
         $encodeSql = null;
@@ -1142,25 +1132,27 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function connect($master = true)
 	{
-        $plugin = $this->setPlugin(null);
+        $plugin = $this->plugin(false);
 
-		if (!($master || ocGet(array('option', 'master'), $this->sql))) {
-			if (!is_object($this->slave)) {
-				$this->slave = DatabaseFactory::create($this->connectName, false, false);
-			}
-            $plugin = $this->setPlugin($this->slave);
-		}
+        if (!$plugin) {
+            if (!($master || ocGet(array('option', 'master'), $this->sql))) {
+                if (!is_object($this->slave)) {
+                    $this->slave = DatabaseFactory::create($this->connectName, false, false);
+                }
+                $plugin = $this->setPlugin($this->slave);
+            }
 
-		if (!is_object($plugin)) {
-			if (!is_object($this->master)) {
-				$this->master = DatabaseFactory::create($this->connectName);
-			}
-            $plugin = $this->setPlugin($this->master);
-		}
+            if (!is_object($plugin)) {
+                if (!is_object($this->master)) {
+                    $this->master = DatabaseFactory::create($this->connectName);
+                }
+                $plugin = $this->setPlugin($this->master);
+            }
+        }
 
-		if ($this->databaseName) {
+        if (!$plugin->isSelectedDatabase()) {
             $plugin->selectDatabase($this->databaseName);
-		}
+        }
 
 		return $plugin;
 	}
@@ -1255,7 +1247,7 @@ abstract class DatabaseModel extends ModelBase
 	 * @param string $on
 	 * @return mixed
 	 */
-	public function parseJoinOnSql($alias, $on)
+	protected function parseJoinOnSql($alias, $on)
 	{
 		if (is_array($on)) {
 			$on = $this->plugin()->parseCondition($on, 'AND', '=', $alias);
@@ -1666,8 +1658,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function getLastSql()
     {
-        $plugin = $this->plugin(false);
-        return $plugin ? $this->plugin()->getLastSql() : null;
+        return $this->connect()->getLastSql();
     }
 
     /**
@@ -1681,7 +1672,6 @@ abstract class DatabaseModel extends ModelBase
         $currentAlias = $this->getCurrentAlias();
 	    $this->setJoin(false, $this->tag, $currentAlias);
 
-        $plugin = $this->plugin();
 		$option = ocGet('option', $this->sql, array());
 		$tables = ocGet('tables', $this->sql, array());
 		$unJoined = count($tables) <= 1;
@@ -1723,7 +1713,7 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function genWhere()
 	{
-        $plugin = $this->plugin();
+        $plugin = $this->connect();
 		$option = ocGet('option', $this->sql, array());
 		$where = array();
 
@@ -1834,12 +1824,9 @@ abstract class DatabaseModel extends ModelBase
 
 			if (empty($fullname)) continue;
 			if ($unJoined) $alias = null;
-			if (!$on && $config) {
-				$on = $this->getJoinOnSql($alias, $config);
-			}
-			if ($on) {
-                $on = $this->parseJoinOnSql($alias, $on);
-            }
+			if (!$on && $config) $on = $this->getJoinOnSql($alias, $config);
+			if ($on) $on = $this->parseJoinOnSql($alias, $on);
+
 			$fullname = $plugin->getTableFullname($fullname, $this->getDatabaseName());
 			$from = $from . $plugin->getJoinSql($type, $fullname, $alias, $on);
 		}
@@ -1855,7 +1842,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function getJoinOnSql($alias, $config)
 	{
-        $plugin = $this->plugin();
+        $plugin = $this->connect();
 		$joinOn = null;
 
 		if ($config) {
@@ -1888,7 +1875,7 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function getComplexWhere(array $data, $alias)
 	{
-        $plugin = $this->plugin();
+        $plugin = $this->connect();
 		$cond = null;
 		list($sign, $field, $value) = $data;
 
@@ -1972,14 +1959,17 @@ abstract class DatabaseModel extends ModelBase
     protected function setJoin($type, $class, $alias, $on = false)
 	{
 		$config = array();
-		$this->connect();
 
 		if ($type == false) {
             $fullname = $this->getTableName();
             $alias = $alias ?: $fullname;
             $class = $this->tag;
             $tables = array($alias => compact('type', 'fullname', 'class', 'config'));
-            $this->sql['tables'] = array_merge($tables, $this->sql['tables']);
+            if (!empty($this->sql['tables'])) {
+                $this->sql['tables'] = array_merge($tables, $this->sql['tables']);
+            } else {
+                $this->sql['tables'] = $tables;
+            }
 		} else {
             $shardingData = array();
             $relateShardingInfo = $this->getRelateShardingInfo($class);

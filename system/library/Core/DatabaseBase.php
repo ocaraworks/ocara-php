@@ -553,6 +553,15 @@ class DatabaseBase extends Sql
 		return $result;
 	}
 
+    /**
+     * 是否已选择数据库
+     * @return bool
+     */
+	public function isSelectedDatabase()
+    {
+        return !!$this->config['name'];
+    }
+
 	/**
 	 * 获取关键字
 	 */
