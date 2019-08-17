@@ -1245,7 +1245,7 @@ abstract class DatabaseModel extends ModelBase
                 $this->sql['option']['where'][] = $where;
             }
         } else {
-	        $sign = 'AND/' . $signOrAlias;
+	        $sign = array('AND', $signOrAlias);
             $this->complexWhere('where', $sign, $where, $value, $alias);
         }
 
@@ -1269,25 +1269,25 @@ abstract class DatabaseModel extends ModelBase
                 $this->sql['option']['where'][] = $where;
             }
         } else {
-            $sign = 'OR/' . $signOrAlias;
+            $sign = array('OR', $signOrAlias);
             $this->complexWhere('where', $sign, $where, $value, $alias);
         }
 
         return $this;
 	}
 
-	/**
-	 * 生成复杂条件
-	 * @param string $operator
-	 * @param string $field
-	 * @param mixed $value
-	 * @param null $alias
-	 * @param string $type
-	 * @return $this
-	 */
-	public function complexWhere($type, $operator, $field, $value, $alias = null)
+    /**
+     * 生成复杂条件
+     * @param $type
+     * @param string|array $signInfo
+     * @param $field
+     * @param $value
+     * @param null $alias
+     * @return $this
+     */
+	public function complexWhere($type, $signInfo, $field, $value, $alias = null)
 	{
-		$signInfo = explode('/', $operator);
+        $signInfo = (array)$signInfo;
 
 		if (isset($signInfo[1])) {
 			list($linkSign, $operator) = $signInfo;
