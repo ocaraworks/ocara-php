@@ -9,6 +9,7 @@
 namespace Ocara\Models;
 
 use Ocara\Core\DriverBase;
+use Ocara\Generators\Sql;
 use \ReflectionObject;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\CacheFactory;
@@ -57,8 +58,6 @@ abstract class DatabaseModel extends ModelBase
     protected static $configPath = array();
     protected static $requirePrimary;
 
-    const EVENT_CACHE_QUERY_DATA = 'cacheQueryData';
-
     /**
      * 初始化
      * DatabaseModel constructor.
@@ -97,13 +96,10 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 注册事件
-     * @throws Exception
      */
     public function registerEvents()
     {
         $this->bindEvents($this);
-        $this->event(self::EVENT_CACHE_QUERY_DATA)
-             ->append(ocConfig(array('EVENT', 'model', 'query', 'save_cache_data'), null));
     }
 
 	/**
@@ -460,64 +456,11 @@ abstract class DatabaseModel extends ModelBase
         return $this->autoIncrementField;
     }
 
-    /**
-     * 别名字段数据映射过滤
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-	public function filterData(array $data)
-	{
-        $plugin = $this->connect();
-		$result = array();
-
-		foreach ($data as $field => $value) {
-		    if (!is_object($value)) {
-                $key = $this->filterField($field);
-                if ($key) {
-                    $result[$key] = $value;
-                }
-            }
-		}
-
-		if ($this->fields) {
-			$result = $plugin->formatFieldValues($this->fields, $result);
-		}
-
-		return $result;
-	}
-
-    /**
-     * 字段别名映射过滤
-     * @param $field
-     * @return mixed|null
-     * @throws Exception
-     */
-	public function filterField($field)
-	{
-	    $plugin = $this->connect();
-
-		if (!$this->fields) {
-			$this->loadFields();
-		}
-
-		$mapsConfig = self::getConfig('MAPS');
-		$key = isset($mapsConfig[$field]) ? $mapsConfig[$field] : $field;
-
-        if (!$plugin->hasAlias($key)) {
-            if (!isset($this->fields[$key])) {
-                return null;
-            }
-        }
-
-		return $key;
-	}
 
     /**
      * 清理SQL
      * @param bool $isClear
      * @return $this
-     * @throws Exception
      */
 	public function clearSql($isClear = true)
 	{
@@ -556,13 +499,19 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 保存记录
      * @param $data
-     * @param $condition
+     * @param $conditionSql
      * @return bool
      * @throws Exception
      */
-    public function baseSave($data, $condition)
+    public function baseSave($data, $conditionSql = null)
     {
         $plugin = $this->connect();
+
+        $conditionSql = $conditionSql ?: $this->getWhereSql($plugin);
+        if (!$conditionSql) {
+            ocService()->error->show('need_condition');
+        }
+
         $data = $this->filterData($data);
         $this->loadFields();
 
@@ -570,10 +519,9 @@ abstract class DatabaseModel extends ModelBase
             ocService()->error->show('fault_save_data');
         }
 
-        $this->pushTransaction();
-
-        if ($condition) {
-            $result = $plugin->update($this->tableName, $data, $condition);
+        if ($conditionSql) {
+            $this->pushTransaction();
+            $result = $plugin->update($this->tableName, $data, $conditionSql);
         } else {
             $autoIncrementField = $this->getAutoIncrementField();
             if (!in_array($autoIncrementField, $this->primaries)) {
@@ -581,6 +529,7 @@ abstract class DatabaseModel extends ModelBase
                     ocService()->error->show('need_create_primary_data');
                 }
             }
+            $this->pushTransaction();
             $result = $plugin->insert($this->tableName, $data);
         }
 
@@ -626,12 +575,9 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function update(array $data, $batchLimit = 1000)
 	{
+        $plugin = $this->connect();
         $batchLimit = $batchLimit ?: 1000;
-        $condition = $this->getCondition();
-
-		if (empty($condition)) {
-		    ocService()->error->show('need_condition');
-		}
+        $conditionSql = $this->getWhereSql($plugin);
 
 		if ($batchLimit) {
             $dataType = $this->getDataType();
@@ -648,7 +594,7 @@ abstract class DatabaseModel extends ModelBase
                 }
             }
         } else {
-		    $this->baseSave($data);
+		    $this->baseSave($data, $conditionSql);
         }
 	}
 
@@ -659,12 +605,9 @@ abstract class DatabaseModel extends ModelBase
      */
     public function delete($batchLimit = 1000)
     {
+        $plugin = $this->connect();
         $batchLimit = $batchLimit ?: 1000;
-        $condition = $this->getCondition();
-
-        if (empty($condition)) {
-            ocService()->error->show('need_condition');
-        }
+        $conditionSql = $this->getWhereSql($plugin);
 
         if ($batchLimit) {
             $dataType = $this->getDataType();
@@ -680,42 +623,30 @@ abstract class DatabaseModel extends ModelBase
                 }
             }
         } else {
-            $this->baseDelete();
+            $this->baseDelete($conditionSql);
         }
     }
 
     /**
      * 删除记录
-     * @return bool
-     * @throws Exception
-     */
-	public function baseDelete()
-	{
-	    $plugin = $this->connect();
-		$condition = $this->getCondition();
-
-		if (empty($condition)) {
-			ocService()->error->show('need_condition');
-		}
-
-        $this->pushTransaction();
-		$result = $plugin->delete($this->tableName, $condition);
-
-		$this->clearSql();
-		return $result;
-	}
-
-    /**
-     * 获取操作条件
+     * @param $conditionSql
      * @return mixed
      * @throws Exception
      */
-    protected function getCondition()
+	public function baseDelete($conditionSql = null)
 	{
-		$this->connect();
-		$condition = $this->genWhere();
+        $plugin = $this->connect();
+        $conditionSql = $conditionSql ?: $this->getWhereSql($plugin);
 
-		return $condition;
+        if (!$conditionSql) {
+            ocService()->error->show('need_condition');
+        }
+
+        $this->pushTransaction();
+		$result = $plugin->delete($this->tableName, $conditionSql);
+
+		$this->clearSql();
+		return $result;
 	}
 
     /**
@@ -889,10 +820,9 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 选择多条记录
-     * @param int $batchLimit
+     * @param $batchLimit
      * @param int $totalLimit
      * @return BatchQueryRecords
-     * @throws Exception
      */
     public function batch($batchLimit, $totalLimit = 0)
     {
@@ -910,7 +840,6 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 选择多条记录
      * @return EachQueryRecords
-     * @throws Exception
      */
     public function each()
     {
@@ -1061,6 +990,15 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
+     * 获取别名
+     * @return mixed|string
+     */
+    public function getAlias()
+    {
+        return !empty($this->sql['alias']) ? $this->sql['alias'] : ($this->alias ?: 'a');
+    }
+
+    /**
      * 查询数据
      * @param mixed $condition
      * @param mixed $option
@@ -1073,27 +1011,11 @@ abstract class DatabaseModel extends ModelBase
     protected function baseFind($condition, $option, $queryRow, $count = false, $dataType = null)
 	{
         $plugin = $this->connect(false);
-        $cacheInfo = null;
-        $cacheObj = null;
-        $encodeSql = null;
 
 	    $this->pushSql($condition, $option, $queryRow);
-        $sql = $this->genSelectSql($count);
+        $this->setJoin(null, $this->tag, $this->getAlias());
 
-		if (isset($this->sql['cache']) && is_array($this->sql['cache'])) {
-			$cacheInfo = $this->sql['cache'];
-		}
-
-		list($cacheConnect, $cacheRequired) = $cacheInfo;
-		$ifCache = $cacheConnect;
-
-		if ($ifCache) {
-			$encodeSql = md5($sql);
-			$cacheObj  = CacheFactory::connect($cacheConnect, $cacheRequired);
-			$cacheData = $this->getCacheData($cacheObj, $encodeSql, $cacheObj, $cacheRequired);
-			if ($cacheData) return $cacheData;
-		}
-
+        $sql = $this->getSelectSql($plugin, $count);
         $dataType = $dataType ? : ($this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY);
 
 		if ($queryRow) {
@@ -1107,13 +1029,54 @@ abstract class DatabaseModel extends ModelBase
 		}
 
 		$this->clearSql();
-
-		if ($ifCache && is_object($cacheObj)) {
-			$this->saveCacheData($cacheObj, $sql, $encodeSql, $cacheRequired, $result);
-		}
-
 		return $result;
 	}
+
+    /**
+     * 获取SQL生成器
+     * @param $plugin
+     * @return Sql
+     */
+	public function getSqlGenerator($plugin)
+    {
+        $generator = new Sql($plugin, $this->databaseName);
+
+        $generator->setDefaultAlias($this->alias);
+        $generator->setSql($this->sql);
+        $generator->setFields($this->getFields());
+        $generator->setMaps(static::getConfig('MAPS'));
+
+        return $generator;
+    }
+
+    /**
+     * 生成Select语句
+     * @param $plugin
+     * @param $count
+     * @return array
+     */
+	public function getSelectSql($plugin, $count)
+    {
+        $generator = $this->getSqlGenerator($plugin);
+        $sql = $generator->genSelectSql($count);
+        $generator = null;
+        unset($generator);
+        return $sql;
+    }
+
+    /**
+     * 生成Where语句
+     * @param $plugin
+     * @return bool|string
+     */
+    public function getWhereSql($plugin)
+    {
+        $generator = $this->getSqlGenerator($plugin);
+        $sql = $generator->genWhereSql();
+        $generator = null;
+        unset($generator);
+        return $sql;
+    }
 
     /**
      * 是否分页
@@ -1158,57 +1121,11 @@ abstract class DatabaseModel extends ModelBase
 	}
 
     /**
-     * 获取缓存数据
-     * @param object $cacheObj
-     * @param string $sql
-     * @param string $sqlEncode
-     * @param bool $cacheRequired
-     * @return mixed|null
-     * @throws Exception
-     */
-	public function getCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired)
-	{
-		if (is_object($cacheObj)) {
-			if ($callback = ocConfig(array('EVENT', 'model', 'query', 'get_cache_data'), null)) {
-				$params = array($cacheObj, $sql, $cacheRequired);
-				if ($result = call_user_func_array($callback, $params)) {
-					return $result;
-				}
-			} else {
-				if ($cacheData = $cacheObj->get($sqlEncode)) {
-					return json_decode($cacheData);
-				}
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * 保存缓存数据
-	 * @param object $cacheObj
-	 * @param string $sql
-	 * @param string $sqlEncode
-	 * @param bool $cacheRequired
-	 * @param array $result
-	 */
-	public function saveCacheData($cacheObj, $sql, $sqlEncode, $cacheRequired, $result)
-	{
-		if ($this->event(self::EVENT_CACHE_QUERY_DATA)->get()) {
-			$params = array($cacheObj, $sql, $result, $cacheRequired);
-			$this->fire(self::EVENT_CACHE_QUERY_DATA, $params);
-		} else {
-			$cacheObj->set($sqlEncode, json_encode($result));
-		}
-	}
-
-    /**
      * 左联接
      * @param string $class
      * @param string $alias
      * @param string $on
      * @return DatabaseModel
-     * @throws Exception
      */
 	public function leftJoin($class, $alias = null, $on = null)
 	{
@@ -1221,7 +1138,6 @@ abstract class DatabaseModel extends ModelBase
      * @param string $alias
      * @param string $on
      * @return DatabaseModel
-     * @throws Exception
      */
 	public function rightJoin($class, $alias = null, $on = null)
 	{
@@ -1234,26 +1150,10 @@ abstract class DatabaseModel extends ModelBase
      * @param string $alias
      * @param string $on
      * @return DatabaseModel
-     * @throws Exception
      */
 	public function innerJoin($class, $alias = null, $on = null)
 	{
 		return $this->setJoin('inner', $class, $alias, $on);
-	}
-
-	/**
-	 * 解析on参数
-	 * @param string $alias
-	 * @param string $on
-	 * @return mixed
-	 */
-	protected function parseJoinOnSql($alias, $on)
-	{
-		if (is_array($on)) {
-			$on = $this->plugin()->parseCondition($on, 'AND', '=', $alias);
-		}
-
-		return $on;
 	}
 
     /**
@@ -1569,7 +1469,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function bind($name, $value)
 	{
-		$this->plugin()->bind($name, $value);
+	    $this->sql['binds'][$name] = $value;
 		return $this;
 	}
 
@@ -1585,317 +1485,12 @@ abstract class DatabaseModel extends ModelBase
 	}
 
     /**
-     * 设置字段别名转换映射
-     * @param $tables
-     * @return array
-     */
-	private function getAliasFields($tables, $currentAlias)
-	{
-		$unJoined = count($tables) <= 1;
-		$transforms = array();
-
-		if ($unJoined) {
-			$map = self::getConfig('MAPS');
-			if ($map) {
-				$transforms[$currentAlias] = $map;
-			}
-		} else {
-			$transforms = array();
-			foreach ($tables as $alias => $row) {
-				if ($alias == $currentAlias) {
-					if ($map = self::getConfig('MAPS')) {
-						$transforms[$currentAlias] = $map;
-					}
-				} elseif (isset($this->joins[$alias])) {
-					if ($map = self::getConfig('MAPS')) {
-						$transforms[$alias] = $map;
-					}
-				}
-			}
-		}
-
-		return $transforms;
-	}
-
-	/**
-	 * 是否默认字段
-	 * @param $fields
-	 * @return bool
-	 */
-    protected function isDefaultFields($fields)
-	{
-		$isDefault = false;
-		if (empty($fields)) {
-			$isDefault = true;
-		} else {
-			$exp = '/^\{\w+\}$/';
-			if (is_array($fields) && count($fields) == 1) {
-				if (isset($fields[1]) && preg_match($exp, $fields[1])) {
-					$isDefault = true;
-				}
-			} elseif (is_string($fields)) {
-				if (isset($fields) && preg_match($exp, $fields)) {
-					$isDefault = true;
-				}
-			}
-		}
-
-		return $isDefault;
-	}
-
-    /**
-     * 获取当前表别名
-     * @return mixed|string
-     */
-	protected function getCurrentAlias()
-    {
-        $currentAlias = !empty($this->sql['alias']) ? $this->sql['alias'] : ($this->alias ?: 'a');
-        return $currentAlias;
-    }
-
-    /**
      * 获取最后执行的SQL
      */
     public function getLastSql()
     {
         return $this->connect()->getLastSql();
     }
-
-    /**
-     * 生成查询Sql
-     * @param bool $count
-     * @return mixed
-     * @throws Exception
-     */
-    protected function genSelectSql($count = false)
-	{
-        $currentAlias = $this->getCurrentAlias();
-	    $this->setJoin(false, $this->tag, $currentAlias);
-
-		$option = ocGet('option', $this->sql, array());
-		$tables = ocGet('tables', $this->sql, array());
-		$unJoined = count($tables) <= 1;
-		$from = $this->getFromSql($tables, $unJoined);
-
-		if ($count) {
-			$countField = ocGet('countField', $this->sql, null);
-			$isGroup = !empty($option['group']);
-			$fields = $plugin->getCountSql($countField, 'total', $isGroup);
-		} else {
-			$aliasFields = $this->getAliasFields($tables, $currentAlias);
-			if (!isset($option['fields']) || $this->isDefaultFields($option['fields'])) {
-				$option['fields'][] = array($currentAlias, array_keys($this->getFields()));
-			}
-
-			$fields = $this->getFieldsSql($option['fields'], $aliasFields, $unJoined);
-		}
-
-		$option['where'] = $this->genWhere();
-		if (isset($option['having'])) {
-			$option['having'] = $this->getWhereSql($option['having']);
-		}
-
-		if (isset($option['limit'])) {
-			if ($count) {
-				ocDel($option, 'limit');
-			} else {
-				$option['limit'] = $plugin->getLimitSql($option['limit']);
-			}
-		}
-
-		return $plugin->getSelectSql($fields, $from, $option);
-	}
-
-    /**
-     * 生成条件数据
-     * @return string
-     * @throws Exception
-     */
-    protected function genWhere()
-	{
-        $plugin = $this->connect();
-		$option = ocGet('option', $this->sql, array());
-		$where = array();
-
-		if (!empty($option['where'])) {
-			$option['where'] = $this->getWhereSql($option['where']);
-			$where[] = array('where' => $option['where'], 'link' => 'AND');
-		}
-
-		if (!empty($option['moreWhere'])) {
-			foreach ($option['moreWhere'] as $row) {
-				$row['where'] = $plugin->parseCondition($row['where']);
-				$where[] = $row;
-			}
-		}
-
-		return $where ? $plugin->getWhereSql($where) : OC_EMPTY;
-	}
-
-    /**
-     * 获取条件SQL语句
-     * @param array $data
-     * @return array
-     * @throws Exception
-     */
-    protected function getWhereSql(array $data)
-	{
-        $plugin = $this->plugin();
-		$where = array();
-
-		foreach ($data as $key => $value) {
-			list($alias, $whereType, $whereData, $linkSign) = $value;
-
-			$condition = null;
-			if ($whereType == 'where') {
-				if (is_array($whereData)) {
-					$whereData = $this->filterData($whereData);
-				}
-				if ($whereData) {
-					$condition = $plugin->parseCondition($whereData, 'AND', '=', $alias);
-				}
-			} elseif ($whereType == 'between') {
-				$field = $this->filterField($whereData[0]);
-				if($field) {
-					$whereData[0] = $field;
-					$whereData[] = $alias;
-					$condition = call_user_func_array(array($plugin, 'getBetweenSql'), $whereData);
-				}
-			} else {
-				$condition = $this->getComplexWhere($whereData, $alias);
-			}
-			if ($condition) {
-				$where[] = array($linkSign, $condition);
-			}
-		}
-
-		$where = $plugin->linkWhere($where);
-		$where = $plugin->wrapWhere($where);
-
-		return $where;
-	}
-
-	/**
-	 * 获取字段列表
-	 * @param array $fieldsData
-	 * @param array $aliasFields
-	 * @param bool $unJoined
-	 * @return mixed
-	 */
-    protected function getFieldsSql($fieldsData, $aliasFields, $unJoined)
-	{
-        $currentAlias = $this->getCurrentAlias();
-        $plugin = $this->plugin();
-
-		if (is_string($fieldsData)) {
-			return $fieldsData;
-		}
-
-		$fields = array();
-
-		foreach ($fieldsData as $key => $value) {
-			list($alias, $fieldData) = $value;
-			if (is_string($fieldData)) {
-				$fieldData = array_map('trim', (explode(',', $fieldData)));
-			}
-			$alias = $unJoined ? false : $alias;
-			$fieldData = (array)$fieldData;
-			$fields[] = $plugin->getFieldsSql($fieldData, $aliasFields, $currentAlias, $alias);
-		}
-
-		$sql = $plugin->combineFieldsSql($fields, $aliasFields, $unJoined, $currentAlias);
-		return $sql;
-	}
-
-	/**
-	 * 生成数据表SQL
-	 * @param string $tables
-	 * @param bool $unJoined
-	 * @return null|string
-	 */
-    protected function getFromSql($tables, $unJoined)
-	{
-        $plugin = $this->plugin();
-		$from = OC_EMPTY;
-
-		foreach ($tables as $alias => $param) {
-			list($type, $fullname, $on, $class, $config) = array_fill(0, 5, null);
-			extract($param);
-
-			if (empty($fullname)) continue;
-			if ($unJoined) $alias = null;
-			if (!$on && $config) $on = $this->getJoinOnSql($alias, $config);
-			if ($on) $on = $this->parseJoinOnSql($alias, $on);
-
-			$fullname = $plugin->getTableFullname($fullname, $this->getDatabaseName());
-			$from = $from . $plugin->getJoinSql($type, $fullname, $alias, $on);
-		}
-
-		return $from;
-	}
-
-	/**
-	 * 获取关联链接条件
-	 * @param string $alias
-	 * @param array $config
-	 * @return string
-	 */
-	public function getJoinOnSql($alias, $config)
-	{
-        $plugin = $this->connect();
-		$joinOn = null;
-
-		if ($config) {
-			$foreignField = $plugin->getFieldNameSql($config['foreignKey'], $alias);
-			$primaryField = $plugin->getFieldNameSql($config['primaryKey'], $this->getCurrentAlias());
-			$where = array($foreignField => ocSql($primaryField));
-			$condition[] = array('AND', $plugin->parseCondition($where, 'AND', null, $alias));
-			if (is_array($config['condition'])) {
-				foreach ($config['condition'] as $key => $value) {
-					$sign = null;
-					if (is_array($value)) {
-						list($sign, $value) = $value;
-					}
-					$key = $plugin->getFieldNameSql($key, $alias);
-					$where = array($key => $value);
-					$condition[] = array('AND', $plugin->parseCondition($where, 'AND', $sign, $alias));
-				}
-			}
-			$joinOn = $plugin->linkWhere($condition);
-		}
-
-		return $joinOn;
-	}
-
-    /**
-     * 复杂条件
-     * @param array $data
-     * @param $alias
-     * @return null
-     */
-    protected function getComplexWhere(array $data, $alias)
-	{
-        $plugin = $this->connect();
-		$cond = null;
-		list($sign, $field, $value) = $data;
-
-		$sign = array_map('trim', explode(OC_DIR_SEP, $sign));
-		if (!$sign) {
-			ocService()->error->show('fault_cond_sign');
-		}
-
-		if (isset($sign[1])) {
-			list($link, $sign) = $sign;
-		} else {
-			$sign = $sign[0];
-			$link = 'AND';
-		}
-
-		$where = array($field => $value);
-		$cond = $plugin->parseCondition($where, $link, $sign, $alias);
-
-		return $cond;
-	}
 
 	/**
 	 * 获取表名
@@ -1954,17 +1549,16 @@ abstract class DatabaseModel extends ModelBase
      * @param $alias
      * @param bool $on
      * @return $this
-     * @throws Exception
      */
     protected function setJoin($type, $class, $alias, $on = false)
 	{
 		$config = array();
 
 		if ($type == false) {
-            $fullname = $this->getTableName();
-            $alias = $alias ?: $fullname;
+            $fullName = $this->getTableName();
+            $alias = $alias ?: $fullName;
             $class = $this->tag;
-            $tables = array($alias => compact('type', 'fullname', 'class', 'config'));
+            $tables = array($alias => compact('type', 'fullName', 'class', 'config'));
             if (!empty($this->sql['tables'])) {
                 $this->sql['tables'] = array_merge($tables, $this->sql['tables']);
             } else {
@@ -1985,10 +1579,10 @@ abstract class DatabaseModel extends ModelBase
 			if ($shardingData) {
                 $model->sharding($shardingData);
             }
-            $fullname = $model->getTableName();
-			$alias = $alias ?: $fullname;
+            $fullName = $model->getTableName();
+			$alias = $alias ?: $fullName;
 			$this->joins[$alias] = $model;
-            $this->sql['tables'][$alias] = compact('type', 'fullname', 'class', 'config');
+            $this->sql['tables'][$alias] = compact('type', 'fullName', 'class', 'config');
 		}
 
 		if ($on) {

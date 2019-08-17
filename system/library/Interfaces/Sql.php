@@ -243,7 +243,7 @@ interface Sql
 	 * 将数组改成条件字符串
 	 * @param array $data
 	 */
-	public function getWhereSql($data);
+	public function getConditionSql($data);
 
 	/**
 	 * 获取合并查询语句

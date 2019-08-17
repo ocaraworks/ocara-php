@@ -390,24 +390,6 @@ function ocShutdownHandler()
 }
 
 /**
- * 调试函数 - 使用var_dump打印输出并且停止代码执行
- * @param mixed $content
- */
-function ocPrint($content)
-{
-	print_r($content);
-}
-
-/**
- * 调试函数 - 使用var_dump打印输出并且停止代码执行
- * @param mixed $content
- */
-function ocDump($content)
-{
-	var_dump($content);
-}
-
-/**
  * 输出错误或返回错误处理类
  * @param null $error
  * @param array $params

@@ -263,7 +263,7 @@ abstract class DatabaseEntity extends BaseEntity
             $this->setProperty($data);
         }
 
-        $result = $model->baseSave($this->toArray(), null);
+        $result = $model->baseSave($this->toArray(), array());
         $this->insertId = $model->getInsertId();
         $autoIncrementField = $this->getModel()->getAutoIncrementField();
 
@@ -308,17 +308,21 @@ abstract class DatabaseEntity extends BaseEntity
             ocService()->transaction->begin();
         }
 
-        $this->fire(self::EVENT_BEFORE_CREATE);
         $data = array_merge($this->getChanged(), $data);
-        if (empty($data)) return false;
 
-        call_user_func_array('ocDel', array(&$data, $model::getPrimaries()));
-        $result = $model->baseSave($data, $this->selected);
+        if ($data) {
+            call_user_func_array('ocDel', array(&$data, $model::getPrimaries()));
+            $model->where($this->selected);
 
-        $this->relateSave();
-        $this->fire(self::EVENT_AFTER_UPDATE);
+            $this->fire(self::EVENT_BEFORE_UPDATE);
+            $result = $model->baseSave($data);
+            $this->relateSave();
+            $this->fire(self::EVENT_AFTER_UPDATE);
 
-        return $result;
+            return $result;
+        }
+
+        return fasle;
     }
 
     /**

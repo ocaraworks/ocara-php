@@ -41,16 +41,6 @@ return array(
          * 数据模型Model相关事件
          */
         'model' => array(
-            //Model查询缓存的事件
-            'query' => array(
-                'save_cache_data' => '', //保存为缓存数据的事件
-                'get_cache_data' => '',  //获取缓存数据的事件
-            )
         ),
-
-        /*
-         * die()或exit()函数事件
-         */
-        'oc_die' => '',
     )
 );

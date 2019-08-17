@@ -1,0 +1,416 @@
+<?php
+/*************************************************************************************************
+ * -----------------------------------------------------------------------------------------------
+ * Ocara开源框架   Session文件方式处理类SessionFile
+ * Copyright (c) http://www.ocara.cn All rights reserved.
+ * -----------------------------------------------------------------------------------------------
+ * @author Lin YiHu <linyhtianwa@163.com>
+ ************************************************************************************************/
+namespace Ocara\Generators;
+
+use Ocara\Core\Base;
+use Ocara\Core\DatabaseBase;
+
+class Sql extends Base
+{
+    protected $database;
+    protected $sql;
+    protected $alias;
+    protected $databaseName;
+    protected $maps;
+    protected $fields;
+
+    /**
+     * Sql constructor.
+     * @param DatabaseBase $database
+     * @param $databaseName
+     */
+    public function __construct(DatabaseBase $database, $databaseName)
+    {
+        $this->database = $database;
+        $this->databaseName = $databaseName;
+    }
+
+    /**
+     * @param $sql
+     */
+    public function setSql($sql)
+    {
+        $this->sql = $sql;
+    }
+
+    /**
+     * @param $maps
+     */
+    public function setMaps($maps)
+    {
+        $this->maps = $maps;
+    }
+
+    /**
+     * @param $fields
+     */
+    public function setFields($fields)
+    {
+        $this->fields = $fields;
+    }
+
+    /**
+     * @param $alias
+     */
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+    }
+
+    /**
+     * 销毁变量
+     */
+    public function __destruct()
+    {
+        $this->database = null;
+        unset($this->database);
+    }
+
+    /**
+     * 生成查询Sql
+     * @param bool $count
+     * @return array
+     */
+    public function genSelectSql($count = false)
+    {
+        $option = ocGet('option', $this->sql, array());
+        $tables = ocGet('tables', $this->sql, array());
+        $unJoined = count($tables) <= 1;
+        $from = $this->getFromSql($tables, $unJoined);
+
+        if ($count) {
+            $countField = ocGet('countField', $this->sql, null);
+            $isGroup = !empty($option['group']);
+            $fields = $this->database->getCountSql($countField, 'total', $isGroup);
+        } else {
+            $aliasFields = $this->getAliasFields($tables, $this->alias);
+            if (!isset($option['fields']) || $this->isDefaultFields($option['fields'])) {
+                $option['fields'][] = array($this->alias, array_keys($this->fields));
+            }
+            $fields = $this->getFieldsSql($option['fields'], $aliasFields, $unJoined);
+        }
+
+        $option['where'] = $this->genWhereSql();
+        if (isset($option['having'])) {
+            $option['having'] = $this->getConditionSql($option['having']);
+        }
+
+        if (isset($option['limit'])) {
+            if ($count) {
+                ocDel($option, 'limit');
+            } else {
+                $option['limit'] = $this->database->getLimitSql($option['limit']);
+            }
+        }
+
+        return $this->database->getSelectSql($fields, $from, $option);
+    }
+
+    /**
+     * 获取条件SQL语句
+     * @param array $data
+     * @return array|string
+     */
+    public function getConditionSql(array $data)
+    {
+        $where = array();
+
+        foreach ($data as $key => $value) {
+            list($alias, $whereType, $whereData, $linkSign) = $value;
+
+            $condition = null;
+            if ($whereType == 'where') {
+                if (is_array($whereData)) {
+                    $whereData = $this->filterData($whereData);
+                }
+                if ($whereData) {
+                    $condition = $this->database->parseCondition($whereData, 'AND', '=', $alias);
+                }
+            } elseif ($whereType == 'between') {
+                $field = $this->filterField($whereData[0]);
+                if($field) {
+                    $whereData[0] = $field;
+                    $whereData[] = $alias;
+                    $condition = call_user_func_array(array($this->database, 'getBetweenSql'), $whereData);
+                }
+            } else {
+                $condition = $this->getComplexWhere($whereData, $alias);
+            }
+            if ($condition) {
+                $where[] = array($linkSign, $condition);
+            }
+        }
+
+        $where = $this->database->linkWhere($where);
+        $where = $this->database->wrapWhere($where);
+
+        return $where;
+    }
+
+    /**
+     * 复杂条件
+     * @param array $data
+     * @param $alias
+     * @return array|bool|mixed|string|null
+     */
+    public function getComplexWhere(array $data, $alias)
+    {
+        $cond = null;
+        list($sign, $field, $value) = $data;
+
+        $sign = array_map('trim', explode(OC_DIR_SEP, $sign));
+        if (!$sign) {
+            ocService()->error->show('fault_cond_sign');
+        }
+
+        if (isset($sign[1])) {
+            list($link, $sign) = $sign;
+        } else {
+            $sign = $sign[0];
+            $link = 'AND';
+        }
+
+        $where = array($field => $value);
+        $cond = $this->database->parseCondition($where, $link, $sign, $alias);
+
+        return $cond;
+    }
+
+    /**
+     * 别名字段数据映射过滤
+     * @param array $data
+     * @return array
+     */
+    public function filterData(array $data)
+    {
+        $result = array();
+
+        foreach ($data as $field => $value) {
+            if (!is_object($value)) {
+                $key = $this->filterField($field);
+                if ($key) {
+                    $result[$key] = $value;
+                }
+            }
+        }
+
+        if ($this->fields) {
+            $result = $this->database->formatFieldValues($this->fields, $result);
+        }
+
+        return $result;
+    }
+
+    /**
+     * 字段别名映射过滤
+     * @param $field
+     * @return null
+     */
+    public function filterField($field)
+    {
+        $key = isset($this->maps[$field]) ? $this->maps[$field] : $field;
+
+        if (!$this->database->hasAlias($key)) {
+            if (!isset($this->fields[$key])) {
+                return null;
+            }
+        }
+
+        return $key;
+    }
+
+    /**
+     * 生成条件数据
+     * @return bool|string
+     */
+    public function genWhereSql()
+    {
+        $option = ocGet('option', $this->sql, array());
+        $where = array();
+
+        if (!empty($option['where'])) {
+            $option['where'] = $this->getConditionSql($option['where']);
+            $where[] = array('where' => $option['where'], 'link' => 'AND');
+        }
+
+        if (!empty($option['moreWhere'])) {
+            foreach ($option['moreWhere'] as $row) {
+                $row['where'] = $this->database->parseCondition($row['where']);
+                $where[] = $row;
+            }
+        }
+
+        return $where ? $this->database->getConditionSql($where) : OC_EMPTY;
+    }
+
+    /**
+     * 获取字段列表
+     * @param array $fieldsData
+     * @param array $aliasFields
+     * @param bool $unJoined
+     * @return mixed
+     */
+    public function getFieldsSql($fieldsData, $aliasFields, $unJoined)
+    {
+        $fields = array();
+
+        if (is_string($fieldsData)) return $fieldsData;
+
+        foreach ($fieldsData as $key => $value) {
+            list($alias, $fieldData) = $value;
+            if (is_string($fieldData)) {
+                $fieldData = array_map('trim', (explode(',', $fieldData)));
+            }
+            $alias = $unJoined ? false : $alias;
+            $fieldData = (array)$fieldData;
+            $fields[] = $this->database->getFieldsSql($fieldData, $aliasFields, $this->alias, $alias);
+        }
+
+        $sql = $this->database->combineFieldsSql($fields, $aliasFields, $unJoined, $this->alias);
+        return $sql;
+    }
+
+    /**
+     * 设置字段别名转换映射
+     * @param $tables
+     * @param $currentAlias
+     * @return array
+     */
+    public function getAliasFields($tables, $currentAlias)
+    {
+        $unJoined = count($tables) <= 1;
+        $transforms = array();
+
+        if ($unJoined) {
+            if ($this->maps) {
+                $transforms[$currentAlias] = $this->maps;
+            }
+        } else {
+            $transforms = array();
+            foreach ($tables as $alias => $row) {
+                if ($alias == $currentAlias) {
+                    if ($this->maps) {
+                        $transforms[$currentAlias] = $this->maps;
+                    }
+                } elseif (isset($this->joins[$alias])) {
+                    if ($this->maps) {
+                        $transforms[$alias] = $this->maps;
+                    }
+                }
+            }
+        }
+
+        return $transforms;
+    }
+
+    /**
+     * 是否默认字段
+     * @param $fields
+     * @return bool
+     */
+    public function isDefaultFields($fields)
+    {
+        $isDefault = false;
+
+        if ($fields) {
+            $exp = '/^\{\w+\}$/';
+            if (is_array($fields) && count($fields) == 1) {
+                if (isset($fields[1]) && preg_match($exp, $fields[1])) {
+                    $isDefault = true;
+                }
+            } elseif (is_string($fields)) {
+                if (isset($fields) && preg_match($exp, $fields)) {
+                    $isDefault = true;
+                }
+            }
+        } else {
+            $isDefault = true;
+        }
+
+        return $isDefault;
+    }
+
+    /**
+     * 生成数据表SQL
+     * @param $tables
+     * @param $unJoined
+     * @return string
+     */
+    public function getFromSql($tables, $unJoined)
+    {
+        $from = OC_EMPTY;
+
+        foreach ($tables as $alias => $param) {
+            if (empty($param['fullName'])) continue;
+
+            if ($unJoined) {
+                $param['alias'] = null;
+            }
+
+            if (!$param['on'] && $param['config']) {
+                $param['on'] = $this->getJoinOnSql($param['alias'], $param['config']);
+            }
+
+            if ($param['on']) {
+                $param['on'] = $this->parseJoinOnSql($param['alias'], $param['on']);
+            }
+
+            $param['fullName'] = $this->database->getTableFullname($param['fullName'], $this->databaseName);
+            $from = $from . $this->database->getJoinSql($param['type'], $param['fullName'], $param['alias'], $param['on']);
+        }
+
+        return $from;
+    }
+
+    /**
+     * 解析on参数
+     * @param string $alias
+     * @param string $on
+     * @return mixed
+     */
+    public function parseJoinOnSql($alias, $on)
+    {
+        if (is_array($on)) {
+            $on = $this->database->parseCondition($on, 'AND', '=', $alias);
+        }
+        return $on;
+    }
+
+    /**
+     * 获取关联链接条件
+     * @param $alias
+     * @param $config
+     * @return null
+     */
+    public function getJoinOnSql($alias, $config)
+    {
+        $joinOn = null;
+
+        if ($config) {
+            $foreignField = $this->database->getFieldNameSql($config['foreignKey'], $alias);
+            $primaryField = $this->database->getFieldNameSql($config['primaryKey'], $this->alias);
+            $where = array($foreignField => ocSql($primaryField));
+            $condition[] = array('AND', $this->database->parseCondition($where, 'AND', null, $alias));
+            if (is_array($config['condition'])) {
+                foreach ($config['condition'] as $key => $value) {
+                    $sign = null;
+                    if (is_array($value)) {
+                        list($sign, $value) = $value;
+                    }
+                    $key = $this->database->getFieldNameSql($key, $alias);
+                    $where = array($key => $value);
+                    $condition[] = array('AND', $this->database->parseCondition($where, 'AND', $sign, $alias));
+                }
+            }
+            $joinOn = $this->database->linkWhere($condition);
+        }
+
+        return $joinOn;
+    }
+}

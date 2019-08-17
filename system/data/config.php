@@ -248,7 +248,6 @@ return array(
         'ocGlobal', 	'ocPath', 	'ocFile', 		'ocRealUrl',
         'ocSimpleUrl', 	'ocUrl', 	'ocConfig',  	'ocGet',
         'ocSet', 		'ocDel',	'ocKeyExists',	'ocFileExists',
-        'ocPrint', 		'ocDump',
     ),
     
     /*
