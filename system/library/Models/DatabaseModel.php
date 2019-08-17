@@ -1041,10 +1041,11 @@ abstract class DatabaseModel extends ModelBase
     {
         $generator = new Sql($plugin, $this->databaseName);
 
-        $generator->setDefaultAlias($this->alias);
+        $generator->setAlias($this->alias);
         $generator->setSql($this->sql);
         $generator->setFields($this->getFields());
         $generator->setMaps(static::getConfig('MAPS'));
+        $generator->setJoins(static::getConfig('JOINS'));
 
         return $generator;
     }
@@ -1588,7 +1589,7 @@ abstract class DatabaseModel extends ModelBase
 		if ($on) {
             $this->addOn($on, $alias);
         } elseif($config) {
-            $this->addOn(null, $alias);
+            $this->addOn(OC_EMPTY, $alias);
         }
 
 		return $this;

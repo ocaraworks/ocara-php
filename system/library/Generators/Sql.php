@@ -18,6 +18,7 @@ class Sql extends Base
     protected $alias;
     protected $databaseName;
     protected $maps;
+    protected $joins;
     protected $fields;
 
     /**
@@ -45,6 +46,14 @@ class Sql extends Base
     public function setMaps($maps)
     {
         $this->maps = $maps;
+    }
+
+    /**
+     * @param $joins
+     */
+    public function setJoins($joins)
+    {
+        $this->joins = $joins;
     }
 
     /**
@@ -350,19 +359,19 @@ class Sql extends Base
             if (empty($param['fullName'])) continue;
 
             if ($unJoined) {
-                $param['alias'] = null;
+                $alias = null;
             }
 
-            if (!$param['on'] && $param['config']) {
-                $param['on'] = $this->getJoinOnSql($param['alias'], $param['config']);
-            }
-
-            if ($param['on']) {
-                $param['on'] = $this->parseJoinOnSql($param['alias'], $param['on']);
+            if (!empty($param['on'])) {
+                $param['on'] = $this->parseJoinOnSql($alias, $param['on']);
+            } elseif ($param['config']) {
+                $param['on'] = $this->getJoinOnSql($alias, $param['config']);
+            } else {
+                $param['on'] = OC_EMPTY;
             }
 
             $param['fullName'] = $this->database->getTableFullname($param['fullName'], $this->databaseName);
-            $from = $from . $this->database->getJoinSql($param['type'], $param['fullName'], $param['alias'], $param['on']);
+            $from = $from . $this->database->getJoinSql($param['type'], $param['fullName'], $alias, $param['on']);
         }
 
         return $from;
