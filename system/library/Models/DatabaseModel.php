@@ -412,8 +412,8 @@ abstract class DatabaseModel extends ModelBase
         }
 
         if ($fieldsInfo) {
-            $this->autoIncrementField = $fieldsInfo['autoIncrementField'];
-            $this->fields = $fieldsInfo['list'];
+            $this->autoIncrementField = ocGet('autoIncrementField', $fieldsInfo, OC_EMPTY);
+            $this->fields = ocGet('list', $fieldsInfo, array());
         }
 
 		return $this;
