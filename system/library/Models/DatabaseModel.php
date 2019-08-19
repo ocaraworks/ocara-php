@@ -1281,8 +1281,6 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function complexWhere($type, $signInfo, $field, $value, $alias = null)
 	{
-        $signInfo = (array)$signInfo;
-
 		if (isset($signInfo[1])) {
 			list($linkSign, $operator) = $signInfo;
 		} else {
