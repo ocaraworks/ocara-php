@@ -509,10 +509,6 @@ abstract class DatabaseModel extends ModelBase
         $plugin = $this->connect();
         $conditionSql = $conditionSql ?: $this->getWhereSql($plugin);
 
-        if (!$conditionSql) {
-            ocService()->error->show('need_condition');
-        }
-
         if (empty($data)) {
             ocService()->error->show('fault_save_data');
         }
@@ -575,7 +571,6 @@ abstract class DatabaseModel extends ModelBase
 	{
         $plugin = $this->connect();
         $batchLimit = $batchLimit ?: 1000;
-        $conditionSql = $this->getWhereSql($plugin);
 
 		if ($batchLimit) {
             $dataType = $this->getDataType();
@@ -592,7 +587,11 @@ abstract class DatabaseModel extends ModelBase
                 }
             }
         } else {
-		    $this->baseSave($data, $conditionSql);
+            $conditionSql = $this->getWhereSql($plugin);
+            if (!$conditionSql) {
+                ocService()->error->show('need_condition');
+            }
+            $this->baseSave($data, $conditionSql);
         }
 	}
 
