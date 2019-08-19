@@ -1273,13 +1273,13 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 生成复杂条件
      * @param $type
-     * @param string|array $signInfo
+     * @param array $signInfo
      * @param $field
      * @param $value
      * @param null $alias
      * @return $this
      */
-	public function complexWhere($type, $signInfo, $field, $value, $alias = null)
+	public function complexWhere($type, array $signInfo, $field, $value, $alias = null)
 	{
 		if (isset($signInfo[1])) {
 			list($linkSign, $operator) = $signInfo;
