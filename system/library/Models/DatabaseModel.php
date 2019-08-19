@@ -506,8 +506,8 @@ abstract class DatabaseModel extends ModelBase
     public function baseSave($data, $conditionSql = null)
     {
         $plugin = $this->connect();
-
         $conditionSql = $conditionSql ?: $this->getWhereSql($plugin);
+
         if (!$conditionSql) {
             ocService()->error->show('need_condition');
         }
