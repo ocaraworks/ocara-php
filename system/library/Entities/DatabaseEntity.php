@@ -263,7 +263,7 @@ abstract class DatabaseEntity extends BaseEntity
             $this->setProperty($data);
         }
 
-        $result = $model->baseSave($this->toArray(), array());
+        $result = $model->baseSave($this->toArray());
         $this->insertId = $model->getInsertId();
         $autoIncrementField = $this->getModel()->getAutoIncrementField();
 
@@ -315,7 +315,7 @@ abstract class DatabaseEntity extends BaseEntity
             $model->where($this->selected);
 
             $this->fire(self::EVENT_BEFORE_UPDATE);
-            $result = $model->baseSave($data);
+            $result = $model->baseSave($data, true);
             $this->relateSave();
             $this->fire(self::EVENT_AFTER_UPDATE);
 

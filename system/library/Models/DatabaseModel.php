@@ -457,7 +457,6 @@ abstract class DatabaseModel extends ModelBase
         return $this->autoIncrementField;
     }
 
-
     /**
      * 清理SQL
      * @param bool $isClear
@@ -500,20 +499,21 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 保存记录
      * @param $data
-     * @param $conditionSql
-     * @return bool
+     * @param bool $isUpdate
+     * @param null $conditionSql
+     * @return mixed
      * @throws Exception
      */
-    public function baseSave($data, $conditionSql = null)
+    public function baseSave($data, $isUpdate = false, $conditionSql = null)
     {
         $plugin = $this->connect();
-        $conditionSql = $conditionSql ?: $this->getWhereSql($plugin);
 
         if (empty($data)) {
             ocService()->error->show('fault_save_data');
         }
 
-        if ($conditionSql) {
+        if ($isUpdate) {
+            $conditionSql = $conditionSql ?: $this->getWhereSql($plugin);
             $this->pushTransaction();
             $result = $plugin->update($this->tableName, $data, $conditionSql);
         } else {
@@ -591,7 +591,7 @@ abstract class DatabaseModel extends ModelBase
             if (!$conditionSql) {
                 ocService()->error->show('need_condition');
             }
-            $this->baseSave($data, $conditionSql);
+            $this->baseSave($data, true, $conditionSql);
         }
 	}
 
