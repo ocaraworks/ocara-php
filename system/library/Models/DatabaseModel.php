@@ -399,16 +399,22 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function loadFields($cache = true)
 	{
-		if (!$this->fields) {
-            if ($cache) {
-                $this->fields = $this->getFieldsConfig();
+        $fieldsInfo = array();
+
+	    if ($cache) {
+	        if (!$this->fields) {
+                $fieldsInfo = $this->getFieldsConfig();
             }
-            if (!$this->fields) {
-                $fieldsInfo = $this->connect()->getFields($this->tableName);
-                $this->autoIncrementField = $fieldsInfo['autoIncrementField'];
-                $this->fields = $fieldsInfo['list'];
-            }
-		}
+        }
+
+        if (!$fieldsInfo) {
+            $fieldsInfo = $this->connect()->getFields($this->tableName);
+        }
+
+        if ($fieldsInfo) {
+            $this->autoIncrementField = $fieldsInfo['autoIncrementField'];
+            $this->fields = $fieldsInfo['list'];
+        }
 
 		return $this;
 	}
@@ -419,12 +425,19 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getFieldsConfig()
 	{
-		$paths = $this->getConfigPath();
-		$path = ocLowerFile($paths['fields']);
+	    if ($this->fields) {
+	        return array(
+                'autoIncrementField' => $this->autoIncrementField,
+	            'list' => $this->fields,
+            );
+        } else {
+            $paths = $this->getConfigPath();
+            $path = ocLowerFile($paths['fields']);
 
-		if (ocFileExists($path)) {
-			return @include($path);
-		}
+            if (ocFileExists($path)) {
+                return @include($path);
+            }
+        }
 
 		return array();
 	}

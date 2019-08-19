@@ -74,7 +74,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 		$table     = $this->getTableFullname($table);
 		$sqlData   = $this->getShowFieldsSql($table);
 		$data      = $this->query($sqlData);
-		$fields    = array('list' => array(), 'autoIncrementField' => OC_EMPTY);
+		$fields    = array('autoIncrementField' => OC_EMPTY, 'list' => array());
 		$isComment = ocConfig('USE_FIELD_DESC_LANG', false);
 
 		foreach ($data as $row) {
