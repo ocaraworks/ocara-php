@@ -399,14 +399,15 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function loadFields($cache = true)
 	{
-		if ($cache) {
-			$this->fields = $this->getFieldsConfig();
-		}
-
 		if (!$this->fields) {
-			$fieldsInfo = $this->connect()->getFields($this->tableName);
-            $this->autoIncrementField = $fieldsInfo['autoIncrementField'];
-            $this->fields = $fieldsInfo['list'];
+            if ($cache) {
+                $this->fields = $this->getFieldsConfig();
+            }
+            if (!$this->fields) {
+                $fieldsInfo = $this->connect()->getFields($this->tableName);
+                $this->autoIncrementField = $fieldsInfo['autoIncrementField'];
+                $this->fields = $fieldsInfo['list'];
+            }
 		}
 
 		return $this;
@@ -1036,8 +1037,6 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getSqlGenerator($plugin)
     {
-        $this->loadFields();
-
         $generator = new Sql($plugin, $this->databaseName);
 
         $generator->setAlias($this->alias);
