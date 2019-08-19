@@ -1352,7 +1352,7 @@ abstract class DatabaseModel extends ModelBase
                 $this->sql['option']['having'][] = $where;
             }
         } else {
-            $sign = 'AND/' . $sign;
+            $sign = array('AND', $sign);
             $this->complexWhere('having', $sign, $where, $value, false);
         }
 
@@ -1374,7 +1374,7 @@ abstract class DatabaseModel extends ModelBase
                 $this->sql['option']['having'][] = $where;
             }
         } else {
-            $sign = 'OR/' . $sign;
+            $sign = array('OR', $sign);
             $this->complexWhere('having', $sign, $where, $value, false);
         }
 
