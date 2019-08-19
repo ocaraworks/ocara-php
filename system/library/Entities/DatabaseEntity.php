@@ -483,7 +483,6 @@ abstract class DatabaseEntity extends BaseEntity
         if (!$this->relations) return true;
 
         $model = $this->getModel();
-
         foreach ($this->relations as $key => $object) {
             $config = $model->getRelateConfig($key);
             if ($config && isset($this->$config['primaryKey'])) {

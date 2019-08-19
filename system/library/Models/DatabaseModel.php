@@ -507,6 +507,7 @@ abstract class DatabaseModel extends ModelBase
     public function baseSave($data, $isUpdate = false, $conditionSql = null)
     {
         $plugin = $this->connect();
+        $this->getFields();
 
         if (empty($data)) {
             ocService()->error->show('fault_save_data');
@@ -633,6 +634,7 @@ abstract class DatabaseModel extends ModelBase
 	public function baseDelete($conditionSql = null)
 	{
         $plugin = $this->connect();
+        $this->getFields();
         $conditionSql = $conditionSql ?: $this->getWhereSql($plugin);
 
         if (!$conditionSql) {
@@ -1008,6 +1010,7 @@ abstract class DatabaseModel extends ModelBase
     protected function baseFind($condition, $option, $queryRow, $count = false, $dataType = null)
 	{
         $plugin = $this->connect(false);
+        $this->getFields();
 
 	    $this->pushSql($condition, $option, $queryRow);
         $this->setJoin(null, $this->tag, $this->getAlias());
