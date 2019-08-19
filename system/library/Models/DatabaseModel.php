@@ -512,9 +512,6 @@ abstract class DatabaseModel extends ModelBase
             ocService()->error->show('need_condition');
         }
 
-        $data = $this->filterData($data);
-        $this->loadFields();
-
         if (empty($data)) {
             ocService()->error->show('fault_save_data');
         }
@@ -1039,6 +1036,8 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getSqlGenerator($plugin)
     {
+        $this->loadFields();
+
         $generator = new Sql($plugin, $this->databaseName);
 
         $generator->setAlias($this->alias);
@@ -1060,8 +1059,6 @@ abstract class DatabaseModel extends ModelBase
     {
         $generator = $this->getSqlGenerator($plugin);
         $sql = $generator->genSelectSql($count);
-        $generator = null;
-        unset($generator);
         return $sql;
     }
 
@@ -1074,8 +1071,6 @@ abstract class DatabaseModel extends ModelBase
     {
         $generator = $this->getSqlGenerator($plugin);
         $sql = $generator->genWhereSql();
-        $generator = null;
-        unset($generator);
         return $sql;
     }
 
