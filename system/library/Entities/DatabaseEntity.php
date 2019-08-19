@@ -278,6 +278,10 @@ abstract class DatabaseEntity extends BaseEntity
         $this->relateSave();
         $this->fire(self::EVENT_AFTER_CREATE);
 
+        if ($this->relations) {
+            ocService()->transaction->commit();
+        }
+
         return $result;
     }
 
@@ -298,19 +302,17 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function update(array $data = array())
     {
+        $result = false;
         $model = $this->getModel();
 
         if (empty($this->selected)) {
             ocService()->error->show('need_condition');
         }
 
-        if ($this->relations) {
-            ocService()->transaction->begin();
-        }
-
         $data = array_merge($this->getChanged(), $data);
 
         if ($data) {
+            if ($this->relations) ocService()->transaction->begin();
             call_user_func_array('ocDel', array(&$data, $model::getPrimaries()));
             $model->where($this->selected);
 
@@ -319,10 +321,10 @@ abstract class DatabaseEntity extends BaseEntity
             $this->relateSave();
             $this->fire(self::EVENT_AFTER_UPDATE);
 
-            return $result;
+            if ($this->relations) ocService()->transaction->commit();
         }
 
-        return fasle;
+        return $result;
     }
 
     /**
