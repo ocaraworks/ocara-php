@@ -356,9 +356,9 @@ class DatabaseBase extends Sql
             $sql = $this->wrapSql($sql);
             foreach ($unions['models'] as $union) {
                 if ($count) {
-                    $unionData = $union['model']->getTotal(self::DEBUG_RETURN);
+                    $unionData = $union['model']->getTotal();
                 } else {
-                    $unionData = $union['model']->getAll(false, false, self::DEBUG_RETURN);
+                    $unionData = $union['model']->getAll();
                 }
                 list($unionSql, $unionParams) = $unionData;
                 $sql .= $this->getUnionSql($unionSql, $union['unionAll']);
