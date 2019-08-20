@@ -628,12 +628,12 @@ class DatabaseBase extends Sql
 		return $result;
 	}
 
-	/**
-	 * 绑定参数
-	 * @param string $type
-	 * @param array $option
-	 * @param scalar $params
-	 */
+    /**
+     * 绑定参数
+     * @param $option
+     * @param $type
+     * @param $params
+     */
 	public function bindParam($option, $type, &$params)
 	{
 		if (is_string($type)) {
