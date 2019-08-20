@@ -48,49 +48,59 @@ class DatabaseBase extends Sql
      */
 	public function __construct(array $config)
 	{
-		$options = array(
-			'host', 'port', 'type', 'class', 'pconnect',
-			'name', 'username', 'prefix', 'charset', 'isPdo',
-			'timeout', 'socket', 'options', 'keywords', 'prepare'
-		);
-
-		$values = array_fill_keys($options, OC_EMPTY);
-		$config = array_merge(array_combine($options, $values), $config);
-		$config['name'] = ocDel($config, 'name');
-
-		if (!$config['charset']) {
-			$config['charset'] = 'utf8';
-		}
-		if (!$config['socket']) {
-			$config['socket'] = null;
-		}
-		if (!$config['options']) {
-			$config['options'] = array();
-		}
-		if (!$config['prepare']) {
-			$config['prepare'] = true;
-		}
-		if (!$config['pconnect']) {
-			$config['pconnect'] = false;
-		}
-		if (!$config['isPdo']) {
-			$config['isPdo'] = true;
-		}
-
-		if (!$config['keywords']) {
-			$config['keywords'] = array();
-		} else {
-			$keywords = explode(',', $config['keywords']);
-			$config['keywords'] = array_map(
-				'trim', array_map('strtolower', $keywords)
-			);
-		}
-
-		$this->config = $config;
-		ocDel($this->config, 'password');
-
-		$this->init($config);
+		$this->init($this->initConfig($config));
 	}
+
+    /**
+     * 初始化配置
+     * @param $config
+     * @return array
+     */
+	public function initConfig($config)
+    {
+        $options = array(
+            'host', 'port', 'type', 'class', 'pconnect',
+            'name', 'username', 'prefix', 'charset', 'isPdo',
+            'timeout', 'socket', 'options', 'keywords', 'prepare'
+        );
+
+        $values = array_fill_keys($options, OC_EMPTY);
+        $config = array_merge(array_combine($options, $values), $config);
+        $config['name'] = ocDel($config, 'name');
+
+        if (!$config['charset']) {
+            $config['charset'] = 'utf8';
+        }
+        if (!$config['socket']) {
+            $config['socket'] = null;
+        }
+        if (!$config['options']) {
+            $config['options'] = array();
+        }
+        if (!$config['prepare']) {
+            $config['prepare'] = true;
+        }
+        if (!$config['pconnect']) {
+            $config['pconnect'] = false;
+        }
+        if (!$config['isPdo']) {
+            $config['isPdo'] = true;
+        }
+
+        if (!$config['keywords']) {
+            $config['keywords'] = array();
+        } else {
+            $keywords = explode(',', $config['keywords']);
+            $config['keywords'] = array_map(
+                'trim', array_map('strtolower', $keywords)
+            );
+        }
+
+        $this->config = $config;
+        ocDel($this->config, 'password');
+
+        return $config;
+    }
 
     /**
      * 注册事件
