@@ -91,9 +91,7 @@ class DatabaseBase extends Sql
             $config['keywords'] = array();
         } else {
             $keywords = explode(',', $config['keywords']);
-            $config['keywords'] = array_map(
-                'trim', array_map('strtolower', $keywords)
-            );
+            $config['keywords'] = array_map('trim', array_map('strtolower', $keywords));
         }
 
         $this->config = $config;
