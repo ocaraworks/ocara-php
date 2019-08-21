@@ -36,11 +36,11 @@ class FieldsService extends BaseService
         $paths = $model->getConfigPath();
 
 		$model->loadFields(false);
-		$fields = $model->getFields();
+		$fieldsConfig = $model->getFieldsConfig();
 
 		$fileCache = ocService()->fileCache;
         $fileCache->format();
-		$fileCache->setData($fields, null, $this->_model . ' Fields');
+		$fileCache->setData($fieldsConfig, null, $this->_model . ' Fields');
 		$fileCache->save($paths['fields']);
 	}
 }

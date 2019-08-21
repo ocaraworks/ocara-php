@@ -772,7 +772,7 @@ class Sql extends Base
 	 * @param $data
 	 * @return bool|string
 	 */
-	public function getWhereSql($data)
+	public function getConditionSql($data)
 	{
 		if (empty($data)) return false;
 		if (!is_array($data)) return $data;

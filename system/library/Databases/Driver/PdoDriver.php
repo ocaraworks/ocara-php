@@ -159,6 +159,9 @@ class PdoDriver extends DriverBase implements DriverInterface
         return $this->stmt = $this->query($sql, $resultMode);
     }
 
+    /**
+     * 关闭连接
+     */
 	public function close()
 	{}
 

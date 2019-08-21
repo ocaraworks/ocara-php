@@ -48,49 +48,57 @@ class DatabaseBase extends Sql
      */
 	public function __construct(array $config)
 	{
-		$options = array(
-			'host', 'port', 'type', 'class', 'pconnect',
-			'name', 'username', 'prefix', 'charset', 'isPdo',
-			'timeout', 'socket', 'options', 'keywords', 'prepare'
-		);
-
-		$values = array_fill_keys($options, OC_EMPTY);
-		$config = array_merge(array_combine($options, $values), $config);
-		$config['name'] = ocDel($config, 'name');
-
-		if (!$config['charset']) {
-			$config['charset'] = 'utf8';
-		}
-		if (!$config['socket']) {
-			$config['socket'] = null;
-		}
-		if (!$config['options']) {
-			$config['options'] = array();
-		}
-		if (!$config['prepare']) {
-			$config['prepare'] = true;
-		}
-		if (!$config['pconnect']) {
-			$config['pconnect'] = false;
-		}
-		if (!$config['isPdo']) {
-			$config['isPdo'] = true;
-		}
-
-		if (!$config['keywords']) {
-			$config['keywords'] = array();
-		} else {
-			$keywords = explode(',', $config['keywords']);
-			$config['keywords'] = array_map(
-				'trim', array_map('strtolower', $keywords)
-			);
-		}
-
-		$this->config = $config;
-		ocDel($this->config, 'password');
-
-		$this->init($config);
+		$this->init($this->initConfig($config));
 	}
+
+    /**
+     * 初始化配置
+     * @param $config
+     * @return array
+     */
+	public function initConfig($config)
+    {
+        $options = array(
+            'host', 'port', 'type', 'class', 'pconnect',
+            'name', 'username', 'prefix', 'charset', 'isPdo',
+            'timeout', 'socket', 'options', 'keywords', 'prepare'
+        );
+
+        $values = array_fill_keys($options, OC_EMPTY);
+        $config = array_merge(array_combine($options, $values), $config);
+        $config['name'] = ocDel($config, 'name');
+
+        if (!$config['charset']) {
+            $config['charset'] = 'utf8';
+        }
+        if (!$config['socket']) {
+            $config['socket'] = null;
+        }
+        if (!$config['options']) {
+            $config['options'] = array();
+        }
+        if (!$config['prepare']) {
+            $config['prepare'] = true;
+        }
+        if (!$config['pconnect']) {
+            $config['pconnect'] = false;
+        }
+        if (!$config['isPdo']) {
+            $config['isPdo'] = true;
+        }
+
+        if (!$config['keywords']) {
+            $config['keywords'] = array();
+        } else {
+            $keywords = explode(',', $config['keywords']);
+            $config['keywords'] = array_map('trim', array_map('strtolower', $keywords));
+        }
+
+        $this->config = $config;
+        ocDel($this->config, 'password');
+
+        return $config;
+    }
 
     /**
      * 注册事件
@@ -133,8 +141,7 @@ class DatabaseBase extends Sql
 		$connectName = $config['connect_name'];
 		$this->setConnectName($connectName);
 
-		$exists = isset(self::$connects[$connectName]) && self::$connects[$connectName] instanceof DriverBase;
-		if ($exists) {
+		if (isset(self::$connects[$connectName]) && self::$connects[$connectName] instanceof DriverBase) {
 			$this->setPlugin(self::$connects[$connectName]);
 		} else {
 			$plugin = $this->setPlugin($this->getDriver($config));
@@ -356,9 +363,9 @@ class DatabaseBase extends Sql
             $sql = $this->wrapSql($sql);
             foreach ($unions['models'] as $union) {
                 if ($count) {
-                    $unionData = $union['model']->getTotal(self::DEBUG_RETURN);
+                    $unionData = $union['model']->getTotal();
                 } else {
-                    $unionData = $union['model']->getAll(false, false, self::DEBUG_RETURN);
+                    $unionData = $union['model']->getAll();
                 }
                 list($unionSql, $unionParams) = $unionData;
                 $sql .= $this->getUnionSql($unionSql, $union['unionAll']);
@@ -553,6 +560,15 @@ class DatabaseBase extends Sql
 		return $result;
 	}
 
+    /**
+     * 是否已选择数据库
+     * @return bool
+     */
+	public function isSelectedDatabase()
+    {
+        return !!$this->config['name'];
+    }
+
 	/**
 	 * 获取关键字
 	 */
@@ -612,12 +628,12 @@ class DatabaseBase extends Sql
 		return $result;
 	}
 
-	/**
-	 * 绑定参数
-	 * @param string $type
-	 * @param array $option
-	 * @param scalar $params
-	 */
+    /**
+     * 绑定参数
+     * @param $option
+     * @param $type
+     * @param $params
+     */
 	public function bindParam($option, $type, &$params)
 	{
 		if (is_string($type)) {

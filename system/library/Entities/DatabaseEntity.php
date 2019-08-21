@@ -263,7 +263,7 @@ abstract class DatabaseEntity extends BaseEntity
             $this->setProperty($data);
         }
 
-        $result = $model->baseSave($this->toArray(), null);
+        $result = $model->baseSave($this->toArray());
         $this->insertId = $model->getInsertId();
         $autoIncrementField = $this->getModel()->getAutoIncrementField();
 
@@ -277,6 +277,10 @@ abstract class DatabaseEntity extends BaseEntity
         $this->data($data);
         $this->relateSave();
         $this->fire(self::EVENT_AFTER_CREATE);
+
+        if ($this->relations) {
+            ocService()->transaction->commit();
+        }
 
         return $result;
     }
@@ -298,25 +302,27 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function update(array $data = array())
     {
+        $result = false;
         $model = $this->getModel();
 
         if (empty($this->selected)) {
             ocService()->error->show('need_condition');
         }
 
-        if ($this->relations) {
-            ocService()->transaction->begin();
-        }
-
-        $this->fire(self::EVENT_BEFORE_CREATE);
         $data = array_merge($this->getChanged(), $data);
-        if (empty($data)) return false;
 
-        call_user_func_array('ocDel', array(&$data, $model::getPrimaries()));
-        $result = $model->baseSave($data, $this->selected);
+        if ($data) {
+            if ($this->relations) ocService()->transaction->begin();
+            call_user_func_array('ocDel', array(&$data, $model::getPrimaries()));
+            $model->where($this->selected);
 
-        $this->relateSave();
-        $this->fire(self::EVENT_AFTER_UPDATE);
+            $this->fire(self::EVENT_BEFORE_UPDATE);
+            $result = $model->baseSave($data, true);
+            $this->relateSave();
+            $this->fire(self::EVENT_AFTER_UPDATE);
+
+            if ($this->relations) ocService()->transaction->commit();
+        }
 
         return $result;
     }
@@ -477,7 +483,6 @@ abstract class DatabaseEntity extends BaseEntity
         if (!$this->relations) return true;
 
         $model = $this->getModel();
-
         foreach ($this->relations as $key => $object) {
             $config = $model->getRelateConfig($key);
             if ($config && isset($this->$config['primaryKey'])) {
