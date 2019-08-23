@@ -40,6 +40,13 @@ interface Database
 	 */
 	public function selectDatabase($name);
 
+    /**
+     * 加密字符串
+     * @param $content
+     * @return mixed
+     */
+    public function escapeString($content);
+
 	/**
 	 * 通过字段类型转换数据类型
 	 * @param $fields

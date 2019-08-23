@@ -1,17 +1,18 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   Session文件方式处理类SessionFile
+ * Ocara开源框架   Sql生成器类Generator
  * Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Generators;
+namespace Ocara\Sql;
 
 use Ocara\Core\Base;
 use Ocara\Core\DatabaseBase;
+use Ocara\Sql\Databases\SqlFactory;
 
-class Sql extends Base
+class Generator extends Base
 {
     protected $database;
     protected $sql;
@@ -20,6 +21,7 @@ class Sql extends Base
     protected $maps;
     protected $joins;
     protected $fields;
+    protected $databaseSql;
 
     /**
      * Sql constructor.
@@ -28,6 +30,13 @@ class Sql extends Base
      */
     public function __construct(DatabaseBase $database, $databaseName)
     {
+        $databaseType = $database->getType();
+        $databaseConfig = $database->getConfig();
+
+        $plugin = SqlFactory::create($databaseType);
+        $plugin->setConfig($databaseConfig);
+        $this->setPlugin($plugin);
+
         $this->database = $database;
         $this->databaseName = $databaseName;
     }
@@ -96,7 +105,7 @@ class Sql extends Base
         if ($count) {
             $countField = ocGet('countField', $this->sql, null);
             $isGroup = !empty($option['group']);
-            $fields = $this->database->getCountSql($countField, 'total', $isGroup);
+            $fields = $this->plugin()->getCountSql($countField, 'total', $isGroup);
         } else {
             $aliasFields = $this->getAliasFields($tables, $this->alias);
             if (!isset($option['fields']) || $this->isDefaultFields($option['fields'])) {
@@ -114,11 +123,11 @@ class Sql extends Base
             if ($count) {
                 ocDel($option, 'limit');
             } else {
-                $option['limit'] = $this->database->getLimitSql($option['limit']);
+                $option['limit'] = $this->plugin()->getLimitSql($option['limit']);
             }
         }
 
-        return $this->database->getSelectSql($fields, $from, $option);
+        return $this->plugin()->getSelectSql($fields, $from, $option);
     }
 
     /**
@@ -139,7 +148,7 @@ class Sql extends Base
                     $whereData = $this->filterData($whereData);
                 }
                 if ($whereData) {
-                    $condition = $this->database->parseCondition($whereData, 'AND', '=', $alias);
+                    $condition = $this->plugin()->parseCondition($whereData, 'AND', '=', $alias);
                 }
             } elseif ($whereType == 'between') {
                 $field = $this->filterField($whereData[0]);
@@ -156,8 +165,8 @@ class Sql extends Base
             }
         }
 
-        $where = $this->database->linkWhere($where);
-        $where = $this->database->wrapWhere($where);
+        $where = $this->plugin()->linkWhere($where);
+        $where = $this->plugin()->wrapWhere($where);
 
         return $where;
     }
@@ -186,7 +195,7 @@ class Sql extends Base
         }
 
         $where = array($field => $value);
-        $cond = $this->database->parseCondition($where, $link, $sign, $alias);
+        $cond = $this->plugin()->parseCondition($where, $link, $sign, $alias);
 
         return $cond;
     }
@@ -210,7 +219,7 @@ class Sql extends Base
         }
 
         if ($this->fields) {
-            $result = $this->database->formatFieldValues($this->fields, $result);
+            $result = $this->plugin()->formatFieldValues($this->fields, $result);
         }
 
         return $result;
@@ -225,7 +234,7 @@ class Sql extends Base
     {
         $key = isset($this->maps[$field]) ? $this->maps[$field] : $field;
 
-        if (!$this->database->hasAlias($key)) {
+        if (!$this->plugin()->hasAlias($key)) {
             if (!isset($this->fields[$key])) {
                 return null;
             }
@@ -250,12 +259,12 @@ class Sql extends Base
 
         if (!empty($option['moreWhere'])) {
             foreach ($option['moreWhere'] as $row) {
-                $row['where'] = $this->database->parseCondition($row['where']);
+                $row['where'] = $this->plugin()->parseCondition($row['where']);
                 $where[] = $row;
             }
         }
 
-        return $where ? $this->database->getConditionSql($where) : OC_EMPTY;
+        return $where ? $this->plugin()->getConditionSql($where) : OC_EMPTY;
     }
 
     /**
@@ -278,10 +287,10 @@ class Sql extends Base
             }
             $alias = $unJoined ? false : $alias;
             $fieldData = (array)$fieldData;
-            $fields[] = $this->database->getFieldsSql($fieldData, $aliasFields, $this->alias, $alias);
+            $fields[] = $this->plugin()->getFieldsSql($fieldData, $aliasFields, $this->alias, $alias);
         }
 
-        $sql = $this->database->combineFieldsSql($fields, $aliasFields, $unJoined, $this->alias);
+        $sql = $this->plugin()->combineFieldsSql($fields, $aliasFields, $unJoined, $this->alias);
         return $sql;
     }
 
@@ -370,8 +379,8 @@ class Sql extends Base
                 $param['on'] = OC_EMPTY;
             }
 
-            $param['fullName'] = $this->database->getTableFullname($param['fullName'], $this->databaseName);
-            $from = $from . $this->database->getJoinSql($param['type'], $param['fullName'], $alias, $param['on']);
+            $param['fullName'] = $this->plugin()->getTableFullname($param['fullName'], $this->databaseName);
+            $from = $from . $this->plugin()->getJoinSql($param['type'], $param['fullName'], $alias, $param['on']);
         }
 
         return $from;
@@ -386,7 +395,7 @@ class Sql extends Base
     public function parseJoinOnSql($alias, $on)
     {
         if (is_array($on)) {
-            $on = $this->database->parseCondition($on, 'AND', '=', $alias);
+            $on = $this->plugin()->parseCondition($on, 'AND', '=', $alias);
         }
         return $on;
     }
@@ -402,22 +411,22 @@ class Sql extends Base
         $joinOn = null;
 
         if ($config) {
-            $foreignField = $this->database->getFieldNameSql($config['foreignKey'], $alias);
-            $primaryField = $this->database->getFieldNameSql($config['primaryKey'], $this->alias);
+            $foreignField = $this->plugin()->getFieldNameSql($config['foreignKey'], $alias);
+            $primaryField = $this->plugin()->getFieldNameSql($config['primaryKey'], $this->alias);
             $where = array($foreignField => ocSql($primaryField));
-            $condition[] = array('AND', $this->database->parseCondition($where, 'AND', null, $alias));
+            $condition[] = array('AND', $this->plugin()->parseCondition($where, 'AND', null, $alias));
             if (is_array($config['condition'])) {
                 foreach ($config['condition'] as $key => $value) {
                     $sign = null;
                     if (is_array($value)) {
                         list($sign, $value) = $value;
                     }
-                    $key = $this->database->getFieldNameSql($key, $alias);
+                    $key = $this->plugin()->getFieldNameSql($key, $alias);
                     $where = array($key => $value);
-                    $condition[] = array('AND', $this->database->parseCondition($where, 'AND', $sign, $alias));
+                    $condition[] = array('AND', $this->plugin()->parseCondition($where, 'AND', $sign, $alias));
                 }
             }
-            $joinOn = $this->database->linkWhere($condition);
+            $joinOn = $this->plugin()->linkWhere($condition);
         }
 
         return $joinOn;

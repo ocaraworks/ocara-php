@@ -120,6 +120,16 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	}
 
     /**
+     * 加密字符串
+     * @param $content
+     * @return mixed
+     */
+	public function escapeString($content)
+    {
+        return $this->plugin()->real_escape_string($content);
+    }
+
+    /**
      * 选择数据库
      * @param string $name
      * @return array|bool|mixed

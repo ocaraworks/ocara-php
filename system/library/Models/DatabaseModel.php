@@ -525,10 +525,14 @@ abstract class DatabaseModel extends ModelBase
             ocService()->error->show('fault_save_data');
         }
 
+        $generator = $this->getSqlGenerator($plugin);
+        $tableFullName = $generator->getTableFullname($this->tableName);
+
         if ($isUpdate) {
-            $conditionSql = $conditionSql ?: $this->getWhereSql($plugin);
+            $conditionSql = $conditionSql ?: $generator->genWhereSql();
+            $sqlData = $this->getUpdateSql($tableFullName, $data, $conditionSql);
             $this->pushTransaction();
-            $result = $plugin->update($this->tableName, $data, $conditionSql);
+            $result = $plugin->execute($sqlData);
         } else {
             $autoIncrementField = $this->getAutoIncrementField();
             if (!in_array($autoIncrementField, $this->primaries)) {
@@ -536,12 +540,56 @@ abstract class DatabaseModel extends ModelBase
                     ocService()->error->show('need_create_primary_data');
                 }
             }
+            $sqlData = $generator->getInsertSql($tableFullName, $data);
             $this->pushTransaction();
-            $result = $plugin->insert($this->tableName, $data);
+            $result = $plugin->execute($sqlData);
+            $result = $result ? $this->getInsertId() : false;
         }
 
         $this->clearSql();
         return $result;
+    }
+
+    /**
+     * 获取最后一次插入记录的自增ID
+     * @param string $sql
+     * @return bool|mixed
+     * @throws Exception
+     */
+    public function getInsertId($sql = null)
+    {
+        $plugin = $this->connect();
+
+        if (empty($sql)) {
+            $generator = $this->getSqlGenerator($plugin);
+            $sql = $generator->getLastIdSql();
+        }
+
+        $result = $plugin->queryRow($sql);
+        return $result ? $result['id'] : false;
+    }
+
+    /**
+     * 检测表是否存在
+     * @param string $table
+     * @param bool $required
+     * @return bool|mixed|void
+     * @throws Exception
+     */
+    public function tableExists($table, $required = false)
+    {
+        $plugin = $this->connect();
+        $generator = $this->getSqlGenerator($plugin);
+
+        $table = $generator->getTableFullname($table);
+        $sqlData = $generator->getSelectSql(1, $table, array('limit' => 1));
+        $result = $plugin->execute($sqlData);
+
+        if ($required) {
+            return $result;
+        } else {
+            return $plugin->errorExists() === false;
+        }
     }
 
 	/**
@@ -646,14 +694,19 @@ abstract class DatabaseModel extends ModelBase
 	public function baseDelete($conditionSql = null)
 	{
         $plugin = $this->connect();
-        $conditionSql = $conditionSql ?: $this->getWhereSql($plugin);
+        $generator = $this->getSqlGenerator($plugin);
+        $tableFullName = $generator->getTableFullname($this->tableName);
+
+        if (!$conditionSql) {
+            $conditionSql = $generator->genWhereSql();
+        }
 
         if (!$conditionSql) {
             ocService()->error->show('need_condition');
         }
 
         $this->pushTransaction();
-		$result = $plugin->delete($this->tableName, $conditionSql);
+		$result = $plugin->execute($this->getDeleteSql($tableFullName, $conditionSql));
 
 		$this->clearSql();
 		return $result;
@@ -1035,7 +1088,7 @@ abstract class DatabaseModel extends ModelBase
 		}
 
 		if (!$count && !$queryRow && $this->isPage()) {
-			$result = array('total' => $this->getTotal(), 'data'	=> $result);
+			$result = array('total' => $this->getTotal(), 'data' => $result);
 		}
 
 		$this->clearSql();
