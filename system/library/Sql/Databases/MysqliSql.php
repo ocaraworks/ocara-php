@@ -11,6 +11,6 @@ namespace Ocara\Sql\Databases;
 use Ocara\Interfaces\Sql as SqlInterface;
 use Ocara\Core\Sql;
 
-class MysqlSql extends Sql implements SqlInterface
+class MysqliSql extends Sql implements SqlInterface
 {
 }

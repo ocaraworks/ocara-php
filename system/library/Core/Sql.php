@@ -18,6 +18,10 @@ class Sql extends Base
 	protected $params = array();
 	protected $config = array();
 
+    /**
+     * Sql constructor.
+     * @param $database
+     */
 	public function __construct($database)
     {
         $this->database = $database;
@@ -114,7 +118,8 @@ class Sql extends Base
             }
         }
 
-        return $this->getTableNameSql($databaseName, $table);
+        $tableFullName = $this->filterName($this->getTableNameSql($databaseName, $table));
+        return $tableFullName;
     }
 
 	/***
@@ -125,7 +130,7 @@ class Sql extends Base
 	 */
 	public function filterValue($content, $addSlashes = true)
 	{
-		if ($mt = self::checkOcaraSqlTag($content)) {
+		if ($mt = self::checkSqlTag($content)) {
 			return $mt[1];
 		} else {
 			if ($addSlashes) {
@@ -150,7 +155,7 @@ class Sql extends Base
 	public function parseValue($value, $paramType = 'where', $ifQuote = true, $prepare = true)
 	{
 		if (ocScalar($value)) {
-			if ($mt = self::checkOcaraSqlTag($value)) {
+			if ($mt = self::checkSqlTag($value)) {
 				return $mt[1];
 			} else {
 				if ($this->database->isPrepare() && $prepare) {
@@ -178,7 +183,7 @@ class Sql extends Base
 			ocService()->error->show('invalid_field_name');
 		}
 
-		if ($mt = self::checkOcaraSqlTag($field)) {
+		if ($mt = self::checkSqlTag($field)) {
 			return $mt[1];
 		}
 
@@ -246,11 +251,11 @@ class Sql extends Base
 	}
 
 	/**
-	 * 检查Ocara代码标记
+	 * 检查SQL代码标记
 	 * @param string $value
 	 * @return array
 	 */
-	public static function checkOcaraSqlTag($value)
+	public static function checkSqlTag($value)
 	{
 		if (preg_match('/^' . OC_SQL_TAG . '(.*)$/i', $value, $mt)) {
 			return $mt;
@@ -313,8 +318,6 @@ class Sql extends Base
 	 */
 	public function getInsertSqlBase($type, $table, $data)
 	{
-        $tableName = $this->getTableNameSql($table);
-        $tableName = $this->filterName($tableName);
 		$fields = $values = array();
 
 		foreach ($data as $key => $value) {
@@ -337,12 +340,9 @@ class Sql extends Base
      */
 	public function getUpdateSql($table, $data, $where)
 	{
-	    $tableName = $this->getTableNameSql($table);
+        $set = OC_EMPTY;
         $where = $this->parseCondition($where);
 		$this->checkStringCondition($where);
-
-		$set   = null;
-        $tableName = $this->filterName($tableName);
 
 		if (is_array($data)) {
 			$array = array();
@@ -383,7 +383,6 @@ class Sql extends Base
 		$this->checkStringCondition($where);
 
         $tableFullName = $this->getTableFullname($table);
-        $tableFullName = $this->filterName($tableFullName);
         $option = $this->filterName($option);
 
 		$sql = "DELETE {$option} FROM {$tableFullName}" . ($where ? " WHERE {$where} " : OC_EMPTY);
@@ -392,13 +391,14 @@ class Sql extends Base
 
 	/**
 	 * 获取表的字段信息
-	 * @param $table
+	 * @param
+     * @param $database
 	 * @return string
 	 */
-	public function getShowFieldsSql($table)
+	public function getShowFieldsSql($table, $database = null)
 	{
-		$table = $this->filterName($table);
-		return "SHOW FULL FIELDS FROM {$table}";
+	    $tableName = $this->getTableFullname($table, $database);
+		return "SHOW FULL FIELDS FROM {$tableName}";
 	}
 
     /**
@@ -448,7 +448,7 @@ class Sql extends Base
 			$limit = "{$limit[0]}, {$limit[1]}";
 		}
 
-		$str = $this->database->scapeString($limit);
+		$str = $this->database->escapeString($limit);
 		if ($str) {
 			return $this->filterSql($str, false, true);
 		}

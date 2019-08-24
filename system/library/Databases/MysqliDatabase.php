@@ -9,6 +9,7 @@
 namespace Ocara\Databases;
 
 use Ocara\Core\DatabaseBase;
+use Ocara\Core\Sql;
 use Ocara\Interfaces\Database as DatabaseInterface;
 
 use Ocara\Exceptions\Exception;
@@ -69,12 +70,9 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
      * @return array
      * @throws Exception
      */
-	public function getFields($table)
+	public function getFields($sqlData)
 	{
-		$tableFullName = $this->getTableFullname($table);
-		$sqlData = $this->getShowFieldsSql($tableFullName);
 		$data = $this->query($sqlData);
-
 		$fields = array('autoIncrementField' => OC_EMPTY, 'list' => array());
 		$isComment = ocConfig('USE_FIELD_DESC_LANG', false);
 
@@ -158,7 +156,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
 					$type = 'integer';
 				}
 			}
-			if (!self::checkOcaraSqlTag($value)) {
+			if (!Sql::checkSqlTag($value)) {
 				if (is_array($value)) {
 					foreach ($value as $k => $v) {
 						settype($value[$k], $type);

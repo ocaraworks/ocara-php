@@ -10,7 +10,6 @@ namespace Ocara\Sql;
 
 use Ocara\Core\Base;
 use Ocara\Core\DatabaseBase;
-use Ocara\Sql\Databases\SqlFactory;
 
 class Generator extends Base
 {
@@ -26,18 +25,16 @@ class Generator extends Base
     /**
      * Sql constructor.
      * @param DatabaseBase $database
-     * @param $databaseName
      */
-    public function __construct(DatabaseBase $database, $databaseName)
+    public function __construct(DatabaseBase $database)
     {
+        $this->database = $database;
         $databaseType = $database->getType();
         $databaseConfig = $database->getConfig();
 
-        $plugin = SqlFactory::create($databaseType);
+        $plugin = SqlFactory::create($databaseType, $database);
         $plugin->setConfig($databaseConfig);
         $this->setPlugin($plugin);
-
-        $this->database = $database;
     }
 
     /**
@@ -171,7 +168,7 @@ class Generator extends Base
                 }
             } elseif ($whereType == 'between') {
                 $field = $this->filterField($whereData[0]);
-                if($field) {
+                if ($field) {
                     $whereData[0] = $field;
                     $whereData[] = $alias;
                     $condition = call_user_func_array(array($this->database, 'getBetweenSql'), $whereData);
@@ -238,7 +235,7 @@ class Generator extends Base
         }
 
         if ($this->fields) {
-            $result = $this->plugin()->formatFieldValues($this->fields, $result);
+            $result = $this->database->formatFieldValues($this->fields, $result);
         }
 
         return $result;
@@ -384,7 +381,7 @@ class Generator extends Base
         $from = OC_EMPTY;
 
         foreach ($tables as $alias => $param) {
-            if (empty($param['fullName'])) continue;
+            if (empty($param['fullname'])) continue;
 
             if ($unJoined) {
                 $alias = null;
@@ -398,8 +395,8 @@ class Generator extends Base
                 $param['on'] = OC_EMPTY;
             }
 
-            $param['fullName'] = $this->plugin()->getTableFullname($param['fullName'], $this->databaseName);
-            $from = $from . $this->plugin()->getJoinSql($param['type'], $param['fullName'], $alias, $param['on']);
+            $param['fullname'] = $this->plugin()->getTableFullname($param['fullname'], $this->databaseName);
+            $from = $from . $this->plugin()->getJoinSql($param['type'], $param['fullname'], $alias, $param['on']);
         }
 
         return $from;
@@ -451,6 +448,7 @@ class Generator extends Base
 
         return array($sql, $params);
     }
+
     /**
      * 获取关联链接条件
      * @param $alias
@@ -481,5 +479,23 @@ class Generator extends Base
         }
 
         return $joinOn;
+    }
+
+    public function getInsertSql($table, $data)
+    {
+        $tableName = $this->getTableFullname($table, $this->databaseName);
+        return $this->plugin()->getInsertSql($table, $data);
+    }
+
+    public function getUpdateSql($table, $data, $where)
+    {
+        $tableName = $this->getTableFullname($table, $this->databaseName);
+        return $this->plugin()->getUpdateSql($tableName, $data, $where);
+    }
+
+    public function getRelaceSql($table, $data)
+    {
+        $tableName = $this->getTableFullname($table, $this->databaseName);
+        return $this->plugin()->getInsertSql($table, $data);
     }
 }

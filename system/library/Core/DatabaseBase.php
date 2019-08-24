@@ -9,6 +9,7 @@
 namespace Ocara\Core;
 
 use Ocara\Exceptions\Exception;
+use Ocara\Sql\Generator;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -155,6 +156,21 @@ class DatabaseBase extends Base
             $this->setCharset($config['charset']);
 		}
 	}
+
+    /**
+     * 获取设置字符集数据
+     * @param $charset
+     * @return mixed|void|null
+     * @throws Exception
+     */
+	public function setCharset($charset)
+    {
+        $generator = new Generator($this);
+        $sql = $generator->getSetCharsetSql($charset);
+        $sqlData = $generator->getSqlData($sql);
+        $result = $this->execute($sqlData);
+        return $result;
+    }
 
     /**
      * 是否PDO连接

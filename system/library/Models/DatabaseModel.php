@@ -399,6 +399,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function loadFields($cache = true)
 	{
+        $plugin = $this->connect();
         $fieldsInfo = array();
 
 	    if ($cache) {
@@ -408,7 +409,9 @@ abstract class DatabaseModel extends ModelBase
         }
 
         if (!$fieldsInfo) {
-            $fieldsInfo = $this->connect()->getFields($this->tableName);
+            $generator = new Generator($plugin);
+            $sqlData = $generator->getShowFieldsSql($this->tableName, $this->databaseName);
+            $fieldsInfo = $plugin->getFields($sqlData);
         }
 
         if ($fieldsInfo) {
@@ -535,6 +538,7 @@ abstract class DatabaseModel extends ModelBase
             ocService()->error->show('fault_save_data');
         }
 
+        $this->getFields();
         $generator = $this->getSqlGenerator($plugin);
 
         if ($isUpdate) {
@@ -543,8 +547,8 @@ abstract class DatabaseModel extends ModelBase
                 ocService()->error->show('need_condition');
             }
             $sqlData = $generator->getUpdateSql($this->tableName, $data, $conditionSql);
-            $this->pushTransaction();
-            $result = $data ? $this->execute($sqlData) : false;
+            $this->pushTransaction($plugin);
+            $result = $data ? $plugin->execute($sqlData) : false;
         } else {
             $autoIncrementField = $this->getAutoIncrementField();
             if (!in_array($autoIncrementField, $this->primaries)) {
@@ -553,8 +557,8 @@ abstract class DatabaseModel extends ModelBase
                 }
             }
             $sqlData = $generator->getInsertSql($this->tableName, $data);
-            $this->pushTransaction();
-            $result = $data ? $this->execute($sqlData) : false;
+            $this->pushTransaction($plugin);
+            $result = $data ? $plugin->execute($sqlData) : false;
             $result = $result ? $this->getInsertId() : false;
         }
 
@@ -594,8 +598,8 @@ abstract class DatabaseModel extends ModelBase
     {
         $plugin = $this->connect();
         $generator = $this->getSqlGenerator($plugin);
-
         $table = $generator->getTableFullname($table);
+
         $sqlData = $generator->getSelectSql(1, $table, array('limit' => 1));
         $result = $plugin->execute($sqlData);
 
@@ -618,9 +622,9 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 推入事务池中
      */
-	public function pushTransaction()
+	public function pushTransaction($plugin)
     {
-        ocService()->transaction->push($this->plugin());
+        ocService()->transaction->push($plugin);
     }
 
     /**
@@ -702,6 +706,7 @@ abstract class DatabaseModel extends ModelBase
 	public function baseDelete($conditionSql = null, $requireCondition = true)
 	{
         $plugin = $this->connect();
+        $this->getFields();
         $generator = $this->getSqlGenerator($plugin);
 
         if (!$conditionSql) {
@@ -712,8 +717,8 @@ abstract class DatabaseModel extends ModelBase
             ocService()->error->show('need_condition');
         }
 
-        $this->pushTransaction();
-		$result = $plugin->execute($this->getDeleteSql($this->tableName, $conditionSql));
+        $this->pushTransaction($plugin);
+		$result = $plugin->execute($generator->getDeleteSql($this->tableName, $conditionSql));
 
 		$this->clearSql();
 		return $result;
@@ -1098,6 +1103,7 @@ abstract class DatabaseModel extends ModelBase
     protected function baseFind($condition, $option, $queryRow, $count = false, $dataType = null)
 	{
         $plugin = $this->connect(false);
+        $this->getFields();
         $dataType = $dataType ? : ($this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY);
 
 	    $this->pushSql($condition, $option, $queryRow);
@@ -1142,31 +1148,6 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
-     * 生成Select语句
-     * @param $plugin
-     * @param $count
-     * @return array
-     */
-	public function getSelectSql($plugin, $count)
-    {
-        $generator = $this->getSqlGenerator($plugin);
-        $sql = $generator->genSelectSql($count);
-        return $sql;
-    }
-
-    /**
-     * 生成Where语句
-     * @param $plugin
-     * @return bool|string
-     */
-    public function getWhereSql($plugin)
-    {
-        $generator = $this->getSqlGenerator($plugin);
-        $sql = $generator->genWhereSql();
-        return $sql;
-    }
-
-    /**
      * 是否分页
      * @return bool
      */
@@ -1199,22 +1180,8 @@ abstract class DatabaseModel extends ModelBase
             $plugin->selectDatabase($this->databaseName);
         }
 
-        $this->getFields();
 		return $plugin;
 	}
-
-    /**
-     * 设置字符集
-     * @param $charset
-     * @return array|bool|mixed
-     * @throws Exception
-     */
-    public function setCharset($charset)
-    {
-        $generator = new Generator();
-        $sqlData = $generator->getSetCharsetSql($charset);
-        return $this->query($sqlData);
-    }
 
     /**
      * 左联接
@@ -1649,10 +1616,10 @@ abstract class DatabaseModel extends ModelBase
 		$config = array();
 
 		if ($type == false) {
-            $fullName = $this->getTableName();
-            $alias = $alias ?: $fullName;
+            $fullname = $this->getTableName();
+            $alias = $alias ?: $fullname;
             $class = $this->tag;
-            $tables = array($alias => compact('type', 'fullName', 'class', 'config'));
+            $tables = array($alias => compact('type', 'fullname', 'class', 'config'));
             if (!empty($this->sql['tables'])) {
                 $this->sql['tables'] = array_merge($tables, $this->sql['tables']);
             } else {
@@ -1673,10 +1640,10 @@ abstract class DatabaseModel extends ModelBase
 			if ($shardingData) {
                 $model->sharding($shardingData);
             }
-            $fullName = $model->getTableName();
-			$alias = $alias ?: $fullName;
+            $fullname = $model->getTableName();
+			$alias = $alias ?: $fullname;
 			$this->joins[$alias] = $model;
-            $this->sql['tables'][$alias] = compact('type', 'fullName', 'class', 'config');
+            $this->sql['tables'][$alias] = compact('type', 'fullname', 'class', 'config');
 		}
 
 		if ($on) {
