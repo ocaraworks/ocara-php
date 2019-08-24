@@ -279,11 +279,11 @@ class DatabaseBase extends Base
      * 获取查询结果
      * @param bool $queryRow
      * @param bool $count
-     * @param array $unions
+     * @param bool $isUnion
      * @param string $dataType
      * @return array|mixed
      */
-	public function getResult($queryRow = false, $count = false, $unions = array(), $dataType = null)
+	public function getResult($queryRow = false, $count = false, $isUnion = false, $dataType = null)
     {
         $dataType = $dataType ? : DriverBase::DATA_TYPE_ARRAY;
         $plugin = $this->plugin();
@@ -291,7 +291,7 @@ class DatabaseBase extends Base
         if ($count) {
             $result = $plugin->get_all_result($dataType, $queryRow);
             $total = 0;
-            if (!empty($unions['models'])) {
+            if ($isUnion) {
                 foreach ($result as $row) {
                     $num = reset($row);
                     $total += (integer)$num;
@@ -318,16 +318,16 @@ class DatabaseBase extends Base
      * 查询多行记录
      * @param string|array $sqlData
      * @param bool $count
-     * @param array $unions
+     * @param bool $isUnion
      * @param null $dataType
      * @return array|mixed
      * @throws Exception
      */
-    public function query($sqlData, $count = false, $unions = array(), $dataType = null)
+    public function query($sqlData, $count = false, $isUnion = false, $dataType = null)
     {
         $sqlData = $this->formatSqlData($sqlData);
-        $this->executeQuery($sqlData, $count, $unions);
-        $result = $this->getResult(false, $count, $unions, $dataType);
+        $this->execute($sqlData);
+        $result = $this->getResult(false, $count, $isUnion, $dataType);
 
         return $result;
     }
@@ -336,16 +336,16 @@ class DatabaseBase extends Base
      * 查询一行
      * @param string|array $sqlData
      * @param bool $count
-     * @param array $unions
+     * @param bool $isUnion
      * @param null $dataType
      * @return array|mixed
      * @throws Exception
      */
-    public function queryRow($sqlData, $count = false, $unions = array(), $dataType = null)
+    public function queryRow($sqlData, $count = false, $isUnion = false, $dataType = null)
     {
         $sqlData = $this->formatSqlData($sqlData);
-        $this->executeQuery($sqlData, $count, $unions);
-        $result = $this->getResult(true, $count, $unions, $dataType);
+        $this->execute($sqlData);
+        $result = $this->getResult(true, $count, $isUnion, $dataType);
 
         return $result;
     }
@@ -357,41 +357,6 @@ class DatabaseBase extends Base
     public function getLastSql()
     {
         return $this->lastSql;
-    }
-
-    /**
-     * 查询数据结果
-     * @param string|array $sqlData
-     * @param bool $count
-     * @param array $unions
-     * @return mixed|void|null
-     * @throws Exception
-     */
-    protected function executeQuery($sqlData, $count = false, $unions = array())
-    {
-        list($sql, $params) = $sqlData;
-
-        if (!empty($unions['models'])) {
-            $sql = $this->wrapSql($sql);
-            foreach ($unions['models'] as $union) {
-                if ($count) {
-                    $unionData = $union['model']->getTotal();
-                } else {
-                    $unionData = $union['model']->getAll();
-                }
-                list($unionSql, $unionParams) = $unionData;
-                $sql .= $this->getUnionSql($unionSql, $union['unionAll']);
-                $params = array_merge($params, $unionParams);
-            }
-            if (!$count && !empty($unions['option'])) {
-                $orderBy = $unions['option']['order'];
-                $limit = $unions['option']['limit'];
-                $sql = $this->getSubQuerySql($sql, $orderBy, $limit);
-            }
-        }
-
-        $result = $this->execute(array($sql, $params));
-        return $result;
     }
 
     /**

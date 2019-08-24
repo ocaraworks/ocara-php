@@ -313,7 +313,8 @@ class Sql extends Base
 	 */
 	public function getInsertSqlBase($type, $table, $data)
 	{
-		$table = $this->filterName($table);
+        $tableName = $this->getTableNameSql($table);
+        $tableName = $this->filterName($tableName);
 		$fields = $values = array();
 
 		foreach ($data as $key => $value) {
@@ -324,7 +325,7 @@ class Sql extends Base
 		$fields = implode(',', $fields);
 		$values = implode(',', $values);
 
-		return $type . " INTO {$table}({$fields}) VALUES({$values})";
+		return $type . " INTO {$tableName}({$fields}) VALUES({$values})";
 	}
 
     /**
@@ -336,10 +337,12 @@ class Sql extends Base
      */
 	public function getUpdateSql($table, $data, $where)
 	{
+	    $tableName = $this->getTableNameSql($table);
+        $where = $this->parseCondition($where);
 		$this->checkStringCondition($where);
 
 		$set   = null;
-		$table = $this->filterName($table);
+        $tableName = $this->filterName($tableName);
 
 		if (is_array($data)) {
 			$array = array();
@@ -351,7 +354,7 @@ class Sql extends Base
 			$set = implode(',', $array);
 		}
 
-		$sql = "UPDATE {$table} SET {$set} " . ($where ? " WHERE {$where} " : OC_EMPTY);
+		$sql = "UPDATE {$tableName} SET {$set} " . ($where ? " WHERE {$where} " : OC_EMPTY);
 		return $this->getSqlData($sql);
 	}
 
@@ -376,12 +379,14 @@ class Sql extends Base
      */
 	public function getDeleteSql($table, $where, $option = null)
 	{
+        $where = $this->parseCondition($where);
 		$this->checkStringCondition($where);
 
-		$table = $this->filterName($table);
+        $tableFullName = $this->getTableFullname($table);
+        $tableFullName = $this->filterName($tableFullName);
         $option = $this->filterName($option);
 
-		$sql = "DELETE {$option} FROM {$table}" . ($where ? " WHERE {$where} " : OC_EMPTY);
+		$sql = "DELETE {$option} FROM {$tableFullName}" . ($where ? " WHERE {$where} " : OC_EMPTY);
 		return $this->getSqlData($sql);
 	}
 
@@ -846,7 +851,7 @@ class Sql extends Base
      * @param array $limit
      * @return string
      */
-    public function getSubQuerySql($sql, $orderBy, array $limit)
+    public function getSubQuerySql($sql, $orderBy = null, array $limit = array())
     {
         $querySql = "SELECT * FROM ($sql) AS a";
 

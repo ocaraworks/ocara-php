@@ -514,10 +514,11 @@ abstract class DatabaseModel extends ModelBase
      * @param $data
      * @param bool $isUpdate
      * @param null $conditionSql
-     * @return mixed
+     * @param bool $requireCondition
+     * @return bool|mixed
      * @throws Exception
      */
-    public function baseSave($data, $isUpdate = false, $conditionSql = null)
+    public function baseSave($data, $isUpdate = false, $conditionSql = null, $requireCondition = true)
     {
         $plugin = $this->connect();
 
@@ -526,13 +527,15 @@ abstract class DatabaseModel extends ModelBase
         }
 
         $generator = $this->getSqlGenerator($plugin);
-        $tableFullName = $generator->getTableFullname($this->tableName);
 
         if ($isUpdate) {
             $conditionSql = $conditionSql ?: $generator->genWhereSql();
-            $sqlData = $this->getUpdateSql($tableFullName, $data, $conditionSql);
+            if ($requireCondition && !$conditionSql) {
+                ocService()->error->show('need_condition');
+            }
+            $sqlData = $generator->getUpdateSql($this->tableName, $data, $conditionSql);
             $this->pushTransaction();
-            $result = $plugin->execute($sqlData);
+            $result = $data ? $this->execute($sqlData) : false;
         } else {
             $autoIncrementField = $this->getAutoIncrementField();
             if (!in_array($autoIncrementField, $this->primaries)) {
@@ -540,9 +543,9 @@ abstract class DatabaseModel extends ModelBase
                     ocService()->error->show('need_create_primary_data');
                 }
             }
-            $sqlData = $generator->getInsertSql($tableFullName, $data);
+            $sqlData = $generator->getInsertSql($this->tableName, $data);
             $this->pushTransaction();
-            $result = $plugin->execute($sqlData);
+            $result = $data ? $this->execute($sqlData) : false;
             $result = $result ? $this->getInsertId() : false;
         }
 
@@ -562,10 +565,12 @@ abstract class DatabaseModel extends ModelBase
 
         if (empty($sql)) {
             $generator = $this->getSqlGenerator($plugin);
-            $sql = $generator->getLastIdSql();
+            $sqlData = $generator->getLastIdSql();
+        } else {
+            $sqlData = array($sql, array());
         }
 
-        $result = $plugin->queryRow($sql);
+        $result = $sqlData ? $plugin->queryRow($sqlData) : false;
         return $result ? $result['id'] : false;
     }
 
@@ -630,7 +635,6 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function update(array $data, $batchLimit = 1000)
 	{
-        $plugin = $this->connect();
         $batchLimit = $batchLimit ?: 1000;
 
 		if ($batchLimit) {
@@ -648,11 +652,7 @@ abstract class DatabaseModel extends ModelBase
                 }
             }
         } else {
-            $conditionSql = $this->getWhereSql($plugin);
-            if (!$conditionSql) {
-                ocService()->error->show('need_condition');
-            }
-            $this->baseSave($data, true, $conditionSql);
+            $this->baseSave($data, true);
         }
 	}
 
@@ -663,13 +663,11 @@ abstract class DatabaseModel extends ModelBase
      */
     public function delete($batchLimit = 1000)
     {
-        $plugin = $this->connect();
         $batchLimit = $batchLimit ?: 1000;
-        $conditionSql = $this->getWhereSql($plugin);
 
         if ($batchLimit) {
             $dataType = $this->getDataType();
-            if (!$dataType || in_array($dataType, array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT))) {
+            if (!$dataType || in_array($dataType, DriverBase::base_diver_types())) {
                 $this->asEntity();
             }
 
@@ -681,32 +679,32 @@ abstract class DatabaseModel extends ModelBase
                 }
             }
         } else {
-            $this->baseDelete($conditionSql);
+            $this->baseDelete();
         }
     }
 
     /**
      * 删除记录
-     * @param $conditionSql
+     * @param null $conditionSql
+     * @param bool $requireCondition
      * @return mixed
      * @throws Exception
      */
-	public function baseDelete($conditionSql = null)
+	public function baseDelete($conditionSql = null, $requireCondition = true)
 	{
         $plugin = $this->connect();
         $generator = $this->getSqlGenerator($plugin);
-        $tableFullName = $generator->getTableFullname($this->tableName);
 
         if (!$conditionSql) {
             $conditionSql = $generator->genWhereSql();
         }
 
-        if (!$conditionSql) {
+        if ($requireCondition && !$conditionSql) {
             ocService()->error->show('need_condition');
         }
 
         $this->pushTransaction();
-		$result = $plugin->execute($this->getDeleteSql($tableFullName, $conditionSql));
+		$result = $plugin->execute($this->getDeleteSql($this->tableName, $conditionSql));
 
 		$this->clearSql();
 		return $result;
@@ -1004,7 +1002,7 @@ abstract class DatabaseModel extends ModelBase
 	public function getTotal()
 	{
 		$queryRow = true;
-		if ($this->unions || !empty($this->sql['option']['group'])) {
+		if (!empty($this->sql['unions']) || !empty($this->sql['option']['group'])) {
 			$queryRow = false;
 		}
 
@@ -1074,17 +1072,20 @@ abstract class DatabaseModel extends ModelBase
     protected function baseFind($condition, $option, $queryRow, $count = false, $dataType = null)
 	{
         $plugin = $this->connect(false);
-
-	    $this->pushSql($condition, $option, $queryRow);
-        $this->setJoin(null, $this->tag, $this->getAlias());
-
-        $sql = $this->getSelectSql($plugin, $count);
         $dataType = $dataType ? : ($this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY);
 
+	    $this->pushSql($condition, $option, $queryRow);
+        $this->setJoin($this->tag, null, $this->getAlias());
+
+        $generator = $this->getSqlGenerator($plugin);
+        $unions = $this->getUnions();
+        $isUnion = !!$unions;
+        $sqlData = $generator->genSelectSql($count, $unions);
+
 		if ($queryRow) {
-            $result = $plugin->queryRow($sql, $count, $this->unions, $dataType);
+            $result = $plugin->queryRow($sqlData, $count, $isUnion, $dataType);
 		} else {
-            $result = $plugin->query($sql, $count, $this->unions, $dataType);
+            $result = $plugin->query($sqlData, $count, $isUnion, $dataType);
 		}
 
 		if (!$count && !$queryRow && $this->isPage()) {
@@ -1191,7 +1192,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function leftJoin($class, $alias = null, $on = null)
 	{
-		return $this->setJoin('left', $class, $alias, $on);
+		return $this->setJoin($class, 'left', $alias, $on);
 	}
 
     /**
@@ -1203,7 +1204,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function rightJoin($class, $alias = null, $on = null)
 	{
-		return $this->setJoin('right', $class, $alias, $on);
+		return $this->setJoin($class, 'right', $alias, $on);
 	}
 
     /**
@@ -1215,7 +1216,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function innerJoin($class, $alias = null, $on = null)
 	{
-		return $this->setJoin('inner', $class, $alias, $on);
+		return $this->setJoin($class, 'inner', $alias, $on);
 	}
 
     /**
@@ -1467,7 +1468,7 @@ abstract class DatabaseModel extends ModelBase
     public function unionOrderBy($orderBy)
     {
         if ($orderBy) {
-            $this->unions['option']['order'] = $orderBy;
+            $this->sql['unions']['option']['order'] = $orderBy;
         }
         return $this;
     }
@@ -1506,7 +1507,7 @@ abstract class DatabaseModel extends ModelBase
             $offset = 0;
         }
 
-        $this->unions['option']['limit'] = array($offset, $rows);
+        $this->sql['unions']['option']['limit'] = array($offset, $rows);
         return $this;
     }
 
@@ -1590,7 +1591,7 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function baseUnion($model, $unionAll = false)
 	{
-		$this->unions['models'][] = compact('model', 'unionAll');
+        $this->sql['unions']['models'][] = compact('model', 'unionAll');
 	}
 
 	/**
@@ -1599,18 +1600,18 @@ abstract class DatabaseModel extends ModelBase
 	 */
 	public function getUnions()
 	{
-		return $this->unions;
+		return !empty($this->sql['unions']) ? $this->sql['unions'] : array();
 	}
 
     /**
      * 联接查询
-     * @param $type
      * @param $class
+     * @param $type
      * @param $alias
      * @param bool $on
      * @return $this
      */
-    protected function setJoin($type, $class, $alias, $on = false)
+    protected function setJoin($class, $type, $alias, $on = false)
 	{
 		$config = array();
 

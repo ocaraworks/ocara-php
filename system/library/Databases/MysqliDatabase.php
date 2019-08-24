@@ -71,15 +71,17 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
      */
 	public function getFields($table)
 	{
-		$table     = $this->getTableFullname($table);
-		$sqlData   = $this->getShowFieldsSql($table);
-		$data      = $this->query($sqlData);
-		$fields    = array('autoIncrementField' => OC_EMPTY, 'list' => array());
+		$tableFullName = $this->getTableFullname($table);
+		$sqlData = $this->getShowFieldsSql($tableFullName);
+		$data = $this->query($sqlData);
+
+		$fields = array('autoIncrementField' => OC_EMPTY, 'list' => array());
 		$isComment = ocConfig('USE_FIELD_DESC_LANG', false);
 
 		foreach ($data as $row) {
 			$fieldRow = array();
 			$fieldRow['name'] = $row['Field'];
+
 			if (strstr($row['Type'], '(')) {
 				$pos = strpos($row['Type'], '(', 0);
 				$endPos = strpos($row['Type'], ')', 0);
@@ -94,11 +96,13 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 			} else {
 				$fieldRow['lang'] = ocHump($fieldRow['name'], OC_SPACE);
 			}
+
 			$fieldRow['isNull'] = $row['Null'] == 'NO' ? OC_FALSE : OC_TRUE;
 			$fieldRow['isPrimary'] = $row['Key'] == 'PRI' ? OC_TRUE : OC_FALSE;
 			$fieldRow['defaultValue'] = (string)$row['Default'];
             $fieldRow['extra'] = $row['Extra'];
 			$fields['list'][$row['Field']] = $fieldRow;
+
 			if ($row['Extra'] == 'auto_increment') {
 			    $fields['autoIncrementField'] = $fieldRow['name'];
             }

@@ -91,21 +91,25 @@ class Generator extends Base
     }
 
     /**
-     * 生成查询Sql
+     * 获取SELECT查询语句
      * @param bool $count
-     * @return array
+     * @param array $unions
+     * @return mixed
      */
-    public function genSelectSql($count = false)
+    public function genSelectSql($count = false, array $unions = array())
     {
+        $plugin = $this->plugin();
+
         $option = ocGet('option', $this->sql, array());
         $tables = ocGet('tables', $this->sql, array());
         $unJoined = count($tables) <= 1;
+
         $from = $this->getFromSql($tables, $unJoined);
 
         if ($count) {
             $countField = ocGet('countField', $this->sql, null);
             $isGroup = !empty($option['group']);
-            $fields = $this->plugin()->getCountSql($countField, 'total', $isGroup);
+            $fields = $plugin->getCountSql($countField, 'total', $isGroup);
         } else {
             $aliasFields = $this->getAliasFields($tables, $this->alias);
             if (!isset($option['fields']) || $this->isDefaultFields($option['fields'])) {
@@ -123,11 +127,17 @@ class Generator extends Base
             if ($count) {
                 ocDel($option, 'limit');
             } else {
-                $option['limit'] = $this->plugin()->getLimitSql($option['limit']);
+                $option['limit'] = $plugin->getLimitSql($option['limit']);
             }
         }
 
-        return $this->plugin()->getSelectSql($fields, $from, $option);
+        $sqlData = $plugin->getSelectSql($fields, $from, $option);
+
+        if (!empty($unions['models'])) {
+            $sqlData = $this->getUnionSql($sqlData, $count);
+        }
+
+        return $sqlData;
     }
 
     /**
@@ -137,6 +147,7 @@ class Generator extends Base
      */
     public function getConditionSql(array $data)
     {
+        $plugin = $this->plugin();
         $where = array();
 
         foreach ($data as $key => $value) {
@@ -148,7 +159,7 @@ class Generator extends Base
                     $whereData = $this->filterData($whereData);
                 }
                 if ($whereData) {
-                    $condition = $this->plugin()->parseCondition($whereData, 'AND', '=', $alias);
+                    $condition = $plugin->parseCondition($whereData, 'AND', '=', $alias);
                 }
             } elseif ($whereType == 'between') {
                 $field = $this->filterField($whereData[0]);
@@ -165,8 +176,8 @@ class Generator extends Base
             }
         }
 
-        $where = $this->plugin()->linkWhere($where);
-        $where = $this->plugin()->wrapWhere($where);
+        $where = $plugin->linkWhere($where);
+        $where = $plugin->wrapWhere($where);
 
         return $where;
     }
@@ -400,6 +411,38 @@ class Generator extends Base
         return $on;
     }
 
+    /**
+     * 攻取Union语句
+     * @param $sqlData
+     * @param $count
+     * @return array
+     */
+    public function getUnionSql($sqlData, $count)
+    {
+        list($sql, $params) = $sqlData;
+        $plugin = $this->plugin();
+
+        if (!empty($unions['models'])) {
+            $sql = $plugin->wrapSql($sql);
+            foreach ($unions['models'] as $union) {
+                if ($count) {
+                    $unionData = $union['model']->getTotal();
+                } else {
+                    $unionData = $union['model']->getAll();
+                }
+                list($unionSql, $unionParams) = $unionData;
+                $sql .= $plugin->getUnionSql($unionSql, $union['unionAll']);
+                $params = array_merge($params, $unionParams);
+            }
+            if (!$count && !empty($unions['option'])) {
+                $orderBy = $unions['option']['order'];
+                $limit = $unions['option']['limit'];
+                $sql = $plugin->getSubQuerySql($sql, $orderBy, $limit);
+            }
+        }
+
+        return array($sql, $params);
+    }
     /**
      * 获取关联链接条件
      * @param $alias
