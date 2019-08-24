@@ -621,9 +621,14 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 推入事务池中
+     * @param DatabaseBase|null $plugin
+     * @throws Exception
      */
-	public function pushTransaction($plugin)
+	public function pushTransaction(DatabaseBase $plugin = null)
     {
+        if (!$plugin) {
+            $plugin = $this->connect();
+        }
         ocService()->transaction->push($plugin);
     }
 

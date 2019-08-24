@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/system/library/Core/Sql.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Sql.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Sql/Generator.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Sql/Generator.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/data/languages/zh_cn.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/data/languages/zh_cn.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/library/Core/Transaction.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Transaction.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -28,55 +29,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="151">
-              <caret line="548" column="9" selection-start-line="548" selection-start-column="9" selection-end-line="548" selection-end-column="9" />
+            <state relative-caret-position="367">
+              <caret line="633" lean-forward="true" selection-start-line="633" selection-end-line="633" />
               <folding>
                 <element signature="e#557#583#0#PHP" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/system/library/Core/Sql.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="305" column="28" selection-start-line="305" selection-start-column="20" selection-end-line="305" selection-end-column="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/system/library/Databases/MysqliDatabase.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="113">
-              <caret line="158" column="22" selection-start-line="158" selection-start-column="22" selection-end-line="158" selection-end-column="22" />
-              <folding>
-                <element signature="e#573#601#0#PHP" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/system/library/Sql/SqlFactory.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="19" column="1" lean-forward="true" selection-start-line="19" selection-start-column="1" selection-end-line="19" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/system/library/Sql/Generator.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="205">
-              <caret line="397" column="66" selection-start-line="397" selection-start-column="50" selection-end-line="397" selection-end-column="66" />
-              <folding>
-                <element signature="e#556#576#0#PHP" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -86,7 +45,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>union</find>
       <find>getResult(</find>
       <find>genSelectSql</find>
       <find>getSubQuerySql(</find>
@@ -112,10 +70,11 @@
       <find>base</find>
       <find>baseSave(</find>
       <find>getUpdateSql(</find>
-      <find>getTableFullname</find>
       <find>checkOcaraSqlTag</find>
       <find>getUpdateSql</find>
       <find>baseSave</find>
+      <find>getTableFullname</find>
+      <find>getInser</find>
     </findStrings>
     <replaceStrings>
       <replace>prefix</replace>
@@ -176,8 +135,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/system/library/Iterators/Database/BatchDataObjectRecords.php" />
-        <option value="$PROJECT_DIR$/system/library/Iterators/Database/ObjectRecords.php" />
         <option value="$PROJECT_DIR$/system/library/Iterators/Database/BatchObjectRecords.php" />
         <option value="$PROJECT_DIR$/system/library/Iterators/Database/EachObjectRecords.php" />
         <option value="$PROJECT_DIR$/system/library/Iterators/Database/EachRecords.php" />
@@ -224,9 +181,11 @@
         <option value="$PROJECT_DIR$/system/library/Sql/SqlFactory.php" />
         <option value="$PROJECT_DIR$/system/library/Core/DatabaseBase.php" />
         <option value="$PROJECT_DIR$/system/library/Sql/Generator.php" />
-        <option value="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" />
         <option value="$PROJECT_DIR$/system/library/Databases/MysqliDatabase.php" />
         <option value="$PROJECT_DIR$/system/library/Core/Sql.php" />
+        <option value="$PROJECT_DIR$/system/library/Core/Transaction.php" />
+        <option value="$PROJECT_DIR$/system/data/languages/zh_cn.php" />
+        <option value="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" />
       </list>
     </option>
   </component>
@@ -265,7 +224,7 @@
               <item name="ocara" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
               <item name="library" type="462c0819:PsiDirectoryNode" />
-              <item name="Sql" type="462c0819:PsiDirectoryNode" />
+              <item name="Models" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -393,7 +352,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="329114000" />
+    <option name="totallyTimeSpent" value="329754000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -408,10 +367,10 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.1738255" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.1738255" />
       <window_info id="Favorites" order="1" sideWeight="0.5014245" side_tool="true" weight="0.22214764" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info active="true" anchor="bottom" id="Find" order="1" sideWeight="0.49946353" visible="true" weight="0.44017094" />
+      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49946353" weight="0.44017094" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -433,13 +392,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/system/library/Core/Error.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="27" column="55" selection-start-line="27" selection-start-column="55" selection-end-line="27" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/Ocara.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="239">
@@ -514,13 +466,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
           <caret line="86" lean-forward="true" selection-start-line="86" selection-end-line="86" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Core/Transaction.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1107">
-          <caret line="93" column="5" lean-forward="true" selection-start-line="93" selection-start-column="5" selection-end-line="93" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -792,19 +737,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="548" column="9" selection-start-line="548" selection-start-column="9" selection-end-line="548" selection-end-column="9" />
-          <folding>
-            <element signature="e#557#583#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Databases/MysqliDatabase.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
+        <state relative-caret-position="290">
           <caret line="158" column="22" selection-start-line="158" selection-start-column="22" selection-end-line="158" selection-end-column="22" />
           <folding>
             <element signature="e#573#601#0#PHP" expanded="true" />
@@ -816,6 +751,30 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="305" column="28" selection-start-line="305" selection-start-column="20" selection-end-line="305" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/data/languages/zh_cn.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="384">
+          <caret line="165" column="54" selection-start-line="165" selection-start-column="54" selection-end-line="165" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Core/Transaction.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="75" column="63" selection-start-line="75" selection-start-column="38" selection-end-line="75" selection-end-column="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/library/Models/DatabaseModel.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="367">
+          <caret line="633" lean-forward="true" selection-start-line="633" selection-end-line="633" />
+          <folding>
+            <element signature="e#557#583#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
