@@ -10,10 +10,10 @@ namespace Ocara\Databases;
 
 use Ocara\Core\DatabaseBase;
 use Ocara\Interfaces\Database as DatabaseInterface;
-use Ocara\Interfaces\Sql as SqlInterface;
+
 use Ocara\Exceptions\Exception;
 
-class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInterface
+class MysqliDatabase extends DatabaseBase implements DatabaseInterface
 {
 	/**
 	 * @var $pdoName pdo扩展名
@@ -109,18 +109,6 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 		}
 
 		return $fields;
-	}
-
-    /**
-     * 设置字符集
-     * @param $charset
-     * @return array|bool|mixed
-     * @throws Exception
-     */
-	public function setCharset($charset)
-	{
-		$sqlData = $this->getSetCharsetSql($charset);
-		return $this->query($sqlData);
 	}
 
     /**

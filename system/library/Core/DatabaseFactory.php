@@ -20,6 +20,7 @@ class DatabaseFactory extends Base
      * @var string
      */
     protected static $defaultServer = 'defaults';
+    protected static $connections = array();
 
     /**
      * 获取数据库实例
@@ -68,18 +69,22 @@ class DatabaseFactory extends Base
 		$object = null;
 		$config = self::getConfig($connectName);
 		$index = $master ? 0 : 1;
-		$hosts = ocForceArray(ocDel($config, 'host'));
 		$connectName = $connectName . '_' . $index;
 
-		if (isset($hosts[$index]) && $hosts[$index]) {
-			$address = array_map('trim', explode(':', $hosts[$index]));
-			$config['host']  = isset($address[0]) ? $address[0] : null;
-			$config['port']  = isset($address[1]) ? $address[1] : null;
-			$config['type']  = self::getDatabaseType($config);
-			$config['class'] = $config['type'];
-			$config['connect_name'] = $connectName;
-			$object = self::createDatabase('Databases', $config);
-		}
+		if (isset(self::$connections[$connectName]) && is_object(self::$connections[$connectName])) {
+		    $object = self::$connections[$connectName];
+        } else {
+            $hosts = ocForceArray(ocDel($config, 'host'));
+            if (isset($hosts[$index]) && $hosts[$index]) {
+                $address = array_map('trim', explode(':', $hosts[$index]));
+                $config['host']  = isset($address[0]) ? $address[0] : null;
+                $config['port']  = isset($address[1]) ? $address[1] : null;
+                $config['type']  = self::getDatabaseType($config);
+                $config['class'] = $config['type'];
+                $config['connect_name'] = $connectName;
+                $object = self::createDatabase('Databases', $config);
+            }
+        }
 
 		return $object;
 	}

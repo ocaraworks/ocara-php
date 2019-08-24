@@ -38,7 +38,6 @@ class Generator extends Base
         $this->setPlugin($plugin);
 
         $this->database = $database;
-        $this->databaseName = $databaseName;
     }
 
     /**
@@ -79,6 +78,15 @@ class Generator extends Base
     public function setAlias($alias)
     {
         $this->alias = $alias;
+    }
+
+    /**
+     * 设置数据库名称
+     * @param $databaseName
+     */
+    public function setDatabaseName($databaseName)
+    {
+        $this->databaseName = $databaseName;
     }
 
     /**

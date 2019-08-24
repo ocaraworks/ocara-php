@@ -9,7 +9,7 @@
 namespace Ocara\Models;
 
 use Ocara\Core\DriverBase;
-use Ocara\Generators\Sql;
+use Ocara\Sql\Generator;
 use \ReflectionObject;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\CacheFactory;
@@ -32,6 +32,8 @@ abstract class DatabaseModel extends ModelBase
 	protected static $table;
     protected static $entity;
     protected static $database;
+    protected static $master;
+    protected static $slave;
 
     protected $plugin;
     protected $alias;
@@ -39,8 +41,6 @@ abstract class DatabaseModel extends ModelBase
     protected $connectName = 'defaults';
 
     protected $tag;
-    protected $master;
-    protected $slave;
     protected $databaseName;
     protected $tableName;
     protected $autoIncrementField;
@@ -500,14 +500,23 @@ abstract class DatabaseModel extends ModelBase
 		return $this;
 	}
 
-	/**
-	 * 规定使用主库查询
-	 */
-	public function master()
-	{
-		$this->sql['option']['master'] = true;
-		return $this;
-	}
+    /**
+     * 规定使用主库查询
+     */
+    public function master()
+    {
+        $this->sql['option']['master'] = true;
+        return $this;
+    }
+
+    /**
+     * 规定使用从库查询
+     */
+    public function slave()
+    {
+        $this->sql['option']['master'] = false;
+        return $this;
+    }
 
     /**
      * 保存记录
@@ -721,9 +730,9 @@ abstract class DatabaseModel extends ModelBase
         $plugin = $this->connect();
 
 		if ($sql) {
-			$sqlData = $plugin->getSqlData($sql);
+            $sqlData = $this->getSqlData($plugin, $sql);
 			$dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
-			return $plugin->query($sqlData, false, array(), $dataType);
+			return $plugin->query($sqlData, false, false, $dataType);
 		}
 
 		return false;
@@ -740,13 +749,30 @@ abstract class DatabaseModel extends ModelBase
         $plugin = $this->connect();
 
 		if ($sql) {
-			$sqlData = $plugin->getSqlData($sql);
+			$sqlData = $this->getSqlData($plugin, $sql);
             $dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
-			return $plugin->query($sqlData, false, array(), $dataType);
+			return $plugin->queryRow($sqlData, false, array(), $dataType);
 		}
 
 		return false;
 	}
+
+    /**
+     * 获取SQL生成数据
+     * @param DatabaseBase $database
+     * @param $sql
+     * @return array
+     */
+	protected function getSqlData(DatabaseBase $database, $sql)
+    {
+        if (is_array($sql)) {
+            $sqlData = $sql;
+        } else {
+            $generator = new Generator($database);
+            $sqlData = $generator->getSqlData($sql);
+        }
+        return $sqlData;
+    }
 
 	/**
 	 * 获取SQL
@@ -1099,12 +1125,13 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 获取SQL生成器
      * @param $plugin
-     * @return Sql
+     * @return Generator
      */
 	public function getSqlGenerator($plugin)
     {
-        $generator = new Sql($plugin, $this->databaseName);
+        $generator = new Generator($plugin);
 
+        $generator->setDatabaseName($this->databaseName);
         $generator->setAlias($this->alias);
         $generator->setSql($this->sql);
         $generator->setFields($this->getFields());
@@ -1150,28 +1177,22 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 连接数据库
-     * @param bool $master
+     * @param bool $isMaster
      * @return mixed|null
      * @throws Exception
      */
-	public function connect($master = true)
+	public function connect($isMaster = true)
 	{
-        $plugin = $this->plugin(false);
+        if (isset($this->sql['option']['master'])) {
+            $master = $this->sql['option']['master'] !== false;
+        } else {
+            $master = $isMaster;
+        }
 
-        if (!$plugin) {
-            if (!($master || ocGet(array('option', 'master'), $this->sql))) {
-                if (!is_object($this->slave)) {
-                    $this->slave = DatabaseFactory::create($this->connectName, false, false);
-                }
-                $plugin = $this->setPlugin($this->slave);
-            }
-
-            if (!is_object($plugin)) {
-                if (!is_object($this->master)) {
-                    $this->master = DatabaseFactory::create($this->connectName);
-                }
-                $plugin = $this->setPlugin($this->master);
-            }
+        if ($master) {
+            $plugin = DatabaseFactory::create($this->connectName);
+        } else {
+            $plugin = DatabaseFactory::create($this->connectName, false, false);
         }
 
         if (!$plugin->isSelectedDatabase()) {
@@ -1179,9 +1200,21 @@ abstract class DatabaseModel extends ModelBase
         }
 
         $this->getFields();
-
 		return $plugin;
 	}
+
+    /**
+     * 设置字符集
+     * @param $charset
+     * @return array|bool|mixed
+     * @throws Exception
+     */
+    public function setCharset($charset)
+    {
+        $generator = new Generator();
+        $sqlData = $generator->getSetCharsetSql($charset);
+        return $this->query($sqlData);
+    }
 
     /**
      * 左联接
