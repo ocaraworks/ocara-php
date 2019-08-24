@@ -1018,7 +1018,7 @@ abstract class DatabaseModel extends ModelBase
      * @return array
      * @throws Exception
      */
-    protected function baseFind($condition, $option, $queryRow, $count = false, $dataType = null)
+    public function baseFind($condition, $option, $queryRow, $count = false, $dataType = null)
 	{
         $plugin = $this->connect(false);
 
