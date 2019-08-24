@@ -2,16 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d5c984d-1efa-4802-8fdb-8636cbe64c7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/data/config.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/data/config.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/DatabaseBase.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/DatabaseBase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Core/DatabaseFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/DatabaseFactory.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/library/Core/Sql.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Core/Sql.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Databases/MysqliDatabase.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Databases/MysqliDatabase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Models/DatabaseModel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Sql/Databases/MysqlSql.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Sql/Databases/MysqliSql.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/library/Sql/Generator.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Sql/Generator.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/library/Sql/SqlFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/system/library/Sql/SqlFactory.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -51,8 +43,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/library/Core/Sql.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="113">
-              <caret line="257" column="27" selection-start-line="257" selection-start-column="27" selection-end-line="257" selection-end-column="27" />
+            <state relative-caret-position="102">
+              <caret line="305" column="28" selection-start-line="305" selection-start-column="20" selection-end-line="305" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -238,7 +230,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="5" />
     <option name="y" value="120" />
     <option name="width" value="1940" />
@@ -401,7 +393,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="328512000" />
+    <option name="totallyTimeSpent" value="329114000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -413,7 +405,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="7" />
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4985755" visible="true" weight="0.1738255" />
@@ -822,8 +814,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/library/Core/Sql.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="257" column="27" selection-start-line="257" selection-start-column="27" selection-end-line="257" selection-end-column="27" />
+        <state relative-caret-position="102">
+          <caret line="305" column="28" selection-start-line="305" selection-start-column="20" selection-end-line="305" selection-end-column="28" />
         </state>
       </provider>
     </entry>

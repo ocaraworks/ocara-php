@@ -328,7 +328,7 @@ class Sql extends Base
 		$fields = implode(',', $fields);
 		$values = implode(',', $values);
 
-		return $type . " INTO {$tableName}({$fields}) VALUES({$values})";
+		return $type . " INTO {$table}({$fields}) VALUES({$values})";
 	}
 
     /**
@@ -354,7 +354,7 @@ class Sql extends Base
 			$set = implode(',', $array);
 		}
 
-		$sql = "UPDATE {$tableName} SET {$set} " . ($where ? " WHERE {$where} " : OC_EMPTY);
+		$sql = "UPDATE {$table} SET {$set} " . ($where ? " WHERE {$where} " : OC_EMPTY);
 		return $this->getSqlData($sql);
 	}
 
@@ -381,11 +381,9 @@ class Sql extends Base
 	{
         $where = $this->parseCondition($where);
 		$this->checkStringCondition($where);
-
-        $tableFullName = $this->getTableFullname($table);
         $option = $this->filterName($option);
 
-		$sql = "DELETE {$option} FROM {$tableFullName}" . ($where ? " WHERE {$where} " : OC_EMPTY);
+		$sql = "DELETE {$option} FROM {$table}" . ($where ? " WHERE {$where} " : OC_EMPTY);
 		return $this->getSqlData($sql);
 	}
 

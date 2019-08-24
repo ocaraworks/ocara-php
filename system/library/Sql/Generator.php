@@ -481,21 +481,40 @@ class Generator extends Base
         return $joinOn;
     }
 
+    /**
+     * 获取Insert语句
+     * @param $table
+     * @param $data
+     * @return mixed
+     */
     public function getInsertSql($table, $data)
     {
         $tableName = $this->getTableFullname($table, $this->databaseName);
-        return $this->plugin()->getInsertSql($table, $data);
+        return $this->plugin()->getInsertSql($tableName, $data);
     }
 
+    /**
+     * 获取Update语句
+     * @param $table
+     * @param $data
+     * @param $where
+     * @return mixed
+     */
     public function getUpdateSql($table, $data, $where)
     {
         $tableName = $this->getTableFullname($table, $this->databaseName);
         return $this->plugin()->getUpdateSql($tableName, $data, $where);
     }
 
+    /**
+     * 获取Replace语句
+     * @param $table
+     * @param $data
+     * @return mixed
+     */
     public function getRelaceSql($table, $data)
     {
         $tableName = $this->getTableFullname($table, $this->databaseName);
-        return $this->plugin()->getInsertSql($table, $data);
+        return $this->plugin()->getInsertSql($tableName, $data);
     }
 }
