@@ -130,13 +130,6 @@ return array(
             ),
         ),
     ),
-
-    /*
-     * 数据库类型映射
-     */
-    'DATABASE_TYPE_MAP' => array(
-        'Mysql' => 'Mysqli',
-    ),
     
     /*
      * Restful路由规则

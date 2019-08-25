@@ -14,10 +14,27 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Sql extends Base
 {
-	protected $prepared;
-
+	protected $database;
 	protected $params = array();
 	protected $config = array();
+
+    /**
+     * Sql constructor.
+     * @param $database
+     */
+	public function __construct($database)
+    {
+        $this->database = $database;
+    }
+
+    /**
+     * 设置数据库配置
+     * @param $config
+     */
+	public function setConfig($config)
+    {
+        $this->config = $config;
+    }
 
     /**
      * 获取设置编码SQL
@@ -69,10 +86,8 @@ class Sql extends Base
 	 */
 	public function filterName($name, $addSlashes = true)
 	{
-        $plugin = $this->plugin();
-
 		if ($addSlashes) {
-			$str = $plugin->real_escape_string($name);
+			$str = $this->database->escapeString($name);
 			if ($str) {
 				return $this->filterSql($str, false, true, true);
 			}
@@ -80,6 +95,32 @@ class Sql extends Base
 
 		return $this->filterSql($name, $addSlashes, true, true);
 	}
+
+    /**
+     * 获取表全名
+     * @param $table
+     * @param null $database
+     * @return mixed|string
+     */
+    public function getTableFullname($table, $database = null)
+    {
+        if (preg_match('/^' . OC_SQL_TAG . '(.*)$/i', $table, $mt)) {
+            return $mt[1];
+        }
+
+        if (preg_match('/(\w+)\.(\w+)/i', $table, $mt)) {
+            $databaseName = $mt[1];
+            $table = $mt[2];
+        } else {
+            $databaseName = $database ?: $this->config['name'];
+            if ($this->config['prefix']) {
+                $table = $this->config['prefix'] . $table;
+            }
+        }
+
+        $tableFullName = $this->filterName($this->getTableNameSql($databaseName, $table));
+        return $tableFullName;
+    }
 
 	/***
 	 * SQL安全过滤
@@ -89,13 +130,11 @@ class Sql extends Base
 	 */
 	public function filterValue($content, $addSlashes = true)
 	{
-        $plugin = $this->plugin();
-
-		if ($mt = self::checkOcaraSqlTag($content)) {
+		if ($mt = self::checkSqlTag($content)) {
 			return $mt[1];
 		} else {
 			if ($addSlashes) {
-				$str = $plugin->real_escape_string($content);
+				$str = $this->database->escapeString($content);
 				if ($str) {
 					return $this->filterSql($str, false);
 				}
@@ -116,10 +155,10 @@ class Sql extends Base
 	public function parseValue($value, $paramType = 'where', $ifQuote = true, $prepare = true)
 	{
 		if (ocScalar($value)) {
-			if ($mt = self::checkOcaraSqlTag($value)) {
+			if ($mt = self::checkSqlTag($value)) {
 				return $mt[1];
 			} else {
-				if ($this->prepared && $prepare) {
+				if ($this->database->isPrepare() && $prepare) {
 					$value = $this->filterSql($value, false);
 					$this->params[$paramType][] = $value;
 					return '?';
@@ -144,7 +183,7 @@ class Sql extends Base
 			ocService()->error->show('invalid_field_name');
 		}
 
-		if ($mt = self::checkOcaraSqlTag($field)) {
+		if ($mt = self::checkSqlTag($field)) {
 			return $mt[1];
 		}
 
@@ -212,11 +251,11 @@ class Sql extends Base
 	}
 
 	/**
-	 * 检查Ocara代码标记
+	 * 检查SQL代码标记
 	 * @param string $value
 	 * @return array
 	 */
-	public static function checkOcaraSqlTag($value)
+	public static function checkSqlTag($value)
 	{
 		if (preg_match('/^' . OC_SQL_TAG . '(.*)$/i', $value, $mt)) {
 			return $mt;
@@ -279,7 +318,6 @@ class Sql extends Base
 	 */
 	public function getInsertSqlBase($type, $table, $data)
 	{
-		$table = $this->filterName($table);
 		$fields = $values = array();
 
 		foreach ($data as $key => $value) {
@@ -302,10 +340,9 @@ class Sql extends Base
      */
 	public function getUpdateSql($table, $data, $where)
 	{
+        $set = OC_EMPTY;
+        $where = $this->parseCondition($where);
 		$this->checkStringCondition($where);
-
-		$set   = null;
-		$table = $this->filterName($table);
 
 		if (is_array($data)) {
 			$array = array();
@@ -342,9 +379,8 @@ class Sql extends Base
      */
 	public function getDeleteSql($table, $where, $option = null)
 	{
+        $where = $this->parseCondition($where);
 		$this->checkStringCondition($where);
-
-		$table = $this->filterName($table);
         $option = $this->filterName($option);
 
 		$sql = "DELETE {$option} FROM {$table}" . ($where ? " WHERE {$where} " : OC_EMPTY);
@@ -353,13 +389,14 @@ class Sql extends Base
 
 	/**
 	 * 获取表的字段信息
-	 * @param $table
+	 * @param
+     * @param $database
 	 * @return string
 	 */
-	public function getShowFieldsSql($table)
+	public function getShowFieldsSql($table, $database = null)
 	{
-		$table = $this->filterName($table);
-		return "SHOW FULL FIELDS FROM {$table}";
+	    $tableName = $this->getTableFullname($table, $database);
+		return "SHOW FULL FIELDS FROM {$tableName}";
 	}
 
     /**
@@ -405,13 +442,11 @@ class Sql extends Base
 	 */
 	public function getLimitSql($limit)
 	{
-        $plugin = $this->plugin();
-
 		if (is_array($limit) && count($limit) >= 2) {
 			$limit = "{$limit[0]}, {$limit[1]}";
 		}
 
-		$str = $plugin->real_escape_string($limit);
+		$str = $this->database->escapeString($limit);
 		if ($str) {
 			return $this->filterSql($str, false, true);
 		}
@@ -684,13 +719,11 @@ class Sql extends Base
 	 */
 	public function getValueSql($val, $ifQuote = true)
 	{
-        $plugin = $this->plugin();
-
 		if (is_numeric($val)) return $val;
 
 		if ($val === null) return 'NULL';
 
-		$str = $plugin->real_escape_string($val);
+		$str = $this->database->escapeString($val);
 
 		if ($str) {
 			$val = $this->filterSql($str, false);
@@ -816,7 +849,7 @@ class Sql extends Base
      * @param array $limit
      * @return string
      */
-    public function getSubQuerySql($sql, $orderBy, array $limit)
+    public function getSubQuerySql($sql, $orderBy = null, array $limit = array())
     {
         $querySql = "SELECT * FROM ($sql) AS a";
 

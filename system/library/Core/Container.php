@@ -228,8 +228,8 @@ class Container extends Basis
 
     /**
      * 获取类实例
-     * @param mixed $name
-     * @return 自定义属性|null
+     * @param null $name
+     * @return array|mixed|null
      */
     public function getInstance($name = null)
     {
@@ -426,9 +426,9 @@ class Container extends Basis
     }
 
     /**
-     * 魔术方法-获取无法访问的属性
-     * @param string $property
-     * @return array|mixed|object|自定义属性|void|null
+     * 获取无法访问的属性
+     * @param $property
+     * @return array|mixed|object|void|null
      * @throws Exception
      */
     public function __get($property)

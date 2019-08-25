@@ -33,6 +33,15 @@ class DriverBase extends Base
     const DATA_TYPE_ARRAY = 1;
     const DATA_TYPE_OBJECT = 2;
 
+    /**
+     * 基本类型（除动态实体类外）
+     * @return array
+     */
+    public static function base_diver_types()
+    {
+        return array(self::DATA_TYPE_ARRAY, self::DATA_TYPE_OBJECT);
+    }
+
 	/**
 	 * 是否长连接
 	 * @param bool $pConnect

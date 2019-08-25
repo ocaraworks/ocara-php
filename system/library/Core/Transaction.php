@@ -72,7 +72,9 @@ class Transaction extends Base
 			$this->list = array();
 		} elseif ($this->count > 1) {
 			$this->count --;
-		}
+		} else {
+            ocService()->error->show('no_transaction_for_commit');
+        }
 	}
 
 	/**

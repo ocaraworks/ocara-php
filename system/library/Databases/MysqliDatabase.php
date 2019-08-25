@@ -9,11 +9,12 @@
 namespace Ocara\Databases;
 
 use Ocara\Core\DatabaseBase;
+use Ocara\Core\Sql;
 use Ocara\Interfaces\Database as DatabaseInterface;
-use Ocara\Interfaces\Sql as SqlInterface;
+
 use Ocara\Exceptions\Exception;
 
-class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInterface
+class MysqliDatabase extends DatabaseBase implements DatabaseInterface
 {
 	/**
 	 * @var $pdoName pdo扩展名
@@ -69,17 +70,16 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
      * @return array
      * @throws Exception
      */
-	public function getFields($table)
+	public function getFields($sqlData)
 	{
-		$table     = $this->getTableFullname($table);
-		$sqlData   = $this->getShowFieldsSql($table);
-		$data      = $this->query($sqlData);
-		$fields    = array('autoIncrementField' => OC_EMPTY, 'list' => array());
+		$data = $this->query($sqlData);
+		$fields = array('autoIncrementField' => OC_EMPTY, 'list' => array());
 		$isComment = ocConfig('USE_FIELD_DESC_LANG', false);
 
 		foreach ($data as $row) {
 			$fieldRow = array();
 			$fieldRow['name'] = $row['Field'];
+
 			if (strstr($row['Type'], '(')) {
 				$pos = strpos($row['Type'], '(', 0);
 				$endPos = strpos($row['Type'], ')', 0);
@@ -94,11 +94,13 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 			} else {
 				$fieldRow['lang'] = ocHump($fieldRow['name'], OC_SPACE);
 			}
+
 			$fieldRow['isNull'] = $row['Null'] == 'NO' ? OC_FALSE : OC_TRUE;
 			$fieldRow['isPrimary'] = $row['Key'] == 'PRI' ? OC_TRUE : OC_FALSE;
 			$fieldRow['defaultValue'] = (string)$row['Default'];
             $fieldRow['extra'] = $row['Extra'];
 			$fields['list'][$row['Field']] = $fieldRow;
+
 			if ($row['Extra'] == 'auto_increment') {
 			    $fields['autoIncrementField'] = $fieldRow['name'];
             }
@@ -108,16 +110,14 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 	}
 
     /**
-     * 设置字符集
-     * @param $charset
-     * @return array|bool|mixed
-     * @throws Exception
+     * 加密字符串
+     * @param $content
+     * @return mixed
      */
-	public function setCharset($charset)
-	{
-		$sqlData = $this->getSetCharsetSql($charset);
-		return $this->query($sqlData);
-	}
+	public function escapeString($content)
+    {
+        return $this->plugin()->real_escape_string($content);
+    }
 
     /**
      * 选择数据库
@@ -156,7 +156,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface, SqlInter
 					$type = 'integer';
 				}
 			}
-			if (!self::checkOcaraSqlTag($value)) {
+			if (!Sql::checkSqlTag($value)) {
 				if (is_array($value)) {
 					foreach ($value as $k => $v) {
 						settype($value[$k], $type);

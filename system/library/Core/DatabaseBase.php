@@ -9,10 +9,11 @@
 namespace Ocara\Core;
 
 use Ocara\Exceptions\Exception;
+use Ocara\Sql\Generator;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class DatabaseBase extends Sql
+class DatabaseBase extends Base
 {
 	/**
 	 * 调试配置
@@ -26,11 +27,14 @@ class DatabaseBase extends Sql
 	/**
 	 * 连接属性
 	 */
+	protected $config;
 	protected $pdoName;
 	protected $connectName;
 	protected $wakeUpTimes = 0;
 	protected $pConnect;
 	protected $lastSql;
+	protected $prepared;
+	protected $params;
 
 	private $error = array();
 	private static $connects = array();
@@ -107,10 +111,10 @@ class DatabaseBase extends Sql
     public function registerEvents()
     {
         $this->event(self::EVENT_BEFORE_EXECUTE_SQL)
-            ->append(ocConfig(array('EVENT', 'database', 'before_execute_sql'), null));
+             ->append(ocConfig(array('EVENT', 'database', 'before_execute_sql'), null));
 
         $this->event(self::EVENT_AFTER_EXECUTE_SQL)
-            ->append(ocConfig(array('EVENT', 'database', 'after_execute_sql'), null));
+             ->append(ocConfig(array('EVENT', 'database', 'after_execute_sql'), null));
     }
 
 	/**
@@ -134,6 +138,7 @@ class DatabaseBase extends Sql
     /**
      * 初始化设置
      * @param array $config
+     * @throws Exception
      */
 	public function init(array $config)
 	{
@@ -152,6 +157,21 @@ class DatabaseBase extends Sql
             $this->setCharset($config['charset']);
 		}
 	}
+
+    /**
+     * 获取设置字符集数据
+     * @param $charset
+     * @return mixed|void|null
+     * @throws Exception
+     */
+	public function setCharset($charset)
+    {
+        $generator = new Generator($this);
+        $sql = $generator->getSetCharsetSql($charset);
+        $sqlData = $generator->getSqlData($sql);
+        $result = $this->execute($sqlData);
+        return $result;
+    }
 
     /**
      * 是否PDO连接
@@ -221,6 +241,15 @@ class DatabaseBase extends Sql
 	}
 
     /**
+     * 获取数据库类型
+     * @return array|bool|mixed|null
+     */
+	public function getType()
+    {
+        return $this->getConfig('type');
+    }
+
+    /**
      * 执行SQL语句
      * @param array $sqlData
      * @param bool $required
@@ -267,11 +296,11 @@ class DatabaseBase extends Sql
      * 获取查询结果
      * @param bool $queryRow
      * @param bool $count
-     * @param array $unions
+     * @param bool $isUnion
      * @param string $dataType
      * @return array|mixed
      */
-	public function getResult($queryRow = false, $count = false, $unions = array(), $dataType = null)
+	public function getResult($queryRow = false, $count = false, $isUnion = false, $dataType = null)
     {
         $dataType = $dataType ? : DriverBase::DATA_TYPE_ARRAY;
         $plugin = $this->plugin();
@@ -279,7 +308,7 @@ class DatabaseBase extends Sql
         if ($count) {
             $result = $plugin->get_all_result($dataType, $queryRow);
             $total = 0;
-            if (!empty($unions['models'])) {
+            if ($isUnion) {
                 foreach ($result as $row) {
                     $num = reset($row);
                     $total += (integer)$num;
@@ -306,16 +335,16 @@ class DatabaseBase extends Sql
      * 查询多行记录
      * @param string|array $sqlData
      * @param bool $count
-     * @param array $unions
+     * @param bool $isUnion
      * @param null $dataType
      * @return array|mixed
      * @throws Exception
      */
-    public function query($sqlData, $count = false, $unions = array(), $dataType = null)
+    public function query($sqlData, $count = false, $isUnion = false, $dataType = null)
     {
         $sqlData = $this->formatSqlData($sqlData);
-        $this->executeQuery($sqlData, $count, $unions);
-        $result = $this->getResult(false, $count, $unions, $dataType);
+        $this->execute($sqlData);
+        $result = $this->getResult(false, $count, $isUnion, $dataType);
 
         return $result;
     }
@@ -324,16 +353,16 @@ class DatabaseBase extends Sql
      * 查询一行
      * @param string|array $sqlData
      * @param bool $count
-     * @param array $unions
+     * @param bool $isUnion
      * @param null $dataType
      * @return array|mixed
      * @throws Exception
      */
-    public function queryRow($sqlData, $count = false, $unions = array(), $dataType = null)
+    public function queryRow($sqlData, $count = false, $isUnion = false, $dataType = null)
     {
         $sqlData = $this->formatSqlData($sqlData);
-        $this->executeQuery($sqlData, $count, $unions);
-        $result = $this->getResult(true, $count, $unions, $dataType);
+        $this->execute($sqlData);
+        $result = $this->getResult(true, $count, $isUnion, $dataType);
 
         return $result;
     }
@@ -345,41 +374,6 @@ class DatabaseBase extends Sql
     public function getLastSql()
     {
         return $this->lastSql;
-    }
-
-    /**
-     * 查询数据结果
-     * @param string|array $sqlData
-     * @param bool $count
-     * @param array $unions
-     * @return mixed|void|null
-     * @throws Exception
-     */
-    protected function executeQuery($sqlData, $count = false, $unions = array())
-    {
-        list($sql, $params) = $sqlData;
-
-        if (!empty($unions['models'])) {
-            $sql = $this->wrapSql($sql);
-            foreach ($unions['models'] as $union) {
-                if ($count) {
-                    $unionData = $union['model']->getTotal();
-                } else {
-                    $unionData = $union['model']->getAll();
-                }
-                list($unionSql, $unionParams) = $unionData;
-                $sql .= $this->getUnionSql($unionSql, $union['unionAll']);
-                $params = array_merge($params, $unionParams);
-            }
-            if (!$count && !empty($unions['option'])) {
-                $orderBy = $unions['option']['order'];
-                $limit = $unions['option']['limit'];
-                $sql = $this->getSubQuerySql($sql, $orderBy, $limit);
-            }
-        }
-
-        $result = $this->execute(array($sql, $params));
-        return $result;
     }
 
     /**
@@ -422,124 +416,6 @@ class DatabaseBase extends Sql
 			$this->plugin()->is_prepare($prepare);
 		}
 		return $this->prepared;
-	}
-
-    /**
-     * 获取最后一次插入记录的自增ID
-     * @param string $sql
-     * @return bool|mixed
-     * @throws \Ocara\Exceptions\Exception
-     */
-	public function getInsertId($sql = null)
-	{
-		if (empty($sql)) $sql = $this->getLastIdSql();
-		$result = $this->queryRow($sql);
-		return $result ? $result['id'] : false;
-	}
-
-    /**
-     * 检测表是否存在
-     * @param string $table
-     * @param bool $required
-     * @return bool|mixed|void
-     * @throws \Ocara\Exceptions\Exception
-     */
-	public function tableExists($table, $required = false)
-	{
-		$table = $this->getTableFullname($table);
-		$sqlData = $this->getSelectSql(1, $table, array('limit' => 1));
-        $result = $this->execute($sqlData);
-
-		if ($required) {
-			return $result;
-		} else {
-			return $this->errorExists() === false;
-		}
-	}
-
-    /**
-     * 插入记录
-     * @param $table
-     * @param array $data
-     * @return bool|mixed|void|null
-     * @throws Exception
-     */
-	public function insert($table, array $data = array())
-	{
-		if (empty($data)) {
-			$this->showError('fault_save_data');
-		}
-
-		$table = $this->getTableFullname($table);
-		$sqlData = $this->getInsertSql($table, $data);
-        $result = $data ? $this->execute($sqlData) : false;
-        $result = $result ? $this->getInsertId() : false;
-
-		return $result;
-	}
-
-    /**
-     * 更新记录
-     * @param $table
-     * @param null $data
-     * @param null $condition
-     * @return bool|mixed|void|null
-     * @throws Exception
-     */
-	public function update($table, $data = null, $condition = null)
-	{
-		if (empty($data)) {
-			$this->showError('fault_save_data');
-		}
-
-		$table = $this->getTableFullname($table);
-		$condition = $this->parseCondition($condition);
-		$sqlData = $this->getUpdateSql($table, $data, $condition);
-		$result = $data ? $this->execute($sqlData) : false;
-
-		return $result;
-	}
-
-    /**
-     * 删除记录
-     * @param $table
-     * @param $condition
-     * @return mixed|void|null
-     * @throws Exception
-     */
-	public function delete($table, $condition)
-	{
-		$table = $this->getTableFullname($table);
-		$condition = $this->parseCondition($condition);
-		$sqlData = $this->getDeleteSql($table, $condition);
-		$result = $this->execute($sqlData);
-
-		return $result;
-	}
-
-    /**
-     * 获取表全名
-     * @param $table
-     * @param null $database
-     * @return mixed|string
-     */
-	public function getTableFullname($table, $database = null)
-	{
-		if (preg_match('/^' . OC_SQL_TAG . '(.*)$/i', $table, $mt)) {
-			return $mt[1];
-		}
-
-		if (preg_match('/(\w+)\.(\w+)/i', $table, $mt)) {
-			$databaseName = $mt[1];
-			$table = $mt[2];
-		} else {
-			$databaseName = $database ?: $this->config['name'];
-			if ($this->config['prefix']) {
-				$table = $this->config['prefix'] . $table;
-			}
-		}
-
-		return $this->getTableNameSql($databaseName, $table);
 	}
 
     /**
