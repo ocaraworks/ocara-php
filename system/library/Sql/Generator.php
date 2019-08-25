@@ -139,7 +139,7 @@ class Generator extends Base
         $sqlData = $plugin->getSelectSql($fields, $from, $option);
 
         if (!empty($unions['models'])) {
-            $sqlData = $this->getUnionSql($sqlData, $count);
+            $sqlData = $this->getUnionSql($sqlData, $unions, $count);
         }
 
         return $sqlData;
@@ -301,7 +301,7 @@ class Generator extends Base
             if (is_string($fieldData)) {
                 $fieldData = array_map('trim', (explode(',', $fieldData)));
             }
-            $alias = $unJoined ? false : $alias;
+            $alias = $unJoined ? null : $alias;
             $fieldData = (array)$fieldData;
             $fields[] = $this->plugin()->getFieldsSql($fieldData, $aliasFields, $this->alias, $alias);
         }
@@ -417,12 +417,13 @@ class Generator extends Base
     }
 
     /**
-     * 攻取Union语句
+     * 获取Union语句
      * @param $sqlData
+     * @param $unions
      * @param $count
      * @return array
      */
-    public function getUnionSql($sqlData, $count)
+    public function getUnionSql($sqlData, $unions, $count)
     {
         list($sql, $params) = $sqlData;
         $plugin = $this->plugin();
@@ -431,9 +432,9 @@ class Generator extends Base
             $sql = $plugin->wrapSql($sql);
             foreach ($unions['models'] as $union) {
                 if ($count) {
-                    $unionData = $union['model']->getTotal();
+                    $unionData = $union['model']->debug()->getTotal();
                 } else {
-                    $unionData = $union['model']->getAll();
+                    $unionData = $union['model']->debug()->getAll();
                 }
                 list($unionSql, $unionParams) = $unionData;
                 $sql .= $plugin->getUnionSql($unionSql, $union['unionAll']);

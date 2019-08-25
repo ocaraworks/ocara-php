@@ -547,8 +547,6 @@ abstract class DatabaseModel extends ModelBase
                 ocService()->error->show('need_condition');
             }
             $sqlData = $generator->getUpdateSql($this->tableName, $data, $conditionSql);
-            $this->pushTransaction($plugin);
-            $result = $data ? $plugin->execute($sqlData) : false;
         } else {
             $autoIncrementField = $this->getAutoIncrementField();
             if (!in_array($autoIncrementField, $this->primaries)) {
@@ -557,8 +555,14 @@ abstract class DatabaseModel extends ModelBase
                 }
             }
             $sqlData = $generator->getInsertSql($this->tableName, $data);
-            $this->pushTransaction($plugin);
-            $result = $data ? $plugin->execute($sqlData) : false;
+        }
+
+        if ($this->isDebug()) return $sqlData;
+
+        $this->pushTransaction($plugin);
+        $result = $data ? $plugin->execute($sqlData) : false;
+
+        if (!$isUpdate) {
             $result = $result ? $this->getInsertId() : false;
         }
 
@@ -583,6 +587,8 @@ abstract class DatabaseModel extends ModelBase
             $sqlData = array($sql, array());
         }
 
+        if ($this->isDebug()) return $sqlData;
+
         $result = $sqlData ? $plugin->queryRow($sqlData) : false;
         return $result ? $result['id'] : false;
     }
@@ -601,6 +607,9 @@ abstract class DatabaseModel extends ModelBase
         $table = $generator->getTableFullname($table);
 
         $sqlData = $generator->getSelectSql(1, $table, array('limit' => 1));
+
+        if ($this->isDebug()) return $sqlData;
+
         $result = $plugin->execute($sqlData);
 
         if ($required) {
@@ -670,7 +679,7 @@ abstract class DatabaseModel extends ModelBase
                 }
             }
         } else {
-            $this->baseSave($data, true);
+            return $this->baseSave($data, true);
         }
 	}
 
@@ -697,7 +706,7 @@ abstract class DatabaseModel extends ModelBase
                 }
             }
         } else {
-            $this->baseDelete();
+            return $this->baseDelete();
         }
     }
 
@@ -723,14 +732,17 @@ abstract class DatabaseModel extends ModelBase
         }
 
         $this->pushTransaction($plugin);
-		$result = $plugin->execute($generator->getDeleteSql($this->tableName, $conditionSql));
+        $sqlData = $generator->getDeleteSql($this->tableName, $conditionSql);
 
+        if ($this->debug()) return $sqlData;
+
+		$result = $plugin->execute($sqlData);
 		$this->clearSql();
 		return $result;
 	}
 
     /**
-     * 用SQL语句获取多条记录
+     * 直接执行查询语句
      * @param $sql
      * @return bool
      * @throws Exception
@@ -741,27 +753,11 @@ abstract class DatabaseModel extends ModelBase
 
 		if ($sql) {
             $sqlData = $this->getSqlData($plugin, $sql);
-			$dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
-			return $plugin->query($sqlData, false, false, $dataType);
-		}
-
-		return false;
-	}
-
-    /**
-     * 用SQL语句获取一条记录
-     * @param $sql
-     * @return bool
-     * @throws Exception
-     */
-	public function queryRow($sql)
-	{
-        $plugin = $this->connect();
-
-		if ($sql) {
-			$sqlData = $this->getSqlData($plugin, $sql);
-            $dataType = $this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY;
-			return $plugin->queryRow($sqlData, false, array(), $dataType);
+            if ($this->isDebug()) {
+                return $sqlData;
+            } else {
+                return $plugin->execute($sqlData);
+            }
 		}
 
 		return false;
@@ -987,6 +983,25 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
+     *
+     * @return $this
+     */
+    public function debug($debug = true)
+    {
+        $this->sql['debug'] = $debug;
+        return $this;
+    }
+
+    /**
+     * 是否调试SQL语句
+     * @return bool
+     */
+    protected function isDebug()
+    {
+        return isset($this->sql['debug']) && $this->sql['debug'] === true;
+    }
+
+    /**
      * 查询多条记录
      * @param mixed $condition
      * @param mixed $option
@@ -1021,6 +1036,8 @@ abstract class DatabaseModel extends ModelBase
 	{
 		$row = $this->getRow($condition, $field);
 
+        if ($this->isDebug()) return $row;
+
 		if (is_object($row)) {
 			return property_exists($row, $field) ? $row->$field : null;
 		}
@@ -1043,6 +1060,8 @@ abstract class DatabaseModel extends ModelBase
 		}
 
 		$result = $this->baseFind(false, false, $queryRow, true);
+
+        if ($this->isDebug()) return $result;
 
 		if ($result) {
 			if (!$queryRow) {
@@ -1118,6 +1137,8 @@ abstract class DatabaseModel extends ModelBase
         $unions = $this->getUnions();
         $isUnion = !!$unions;
         $sqlData = $generator->genSelectSql($count, $unions);
+
+        if ($this->isDebug()) return $sqlData;
 
 		if ($queryRow) {
             $result = $plugin->queryRow($sqlData, $count, $isUnion, $dataType);
@@ -1567,23 +1588,23 @@ abstract class DatabaseModel extends ModelBase
 		return static::$table;
 	}
 
-	/**
-	 * 合并查询（去除重复值）
-	 * @param ModelBase $model
-	 * @return $this
-	 */
-	public function union(ModelBase $model)
+    /**
+     * 合并查询（去除重复值）
+     * @param DatabaseModel $model
+     * @return $this
+     */
+	public function union(DatabaseModel $model)
 	{
 		$this->baseUnion($model, false);
 		return $this;
 	}
 
-	/**
-	 * 合并查询
-	 * @param ModelBase $model
-	 * @return $this
-	 */
-	public function unionAll(ModelBase $model)
+    /**
+     * 合并查询
+     * @param DatabaseModel $model
+     * @return $this
+     */
+	public function unionAll(DatabaseModel $model)
 	{
 		$this->baseUnion($model, true);
 		return $this;
