@@ -1003,26 +1003,28 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 查询多条记录
-     * @param mixed $condition
-     * @param mixed $option
+     * @param null $condition
+     * @param null $option
+     * @param array $executeOptions
      * @return array
      * @throws Exception
      */
-	public function getAll($condition = null, $option = null)
+	public function getAll($condition = null, $option = null, $executeOptions = array())
 	{
-		return $this->baseFind($condition, $option, false, false);
+		return $this->baseFind($condition, $option, false, false, null, $executeOptions);
 	}
 
     /**
      * 查询一条记录
-     * @param mixed $condition
-     * @param mixed $option
+     * @param null $condition
+     * @param null $option
+     * @param array $executeOptions
      * @return array
      * @throws Exception
      */
-	public function getRow($condition = null, $option = null)
+	public function getRow($condition = null, $option = null, $executeOptions = array())
 	{
-		return $this->baseFind($condition, $option, true, false);
+		return $this->baseFind($condition, $option, true, falsenull, $executeOptions);
 	}
 
     /**
@@ -1049,17 +1051,18 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 查询总数
+     * @param array $executeOptions
      * @return array|int|mixed
      * @throws Exception
      */
-	public function getTotal()
+	public function getTotal($executeOptions = array())
 	{
 		$queryRow = true;
 		if (!empty($this->sql['unions']) || !empty($this->sql['option']['group'])) {
 			$queryRow = false;
 		}
 
-		$result = $this->baseFind(false, false, $queryRow, true);
+		$result = $this->baseFind(false, false, $queryRow, true, null, $executeOptions);
 
         if ($this->isDebug()) return $result;
 
@@ -1118,13 +1121,14 @@ abstract class DatabaseModel extends ModelBase
      * 查询数据
      * @param mixed $condition
      * @param mixed $option
-     * @param bool $queryRow
+     * @param $queryRow
      * @param bool $count
      * @param null $dataType
-     * @return array
+     * @param array $executeOptions
+     * @return array|mixed
      * @throws Exception
      */
-    protected function baseFind($condition, $option, $queryRow, $count = false, $dataType = null)
+    protected function baseFind($condition, $option, $queryRow, $count = false, $dataType = null, $executeOptions = array())
 	{
         $plugin = $this->connect(false);
         $this->getFields();
@@ -1134,8 +1138,16 @@ abstract class DatabaseModel extends ModelBase
         $this->setJoin($this->tag, null, $this->getAlias());
 
         $generator = $this->getSqlGenerator($plugin);
-        $unions = $this->getUnions();
-        $isUnion = !!$unions;
+
+        $closeUnion = isset($executeOptions['close_union']) && $executeOptions['close_union'] === true;
+        if ($closeUnion) {
+            $unions = array();
+            $isUnion = false;
+        } else {
+            $unions = $this->getUnions();
+            $isUnion = !!$unions;
+        }
+
         $sqlData = $generator->genSelectSql($count, $unions);
 
         if ($this->isDebug()) return $sqlData;

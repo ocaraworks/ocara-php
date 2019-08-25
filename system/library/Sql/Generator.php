@@ -431,10 +431,11 @@ class Generator extends Base
         if (!empty($unions['models'])) {
             $sql = $plugin->wrapSql($sql);
             foreach ($unions['models'] as $union) {
+                $executeOptions = array('close_union' => true);
                 if ($count) {
-                    $unionData = $union['model']->debug()->getTotal();
+                    $unionData = $union['model']->debug()->getTotal($executeOptions);
                 } else {
-                    $unionData = $union['model']->debug()->getAll();
+                    $unionData = $union['model']->debug()->getAll(null, null, $executeOptions);
                 }
                 list($unionSql, $unionParams) = $unionData;
                 $sql .= $plugin->getUnionSql($unionSql, $union['unionAll']);
