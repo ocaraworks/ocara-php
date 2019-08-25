@@ -658,6 +658,7 @@ abstract class DatabaseModel extends ModelBase
      * 批量更新记录
      * @param array $data
      * @param int $batchLimit
+     * @return bool|mixed
      * @throws Exception
      */
 	public function update(array $data, $batchLimit = 1000)
@@ -686,6 +687,7 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 批量删除记录
      * @param int $batchLimit
+     * @return mixed
      * @throws Exception
      */
     public function delete($batchLimit = 1000)
@@ -1024,7 +1026,7 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getRow($condition = null, $option = null, $executeOptions = array())
 	{
-		return $this->baseFind($condition, $option, true, falsenull, $executeOptions);
+		return $this->baseFind($condition, $option, true, false, null, $executeOptions);
 	}
 
     /**
@@ -1766,7 +1768,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public static function __callStatic($name, $params)
     {
-        $regExp = '/^((findRowBy)|(findBy)|(getRowBy)|(getAllBy))(\w+)$/';
+        $regExp = '/^((selectOne)|(selectAll)|(getRow)|(getAll))By(\w+)$/';
 
         if (preg_match($regExp, $name, $matches)) {
             $method = $matches[1];
@@ -1797,13 +1799,13 @@ abstract class DatabaseModel extends ModelBase
 
         $model = new static();
         $fields = $model->getFields();
+        $fieldName = ocHumpToLine($fieldName);
 
         if (array_key_exists($fieldName, $fields)){
-            $fieldName = ocHumpToLine($fieldName);
-            if (array_key_exists($fieldName, $fields)) {
-                $model->where(array($fieldName => $value));
-                return $model->$method();
-            }
+            $result = $model
+                ->where(array($fieldName => $value))
+                ->$method();
+            return $result;
         }
 
         ocService()->error->show('not_exists_find_field');
