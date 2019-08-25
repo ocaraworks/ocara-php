@@ -39,7 +39,7 @@ class DriverBase extends Base
      */
     public static function base_diver_types()
     {
-        return array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT);
+        return array(self::DATA_TYPE_ARRAY, self::DATA_TYPE_OBJECT);
     }
 
 	/**

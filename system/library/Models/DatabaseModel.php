@@ -657,7 +657,7 @@ abstract class DatabaseModel extends ModelBase
 
 		if ($batchLimit) {
             $dataType = $this->getDataType();
-            if (!$dataType || in_array($dataType, array(DriverBase::DATA_TYPE_ARRAY, DriverBase::DATA_TYPE_OBJECT))) {
+            if (!$dataType || in_array($dataType, DriverBase::base_diver_types())) {
                 $this->asEntity();
             }
 
