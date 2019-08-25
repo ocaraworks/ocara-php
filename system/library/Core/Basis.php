@@ -72,7 +72,7 @@ abstract class Basis
 
     /**
      * 魔术方法-读取不可访问属性的值时
-     * @param string $property
+     * @param $property
      * @return mixed
      * @throws Exception
      */

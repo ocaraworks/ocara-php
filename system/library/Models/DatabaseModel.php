@@ -354,17 +354,19 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取当前数据库对象
-     * @param bool $slave
-     * @return mixed
+     * @param bool $master
+     * @return mixed|null
+     * @throws Exception
      */
-	public function db($slave = false)
+	public function db($master = true)
 	{
-		$name = $slave ? 'slave' : 'plugin';
-		if (is_object($this->$name)) {
-			return $this->$name;
-		}
+	    $connect = $this->connect($master);
 
-		ocService()->error->show('null_database');
+	    if (!$connect) {
+            ocService()->error->show('null_database');
+        }
+
+        return $connect;
 	}
 
 	/**

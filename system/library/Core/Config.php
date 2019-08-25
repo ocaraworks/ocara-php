@@ -182,10 +182,9 @@ class Config extends Basis
      * 获取配置
      * @param null $key
      * @param null $default
-     * @return array|bool|mixed|null|自定义属性
-     * @throws Exception
+     * @return array|bool|mixed|null
      */
-    public function get($key = null, $default = null, $existsWrap = false)
+    public function get($key = null, $default = null)
     {
         if (isset($key)) {
             $result = null;

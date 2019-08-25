@@ -70,9 +70,9 @@ abstract class Base extends Basis
     }
 
     /**
-     * 魔术方法-获取自定义属性
+     * 魔术方法获取自定义属性
      * @param string $property
-     * @return array|mixed|自定义属性
+     * @return mixed
      */
     public function __get($property)
     {

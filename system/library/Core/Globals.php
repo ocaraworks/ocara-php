@@ -28,8 +28,8 @@ class Globals extends Base
 
     /**
      * 获取属性
-     * @param string $name
-     * @return 自定义属性|null
+     * @param null $name
+     * @return null
      */
     public function get($name = null)
     {
