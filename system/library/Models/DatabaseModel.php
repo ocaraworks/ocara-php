@@ -32,8 +32,6 @@ abstract class DatabaseModel extends ModelBase
 	protected static $table;
     protected static $entity;
     protected static $database;
-    protected static $master;
-    protected static $slave;
 
     protected $plugin;
     protected $alias;
