@@ -1,8 +1,7 @@
 <?php
-/**
+/*
  * 程序执行开始时间
  */
-
 define('OC_EXECUTE_START_TIME', microtime(true));
 
 /*
