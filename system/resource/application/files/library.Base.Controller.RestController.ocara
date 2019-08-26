@@ -1,0 +1,13 @@
+<?php
+/**
+ * Restful控制器基类
+ */
+namespace Base;
+use Ocara\Controllers\Rest;
+
+class RestController extends Rest
+{
+	public function __start()
+	{
+	}
+}

@@ -1,0 +1,11 @@
+<?php
+/**
+ * 实体模型基类
+ */
+namespace Base;
+
+use Ocara\Entities\DatabaseEntity as BaseDatabaseEntity;
+
+class DatabaseEntity extends BaseDatabaseEntity
+{
+}

@@ -1,0 +1,13 @@
+<?php
+/**
+ * Api控制器基类
+ */
+namespace Base;
+use Ocara\Controllers\Api;
+
+class ApiController extends Api
+{
+	public function __start()
+	{
+	}
+}

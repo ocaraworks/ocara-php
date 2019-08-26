@@ -1,0 +1,14 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2018/11/16
+ * Time: 23:36
+ */
+namespace Base;
+
+use Ocara\Core\Base;
+
+class BaseService extends Base
+{
+}

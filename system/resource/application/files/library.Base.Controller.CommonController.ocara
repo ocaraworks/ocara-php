@@ -1,0 +1,13 @@
+<?php
+/**
+ * 普通控制器基类
+ */
+namespace Base;
+use Ocara\Controllers\Common;
+
+class CommonController extends Common
+{
+	public function __start()
+	{
+	}
+}

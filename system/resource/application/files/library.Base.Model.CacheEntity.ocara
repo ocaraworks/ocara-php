@@ -1,0 +1,11 @@
+<?php
+/**
+ * 缓存模型基类
+ */
+namespace Base;
+
+use Ocara\Entities\CacheEntity as BaseCacheEntity;
+
+class CacheEntity extends BaseCacheEntity
+{
+}
