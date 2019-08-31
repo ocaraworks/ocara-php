@@ -58,11 +58,10 @@ final class ApplicationGenerator
 	public static function createFile()
 	{
 		foreach (self::$files as $key => $value) {
-
 			foreach ($value as $v) {
-				$filePath = self::$root . "/{$key}/{$v}";
+				$filePath = self::$root . "/{$key}/{$v}.php";
 				$source   = OC_SYS . 'resource/application/files/';
-				$source  = $source . str_replace(OC_DIR_SEP, '.', "{$key}/{$v}");
+				$source  = $source . str_replace(OC_DIR_SEP, '.', "{$key}/{$v}.ocara");
 				self::write($filePath, self::read($source));
 			}
 		}
@@ -101,7 +100,7 @@ final class ApplicationGenerator
 			}
 		}
 
-		$result = fread($fo);
+		$result = fread($fo, filesize($filePath));
 		@fclose($fo);
 
 		return $result;
@@ -124,11 +123,12 @@ final class ApplicationGenerator
 		@fclose($fo);
 	}
 
-	/**
-	 * 文件或目录不可写错误
-	 * @param string $path
-	 */
-	private function error($path, $type)
+    /**
+     * 文件或目录不可写错误
+     * @param $path
+     * @param $type
+     */
+	private static function error($path, $type)
 	{
 		die("Please make sure the parent directory is {$type} : {$path}.");
 	}

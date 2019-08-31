@@ -75,6 +75,7 @@ final class Ocara
 	 */
 	public static function create()
 	{
+	    self::getInstance();
 		include_once (OC_CORE . 'Application.php');
         ApplicationGenerator::create();
 	}
