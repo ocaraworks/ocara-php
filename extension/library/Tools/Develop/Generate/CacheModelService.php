@@ -91,7 +91,7 @@ class CacheModelService extends BaseService
 
         $content = "<?php\r\n";
         $content .= "namespace {$namespace};\r\n";
-        $content .= "use Base\\{$modelBase};\r\n";
+        $content .= "use Base\\Model\\{$modelBase};\r\n";
         $content .= "\r\n";
         $content .= "class {$modelName} extends {$modelBase}\r\n";
         $content .= "{\r\n";

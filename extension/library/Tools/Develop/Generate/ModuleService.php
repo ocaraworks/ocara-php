@@ -49,7 +49,7 @@ class ModuleService extends BaseService
 
 		$content = "<?php\r\n";
 		$content .= "namespace {$namespace}\\{$this->mdlname}\\controller;\r\n";
-		$content .= "use Base\\{$baseController};\r\n";
+		$content .= "use Base\\Controller\\{$baseController};\r\n";
 		
 		$content .= "\r\n";
 		$content .= "class {$mdlname}Module extends {$baseController}\r\n";
