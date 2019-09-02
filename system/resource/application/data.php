@@ -1,37 +1,38 @@
 <?php
 $dirs = array(
 	'application' => array(
-		'console/make',
-        'console/tasks',
         'controller',
-        'dal/entities',
-        'dal/model/defaults',
-        'dal/values',
+        'model/cache',
+        'model/database',
+        'model/entity/database',
+        'lang/zh_cn',
+        'lang/zh_cn/database',
+        'modules',
         'service',
         'view/defaults/helper',
         'view/defaults/part',
         'view/defaults/layout',
         'view/defaults/template',
-        'resource/config/control',
-        'resource/config/model',
-        'resource/fields',
-        'resource/lang/control',
-        'resource/lang/model',
 	),
 	'public' => array(
 		'attachments',
+		'pass',
 		'src/css/defaults',
 		'src/images/defaults',
 		'src/js',
-		'static',
 	),
-	'data' => array(
-	    'docs',
+	'resource' => array(
+	    'config/env',
+	    'data/docs',
+        'data/fields'
     ),
 	'runtime' => array(
-        'cache',
         'logs',
-        'sessions',
+        'session',
+    ),
+    'tools' => array(
+        'dev/controller/generate',
+        'dev/private/config'
     ),
 );
 
@@ -44,6 +45,10 @@ $files = array(
         'config/env',
         'config/resource',
         'config/static',
+        'config/env/develop',
+        'config/env/local',
+        'config/env/production',
+        'config/env/test',
     ),
     'application' => array(
         'lang/zh_cn/base',
@@ -59,4 +64,14 @@ $files = array(
         'Base/Entities/CacheEntity',
         'Base/Entities/DatabaseModel',
 	),
+    'tools' => array(
+        'dev/controller/DevModule',
+        'dev/controller/generate/ActionAction',
+        'dev/controller/generate/Controller',
+        'dev/controller/generate/ErrorAction',
+        'dev/controller/generate/IndexAction',
+        'dev/controller/generate/LoginAction',
+        'dev/controller/generate/LogoutAction',
+        'dev/private/config/base',
+    ),
 );

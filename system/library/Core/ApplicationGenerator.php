@@ -23,7 +23,7 @@ final class ApplicationGenerator
 	{
 		include (OC_SYS . 'resource/application/data.php');
 
-		$cwd = dirname(ocCommPath(realpath($_SERVER['SCRIPT_FILENAME'])));
+		$cwd = dirname(dirname(ocCommPath(realpath($_SERVER['SCRIPT_FILENAME']))));
 		self::$root  = str_replace('\\', OC_DIR_SEP, $cwd);
 		self::$dirs  = $dirs;
 		self::$files = $files;
@@ -62,7 +62,7 @@ final class ApplicationGenerator
 				$filePath = self::$root . "/{$key}/{$v}.php";
 				$source   = OC_SYS . 'resource/application/files/';
 				$source  = $source . str_replace(OC_DIR_SEP, '.', "{$key}/{$v}.ocara");
-				self::write($filePath, self::read($source));
+				ocWrite($filePath, ocRead($source));
 			}
 		}
 	}
@@ -73,54 +73,14 @@ final class ApplicationGenerator
 	public static function modifyIndex()
 	{
 		$file = $_SERVER["SCRIPT_FILENAME"];
-		$content = self::read($file);
+		$content = ocRead($file);
 		$content = str_ireplace(
 			'Ocara\\Ocara:create()',
 			'Ocara\\Ocara:run()',
 			$content
 		);
 
-		self::write($file, $content);
-	}
-
-	/**
-	 * 读取文件
-	 * @param $filePath
-	 * @return mixed
-	 */
-	private static function read($filePath)
-	{
-		if (!ocFileExists($filePath)) {
-			die("Lost ocara file : {$filePath}");
-		}
-
-		if (!$fo = @fopen($filePath, 'rb')) {
-			if (!is_readable($filePath)) {
-				if (!@chmod($filePath, 0755)) self::error($filePath, 'readable');
-			}
-		}
-
-		$result = fread($fo, filesize($filePath));
-		@fclose($fo);
-
-		return $result;
-	}
-
-	/**
-	 * 写入内容
-	 * @param string $filePath
-	 * @param string $content
-	 */
-	private static function write($filePath, $content)
-	{
-		if (!$fo = @fopen($filePath, 'wb')) {
-			if (!is_writable($filePath)) {
-				if (!@chmod($filePath, 0777)) self::error($filePath, 'writable');
-			}
-		}
-
-		$result = fwrite($fo, $content);
-		@fclose($fo);
+		ocWrite($file, $content);
 	}
 
     /**

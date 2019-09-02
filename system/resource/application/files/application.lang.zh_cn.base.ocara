@@ -1,7 +1,6 @@
 <?php
 /**
- * Ocara base language config
- * See ocara/system/data/languages/zh_cn.php
+ * base language config
  */
 return array(
 	
