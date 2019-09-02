@@ -1,8 +1,8 @@
 <?php
 /**
- * 实体模型基类
+ * 数据库实体基类
  */
-namespace Base;
+namespace Base\Model;
 
 use Ocara\Entities\DatabaseEntity as BaseDatabaseEntity;
 

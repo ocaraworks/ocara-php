@@ -1,11 +1,49 @@
 <?php
 /**
- * 缓存模型基类
+ * 缓存实体基类
  */
-namespace Base;
+namespace Base\Model;
 
 use Ocara\Entities\CacheEntity as BaseCacheEntity;
 
 class CacheEntity extends BaseCacheEntity
 {
+    /**
+     * CacheEntity constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * 保存
+     * @param array $data
+     * @return mixed
+     */
+    public function save($data = array())
+    {}
+
+    /**
+     * 新建
+     * @param array $data
+     * @return mixed
+     */
+    public function create($data = array())
+    {}
+
+    /**
+     * 更新
+     * @param array $data
+     * @return mixed
+     */
+    public function update($data = array())
+    {}
+
+    /**
+     * 删除
+     * @return mixed
+     */
+    public function delete()
+    {}
 }

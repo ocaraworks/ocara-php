@@ -2,7 +2,7 @@
 /**
  * Api控制器基类
  */
-namespace Base;
+namespace Base\Controller;
 use Ocara\Controllers\Api;
 
 class ApiController extends Api

@@ -61,8 +61,8 @@ $files = array(
         'Base/Controller/RestController',
         'Base/Model/CacheModel',
         'Base/Model/DatabaseModel',
-        'Base/Entities/CacheEntity',
-        'Base/Entities/DatabaseModel',
+        'Base/Model/CacheEntity',
+        'Base/Model/DatabaseEntity',
 	),
     'tools' => array(
         'dev/controller/DevModule',

@@ -2,7 +2,7 @@
 /**
  * Restful控制器基类
  */
-namespace Base;
+namespace Base\Controller;
 use Ocara\Controllers\Rest;
 
 class RestController extends Rest
