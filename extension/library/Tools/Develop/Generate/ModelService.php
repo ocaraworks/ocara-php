@@ -121,7 +121,7 @@ class ModelService extends BaseService
         //新建模型
 		$content = "<?php\r\n";
 		$content .= "namespace {$namespace};\r\n";
-		$content .= "use Base\\{$modelBase};\r\n";
+		$content .= "use Base\\Model\\{$modelBase};\r\n";
 		$content .= "\r\n";
 		$content .= "class {$modelName} extends {$modelBase}\r\n";
 		$content .= "{\r\n";
@@ -177,7 +177,7 @@ class ModelService extends BaseService
         $content = "<?php\r\n";
         $content .= "namespace {$entityNamespace};\r\n";
         $content .= "\r\n";
-        $content .= "use Base\\{$modelBase};\r\n";
+        $content .= "use Base\\Model\\{$modelBase};\r\n";
         $content .= "\r\n";
         $content .= "class {$entityName} extends {$modelBase}\r\n";
         $content .= "{\r\n";

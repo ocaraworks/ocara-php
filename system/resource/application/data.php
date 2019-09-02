@@ -1,58 +1,77 @@
 <?php
 $dirs = array(
 	'application' => array(
-		'console/make',
-        'console/tasks',
         'controller',
-        'dal/entities',
-        'dal/model/defaults',
-        'dal/values',
+        'model/cache',
+        'model/database',
+        'model/entity/database',
+        'lang/zh_cn',
+        'lang/zh_cn/database',
+        'modules',
         'service',
         'view/defaults/helper',
         'view/defaults/part',
         'view/defaults/layout',
         'view/defaults/template',
-        'resource/config/control',
-        'resource/config/model',
-        'resource/fields',
-        'resource/lang/control',
-        'resource/lang/model',
 	),
 	'public' => array(
 		'attachments',
+		'pass',
 		'src/css/defaults',
 		'src/images/defaults',
 		'src/js',
-		'static',
 	),
-	'data' => array(
-	    'docs',
+	'resource' => array(
+	    'config/env',
+	    'data/docs',
+        'data/fields'
     ),
 	'runtime' => array(
-        'cache',
         'logs',
-        'sessions',
+        'session',
+    ),
+    'tools' => array(
+        'dev/controller/generate',
+        'dev/private/config'
     ),
 );
 
 $files = array(
-    'application' => array(
-        'resource/config/application.php',
-        'resource/config/develop.php',
-        'resource/config/database.php',
-        'resource/config/cache.php',
-        'resource/config/event.php',
-        'resource/config/env.php',
-        'resource/config/resource.php',
-        'resource/config/static.php',
-        'view/defaults/layout/layout.php'
+    'resource' => array(
+        'config/application',
+        'config/develop',
+        'config/database',
+        'config/cache',
+        'config/env',
+        'config/resource',
+        'config/static',
+        'config/env/develop',
+        'config/env/local',
+        'config/env/production',
+        'config/env/test',
     ),
-
+    'application' => array(
+        'lang/zh_cn/base',
+        'view/defaults/layout/layout'
+    ),
 	'library' => array(
-        'Base/BaseService.php',
-		'Base/CommonController.php',
-        'Base/RestController.php',
-        'Base/CacheModel.php',
-        'Base/DatabaseModel.php',
+        'Base/Service/BaseService',
+        'Base/Controller/ApiController',
+		'Base/Controller/CommonController',
+        'Base/Controller/RestController',
+        'Base/Model/CacheModel',
+        'Base/Model/DatabaseModel',
+        'Base/Model/CacheEntity',
+        'Base/Model/DatabaseEntity',
 	),
+    'tools' => array(
+        'dev/controller/DevModule',
+        'dev/controller/generate/ActionAction',
+        'dev/controller/generate/Controller',
+        'dev/controller/generate/ErrorAction',
+        'dev/controller/generate/IndexAction',
+        'dev/controller/generate/LoginAction',
+        'dev/controller/generate/LogoutAction',
+        'dev/private/config/base',
+    ),
 );

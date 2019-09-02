@@ -6,7 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
-namespace Ocara\Models;
+namespace Ocara\Entities;
 
 use Ocara\Core\BaseEntity;
 use Ocara\Core\Models\CacheFactory;
