@@ -320,35 +320,30 @@ function ocRead($filePath, $checkPath = true)
  */
 function ocRemote($url, $data = null, array $headers = array())
 {
-	if (@ini_get('allow_url_fopen'))
-	 {
-		if (function_exists('file_get_contents')) {
-			if (empty($data)) {
-				return @file_get_contents($url);
-			}
+	if (!@ini_get('allow_url_fopen')) return null;
 
-			$data   = http_build_query($data, OC_EMPTY, '&');
-			$header = "Content-type: application/x-www-form-urlencoded\r\n";
-			$header = $header . "Content-length:" . strlen($data) . "\r\n";
-			
-			if ($headers) {
-				foreach ($headers as $value) {
-					$header = $header . $value . "\r\n";
-				}
-			}
-			
-			$context['http'] = array(
-				'method'  => 'POST',
-				'header'  => $header,
-				'content' => $data
-			);
-			
-			return @file_get_contents($url, false, stream_context_create($context));
-		}
-		return ocCurl($url, $data, $headers);
-	}
-	
-	return null;
+    if (!function_exists('file_get_contents')) return ocCurl($url, $data, $headers);
+
+    if (empty($data)) return @file_get_contents($url);
+
+    $data   = http_build_query($data, OC_EMPTY, '&');
+    $header = "Content-type: application/x-www-form-urlencoded\r\n";
+    $header = $header . "Content-length:" . strlen($data) . "\r\n";
+
+    if ($headers) {
+        foreach ($headers as $value) {
+            $header = $header . $value . "\r\n";
+        }
+    }
+
+    $context['http'] = array(
+        'method'  => 'POST',
+        'header'  => $header,
+        'content' => $data
+    );
+
+    $result = @file_get_contents($url, false, stream_context_create($context));
+    return $result;
 }
 
 /**
@@ -361,38 +356,35 @@ function ocRemote($url, $data = null, array $headers = array())
  */
 function ocCurl($url, $data = null, array $headers = array(), $showError = false)
 {
-	if (function_exists('curl_init')) {
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		
-		if ($headers) {
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-		}
-		
-		if ($data) {
-			curl_setopt($ch, CURLOPT_POST, 1);
-			if (is_array($data)) {
-				$data = http_build_query($data);
-			}
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		}
-		
-		curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-		$content = curl_exec($ch);
-	
-		if ($showError && $error = curl_error($ch)) {
-			curl_close($ch);
-			ocService()->error->show('failed_curl_return', array(curl_error($ch)));
-		}
-		
-		curl_close($ch);
+	if (!function_exists('curl_init')) return null;
 
-		return $content;
-	}
-	
-	return null;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+    if ($headers) {
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    }
+
+    if ($data) {
+        curl_setopt($ch, CURLOPT_POST, 1);
+        if (is_array($data)) {
+            $data = http_build_query($data);
+        }
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    }
+
+    curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+    $content = curl_exec($ch);
+
+    if ($showError && $error = curl_error($ch)) {
+        curl_close($ch);
+        ocService()->error->show('failed_curl_return', array(curl_error($ch)));
+    }
+
+    curl_close($ch);
+    return $content;
 }
 
 /**
