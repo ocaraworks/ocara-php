@@ -1,6 +1,7 @@
 <?php
 $dirs = array(
 	'application' => array(
+	    'console',
         'controller',
         'model/cache',
         'model/database',
@@ -61,7 +62,6 @@ $files = array(
         'Base/Controller/RestController',
         'Base/Model/CacheModel',
         'Base/Model/DatabaseModel',
-        'Base/Model/CacheEntity',
         'Base/Model/DatabaseEntity',
 	),
     'tools' => array(
