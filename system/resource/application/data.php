@@ -76,6 +76,6 @@ $files = array(
         'dev/controller/generate/IndexAction',
         'dev/controller/generate/LoginAction',
         'dev/controller/generate/LogoutAction',
-        'dev/private/config/base',
+        'dev/privates/config/base',
     ),
 );
