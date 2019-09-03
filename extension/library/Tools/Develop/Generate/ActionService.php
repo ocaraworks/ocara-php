@@ -97,9 +97,12 @@ class ActionService extends BaseService
     public function createView($actionClass)
     {
         $action = new $actionClass();
-
         $template = $this->ttype;
-        $modulePath = ocPath('modules', $this->mdlname .'/view/');
+        $modulePath = null;
+
+        if (!$this->mdlname) {
+            $modulePath = ocPath('view');
+        }
 
         ocCheckPath($action->view->getModuleViewPath($this->mdlname, 'helper', $template, $modulePath));
         ocCheckPath($action->view->getModuleViewPath($this->mdlname, 'part', $template, $modulePath));
