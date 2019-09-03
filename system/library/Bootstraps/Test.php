@@ -15,11 +15,9 @@ class Test extends BootstrapBase implements BootstrapInterface
 {
 
     /**
-     * 运行访问控制器
-     * @param array|string $route
-     * @param array $params
-     * @param null $moduleNamespace
-     * @return mixed
+     * echo $urlDir;die;
+     * @param array $route
+     * @return mixed|void
      */
     public function start($route = array())
     {

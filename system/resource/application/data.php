@@ -33,7 +33,7 @@ $dirs = array(
     ),
     'tools' => array(
         'dev/controller/generate',
-        'dev/private/config'
+        'dev/privates/config'
     ),
 );
 
