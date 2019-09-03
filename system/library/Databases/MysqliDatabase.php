@@ -66,7 +66,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
 
     /**
      * 获取字段
-     * @param string $table
+     * @param string $sqlData
      * @return array
      * @throws Exception
      */

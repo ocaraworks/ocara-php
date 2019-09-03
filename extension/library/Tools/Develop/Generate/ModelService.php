@@ -14,6 +14,7 @@ use Ocara\Core\DatabaseFactory;
 use Ocara\Exceptions\Exception;
 use Ocara\Extension\Tools\Develop\Generate\BaseService;
 use Ocara\Extension\Tools\Develop\Generate\FieldsService;
+use Ocara\Sql\Generator;
 
 class ModelService extends BaseService
 {
@@ -95,8 +96,10 @@ class ModelService extends BaseService
 
 		if (empty($this->_primaries)) {
 			$connect = DatabaseFactory::create($this->_connectName);
-			$fields = $connect->getFields($this->_table);
-			$fields = $fields['list'];
+            $generator = new Generator($connect);
+            $sqlData = $generator->getShowFieldsSql($this->_table, $this->_database);
+            $fieldsInfo = $connect->getFields($sqlData);
+			$fields = $fieldsInfo['list'];
 			$primaryFields = array();
 			foreach ($fields as $fieldName => $fieldInfo) {
 				if ($fieldInfo['isPrimary']) {
