@@ -38,6 +38,11 @@ $dirs = array(
 );
 
 $files = array(
+    'application' => array(
+        'controller/Module',
+        'lang/zh_cn/base',
+        'view/defaults/layout/layout'
+    ),
     'resource' => array(
         'config/application',
         'config/develop',
@@ -51,10 +56,6 @@ $files = array(
         'config/env/production',
         'config/env/test',
     ),
-    'application' => array(
-        'lang/zh_cn/base',
-        'view/defaults/layout/layout'
-    ),
 	'library' => array(
         'Base/Service/BaseService',
         'Base/Controller/ApiController',
@@ -64,6 +65,9 @@ $files = array(
         'Base/Model/DatabaseModel',
         'Base/Model/DatabaseEntity',
 	),
+    'public' => array(
+        'pass/tools/index'
+    ),
     'tools' => array(
         'dev/controller/DevModule',
         'dev/controller/generate/ActionAction',
