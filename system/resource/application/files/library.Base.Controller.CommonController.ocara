@@ -3,6 +3,7 @@
  * 普通控制器基类
  */
 namespace Base\Controller;
+
 use Ocara\Controllers\Common;
 
 class CommonController extends Common

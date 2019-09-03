@@ -70,7 +70,7 @@ class Config extends Basis
      */
     public function loadModuleConfig($route, $rootPath = null)
     {
-        $subPath = 'config/control/';
+        $subPath = 'config/';
         $path = $this->getConfigPath($route, $subPath, $rootPath);
         $this->load($path);
     }

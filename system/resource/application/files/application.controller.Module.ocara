@@ -4,7 +4,7 @@
  */
 namespace app\controller;
 
-use Base\CommonController;
+use Base\Controller\CommonController;
 
 class Module extends CommonController
 {

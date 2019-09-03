@@ -28,31 +28,4 @@ abstract class CacheEntity extends BaseEntity
     {
         $this->setPlugin(new $this->modelClass());
     }
-
-    /**
-     * 保存
-     * @param array $data
-     * @return mixed
-     */
-    abstract public function save($data = array());
-
-    /**
-     * 新建
-     * @param array $data
-     * @return mixed
-     */
-    abstract public function create($data = array());
-
-    /**
-     * 更新
-     * @param array $data
-     * @return mixed
-     */
-    abstract public function update($data = array());
-
-    /**
-     * 删除
-     * @return mixed
-     */
-    abstract public function delete();
 }

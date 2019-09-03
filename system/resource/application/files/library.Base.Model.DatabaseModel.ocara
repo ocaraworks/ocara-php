@@ -2,7 +2,7 @@
 /**
  * 数据库模型基类
  */
-namespace Base;
+namespace Base\Model;
 
 use Ocara\Models\DatabaseModel as BaseDatabaseModel;
 

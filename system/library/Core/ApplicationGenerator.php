@@ -75,8 +75,8 @@ final class ApplicationGenerator
 		$file = $_SERVER["SCRIPT_FILENAME"];
 		$content = ocRead($file);
 		$content = str_ireplace(
-			'Ocara\\Ocara:create()',
-			'Ocara\\Ocara:run()',
+			'Ocara\\Core\\Ocara::create()',
+			'Ocara\\Core\\Ocara::run()',
 			$content
 		);
 

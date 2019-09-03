@@ -2,7 +2,7 @@
 /**
  * 缓存模型基类
  */
-namespace Base;
+namespace Base\Model;
 
 use Ocara\Models\CacheModel as BaseCacheModel;
 

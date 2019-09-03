@@ -1,6 +1,7 @@
 <?php
 $dirs = array(
 	'application' => array(
+	    'console',
         'controller',
         'model/cache',
         'model/database',
@@ -32,11 +33,16 @@ $dirs = array(
     ),
     'tools' => array(
         'dev/controller/generate',
-        'dev/private/config'
+        'dev/privates/config'
     ),
 );
 
 $files = array(
+    'application' => array(
+        'controller/Module',
+        'lang/zh_cn/base',
+        'view/defaults/layout/layout'
+    ),
     'resource' => array(
         'config/application',
         'config/develop',
@@ -50,10 +56,6 @@ $files = array(
         'config/env/production',
         'config/env/test',
     ),
-    'application' => array(
-        'lang/zh_cn/base',
-        'view/defaults/layout/layout'
-    ),
 	'library' => array(
         'Base/Service/BaseService',
         'Base/Controller/ApiController',
@@ -61,9 +63,11 @@ $files = array(
         'Base/Controller/RestController',
         'Base/Model/CacheModel',
         'Base/Model/DatabaseModel',
-        'Base/Model/CacheEntity',
         'Base/Model/DatabaseEntity',
 	),
+    'public' => array(
+        'pass/tools/index'
+    ),
     'tools' => array(
         'dev/controller/DevModule',
         'dev/controller/generate/ActionAction',
@@ -72,6 +76,6 @@ $files = array(
         'dev/controller/generate/IndexAction',
         'dev/controller/generate/LoginAction',
         'dev/controller/generate/LogoutAction',
-        'dev/private/config/base',
+        'dev/privates/config/base',
     ),
 );
