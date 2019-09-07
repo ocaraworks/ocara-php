@@ -45,7 +45,7 @@ $files = array(
     ),
     'resource' => array(
         'config/application',
-        'config/develop',
+        'config/system',
         'config/database',
         'config/cache',
         'config/env',
