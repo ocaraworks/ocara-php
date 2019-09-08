@@ -70,14 +70,15 @@ final class Ocara
         set_exception_handler(array($container->exceptionHandler, 'exceptionHandler'));
 	}
 
-	/**
-	 * 新建应用
-	 */
-	public static function create()
+    /**
+     * 新建应用
+     * @param string $moduleType
+     */
+	public static function create($moduleType = 'common')
 	{
 	    self::getInstance();
 		include_once (OC_CORE . 'Application.php');
-        ApplicationGenerator::create();
+        ApplicationGenerator::create($moduleType);
 	}
 
     /**
