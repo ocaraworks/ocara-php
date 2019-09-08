@@ -6,6 +6,6 @@ namespace Base\Service;
 
 use Ocara\Core\Base;
 
-class BaseService extends Base
+class CommonService extends Base
 {
 }

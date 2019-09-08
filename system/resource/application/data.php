@@ -41,6 +41,7 @@ $files = array(
     'application' => array(
         'controller/Module',
         'lang/zh_cn/base',
+        'service.BaseService',
         'view/defaults/layout/layout'
     ),
     'resource' => array(
@@ -57,7 +58,7 @@ $files = array(
         'config/env/test',
     ),
 	'library' => array(
-        'Base/Service/BaseService',
+        'Base/Service/CommonService',
         'Base/Controller/ApiController',
 		'Base/Controller/CommonController',
         'Base/Controller/RestController',
