@@ -187,8 +187,6 @@ class ActionService extends BaseService
 		$content .= "namespace {$actionNamespace};\r\n";
         $content .= "\r\n";
 		//$content .= "use $controlNamespace\\{$controlClassName};\r\n";
-
-		$content .= "\r\n";
 		$content .= "class {$className} extends {$controlClassName}\r\n";
 
 		$content .= "{\r\n";

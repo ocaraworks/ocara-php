@@ -1,0 +1,11 @@
+<?php
+/**
+ * Default module class Module
+ */
+namespace app\controller;
+
+use Base\Controller\ApiController;
+
+class Module extends ApiController
+{
+}

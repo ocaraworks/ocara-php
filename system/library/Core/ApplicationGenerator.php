@@ -16,10 +16,11 @@ final class ApplicationGenerator
 	public static $dirs;
 	public static $files;
 
-	/**
-	 * 应用生成
-	 */
-	public static function create()
+    /**
+     * 应用生成
+     * @param $moduleType
+     */
+	public static function create($moduleType = 'common')
 	{
 		include (OC_SYS . 'resource/application/data.php');
 
@@ -29,7 +30,7 @@ final class ApplicationGenerator
 		self::$files = $files;
 
 		self::createDir();
-		self::createFile();
+		self::createFile($moduleType);
 		self::modifyIndex();
 
 		exit('Application create Success!');
@@ -52,16 +53,24 @@ final class ApplicationGenerator
 		}
 	}
 
-	/**
-	 * 新建文件
-	 */
-	public static function createFile()
+    /**
+     * 新建文件
+     * @param $moduleType
+     */
+	public static function createFile($moduleType)
 	{
+        $moduleType = lcfirst($moduleType);
+
 		foreach (self::$files as $key => $value) {
 			foreach ($value as $v) {
 				$filePath = self::$root . "/{$key}/{$v}.php";
 				$source   = OC_SYS . 'resource/application/files/';
-				$source  = $source . str_replace(OC_DIR_SEP, '.', "{$key}/{$v}.ocara");
+				$templateFile = str_replace(OC_DIR_SEP, '.', "{$key}/{$v}.ocara");
+                if  (is_file($source . $moduleType . '/' . $templateFile)) {
+                    $source = $source . $moduleType . '/' . $templateFile;
+                } else {
+                    $source  = $source . $templateFile;
+                }
 				ocWrite($filePath, ocRead($source));
 			}
 		}
@@ -74,8 +83,8 @@ final class ApplicationGenerator
 	{
 		$file = $_SERVER["SCRIPT_FILENAME"];
 		$content = ocRead($file);
-		$content = str_ireplace(
-			'Ocara\\Core\\Ocara::create()',
+		$content = preg_replace(
+            "/Ocara[\\\\]Core[\\\\]Ocara::create\([\\\"\\\'\w]*\)/",
 			'Ocara\\Core\\Ocara::run()',
 			$content
 		);

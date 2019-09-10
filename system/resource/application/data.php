@@ -41,11 +41,12 @@ $files = array(
     'application' => array(
         'controller/Module',
         'lang/zh_cn/base',
+        'service.BaseService',
         'view/defaults/layout/layout'
     ),
     'resource' => array(
         'config/application',
-        'config/develop',
+        'config/system',
         'config/database',
         'config/cache',
         'config/env',
@@ -57,7 +58,7 @@ $files = array(
         'config/env/test',
     ),
 	'library' => array(
-        'Base/Service/BaseService',
+        'Base/Service/CommonService',
         'Base/Controller/ApiController',
 		'Base/Controller/CommonController',
         'Base/Controller/RestController',
