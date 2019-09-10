@@ -313,10 +313,6 @@ function ocIntersectKey($data, $keys)
  */
 function ocGetExceptionData($exception)
 {
-	if (!(is_object($exception) && $exception instanceof \Exception)) {
-		ocService()->error->show('invalid_exception');
-	}
-
 	$errorType = 'exception_error';
 	if ($exception instanceof ErrorException) {
 		$errorType = 'program_error';

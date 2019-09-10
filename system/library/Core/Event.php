@@ -9,6 +9,7 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Basis;
+use \ReflectionException;
 use Ocara\Interfaces\Event as EventInterface;
 use Ocara\Interfaces\Middleware;
 
@@ -218,7 +219,8 @@ class Event extends Basis implements EventInterface
      * 触发事件
      * @param object $eventObject
      * @param array $params
-     * @return mixed
+     * @return array|mixed
+     * @throws ReflectionException
      */
     public function trigger($eventObject, array $params = array())
     {
