@@ -56,7 +56,6 @@ class Api extends Base
      */
 	public function format($result, $contentType)
 	{
-
         switch ($contentType)
         {
             case 'json':

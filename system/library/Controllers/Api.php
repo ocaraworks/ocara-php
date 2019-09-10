@@ -123,7 +123,7 @@ class Api extends ControllerBase implements ControllerInterface
         $contentType = $this->contentType ? : ocConfig('API_CONTENT_TYPE');
 
         $this->response->setContentType($contentType);
-        $this->fire(self::EVENT_AFTER_RENDER, $params);
+        $this->fire(self::EVENT_BEFORE_RENDER, $params);
 
         $content = $this->view->render($this->result);
         $this->view->output($content);
