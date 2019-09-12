@@ -14,4 +14,16 @@ defined('OC_PATH') or exit('Forbidden!');
 
 abstract class BaseEntity extends Base
 {
+    /**
+     * 加载数据
+     * @param array $data
+     * @return $this
+     */
+    public function data(array $data)
+    {
+        if ($data) {
+            $this->setProperty($data);
+        }
+        return $this;
+    }
 }
