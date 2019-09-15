@@ -1524,8 +1524,18 @@ abstract class DatabaseModel extends ModelBase
 		if (isset($rows)) {
 		    $rows = $rows ? : 1;
 		} else {
-            $rows = $offset;
-            $offset = 0;
+		    if (is_array($offset)) {
+		        if (isset($offset[1])) {
+                    $rows = $offset[1];
+		            $offset = $offset[0];
+                } else {
+		            $rows = $offset[0] ?? 0;
+		            $offset = 0;
+                }
+            } else {
+                $rows = $offset;
+                $offset = 0;
+            }
         }
 
 		$this->sql['option']['limit'] = array($offset, $rows);
