@@ -118,7 +118,7 @@ return array(
 	'not_exists_form'				=> array(2411, '表单不存在或已过期'),
 	'not_writable_htaccess'			=> array(2412, '.htaccess无法写入，请检查目录权限是否可写。'),
 	'not_exists_database' 			=> array(2413, '数据库不存在或连接失败。'),
-	'not_exists_cache'				=> array(2414, '缓存不存在。'),
+	'not_exists_cache'				=> array(2414, '%s缓存不存在。'),
 	'not_exists_font'				=> array(2415, '字体不存在'),
 	'not_exists_function_file'		=> array(2416, '函数库文件不存在'),
 	'not_exists_key'				=> array(2417, '键名“%s”不存在'),
