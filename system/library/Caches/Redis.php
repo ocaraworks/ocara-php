@@ -36,7 +36,7 @@ class Redis extends CacheBase implements CacheInterface
 		$timeout  = ocGet('timeout', $config, false);
 		$password = ocGet('password', $config, false);
 
-        $plugin = $this->setPlugin(new Redis());
+        $plugin = $this->setPlugin(new \Redis());
         $plugin->connect($host, $port, $timeout);
 
 		if ($password) {
