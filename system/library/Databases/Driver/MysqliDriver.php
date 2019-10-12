@@ -415,8 +415,9 @@ class MysqliDriver extends DriverBase implements DriverInterface
 	public function bind_param($parameter, &$variable)
 	{
         $args = func_get_args();
-        foreach ($args as $key => $item) {
-            $args[$key] = &$item;
+
+        if (isset($args[1])) {
+            $args[1] = &$variable;
         }
 
 		$result = call_user_func_array(array($this->stmt, 'bind_param'), $args);

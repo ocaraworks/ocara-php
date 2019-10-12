@@ -381,9 +381,11 @@ class PdoDriver extends DriverBase implements DriverInterface
 	public function bind_param($parameter, &$variable)
 	{
 	    $args = func_get_args();
-        foreach ($args as $key => $item) {
-            $args[$key] = &$item;
-	    }
+
+        if (isset($args[1])) {
+            $args[1] = &$variable;
+        }
+
 		return call_user_func_array(array($this->stmt, 'bindParam'), $args);
 	}
 
