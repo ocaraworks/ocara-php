@@ -514,7 +514,7 @@ class Generator extends Base
      * @param $data
      * @return mixed
      */
-    public function getRelaceSql($table, $data)
+    public function getReplaceSql($table, $data)
     {
         $tableName = $this->getTableFullname($table, $this->databaseName);
         return $this->plugin()->getInsertSql($tableName, $data);
