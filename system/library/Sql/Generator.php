@@ -487,10 +487,14 @@ class Generator extends Base
      * 获取Insert语句
      * @param $table
      * @param $data
+     * @param $isFilterData
      * @return mixed
      */
-    public function getInsertSql($table, $data)
+    public function getInsertSql($table, $data, $isFilterData)
     {
+        if ($isFilterData) {
+            $data = $this->filterData($data);
+        }
         $tableName = $this->getTableFullname($table, $this->databaseName);
         return $this->plugin()->getInsertSql($tableName, $data);
     }
@@ -500,11 +504,16 @@ class Generator extends Base
      * @param $table
      * @param $data
      * @param $where
+     * @param $isFilterData
      * @return mixed
      */
-    public function getUpdateSql($table, $data, $where)
+    public function getUpdateSql($table, $data, $where, $isFilterData)
     {
+        if ($isFilterData) {
+            $data = $this->filterData($data);
+        }
         $tableName = $this->getTableFullname($table, $this->databaseName);
+        $data = $this->filterData($data);
         return $this->plugin()->getUpdateSql($tableName, $data, $where);
     }
 
@@ -512,11 +521,15 @@ class Generator extends Base
      * 获取Replace语句
      * @param $table
      * @param $data
+     * @param $isFilterData
      * @return mixed
      */
-    public function getReplaceSql($table, $data)
+    public function getReplaceSql($table, $data, $isFilterData)
     {
+        if ($isFilterData) {
+            $data = $this->filterData($data);
+        }
         $tableName = $this->getTableFullname($table, $this->databaseName);
-        return $this->plugin()->getInsertSql($tableName, $data);
+        return $this->plugin()->getReplaceSql($tableName, $data);
     }
 }

@@ -24,12 +24,12 @@ defined('OC_PATH') or exit('Forbidden!');
 abstract class DatabaseModel extends ModelBase
 {
 
-	/**
-	 * @var @primary 主键字段列表
-	 * @var $primaries 主键字段数组
-	 */
-	protected static $primary;
-	protected static $table;
+    /**
+     * @var @primary 主键字段列表
+     * @var $primaries 主键字段数组
+     */
+    protected static $primary;
+    protected static $table;
     protected static $entity;
     protected static $database;
 
@@ -61,36 +61,36 @@ abstract class DatabaseModel extends ModelBase
      * DatabaseModel constructor.
      * @param array $data
      */
-	public function __construct(array $data = array())
-	{
-		$this->initialize();
-		if ($data) $this->data($data);
-	}
+    public function __construct(array $data = array())
+    {
+        $this->initialize();
+        if ($data) $this->data($data);
+    }
 
-	/**
-	 * 初始化
-	 */
-	public function initialize()
-	{
-		if (self::$requirePrimary === null) {
-			$required = ocConfig('MODEL_REQUIRE_PRIMARY', false);
-			self::$requirePrimary = $required ? true : false;
-		}
+    /**
+     * 初始化
+     */
+    public function initialize()
+    {
+        if (self::$requirePrimary === null) {
+            $required = ocConfig('MODEL_REQUIRE_PRIMARY', false);
+            self::$requirePrimary = $required ? true : false;
+        }
 
-		if (self::$requirePrimary && !static::$primary) {
-			ocService()->error->show('no_primaries');
-		}
+        if (self::$requirePrimary && !static::$primary) {
+            ocService()->error->show('no_primaries');
+        }
 
-		$this->tag = self::getClass();
-		$this->tableName = static::$table ?: lcfirst(self::getClassName());
+        $this->tag = self::getClass();
+        $this->tableName = static::$table ?: lcfirst(self::getClassName());
         $this->databaseName = static::$database ?: null;
         $this->primaries = static::getPrimaries();
 
-		if (method_exists($this, '__start')) $this->__start();
-		if (method_exists($this, '__model')) $this->__model();
+        if (method_exists($this, '__start')) $this->__start();
+        if (method_exists($this, '__model')) $this->__model();
 
-		return $this;
-	}
+        return $this;
+    }
 
     /**
      * 注册事件
@@ -100,57 +100,57 @@ abstract class DatabaseModel extends ModelBase
         $this->bindEvents($this);
     }
 
-	/**
-	 * 获取Model标记
-	 * @return string
-	 */
-	public function getTag()
-	{
-		return $this->tag;
-	}
+    /**
+     * 获取Model标记
+     * @return string
+     */
+    public function getTag()
+    {
+        return $this->tag;
+    }
 
-	/**
-	 * 获取表名
-	 * @return mixed
-	 */
-	public function getTableName()
-	{
-		return $this->tableName;
-	}
+    /**
+     * 获取表名
+     * @return mixed
+     */
+    public function getTableName()
+    {
+        return $this->tableName;
+    }
 
     /**
      * 获取表的全名（包括前缀）
      * @return mixed
      * @throws Exception
      */
-	public function getTableFullname()
-	{
-		return $this->connect()->getTableFullname($this->tableName);
-	}
+    public function getTableFullname()
+    {
+        return $this->connect()->getTableFullname($this->tableName);
+    }
 
-	/**
-	 * 获取当前服务器
-	 * @return mixed
-	 */
-	public function getConnectName()
-	{
-		return $this->connectName;
-	}
+    /**
+     * 获取当前服务器
+     * @return mixed
+     */
+    public function getConnectName()
+    {
+        return $this->connectName;
+    }
 
-	/**
-	 * 获取当前数据库
-	 * @return mixed
-	 */
-	public static function getDatabase()
-	{
-		return static::$database;
-	}
+    /**
+     * 获取当前数据库
+     * @return mixed
+     */
+    public static function getDatabase()
+    {
+        return static::$database;
+    }
 
     /**
      * 获取当前数据库名称
      * @return mixed
      */
-	public function getDatabaseName()
+    public function getDatabaseName()
     {
         return $this->databaseName;
     }
@@ -159,7 +159,7 @@ abstract class DatabaseModel extends ModelBase
      * 获取主键
      * @return array
      */
-	public static function getPrimaries()
+    public static function getPrimaries()
     {
         return static::$primary ? explode(',', static::$primary) : array();
     }
@@ -170,10 +170,10 @@ abstract class DatabaseModel extends ModelBase
      * @param null $relationName
      * @return $this
      */
-	public function sharding(array $data = array(), $relationName = null)
-	{
-	    if (func_num_args() >= 2) {
-	        if ($relationName) {
+    public function sharding(array $data = array(), $relationName = null)
+    {
+        if (func_num_args() >= 2) {
+            if ($relationName) {
                 $this->relateShardingInfo[$relationName] = $data;
             }
         } else {
@@ -182,34 +182,34 @@ abstract class DatabaseModel extends ModelBase
             }
         }
 
-		return $this;
-	}
+        return $this;
+    }
 
     /**
      * 加载配置文件
      */
-	public static function loadConfig()
-	{
-	    $class = self::getClass();
+    public static function loadConfig()
+    {
+        $class = self::getClass();
 
-		if (empty(self::$config[$class])) {
-		    $model = new static();
-			self::$config[$class] = $model->getModelConfig();
-		}
-	}
+        if (empty(self::$config[$class])) {
+            $model = new static();
+            self::$config[$class] = $model->getModelConfig();
+        }
+    }
 
     /**
      * 获取Model的配置
      * @return array|mixed
      */
-	public function getModelConfig()
-	{
+    public function getModelConfig()
+    {
         $paths = $this->getConfigPath();
 
         $modelConfig = array(
-            'MAPS' => $this->fieldsMap() ? : array(),
-            'RELATIONS' => $this->relations() ? : array(),
-            'RULES' => $this->rules() ? : array(),
+            'MAPS' => $this->fieldsMap() ?: array(),
+            'RELATIONS' => $this->relations() ?: array(),
+            'RULES' => $this->rules() ?: array(),
             'LANG' => array()
         );
 
@@ -220,22 +220,22 @@ abstract class DatabaseModel extends ModelBase
             }
         }
 
-		if ($paths['moduleLang'] && ocFileExists($paths['moduleLang'])) {
-			$lang = @include($paths['moduleLang']);
-			if ($lang && is_array($lang)) {
-				$modelConfig['LANG'] = array_merge($modelConfig['LANG'], $lang);
-			}
-		}
+        if ($paths['moduleLang'] && ocFileExists($paths['moduleLang'])) {
+            $lang = @include($paths['moduleLang']);
+            if ($lang && is_array($lang)) {
+                $modelConfig['LANG'] = array_merge($modelConfig['LANG'], $lang);
+            }
+        }
 
-		ksort($modelConfig);
-		return $modelConfig;
-	}
+        ksort($modelConfig);
+        return $modelConfig;
+    }
 
     /**
      * 数据表字段别名映射
      * @return array
      */
-	public function fieldsMap()
+    public function fieldsMap()
     {
         return array();
     }
@@ -264,32 +264,32 @@ abstract class DatabaseModel extends ModelBase
      * @param string $field
      * @return array|bool|mixed|null
      */
-	public static function getConfig($key = null, $field = null)
-	{
+    public static function getConfig($key = null, $field = null)
+    {
         self::loadConfig();
         $tag = self::getClass();
 
-		if (isset($key)) {
+        if (isset($key)) {
             $key = strtoupper($key);
-			if ($field) {
-				return ocGet(array($key, $field), self::$config[$tag]);
-			}
-			return ocGet($key, self::$config[$tag], array());
-		}
+            if ($field) {
+                return ocGet(array($key, $field), self::$config[$tag]);
+            }
+            return ocGet($key, self::$config[$tag], array());
+        }
 
-		return self::$config[$tag];
-	}
+        return self::$config[$tag];
+    }
 
     /**
      * 获取配置文件路径
      * @return array|mixed
      */
-	public function getConfigPath()
-	{
-	    $tag = $this->tag;
+    public function getConfigPath()
+    {
+        $tag = $this->tag;
 
-	    if (!empty(self::$configPath[$tag])) {
-	        return self::$configPath[$tag];
+        if (!empty(self::$configPath[$tag])) {
+            return self::$configPath[$tag];
         }
 
         $moduleLang = OC_EMPTY;
@@ -302,7 +302,7 @@ abstract class DatabaseModel extends ModelBase
 
         if ($this->module) {
             list($rootPath, $subDir) = ocSeparateDir($dir, '/privates/model/database/');
-            $modulePath = OC_MODULE_PATH ? : ocPath('modules');
+            $modulePath = OC_MODULE_PATH ?: ocPath('modules');
             $moduleLang = $modulePath . '/' . $this->module . '/privates/lang/' . $language . '/database/' . $subDir . $file;
         } else {
             list($rootPath, $subDir) = ocSeparateDir($dir, '/application/model/database/');
@@ -311,41 +311,41 @@ abstract class DatabaseModel extends ModelBase
         $subDir = rtrim($subDir, '/');
         $paths = array(
             'lang' => ocPath('lang', ocDir($language, 'database', $subDir) . $file),
-            'fields' => ocPath('fields',  ocDir($subDir) . $file),
+            'fields' => ocPath('fields', ocDir($subDir) . $file),
             'moduleLang' => $moduleLang
         );
 
         return self::$configPath[$tag] = $paths;
-	}
+    }
 
     /**
      * 数据字段别名映射
      * @param array $data
      * @return array
      */
-	public static function mapData(array $data)
-	{
-		$config = self::getConfig('MAPS');
-		if (!$config) return $data;
+    public static function mapData(array $data)
+    {
+        $config = self::getConfig('MAPS');
+        if (!$config) return $data;
 
-		$result = array();
-		foreach ($data as $key => $value) {
-			if (isset($config[$key])) {
-				$result[$config[$key]] = $value;
-			} else {
-				$result[$key] = $value;
-			}
-		}
+        $result = array();
+        foreach ($data as $key => $value) {
+            if (isset($config[$key])) {
+                $result[$config[$key]] = $value;
+            } else {
+                $result[$key] = $value;
+            }
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
     /**
      * 字段别名映射
      * @param $field
      * @return mixed
      */
-	public static function mapField($field)
+    public static function mapField($field)
     {
         $config = self::getConfig('MAPS');
         $result = isset($config[$field]) ? $config[$field] : $field;
@@ -358,38 +358,38 @@ abstract class DatabaseModel extends ModelBase
      * @return mixed|null
      * @throws Exception
      */
-	public function db($master = true)
-	{
-	    $connect = $this->connect($master);
+    public function db($master = true)
+    {
+        $connect = $this->connect($master);
 
-	    if (!$connect) {
+        if (!$connect) {
             ocService()->error->show('null_database');
         }
 
         return $connect;
-	}
+    }
 
-	/**
-	 * 切换数据库
-	 * @param string $name
-	 */
-	public function setDatabase($name)
-	{
-		$this->databaseName = $name;
-	}
+    /**
+     * 切换数据库
+     * @param string $name
+     */
+    public function setDatabase($name)
+    {
+        $this->databaseName = $name;
+    }
 
-	/**
-	 * 切换数据表
-	 * @param $name
-	 * @param null $primary
-	 */
-	public function selectTable($name, $primary = null)
-	{
-		$this->tableName = $name;
+    /**
+     * 切换数据表
+     * @param $name
+     * @param null $primary
+     */
+    public function selectTable($name, $primary = null)
+    {
+        $this->tableName = $name;
         if ($primary) {
             $this->primaries = explode(',', $primary);
         }
-	}
+    }
 
     /**
      * 从数据库获取数据表的字段
@@ -397,13 +397,13 @@ abstract class DatabaseModel extends ModelBase
      * @return $this
      * @throws Exception
      */
-	public function loadFields($cache = true)
-	{
+    public function loadFields($cache = true)
+    {
         $plugin = $this->connect();
         $fieldsInfo = array();
 
-	    if ($cache) {
-	        if (!$this->fields) {
+        if ($cache) {
+            if (!$this->fields) {
                 $fieldsInfo = $this->getFieldsConfig();
             }
         }
@@ -419,19 +419,19 @@ abstract class DatabaseModel extends ModelBase
             $this->fields = ocGet('list', $fieldsInfo, array());
         }
 
-		return $this;
-	}
+        return $this;
+    }
 
     /**
      * 获取字段配置
      * @return array|mixed
      */
-	public function getFieldsConfig()
-	{
-	    if ($this->fields) {
-	        return array(
+    public function getFieldsConfig()
+    {
+        if ($this->fields) {
+            return array(
                 'autoIncrementField' => $this->autoIncrementField,
-	            'list' => $this->fields,
+                'list' => $this->fields,
             );
         } else {
             $paths = $this->getConfigPath();
@@ -442,20 +442,20 @@ abstract class DatabaseModel extends ModelBase
             }
         }
 
-		return array();
-	}
+        return array();
+    }
 
-	/**
-	 * 获取字段
-	 */
-	public function getFields()
-	{
-		if (empty($this->fields)) {
-			$this->loadFields();
-		}
+    /**
+     * 获取字段
+     */
+    public function getFields()
+    {
+        if (empty($this->fields)) {
+            $this->loadFields();
+        }
 
-		return $this->fields;
-	}
+        return $this->fields;
+    }
 
     /**
      * 获取字段
@@ -478,30 +478,30 @@ abstract class DatabaseModel extends ModelBase
      * @param bool $isClear
      * @return $this
      */
-	public function clearSql($isClear = true)
-	{
-	    if (func_num_args()) {
-	        $this->isClear = $isClear ? true : false;
+    public function clearSql($isClear = true)
+    {
+        if (func_num_args()) {
+            $this->isClear = $isClear ? true : false;
         } else {
-	        if ($this->isClear) {
+            if ($this->isClear) {
                 $this->sql = array();
             }
         }
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * 缓存查询的数据
-	 * @param string $server
-	 * @param bool $required
-	 * @return $this
-	 */
-	public function cache($server = null, $required = false)
-	{
-		$server = $server ? : DatabaseFactory::getDefaultServer();
-		$this->sql['cache'] = array($server, $required);
-		return $this;
-	}
+    /**
+     * 缓存查询的数据
+     * @param string $server
+     * @param bool $required
+     * @return $this
+     */
+    public function cache($server = null, $required = false)
+    {
+        $server = $server ?: DatabaseFactory::getDefaultServer();
+        $this->sql['cache'] = array($server, $required);
+        return $this;
+    }
 
     /**
      * 规定使用主库查询
@@ -519,6 +519,26 @@ abstract class DatabaseModel extends ModelBase
     {
         $this->sql['option']['master'] = false;
         return $this;
+    }
+
+    /**
+     * 是否过滤数据
+     * @param null $isFilterData
+     * @return $this
+     */
+    public function filterData($isFilterData = null)
+    {
+        if (isset($isFilterData)) {
+            $this->sql['option']['isFilterData'] = is_bool($isFilterData) ? $isFilterData : false;
+            return $this;
+        }
+
+        $result = false;
+        if (isset($this->sql['option']['isFilterData'])) {
+            $result = $this->sql['option']['isFilterData'];
+        }
+
+        return $result;
     }
 
     /**
@@ -540,13 +560,14 @@ abstract class DatabaseModel extends ModelBase
 
         $this->getFields();
         $generator = $this->getSqlGenerator($plugin);
+        $isFilterData = $this->filterData();
 
         if ($isUpdate) {
             $conditionSql = $conditionSql ?: $generator->genWhereSql();
             if ($requireCondition && !$conditionSql) {
                 ocService()->error->show('need_condition');
             }
-            $sqlData = $generator->getUpdateSql($this->tableName, $data, $conditionSql);
+            $sqlData = $generator->getUpdateSql($this->tableName, $data, $conditionSql, $isFilterData);
         } else {
             $autoIncrementField = $this->getAutoIncrementField();
             if (!in_array($autoIncrementField, $this->primaries)) {
@@ -554,7 +575,7 @@ abstract class DatabaseModel extends ModelBase
                     ocService()->error->show('need_create_primary_data');
                 }
             }
-            $sqlData = $generator->getInsertSql($this->tableName, $data);
+            $sqlData = $generator->getInsertSql($this->tableName, $data, $isFilterData);
         }
 
         if ($this->isDebug()) return $sqlData;
