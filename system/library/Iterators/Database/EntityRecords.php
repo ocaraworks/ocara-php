@@ -45,7 +45,7 @@ class EntityRecords implements Iterator
     function current()
     {
         $entity = new $this->entity();
-        $entity->selectFrom($this->data[$this->key()]);
+        $entity->dataFrom($this->data[$this->key()]);
         return $entity;
     }
 

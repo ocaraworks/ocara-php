@@ -115,7 +115,7 @@ class DriverBase extends Base
         $object = new $class();
 
         if ($object instanceof BaseEntity) {
-            $object->selectFrom($data);
+            $object->dataFrom($data);
         } else {
             foreach ($data as $key => $value) {
                 $object->$key = $value;

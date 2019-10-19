@@ -228,7 +228,7 @@ abstract class DatabaseEntity extends BaseEntity
      * @param $data
      * @return DatabaseEntity
      */
-    public function selectFrom($data)
+    public function dataFrom($data)
     {
         $model = static::getModelClass();
         $primaries = array_fill_keys($model::getPrimaries(), null);
@@ -241,6 +241,26 @@ abstract class DatabaseEntity extends BaseEntity
         $this->data($data);
 
         return $this;
+    }
+
+    /**
+     * 获取一行对象
+     * @param $condition
+     * @param array $options
+     * @return static
+     */
+    public static function selectFrom($condition, $options = [])
+    {
+        $model = static::getModelClass();
+        $data = $model::build()
+            ->where($condition)
+            ->limit(1)
+            ->getRow(null, $options);
+
+        $entity = new static();
+        $entity->data($data);
+
+        return $entity;
     }
 
     /**
