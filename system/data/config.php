@@ -98,6 +98,7 @@ return array(
         'fileLog'           => 'Ocara\Service\FileLog',
         'formToken'         => 'Ocara\Core\FormToken',
         'validator' 	    => 'Ocara\Core\Validator',
+        'code'              => 'Ocara\Service\Code',
     ),
     
     /*

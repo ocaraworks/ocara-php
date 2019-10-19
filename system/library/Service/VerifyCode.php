@@ -136,7 +136,7 @@ class VerifyCode extends ServiceBase
 
 		$type       = ocGet('type', $format, 'both');
 		$filter     = ocGet('filter', $format);
-		$verifyCode = Code::getCaptcha($type, $length, $filter);
+		$verifyCode = ocService()->code->getCaptcha($type, $length, $filter);
 
 		$this->addText($verifyCode, $format, $left);
 		$_SESSION[$this->sessionName] = $verifyCode;

@@ -17,7 +17,7 @@ class Code extends ServiceBase
      * @param $length
      * @return string|null
      */
-	public static function getRand($length)
+	public function getRand($length)
 	{
 		$rand = null;
 		
@@ -35,7 +35,7 @@ class Code extends ServiceBase
      * @param array $filter
      * @return mixed|string
      */
-	public static function getCaptcha($type, $length, $filter = array())
+	public function getCaptcha($type, $length, $filter = array())
 	{
 		$type = strtolower($type);
 		$characters = array();
@@ -69,7 +69,7 @@ class Code extends ServiceBase
 		}
 		
 		if (!$characters) {
-			return self::getCaptcha('both', $length, $filter);
+			return $this->getCaptcha('both', $length, $filter);
 		}
 		
 		$characters = array_diff($characters, $filter);
@@ -80,9 +80,9 @@ class Code extends ServiceBase
 			$remainder = $length % 10;
 			$result = null;
 			for ($i = 1; $i <= $count; $i++) {
-				$result = $result . self::getCaptcha($type, 10);
+				$result = $result . $this->getCaptcha($type, 10);
 			}
-			return $result . self::getCaptcha($type, $remainder);
+			return $result . $this->getCaptcha($type, $remainder);
 		} else {
 			$code = array_rand(array_flip($characters), $length);
 			return is_array($code) ? implode(OC_EMPTY, $code) : $code;
