@@ -67,6 +67,7 @@ return array(
     'need_find_value'               => array(2111, '查询字段值不能为空！'),
 	'need_create_primary_data'      => array(2112, '缺少主键数据无法添加记录！'),
 	'need_entity_class'             => array(2113, '缺少实体类'),
+	'need_primary_values'           => array(2114, '查询字段列表缺少主键字段，无法新建ORM实体对象。'),
 
 	//失败
 	'failed_db_init'				=> array(2200, '数据库初始化失败。'),
@@ -118,7 +119,7 @@ return array(
 	'not_exists_form'				=> array(2411, '表单不存在或已过期'),
 	'not_writable_htaccess'			=> array(2412, '.htaccess无法写入，请检查目录权限是否可写。'),
 	'not_exists_database' 			=> array(2413, '数据库不存在或连接失败。'),
-	'not_exists_cache'				=> array(2414, '缓存不存在。'),
+	'not_exists_cache'				=> array(2414, '%s缓存不存在。'),
 	'not_exists_font'				=> array(2415, '字体不存在'),
 	'not_exists_function_file'		=> array(2416, '函数库文件不存在'),
 	'not_exists_key'				=> array(2417, '键名“%s”不存在'),

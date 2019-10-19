@@ -352,9 +352,10 @@ function ocRemote($url, $data = null, array $headers = array())
  * @param null $data
  * @param array $headers
  * @param bool $showError
+ * @param string $method
  * @return bool|string|null
  */
-function ocCurl($url, $data = null, array $headers = array(), $showError = false)
+function ocCurl($url, $data = null, array $headers = array(), $showError = false, $method = null)
 {
 	if (!function_exists('curl_init')) return null;
 
@@ -374,6 +375,14 @@ function ocCurl($url, $data = null, array $headers = array(), $showError = false
         }
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     }
+
+    if ($method) {
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+    }
+
+//
+//    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+//    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
     curl_setopt($ch, CURLOPT_FAILONERROR, 1);
     $content = curl_exec($ch);

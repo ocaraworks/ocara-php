@@ -584,13 +584,13 @@ class DatabaseBase extends Base
 			}
 		}
 
-		foreach ($paramData as $key => &$value) {
+		foreach ($paramData as $key => $value) {
 			$type = $this->parseParamType($value);
 			if ($this->isPdo()) {
-                $plugin->bind_param($key + 1, $value, $type);
+                $plugin->bind_param($key + 1, $paramData[$key], $type);
 			} else {
 				$types = $types . $type;
-				$data[] = &$value;
+				$data[] = &$paramData[$key];
 			}
 		}
 

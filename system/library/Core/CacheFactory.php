@@ -93,14 +93,12 @@ class CacheFactory extends Base
 		if ($classInfo) {
 			list($path, $namespace) = $classInfo;
 			include_once($path);
-			$class  = $namespace . 'Caches' . OC_NS_SEP . $type;
+			$class  = $namespace . 'Core\Caches' . OC_NS_SEP . $type;
 			if (class_exists($class, false)) {
 				$config['connect_name'] = $connectName;
 				$object = new $class($config, $required);
 				return $object;
 			}
 		}
-
-        ocService()->error->show('not_exists_cache');
 	}
 }
