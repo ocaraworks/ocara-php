@@ -74,6 +74,11 @@ return array(
     'DEFAULT_PROVIDER' => 'Ocara\Providers\Main',
 
     /*
+     * 默认响应格式
+     */
+    'DEFAULT_RESPONSE_FORMAT' => 'common', //common或API
+
+    /*
      * 系统服务类（单例模式）
      */
     'SYSTEM_SINGLETON_SERVICE_CLASS' => array(

@@ -62,6 +62,7 @@ class Response extends Base
 
     /**
      * 发送响应数据
+     * @param bool $sendHeaders
      * @throws Exception
      */
 	public function send($sendHeaders = true)
@@ -121,18 +122,6 @@ class Response extends Base
 	public function setOption($name, $value = null)
 	{
 		$this->headers[$name] = $value;
-	}
-
-    /**
-     * 获取头部设置
-     * @param string $name
-     * @return null
-     * @throws Exception
-     */
-	public function getOption($name)
-	{
-		$this->prepareHeaders();
-		return $this->getHeaderOption($name);
 	}
 
     /**
@@ -247,7 +236,6 @@ class Response extends Base
     /**
      * 获取要发送的头数据
      * @return array
-     * @throws Exception
      */
 	public function prepareHeaders()
 	{
@@ -255,15 +243,6 @@ class Response extends Base
 		if ($statusCode = $this->getHeaderOption('statusCode')) {
 			$data['statusCode'] = $statusCode;
 		}
-
-		if (empty($this->headers['contentType'])) {
-			if (ocService('request', true)->isAjax()) {
-				$this->headers['contentType'] = ocConfig('DEFAULT_AJAX_CONTENT_TYPE', 'json');
-			} else {
-				$this->headers['contentType'] = ocConfig('DEFAULT_CONTENT_TYPE', 'html');
-			}
-		}
-
 		$data['contentType'] = $this->getHeaderOption('contentType');
 		return $data;
 	}

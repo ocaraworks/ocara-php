@@ -210,7 +210,7 @@ class Common extends ControllerBase implements ControllerInterface
     {
         $this->result = $this->api->getResult($this->result, $message, $status);
 
-        if (!$this->response->getOption('statusCode')) {
+        if (!$this->response->getHeaderOption('statusCode')) {
             if ($this->result['status'] == 'success') {
                 $this->response->setStatusCode(Response::STATUS_OK);
             } else {
@@ -220,7 +220,7 @@ class Common extends ControllerBase implements ControllerInterface
 
         if (!ocConfig(array('API', 'send_header_code'), 0)) {
             $this->response->setStatusCode(Response::STATUS_OK);
-            $this->result['status'] = $this->response->getOption('statusCode');
+            $this->result['status'] = $this->response->getHeaderOption('statusCode');
         }
     }
 

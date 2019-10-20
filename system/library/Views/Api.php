@@ -33,7 +33,7 @@ class Api extends ViewBase implements ViewInterfaces
      */
     public function render($result)
     {
-        $contentType = ocService()->response->getOption('contentType');
+        $contentType = ocService()->response->getHeaderOption('contentType');
         $content = ocService()->api->format($result, $contentType);
         return $content;
     }

@@ -637,9 +637,8 @@ class Common extends ViewBase implements ViewInterfaces
      */
     public function renderApi($result)
     {
-        $contentType = ocService()->response->getOption('contentType');
+        $contentType = ocService()->response->getHeaderOption('contentType');
         $content = ocService()->api->format($result, $contentType);
-
         return $content;
     }
 }

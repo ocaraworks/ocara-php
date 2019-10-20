@@ -16,9 +16,14 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class ExceptionHandler extends Base
 {
+    protected $responseFormat;
+
     const EVENT_BEFORE_OUTPUT = 'beforeOutput';
     const EVENT_OUTPUT = 'output';
     const EVENT_AFTER_OUTPUT = 'afterOutput';
+
+    const RESPONSE_FORMAT_API = 'API';
+    const RESPONSE_FORMAT_COMMON = 'common';
 
     public function registerEvents()
     {
@@ -71,7 +76,7 @@ class ExceptionHandler extends Base
     {
         $response = ocService('response', true);
 
-        if (!$response->getOption('statusCode')) {
+        if (!$response->getHeaderOption('statusCode')) {
             $response->setStatusCode(Response::STATUS_SERVER_ERROR);
         }
 
@@ -80,6 +85,15 @@ class ExceptionHandler extends Base
         $this->fire(self::EVENT_AFTER_OUTPUT, array($exception));
 
         $response->send();
+    }
+
+    /**
+     * 设置内容响应返回格式
+     * @param $responseFormat
+     */
+    public function setResponseFormat($responseFormat)
+    {
+        $this->responseFormat = $responseFormat;
     }
 
     /**
@@ -93,9 +107,18 @@ class ExceptionHandler extends Base
     {
         $error = ocGetExceptionData($exception);
 
-        if (ocService('request', true)->isAjax()) {
+        $isAPi = ocConfig('DEFAULT_RESPONSE_FORMAT') == self::RESPONSE_FORMAT_API
+            || $this->responseFormat == 'API'
+            || ocService('request', true)->isAjax();
+
+        if ($isAPi) {
             $this->apiError($error);
         } else {
+            $response = ocService('response', true);
+            $contentType = $response->getHeaderOption('contentType');
+            if (!$contentType) {
+                $response->setContentType('html');
+            }
             $defaultOutput = ocConfig(array('SYSTEM_SINGLETON_SERVICE_CLASS', 'errorOutput'));
             ocService('errorOutput', $defaultOutput)->display($error);
         }
@@ -121,15 +144,21 @@ class ExceptionHandler extends Base
     /**
      * Ajax处理
      * @param $error
+     * @throws Exception
      */
     protected function apiError($error)
     {
-        $message = ocService()->api->getResult(OC_EMPTY, $error, 'error');
-        $content = ocService('api', true)->format($message);
-
         $response = ocService('response', true);
+        $message = ocService()->api->getResult(OC_EMPTY, $error, 'error');
+        $contentType = ocService()->response->getHeaderOption('contentType');
+
+        if (!$contentType) {
+            $contentType = ocConfig('API_CONTENT_TYPE', 'json');
+            $response->setContentType($contentType);
+        }
+
+        $content = ocService('api', true)->format($message, $contentType);
         $response->setStatusCode(Response::STATUS_SERVER_ERROR);
         $response->setBody($content);
-        $response->send();
     }
 }

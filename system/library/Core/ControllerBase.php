@@ -38,6 +38,10 @@ abstract class ControllerBase extends serviceProvider
 	 */
 	public function initialize()
 	{
+	    if ($this instanceof \Ocara\Controllers\Api) {
+            ocService()->exceptionHandler->setResponseFormat(ExceptionHandler::RESPONSE_FORMAT_API);
+        }
+
         $this->bindEvents($this);
 
         if (!in_array(PHP_SAPI, array('cli'))) $this->session->boot();

@@ -29,7 +29,7 @@ class Rest extends Api
     {
         $this->result = $this->api->getResult($data, $message, $status);
 
-        if (!$this->response->getOption('statusCode')) {
+        if (!$this->response->getHeaderOption('statusCode')) {
             if ($this->result['status'] == 'success') {
                 $successCode = strtr(
                     ocService()->app->getRoute('action'),
@@ -43,7 +43,7 @@ class Rest extends Api
 
         if (!ocConfig(array('API', 'send_header_code'), 0)) {
             $this->response->setStatusCode(Response::STATUS_OK);
-            $this->result['status'] = $this->response->getOption('status');
+            $this->result['status'] = $this->response->getHeaderOption('status');
         }
     }
 }
