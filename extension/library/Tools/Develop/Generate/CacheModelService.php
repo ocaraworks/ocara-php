@@ -77,7 +77,7 @@ class CacheModelService extends BaseService
         }
 
         $namespace = $rootNamespace;
-		$modelName = ucfirst($this->_model);
+		$modelName = ucfirst($this->_model) . 'Model';
         $modelClass = $namespace . OC_NS_SEP . $modelName;
 
 		if (empty($this->_prefix)) {
