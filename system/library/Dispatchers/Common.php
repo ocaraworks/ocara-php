@@ -46,7 +46,7 @@ class Common extends Base
         $method = $route['action'] . 'Action';
 
         if (!class_exists($cClass)) {
-            $service->error->show('no_controller', array($uController . 'Controller'));
+            $service->error->show('no_controller', array($cClass));
         }
 
         if (!method_exists($cClass, $method)) {
