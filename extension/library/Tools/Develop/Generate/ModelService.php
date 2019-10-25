@@ -89,6 +89,7 @@ class ModelService extends BaseService
         $entityName = ucfirst($this->_model) . 'Entity';
         $entityClass = $entityNamespace . OC_NS_SEP . $entityName;
         $modelClass = $namespace . OC_NS_SEP . $modelName;
+        $modelDataClass = $namespace . OC_NS_SEP . ucfirst($this->_model);
 
 		if (empty($this->_table)) {
 			$this->showError('请填写表名！');
@@ -212,7 +213,7 @@ class ModelService extends BaseService
 		//新建字段数据文件
         $fieldsService = new FieldsService();
         $fieldsService->add(array(
-            'model' => $modelClass
+            'model' => $modelDataClass
         ));
 
 		//新建语言文件
