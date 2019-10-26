@@ -117,6 +117,7 @@ return array(
         'formManager'       => 'Ocara\Core\FormManager',
         'validate' 	        => 'Ocara\Service\Validate',
         'auth'              => 'Ocara\Service\Auth',
+        'xml'               => 'Ocara\Service\Xml'
     ),
 
     /*
