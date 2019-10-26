@@ -17,7 +17,7 @@ class FieldsService extends BaseService
 	public function add($data = array())
 	{
 	    $data = $data ? : ocService()->request->getPost();
-		$this->_model = preg_replace('/[\\\\]+/', '\\',$data['model']);
+		$this->_model = preg_replace('/[\\\\]+/', '\\',$data['model']) . 'Model';
 
 		$this->updateModel();
 	}

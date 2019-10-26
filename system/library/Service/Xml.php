@@ -156,17 +156,24 @@ class Xml extends ServiceBase
     /**
      * 加载并解析XML数组
      * @param array $xmlSource
+     * @param bool $standardRoot
      * @throws Exception
      */
-	protected function loadArray(array $xmlSource)
+	protected function loadArray(array $xmlSource, $standardRoot = true)
 	{
 		$root = ocGet(0, $xmlSource);
 
 		if (!is_string($root) || empty($root)) {
 			$this->showError('need_root_node');
 		}
-		
-		$xmlData = "<?xml version=\"1.0\" encoding=\"{$this->encoding}\"?>"
+
+		if ($standardRoot) {
+            $rootNode = "<?xml version=\"1.0\" encoding=\"{$this->encoding}\"?>";
+        } else {
+            $rootNode = "<xml>";
+        }
+
+		$xmlData = $rootNode
 			. PHP_EOL
 			. "<{$root}>"
 			. PHP_EOL;
