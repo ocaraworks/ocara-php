@@ -241,6 +241,8 @@ class Generator extends Base
         return $result;
     }
 
+
+
     /**
      * 字段别名映射过滤
      * @param $field

@@ -165,6 +165,7 @@ return array(
 	'no_relate_primary_key'         => array(2532, '关联主键不存在或为null！'),
 	'no_transaction_for_commit'     => array(2533, '无法匹配的事务提交！'),
 	'no_special_action'             => array(2534, '找不到该控制器动作！'),
+    'no_condition_array_value'      => array(2535, '数组型条件值缺少元素值！'),
 
 	//已存在
 	'exists_dir'		    		=> array(2601, '已存在同名的目录。'),

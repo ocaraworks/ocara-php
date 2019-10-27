@@ -22,6 +22,7 @@ class BaseService
             'Common' => array(
                 'registerForms', 'display', 'submit', 'ajax',
             ),
+            'Task' => array(),
             'Api' => array(
                 'registerForms', 'display', 'submit',
             ),

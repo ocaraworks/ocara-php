@@ -792,6 +792,25 @@ class Sql extends Base
 		} else {
 			foreach ($data as $key => $value) {
 				$field = $this->parseField($key, $alias);
+				if (is_array($value)) {
+				    if ($value) {
+				        if (count($value) == 1) {
+				            $value = $value[0];
+                        } else {
+                            $newSign = $value[0];
+                            $value = $value[1];
+                            if (in_array($sign, array('IN', 'NOT IN'))) {
+                                $value = $this->getInSql($key, $value, $alias, $sign);
+                            } else {
+                                $value = $this->parseValue($value, 'where');
+                            }
+                            $result[] = "({$field} {$newSign} {$value})";
+                            continue;
+                        }
+                    } else { //空数组报错
+				        ocService()->error->show('no_condition_array_value');
+                    }
+                }
 				$value = $this->parseValue($value, 'where');
 				$result[] = "({$field} {$sign} {$value})";
 			}
