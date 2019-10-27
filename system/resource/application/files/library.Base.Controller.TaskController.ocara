@@ -1,0 +1,14 @@
+<?php
+/**
+ * Task控制器基类
+ */
+namespace Base\Controller;
+
+use Ocara\Controllers\Task;
+
+class TaskController extends Task
+{
+	public function __start()
+	{
+	}
+}
