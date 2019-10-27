@@ -606,6 +606,41 @@ class DatabaseBase extends Base
 		}
 	}
 
+    /**
+     * 格式化字段值为适合的数据类型
+     * @param $fields
+     * @param array $data
+     * @param bool $isCondition
+     * @return array
+     */
+    public function formatFieldValues($fields, $data = array(), $isCondition = false)
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                if ($value && $isCondition) {
+                    if (count($value) == 1) { //只有一个元素，直接变成字符
+                        $value = $value[0];
+                        $value = $this->formatOneFieldValue($fields, $key, $value);
+                    } else {
+                        $newValue = $value[1];
+                        if (is_array($newValue)) { //数组处理
+                            foreach ($newValue as $newKey => $newItem) {
+                                $newValue[$newKey] = $this->formatOneFieldValue($fields, $key, $newItem);
+                            }
+                            $value[1] = $newValue;
+                        } else {
+                            $value[1] = $this->formatOneFieldValue($fields, $key, $newValue);
+                        }
+                    }
+                }
+            } else {
+                $value = $this->formatOneFieldValue($fields, $key, $value);
+            }
+            $data[$key] = $value;
+        }
+        return $data;
+    }
+
 	/**
 	 * 保存错误信息
 	 */

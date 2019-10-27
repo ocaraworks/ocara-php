@@ -161,7 +161,7 @@ class Generator extends Base
             $condition = null;
             if ($whereType == 'where') {
                 if (is_array($whereData)) {
-                    $whereData = $this->filterData($whereData);
+                    $whereData = $this->filterData($whereData, false);
                 }
                 if ($whereData) {
                     $condition = $plugin->parseCondition($whereData, 'AND', '=', $alias);
@@ -219,9 +219,10 @@ class Generator extends Base
     /**
      * 别名字段数据映射过滤
      * @param array $data
+     * @param bool $isCondition
      * @return array
      */
-    public function filterData(array $data)
+    public function filterData(array $data, $isCondition = false)
     {
         $result = array();
 
@@ -235,7 +236,7 @@ class Generator extends Base
         }
 
         if ($this->fields) {
-            $result = $this->database->formatFieldValues($this->fields, $result);
+            $result = $this->database->formatFieldValues($this->fields, $result, $isCondition);
         }
 
         return $result;

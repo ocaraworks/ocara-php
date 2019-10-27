@@ -47,10 +47,12 @@ interface Database
      */
     public function escapeString($content);
 
-	/**
-	 * 通过字段类型转换数据类型
-	 * @param $fields
-	 * @param $data
-	 */
-	public function formatFieldValues($fields, $data = array());
+    /**
+     * 单个字段值格式化为适合类型
+     * @param $fieldsData
+     * @param $field
+     * @param $value
+     * @return mixed
+     */
+	public function formatOneFieldValue($fieldsData, $field, $value);
 }

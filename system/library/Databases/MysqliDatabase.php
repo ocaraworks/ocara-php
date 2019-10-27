@@ -136,53 +136,18 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
 	}
 
     /**
-     * 格式化字段值为适合的数据类型
-     * @param $fields
-     * @param array $data
-     * @param bool $isCondition
-     * @return array
-     */
-	public function formatFieldValues($fields, $data = array(), $isCondition = false)
-	{
-		foreach ($data as $key => $value) {
-		    if (is_array($value)) {
-		        if ($value && $isCondition) {
-		            if (count($value) == 1) { //只有一个元素，直接变成字符
-		                $value = $value[0];
-		                $value = $this->formatOneFieldValue($fields, $key, $value);
-                    } else {
-		                $newValue = $value[1];
-		                if (is_array($newValue)) { //数组处理
-		                    foreach ($newValue as $newKey => $newItem) {
-                                $newValue[$newKey] = $this->formatOneFieldValue($fields, $key, $newItem);
-                            }
-                            $value[1] = $newValue;
-                        } else {
-                            $value[1] = $this->formatOneFieldValue($fields, $key, $newValue);
-                        }
-                    }
-                }
-            } else {
-                $value = $this->formatOneFieldValue($fields, $key, $value);
-            }
-		    $data[$key] = $value;
-		}
-		return $data;
-	}
-
-    /**
      * 单个字段值格式化为适合类型
-     * @param $fields
-     * @param $key
+     * @param $fieldsData
+     * @param $field
      * @param $value
      * @return mixed
      */
-	public function formatOneFieldValue($fields, $key, $value)
+	public function formatOneFieldValue($fieldsData, $field, $value)
     {
         $type = 'string';
 
-        if (isset($fields[$key]) && in_array($fields[$key]['type'], self::$quoteBackList)) {
-            $type = $fields[$key]['type'];
+        if (isset($fieldsData[$field]) && in_array($fieldsData[$field]['type'], self::$quoteBackList)) {
+            $type = $fieldsData[$field]['type'];
             if ($type == 'float') {
                 $type = 'float';
             } elseif ($type == 'double') {
