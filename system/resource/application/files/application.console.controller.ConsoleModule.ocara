@@ -1,0 +1,9 @@
+<?php
+namespace app\console\controller;
+
+use Base\Controller\TaskController;
+
+class ConsoleModule extends TaskController
+{
+
+}

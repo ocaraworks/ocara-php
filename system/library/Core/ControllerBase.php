@@ -47,7 +47,8 @@ abstract class ControllerBase extends serviceProvider
         if (!in_array(PHP_SAPI, array('cli'))) $this->session->boot();
 
         $this->formManager->setRoute($this->getRoute());
-        $this->setPlugin($this->view);
+
+        if (!in_array(PHP_SAPI, array('cli'))) $this->setPlugin($this->view);
 
 		method_exists($this, '__start') && $this->__start();
 		method_exists($this, '__module') && $this->__module();
