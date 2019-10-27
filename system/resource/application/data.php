@@ -1,7 +1,7 @@
 <?php
 $dirs = array(
 	'application' => array(
-	    'console/controller',
+	    'console',
         'controller',
         'model/cache',
         'model/database',
@@ -39,7 +39,6 @@ $dirs = array(
 
 $files = array(
     'application' => array(
-        'console/controller/ConsoleModule',
         'controller/Module',
         'lang/zh_cn/base',
         'service.BaseService',

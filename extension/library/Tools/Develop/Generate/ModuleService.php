@@ -29,7 +29,16 @@ class ModuleService extends BaseService
 	{
 		$mdlname   = ucfirst($this->mdlname);
 		$className = $mdlname . 'Module';
-		$baseController = ucfirst($this->controllerType) . 'Controller';
+
+		$controllerMaps = array(
+		    'console' => 'TaskController'
+        );
+
+		if (array_key_exists($this->mdltype, $controllerMaps)) {
+            $baseController = $controllerMaps[$this->mdltype];
+        } else {
+            $baseController = ucfirst($this->controllerType) . 'Controller';
+        }
 
 		switch($this->mdltype)
         {
@@ -45,6 +54,8 @@ class ModuleService extends BaseService
                 $namespace = "app\\tools";
                 $modulePath = ocPath('tools', $this->mdlname);
                 break;
+            default:
+                $this->showError('不支持的模块类型！');
         }
 
 		$content = "<?php\r\n";
