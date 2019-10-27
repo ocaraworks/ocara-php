@@ -623,12 +623,7 @@ class DatabaseBase extends Base
                         $value = $this->formatOneFieldValue($fields, $key, $value);
                     } else {
                         $newValue = $value[1];
-                        if (is_array($newValue)) { //数组处理
-                            foreach ($newValue as $newKey => $newItem) {
-                                $newValue[$newKey] = $this->formatOneFieldValue($fields, $key, $newItem);
-                            }
-                            $value[1] = $newValue;
-                        } else {
+                        if (!is_array($newValue)) { //数组不处理
                             $value[1] = $this->formatOneFieldValue($fields, $key, $newValue);
                         }
                     }

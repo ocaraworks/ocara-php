@@ -69,8 +69,10 @@ class Sql extends Base
 		if ($list && is_array($list)) {
 			$sql  = implode(',', $list);
 			if (is_numeric(reset($list))) {
+                $sql  = implode( ',', $list);
 				$sql = $this->parseValue($sql, 'where', false, false);
 			} else {
+                $sql  = implode(OC_QUOTE . ',' . OC_QUOTE, $list);
 				$sql = $this->parseValue($sql, 'where', true, false);
 			}
 		}
