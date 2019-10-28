@@ -76,7 +76,7 @@ return array(
     /*
      * 默认响应格式
      */
-    'DEFAULT_RESPONSE_FORMAT' => 'common', //common或API
+    'DEFAULT_RESPONSE_FORMAT' => 'common', //common或api
 
     /*
      * 系统服务类（单例模式）

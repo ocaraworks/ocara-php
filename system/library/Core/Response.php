@@ -37,7 +37,6 @@ class Response extends Base
     /**
      * 发送头部信息
      * @param array $data
-     * @throws Exception
      */
 	public function sendHeaders(array $data = array())
 	{
@@ -63,17 +62,20 @@ class Response extends Base
     /**
      * 发送响应数据
      * @param bool $sendHeaders
-     * @throws Exception
+     * @return bool
      */
 	public function send($sendHeaders = true)
     {
+        if ($this->isSent()) {
+            return false;
+        }
+
         if ($sendHeaders) {
             $this->sendHeaders();
         }
-        if (!headers_sent()) {
-            echo $this->body;
-            $this->isSent = true;
-        }
+
+        echo $this->body;
+        $this->isSent = true;
     }
 
     /**
@@ -192,7 +194,6 @@ class Response extends Base
      * 跳转到另一个控制器动作
      * @param $route
      * @param array $params
-     * @throws Exception
      */
     public function jump($route, array $params = array())
     {
@@ -202,7 +203,6 @@ class Response extends Base
     /**
      * 打开外部URL链接
      * @param $url
-     * @throws Exception
      */
 	public function redirect($url)
 	{

@@ -22,7 +22,7 @@ class ExceptionHandler extends Base
     const EVENT_OUTPUT = 'output';
     const EVENT_AFTER_OUTPUT = 'afterOutput';
 
-    const RESPONSE_FORMAT_API = 'API';
+    const RESPONSE_FORMAT_API = 'api';
     const RESPONSE_FORMAT_COMMON = 'common';
 
     public function registerEvents()
