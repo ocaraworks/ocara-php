@@ -163,26 +163,28 @@ class Xml extends ServiceBase
 	{
 		$root = ocGet(0, $xmlSource);
 
-		if (!is_string($root) || empty($root)) {
-			$this->showError('need_root_node');
-		}
-
 		if ($standardRoot) {
             $rootNode = "<?xml version=\"1.0\" encoding=\"{$this->encoding}\"?>";
         } else {
             $rootNode = "<xml>";
         }
 
-		$xmlData = $rootNode
-			. PHP_EOL
-			. "<{$root}>"
-			. PHP_EOL;
-		
+		$xmlData = $rootNode . PHP_EOL;
+
+		if ($root) {
+            $xmlData .= "<{$root}>" . PHP_EOL;
+        }
+
 		if (is_array($list = ocGet(1, $xmlSource))) {
 			$xmlData .= $this->makeXml($list);
 		}
-		
-		$xmlData .= "</{$root}>";
+
+        if ($root) {
+            $xmlData .= "</{$root}>";
+        }
+
+        $xmlData .= "</xml>";
+
 		$this->loadString($xmlData);
 	}
 
