@@ -297,7 +297,7 @@ abstract class DatabaseModel extends ModelBase
 
         $ref = new ReflectionObject($this);
         $filePath = ocCommPath($ref->getFileName());
-        $file = basename($filePath);
+        $file = substr(basename($filePath), 0, -9);
         $dir = dirname($filePath) . OC_DIR_SEP;
 
         if ($this->module) {
