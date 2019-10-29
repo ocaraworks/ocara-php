@@ -626,7 +626,6 @@ abstract class DatabaseModel extends ModelBase
         $plugin = $this->connect();
         $generator = $this->getSqlGenerator($plugin);
         $table = $generator->getTableFullname($table);
-
         $sqlData = $generator->getSelectSql(1, $table, array('limit' => 1));
 
         if ($this->isDebug()) return $sqlData;
