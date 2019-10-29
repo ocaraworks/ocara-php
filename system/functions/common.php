@@ -326,7 +326,10 @@ function ocRemote($url, $data = null, array $headers = array())
 
     if (empty($data)) return @file_get_contents($url);
 
-    $data   = http_build_query($data, OC_EMPTY, '&');
+    if (is_array($data)) {
+        $data = http_build_query($data, OC_EMPTY, '&');
+    }
+
     $header = "Content-type: application/x-www-form-urlencoded\r\n";
     $header = $header . "Content-length:" . strlen($data) . "\r\n";
 
