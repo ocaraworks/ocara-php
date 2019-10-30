@@ -37,6 +37,8 @@ class Xml extends ServiceBase
 	{
 		$this->xmlParser = xml_parser_create($encoding);
 		$this->encoding  = $encoding;
+        xml_parser_set_option($this->xmlParser, XML_OPTION_CASE_FOLDING, 0);
+        xml_parser_set_option($this->xmlParser, XML_OPTION_SKIP_WHITE, 1);
 	}
 
     /**
@@ -111,8 +113,16 @@ class Xml extends ServiceBase
      */
 	public function makeArray()
 	{
+        $result = [];
 		xml_parse_into_struct($this->xmlParser, $this->xmlData, $values, $index);
-		return array($index, $values);
+
+        foreach ($values as $row) {
+            if ($row['type'] == 'complete') {
+                $result[$row['tag']] = $row['value'];
+            }
+		}
+
+		return $result;
 	}
 
     /**
