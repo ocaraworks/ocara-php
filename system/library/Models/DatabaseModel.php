@@ -297,7 +297,7 @@ abstract class DatabaseModel extends ModelBase
 
         $ref = new ReflectionObject($this);
         $filePath = ocCommPath($ref->getFileName());
-        $file = basename($filePath);
+        $file = substr(basename($filePath), 0, -9);
         $dir = dirname($filePath) . OC_DIR_SEP;
 
         if ($this->module) {
@@ -626,7 +626,6 @@ abstract class DatabaseModel extends ModelBase
         $plugin = $this->connect();
         $generator = $this->getSqlGenerator($plugin);
         $table = $generator->getTableFullname($table);
-
         $sqlData = $generator->getSelectSql(1, $table, array('limit' => 1));
 
         if ($this->isDebug()) return $sqlData;

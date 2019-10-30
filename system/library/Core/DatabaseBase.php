@@ -63,9 +63,9 @@ class DatabaseBase extends Base
 	public function initConfig($config)
     {
         $options = array(
-            'host', 'port', 'type', 'class', 'pconnect',
-            'name', 'username', 'prefix', 'charset', 'isPdo',
-            'timeout', 'socket', 'options', 'keywords', 'prepare'
+            'host', 'port', 'type', 'class',
+            'name', 'username', 'prefix', 'charset',
+            'timeout', 'socket', 'options', 'keywords',
         );
 
         $values = array_fill_keys($options, OC_EMPTY);
@@ -81,13 +81,14 @@ class DatabaseBase extends Base
         if (!$config['options']) {
             $config['options'] = array();
         }
-        if (!$config['prepare']) {
+
+        if (!isset($config['prepare'])) {
             $config['prepare'] = true;
         }
-        if (!$config['pconnect']) {
+        if (!isset($config['pconnect'])) {
             $config['pconnect'] = false;
         }
-        if (!$config['isPdo']) {
+        if (!isset($config['isPdo'])) {
             $config['isPdo'] = true;
         }
 
@@ -549,7 +550,7 @@ class DatabaseBase extends Base
 	{
 		$mapTypes = $this->plugin()->get_param_types();
 
-		if (is_numeric($value)) {
+		if (is_int($value)) {
 			return $mapTypes['integer'];
 		} elseif (is_string($value)) {
 			return $mapTypes['string'];

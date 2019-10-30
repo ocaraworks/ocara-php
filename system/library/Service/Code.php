@@ -21,7 +21,7 @@ class Code extends ServiceBase
 	{
 		$rand = null;
 		
-		for ($i = 0;$i < $length;$i++) {
+		for ($i = 0;$i < $length; $i++) {
 			$rand = $rand . chr(mt_rand(33, 126));
 		}
 		
@@ -35,7 +35,7 @@ class Code extends ServiceBase
      * @param array $filter
      * @return mixed|string
      */
-	public function getCaptcha($type, $length, $filter = array())
+        public function getCaptcha($type, $length, $filter = array())
 	{
 		$type = strtolower($type);
 		$characters = array();

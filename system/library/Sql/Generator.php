@@ -161,7 +161,8 @@ class Generator extends Base
             $condition = null;
             if ($whereType == 'where') {
                 if (is_array($whereData)) {
-                    $whereData = $this->filterData($whereData, false);
+                    $whereData = $this->filterData($whereData);
+                    $whereData = $this->formatFields($whereData, false);
                 }
                 if ($whereData) {
                     $condition = $plugin->parseCondition($whereData, 'AND', '=', $alias);
@@ -219,10 +220,9 @@ class Generator extends Base
     /**
      * 别名字段数据映射过滤
      * @param array $data
-     * @param bool $isCondition
      * @return array
      */
-    public function filterData(array $data, $isCondition = false)
+    public function filterData(array $data)
     {
         $result = array();
 
@@ -235,14 +235,22 @@ class Generator extends Base
             }
         }
 
-        if ($this->fields) {
-            $result = $this->database->formatFieldValues($this->fields, $result, $isCondition);
-        }
-
         return $result;
     }
 
-
+    /**
+     * 格式化数据
+     * @param $data
+     * @param $isCondition
+     * @return mixed
+     */
+    public function formatFields($data, $isCondition = false)
+    {
+        if ($this->fields) {
+            $data = $this->database->formatFieldValues($this->fields, $data, $isCondition);
+        }
+        return $data;
+    }
 
     /**
      * 字段别名映射过滤
@@ -498,6 +506,7 @@ class Generator extends Base
         if ($isFilterData) {
             $data = $this->filterData($data);
         }
+        $data = $this->formatFields($data);
         $tableName = $this->getTableFullname($table, $this->databaseName);
         return $this->plugin()->getInsertSql($tableName, $data);
     }
@@ -515,8 +524,8 @@ class Generator extends Base
         if ($isFilterData) {
             $data = $this->filterData($data);
         }
+        $data = $this->formatFields($data);
         $tableName = $this->getTableFullname($table, $this->databaseName);
-        $data = $this->filterData($data);
         return $this->plugin()->getUpdateSql($tableName, $data, $where);
     }
 
@@ -532,6 +541,7 @@ class Generator extends Base
         if ($isFilterData) {
             $data = $this->filterData($data);
         }
+        $data = $this->formatFields($data);
         $tableName = $this->getTableFullname($table, $this->databaseName);
         return $this->plugin()->getReplaceSql($tableName, $data);
     }

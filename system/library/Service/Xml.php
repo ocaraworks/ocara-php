@@ -156,37 +156,35 @@ class Xml extends ServiceBase
     /**
      * 加载并解析XML数组
      * @param array $xmlSource
-     * @param bool $standardRoot
      * @throws Exception
      */
-	protected function loadArray(array $xmlSource, $standardRoot = true)
-	{
-		$root = ocGet(0, $xmlSource);
+    protected function loadArray(array $xmlSource)
+    {
+        $xmlData = [];
+        $root = ocGet(0, $xmlSource);
 
-		if ($standardRoot) {
-            $rootNode = "<?xml version=\"1.0\" encoding=\"{$this->encoding}\"?>";
-        } else {
-            $rootNode = "<xml>";
+        if (!is_string($root) || empty($root)) {
+            $this->showError('need_root_node');
         }
 
-		$xmlData = $rootNode . PHP_EOL;
+        $list = ocGet(1, $xmlSource);
+        $hasStatement = ocGet(2, $xmlSource, true);
 
-		if ($root) {
-            $xmlData .= "<{$root}>" . PHP_EOL;
+        if ($hasStatement) {
+            $xmlData[] = "<?xml version=\"1.0\" encoding=\"{$this->encoding}\"?>";
         }
 
-		if (is_array($list = ocGet(1, $xmlSource))) {
-			$xmlData .= $this->makeXml($list);
-		}
+        $xmlData[] = "<{$root}>" ;
 
-        if ($root) {
-            $xmlData .= "</{$root}>";
+        if (is_array($list)) {
+            $xmlData[] = $this->makeXml($list);
         }
 
-        $xmlData .= "</xml>";
+        $xmlData[]= "</{$root}>";
+        $xmlData = implode(PHP_EOL, $xmlData);
 
-		$this->loadString($xmlData);
-	}
+        $this->loadString($xmlData);
+    }
 
     /**
      * 解析XML文件
@@ -227,18 +225,20 @@ class Xml extends ServiceBase
      */
 	protected function makeXml(array $xmlArray)
 	{
-		$xmlStr = null;
+		$xmlData = null;
 		
 		foreach ($xmlArray as $xmlKey => $xmlVal) {
-			$xmlStr .= "<{$xmlKey}>";
+            $xmlString = "<{$xmlKey}>";
 			if (is_array($xmlVal) && $xmlVal) {
-				$xmlStr .= "\r\n\t" . $this->makeXml($xmlVal, $xmlStr);
+                $xmlString .= "\t" . $this->makeXml($xmlVal, $xmlData);
 			} else {
-				$xmlStr .= "{$xmlVal}";
+                $xmlString .= "{$xmlVal}";
 			}
-			$xmlStr .= "</{$xmlKey}>\r\n";
+            $xmlString .= "</{$xmlKey}>";
+			$xmlData[] = $xmlString;
 		}
 
-		return $xmlStr;
+        $xmlData = implode(PHP_EOL, $xmlData);
+		return $xmlData;
 	}
 }
