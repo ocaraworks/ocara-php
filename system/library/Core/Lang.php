@@ -35,11 +35,7 @@ class Lang extends Base
 				}
 			}
 		}
-
-		if ($this->data === null) {
-			$this->data = array();
-			$this->load(ocPath('lang', 'lang/' . ocService()->app->getLanguage()));
-		}
+		$this->load(ocPath('lang', ocService()->app->getLanguage()));
 	}
 
     /**
