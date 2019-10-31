@@ -251,6 +251,12 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public static function selectFrom($condition, $options = [])
     {
+        $options = (array)$options;
+
+        if (isset($options['fields'])) {
+            ocDel('fields', $options);
+        }
+
         $model = static::getModelClass();
         $data = $model::build()
             ->where($condition)
@@ -260,6 +266,14 @@ abstract class DatabaseEntity extends BaseEntity
         $entity = new static();
         $entity->data($data);
 
+        $condition = [];
+        $primaries = $model::getPrimaries();
+
+        foreach ($primaries as $field) {
+            $condition[$field] = $entity->$field;
+        }
+        
+        $entity->getPrimaryCondition($condition);
         return $entity;
     }
 

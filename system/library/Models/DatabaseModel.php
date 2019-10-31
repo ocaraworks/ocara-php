@@ -54,7 +54,6 @@ abstract class DatabaseModel extends ModelBase
 
     protected static $config = array();
     protected static $configPath = array();
-    protected static $requirePrimary;
 
     /**
      * 初始化
@@ -72,12 +71,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function initialize()
     {
-        if (self::$requirePrimary === null) {
-            $required = ocConfig('MODEL_REQUIRE_PRIMARY', false);
-            self::$requirePrimary = $required ? true : false;
-        }
-
-        if (self::$requirePrimary && !static::$primary) {
+        if (!static::$primary) {
             ocService()->error->show('no_primaries');
         }
 
@@ -1142,7 +1136,7 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 查询数据
      * @param mixed $condition
-     * @param mixed $option
+     * @param mixed $options
      * @param $queryRow
      * @param bool $count
      * @param null $dataType
@@ -1150,13 +1144,13 @@ abstract class DatabaseModel extends ModelBase
      * @return array|mixed
      * @throws Exception
      */
-    protected function baseFind($condition, $option, $queryRow, $count = false, $dataType = null, $executeOptions = array())
+    protected function baseFind($condition, $options, $queryRow, $count = false, $dataType = null, $executeOptions = array())
 	{
         $plugin = $this->connect(false);
         $this->getFields();
         $dataType = $dataType ? : ($this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY);
 
-	    $this->pushSql($condition, $option, $queryRow);
+	    $this->pushSql($condition, $options, $queryRow);
         $this->setJoin($this->tag, null, $this->getAlias());
 
         $generator = $this->getSqlGenerator($plugin);

@@ -118,7 +118,7 @@ class Xml extends ServiceBase
 
         foreach ($values as $row) {
             if ($row['type'] == 'complete') {
-                $result[$row['tag']] = $row['value'];
+                $result[$row['tag']] = $row['value'] ?? null;
             }
 		}
 
