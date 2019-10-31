@@ -47,7 +47,7 @@ class Route extends Base
         $featureClass = ControllerBase::getFeatureClass($controllerType);
 
         if (!ocClassExists($featureClass)) {
-            $service->error->show('not_exists_class', $featureClass);
+            $service->error->show('not_exists_class', [$featureClass]);
         }
 
         $feature = new $featureClass();

@@ -12,5 +12,5 @@ use Ocara\Interfaces\Feature;
 
 defined('OC_PATH') or exit('Forbidden!');
 
-class Common extends Base implements Feature
+class Task extends Base implements Feature
 {}
