@@ -89,7 +89,7 @@ abstract class CacheModel extends ModelBase
             $plugin = $this->setPlugin($this->master);
         }
 
-        if ($this->database) {
+        if (!ocEmpty($this->database)) {
             $plugin->selectDatabase($this->database);
         }
 
