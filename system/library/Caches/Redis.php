@@ -63,7 +63,7 @@ class Redis extends CacheBase implements CacheInterface
         $expireTime = array_key_exists(2, $args) ? $args[2] : 0;
         $plugin = $this->plugin();
 
-		$result = $plugin->set($name, serialize($value));
+		$result = $plugin->set($name, $value);
         $plugin->setTimeout($name, $expireTime);
 		return $result;
 	}
@@ -78,7 +78,7 @@ class Redis extends CacheBase implements CacheInterface
     {
         $plugin = $this->plugin(false);
 		if (is_object($plugin) && method_exists($plugin, 'get')) {
-			return unserialize($plugin->get($name));
+			return $plugin->get($name);
 		}
 
 		return null;
