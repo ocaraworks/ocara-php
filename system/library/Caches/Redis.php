@@ -64,7 +64,11 @@ class Redis extends CacheBase implements CacheInterface
         $plugin = $this->plugin();
 
 		$result = $plugin->set($name, $value);
-        $plugin->setTimeout($name, $expireTime);
+
+		if ($expireTime > 0) {
+            $plugin->setTimeout($name, $expireTime);
+        }
+
 		return $result;
 	}
 
