@@ -22,6 +22,9 @@ class Memcache extends CacheBase implements CacheInterface
      */
 	public function connect($config, $required = true)
 	{
+	    if (empty($config['servers'])) {
+            ocService()->error->check('null_cache_host', array(), $required);
+        }
 		if (!ocGet('open', $config, false)) {
 			return ocService()->error->check('no_open_service_config', array('Memcache'), $required);
 		}

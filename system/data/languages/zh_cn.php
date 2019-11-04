@@ -43,7 +43,7 @@ return array(
 	'null_receiver' 				=> array(1806, '邮件Socket发送没有提供接收方！'),
 	'null_template_engine'			=> array(1807, '模板插件是空的！'),
     'null_route'                    => array(1808, '路由为空或错误！'),
-	'null_cache_host'               => array(1809, '缓存HOST为空！'),
+	'null_cache_host'               => array(1809, '缓存服务器配置为空！'),
 
 	//非法
 	'invalid_path' 					=> array(1900, '文件路径非法：%s。'),
