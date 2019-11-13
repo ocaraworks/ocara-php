@@ -30,7 +30,7 @@ class FormToken extends Base
         if ($config = ocConfig(array('SOURCE', 'form', 'generate_token'), null)) {
             $token = call_user_func_array($config, array($formName, $route));
         } else {
-            $token = md5($routeStr . $formName . md5(ocService()->code->getRand(5)) . uniqid(mt_rand()));
+            $token = md5($routeStr . $formName . md5(ocService()->code->getRandNumber(5)) . uniqid(mt_rand()));
         }
 
         return $token;
