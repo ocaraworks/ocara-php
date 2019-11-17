@@ -207,6 +207,6 @@ class FileLog extends ServiceBase implements LogInterface
 	protected function createLogFile($logName)
 	{
 		$path = $this->logRoot . ocDir($logName);
-		return ocService()->file->createFile($path . $logName . '_' . time() . '.txt');
+		return ocService()->file->createFile($path . $logName . '_' . date('YmdHis') . '.txt');
 	}
 }
