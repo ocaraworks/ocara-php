@@ -45,6 +45,12 @@ abstract class DatabaseEntity extends BaseEntity
         }
     }
 
+    public function registerEvents()
+    {
+        parent::registerEvents();
+        $this->bindEvents($this);
+    }
+
     /**
      * 获取模型类名
      * @return mixed
