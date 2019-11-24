@@ -848,7 +848,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 按条件选择首行
-     * @param bool $condition
+     * @param mixed $condition
      * @param null $options
      * @return $this|array|null
      * @throws Exception
