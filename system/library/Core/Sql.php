@@ -801,12 +801,9 @@ class Sql extends Base
                             $newSign = $value[0];
                             $value = $value[1];
                             if (in_array($newSign, array('IN', 'NOT IN'))) {
-                                $value = $this->getInSql($key, $value, $alias, $newSign);
-                            } else {
-                                $value = $this->parseValue($value, 'where');
+                                $result[] = $this->getInSql($key, $value, $alias, $newSign);
+                                continue;
                             }
-                            $result[] = "({$field} {$newSign} {$value})";
-                            continue;
                         }
                     } else { //空数组报错
 				        ocService()->error->show('no_condition_array_value');
