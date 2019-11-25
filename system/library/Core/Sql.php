@@ -800,8 +800,8 @@ class Sql extends Base
                         } else {
                             $newSign = $value[0];
                             $value = $value[1];
-                            if (in_array($sign, array('IN', 'NOT IN'))) {
-                                $value = $this->getInSql($key, $value, $alias, $sign);
+                            if (in_array($newSign, array('IN', 'NOT IN'))) {
+                                $value = $this->getInSql($key, $value, $alias, $newSign);
                             } else {
                                 $value = $this->parseValue($value, 'where');
                             }
