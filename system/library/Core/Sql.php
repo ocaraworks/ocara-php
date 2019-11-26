@@ -66,14 +66,18 @@ class Sql extends Base
 	{
 		$sql = $list;
 
-		if ($list && is_array($list)) {
-			if (is_numeric(reset($list))) {
-                $sql  = implode( ',', $list);
-				$sql = $this->parseValue($sql, 'where', false, false);
-			} else {
-                $sql  = implode(OC_QUOTE . ',' . OC_QUOTE, $list);
-				$sql = $this->parseValue($sql, 'where', true, false);
-			}
+		if (is_array($list)) {
+		    if ($list) {
+                if (is_numeric(reset($list))) {
+                    $sql  = implode( ',', $list);
+                    $sql = $this->parseValue($sql, 'where', false, false);
+                } else {
+                    $sql  = implode(OC_QUOTE . ',' . OC_QUOTE, $list);
+                    $sql = $this->parseValue($sql, 'where', true, false);
+                }
+            } else {
+                $sql = OC_EMPTY;
+            }
 		}
 
 		return $sql;
@@ -472,6 +476,7 @@ class Sql extends Base
 		}
 
 		$field = $this->parseField($field, $alias);
+
 		if (ocScalar($list) && $field) {
 			return " {$field} {$sign} ($list)";
 		}
