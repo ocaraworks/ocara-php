@@ -39,7 +39,6 @@ class Request extends Base
 			} else {
 				parse_str($post, $_POST);
 			}
-			$_REQUEST = array_merge($_REQUEST, $_POST);
 		}
 	}
 
@@ -52,6 +51,10 @@ class Request extends Base
 		$_GET  	 = ocArrayMap(array($this, $func), $_GET);
 		$_POST   = ocArrayMap(array($this, $func), $_POST);
 		$_COOKIE = ocArrayMap(array($this, 'stripSqlTag'), $_COOKIE);
+
+        $_REQUEST = array_merge($_REQUEST, $_GET);
+        $_REQUEST = array_merge($_REQUEST, $_POST);
+        $_REQUEST = array_merge($_REQUEST, $_COOKIE);
 	}
 
 	/**
