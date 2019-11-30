@@ -39,6 +39,7 @@ class Request extends Base
 			} else {
 				parse_str($post, $_POST);
 			}
+			$_REQUEST = array_merge($_REQUEST, $_POST);
 		}
 	}
 
@@ -235,7 +236,7 @@ class Request extends Base
 	 * @return array|null|string
 	 */
 	public function getRequest($key = null, $default = null)
-	{		
+	{
 		return $this->getRequestValue($_REQUEST, $key, $default);
 	}
 
