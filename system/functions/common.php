@@ -393,7 +393,7 @@ function ocCurl($url, $data = null, array $headers = array(), $showError = false
     curl_close($ch);
 
     if ($error) {
-        ocService()->error->writeLog('curl request error :' . $error . '|' . json_encode(func_get_args()));
+        ocService()->error->writeLog('curl request error :' . $error);
         if ($showError) {
             ocService()->error->show('failed_curl_return', array($error));
         }
