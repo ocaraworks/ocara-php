@@ -69,16 +69,28 @@ class Download extends ServiceBase
         }
 
         $mine = $mineTypes[$saveType];
-        
-        ocService()->response->setHeader(array(
+        $headers = array(
             "Content-Type:{$mine};encoding={$encode};name={$saveName}",
             "Content-Disposition: attachment; filename={$saveName}",
             'Pragma: no-cache',
             'Cache-Control: no-cache, must-revalidate',
             'Expires: 0',
-        ));
+        );
 
+        ocService()->response->setHeader();
         ocService()->response->setBody($content);
+    }
+
+    /**
+     * 显示文件内容
+     * @param $content
+     * @param $fileOrType
+     * @param string $encode
+     */
+    public function showFile($fileName, $encode = 'utf-8')
+    {
+        $content = ocRead($fileName);
+        return $this->showContent($content, $fileName, $encode);
     }
 
     /**
@@ -110,7 +122,7 @@ class Download extends ServiceBase
             'Cache-Control: no-cache, must-revalidate',
             'Expires: 0',
         );
-        
+
         ocService()->response->setHeader($headers);
         ocService()->response->setBody($content);
     }
