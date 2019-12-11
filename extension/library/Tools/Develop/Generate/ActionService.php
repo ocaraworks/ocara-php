@@ -116,7 +116,7 @@ class ActionService extends BaseService
 
         $path = $action->view->getModuleViewPath(
             $this->mdlname,
-            ocDir('template', $this->mdlname, $this->cname),
+            ocDir('template', $this->cname),
             $template,
             $modulePath
         );
