@@ -15,8 +15,6 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Error extends ServiceProvider
 {
-    const EVENT_WRITE_LOG = 'writeLog';
-
 	/**
 	 * 处理出错结果
 	 * @param string $error
@@ -42,10 +40,13 @@ class Error extends ServiceProvider
 			$error = ocService()->lang->get($error, $params);
 			throw new Exception($error['message'], $error['code']);
 		} catch(Exception $exception) {
-            $this->fire(
-                self::EVENT_WRITE_LOG,
-				array($exception->getMessage(), $exception->getTrace())
-			);
+            $error = ocGetExceptionData($exception);
+            ocService('log', true)
+                ->write(
+                    $error['message'],
+                    $error['traceInfo'],
+                    'exception'
+                );
 		}
 	}
 

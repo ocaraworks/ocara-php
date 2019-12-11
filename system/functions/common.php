@@ -389,13 +389,16 @@ function ocCurl($url, $data = null, array $headers = array(), $showError = false
 
     curl_setopt($ch, CURLOPT_FAILONERROR, 1);
     $content = curl_exec($ch);
-
-    if ($showError && $error = curl_error($ch)) {
-        curl_close($ch);
-        ocService()->error->show('failed_curl_return', array(curl_error($ch)));
-    }
-
+    $error = curl_error($ch);
     curl_close($ch);
+
+    if ($error) {
+        ocService()->error->writeLog('curl request error :' . $error);
+        if ($showError) {
+            ocService()->error->show('failed_curl_return', array($error));
+        }
+    }
+    
     return $content;
 }
 

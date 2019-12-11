@@ -130,6 +130,7 @@ return array(
 	'not_exists_const'				=> array(2421, '缺少常量'),
 	'not_exists_dependence_set' 	=> array(2422, '依赖不存在'),
     'not_exists_find_field'         => array(2423, '查询字段不存在！'),
+	'not_exists_mime_config'        => array(2425, '缺少MIME类型%s的配置！'),
 
 	//没有
 	'no_config'						=> array(2501, '找不到该配置：%s。'),

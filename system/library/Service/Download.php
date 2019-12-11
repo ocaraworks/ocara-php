@@ -69,15 +69,61 @@ class Download extends ServiceBase
         }
 
         $mine = $mineTypes[$saveType];
-        
-        ocService()->response->setHeader(array(
+        $headers = array(
             "Content-Type:{$mine};encoding={$encode};name={$saveName}",
             "Content-Disposition: attachment; filename={$saveName}",
             'Pragma: no-cache',
             'Cache-Control: no-cache, must-revalidate',
             'Expires: 0',
-        ));
+        );
 
+        ocService()->response->setHeader();
+        ocService()->response->setBody($content);
+    }
+
+    /**
+     * 显示文件内容
+     * @param $content
+     * @param $fileOrType
+     * @param string $encode
+     */
+    public function showFile($fileName, $encode = 'utf-8')
+    {
+        $content = ocRead($fileName);
+        return $this->showContent($content, $fileName, $encode);
+    }
+
+    /**
+     * 显示内容
+     * @param $content
+     * @param $fileOrType
+     * @param string $encode
+     */
+    public function showContent($content, $fileOrType, $encode = 'utf-8')
+    {
+        $expression = '/^.+\.(\w{2,4})$/';
+        $mineTypes = ocConfig('MINE_TYPES');
+
+        if (preg_match($expression, $fileOrType, $mt)) {
+            $type = $mt[1];
+        } else {
+            $type = $fileOrType;
+        }
+
+        if (!isset($mineTypes[$type])) {
+            ocService()->error->show('not_exists_mime_config', $type);
+        }
+
+        $mine = $mineTypes[$type];
+
+        $headers = array(
+            "Content-Type:{$mine};",
+            'Pragma: no-cache',
+            'Cache-Control: no-cache, must-revalidate',
+            'Expires: 0',
+        );
+
+        ocService()->response->setHeader($headers);
         ocService()->response->setBody($content);
     }
 }
