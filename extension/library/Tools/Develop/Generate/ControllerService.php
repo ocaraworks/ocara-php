@@ -72,6 +72,7 @@ class ControllerService extends BaseService
         $data = array(
             'mdlname' => $this->mdlname,
             'actname' => $this->cname . '/' . $actionName,
+            'controllerType' => $this->controllerType,
             'createview' => $this->controllerType == 'Common' ? 1 : 0,
             'ttype' => 'defaults',
             'mdltype' => $this->mdltype,
