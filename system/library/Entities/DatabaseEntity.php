@@ -316,10 +316,8 @@ abstract class DatabaseEntity extends BaseEntity
         }
 
         $condition = self::mapPrimary($this->toArray());
-        $data = $this->getRow($condition);
-
-        $this->data($data);
-        $this->relateSave();
+        $this->dataFrom($this->toArray());
+        
         $this->fire(self::EVENT_AFTER_CREATE);
 
         if ($this->relations) {
