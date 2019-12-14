@@ -225,7 +225,10 @@ abstract class DatabaseEntity extends BaseEntity
             ->getModel()
             ->getRow($condition, $options);
 
-        $entity->data($data);
+        if ($data) {
+            $entity->data($data);
+        }
+
         return $entity;
     }
 
@@ -270,16 +273,17 @@ abstract class DatabaseEntity extends BaseEntity
             ->getRow(null, $options);
 
         $entity = new static();
-        $entity->data($data);
 
-        $condition = [];
-        $primaries = $model::getPrimaries();
-
-        foreach ($primaries as $field) {
-            $condition[$field] = $entity->$field;
+        if ($data) {
+            $entity->data($data);
+            $condition = [];
+            $primaries = $model::getPrimaries();
+            foreach ($primaries as $field) {
+                $condition[$field] = $entity->$field;
+            }
+            $entity->getPrimaryCondition($condition);
         }
-        
-        $entity->getPrimaryCondition($condition);
+
         return $entity;
     }
 
