@@ -17,6 +17,6 @@ class Resource implements Middleware
      * @param array $params
      * @return mixed
      */
-    public function handler(array $params = array())
+    public function handle(array $params = array())
     {}
 }

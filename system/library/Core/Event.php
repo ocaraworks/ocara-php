@@ -262,7 +262,7 @@ class Event extends Basis implements EventInterface
     public function runCallback($callback, $params)
     {
         if (is_object($callback)) {
-            $callback = array($callback, 'handler');
+            $callback = array($callback, 'handle');
         }
 
         return call_user_func_array($callback, $params);

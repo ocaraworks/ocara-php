@@ -14,7 +14,7 @@ return array(
          * 环境配置
          */
         'env' => array(
-            'get_config' => '', //获取环境配置事件回调
+            'get_env' => '', //获取环境类型事件回调
         ),
 
         /*

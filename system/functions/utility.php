@@ -373,14 +373,14 @@ function ocContainer()
 /**
  * PHP中止执行时处理
  */
-function ocShutdownHandler()
+function ocShutdownHandle()
 {
 	$error = error_get_last();
 	if ($error) {
 		if (@ini_get('display_errors') && !ocService()->response->isSent()) {
 			ocService()
                 ->exceptionHandler
-                ->errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
+                ->errorHandle($error['type'], $error['message'], $error['file'], $error['line']);
 		}
 	}
 }

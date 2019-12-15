@@ -66,8 +66,8 @@ final class Ocara
 
         spl_autoload_register(array($loader, 'autoload'));
         @ini_set('register_globals', 'Off');
-        register_shutdown_function("ocShutdownHandler");
-        set_exception_handler(array($container->exceptionHandler, 'exceptionHandler'));
+        register_shutdown_function("ocShutdownHandle");
+        set_exception_handler(array($container->exceptionHandler, 'exceptionHandle'));
 	}
 
     /**

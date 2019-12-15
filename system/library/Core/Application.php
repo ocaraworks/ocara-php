@@ -27,21 +27,27 @@ class Application extends Base
      */
     public function __construct()
     {
-        //initialize global config
-        ocContainer()->config->loadGlobalConfig();
-        $this->setLanguage(ocContainer()->config->get('LANGUAGE', 'zh_cn'));
+        $container = ocContainer();
 
+        //initialize global config
+        $container->config->loadGlobalConfig();
+        $this->setLanguage($container->config->get('LANGUAGE', 'zh_cn'));
+
+        //get enviroment
+        $container->getEnvironment();
+        $container->loadEnvironmentConfig();
+        
         //error report
         error_reporting($this->errorReporting());
 
         //append module namespace
         if (OC_MODULE_NAMESPACE && OC_MODULE_PATH) {
-            ocContainer()->loader->registerNamespace(OC_MODULE_NAMESPACE, OC_MODULE_PATH);
+            $container->loader->registerNamespace(OC_MODULE_NAMESPACE, OC_MODULE_PATH);
         }
 
         //initialize default service provider
         $providerClass = ocConfig('DEFAULT_PROVIDER', 'Ocara\Providers\Main');
-        $provider = new $providerClass(array(), ocContainer());
+        $provider = new $providerClass(array(), $container);
 
         ServiceProvider::setDefault($provider);
         ocImport(array(OC_SYS . 'const/config.php'));
@@ -82,7 +88,7 @@ class Application extends Base
         $error = $error ? : ($sysModel == 'develop' ? E_ALL : 0);
 
         set_error_handler(
-            array($container->exceptionHandler, 'errorHandler'),
+            array($container->exceptionHandler, 'errorHandle'),
             $error
         );
 

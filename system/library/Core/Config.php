@@ -24,6 +24,7 @@ class Config extends Basis
 	/**
 	 * 数据变量
 	 */
+	protected $environment;
 	protected $frameworkConfig = array();
 	protected $data = array();
 
@@ -48,6 +49,21 @@ class Config extends Basis
 	}
 
     /**
+     * 获取系统环境
+     */
+	public function getEnvironment()
+    {
+        if (!isset($this->environment)) {
+            $environmentResource = ocConfig('RESOURCE.resource.env.get_env');
+            if ($environmentResource) {
+                $this->environment = call_user_func_array(array($environmentResource, 'handle')) ?: OC_EMPTY;
+            }
+        }
+
+        return $this->environment;
+    }
+
+    /**
      * 加载全局配置
      * @throws Exception
      */
@@ -64,6 +80,18 @@ class Config extends Basis
     }
 
     /**
+     * 获取环境配置
+     * @param null $path
+     */
+    public function loadEnvironmentConfig($path = null)
+    {
+        $path = ($path ?: ocPath('config')) . 'env';
+        if (is_dir($path)) {
+            $this->load($path);
+        }
+    }
+
+    /**
      * 加载模块配置
      * @param string $route
      * @param string $rootPath
@@ -72,7 +100,10 @@ class Config extends Basis
     {
         $subPath = 'config/';
         $path = $this->getConfigPath($route, $subPath, $rootPath);
-        $this->load($path);
+        if (is_dir($path)) {
+            $this->load($path);
+            $this->loadEnvironmentConfig($path);
+        }
     }
 
     /**
@@ -87,6 +118,7 @@ class Config extends Basis
 
         if (is_dir($path)) {
             $this->load($path);
+            $this->loadEnvironmentConfig($path);
         }
 	}
 

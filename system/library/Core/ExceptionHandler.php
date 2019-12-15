@@ -38,9 +38,9 @@ class ExceptionHandler extends Base
      * 错误处理
      * @param $exception
      */
-    public function exceptionHandler($exception)
+    public function exceptionHandle($exception)
     {
-        return $this->handler($exception);
+        return $this->handle($exception);
     }
 
     /**
@@ -53,7 +53,7 @@ class ExceptionHandler extends Base
      * @return bool
      * @throws Exception
      */
-    public function errorHandler($level, $message, $file, $line, $context = '')
+    public function errorHandle($level, $message, $file, $line, $context = '')
     {
         try {
             throw new ErrorException($message, $level, $level, $file, $line);
@@ -61,7 +61,7 @@ class ExceptionHandler extends Base
             $exceptErrors = ocForceArray(ocConfig(array('ERROR_HANDLER', 'except_error_list'), array()));
             if (!in_array($level, $exceptErrors)) {
                 $handler = new static();
-                $handler->exceptionHandler($exception);
+                $handler->exceptionHandle($exception);
             }
         }
 
@@ -72,7 +72,7 @@ class ExceptionHandler extends Base
      * 错误处理
      * @param $exception
      */
-    public function handler($exception)
+    public function handle($exception)
     {
         $response = ocService('response', true);
 
