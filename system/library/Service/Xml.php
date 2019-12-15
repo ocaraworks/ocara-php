@@ -35,11 +35,19 @@ class Xml extends ServiceBase
 	 */
 	public function __construct($encoding = 'utf-8')
 	{
-		$this->xmlParser = xml_parser_create($encoding);
 		$this->encoding  = $encoding;
-        xml_parser_set_option($this->xmlParser, XML_OPTION_CASE_FOLDING, 0);
-        xml_parser_set_option($this->xmlParser, XML_OPTION_SKIP_WHITE, 1);
 	}
+
+    /**
+     * @return resource新建XML解析器
+     */
+	public function createXmlParser()
+    {
+        $xmlParser = xml_parser_create($this->encoding);
+        xml_parser_set_option($xmlParser, XML_OPTION_CASE_FOLDING, 0);
+        xml_parser_set_option($xmlParser, XML_OPTION_SKIP_WHITE, 1);
+        return $xmlParser;
+    }
 
     /**
      * 重新初始化
@@ -114,13 +122,16 @@ class Xml extends ServiceBase
 	public function makeArray()
 	{
         $result = [];
-		xml_parse_into_struct($this->xmlParser, $this->xmlData, $values, $index);
+        $xmlParser = $this->createXmlParser();
+		xml_parse_into_struct($xmlParser, $this->xmlData, $values, $index);
 
         foreach ($values as $row) {
             if ($row['type'] == 'complete') {
                 $result[$row['tag']] = $row['value'] ?? null;
             }
 		}
+
+        xml_parser_free($xmlParser);
 
 		return $result;
 	}
@@ -134,18 +145,6 @@ class Xml extends ServiceBase
 			header("Content-Type: text/xml;encoding={$this->encoding};");
 			echo $this->xmlData;
 		}
-	}
-
-	/**
-	 * 清空
-	 */
-	public function destroy()
-	{
-		$this->xmlObj 	 = 
-		$this->xmlParser = 
-		$this->xmlData 	 = null;
-		
-		@xml_parser_free($this->xmlParser);
 	}
 
     /**
@@ -205,7 +204,7 @@ class Xml extends ServiceBase
      */
 	protected function parseXml($xmlSource, $type = 'file')
 	{
-		$xmlParser = xml_parser_create($this->encoding);
+		$xmlParser = $this->createXmlParser();
 		$result = false;
 		
 		if ($type == 'file') {
