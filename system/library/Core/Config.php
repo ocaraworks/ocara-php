@@ -56,10 +56,10 @@ class Config extends Basis
         if (!isset($this->environment)) {
             $environmentResource = ocConfig('RESOURCE.env.get_env');
             if ($environmentResource) {
-                $this->environment = call_user_func_array(array($environmentResource, 'handle')) ?: OC_EMPTY;
+                $object = new $environmentResource();
+                $this->environment = call_user_func_array(array($object, 'handle'), array()) ?: OC_EMPTY;
             }
         }
-
         return $this->environment;
     }
 
