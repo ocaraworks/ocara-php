@@ -34,8 +34,8 @@ class Application extends Base
         $this->setLanguage($container->config->get('LANGUAGE', 'zh_cn'));
 
         //get enviroment
-        $container->getEnvironment();
-        $container->loadEnvironmentConfig();
+        $container->config->getEnvironment();
+        $container->config->loadEnvironmentConfig();
         
         //error report
         error_reporting($this->errorReporting());
