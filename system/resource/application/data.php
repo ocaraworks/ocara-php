@@ -55,7 +55,7 @@ $files = array(
         'config/env/develop',
         'config/env/local',
         'config/env/production',
-        'config/env/test',
+        'config/env/alpha',
     ),
 	'library' => array(
         'Base/Service/CommonService',

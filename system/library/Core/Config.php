@@ -149,6 +149,7 @@ class Config extends Basis
             foreach ($paths as $path) {
                 if (is_dir($path)) {
                     $files = scandir($path);
+                    asort($files);
                     foreach ($files as $file) {
                         if ($file == '.' || $file == '..') continue;
                         $fileType = pathinfo($file, PATHINFO_EXTENSION);
