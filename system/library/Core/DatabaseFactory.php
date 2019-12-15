@@ -115,7 +115,7 @@ class DatabaseFactory extends Base
 
         $config = ocForceArray(ocConfig(array('DATABASE', $connectName)));
 
-		if ($callback = ocConfig(array('SOURCE', 'database', 'get_config'), null)) {
+		if ($callback = ocConfig(array('RESOURCE', 'database', 'get_config'), null)) {
 			$config = array_merge(
 			    $config,
                 call_user_func_array($callback, array($connectName))

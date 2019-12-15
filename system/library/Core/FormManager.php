@@ -34,7 +34,7 @@ class FormManager extends ServiceProvider
     public function registerEvents()
     {
         $this->event(self::EVENT_CHECK_ERROR)
-             ->append(ocConfig(array('EVENT', 'form', 'check_error'), null));
+             ->append(ocConfig(array('EVENTS', 'form', 'check_error'), null));
     }
 
     /**

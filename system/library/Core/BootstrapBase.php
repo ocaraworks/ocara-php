@@ -22,13 +22,13 @@ abstract class BootstrapBase extends Base
     public function registerEvents()
     {
         $this->event(self::EVENT_DIE)
-             ->append(ocConfig(array('EVENT', 'oc_die'), null));
+             ->append(ocConfig(array('EVENTS', 'oc_die'), null));
 
-        $this->bindEvents(ocConfig(array('EVENT', 'log'), ocService()->log));
+        $this->bindEvents(ocConfig(array('EVENTS', 'log'), ocService()->log));
 
         $this->event(self::EVENT_BEFORE_DISPATCH)
-             ->append(ocConfig(array('EVENT', 'action', 'before_run'), null))
-             ->append(ocConfig(array('EVENT', 'auth', 'check'), null));
+             ->append(ocConfig(array('EVENTS', 'action', 'before_run'), null))
+             ->append(ocConfig(array('EVENTS', 'auth', 'check'), null));
     }
 
     /**

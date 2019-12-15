@@ -6,12 +6,12 @@
  */
 
 return array(
-    'EVENT' => array(
+    'EVENTS' => array(
         /*
          * 错误输出事件
          */
         'error' => array(
-            'before_output'      => '', //打印错误前
+            'before_output' => '', //打印错误前
         ),
 
         /*

@@ -51,6 +51,7 @@ $files = array(
         'config/cache',
         'config/env',
         'config/resource',
+        'config/events',
         'config/static',
         'config/env/develop',
         'config/env/local',

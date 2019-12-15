@@ -66,7 +66,7 @@ class CacheFactory extends Base
 
 		$config = array();
 
-		if ($callback = ocConfig(array('SOURCE', 'cache', 'get_config'), null)) {
+		if ($callback = ocConfig(array('RESOURCE', 'cache', 'get_config'), null)) {
 			$config = call_user_func_array($callback, array($connectName));
 		}
 
