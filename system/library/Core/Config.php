@@ -152,12 +152,14 @@ class Config extends Basis
                     asort($files);
                     foreach ($files as $file) {
                         if ($file == '.' || $file == '..') continue;
-                        $fileType = pathinfo($file, PATHINFO_EXTENSION);
                         $file = $path . OC_DIR_SEP . $file;
-                        if (is_file($file) && $fileType == 'php') {
-                            $content = include($file);
-                            if (is_array($content)) {
-                                $config[] = $content;
+                        if (is_file($file)) {
+                            $fileType = pathinfo($file, PATHINFO_EXTENSION);
+                            if ($fileType == 'php') {
+                                $content = include($file);
+                                if (is_array($content)) {
+                                    $config[] = $content;
+                                }
                             }
                         }
                     }
