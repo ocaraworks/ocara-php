@@ -1,6 +1,7 @@
 <?php
 $dirs = array(
 	'application' => array(
+	    'config/env',
 	    'console',
         'controller',
         'model/cache',
@@ -22,14 +23,14 @@ $dirs = array(
 		'src/images/defaults',
 		'src/js',
 	),
-	'resource' => array(
-	    'config/env',
-	    'data/docs',
-        'data/fields'
+	'data' => array(
+	    'docs',
+        'fields'
     ),
 	'runtime' => array(
         'logs',
         'session',
+        'temp'
     ),
     'tools' => array(
         'dev/controller/generate',
@@ -39,12 +40,6 @@ $dirs = array(
 
 $files = array(
     'application' => array(
-        'controller/Module',
-        'lang/zh_cn/base',
-        'service.BaseService',
-        'view/defaults/layout/layout'
-    ),
-    'resource' => array(
         'config/application',
         'config/system',
         'config/database',
@@ -57,6 +52,10 @@ $files = array(
         'config/env/local',
         'config/env/production',
         'config/env/alpha',
+        'controller/Module',
+        'lang/zh_cn/base',
+        'service.BaseService',
+        'view/defaults/layout/layout'
     ),
 	'library' => array(
         'Base/Service/CommonService',
