@@ -180,6 +180,7 @@ return array(
     
         /*所属目录*/
         'belongs' => array(
+            'config'        => 'application',
             'console'  	    => 'application',
             'controller'  	=> 'application',
             'lang'          => 'application',
@@ -194,11 +195,9 @@ return array(
             'database'      => 'application/database',
 
             'tools'  	    => '',
-            'config'        => 'resource',
-
-            'data'          => 'resource',
-            'doc'           => 'resource/data',
-            'fields'        => 'resource/data',
+            'data'          => '',
+            'doc'           => 'data',
+            'fields'        => 'data',
 
             'runtime'       => '',
             'temp'          => 'data/runtime',

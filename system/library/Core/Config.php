@@ -85,9 +85,14 @@ class Config extends Basis
      */
     public function loadEnvironmentConfig($path = null)
     {
-        $path = ($path ?: ocPath('config')) . 'env';
-        if (is_dir($path)) {
-            $this->load($path);
+        if ($this->environment) {
+            $filePath = ($path ?: ocPath('config')) . 'env/' . $this->environment . '.php';
+            if (is_file($filePath)) {
+                $content = include($filePath);
+                if (is_array($content)) {
+                    $this->data = array_merge($this->data, $content);
+                }
+            }
         }
     }
 
