@@ -19,18 +19,18 @@ class File extends ServiceBase
 	 * @param null $mode
 	 * @return bool|mixed|string
 	 */
-	public static function createFile($filePath, $perm = null, $mode = null)
+	public function createFile($filePath, $perm = null, $mode = null)
 	{
 		if (ocFileExists($filePath, true)) return $filePath;
 
 		ocCheckPath(dirname($filePath), $mode);
 		$filePath = ocCheckFilePath($filePath);
-		
+
 		if (function_exists('file_put_contents')) {
 			$result = @file_put_contents($filePath, OC_EMPTY);
 			return $result >= 0 ? $filePath : false;
 		}
-		
+
 		if (!($fo = @fopen($filePath, 'wb'))) return false;
 		
 		if ($perm && !chmod($filePath, $perm)) {
@@ -49,10 +49,10 @@ class File extends ServiceBase
 	 * @param bool $createDir
 	 * @return bool|resource
 	 */
-	public static function openFile($filePath, $openMode, $perm = null, $createDir = true)
+	public function openFile($filePath, $openMode, $perm = null, $createDir = true)
 	{
 		if (!ocFileExists($filePath, true)) {
-			if (!$createDir || !self::createFile($filePath, $perm)) {
+			if (!$createDir || !$this->createFile($filePath, $perm)) {
 				return false;
 			} 
 		} 
@@ -65,7 +65,7 @@ class File extends ServiceBase
 	 * @param source $source
 	 * @return bool
 	 */
-	public static function closeFile($source)
+	public function closeFile($source)
 	{
 		if (is_resource($source)) {
 			return @fclose($source);
@@ -80,7 +80,7 @@ class File extends ServiceBase
 	 * @param string $newName
 	 * @return bool
 	 */
-	public static function rename($file, $newName)
+	public function rename($file, $newName)
 	{
 		if ($file = ocFileExists($file, true)) {
 			$newFile = ocCheckFilePath(dirname($file) . OC_DIR_SEP. $newName);	
@@ -95,7 +95,7 @@ class File extends ServiceBase
 	 * @param string $filePath
 	 * @return bool
 	 */
-	public static function delFile($filePath)
+	public function delFile($filePath)
 	{
 		if ($filePath = ocFileExists($filePath, true)) {
 			return is_writable($filePath) ? @unlink($filePath) : false;
@@ -109,7 +109,7 @@ class File extends ServiceBase
      * @param $filePath
      * @return false|string
      */
-	public static function readFile($filePath)
+	public function readFile($filePath)
 	{
 		return ocRead($filePath);
 	}
@@ -122,9 +122,9 @@ class File extends ServiceBase
 	 * @param bool $trim
 	 * @return bool|int|void
 	 */
-	public static function writeFile($path, $content, $perm = null, $trim = false)
+	public function writeFile($path, $content, $perm = null, $trim = false)
 	{
-		return ocWrite($path, self::getContent($content, $trim), false, $perm);
+		return ocWrite($path, $this->getContent($content, $trim), false, $perm);
 	}
 
 	/**
@@ -135,9 +135,9 @@ class File extends ServiceBase
 	 * @param bool $trim
 	 * @return bool|int|void
 	 */
-	public static function appendFile($path, $content, $perm = null, $trim = false)
+	public function appendFile($path, $content, $perm = null, $trim = false)
 	{
-		return ocWrite($path, self::getContent($content, $trim), true, $perm);
+		return ocWrite($path, $this->getContent($content, $trim), true, $perm);
 	}
 
 	/**
@@ -146,7 +146,7 @@ class File extends ServiceBase
 	 * @param string $destination
 	 * @return bool
 	 */
-	public static function copyFile($source, $destination)
+	public function copyFile($source, $destination)
 	{
 		$source = ocFileExists($source, true);
 		$destination = ocCheckFilePath($destination, true);
@@ -167,7 +167,7 @@ class File extends ServiceBase
 	 * @param string $destination
 	 * @return bool
 	 */
-	public static function moveFile($source, $destination)
+	public function moveFile($source, $destination)
 	{
 		$source = ocFileExists($source, true);
 		$destination = ocCheckFilePath($destination, true);
@@ -187,7 +187,7 @@ class File extends ServiceBase
 	 * @param string $filePath
 	 * @return array
 	 */
-	public static function fileInfo($filePath)
+	public function fileInfo($filePath)
 	{
 		if (!ocFileExists($filePath)) return array();
 		
@@ -209,7 +209,7 @@ class File extends ServiceBase
 	 * @param integer $perm
 	 * @return bool
 	 */
-	public static function createDir($path, $perm = null)
+	public function createDir($path, $perm = null)
 	{
 		return ocCheckPath($path, $perm);
 	}
@@ -220,9 +220,9 @@ class File extends ServiceBase
 	 * @param bool $recursive
 	 * @return bool
 	 */
-	public static function delDir($path, $recursive = false)
+	public  function delDir($path, $recursive = false)
 	{
-		return self::baseDelDir($path, $recursive, 'del');
+		return $this->baseDelDir($path, $recursive, 'del');
 	}
 
 	/**
@@ -231,10 +231,34 @@ class File extends ServiceBase
 	 * @param bool $recursive
 	 * @return bool
 	 */
-	public static function clearDir($path, $recursive = false)
+	public function clearDir($path, $recursive = false)
 	{
-		return self::baseDelDir($path, $recursive, 'clear');
+		return $this->baseDelDir($path, $recursive, 'clear');
 	}
+
+    /**
+     * 文件重命加一
+     * @param $file
+     * @return string
+     */
+	public function increaseFileName($file, $separateSign = '_')
+    {
+        $position = strrpos($file,'.');
+        $mainName = substr($file,0, $position);
+        $extensionName = substr($file, $position);
+
+        if (strstr($mainName, $separateSign)) {
+            $options = explode($mainName);
+            $lastKey = count($options) - 1;
+            $options[$lastKey] = intval($options[$lastKey]) + 1;
+            $mainName = implode($separateSign, $options);
+        } else {
+            $mainName = $mainName . $separateSign . '1';
+        }
+
+        $file = $mainName . ($extensionName ? '.' . $extensionName : OC_EMPTY);
+        return $file;
+    }
 
 	/**
 	 * 类内部函数,删除或清空目录
@@ -243,7 +267,7 @@ class File extends ServiceBase
 	 * @param string $delType
 	 * @return bool
 	 */
-	private static function baseDelDir($path, $recursive = false, $delType = 'del')
+	private function baseDelDir($path, $recursive = false, $delType = 'del')
 	{
 		if (!$path) return false;
 		if (!is_dir($path)) return true;
@@ -256,10 +280,10 @@ class File extends ServiceBase
 				ocDel($subElements, $key);
 				$subPath = $path . OC_DIR_SEP . $element;
 				if (is_file($subPath)) {
-					if (!self::delFile($subPath)) return false;
+					if (!$this->delFile($subPath)) return false;
 				} elseif (is_dir($subPath)) {
 					if (!$recursive) continue;
-					if (!self::delDir($subPath, true, 'del')) return false;
+					if (!$this->delDir($subPath, true, 'del')) return false;
 				}
 			}
 		}
@@ -277,7 +301,7 @@ class File extends ServiceBase
 	 * @param bool $trim
 	 * @return mixed
 	 */
-	private static function getContent($content, $trim)
+	private function getContent($content, $trim)
 	{
 		if ($trim) {
 			if (is_array($content)) {

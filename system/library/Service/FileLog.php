@@ -18,6 +18,7 @@ class FileLog extends ServiceBase implements LogInterface
 	public $sysLogPath;
 	public $logRoot;
 	public $maxLogSize = 1;
+	public $extensionName;
 
     /**
      * 选项设置函数
@@ -25,12 +26,14 @@ class FileLog extends ServiceBase implements LogInterface
      * @param inte $maxLogSize
      * @throws Exception
      */
-	public function setOption($logRoot = null, $maxLogSize = null)
+	public function setOption($logRoot = null, $maxLogSize = null, $extensionName = null)
 	{
+        $extensionName = $extensionName ? $extensionName : 'txt';
+
 		if (empty($logRoot)) {
 			$logRoot = ocConfig(array('LOG', 'root'), false);
 		}
-		
+
 		if ($logRoot) {
 			$this->logType = 'custom';
 			$logRoot = ocPath('runtime', $logRoot);
@@ -49,9 +52,10 @@ class FileLog extends ServiceBase implements LogInterface
 		if (!ocCheckPath($logRoot)) {
 			$this->showError('cannot_create_log_dir');
 		}
-		
-		$this->logRoot 	  = ocDir($logRoot);
+
+		$this->logRoot = ocDir($logRoot);
 		$this->maxLogSize = $maxLogSize ? : 2;
+		$this->extensionName = $extensionName;
 	}
 
     /**
@@ -89,20 +93,11 @@ class FileLog extends ServiceBase implements LogInterface
 		if ($this->logType == 'sys') {
 			return ocService()->file->appendFile($this->sysLogPath, "$content\n");
 		}
-		
-		$logPath = $this->logRoot . $logName;
-		if (!is_dir($logPath)) {
-			$this->create($logPath);
-		}
-		
-		$lastLogFile = ocDir($logPath) . $this->getLastLogFile($logName);
-		$fileInfo 	 = ocService()->file->fileInfo($lastLogFile);
 
-		if ($fileInfo && $fileInfo['size'] > $this->maxLogSize * 1024 * 1024) {
-			$lastLogFile = $this->createLogFile($logName);
-		}
+		$lastLogFile = $this->getLastLogFile($logName);
+		$result = ocService()->file->appendFile($lastLogFile, "{$content}" . PHP_EOL);
 
-		return ocService()->file->appendFile($lastLogFile, "{$content}" . PHP_EOL);
+		return $result;
 	}
 
     /**
@@ -173,40 +168,41 @@ class FileLog extends ServiceBase implements LogInterface
 	protected function getLastLogFile($logName, $create = true)
 	{
 		$logPath = $this->logRoot . ocDir($logName);
-		
+
 		if (!is_dir($logPath)) {
 			$this->create($logPath);
 		}
-		
-		$max 	= 0;
-		$regExp = '/^.+\_([0-9]+)\.[a-z0-9]{2,4}$/i';
-		$files 	= scandir($logPath);
-		
-		ocDel($files, 0, 1);
-		
-		if ($files) {
-			foreach ($files as $file) {
-				if (preg_match($regExp, $file, $mt)) {
-					if ($mt[1] > $max) $max = $mt[1];
-				}
-			}
-		}
 
-		if ($max) {
-			return $logName . '_' . $max . '.txt';
-		}
-		
-		return $create ? ocBasename($this->createLogFile($logName)) : false;
-	}
+		$maxFile = OC_EMPTY;
+		$files = scandir($logPath, SCANDIR_SORT_DESCENDING);
 
-    /**
-     * 新建日志文件
-     * @param string $logName
-     * @return mixed
-     */
-	protected function createLogFile($logName)
-	{
-		$path = $this->logRoot . ocDir($logName);
-		return ocService()->file->createFile($path . $logName . '_' . date('Ymd') . '.txt');
+        foreach ($files as $file) {
+            $logFile = $logPath . $file;
+            if (is_file($logFile) && pathinfo($logFile)['extension'] == $this->extensionName) {
+                $maxFile = $file;
+                break;
+            }
+        }
+
+        $fileService = ocService()->file;
+        $todayFile = date('Ymd') . '.' . $this->extensionName;
+
+		if (!$maxFile && $maxFile < $todayFile) {
+            $maxFile = $todayFile;
+        } else {
+            $fileInfo = $fileService->fileInfo($logPath . $maxFile);
+            $maxSize = $this->maxLogSize * 1024 * 1024;
+            if ($fileInfo && $fileInfo['size'] > $maxSize) {
+                $maxFile = $fileService->increaseFileName($maxFile);
+            }
+        }
+
+		$filePath = $logPath . $maxFile;
+
+		if ($create && !is_file($filePath)) {
+            $fileService->createFile($filePath, 0777, 'wb');
+        }
+
+		return $filePath;
 	}
 }
