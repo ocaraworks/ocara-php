@@ -340,7 +340,7 @@ class PdoDriver extends DriverBase implements DriverInterface
      */
 	public function error_exists()
     {
-        $errorInfo = $this->error_info();
+        $errorInfo = $this->error_list();
         return !empty($errorInfo[1]);
     }
 
