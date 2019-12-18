@@ -333,7 +333,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
 			$errorCode = $this->connection->errno;
 		}
 
-		return (integer)$errorCode;
+		return $errorCode;
 	}
 
 	/**
@@ -358,7 +358,17 @@ class MysqliDriver extends DriverBase implements DriverInterface
 		return array($this->connection->error);
 	}
 
-	/**
+    /**
+     * 是否存在错误
+     * @return bool
+     */
+    public function error_exists()
+    {
+        $errorNo = $this->error_no();
+        return $errorNo > 0;
+    }
+
+    /**
 	 * @param string $str
 	 * @return mixed
 	 */

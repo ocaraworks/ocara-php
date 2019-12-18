@@ -645,7 +645,7 @@ class DatabaseBase extends Base
 		$this->error = array();
 		$plugin = $this->plugin();
 
-		if ($plugin->error_no() > 0) {
+		if ($plugin->error_exists()) {
 			$this->error['errorCode'] = $plugin->error_no();
 			$this->error['errorMessage'] = $plugin->error();
 			$this->error['errorList'] = $plugin->error_list();
