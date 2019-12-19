@@ -221,6 +221,14 @@ class Request extends Base
 		return $this->getRequestValue($_POST, $key, $default);
 	}
 
+    /**
+     * 获取输入流数据
+     */
+	public function getInput()
+    {
+        return ocGetContents('php://input');
+    }
+
 	/**
 	 * 获取COOKIE参数值
 	 * @param string $key
