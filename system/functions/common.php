@@ -321,7 +321,8 @@ function ocGetContents($target)
     if (function_exists('file_get_contents')) {
         return file_get_contents($target);
     }
-    return readfile($target);
+
+    return implode('', file($target));
 }
 
 /**
