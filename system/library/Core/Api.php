@@ -42,7 +42,7 @@ class Api extends Base
     protected function getXmlResult($result)
     {
         $xmlObj = new Xml();
-        $xmlObj->setData('array', array('root', $result));
+        $xmlObj->loadArray(array('root', $result));
         $xml = $xmlObj->getContent();
 
         return $xml;

@@ -50,33 +50,6 @@ class Xml extends ServiceBase
     }
 
     /**
-     * 重新初始化
-     * @param $type
-     * @param $xmlSource
-     * @throws Exception
-     */
-	public function setData($type, $xmlSource)
-	{
-		if ($type == 'file') {
-			if (!$this->parseXml($xmlSource, 'file')) {
-				$this->showError('failed_xml_parse');
-			}
-			if (!pathinfo($xmlSource, PATHINFO_EXTENSION)) {
-				$xmlSource = $xmlSource . '.xml';
-			}
-			$this->xmlPath = $xmlSource;
-			$this->xmlObj = simplexml_load_file($xmlSource);
-			$this->xmlData = ocRead($xmlSource);
-		} elseif ($type == 'string') {
-			$this->loadString($xmlSource);
-		} elseif ($type == 'array') {
-			$this->loadArray($xmlSource);
-		} else {
-			$this->showError('fault_xml_source');
-		}
-	}
-
-    /**
      * 保存XML文件
      * @param $filePath
      * @param null $perm
@@ -142,8 +115,10 @@ class Xml extends ServiceBase
 	public function display()
 	{
 		if (is_object($this->xmlObj)) {
-			header("Content-Type: text/xml;encoding={$this->encoding};");
-			echo $this->xmlData;
+            ocService()->response->setContentType('xml');
+            ocService()->response->setCharset($this->encoding);
+			ocService()->response->setBody($this->xmlData);
+            ocService()->response->send();
 		}
 	}
 
@@ -152,7 +127,7 @@ class Xml extends ServiceBase
      * @param $xmlSource
      * @throws Exception
      */
-	protected function loadString($xmlSource)
+    public function loadString($xmlSource)
 	{
 		if (!($this->parseXml($xmlSource, 'string'))) {
 			$this->showError('failed_xml_parse');
@@ -167,7 +142,7 @@ class Xml extends ServiceBase
      * @param array $xmlSource
      * @throws Exception
      */
-    protected function loadArray(array $xmlSource)
+    public function loadArray(array $xmlSource)
     {
         $xmlData = [];
         $root = ocGet(0, $xmlSource);
@@ -196,13 +171,33 @@ class Xml extends ServiceBase
     }
 
     /**
+     * 加载文件
+     * @param $xmlSource
+     * @throws Exception
+     */
+    public function loadFile($xmlSource)
+    {
+        if (!$this->parseXml($xmlSource, 'file')) {
+            $this->showError('failed_xml_parse');
+        }
+
+        if (!pathinfo($xmlSource, PATHINFO_EXTENSION)) {
+            $xmlSource = $xmlSource . '.xml';
+        }
+
+        $this->xmlPath = $xmlSource;
+        $this->xmlObj = simplexml_load_file($xmlSource);
+        $this->xmlData = ocRead($xmlSource);
+    }
+
+    /**
      * 解析XML文件
      * @param $xmlSource
      * @param string $type
      * @return bool|int
      * @throws Exception
      */
-	protected function parseXml($xmlSource, $type = 'file')
+    public function parseXml($xmlSource, $type = 'file')
 	{
 		$xmlParser = $this->createXmlParser();
 		$result = false;
@@ -232,7 +227,7 @@ class Xml extends ServiceBase
      * @param array $xmlArray
      * @return string|null
      */
-	protected function makeXml(array $xmlArray)
+	public function makeXml(array $xmlArray)
 	{
 		$xmlData = null;
 		
