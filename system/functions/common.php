@@ -312,6 +312,19 @@ function ocRead($filePath, $checkPath = true)
 }
 
 /**
+ * 读取内容
+ * @param $target
+ * @return false|int|string
+ */
+function ocGetContents($target)
+{
+    if (function_exists('file_get_contents')) {
+        return file_get_contents($target);
+    }
+    return readfile($target);
+}
+
+/**
  * 获取远程内容
  * @param $url
  * @param null $data
