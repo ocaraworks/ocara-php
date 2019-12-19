@@ -48,7 +48,7 @@ class Log extends Base
         }
 
         if (!ocScalar($message)) {
-            $message .= ocJsonEncode($message);
+            $message = ocJsonEncode($message);
         }
 
         $format = ocConfig(array('LOG', 'format'), '[{type}]|{time}|{message}', true);
