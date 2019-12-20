@@ -110,19 +110,6 @@ class Xml extends ServiceBase
 	}
 
     /**
-     * 打印XML
-     */
-	public function display()
-	{
-		if (is_object($this->xmlObj)) {
-            ocService()->response->setContentType('xml');
-            ocService()->response->setCharset($this->encoding);
-			ocService()->response->setBody($this->xmlData);
-            ocService()->response->send();
-		}
-	}
-
-    /**
      * 加载并解析XML字符串
      * @param $xmlSource
      * @throws Exception
