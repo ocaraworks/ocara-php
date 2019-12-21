@@ -46,6 +46,42 @@ abstract class DatabaseEntity extends BaseEntity
     }
 
     /**
+     * 创建记录前置事件
+     */
+    public function beforeCreate()
+    {}
+
+    /**
+     * 创建记录后置事件
+     */
+    public function afterCreate()
+    {}
+
+    /**
+     * 更新记录前置事件
+     */
+    public function beforeUpdate()
+    {}
+
+    /**
+     * 更新记录后置事件
+     */
+    public function afterUpdate()
+    {}
+
+    /**
+     * 删除记录前置事件
+     */
+    public function beforeDelete()
+    {}
+
+    /**
+     * 删除记录后置事件
+     */
+    public function afterDelete()
+    {}
+
+    /**
      * 获取模型类名
      * @return mixed
      */
