@@ -15,15 +15,9 @@ abstract class DatabaseEntity extends BaseEntity
     private $relations = array();
     private $changes = array();
 
-    /**
-     * @var int $insertId
-     */
     private $insertId;
-
-    /**
-     * @var string $source
-     */
     private $source;
+    private $useTransaction = true;
 
     const EVENT_BEFORE_CREATE = 'beforeCreate';
     const EVENT_AFTER_CREATE = 'afterCreate';
@@ -297,7 +291,7 @@ abstract class DatabaseEntity extends BaseEntity
     {
         $model = $this->getModel();
 
-        if ($this->relations) {
+        if ($this->isUseTransaction()) {
             ocService()->transaction->begin();
         }
 
@@ -320,7 +314,7 @@ abstract class DatabaseEntity extends BaseEntity
         
         $this->fire(self::EVENT_AFTER_CREATE);
 
-        if ($this->relations) {
+        if ($this->isUseTransaction()) {
             ocService()->transaction->commit();
         }
 
@@ -334,6 +328,24 @@ abstract class DatabaseEntity extends BaseEntity
     public function getInsertId()
     {
         return $this->insertId;
+    }
+
+    /**
+     * 是否使用事务
+     * @param $useTransaction
+     */
+    public function useTransaction($useTransaction)
+    {
+        $this->useTransaction = $useTransaction === true;
+    }
+
+    /**
+     * 获取是否使用事务
+     * @return bool
+     */
+    public function isUseTransaction()
+    {
+        return  $this->useTransaction || !empty($this->relations);
     }
 
     /**
@@ -354,7 +366,9 @@ abstract class DatabaseEntity extends BaseEntity
         $data = array_merge($this->getChanged(), $data);
 
         if ($data) {
-            if ($this->relations) ocService()->transaction->begin();
+            if ($this->isUseTransaction()) {
+                ocService()->transaction->begin();
+            }
             call_user_func_array('ocDel', array(&$data, $model::getPrimaries()));
             $model->where($this->selected);
 
@@ -363,7 +377,9 @@ abstract class DatabaseEntity extends BaseEntity
             $this->relateSave();
             $this->fire(self::EVENT_AFTER_UPDATE);
 
-            if ($this->relations) ocService()->transaction->commit();
+            if ($this->isUseTransaction()) {
+                ocService()->transaction->commit();
+            }
         }
 
         return $result;
@@ -412,11 +428,19 @@ abstract class DatabaseEntity extends BaseEntity
             ocService()->error->show('need_condition');
         }
 
+        if ($this->isUseTransaction()) {
+            ocService()->transaction->begin();
+        }
+
         $model->where($this->selected);
         $this->fire(self::EVENT_BEFORE_DELETE);
 
         $result = $model->baseDelete();
         $this->fire(self::EVENT_AFTER_DELETE);
+
+        if ($this->isUseTransaction()) {
+            ocService()->transaction->commint();
+        }
 
         return $result;
     }
