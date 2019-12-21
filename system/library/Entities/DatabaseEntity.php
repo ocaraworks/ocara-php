@@ -277,7 +277,11 @@ abstract class DatabaseEntity extends BaseEntity
         }
 
         $this->getPrimaryCondition(array_intersect_key($data, $primaries));
-        $this->data($data);
+
+        $fields = $this->getModel()->getFieldsName();
+
+        $defaultData = array_fill_keys($fields, null);
+        $this->data(array_merge($defaultData, $data));
 
         return $this;
     }
@@ -345,10 +349,7 @@ abstract class DatabaseEntity extends BaseEntity
             $this->$autoIncrementField = $this->insertId;
         }
 
-        $defaultData = array_fill_keys($this->getModel()->getFieldsName(), null);
-        $data = array_merge($defaultData, $this->toArray());
-
-        $this->dataFrom($data);
+        $this->dataFrom($this->toArray());
         $this->fire(self::EVENT_AFTER_CREATE);
 
         if ($this->isUseTransaction()) {
