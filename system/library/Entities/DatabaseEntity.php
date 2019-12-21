@@ -345,9 +345,10 @@ abstract class DatabaseEntity extends BaseEntity
             $this->$autoIncrementField = $this->insertId;
         }
 
-        $condition = self::mapPrimary($this->toArray());
-        $this->dataFrom($this->toArray());
-        
+        $defaultData = array_fill_keys($this->getModel()->getFieldsName(), null);
+        $data = array_merge($defaultData, $this->toArray());
+
+        $this->dataFrom($data);
         $this->fire(self::EVENT_AFTER_CREATE);
 
         if ($this->isUseTransaction()) {
