@@ -68,7 +68,10 @@ class Url extends Base
 			ocService()->error->show('fault_url');
 		}
 
-		if ($this->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
+		if (PHP_SAPI == 'cli') {
+		    $route = explode(OC_DIR_SEP, trim($url, OC_DIR_SEP));
+            $get = array_merge($route, $result);
+        } elseif ($this->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
 			$get = trim($result[3]);
 			if ($get) {
 				$get = explode(OC_DIR_SEP, trim($result[3], OC_DIR_SEP));
@@ -113,7 +116,10 @@ class Url extends Base
 		$el  = '[^\/\&\?]';
 		$get = null;
 
-		if ($this->isVirtualUrl($urlType)) {
+		if (PHP_SAPI == 'cli') {
+		    $get = ocGet(array('argv', '2'), $_SERVER);
+		    $get = explode(OC_DIR_SEP, trim($get, OC_DIR_SEP));
+        } elseif ($this->isVirtualUrl($urlType)) {
 			$str  = $urlType == self::ROUTE_TYPE_PATH ? 'index\.php[\/]?' : false;
 			$el   = '[^\/\&\?]';
 			$mvc  = '\w*';
