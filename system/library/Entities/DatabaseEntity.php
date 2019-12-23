@@ -279,10 +279,13 @@ abstract class DatabaseEntity extends BaseEntity
 
         $this->getPrimaryCondition(array_intersect_key($data, $primaries));
 
-        $fields = $this->getModel()->getFieldsName();
-
-        $defaultData = array_fill_keys($fields, null);
-        $this->data(array_merge($defaultData, $data));
+        if ($getFullFields) {
+            $fields = $this->getModel()->getFieldsName();
+            $defaultData = array_fill_keys($fields, null);
+            $data = array_merge($defaultData, $data);
+        }
+        
+        $this->data($data);
 
         return $this;
     }
