@@ -22,7 +22,7 @@ class Loader extends Basis
 
     public function __construct()
     {
-        $this->defaultPath = ocCommPath(OC_ROOT . 'library');
+        $this->defaultPath = ocCommPath(OC_ROOT . 'support');
 
         $config = ocContainer()->config;
         $defaultAutoMap = $config->getDefault('NAMESPACE_MAP', array());

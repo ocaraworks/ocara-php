@@ -84,7 +84,7 @@ class ServiceBase extends Base
 			if (ocFileExists($path = OC_EXT . $classFile)) {
 				return array($path, 'Ocara\Core\Extension' . OC_NS_SEP);
 			}
-			if (ocFileExists($path = ocPath('library', $classFile))) {
+			if (ocFileExists($path = ocPath('support', $classFile))) {
 				return array($path, OC_NS_SEP);
 			}
 		}

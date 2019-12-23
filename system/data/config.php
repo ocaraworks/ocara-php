@@ -204,7 +204,7 @@ return array(
             'logs'          => 'data/runtime',
             'sessions'      => 'data/runtime',
 
-            'library'	    => '',
+            'support'	    => '',
             'functions'	    => '',
             'pass'			=> '',
     

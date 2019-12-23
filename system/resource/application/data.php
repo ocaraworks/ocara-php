@@ -57,7 +57,7 @@ $files = array(
         'service.BaseService',
         'view/defaults/layout/layout'
     ),
-	'library' => array(
+	'support' => array(
         'Base/Service/CommonService',
         'Base/Controller/ApiController',
 		'Base/Controller/CommonController',
