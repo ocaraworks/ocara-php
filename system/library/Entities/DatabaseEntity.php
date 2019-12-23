@@ -265,9 +265,10 @@ abstract class DatabaseEntity extends BaseEntity
     /**
      * 以数据选择记录
      * @param $data
-     * @return DatabaseEntity
+     * @param bool $getFullFields
+     * @return $this
      */
-    public function dataFrom($data)
+    public function dataFrom($data, $getFullFields = false)
     {
         $model = static::getModelClass();
         $primaries = array_fill_keys($model::getPrimaries(), null);
@@ -349,7 +350,7 @@ abstract class DatabaseEntity extends BaseEntity
             $this->$autoIncrementField = $this->insertId;
         }
 
-        $this->dataFrom($this->toArray());
+        $this->dataFrom($this->toArray(), true);
         $this->fire(self::EVENT_AFTER_CREATE);
 
         if ($this->isUseTransaction()) {
