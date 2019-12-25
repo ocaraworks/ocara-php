@@ -527,7 +527,8 @@ abstract class DatabaseModel extends ModelBase
             return $this;
         }
 
-        $result = false;
+        $result = ocConfig('DATABASE_MODEL.auto_filter_data', true);
+
         if (isset($this->sql['option']['isFilterData'])) {
             $result = $this->sql['option']['isFilterData'];
         }

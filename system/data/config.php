@@ -54,7 +54,15 @@ return array(
             'location'	 => 'session', //保存位置，文件目录名、数据库表名或缓存前缀
         ),
     ),
-    
+
+    /*
+     * 数据库模型配置
+     */
+    'DATABASE_MODEL' => [
+        //模型在查询或保存时是否过滤非字段数据
+        'auto_filter_data' => true,
+    ],
+
     /*
      * 应用配置
      */
