@@ -407,6 +407,7 @@ function ocCurl($url, $data = null, array $headers = array(), $showError = false
     curl_close($ch);
 
     if ($error) {
+        ocService()->error->writeLog('curl params :' . json_encode(func_get_args(), JSON_UNESCAPED_UNICODE));
         $error = json_encode($error, JSON_UNESCAPED_UNICODE);
         ocService()->error->writeLog('curl request error :' . $error);
         if ($showError) {
