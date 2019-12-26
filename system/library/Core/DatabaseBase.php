@@ -57,16 +57,6 @@ class DatabaseBase extends Base
 	}
 
     /**
-     * 注册事件
-     * @throws Exception
-     */
-	public function registerEvents()
-    {
-        $this->event(self::EVENT_BEFORE_SHOW_ERROR)
-            ->setDefault(array($this, 'beforeShowError'));
-    }
-
-    /**
      * 初始化配置
      * @param $config
      * @return array
@@ -127,6 +117,9 @@ class DatabaseBase extends Base
 
         $this->event(self::EVENT_AFTER_EXECUTE_SQL)
              ->append(ocConfig(array('EVENTS', 'database', 'after_execute_sql'), null));
+
+        $this->event(self::EVENT_BEFORE_SHOW_ERROR)
+            ->setDefault(array($this, 'beforeShowError'));
     }
 
 	/**
