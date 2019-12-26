@@ -279,7 +279,7 @@ class Generator extends Base
      * @param $isFilterCondition
      * @return string
      */
-    public function genWhereSql($isFilterCondition)
+    public function genWhereSql($isFilterCondition = null)
     {
         $option = ocGet('option', $this->sql, array());
         $where = array();

@@ -577,9 +577,10 @@ abstract class DatabaseModel extends ModelBase
         $this->getFields();
         $generator = $this->getSqlGenerator($plugin);
         $isFilterData = $this->filterData();
+        $isFilterCondition = $this->filterCondition();
 
         if ($isUpdate) {
-            $conditionSql = $conditionSql ?: $generator->genWhereSql();
+            $conditionSql = $conditionSql ?: $generator->genWhereSql($isFilterCondition);
             if ($requireCondition && !$conditionSql) {
                 ocService()->error->show('need_condition');
             }
@@ -757,12 +758,13 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function baseDelete($conditionSql = null, $requireCondition = true)
 	{
+	    $isFilterCondition = $this->filterCondition();
         $plugin = $this->connect();
         $this->getFields();
         $generator = $this->getSqlGenerator($plugin);
 
         if (!$conditionSql) {
-            $conditionSql = $generator->genWhereSql();
+            $conditionSql = $generator->genWhereSql($isFilterCondition);
         }
 
         if ($requireCondition && !$conditionSql) {
