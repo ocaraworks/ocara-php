@@ -23,6 +23,7 @@ class DatabaseBase extends Base
 
     const EVENT_BEFORE_EXECUTE_SQL = 'beforeExecuteSql';
     const EVENT_AFTER_EXECUTE_SQL = 'afterExecuteSql';
+    const EVENT_BEFORE_SHOW_ERROR = 'beforeShowError';
 
 	/**
 	 * 连接属性
@@ -54,6 +55,16 @@ class DatabaseBase extends Base
 	{
 		$this->init($this->initConfig($config));
 	}
+
+    /**
+     * 注册事件
+     * @throws Exception
+     */
+	public function registerEvents()
+    {
+        $this->event(self::EVENT_BEFORE_SHOW_ERROR)
+            ->setDefault(array($this, 'beforeShowError'));
+    }
 
     /**
      * 初始化配置
@@ -688,11 +699,22 @@ class DatabaseBase extends Base
      * 显示错误信息
      * @param $error
      */
-	public function showError($error = null)
+	public function showError($error = null, $params = array())
 	{
         $error = $error ? : $this->getError();
+        $this->fire(self::EVENT_BEFORE_SHOW_ERROR, array($error, $params));
         ocService()->error->show($error);
 	}
+
+    /**
+     * 显示错误前置事件
+     * @param $error
+     * @param $params
+     */
+	public function beforeShowError($error, $params)
+    {
+        ocService()->log->error($error . '|' . ocJsonEncode($params));
+    }
 
     /**
      * 检测错误
@@ -714,7 +736,7 @@ class DatabaseBase extends Base
 		}
 
 		if ($required && $errorExists) {
-			return $this->showError($error);
+			return $this->showError($error, $params);
 		}
 
 		return $ret;
