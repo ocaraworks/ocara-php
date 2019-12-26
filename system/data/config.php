@@ -59,8 +59,10 @@ return array(
      * 数据库模型配置
      */
     'DATABASE_MODEL' => [
-        //模型在查询或保存时是否自动过滤非字段数据
+        //是否在保存数据时自动过滤非字段数据
         'auto_filter_data' => true,
+        //是否自动过滤非字段条件
+        'auto_filter_condition' => false,
     ],
 
     /*

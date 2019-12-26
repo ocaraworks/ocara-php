@@ -537,6 +537,27 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
+     * 是否过滤数据
+     * @param null $isFilterData
+     * @return $this
+     */
+    public function filterCondition($isFilterCondition = null)
+    {
+        if (isset($isFilterCondition)) {
+            $this->sql['option']['isFilterCondition'] = is_bool($isFilterCondition) ? $isFilterCondition : false;
+            return $this;
+        }
+
+        $result = ocConfig('DATABASE_MODEL.auto_filter_condition', true);
+
+        if (isset($this->sql['option']['isFilterCondition'])) {
+            $result = $this->sql['option']['isFilterCondition'];
+        }
+
+        return $result;
+    }
+
+    /**
      * 保存记录
      * @param $data
      * @param bool $isUpdate
@@ -1147,6 +1168,7 @@ abstract class DatabaseModel extends ModelBase
      */
     protected function baseFind($condition, $options, $queryRow, $count = false, $dataType = null, $executeOptions = array())
 	{
+	    $isFilterCondition = $this->filterCondition();
         $plugin = $this->connect(false);
         $this->getFields();
         $dataType = $dataType ? : ($this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY);
@@ -1165,7 +1187,7 @@ abstract class DatabaseModel extends ModelBase
             $isUnion = !!$unions;
         }
 
-        $sqlData = $generator->genSelectSql($count, $unions);
+        $sqlData = $generator->genSelectSql($count, $unions, $isFilterCondition);
 
         if ($this->isDebug()) return $sqlData;
 

@@ -99,9 +99,10 @@ class Generator extends Base
      * 获取SELECT查询语句
      * @param bool $count
      * @param array $unions
-     * @return mixed
+     * @param null $isFilterCondition
+     * @return array
      */
-    public function genSelectSql($count = false, array $unions = array())
+    public function genSelectSql($count = false, array $unions = array(), $isFilterCondition = null)
     {
         $plugin = $this->plugin();
 
@@ -123,9 +124,9 @@ class Generator extends Base
             $fields = $this->getFieldsSql($option['fields'], $aliasFields, $unJoined);
         }
 
-        $option['where'] = $this->genWhereSql();
+        $option['where'] = $this->genWhereSql($isFilterCondition);
         if (isset($option['having'])) {
-            $option['having'] = $this->getConditionSql($option['having']);
+            $option['having'] = $this->getConditionSql($option['having'], $isFilterCondition);
         }
 
         if (isset($option['limit'])) {
@@ -148,9 +149,10 @@ class Generator extends Base
     /**
      * 获取条件SQL语句
      * @param array $data
-     * @return array|string
+     * @param $isFilterCondition
+     * @return array
      */
-    public function getConditionSql(array $data)
+    public function getConditionSql(array $data, $isFilterCondition = null)
     {
         $plugin = $this->plugin();
         $where = array();
@@ -161,7 +163,9 @@ class Generator extends Base
             $condition = null;
             if ($whereType == 'where') {
                 if (is_array($whereData)) {
-                    $whereData = $this->filterData($whereData);
+                    if ($isFilterCondition) {
+                        $whereData = $this->filterData($whereData);
+                    }
                     $whereData = $this->formatFields($whereData, false);
                 }
                 if ($whereData) {
@@ -272,15 +276,16 @@ class Generator extends Base
 
     /**
      * 生成条件数据
-     * @return bool|string
+     * @param $isFilterCondition
+     * @return string
      */
-    public function genWhereSql()
+    public function genWhereSql($isFilterCondition)
     {
         $option = ocGet('option', $this->sql, array());
         $where = array();
 
         if (!empty($option['where'])) {
-            $option['where'] = $this->getConditionSql($option['where']);
+            $option['where'] = $this->getConditionSql($option['where'], $isFilterCondition);
             $where[] = array('where' => $option['where'], 'link' => 'AND');
         }
 
