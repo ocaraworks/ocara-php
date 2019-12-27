@@ -248,7 +248,7 @@ class File extends ServiceBase
         $extensionName = substr($file, $position);
 
         if (strstr($mainName, $separateSign)) {
-            $options = explode($mainName);
+            $options = explode($separateSign, $mainName);
             $lastKey = count($options) - 1;
             $options[$lastKey] = intval($options[$lastKey]) + 1;
             $mainName = implode($separateSign, $options);
