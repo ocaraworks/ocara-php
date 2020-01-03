@@ -787,8 +787,8 @@ class Sql extends Base
 			return $data;
 		}
 
-		$link   = $link ? : ',';
-		$sign   = $sign ? strtoupper(trim(ocService()->filter->replaceSpace($sign))) : '=';
+		$link = $link ? : ',';
+		$sign = $sign ? strtoupper(trim(ocService()->filter->replaceSpace($sign))) : '=';
 		$result = array();
 
 		if (in_array($sign, array('IN', 'NOT IN'))) {
@@ -797,16 +797,17 @@ class Sql extends Base
 			}
 		} else {
 			foreach ($data as $key => $value) {
+			    $newSign = $sign;
 				$field = $this->parseField($key, $alias);
 				if (is_array($value)) {
 				    if ($value) {
 				        if (count($value) == 1) {
 				            $value = $value[0];
                         } else {
-                            $sign = $value[0];
+                            $newSign = $value[0];
                             $value = $value[1];
-                            if (in_array($sign, array('IN', 'NOT IN'))) {
-                                $result[] = $this->getInSql($key, $value, $alias, $sign);
+                            if (in_array($newSign, array('IN', 'NOT IN'))) {
+                                $result[] = $this->getInSql($key, $value, $alias, $newSign);
                                 continue;
                             }
                         }
@@ -815,7 +816,7 @@ class Sql extends Base
                     }
                 }
 				$value = $this->parseValue($value, 'where');
-				$result[] = "({$field} {$sign} {$value})";
+				$result[] = "({$field} {$newSign} {$value})";
 			}
 		}
 
