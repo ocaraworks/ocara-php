@@ -40,6 +40,8 @@ class Request extends Base
 				parse_str($post, $_POST);
 			}
 		}
+		
+		$_POST = ocForceArray($_POST);
 	}
 
 	/**

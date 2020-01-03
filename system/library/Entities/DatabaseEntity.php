@@ -301,7 +301,7 @@ abstract class DatabaseEntity extends BaseEntity
         $options = (array)$options;
 
         if (isset($options['fields'])) {
-            ocDel('fields', $options);
+            ocDel($options, 'fields');
         }
 
         $model = static::getModelClass();
