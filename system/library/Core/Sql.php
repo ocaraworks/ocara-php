@@ -788,10 +788,10 @@ class Sql extends Base
 		}
 
 		$link = $link ? : ',';
-		$sign = $sign ? strtoupper(trim(ocService()->filter->replaceSpace($sign))) : '=';
+		$sign = $sign ? trim(ocService()->filter->replaceSpace($sign)) : '=';
 		$result = array();
 
-		if (in_array($sign, array('IN', 'NOT IN'))) {
+		if (in_array(strtoupper($sign), array('IN', 'NOT IN'))) {
 			foreach ($data as $key => $value) {
 				$result[] = $this->getInSql($key, $value, $alias, $sign);
 			}
