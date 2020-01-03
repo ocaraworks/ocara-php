@@ -397,9 +397,12 @@ function ocCurl($url, $data = null, array $headers = array(), $showError = false
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
     }
 
-//
-//    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-//    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    $urlInfo = parse_url($url);
+
+    if (empty($urlInfo['scheme']) || strtolower($urlInfo['scheme']) != 'https') {
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    }
 
     curl_setopt($ch, CURLOPT_FAILONERROR, 1);
     $content = curl_exec($ch);
