@@ -405,17 +405,22 @@ abstract class DatabaseEntity extends BaseEntity
             ocService()->error->show('need_condition');
         }
 
-        $data = array_merge($this->getChanged(), $data);
+        $changes = array_merge($this->getChanged(), $data);
 
-        if ($data) {
+        if ($changes) {
             if ($this->isUseTransaction()) {
                 ocService()->transaction->begin();
             }
-            call_user_func_array('ocDel', array(&$data, $model::getPrimaries()));
-            $model->where($this->selected);
 
+            $this->data($data);
+            $model->where($this->selected);
             $this->fire(self::EVENT_BEFORE_UPDATE);
+            $data = $this->toArray();
+
+            call_user_func_array('ocDel', array(&$data, $model::getPrimaries()));
+
             $result = $model->baseSave($data, true);
+
             $this->relateSave();
             $this->fire(self::EVENT_AFTER_UPDATE);
 
