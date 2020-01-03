@@ -157,7 +157,7 @@ class Validate extends ServiceBase
      * @return array|false|int
      * @throws Exception
      */
-	public static function mobileTel($value)
+	public static function mobile($value)
 	{
 		$result = preg_match('/^[1]\d{10}$/', $value);
 		$result = self::validate($result, 'unvalid_mobile');
