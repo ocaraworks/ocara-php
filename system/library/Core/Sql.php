@@ -806,7 +806,7 @@ class Sql extends Base
                         } else {
                             $newSign = $value[0];
                             $value = $value[1];
-                            if (in_array($newSign, array('IN', 'NOT IN'))) {
+                            if (in_array(strtoupper($newSign), array('IN', 'NOT IN'))) {
                                 $result[] = $this->getInSql($key, $value, $alias, $newSign);
                                 continue;
                             }
