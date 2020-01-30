@@ -85,6 +85,9 @@ class Error extends ServiceProvider
 	protected function getErrorLanguage($error, $params= array())
     {
         if (is_array($error)) {
+            if (!empty($error['status'])) {
+                ocService('response', true)->setStatusCode($error['status'], true);
+            }
             $error = ocService('lang', true)->get($error['message'], $params);
         } else {
             $error = ocService('lang', true)->get($error, $params);

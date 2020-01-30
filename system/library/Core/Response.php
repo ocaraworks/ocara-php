@@ -31,6 +31,8 @@ class Response extends Base
 	const STATUS_SERVICE_UNAVAILABLE = 503;
 
     protected $headers = array();
+    protected $lockHeaders = array();
+    protected $lockBody = false;
     protected $isSent = false;
     protected $body;
 
@@ -90,11 +92,19 @@ class Response extends Base
     /**
      * 设置响应体
      * @param $body
+     * @param bool $important
      */
-    public function setBody($body)
+    public function setBody($body, $important = false)
     {
-        if (!$this->body) {
-            $this->body = $body;
+        if (!$this->lockBody) {
+            if ($important) {
+                $this->lockBody = true;
+                $this->body = $body;
+            } else {
+                if (!$this->body) {
+                    $this->body = $body;
+                }
+            }
         }
     }
 
@@ -116,14 +126,20 @@ class Response extends Base
 		$this->headers = array_merge($this->headers, (array)$headers);
 	}
 
-	/**
-	 * 设置头部选项
-	 * @param $name
-	 * @param null $value
-	 */
-	public function setOption($name, $value = null)
+    /**
+     * 设置头部选项
+     * @param $name
+     * @param null $value
+     * @param bool $important
+     */
+	public function setOption($name, $value = null, $important = false)
 	{
-		$this->headers[$name] = $value;
+        if (empty($this->lockHeaders[$name])) {
+            if ($important) {
+                $this->lockHeaders[$name] = true;
+            }
+            $this->headers[$name] = $value;
+        }
 	}
 
     /**
@@ -149,30 +165,32 @@ class Response extends Base
      * @param $code
      * @throws Exception
      */
-	public function setStatusCode($code)
+	public function setStatusCode($code, $important = false)
 	{
-		$httpStatus = ocConfig('HTTP_STATUS');
-		if (array_key_exists($code, $httpStatus)) {
-			$this->headers['statusCode'] = $code;
-		}
+        $httpStatus = ocConfig('HTTP_STATUS');
+        if (array_key_exists($code, $httpStatus)) {
+            $this->setOption('statusCode', $code, $important);
+        }
 	}
 
-	/**
-	 * 设置响应文档类型
-	 * @param string $contentType
-	 */
-	public function setContentType($contentType)
+    /**
+     * 设置响应文档类型
+     * @param $contentType
+     * @param bool $important
+     */
+	public function setContentType($contentType, $important = false)
 	{
-		$this->headers['contentType'] = $contentType;
+        $this->setOption('contentType', $contentType, $important);
 	}
 
-	/**
-	 * 设置响应文档编码
-	 * @param string $charset
-	 */
-	public function setCharset($charset = 'utf-8')
+    /**
+     * 设置响应文档编码
+     * @param string $charset
+     * @param bool $important
+     */
+	public function setCharset($charset = 'utf-8', $important = false)
 	{
-		$this->headers['charset'] = $charset;
+        $this->setOption('charset', $charset, $important);
 	}
 
     /**
