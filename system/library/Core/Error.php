@@ -37,7 +37,7 @@ class Error extends ServiceProvider
 	public function writeLog($error, array $params = array())
 	{
 		try {
-            $error = $this->getErrorLanguage($error, $params);
+			$error = ocService()->lang->get($error, $params);
 			throw new Exception($error['message'], $error['code']);
 		} catch(Exception $exception) {
             $error = ocGetExceptionData($exception);
@@ -59,7 +59,11 @@ class Error extends ServiceProvider
 	public function show($error, array $params = array())
 	{
         ocService('transaction', true)->rollback();
-        $error = $this->getErrorLanguage($error, $params);
+
+		if (!is_array($error)) {
+			$error = ocService('lang', true)->get($error, $params);
+		}
+
         throw new Exception($error['message'], $error['code']);
 	}
 
@@ -72,27 +76,7 @@ class Error extends ServiceProvider
 	public function trigger($error, array $params = array(), $errorType = E_USER_ERROR)
 	{
 		$errorType = $errorType ? : E_USER_ERROR;
-        $error = $this->getErrorLanguage($error, $params);
+		$error = ocService()->lang->get($error, $params);
 		trigger_error($error['message'], $errorType);
 	}
-
-    /**
-     * 获取错误语言
-     * @param $error
-     * @param array $params
-     * @return mixed
-     */
-	protected function getErrorLanguage($error, $params= array())
-    {
-        if (is_array($error)) {
-            if (!empty($error['status'])) {
-                ocService('response', true)->setStatusCode($error['status'], true);
-            }
-            $error = ocService('lang', true)->get($error['message'], $params);
-        } else {
-            $error = ocService('lang', true)->get($error, $params);
-        }
-
-        return $error;
-    }
 }

@@ -54,8 +54,9 @@ $files = array(
         'config/env/alpha',
         'controller/Module',
         'lang/zh_cn/base',
-        'service.BaseService',
-        'view/defaults/layout/layout'
+        'service/BaseService',
+        'view/defaults/layout/layout',
+        'ocara'
     ),
 	'support' => array(
         'Base/Service/CommonService',

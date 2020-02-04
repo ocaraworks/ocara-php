@@ -161,7 +161,7 @@ class Lang extends Base
     {
 		if (func_num_args()) {
 			if (ocKeyExists($key, $this->data)) {
-                $value = ocGetLanguage($this->data, $key, $params);
+                $value =  ocGetLanguage($this->data, $key, $params);
 			} else {
                 $value = $this->getDefault($key, $params);
             }

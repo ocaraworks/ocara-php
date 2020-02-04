@@ -174,13 +174,16 @@ class FileLog extends ServiceBase implements LogInterface
 		}
 
 		$maxFile = OC_EMPTY;
-		$files = scandir($logPath, SCANDIR_SORT_DESCENDING);
+		$files = scandir($logPath, defined('SCANDIR_SORT_DESCENDING') ? SCANDIR_SORT_DESCENDING : 1);
 
         foreach ($files as $file) {
             $logFile = $logPath . $file;
-            if (is_file($logFile) && pathinfo($logFile)['extension'] == $this->extensionName) {
-                $maxFile = $file;
-                break;
+            if (is_file($logFile)) {
+                $pathInfo = pathinfo($logFile);
+                if ($pathInfo['extension'] == $this->extensionName) {
+                    $maxFile = $file;
+                    break;
+                }
             }
         }
 

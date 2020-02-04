@@ -60,11 +60,12 @@ final class ApplicationGenerator
 	public static function createFile($moduleType)
 	{
         $moduleType = lcfirst($moduleType);
-
+print_r(self::$files);die;
 		foreach (self::$files as $key => $value) {
 			foreach ($value as $v) {
 				$filePath = self::$root . "/{$key}/{$v}.php";
-				$source   = OC_SYS . 'resource/application/files/';
+				$source = OC_SYS . 'resource/application/files/';
+
 				$templateFile = str_replace(OC_DIR_SEP, '.', "{$key}/{$v}.ocara");
                 if  (is_file($source . $moduleType . '/' . $templateFile)) {
                     $source = $source . $moduleType . '/' . $templateFile;

@@ -63,7 +63,7 @@ return array(
         'auto_filter_data' => true,
         //是否自动过滤非字段条件
         'auto_filter_condition' => false,
-    ),
+     ),
 
     /*
      * 应用配置
