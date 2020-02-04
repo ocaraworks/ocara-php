@@ -148,7 +148,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
 
         if (isset($fieldsData[$field]) && in_array($fieldsData[$field]['type'], self::$quoteBackList)) {
             $type = $fieldsData[$field]['type'];
-            if ($type == 'float') {
+            if (in_array($type, array('float', 'decimal'))) {
                 $type = 'float';
             } elseif ($type == 'double') {
                 $type = 'double';
