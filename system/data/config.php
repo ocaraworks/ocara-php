@@ -58,12 +58,12 @@ return array(
     /*
      * 数据库模型配置
      */
-    'DATABASE_MODEL' => [
+    'DATABASE_MODEL' => array(
         //是否在保存数据时自动过滤非字段数据
         'auto_filter_data' => true,
         //是否自动过滤非字段条件
         'auto_filter_condition' => false,
-    ],
+    ),
 
     /*
      * 应用配置
