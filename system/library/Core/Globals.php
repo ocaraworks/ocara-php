@@ -33,7 +33,7 @@ class Globals extends Base
      */
     public function get($name = null)
     {
-        return array_key_exists($name, $this) ? $this->data[$name] : null;
+        return array_key_exists($name, $this->data) ? $this->data[$name] : null;
     }
 
     /**
@@ -43,7 +43,7 @@ class Globals extends Base
      */
     public function has($name = null)
     {
-        return array_key_exists($name, $this);
+        return array_key_exists($name, $this->data);
     }
 
     /**
@@ -53,7 +53,7 @@ class Globals extends Base
      */
     public function delete($name)
     {
-        if (array_key_exists($name, $this)) {
+        if (array_key_exists($name, $this->data)) {
             $this->data[$name] = null;
             unset($this->data[$name]);
         }
