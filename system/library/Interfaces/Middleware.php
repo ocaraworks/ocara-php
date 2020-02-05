@@ -14,8 +14,8 @@ interface Middleware
 {
 	/**
 	 * 处理函数
-	 * @param array $params
+	 * @param mixed $params
 	 * @return mixed
 	 */
-	public function handle(array $params = array());
+	public function handle($params = array());
 }

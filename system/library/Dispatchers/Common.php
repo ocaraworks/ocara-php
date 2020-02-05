@@ -86,6 +86,6 @@ class Common extends Base
 
         $Control->doAction($method);
 
-        $this->fire(self::EVENT_AFTER_DISPATCH);
+        $this->fire(self::EVENT_AFTER_DISPATCH, array($route));
     }
 }

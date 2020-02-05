@@ -32,6 +32,7 @@ class Response extends Base
 
     protected $headers = array();
     protected $isSent = false;
+    protected $lastHeaders = array();
     protected $body;
 
     /**
@@ -44,6 +45,8 @@ class Response extends Base
 			if (empty($data)) {
 				$data = $this->prepareHeaders();
 			}
+
+			$this->lastHeaders = $data;
 
 			foreach ($data as $key => $header) {
 				if (is_string($key)) {
@@ -105,6 +108,15 @@ class Response extends Base
     public function getBody()
     {
         return $this->body;
+    }
+
+    /**
+     * 获取最后响应头
+     * @return array
+     */
+    public function getLastHeaders()
+    {
+        return $this->lastHeaders;
     }
 
 	/**

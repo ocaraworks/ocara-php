@@ -4,7 +4,7 @@ use Ocara\Interfaces\Middleware as MiddlewareInterface;
 
 class Middleware extends ServiceProvider implements MiddlewareInterface
 {
-    public function handle(array $params = array())
+    public function handle($params = array())
     {
         // TODO: Implement handle() method.
     }
