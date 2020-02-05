@@ -414,7 +414,6 @@ function ocError($error = null, array $params = array())
 function ocIsCallable($callback, $requirePublic = true, $requireStatic = true)
 {
     if (!is_callable($callback, true)) return false;
-    if (is_object($callback)) return true;
 
     if (is_string($callback)) {
         if (strstr($callback, '::')) {
