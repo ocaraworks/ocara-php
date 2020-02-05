@@ -12,8 +12,7 @@ use \Ocara\Exceptions\Exception;
 
 abstract class BootstrapBase extends Base
 {
-    const EVENT_DIE = 'die';
-    const EVENT_BEFORE_DISPATCH = 'beforeDispatch';
+    const EVENT_BEFORE_BOOTSTRAP = 'beforeBootstrap';
 
     /**
      * 注册事件
@@ -21,14 +20,8 @@ abstract class BootstrapBase extends Base
      */
     public function registerEvents()
     {
-        $this->event(self::EVENT_DIE)
-             ->append(ocConfig(array('EVENTS', 'oc_die'), null));
-
-        $this->bindEvents(ocConfig(array('EVENTS', 'log'), ocService()->log));
-
-        $this->event(self::EVENT_BEFORE_DISPATCH)
-             ->append(ocConfig(array('EVENTS', 'action', 'before_run'), null))
-             ->append(ocConfig(array('EVENTS', 'auth', 'check'), null));
+        $this->event(self::EVENT_BEFORE_BOOTSTRAP)
+             ->append(ocConfig(array('EVENTS', 'bootstrap', 'before_bootstrap'), null));
     }
 
     /**
@@ -45,5 +38,7 @@ abstract class BootstrapBase extends Base
         if (!@ini_get('short_open_tag')) {
             ocService()->error->show('need_short_open_tag');
         }
+
+        $this->fire(self::EVENT_BEFORE_BOOTSTRAP);
     }
 }

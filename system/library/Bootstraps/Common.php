@@ -37,8 +37,6 @@ class Common extends BootstrapBase implements BootstrapInterface
     {
         $service = ocService();
         $moduleNamespace = $moduleNamespace ? : OC_MODULE_NAMESPACE;
-        $this->fire(self::EVENT_BEFORE_DISPATCH);
-
         $service->dispatcher->dispatch($route, $moduleNamespace, $params);
         return $service->response->send();
     }

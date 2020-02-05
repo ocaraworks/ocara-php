@@ -18,6 +18,7 @@ class ExceptionHandler extends Base
 {
     protected $responseFormat;
 
+    const EVENT_REPORT = 'report';
     const EVENT_BEFORE_OUTPUT = 'beforeOutput';
     const EVENT_OUTPUT = 'output';
     const EVENT_AFTER_OUTPUT = 'afterOutput';
@@ -27,11 +28,17 @@ class ExceptionHandler extends Base
 
     public function registerEvents()
     {
+        $this->event(self::EVENT_REPORT)
+             ->append(ocConfig(array('EVENT', 'error', 'report'), array($this, 'report')));
+
         $this->event(self::EVENT_BEFORE_OUTPUT)
-             ->setDefault(array($this, 'report'));
+            ->append(ocConfig(array('EVENT', 'error', 'before_output'), null));
 
         $this->event(self::EVENT_OUTPUT)
-             ->setDefault(array($this, 'output'));
+             ->append(ocConfig(array('EVENT', 'error', 'output'), array($this, 'output')));
+
+        $this->event(self::EVENT_AFTER_OUTPUT)
+            ->append(ocConfig(array('EVENT', 'error', 'after_output'), null));
     }
 
     /**
@@ -79,6 +86,8 @@ class ExceptionHandler extends Base
         if (!$response->getHeaderOption('statusCode')) {
             $response->setStatusCode(Response::STATUS_SERVER_ERROR);
         }
+
+        $this->fire(self::EVENT_REPORT, array($exception));
 
         $this->fire(self::EVENT_BEFORE_OUTPUT, array($exception));
         $this->fire(self::EVENT_OUTPUT, array($exception));

@@ -9,11 +9,28 @@
 namespace Ocara\Dispatchers;
 
 use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
 class Common extends Base
 {
+    const EVENT_BEFORE_DISPATCH = 'beforeDispatch';
+    const EVENT_AFTER_DISPATCH = 'afterDispatch';
+
+    /**
+     * 注册事件
+     * @throws Exception
+     */
+    public function registerEvents()
+    {
+        $this->event(self::EVENT_BEFORE_DISPATCH)
+             ->append(ocConfig(array('EVENT', 'dispatch', 'before_dispatch'), null));
+
+        $this->event(self::EVENT_AFTER_DISPATCH)
+             ->append(ocConfig(array('EVENT', 'dispatch', 'after_dispatch'), null));
+    }
+
     /**
      * 分发路由控制器
      * @param $route
@@ -31,6 +48,8 @@ class Common extends Base
 
         $uController = ucfirst($route['controller']);
         $uAction = ucfirst($route['action']);
+
+        $this->fire(self::EVENT_BEFORE_DISPATCH, array($route));
 
         if ($route['module']) {
             $cNamespace = sprintf($moduleNamespace . '%s\%s\%s\\',
@@ -66,5 +85,7 @@ class Common extends Base
         }
 
         $Control->doAction($method);
+
+        $this->fire(self::EVENT_AFTER_DISPATCH);
     }
 }
