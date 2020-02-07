@@ -112,13 +112,22 @@ function ocLang($name, array $params = array(), $default = null)
  */
 function ocConfig($key, $default = null, $unEmpty = false)
 {
+    $argsLength = func_num_args();
+    $hasDefault = $argsLength > 1;
     $key = is_array($key) ? $key : explode('.', $key);
 
 	if ($result = ocContainer()->config->arrayGet($key)) {
-		return $unEmpty && ocEmpty($result[0]) ? $default : $result[0];
+	    if (!$result[0]) {
+	        if ($unEmpty) {
+	            if (ocEmpty($result[0])) return $default;
+            } else {
+                if ($hasDefault) return $default;
+            }
+        }
+        return $result[0];
 	}
 
-	if (func_num_args() == 1) {
+	if (!$hasDefault) {
         $key = implode('.', ocParseKey($key));
         throw new Exception('No config for key ' . $key . '.');
     }
