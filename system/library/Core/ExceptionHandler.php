@@ -11,6 +11,7 @@ namespace Ocara\Core;
 use \ErrorException;
 use Ocara\Core\Base;
 use Ocara\Exceptions\Exception;
+use function AlibabaCloud\Client\value;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -115,14 +116,12 @@ class ExceptionHandler extends Base
     public function output($exception, $event, $object)
     {
         $error = ocGetExceptionData($exception);
+        $responseFormat = $this->responseFormat ?: ocConfig('DEFAULT_RESPONSE_FORMAT', null);
+        $isAPi = $responseFormat == self::RESPONSE_FORMAT_API;
 
-        if ($this->responseFormat) {
-            $isAPi = $this->responseFormat == self::RESPONSE_FORMAT_API;
-        } else {
+        if (!$isAPi) {
             if (ocService('request', true)->isAjax()) {
                 $isAPi = true;
-            } else {
-                $isAPi = ocConfig('DEFAULT_RESPONSE_FORMAT', null) == self::RESPONSE_FORMAT_API;
             }
         }
 

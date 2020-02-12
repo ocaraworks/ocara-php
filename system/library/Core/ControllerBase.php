@@ -40,6 +40,8 @@ abstract class ControllerBase extends serviceProvider
 	{
 	    if ($this instanceof \Ocara\Controllers\Api) {
             ocService()->exceptionHandler->setResponseFormat(ExceptionHandler::RESPONSE_FORMAT_API);
+        } else {
+            ocService()->exceptionHandler->setResponseFormat(ExceptionHandler::RESPONSE_FORMAT_COMMON);
         }
 
         $this->bindEvents($this);
