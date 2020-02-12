@@ -116,9 +116,15 @@ class ExceptionHandler extends Base
     {
         $error = ocGetExceptionData($exception);
 
-        $isAPi = ocConfig('DEFAULT_RESPONSE_FORMAT') == self::RESPONSE_FORMAT_API
-            || $this->responseFormat == 'API'
-            || ocService('request', true)->isAjax();
+        if ($this->responseFormat) {
+            $isAPi = $this->responseFormat == self::RESPONSE_FORMAT_API;
+        } else {
+            if (ocService('request', true)->isAjax()) {
+                $isAPi = true;
+            } else {
+                $isAPi = ocConfig('DEFAULT_RESPONSE_FORMAT', null) == self::RESPONSE_FORMAT_API;
+            }
+        }
 
         if ($isAPi) {
             $this->apiError($error);
