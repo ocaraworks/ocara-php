@@ -21,7 +21,7 @@
 <div id="main">
 <div class="content">
 <div class="<?=$error['class']?>"><?php echo $error['code'], $error['desc'], $error['message'];?></div>
-	<?php if (OC_SYS_MODEL == 'develop') {?>
+	<?php if (ocContainer()->config->get('SYS_MODEL') == 'develop') {?>
 <div class="oc-message">
     <div class="location">In file <strong><?=$error['file'];?></strong> at line <?=$error['line']?></div>
     <?=$error['trace']?>

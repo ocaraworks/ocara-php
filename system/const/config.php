@@ -14,9 +14,6 @@ $config = ocContainer()->config;
 
 defined('OC_INVOKE') OR define('OC_INVOKE', false);
 
-//系统执行模式
-defined('OC_SYS_MODEL') OR define('OC_SYS_MODEL', $config->get('SYS_MODEL', 'application'));
-
 //系统语言
 defined('OC_LANGUAGE') OR define('OC_LANGUAGE', ocService()->app->getLanguage());
 
