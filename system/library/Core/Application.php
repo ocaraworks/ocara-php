@@ -50,6 +50,11 @@ class Application extends Base
         $provider = new $providerClass(array(), $container);
 
         ServiceProvider::setDefault($provider);
+
+        //exception handler
+        register_shutdown_function("ocShutdownHandle");
+        set_exception_handler(array($container->exceptionHandler, 'exceptionHandle'));
+        
         ocImport(array(OC_SYS . 'const/config.php'));
     }
 

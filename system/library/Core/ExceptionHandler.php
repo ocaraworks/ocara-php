@@ -26,6 +26,10 @@ class ExceptionHandler extends Base
     const RESPONSE_FORMAT_API = 'api';
     const RESPONSE_FORMAT_COMMON = 'common';
 
+    /**
+     * 事件注册
+     * @throws Exception
+     */
     public function registerEvents()
     {
         $this->event(self::EVENT_REPORT)
@@ -44,6 +48,7 @@ class ExceptionHandler extends Base
     /**
      * 错误处理
      * @param $exception
+     * @throws Exception
      */
     public function exceptionHandle($exception)
     {
