@@ -78,6 +78,7 @@ class ExceptionHandler extends Base
     /**
      * 错误处理
      * @param $exception
+     * @throws Exception
      */
     public function handle($exception)
     {
@@ -87,11 +88,14 @@ class ExceptionHandler extends Base
             $response->setStatusCode(Response::STATUS_SERVER_ERROR);
         }
 
-        $this->fire(self::EVENT_REPORT, array($exception));
-
-        $this->fire(self::EVENT_BEFORE_OUTPUT, array($exception));
-        $this->fire(self::EVENT_OUTPUT, array($exception));
-        $this->fire(self::EVENT_AFTER_OUTPUT, array($exception));
+        try {
+            $this->fire(self::EVENT_REPORT, array($exception));
+            $this->fire(self::EVENT_BEFORE_OUTPUT, array($exception));
+            $this->fire(self::EVENT_OUTPUT, array($exception));
+            $this->fire(self::EVENT_AFTER_OUTPUT, array($exception));
+        } catch (\Exception $exception) {
+            $this->output($exception, null, null);
+        }
 
         $response->send();
     }
