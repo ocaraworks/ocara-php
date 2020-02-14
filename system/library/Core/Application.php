@@ -33,7 +33,7 @@ class Application extends Base
         $container->config->loadGlobalConfig();
         $this->setLanguage($container->config->get('LANGUAGE', 'zh_cn'));
 
-        //get enviroment
+        //get environment
         $container->config->getEnvironment();
         $container->config->loadEnvironmentConfig();
         
