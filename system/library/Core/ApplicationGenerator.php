@@ -60,22 +60,54 @@ final class ApplicationGenerator
 	public static function createFile($moduleType)
 	{
         $moduleType = lcfirst($moduleType);
-print_r(self::$files);die;
-		foreach (self::$files as $key => $value) {
-			foreach ($value as $v) {
-				$filePath = self::$root . "/{$key}/{$v}.php";
-				$source = OC_SYS . 'resource/application/files/';
 
-				$templateFile = str_replace(OC_DIR_SEP, '.', "{$key}/{$v}.ocara");
-                if  (is_file($source . $moduleType . '/' . $templateFile)) {
-                    $source = $source . $moduleType . '/' . $templateFile;
-                } else {
-                    $source  = $source . $templateFile;
+		foreach (self::$files as $key => $value) {
+		    if (is_array($value)) {
+                foreach ($value as $v) {
+                    $source = self::getFileSource($moduleType, $value, $key);
+                    if (is_file($source)) {
+                        $filePath = self::$root . "/{$key}/{$value}";
+                        ocWrite($filePath, ocRead($source));
+                    }
                 }
-				ocWrite($filePath, ocRead($source));
-			}
+            } else {
+                $source = self::getFileSource($moduleType, $value, null, null);
+                if (is_file($source)) {
+                    $filePath = self::$root . "/{$value}";
+                    ocWrite($filePath, ocRead($source, false));
+                } else {
+                    $source = self::getFileSource($moduleType, $value, null);
+                    if (is_file($source)) {
+                        $filePath = self::$root . "/{$key}/{$value}";
+                        ocWrite($filePath, ocRead($source));
+                    }
+                }
+            }
 		}
 	}
+
+    /**
+     * 获取文件来源
+     * @param $moduleType
+     * @param $key
+     * @param $value
+     * @param string $fileType
+     * @return string
+     */
+	public static function getFileSource($moduleType, $value, $key, $fileType = 'ocara')
+    {
+        $fileType = $fileType ? '.' . $fileType : null;
+        $source = OC_SYS . 'resource/application/files/';
+        $templateFile = str_replace(OC_DIR_SEP, '.', ($key ? $key .'/' : null) . "{$value}" . $fileType);
+
+        if (is_file($source . $moduleType . '/' . $templateFile)) {
+            $source = $source . $moduleType . '/' . $templateFileNaked;
+        } else {
+            $source  = $source . $templateFile;
+        }
+
+        return $source;
+    }
 
 	/**
 	 * 修改index.php内容

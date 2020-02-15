@@ -56,7 +56,6 @@ $files = array(
         'lang/zh_cn/base',
         'service/BaseService',
         'view/defaults/layout/layout',
-        'ocara'
     ),
 	'support' => array(
         'Base/Service/CommonService',
@@ -81,4 +80,5 @@ $files = array(
         'dev/controller/generate/LogoutAction',
         'dev/privates/config/base',
     ),
+    'ocara'
 );
