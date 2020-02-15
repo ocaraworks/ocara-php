@@ -64,9 +64,9 @@ final class ApplicationGenerator
 		foreach (self::$files as $key => $value) {
 		    if (is_array($value)) {
                 foreach ($value as $v) {
-                    $source = self::getFileSource($moduleType, $value, $key);
+                    $source = self::getFileSource($moduleType, $v, $key);
                     if (is_file($source)) {
-                        $filePath = self::$root . "/{$key}/{$value}";
+                        $filePath = self::$root . "/{$key}/{$v}.php";
                         ocWrite($filePath, ocRead($source));
                     }
                 }
@@ -78,7 +78,7 @@ final class ApplicationGenerator
                 } else {
                     $source = self::getFileSource($moduleType, $value, null);
                     if (is_file($source)) {
-                        $filePath = self::$root . "/{$key}/{$value}";
+                        $filePath = self::$root . "/{$value}.php";
                         ocWrite($filePath, ocRead($source));
                     }
                 }
@@ -101,7 +101,7 @@ final class ApplicationGenerator
         $templateFile = str_replace(OC_DIR_SEP, '.', ($key ? $key .'/' : null) . "{$value}" . $fileType);
 
         if (is_file($source . $moduleType . '/' . $templateFile)) {
-            $source = $source . $moduleType . '/' . $templateFileNaked;
+            $source = $source . $moduleType . '/' . $templateFile;
         } else {
             $source  = $source . $templateFile;
         }
