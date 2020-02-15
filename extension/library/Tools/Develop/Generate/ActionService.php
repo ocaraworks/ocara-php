@@ -8,6 +8,8 @@
  ************************************************************************************************/
 namespace Ocara\Extension\Tools\Develop\Generate;
 
+use Ocara\Exceptions\Exception;
+
 defined('OC_PATH') or exit('Forbidden!');
 
 class ActionService extends BaseService
@@ -29,7 +31,7 @@ class ActionService extends BaseService
     /**
      * 添加
      * @param array $data
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public function add(array $data = array())
 	{
@@ -92,7 +94,6 @@ class ActionService extends BaseService
      * 新建视图
      * @param $actionClass
      * @return bool
-     * @throws \Ocara\Exceptions\Exception
      */
     public function createView($actionClass)
     {
@@ -128,7 +129,7 @@ class ActionService extends BaseService
 
     /**
      * 新建Action
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
 	public function createAction()
 	{
