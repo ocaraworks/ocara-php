@@ -59,6 +59,15 @@ class Event extends Basis implements EventInterface
     }
 
     /**
+     * @param $callback
+     * @return bool
+     */
+    public function isClass($callback)
+    {
+        return is_object($callback) && !$callback instanceof Closure;
+    }
+
+    /**
      * 新建事件处理器
      * @param $callback
      * @param int $args
@@ -72,7 +81,7 @@ class Event extends Basis implements EventInterface
             $callback = new $callback();
         }
 
-        if (is_object($callback) && !$callback instanceof Closure && !($callback instanceof Middleware)) {
+        if ($this->isClass($callback) && !($callback instanceof Middleware)) {
             ocService()->error->show('invalid_middleware');
         }
 
@@ -262,7 +271,7 @@ class Event extends Basis implements EventInterface
      */
     public function runCallback($callback, $params)
     {
-        if (is_object($callback) && !$callback instanceof Closure) {
+        if ($this->isClass($callback)) {
             $callback = array($callback, 'handle');
         }
 
