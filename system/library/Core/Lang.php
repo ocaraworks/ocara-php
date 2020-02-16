@@ -152,10 +152,9 @@ class Lang extends Base
 
     /**
      * 获取语言配置
-     * @param string|array $key
+     * @param string $key
      * @param array $params
-     * @return array|null
-     * @throws Exception
+     * @return array
      */
     public function get($key = null, array $params = array())
     {
