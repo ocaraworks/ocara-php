@@ -52,7 +52,8 @@ return array(
 	'invalid_class_static_method' 	=> array(1903, '%s缺少静态方法%s()！请使用类对象代替类名传递。'),
 	'invalid_entity_database'       => array(1904, '实体的数据表模型不正确！'),
     'invalid_entity_cache'          => array(1905, '实体的缓存模型不正确！'),
-
+    'invalid_middleware'            => array(1906, '非法的事件处理对象！事件处理对象需要handler()方法。'),
+	
 	//必需
 	'need_condition' 				=> array(2100, '查询条件不存在或为空。'),
 	'need_radio_desc' 				=> array(2101, '必须为单选框提供文字描述！'),

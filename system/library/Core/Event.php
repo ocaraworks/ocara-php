@@ -8,8 +8,9 @@
  ************************************************************************************************/
 namespace Ocara\Core;
 
-use Ocara\Core\Basis;
+use \Closure;
 use \ReflectionException;
+use Ocara\Core\Basis;
 use Ocara\Interfaces\Event as EventInterface;
 use Ocara\Interfaces\Middleware;
 
@@ -71,7 +72,7 @@ class Event extends Basis implements EventInterface
             $callback = new $callback();
         }
 
-        if (is_object($callback) && !($callback instanceof Middleware)) {
+        if (is_object($callback) && !$callback instanceof Closure && !($callback instanceof Middleware)) {
             ocService()->error->show('invalid_middleware');
         }
 
@@ -261,7 +262,7 @@ class Event extends Basis implements EventInterface
      */
     public function runCallback($callback, $params)
     {
-        if (is_object($callback)) {
+        if (is_object($callback) && !$callback instanceof Closure) {
             $callback = array($callback, 'handle');
         }
 

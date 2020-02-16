@@ -16,11 +16,12 @@ abstract class Base extends Basis
 {
     private $plugin;
     private $event;
+    private $isRegisteredEvent;
 
     private $events = array();
     private $traits = array();
 
-    private $isRegisteredEvent;
+    private static $classEvents = array();
 
     /**
      * 实例化
@@ -66,6 +67,13 @@ abstract class Base extends Basis
      */
     public static function __callStatic($name, $params)
     {
+        if (substr($name, 0, 5) == 'event') {
+            $eventName = lcfirst(substr($name, 5));
+            $event = ocContainer()->create('event');
+            $event->setName($eventName);
+            self::$classEvents[self::getClass()][$eventName] = $event;
+            return self::$classEvents[self::getClass()][$eventName];
+        }
         return ocService()->error->show('no_method', array($name));
     }
 
@@ -215,6 +223,11 @@ abstract class Base extends Basis
     {
         if (empty($this->isRegisteredEvent)) {
             $this->isRegisteredEvent = true;
+            if (array_key_exists(self::getClass(), self::$classEvents)) {
+                foreach (self::$classEvents[self::getClass()] as $eventName => $handlers) {
+                    $this->events[$eventName] = self::$classEvents[self::getClass()][$eventName];
+                }
+            }
             $this->registerEvents();
         }
     }
