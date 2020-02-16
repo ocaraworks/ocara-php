@@ -518,7 +518,8 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 是否过滤数据
      * @param null $isFilterData
-     * @return $this
+     * @return $this|null
+     * @throws Exception
      */
     public function filterData($isFilterData = null)
     {
@@ -538,8 +539,9 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 是否过滤数据
-     * @param null $isFilterData
-     * @return $this
+     * @param null $isFilterCondition
+     * @return $this|null
+     * @throws Exception
      */
     public function filterCondition($isFilterCondition = null)
     {
