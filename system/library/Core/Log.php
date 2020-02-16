@@ -18,6 +18,15 @@ class Log extends Base
 {
     protected $name;
 
+    const EMERGENCY = 'emergency';
+    const ALERT     = 'alert';
+    const CRITICAL  = 'critical';
+    const ERROR     = 'error';
+    const WARNING   = 'warning';
+    const NOTICE    = 'notice';
+    const INFO      = 'info';
+    const DEBUG     = 'debug';
+
     /**
      * 初始化
      * Log constructor.
@@ -34,11 +43,11 @@ class Log extends Base
     /**
      * 初始化
      * @param $message
-     * @param array $traceInfo
+     * @param array $context
      * @param string $type
      * @throws Exception
      */
-    public function write($message, array $traceInfo = array(), $type = 'info')
+    public function write($message, array $context = array(), $type = 'info')
     {
         $time = date(ocConfig(array('DATE_FORMAT', 'datetime')), time());
         $plugin = $this->plugin();
@@ -52,12 +61,8 @@ class Log extends Base
         }
 
         $format = ocConfig(array('LOG', 'format'), '[{type}]|{time}|{message}', true);
-        $message = trim($message);
+        $message = ocSprintf(trim($message), $context);
         $content = ocSprintf($format, compact('type', 'time', 'message'));
-
-        if ($traceInfo) {
-            $content .= PHP_EOL . self::getTraceString($traceInfo);
-        }
 
         try {
             $plugin->write($this->name, $content);
@@ -68,45 +73,91 @@ class Log extends Base
     /**
      * 信息日志
      * @param $content
-     * @param array $traceInfo
+     * @param array $context
      * @throws Exception
      */
-    public function info($content, array $traceInfo = array())
+    public function info($content, array $context = array())
     {
-        $this->write($content, $traceInfo, 'info');
+        $this->write($content, $context, self::INFO);
     }
 
     /**
      * 调试日志
      * @param $content
-     * @param array $traceInfo
+     * @param array $context
      * @throws Exception
      */
-    public function debug($content, array $traceInfo = array())
+    public function debug($content, array $context = array())
     {
-        $this->write($content, $traceInfo, 'debug');
+        $this->write($content, $context, self::DEBUG);
     }
 
     /**
-     * 错误日志
+     * 运行时错误不需要马上处理，
+     * 但通常应该被记录和监控。
      * @param $content
-     * @param array $traceInfo
+     * @param array $context
      * @throws Exception
      */
-    public function error($content, array $traceInfo = array())
+    public function error($content, array $context = array())
     {
-        $this->write($content, $traceInfo, 'error');
+        $this->write($content, $context, self::ERROR);
     }
 
     /**
      * 警告日志
      * @param $content
-     * @param array $traceData
+     * @param array $context
      * @throws Exception
      */
-    public function warning($content, array $traceData = array())
+    public function warning($content, array $context = array())
     {
-        $this->write($content, $traceData, 'warning');
+        $this->write($content, $context, SELF::WARNING);
+    }
+
+    /**
+     * 系统无法使用。
+     * @param $content
+     * @param array $context
+     * @throws Exception
+     */
+    public function emergency($content, array $context = array())
+    {
+        $this->write($content, $context, SELF::EMERGENCY);
+    }
+
+    /**
+     * 警告日志
+     * @param $content
+     * @param array $context
+     * @throws Exception
+     */
+    public function alert($content, array $context = array())
+    {
+        $this->write($content, $context, SELF::ALERT);
+    }
+
+    /**
+     * 正常但重要的事件.
+     * @param $content
+     * @param array $context
+     * @throws Exception
+     */
+    public function notice($content, array $context = array())
+    {
+        $this->write($content, $context, SELF::NOTICE);
+    }
+
+    /**
+     * 临界条件
+     * 例如: 应用组件不可用，意外的异常。
+     * @param $content
+     * @param array $context
+     * @throws Exception
+     */
+    public function critical($content, array $context = array())
+    {
+        $this->write($content, $context, SELF::CRITICAL);
     }
 
     /**

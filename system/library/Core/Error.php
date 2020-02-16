@@ -29,11 +29,12 @@ class Error extends ServiceProvider
 		$this->show($error, $params);
 	}
 
-	/**
-	 * 记录异常错误日志
-	 * @param string $error
-	 * @param array $params
-	 */
+    /**
+     * 记录异常错误日志
+     * @param $error
+     * @param array $params
+     * @throws Exception
+     */
 	public function writeLog($error, array $params = array())
 	{
 		try {
@@ -42,11 +43,7 @@ class Error extends ServiceProvider
 		} catch(Exception $exception) {
             $error = ocGetExceptionData($exception);
             ocService('log', true)
-                ->write(
-                    $error['message'],
-                    $error['traceInfo'],
-                    'exception'
-                );
+                ->write($error['message'] . PHP_EOL . Log::getTraceString($error['traceInfo']));
 		}
 	}
 

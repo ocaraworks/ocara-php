@@ -151,16 +151,13 @@ class ExceptionHandler extends Base
      * @param $exception
      * @param $event
      * @param $object
+     * @throws Exception
      */
     public function report($exception, $event, $object)
     {
         $error = ocGetExceptionData($exception);
         ocService('log', true)
-            ->write(
-                $error['message'],
-                $error['traceInfo'],
-                'exception'
-            );
+            ->error($error['message'] . PHP_EOL . Log::getTraceString($error['traceInfo']));
     }
 
     /**
