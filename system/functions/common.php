@@ -338,10 +338,14 @@ function ocRemote($url, $data = null, array $headers = array())
 
     if (!function_exists('file_get_contents')) return ocCurl($url, $data, $headers);
 
-    if (empty($data)) return @file_get_contents($url);
+    if (!$data) return @file_get_contents($url);
 
-    if (is_array($data)) {
-        $data = http_build_query($data, OC_EMPTY, '&');
+    if ($data === true) {
+        $data = '';
+    } else {
+        if (is_array($data)) {
+            $data = http_build_query($data, OC_EMPTY, '&');
+        }
     }
 
     $header = "Content-type: application/x-www-form-urlencoded\r\n";
