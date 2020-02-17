@@ -631,7 +631,7 @@ function ocFileExists($filePath, $check = false)
 	if ($filePath) {
 		$filePath = ocCommPath($filePath);
 		if ($check) {
-			$filePath = ocCheckFilePath($filePath);
+			$filePath = ocCheckChineseFilePath($filePath);
 		}
 		if (is_file($filePath)) {
 		    if (OC_IS_WIN && ocBasename(ocCommPath(realpath($filePath))) != ocBasename($filePath)) {
@@ -677,7 +677,7 @@ function ocHumpToLine($str, $sep = '_')
  * @param string $filePath
  * @return bool|mixed|string
  */
-function ocCheckFilePath($filePath) 
+function ocCheckChineseFilePath($filePath)
 {
 	if (preg_match('/[\x{4e00}-\x{9fa5}]+/u', $filePath)) {
 		$filePath = iconv('UTF-8', 'GBK', $filePath);
