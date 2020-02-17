@@ -391,7 +391,9 @@ function ocCurl($url, $data = null, array $headers = array(), $showError = false
 
     if ($data) {
         curl_setopt($ch, CURLOPT_POST, 1);
-        if (is_array($data)) {
+        if ($data === true) {
+            $data = '';
+        } elseif (is_array($data)) {
             $data = http_build_query($data);
         }
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
