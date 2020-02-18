@@ -84,13 +84,13 @@ class Ftp extends ServiceBase
      * 下载文件
      * @param $remoteFile
      * @param $localFile
-     * @param bool $asyn
+     * @param bool $async
      * @param string $mode
      * @param int $location
      * @return bool
      * @throws Exception
      */
-	public function download($remoteFile, $localFile, $asyn = true, $mode = 'b', $location = 0)
+	public function download($remoteFile, $localFile, $async = true, $mode = 'b', $location = 0)
 	{
 		$fopen = @fopen($localFile, 'wb');
 		
@@ -100,7 +100,7 @@ class Ftp extends ServiceBase
 		
 		$mode = $mode == 'b' ? FTP_BINARY : FTP_ASCII;
 		
-		if (!$asyn) {
+		if (!$async) {
 			return @ftp_get($this->connection, $localFile, $remoteFile, $mode);
 		}
 		
