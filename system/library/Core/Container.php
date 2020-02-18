@@ -154,7 +154,7 @@ class Container extends Basis
      * @param null $name
      * @param array $params
      * @param array $deps
-     * @return array|mixed|object|自定义属性|void|null
+     * @return array|mixed|object|void|null
      * @throws Exception
      */
     public function get($name = null, array $params = array(), array $deps = array())

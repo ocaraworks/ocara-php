@@ -36,6 +36,7 @@ $dirs = array(
         'dev/controller/generate',
         'dev/privates/config'
     ),
+    'tests' => array(),
 );
 
 $files = array(
@@ -79,6 +80,9 @@ $files = array(
         'dev/controller/generate/LoginAction',
         'dev/controller/generate/LogoutAction',
         'dev/privates/config/base',
+    ),
+    'tests' => array(
+        'bootstrap'
     ),
     'ocara'
 );
