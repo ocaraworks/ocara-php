@@ -176,7 +176,7 @@ class Request extends Base
 	{
 		$_SERVER['HTTP_X_REQUESTED_WITH'] = 'xmlhttprequest';
 		if (isset($_GET['oc_ajax'])) {
-			$_GET['oc_ajax'] = true;
+			$_GET['oc_ajax'] = 1;
 		}
 	}
 
