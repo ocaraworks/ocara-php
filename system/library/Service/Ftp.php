@@ -56,16 +56,16 @@ class Ftp extends ServiceBase
      * 上传文件
      * @param $localFile
      * @param $remoteFile
-     * @param bool $asyn
+     * @param bool $async
      * @param string $mode
      * @param int $location
      * @return bool
      */
-	public function upload($localFile, $remoteFile, $asyn = true, $mode = 'b', $location = 0)
+	public function upload($localFile, $remoteFile, $async = true, $mode = 'b', $location = 0)
 	{
 		$mode = $mode == 'b' ? FTP_BINARY : FTP_ASCII;
 		
-		if (!$asyn) {
+		if (!$async) {
 			return @ftp_put($this->connection, $remoteFile, $localFile, $mode);
 		}
 		
