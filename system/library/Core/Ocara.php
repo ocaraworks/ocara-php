@@ -14,8 +14,8 @@ use Ocara\Exceptions\Exception;
 final class Ocara
 {
 	/**
-	 * @var $instance 	实例
-	 * @var $info 		框架信息
+	 * @var $instance 实例
+	 * @var $info 框架信息
 	 */
 	private static $instance;
 	private static $info;
@@ -25,6 +25,7 @@ final class Ocara
 
 	/**
 	 * 单例模式引用
+     * @return $this
 	 */
 	public static function getInstance()
 	{

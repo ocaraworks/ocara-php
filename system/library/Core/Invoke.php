@@ -12,6 +12,23 @@ use \Exception;
 
 final class Invoke
 {
+    /**
+     * @var $instance 实例
+     */
+    private static $instance;
+
+    /**
+     * 单例模式引用
+     * @return $this
+     */
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
 	/**
 	 * 目录分隔符替换
 	 * @param $path
@@ -25,6 +42,7 @@ final class Invoke
     /**
      * 初始化
      * @param string $bootstrap
+     * @return mixed
      * @throws Exception
      */
 	public static function init($bootstrap = null)
@@ -44,6 +62,7 @@ final class Invoke
 
 		Ocara::getInstance();
         ocContainer()->app->bootstrap($bootstrap);
+        return $this;
 	}
 
     /**
