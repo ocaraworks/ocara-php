@@ -30,7 +30,7 @@ class Excel extends ServiceBase
 		header("Cache-Control: no-cache, must-revalidate");
 		header("Expires: 0");
 		
-		echo $this->printContent($content, $charset);
+		echo $this->formatContent($content, $charset);
 	}
 
     /**
@@ -47,7 +47,7 @@ class Excel extends ServiceBase
 		$charset  = $charset == 'utf-8' ? 'gbk' : $charset;
 		$filePath = $this->convert($filePath, $charset);
 		
-		return ocWrite($filePath, $this->printContent($content, $charset), false, $perm);
+		return ocWrite($filePath, $this->formatContent($content, $charset), false, $perm);
 	}
 
     /**
@@ -56,7 +56,7 @@ class Excel extends ServiceBase
      * @param string $charset
      * @return string|null
      */
-	public function printContent($content, $charset)
+	public function formatContent($content, $charset)
 	{
 		$result  = null;
 		
