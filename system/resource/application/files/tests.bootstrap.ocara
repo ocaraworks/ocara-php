@@ -17,7 +17,4 @@ define('OC_ROOT', dirname(__DIR__) . '/');
 //require_once(OC_ROOT . 'ocara/system/library/Core/Ocara.php');
 require_once OC_ROOT . 'vendor/autoload.php';
 
-Ocara::getInstance();
-ocContainer()->app
-    ->bootstrap('Ocara\Bootstraps\Tests')
-    ->start();
+Ocara::start('Ocara\Bootstraps\Tests');

@@ -81,7 +81,7 @@ final class Ocara
 	}
 
     /**
-     * 运行框架
+     * 运行路由
      * @param string $bootstrap
      * @return mixed
      */
@@ -101,6 +101,23 @@ final class Ocara
 
         return $result;
 	}
+
+    /**
+     * 开始应用
+     * @param null $bootstrap
+     */
+	public static function start($bootstrap = null)
+    {
+        self::getInstance();
+
+        if (empty($bootstrap)) {
+            $bootstrap = defined('OC_BOOTSTRAP') ? OC_BOOTSTRAP : 'Ocara\Bootstraps\Common';
+        }
+
+        ocContainer()->app
+            ->bootstrap('Ocara\Bootstraps\Tests')
+            ->start();
+    }
 
     /**
      * 框架更新
