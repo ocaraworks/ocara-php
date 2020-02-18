@@ -19,11 +19,9 @@ use Ocara\Exceptions\Exception;
 class Xml extends ServiceBase
 {
 	/**
-	 * @var $xmlParser 解析器资源句柄
 	 * @var $xmlObj SimpleXMLElement对象
 	 * @var $xmlData XML数据数组
 	 */
-	public $xmlParser;
 	public $xmlObj;
 	public $xmlPath;
 	public $xmlData;
@@ -39,7 +37,7 @@ class Xml extends ServiceBase
 	}
 
     /**
-     * @return resource新建XML解析器
+     * @return resource 新建XML解析器
      */
 	public function createXmlParser()
     {
@@ -91,57 +89,36 @@ class Xml extends ServiceBase
 	}
 
     /**
-     * 生成XML数组
-     * @return array
-     */
-	public function makeArray()
-	{
-        $result = array();
-        $xmlParser = $this->createXmlParser();
-		xml_parse_into_struct($xmlParser, $this->xmlData, $values, $index);
-
-        foreach ($values as $row) {
-            if ($row['type'] == 'complete') {
-                $result[$row['tag']] = isset($row['value']) ? $row['value'] : null;
-            }
-		}
-
-        xml_parser_free($xmlParser);
-
-		return $result;
-	}
-
-    /**
      * 加载并解析XML字符串
-     * @param $xmlSource
+     * @param $xmlString
      * @throws Exception
      */
-    public function loadString($xmlSource)
+    public function loadString($xmlString)
 	{
-		if (!($this->parseXml($xmlSource, 'string'))) {
+		if (!($this->parseXml($xmlString, 'string'))) {
 			$this->showError('failed_xml_parse');
 		}
 		
-		$this->xmlObj = simplexml_load_string($xmlSource);
-		$this->xmlData = $xmlSource;
+		$this->xmlObj = simplexml_load_string($xmlString);
+		$this->xmlData = $xmlString;
 	}
 
     /**
      * 加载并解析XML数组
-     * @param array $xmlSource
+     * @param array $xmlArray
      * @throws Exception
      */
-    public function loadArray(array $xmlSource)
+    public function loadArray(array $xmlArray)
     {
         $xmlData = array();
-        $root = ocGet(0, $xmlSource);
+        $root = ocGet(0, $xmlArray);
 
         if (!is_string($root) || empty($root)) {
             $this->showError('need_root_node');
         }
 
-        $list = ocGet(1, $xmlSource);
-        $hasStatement = ocGet(2, $xmlSource, true);
+        $list = ocGet(1, $xmlArray);
+        $hasStatement = ocGet(2, $xmlArray, true);
 
         if ($hasStatement) {
             $xmlData[] = "<?xml version=\"1.0\" encoding=\"{$this->encoding}\"?>";
@@ -161,22 +138,22 @@ class Xml extends ServiceBase
 
     /**
      * 加载文件
-     * @param $xmlSource
+     * @param $xmlFile
      * @throws Exception
      */
-    public function loadFile($xmlSource)
+    public function loadFile($xmlFile)
     {
-        if (!$this->parseXml($xmlSource, 'file')) {
+        if (!$this->parseXml($xmlFile, 'file')) {
             $this->showError('failed_xml_parse');
         }
 
-        if (!pathinfo($xmlSource, PATHINFO_EXTENSION)) {
-            $xmlSource = $xmlSource . '.xml';
+        if (!pathinfo($xmlFile, PATHINFO_EXTENSION)) {
+            $xmlFile = $xmlFile . '.xml';
         }
 
-        $this->xmlPath = $xmlSource;
-        $this->xmlObj = simplexml_load_file($xmlSource);
-        $this->xmlData = ocRead($xmlSource);
+        $this->xmlPath = $xmlFile;
+        $this->xmlObj = simplexml_load_file($xmlFile);
+        $this->xmlData = ocRead($xmlFile);
     }
 
     /**
@@ -234,4 +211,25 @@ class Xml extends ServiceBase
         $xmlData = implode(PHP_EOL, $xmlData);
 		return $xmlData;
 	}
+
+    /**
+     * 转换成XML数组
+     * @return array
+     */
+    public function toArray()
+    {
+        $result = array();
+        $xmlParser = $this->createXmlParser();
+        xml_parse_into_struct($xmlParser, $this->xmlData, $values, $index);
+
+        foreach ($values as $row) {
+            if ($row['type'] == 'complete') {
+                $result[$row['tag']] = isset($row['value']) ? $row['value'] : null;
+            }
+        }
+
+        xml_parser_free($xmlParser);
+
+        return $result;
+    }
 }
