@@ -11,7 +11,7 @@ return array(
      */
     'RESOURCE' => array(
         /**
-         * 环境配置
+         * 运行环境配置
          */
         'env' => array(
             'get_env' => '', //获取环境类型事件回调
