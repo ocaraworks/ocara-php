@@ -41,7 +41,7 @@ class Log extends Base
     }
 
     /**
-     * 初始化
+     * 写日志
      * @param $message
      * @param array $context
      * @param string $type

@@ -15,10 +15,9 @@ class Download extends ServiceBase
 {
     /**
      * 下载文件
-     * @param string $filePath
-     * @param string $saveName
+     * @param $filePath
+     * @param null $saveName
      * @param string $encode
-     * @return bool
      * @throws Exception
      */
 	public function download($filePath, $saveName = null, $encode = 'utf-8')
@@ -39,7 +38,7 @@ class Download extends ServiceBase
 		}
 
 		$content = ocRead($filePath);
-		$this->downloadContent($saveName, $content, $encode);
+		$this->downloadContent($content, $saveName, $encode);
 	}
 
     /**
@@ -60,7 +59,6 @@ class Download extends ServiceBase
             $this->showError('failed_save_filename');
         }
 
-        $saveName = $saveName ? : ocBasename($filePath);
         $saveType = $mt[1];
         $mineTypes = ocConfig('MINE_TYPES');
 
@@ -83,9 +81,9 @@ class Download extends ServiceBase
 
     /**
      * 显示文件内容
-     * @param $content
-     * @param $fileOrType
+     * @param $fileName
      * @param string $encode
+     * @throws Exception
      */
     public function showFile($fileName, $encode = 'utf-8')
     {
@@ -98,6 +96,7 @@ class Download extends ServiceBase
      * @param $content
      * @param $fileOrType
      * @param string $encode
+     * @throws Exception
      */
     public function showContent($content, $fileOrType, $encode = 'utf-8')
     {

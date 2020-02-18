@@ -98,27 +98,28 @@ class FileCache extends ServiceBase
 
     /**
      * 内部函数-写入数组
-     * @param $array
-     * @param int $tNum
+     * @param $data
+     * @param int $tabNum
      * @return string
      */
-	protected function writeArray($array, $tNum = 0)
+	protected function writeArray($data, $tabNum = 0)
 	{
-		$tNum = $tNum + 1;
-		$tab = str_repeat("\t", $tNum);
+        $tabNum = $tabNum + 1;
+		$tab = str_repeat("\t", $tabNum);
 		$str = OC_EMPTY;
 		$index = 0;
-		$lastIndex = count($array) - 1;
+		$lastIndex = count($data) - 1;
+		$isAssoc = ocAssoc($data);
 		
-		foreach ($array as $key => $value) {
+		foreach ($data as $key => $value) {
 			$str .= $tab;
-			if (ocAssoc($array)) {
+			if ($isAssoc) {
 				$str .= "'$key' => ";
 			}
 			if (is_array($value)) {
 				$str .= "array(\r\n";
 				
-				$str .= $this->writeArray($value, $tNum);
+				$str .= $this->writeArray($value, $tabNum);
 				$str .= $tab . ')';
 				if ($index != $lastIndex) {
 					$str .= ',';

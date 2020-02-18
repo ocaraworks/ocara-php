@@ -24,11 +24,13 @@ class Upload extends ServiceBase
 
 	private $files;
 
-	/**
-	 * 析构函数
-	 * @param string $savePath
-	 * @param array $rules
-	 */
+    /**
+     * 析构函数
+     * Upload constructor.
+     * @param null $savePath
+     * @param array $rules
+     * @throws Exception
+     */
 	public function __construct($savePath = null, array $rules = array())
 	{
 		$this->maxSize = floatval(@ini_get('upload_max_filesize'));
@@ -42,6 +44,7 @@ class Upload extends ServiceBase
      * @param null $prefix
      * @param int $perm
      * @return bool
+     * @throws Exception
      */
 	public function setSavePath($savePath, $prefix = null, $perm = 0777)
 	{
@@ -152,6 +155,7 @@ class Upload extends ServiceBase
      * 上传所有文件
      * @param $files
      * @return bool
+     * @throws Exception
      */
 	private function uploadAllFile($files)
 	{

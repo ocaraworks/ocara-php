@@ -111,7 +111,7 @@ function ocCheckPath($path, $perm = null, $required = false)
 	if (empty($path)) return false;
 
 	if (!is_dir($path)) {
-		$perm = $perm ? : 0755;
+		$perm = $perm ?: 0755;
 		if (!@mkdir($path, $perm, true)) {
 			if ($required) {
 				ocService()->error->show('failed_make_dir');

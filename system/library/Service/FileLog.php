@@ -23,7 +23,8 @@ class FileLog extends ServiceBase implements LogInterface
     /**
      * 选项设置函数
      * @param string $logRoot
-     * @param inte $maxLogSize
+     * @param int $maxLogSize
+     * @param string $extensionName
      * @throws Exception
      */
 	public function setOption($logRoot = null, $maxLogSize = null, $extensionName = null)

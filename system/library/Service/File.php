@@ -16,14 +16,16 @@ class File extends ServiceBase
 	 * 新建空文件
 	 * @param string $filePath
 	 * @param integer $perm
-	 * @param null $mode
+	 * @param null $openMode
 	 * @return bool|mixed|string
 	 */
-	public function createFile($filePath, $perm = null, $mode = null)
+	public function createFile($filePath, $perm = null, $openMode = null)
 	{
+        $openMode = $openMode ?: 'wb';
+
 		if (ocFileExists($filePath, true)) return $filePath;
 
-		ocCheckPath(dirname($filePath), $mode);
+		ocCheckPath(dirname($filePath), $perm);
 		$filePath = ocCheckChineseFilePath($filePath);
 
 		if (function_exists('file_put_contents')) {
@@ -31,7 +33,7 @@ class File extends ServiceBase
 			return $result >= 0 ? $filePath : false;
 		}
 
-		if (!($fo = @fopen($filePath, 'wb'))) return false;
+		if (!($fo = @fopen($filePath, $openMode))) return false;
 		
 		if ($perm && !chmod($filePath, $perm)) {
 			return false;
@@ -76,15 +78,15 @@ class File extends ServiceBase
 
 	/**
 	 * 重命名文件
-	 * @param string $file
+	 * @param string $filePath
 	 * @param string $newName
 	 * @return bool
 	 */
-	public function rename($file, $newName)
+	public function rename($filePath, $newName)
 	{
-		if ($file = ocFileExists($file, true)) {
-			$newFile = ocCheckChineseFilePath(dirname($file) . OC_DIR_SEP. $newName);
-			return ocFileExists($newFile) ? false : @rename($file, $newFile);
+		if ($filePath = ocFileExists($filePath, true)) {
+			$newFile = ocCheckChineseFilePath(dirname($filePath) . OC_DIR_SEP. $newName);
+			return ocFileExists($newFile) ? false : @rename($filePath, $newFile);
 		}
 		
 		return false;
@@ -128,7 +130,7 @@ class File extends ServiceBase
 	}
 
 	/**
-	向文件写入一行
+     * 向文件追加一行
 	 * @param string $path
 	 * @param string $content
 	 * @param integer $perm
