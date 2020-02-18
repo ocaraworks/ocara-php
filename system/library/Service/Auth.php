@@ -22,7 +22,16 @@ final class Auth extends ServiceBase
 	{
 		$this->data = $data;
 	}
-	
+
+    /**
+     * 获取权限数据
+     * @return array
+     */
+	public function getData()
+    {
+        return $this->data;
+    }
+
 	/**
 	 * 新建角色
 	 * @param string $roleList

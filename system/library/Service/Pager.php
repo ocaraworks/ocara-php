@@ -135,7 +135,7 @@ class Pager extends ServiceBase
      * @param $class
      * @return $this
      */
-	public function setActClass($class)
+	public function setActiveClass($class)
 	{
 		$this->actClass = $class;
 		return $this;
@@ -147,6 +147,7 @@ class Pager extends ServiceBase
      * @param $url
      * @param array $attr
      * @return $this|bool
+     * @throws Exception
      */
 	public function setHtml($total, $url, array $attr = array())
 	{
@@ -218,6 +219,7 @@ class Pager extends ServiceBase
     /**
      * 生成HTML
      * @return string
+     * @throws Exception
      */
 	protected function setPageHtml()
 	{
