@@ -17,18 +17,18 @@ class SocketClient extends SocketBase
      * @param string $host
      * @param int $port
      * @param int $limitTime
-     * @param int $recTimeout
+     * @param int $receiveTimeout
      * @param int $sendTimeout
      * @return resource
      * @throws Exception
      */
-	public function connect($host, $port, $limitTime = 0, $recTimeout = 3, $sendTimeout = 2)
+	public function connect($host, $port, $limitTime = 0, $receiveTimeout = 3, $sendTimeout = 2)
 	{
 		if ($limitTime) @set_time_limit($limitTime);
 		
 		$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 		socket_set_option(
-			$this->socket, SOL_SOCKET, SO_RCVTIMEO, array('sec' => $recTimeout, 'usec' => 0)
+			$this->socket, SOL_SOCKET, SO_RCVTIMEO, array('sec' => $receiveTimeout, 'usec' => 0)
 		);
 		socket_set_option(
 			$this->socket, SOL_SOCKET, SO_SNDTIMEO, array('sec' => $sendTimeout, 'usec' => 0)
@@ -90,7 +90,7 @@ class SocketClient extends SocketBase
 	}
 
     /**
-     * 关闭当前Socket链接
+     * 安全关闭当前Socket链接
      * @param int $how
      */
 	public function shutdown($how = 2)
@@ -101,7 +101,7 @@ class SocketClient extends SocketBase
 	}
 
 	/**
-	 * 关闭当前Socket进程
+	 * 强制关闭当前Socket进程
 	 */
 	public function close()
 	{
