@@ -44,7 +44,7 @@ abstract class ControllerBase extends serviceProvider
             ocService()->exceptionHandler->setResponseFormat(ExceptionHandler::RESPONSE_FORMAT_COMMON);
         }
 
-        $this->bindEvents($this);
+        $this->bindEventHandler($this);
 
         if (!in_array(PHP_SAPI, array('cli'))) $this->session->boot();
 

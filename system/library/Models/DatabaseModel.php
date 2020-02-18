@@ -91,7 +91,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function registerEvents()
     {
-        $this->bindEvents($this);
+        $this->bindEventHandler($this);
     }
 
     /**

@@ -201,7 +201,7 @@ abstract class Base extends Basis
      * @param $eventHandler
      * @return $this
      */
-    public function bindEvents($eventHandler)
+    public function bindEventHandler($eventHandler)
     {
         $this->checkRegisteredEvents();
 

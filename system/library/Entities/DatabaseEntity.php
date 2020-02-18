@@ -42,7 +42,7 @@ abstract class DatabaseEntity extends BaseEntity
     public function registerEvents()
     {
         parent::registerEvents();
-        $this->bindEvents($this);
+        $this->bindEventHandler($this);
     }
 
     /**
