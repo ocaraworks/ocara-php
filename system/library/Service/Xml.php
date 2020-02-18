@@ -94,13 +94,13 @@ class Xml extends ServiceBase
      */
 	public function makeArray()
 	{
-        $result = [];
+        $result = array();
         $xmlParser = $this->createXmlParser();
 		xml_parse_into_struct($xmlParser, $this->xmlData, $values, $index);
 
         foreach ($values as $row) {
             if ($row['type'] == 'complete') {
-                $result[$row['tag']] = $row['value'] ?? null;
+                $result[$row['tag']] = isset($row['value']) ? $row['value'] : null;
             }
 		}
 
@@ -131,7 +131,7 @@ class Xml extends ServiceBase
      */
     public function loadArray(array $xmlSource)
     {
-        $xmlData = [];
+        $xmlData = array();
         $root = ocGet(0, $xmlSource);
 
         if (!is_string($root) || empty($root)) {

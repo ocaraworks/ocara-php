@@ -296,7 +296,7 @@ abstract class DatabaseEntity extends BaseEntity
      * @param array $options
      * @return static
      */
-    public static function selectFrom($condition, $options = [])
+    public static function selectFrom($condition, $options = array())
     {
         $options = (array)$options;
 
@@ -314,7 +314,7 @@ abstract class DatabaseEntity extends BaseEntity
 
         if ($data) {
             $entity->data($data);
-            $condition = [];
+            $condition = array();
             $primaries = $model::getPrimaries();
             foreach ($primaries as $field) {
                 $condition[$field] = $entity->$field;

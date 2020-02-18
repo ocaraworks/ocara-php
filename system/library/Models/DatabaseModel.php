@@ -1570,7 +1570,7 @@ abstract class DatabaseModel extends ModelBase
                     $rows = $offset[1];
 		            $offset = $offset[0];
                 } else {
-		            $rows = $offset[0] ?? 0;
+		            $rows = isset($offset[0]) ? $offset[0] : 0;
 		            $offset = 0;
                 }
             } else {

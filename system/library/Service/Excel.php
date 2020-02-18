@@ -30,7 +30,8 @@ class Excel extends ServiceBase
 		header("Cache-Control: no-cache, must-revalidate");
 		header("Expires: 0");
 		
-		echo $this->formatContent($content, $charset);
+		ocService()->response->setBody($this->formatContent($content, $charset));
+        ocService()->response->send();
 	}
 
     /**
