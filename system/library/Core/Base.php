@@ -15,7 +15,7 @@ defined('OC_PATH') or exit('Forbidden!');
 abstract class Base extends Basis
 {
     private $plugin;
-    private $event;
+    private $eventHandler;
     private $isRegisteredEvent;
 
     private $events = array();
@@ -175,9 +175,9 @@ abstract class Base extends Basis
             $event = ocContainer()->create('event');
             $event->setName($eventName);
             $this->events[$eventName] = $event;
-            if ($this->event && method_exists($this->event, $eventName)) {
+            if ($this->eventHandler && method_exists($this->eventHandler, $eventName)) {
                 $event->clear();
-                $event->append(array(&$this->event, $eventName), $eventName);
+                $event->append(array(&$this->eventHandler, $eventName), $eventName);
             }
         }
 
@@ -198,19 +198,19 @@ abstract class Base extends Basis
 
     /**
      * 绑定事件资源包
-     * @param $eventObject
+     * @param $eventHandler
      * @return $this
      */
-    public function bindEvents($eventObject)
+    public function bindEvents($eventHandler)
     {
         $this->checkRegisteredEvents();
 
-        if (is_string($eventObject) && class_exists($eventObject)) {
-            $eventObject = new $eventObject();
+        if (is_string($eventHandler) && class_exists($eventHandler)) {
+            $eventHandler = new $eventHandler();
         }
 
-        if (is_object($eventObject)) {
-            $this->event = $eventObject;
+        if (is_object($eventHandler)) {
+            $this->eventHandler = $eventHandler;
         }
 
         return $this;
