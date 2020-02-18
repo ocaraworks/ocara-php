@@ -34,7 +34,7 @@ final class Invoke
 	 * @param $path
 	 * @return mixed
 	 */
-	private static function getCommPath($path)
+	protected function getCommPath($path)
 	{
 		return str_replace(DIRECTORY_SEPARATOR, '/', $path);
 	}
@@ -45,10 +45,10 @@ final class Invoke
      * @return mixed
      * @throws Exception
      */
-	public static function init($bootstrap = null)
+	public function init($bootstrap = null)
 	{
         defined('OC_EXECUTE_START_TIME') OR define('OC_EXECUTE_START_TIME', microtime(true));
-        defined('OC_PATH') OR define('OC_PATH', self::getCommPath(realpath(dirname(dirname(dirname(__DIR__))))) . '/');
+        defined('OC_PATH') OR define('OC_PATH', $this->getCommPath(realpath(dirname(dirname(dirname(__DIR__))))) . '/');
         defined('OC_INVOKE') OR define('OC_INVOKE', true);
 
 		if (!is_file($path = OC_PATH . 'system/library/Core/Ocara.php')) {
@@ -72,7 +72,7 @@ final class Invoke
      * @param string $requestMethod
      * @return mixed
      */
-	public static function run($route, $params = array(), $requestMethod = 'GET')
+	public function run($route, $params = array(), $requestMethod = 'GET')
     {
         if ($params) {
             if ($requestMethod == 'GET'){
