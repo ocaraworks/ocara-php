@@ -28,15 +28,15 @@ class Date extends ServiceBase
      * @return array|string
      * @throws Exception
      */
-	public static function getDateInfo($time)
+	public function getDateInfo($time)
 	{
 		$dateInfo = array();
 
 		if (is_string($time)) {
-			$dateInfo = self::baseGetDateInfo($time);
+			$dateInfo = $this->baseGetDateInfo($time);
 		} elseif (is_numeric($time)) {
 			$data = getdate($time);
-			foreach (self::$maps as $key => $value) {
+			foreach ($this->$maps as $key => $value) {
 				$dateInfo[$key] = $data[$value];
 			}
 		}
@@ -53,16 +53,16 @@ class Date extends ServiceBase
      * @return bool|false|string
      * @throws Exception
      */
-	public static function set($time, $number, $type)
+	public function set($time, $number, $type)
 	{
-		$dateInfo = self::getDateInfo($time);
+		$dateInfo = $this->getDateInfo($time);
 		
 		if ($dateInfo) {
-			if (array_key_exists($type, self::$maps)) {
+			if (array_key_exists($type, $this->$maps)) {
 				$dateInfo[$type] = abs($number);
-				self::checkDate($dateInfo);
+				$this->checkDate($dateInfo);
 			}
-			return self::getDate($dateInfo);
+			return $this->getDate($dateInfo);
 		}
 		
 		return false;
@@ -75,11 +75,11 @@ class Date extends ServiceBase
      * @return array|bool|int|mixed|null
      * @throws Exception
      */
-	public static function get($time, $type)
+	public function get($time, $type)
 	{
-		$dateInfo = self::getDateInfo($time);
+		$dateInfo = $this->getDateInfo($time);
 		
-		if (array_key_exists($type, self::$maps)) {
+		if (array_key_exists($type, $this->$maps)) {
 			return ocGet($type, $dateInfo, 0);
 		}
 		
@@ -93,15 +93,15 @@ class Date extends ServiceBase
      * @param string $format
      * @return bool|false|string
      */
-	public static function add($time, $number, $type, $format = null)
+	public function add($time, $number, $type, $format = null)
 	{
-		$time = self::getDate($time, $format);
+		$time = $this->getDate($time, $format);
 		
 		if ($time) {
-			if (array_key_exists($type, self::$maps)) {
+			if (array_key_exists($type, $this->$maps)) {
 				$sign = $number < 0 ? '-' : '+';
 				$number = abs($number);
-				return self::getDate(strtotime("{$time} {$sign} {$number} {$type}"), $format);
+				return $this->getDate(strtotime("{$time} {$sign} {$number} {$type}"), $format);
 			}
 		}
 		
@@ -114,9 +114,9 @@ class Date extends ServiceBase
      * @param string $format
      * @return false|string
      */
-	public static function getDate($time, $format = null)
+	public function getDate($time, $format = null)
 	{
-		$timestamp = self::getTimestamp($time);
+		$timestamp = $this->getTimestamp($time);
 		$format = $format == 'mdy' ? 'm-d-Y' : 'Y-m-d';
 
 		return date($format . ' H:i:s', $timestamp);
@@ -129,10 +129,10 @@ class Date extends ServiceBase
      * @param string $type
      * @return array
      */
-	public static function getInterval($startTime, $endTime, $type = null)
+	public function getInterval($startTime, $endTime, $type = null)
 	{
-		$start = self::getTimestamp($startTime);
-		$end   = self::getTimestamp($endTime);
+		$start = $this->getTimestamp($startTime);
+		$end   = $this->getTimestamp($endTime);
 		
 		if ($start && $end) {
 			$diff = $end - $start;
@@ -147,7 +147,7 @@ class Date extends ServiceBase
 		} else 
 			list($days, $hours, $minutes, $seconds) = array_fill(0, 4, 0);
 		
-		if (array_key_exists(rtrim($type, 's'), self::$maps)) {
+		if (array_key_exists(rtrim($type, 's'), $this->$maps)) {
 			return $$type;
 		} else {
 			return compact('days', 'hours', 'minutes', 'seconds');
@@ -159,7 +159,7 @@ class Date extends ServiceBase
      * @param string|numric|array $time
      * @return false|int
      */
-	public static function getTimestamp($time)
+	public function getTimestamp($time)
 	{
 		if (is_numeric($time)) {
 			return $time;
@@ -180,7 +180,7 @@ class Date extends ServiceBase
      * @param integer $year
      * @return bool
      */
-	public static function isYun($year)
+	public function isYun($year)
 	{
 		return $year % 4 == 0 && $year % 100 != 0 || $year % 400 == 0;
 	}
@@ -192,7 +192,7 @@ class Date extends ServiceBase
      * @return array|mixed
      * @throws Exception
      */
-	protected static function baseGetDateInfo($string, $format = null)
+	protected function baseGetDateInfo($string, $format = null)
 	{
 		if (!is_string($string)) return $string;
 		
@@ -211,7 +211,7 @@ class Date extends ServiceBase
 				list($year, $month, $day, $hour, $minute, $second) = $mt;
 			}
 			$dateInfo = compact('hour', 'minute', 'second', 'month', 'day', 'year');
-			return self::checkDate($dateInfo);
+			return $this->checkDate($dateInfo);
 		}
 		
 		return array();
@@ -223,23 +223,23 @@ class Date extends ServiceBase
      * @return mixed
      * @throws Exception
      */
-	public static function checkDate(array $dateInfo)
+	public function checkDate(array $dateInfo)
 	{
 		extract($dateInfo);
 		
 		$msg = 'fault_time_number';
 		
 		if ($month > 12 || $day > 31 || $hour > 24 || $minute > 60 || $second > 60) {
-			self::showError($msg);
+			$this->showError($msg);
 		}
 		
-		if (self::isYun($year)) {
+		if ($this->isYun($year)) {
 			if ($month == 2 && $day > 29) {
-				self::showError($msg);
+				$this->showError($msg);
 			}
 		} else {
 			if ($month == 2 && $day > 28) {
-				self::showError($msg);
+				$this->showError($msg);
 			}
 		}
 		
