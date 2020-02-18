@@ -37,7 +37,7 @@ class SessionCache extends ServiceProvider
      */
     public function init()
     {
-        $prefix = ocConfig(array('SESSION', 'options', 'location'), 'session');
+        $prefix = ocConfig(array('SESSION', 'options', 'location'), 'session_');
         $this->prefix = $prefix;
     }
 
