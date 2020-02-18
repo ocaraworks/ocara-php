@@ -43,7 +43,7 @@ class Api extends Base
     {
         $xmlObj = new Xml();
         $xmlObj->loadArray(array('root', $result));
-        $xml = $xmlObj->getContent();
+        $xml = $xmlObj->getResult();
 
         return $xml;
     }

@@ -83,7 +83,7 @@ class Xml extends ServiceBase
      * 获取处理后的XML内容
      * @return mixed
      */
-	public function getContent()
+	public function getResult()
 	{
 		return $this->xmlData;
 	}
