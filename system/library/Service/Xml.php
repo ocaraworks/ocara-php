@@ -75,8 +75,10 @@ class Xml extends ServiceBase
 		header("Pragma: no-cache");
 		header("Cache-Control: no-cache, must-revalidate");
 		header("Expires: 0");
-		
-		echo $this->xmlData;
+
+        $response = ocService()->response;
+        $response->setBody($this->xmlData);
+        $response->send();
 	}
 
     /**
