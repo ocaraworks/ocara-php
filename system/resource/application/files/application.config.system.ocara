@@ -34,7 +34,10 @@ return array(
      * session配置
      */
     'SESSION' => array(
-        'handler' => 'Ocara\Sessions\SessionFile',
+        //session处理器。file表示文件，database表示数据库，cache表示缓存，其他的直接写完整类名
+        'handler' => 'file',
+
+        //选项设置，不同的处理器选项不同
         'options' => array(
             'save_time'	 => 0, //session的最长存活时间（单位为秒）
             'server'     => '', //服务器名称，数据库服务器名称或Redis服务器名
