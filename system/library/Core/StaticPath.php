@@ -64,7 +64,7 @@ class StaticPath extends Base
 		}
 		
 		$params = $params[$action];
-		$mvcPathMap = self::getMvcPathMap($module, $controller, $action);
+		$mvcPathMap = $this->getMvcPathMap($module, $controller, $action);
 		list($file, $param) = $this->getParamsPathMap($params, $module, $controller, $action, $data);
 		$file = str_ireplace('{p}', $file, $mvcPathMap);
 
@@ -126,15 +126,15 @@ class StaticPath extends Base
 
 		$offset     = $module ? 3 : 2;
 		$index 		= strrpos($params, OC_DIR_SEP);
-		$pathStr 	= str_replace(self::$delimiter, OC_DIR_SEP, substr($params, 0, $index));
+		$pathStr 	= str_replace($this->delimiter, OC_DIR_SEP, substr($params, 0, $index));
 		$fileStr 	= substr($params, $index ? $index + 1 : 0);
 
-		if (!preg_match('/^{[\w:]+}(' . self::$delimiter . '{[\w:]+})*$/', $fileStr)) {
+		if (!preg_match('/^{[\w:]+}(' . $this->delimiter . '{[\w:]+})*$/', $fileStr)) {
 			ocService()->error->show('fault_static_field');
 		}
 
 		$pathParams = $pathStr ? explode(OC_DIR_SEP, trim($pathStr, OC_DIR_SEP)) : array();
-		$fileParams = $fileStr ? explode(self::$delimiter, trim($fileStr, self::$delimiter)) : array();
+		$fileParams = $fileStr ? explode($this->delimiter, trim($fileStr, $this->delimiter)) : array();
 
 		list($pathStr, $paramData) = $this->getParams($offset, $pathParams, $data, $pathStr, true);
 		list($fileStr, $paramData) = $this->getParams($offset + count($pathParams), $fileParams, $data, $fileStr);
@@ -152,11 +152,11 @@ class StaticPath extends Base
      */
 	public function getMvcPathMap($module, $controller, $action)
 	{
-		if ($this->route && preg_match('/^{c}[\/-]{a}[\/-]{p}$/i', self::$route)) {
+		if ($this->route && preg_match('/^{c}[\/-]{a}[\/-]{p}$/i', $this->route)) {
 			$search  = array('{c}', '{a}');
 			$replace = array($controller, $action);
 			$module  = $module ? $module . OC_DIR_SEP : false;
-			return $module . str_ireplace($search, $replace, self::$route);
+			return $module . str_ireplace($search, $replace, $this->route);
 		}
 
 		ocService()->error->show('fault_static_route');
