@@ -51,7 +51,7 @@ class Filter extends Base
                         foreach ($keywords as $key => $value) {
                             $keywords[$key] = "/{$value}/i";
                         }
-                        $content = preg_replace($keywords, "|#\${0}#|", (string)$content);
+                        $content = preg_replace($keywords, "#\${0}#", (string)$content);
                     }
                 }
             }
