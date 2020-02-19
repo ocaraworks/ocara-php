@@ -234,11 +234,14 @@ class Event extends Basis implements EventInterface
      */
     public function trigger($eventObject, array $params = array())
     {
+        $result = null;
+        $handlerLength = 0;
         $params = array_merge($params, array($this, $eventObject));
         $results = array();
 
         if ($this->handlers) {
             $handlers = $this->handlers;
+            $handlerLength = count($handlers);
             array_multisort(array_column(
                 $handlers, 'priority'), SORT_DESC,
                 array_column($handlers, 'index'), SORT_ASC,
@@ -253,14 +256,23 @@ class Event extends Basis implements EventInterface
                 }
             }
         } elseif ($this->defaultHandler) {
+            $handlerLength = 2;
             $this->running = true;
             if (is_object($this->defaultHandler) || ocIsCallable($this->defaultHandler)){
                 $results[] = $this->runCallback($this->defaultHandler, $params);
             }
         }
 
+        if ($handlerLength) {
+            if ($handlerLength == 1) {
+                $result = $results ? reset($results) : null;
+            } else {
+                $result = $results;
+            }
+        }
+
         $this->stop();
-        return $results;
+        return $result;
     }
 
     /**

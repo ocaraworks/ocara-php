@@ -51,8 +51,8 @@ return array(
          * 过滤事件
          */
         'filters' => array(
-            'sql_keywords_filter' => '', //SQL关键字过滤回调
-            'script_keywords_filter' => '', //前端脚本关键字过滤回调
+            'sql_keywords_filter' => '', //SQL关键字过滤回调，必须返回值
+            'script_keywords_filter' => '', //前端脚本关键字过滤回调，必须返回值
         ),
 
         /*

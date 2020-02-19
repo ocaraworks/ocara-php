@@ -16,7 +16,9 @@ defined('OC_PATH') or exit('Forbidden!');
 class Filter extends Base
 {
     const EVENT_SQL_KEYWORDS_FILTER = 'sql_keywords_filter';
-	protected $jsEvents;
+    const EVENT_SCRIPT_KEYWORDS_FILTER = 'script_keywords_filter';
+
+	protected $jsEvents = array();
 
 	/**
 	 * 初始化
@@ -26,6 +28,21 @@ class Filter extends Base
 	{
 		$this->jsEvents = implode('|', ocConfig('JS_EVENTS', array()));
 	}
+
+    /**
+     * 注册事件
+     * @throws Exception
+     */
+	public function registerEvents()
+    {
+        parent::registerEvents();
+
+        $this->event(self::EVENT_SQL_KEYWORDS_FILTER)
+            ->append(ocConfig('EVENTS.filters.sql_keywords_filter', array($this, 'eventSqlKeywordsFilter')));
+
+        $this->event(self::EVENT_SCRIPT_KEYWORDS_FILTER)
+             ->append(ocConfig('EVENTS.filters.script_keywords_filter', array($this, 'eventScriptKeywordsFilter')));
+    }
 
     /**
      * 过滤SQL语句
@@ -48,10 +65,7 @@ class Filter extends Base
                     if (ocConfig('EVENTS.filters.sql_keywords_filter', null)) {
                         $content = $this->fire(self::EVENT_SQL_KEYWORDS_FILTER, array($content, $keywords));
                     } else {
-                        foreach ($keywords as $key => $value) {
-                            $keywords[$key] = "/{$value}/i";
-                        }
-                        $content = preg_replace($keywords, "#\${0}#", (string)$content);
+                        $content = $this->fire(self::EVENT_SQL_KEYWORDS_FILTER, array($content, $keywords));
                     }
                 }
             }
@@ -60,10 +74,25 @@ class Filter extends Base
     }
 
     /**
+     * SQL过滤事件
+     * @param $content
+     * @param $keywords
+     * @return string|string[]|null
+     */
+    public function eventSqlKeywordsFilter($content, $keywords)
+    {
+        foreach ($keywords as $key => $value) {
+            $keywords[$key] = "/{$value}/i";
+        }
+
+        $content = preg_replace($keywords, "#\${0}#", (string)$content);
+        return $content;
+    }
+
+    /**
      * 过滤内容
      * @param $content
      * @return array|mixed|string
-     * @throws Exception
      */
 	public function content($content)
 	{
@@ -112,7 +141,6 @@ class Filter extends Base
      * 过滤脚本
      * @param $content
      * @return array|mixed|string|string[]|null
-     * @throws Exception
      */
 	public function script($content)
 	{
@@ -125,16 +153,22 @@ class Filter extends Base
 			$content = preg_replace('/<object[^>]*>.*<\/object>/i', OC_EMPTY, $content);
 			$content = preg_replace('/javascript:/i', OC_EMPTY, $content);
 
-            if (ocConfig('EVENTS.filters.script_keywords_filter', null)) {
-                $content = $this->fire(self::EVENT_SQL_KEYWORDS_FILTER, array($content, $this->jsEvents));
-            } else {
-                $expression = '/(on('.$this->jsEvents.'))|(('.$this->jsEvents.')\((\s*function\()?)/i';
-                $content = preg_replace($expression, "#\${1}#", $content);
-            }
-
+            $content = $this->fire(self::EVENT_SCRIPT_KEYWORDS_FILTER, array($content, $this->jsEvents));
 			return $content;
 		}
 	}
+
+    /**
+     * 脚本关键字过滤事件处理
+     * @param $content
+     * @return string|string[]|null
+     */
+	public function eventScriptKeywordsFilter($content)
+    {
+        $expression = '/(on('.$this->jsEvents.'))|(('.$this->jsEvents.')\((\s*function\()?)/i';
+        $content = preg_replace($expression, "#\${1}#", $content);
+        return $content;
+    }
 
 	/**
 	 * 过滤路径
@@ -154,11 +188,11 @@ class Filter extends Base
 		}
 	}
 
-	/**
-	 * 过滤Request来的数据
-	 * @param string|array $content
-	 * @return array|string
-	 */
+    /**
+     * 过滤Request来的数据
+     * @param $content
+     * @return array|string
+     */
 	public function request($content)
 	{
 		if (is_array($content)) {
