@@ -544,9 +544,6 @@ class Sql extends Base
 				case 'HAVING':
 					$this->checkStringCondition($content);
 					break;
-				case 'GROUP':
-					$content = $this->filterName($content);
-					break;
 				case 'MORE':
 					if ($content) {
 						$content = array_map(array($this, 'filterValue'), $content);
