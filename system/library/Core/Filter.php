@@ -45,7 +45,7 @@ class Filter extends Base
                 if ($equal) {
                     if (in_array(strtolower($content), $keywords)) return false;
                 } else {
-                    if (ocConfig('EVENTS.database.sql_keywords_filter', null)) {
+                    if (ocConfig('EVENTS.filters.sql_keywords_filter', null)) {
                         $content = $this->fire(self::EVENT_SQL_KEYWORDS_FILTER, array($content, $keywords));
                     } else {
                         foreach ($keywords as $key => $value) {
@@ -59,11 +59,12 @@ class Filter extends Base
         }
     }
 
-	/**
-	 * 过滤内容
-	 * @param string|array $content
-	 * @return array|mixed|string
-	 */
+    /**
+     * 过滤内容
+     * @param $content
+     * @return array|mixed|string
+     * @throws Exception
+     */
 	public function content($content)
 	{
 		return $this->html($this->script($content));
@@ -107,11 +108,12 @@ class Filter extends Base
 		}
 	}
 
-	/**
-	 * 过滤脚本
-	 * @param string|array $content
-	 * @return array|mixed
-	 */
+    /**
+     * 过滤脚本
+     * @param $content
+     * @return array|mixed|string|string[]|null
+     * @throws Exception
+     */
 	public function script($content)
 	{
 		if (is_array($content)) {
@@ -123,9 +125,13 @@ class Filter extends Base
 			$content = preg_replace('/<object[^>]*>.*<\/object>/i', OC_EMPTY, $content);
 			$content = preg_replace('/javascript:/i', OC_EMPTY, $content);
 
-			$expression = '/(on('.$this->jsEvents.'))|(('.$this->jsEvents.')\((\s*function\()?)/i';
-			$content = preg_replace($expression, "#\${1}#", $content);
-			
+            if (ocConfig('EVENTS.filters.script_keywords_filter', null)) {
+                $content = $this->fire(self::EVENT_SQL_KEYWORDS_FILTER, array($content, $this->jsEvents));
+            } else {
+                $expression = '/(on('.$this->jsEvents.'))|(('.$this->jsEvents.')\((\s*function\()?)/i';
+                $content = preg_replace($expression, "#\${1}#", $content);
+            }
+
 			return $content;
 		}
 	}
