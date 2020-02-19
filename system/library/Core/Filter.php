@@ -78,6 +78,7 @@ class Filter extends Base
      * @param $content
      * @param $keywords
      * @return string|string[]|null
+     * @throws Exception
      */
     public function eventSqlKeywordsFilter($content, $keywords)
     {
@@ -85,7 +86,8 @@ class Filter extends Base
             $keywords[$key] = "/{$value}/i";
         }
 
-        $content = preg_replace($keywords, "#\${0}#", (string)$content);
+        $addChar = ocConfig('FILTERS.sql_keyword_add_char', '#');
+        $content = preg_replace($keywords, $addChar . "\${0}" . $addChar, (string)$content);
         return $content;
     }
 
@@ -162,11 +164,13 @@ class Filter extends Base
      * 脚本关键字过滤事件处理
      * @param $content
      * @return string|string[]|null
+     * @throws Exception
      */
 	public function eventScriptKeywordsFilter($content)
     {
+        $addChar = ocConfig('FILTERS.sql_keyword_add_char', '#');
         $expression = '/(on('.$this->jsEvents.'))|(('.$this->jsEvents.')\((\s*function\()?)/i';
-        $content = preg_replace($expression, "#\${1}#", $content);
+        $content = preg_replace($expression, $addChar . "\${1}" . $addChar, $content);
         return $content;
     }
 

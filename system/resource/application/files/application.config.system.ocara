@@ -115,6 +115,14 @@ return array(
     ),
 
     /*
+     * 安全过滤配置
+     */
+    'FILTERS' => array(
+        'sql_keyword_add_char' => '#', //SQL关键字首尾增加字符
+        'script_keyword_add_char' => '#', //Javascript等关键字首尾增加字符
+    ),
+
+    /*
      * 验证码在$SESSION中的保存名称
      */
     'VERIFYCODE_NAME' => 'OCSESSCODE',

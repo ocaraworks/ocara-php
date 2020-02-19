@@ -48,7 +48,7 @@ return array(
         ),
 
         /**
-         * 过滤事件
+         * 安全过滤事件
          */
         'filters' => array(
             'sql_keywords_filter' => '', //SQL关键字过滤回调，必须返回值
@@ -58,7 +58,7 @@ return array(
         /*
          * 数据模型Model相关事件
          */
-        'model' => array(
+            'model' => array(
         ),
     )
 );

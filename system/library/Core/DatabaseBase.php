@@ -97,7 +97,7 @@ class DatabaseBase extends Base
             $config['keywords'] = array();
         } else {
             $keywords = is_array($config['keywords']) ? $config['keywords']: explode(',', $config['keywords']);
-            $config['keywords'] = array_map('trim', array_map('strtolower', $keywords));
+            $config['keywords'] = array_map('trim', $keywords);
         }
 
         $this->config = $config;
