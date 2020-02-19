@@ -93,7 +93,7 @@ class Sql extends Base
 	{
 		if ($addSlashes) {
 			$str = $this->database->escapeString($name);
-			if ($str) {
+			if ($str !== false) {
 				return $this->filterSql($str, false, true, true);
 			}
 		}
@@ -140,7 +140,7 @@ class Sql extends Base
 		} else {
 			if ($addSlashes) {
 				$str = $this->database->escapeString($content);
-				if ($str) {
+				if ($str !== false) {
 					return $this->filterSql($str, false);
 				}
 			}
@@ -452,7 +452,7 @@ class Sql extends Base
 		}
 
 		$str = $this->database->escapeString($limit);
-		if ($str) {
+		if ($str !== false) {
 			return $this->filterSql($str, false, true);
 		}
 
@@ -731,7 +731,7 @@ class Sql extends Base
 
 		$str = $this->database->escapeString($val);
 
-		if ($str) {
+		if ($str !== false) {
 			$val = $this->filterSql($str, false);
 		} else {
 			$val = $this->filterSql($val);
