@@ -84,21 +84,13 @@ class Sql extends Base
 	}
 
 	/**
-	 * 转义字符
+	 * 字段名或表名等过滤，仅转义字符
 	 * @param string $name
-	 * @param bool $addSlashes
 	 * @return array|bool|mixed|string
 	 */
-	public function filterName($name, $addSlashes = true)
+	public function filterName($name)
 	{
-		if ($addSlashes) {
-			$str = $this->database->escapeString($name);
-			if ($str !== false) {
-				return $this->filterSql($str, false, true, true);
-			}
-		}
-
-		return $this->filterSql($name, $addSlashes, true, true);
+		return ocService()->filter->addSlashes($name);
 	}
 
     /**
