@@ -43,6 +43,7 @@ return array(
          * 数据库相关事件
          */
         'database' => array(
+            'sql_keywords_filter' => '', //SQL关键字过滤回调
             'before_execute_sql' => '', //执行SQL语句前回调，适合于写SQL语句日志
             'after_execute_sql' => '', //执行SQL语句后回调，适合于写SQL执行结果日志
         ),

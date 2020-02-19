@@ -15,6 +15,7 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Filter extends Base
 {
+    const EVENT_SQL_KEYWORDS_FILTER = 'sql_keywords_filter';
 	protected $jsEvents;
 
 	/**
@@ -35,21 +36,28 @@ class Filter extends Base
      * @return array|bool|mixed|string
      * @throws Exception
      */
-	public function sql($content, $addSlashes = true, array $keywords = array(), $equal = false)
-	{
-		if (is_array($content)) {
-			return array_map(__METHOD__, $content);
-		} else {
-			if ($keywords && ocConfig('DATABASE_FILTER_SQL_KEYWORDS', true)) {
-				if ($equal) {
-					if (in_array(strtolower($content), $keywords)) return false;
-				} else {
-					$content = str_ireplace($keywords, OC_EMPTY, (string)$content);
-				}
-			}
-			return $addSlashes ? $this->addSlashes($content) : $content;
-		}
-	}
+    public function sql($content, $addSlashes = true, array $keywords = array(), $equal = false)
+    {
+        if (is_array($content)) {
+            return array_map(__METHOD__, $content);
+        } else {
+            if ($keywords && ocConfig('DATABASE_FILTER_SQL_KEYWORDS', true)) {
+                if ($equal) {
+                    if (in_array(strtolower($content), $keywords)) return false;
+                } else {
+                    if (ocConfig('EVENTS.database.sql_keywords_filter', null)) {
+                        $content = $this->fire(self::EVENT_SQL_KEYWORDS_FILTER, array($content, $keywords));
+                    } else {
+                        foreach ($keywords as $key => $value) {
+                            $keywords[$key] = "/{$value}/i";
+                        }
+                        $content = preg_replace($keywords, "|#\${0}#|", (string)$content);
+                    }
+                }
+            }
+            return $addSlashes ? $this->addSlashes($content) : $content;
+        }
+    }
 
 	/**
 	 * 过滤内容
@@ -116,7 +124,7 @@ class Filter extends Base
 			$content = preg_replace('/javascript:/i', OC_EMPTY, $content);
 
 			$expression = '/(on('.$this->jsEvents.'))|(('.$this->jsEvents.')\((\s*function\()?)/i';
-			$content = preg_replace($expression, OC_EMPTY, $content);
+			$content = preg_replace($expression, "#\${1}#", $content);
 			
 			return $content;
 		}
