@@ -213,9 +213,8 @@ interface Sql
 	/**
 	 * 转义字符
 	 * @param string $name
-	 * @param bool $addSlashes
 	 */
-	public function filterName($name, $addSlashes = true);
+	public function filterName($name);
 	
 	/**
 	 * SQL安全过滤
