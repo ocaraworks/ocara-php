@@ -545,7 +545,7 @@ class Sql extends Base
 					$this->checkStringCondition($content);
 					break;
 				case 'MORE':
-					if ($content) {
+					if ($content && is_array($content)) {
 						$content = array_map(array($this, 'filterValue'), $content);
 						$content = OC_SPACE . implode(OC_SPACE, $content);
 					}
