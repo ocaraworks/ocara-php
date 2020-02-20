@@ -506,7 +506,7 @@ abstract class DatabaseEntity extends BaseEntity
      * @param $condition
      * @return array
      */
-    protected function getPrimaryCondition($condition)
+    public function getPrimaryCondition($condition)
     {
         $where = array();
         $values = array();
