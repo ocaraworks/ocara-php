@@ -460,6 +460,16 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
+     * 是否有字段
+     * @param $field
+     * @return bool
+     */
+    public function hasField($field)
+    {
+        return in_array($field, $this->getFields());
+    }
+
+    /**
      * 获取自增字段名
      */
     public function getAutoIncrementField()
