@@ -244,22 +244,21 @@ abstract class DatabaseEntity extends BaseEntity
      * 从数据库选择记录
      * @param $values
      * @param null $options
-     * @return DatabaseEntity
+     * @return $this
      */
-    public static function select($values, $options = null)
+    public function select($values, $options = null)
     {
-        $entity = new static();
-        $condition = $entity->getPrimaryCondition($values);
+        $condition = $this->getPrimaryCondition($values);
 
-        $data = $entity
+        $data = $this
             ->getModel()
             ->getRow($condition, $options);
 
         if ($data) {
-            $entity->data($data);
+            $this->data($data);
         }
 
-        return $entity;
+        return $this;
     }
 
     /**
@@ -294,9 +293,9 @@ abstract class DatabaseEntity extends BaseEntity
      * 获取一行对象
      * @param $condition
      * @param array $options
-     * @return static
+     * @return $this
      */
-    public static function selectFrom($condition, $options = array())
+    public function selectFrom($condition, $options = array())
     {
         $options = (array)$options;
 
@@ -310,19 +309,17 @@ abstract class DatabaseEntity extends BaseEntity
             ->limit(1)
             ->getRow(null, $options);
 
-        $entity = new static();
-
         if ($data) {
-            $entity->data($data);
+            $this->data($data);
             $condition = array();
             $primaries = $model::getPrimaries();
             foreach ($primaries as $field) {
-                $condition[$field] = $entity->$field;
+                $condition[$field] = $this->$field;
             }
-            $entity->getPrimaryCondition($condition);
+            $this->getPrimaryCondition($condition);
         }
 
-        return $entity;
+        return $this;
     }
 
     /**
