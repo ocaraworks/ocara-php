@@ -49,12 +49,17 @@ class ModelService extends BaseService
 
 	public function createDatabaseModel()
 	{
-		$connect = ucfirst($this->_connectName);
-		$modelBase = 'DatabaseModel';
-		$connectPath = $this->_connectName . OC_DIR_SEP;
+        $connectName = null;
+        if ($this->_connectName && $this->_connectName != DatabaseFactory::getDefaultServer()) {
+            $connectName = $this->_connectName;
+        }
 
-		$moduleModelDir = "{$this->_mdlname}/privates/model/database/";
-        $entityModelDir = "{$this->_mdlname}/privates/entity/database/";
+        $connectNameDir = ($connectName ? $connectName . '/' : null);
+        $connectNamespace = $connectName ? OC_NS_SEP . $connectName : null;
+		$modelBase = 'DatabaseModel';
+
+		$moduleModelDir = "{$this->_mdlname}/privates/model/database/" . $connectNameDir;
+        $entityModelDir = "{$this->_mdlname}/privates/entity/database/" . $connectNameDir;
 
         switch($this->_mdltype)
         {
@@ -83,8 +88,11 @@ class ModelService extends BaseService
                 $entityPath = ocPath('entity', 'database/');
         }
 
-        $namespace = $rootNamespace;
-        $entityNamespace = $entityRootNamespace;
+        $modelPath = $modelPath . $connectNameDir;
+        $entityPath = $entityPath . $connectNameDir;
+
+        $namespace = $rootNamespace . $connectNamespace;
+        $entityNamespace = $entityRootNamespace . $connectNamespace;
 		$modelName = ucfirst($this->_model) . 'Model';
         $entityName = ucfirst($this->_model) . 'Entity';
         $entityClass = $entityNamespace . OC_NS_SEP . $entityName;
@@ -98,7 +106,7 @@ class ModelService extends BaseService
 			$connect = DatabaseFactory::create($this->_connectName);
             $generator = new Generator($connect);
             $sqlData = $generator->getShowFieldsSql($this->_table, $this->_database);
-            $fieldsInfo = $connect->getFields($sqlData);
+            $fieldsInfo = $connect->getFieldsInfo($sqlData);
 			$fields = $fieldsInfo['list'];
 			$primaryFields = array();
 			foreach ($fields as $fieldName => $fieldInfo) {
@@ -112,6 +120,7 @@ class ModelService extends BaseService
 		}
 
         ocCheckPath($modelPath);
+
         if (ocFileExists($path = $modelPath .  "{$modelName}.php")) {
             $this->showError('Model文件已存在，请先手动删除！');
         }
