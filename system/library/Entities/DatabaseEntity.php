@@ -142,7 +142,7 @@ abstract class DatabaseEntity extends BaseEntity
     {
         $this->selected = array();
         $this->oldData = array();
-        $fields = $this->getModel()->getFieldsName();
+        $fields = $this->getModel()->getFields();
         $this->clearProperties($fields);
         return $this;
     }
@@ -280,7 +280,7 @@ abstract class DatabaseEntity extends BaseEntity
         $this->getPrimaryCondition(array_intersect_key($data, $primaries));
 
         if ($getFullFields) {
-            $fields = $this->getModel()->getFieldsName();
+            $fields = $this->getModel()->getFields();
             $defaultData = array_fill_keys($fields, null);
             $data = array_merge($defaultData, $data);
         }

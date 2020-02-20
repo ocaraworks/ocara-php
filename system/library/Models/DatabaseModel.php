@@ -405,7 +405,7 @@ abstract class DatabaseModel extends ModelBase
         if (!$fieldsInfo) {
             $generator = new Generator($plugin);
             $sqlData = $generator->getShowFieldsSql($this->tableName, $this->databaseName);
-            $fieldsInfo = $plugin->getFields($sqlData);
+            $fieldsInfo = $plugin->getFieldsInfo($sqlData);
         }
 
         if ($fieldsInfo) {
@@ -442,7 +442,7 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 获取字段
      */
-    public function getFields()
+    public function getFieldsInfo()
     {
         if (empty($this->fields)) {
             $this->loadFields();
@@ -454,9 +454,9 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 获取字段
      */
-    public function getFieldsName()
+    public function getFields()
     {
-        return array_keys($this->getFields());
+        return array_keys($this->getFieldsInfo());
     }
 
     /**
@@ -576,7 +576,7 @@ abstract class DatabaseModel extends ModelBase
             ocService()->error->show('fault_save_data');
         }
 
-        $this->getFields();
+        $this->getFieldsInfo();
         $generator = $this->getSqlGenerator($plugin);
         $isFilterData = $this->filterData();
         $isFilterCondition = $this->filterCondition();
@@ -762,7 +762,7 @@ abstract class DatabaseModel extends ModelBase
 	{
 	    $isFilterCondition = $this->filterCondition();
         $plugin = $this->connect();
-        $this->getFields();
+        $this->getFieldsInfo();
         $generator = $this->getSqlGenerator($plugin);
 
         if (!$conditionSql) {
@@ -1174,7 +1174,7 @@ abstract class DatabaseModel extends ModelBase
 	{
 	    $isFilterCondition = $this->filterCondition();
         $plugin = $this->connect(false);
-        $this->getFields();
+        $this->getFieldsInfo();
         $dataType = $dataType ? : ($this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY);
 
 	    $this->pushSql($condition, $options, $queryRow);
@@ -1221,7 +1221,7 @@ abstract class DatabaseModel extends ModelBase
         $generator->setDatabaseName($this->databaseName);
         $generator->setAlias($this->alias);
         $generator->setSql($this->sql);
-        $generator->setFields($this->getFields());
+        $generator->setFields($this->getFieldsInfo());
         $generator->setMaps(static::getConfig('MAPS'));
         $generator->setJoins(static::getConfig('JOINS'));
 
@@ -1849,7 +1849,7 @@ abstract class DatabaseModel extends ModelBase
         }
 
         $model = new static();
-        $fields = $model->getFields();
+        $fields = $model->getFieldsInfo();
         $fieldName = ocHumpToLine($fieldName);
 
         if (array_key_exists($fieldName, $fields)){

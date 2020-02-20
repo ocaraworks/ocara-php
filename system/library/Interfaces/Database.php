@@ -26,7 +26,7 @@ interface Database
 	 * 获取以表字段名为键值的数组
 	 * @param string $table
 	 */
-	public function getFields($table);
+	public function getFieldsInfo($table);
 
 	/**
 	 * 设置数据库编码

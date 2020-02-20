@@ -70,7 +70,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
      * @return array
      * @throws Exception
      */
-	public function getFields($sqlData)
+	public function getFieldsInfo($sqlData)
 	{
 		$data = $this->query($sqlData);
 		$fields = array('autoIncrementField' => OC_EMPTY, 'list' => array());
