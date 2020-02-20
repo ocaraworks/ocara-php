@@ -328,8 +328,7 @@ abstract class DatabaseEntity extends BaseEntity
     /**
      * 新建
      * @param array $data
-     * @return bool
-     * @throws Exception
+     * @return mixed
      */
     public function create(array $data = array())
     {
