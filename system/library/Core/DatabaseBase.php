@@ -87,6 +87,7 @@ class DatabaseBase extends Base
         if (!isset($config['prepare'])) {
             $config['prepare'] = true;
         }
+
         if (!isset($config['pconnect'])) {
             $config['pconnect'] = false;
         }

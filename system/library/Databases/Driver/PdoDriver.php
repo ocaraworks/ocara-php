@@ -359,7 +359,7 @@ class PdoDriver extends DriverBase implements DriverInterface
 	 */
 	public function real_escape_string($str)
 	{
-		return $str;
+		return false;
 	}
 
     /**
