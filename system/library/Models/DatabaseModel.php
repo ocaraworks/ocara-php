@@ -54,12 +54,8 @@ abstract class DatabaseModel extends ModelBase
     protected static $config = array();
     protected static $configPath = array();
 
-    protected static $optionMaps = array(
-        'order' => 'orderBy',
-        'group' => 'groupBy',
-        'limit' => 'limit',
-        'having' => 'having',
-        'more' => 'more'
+    protected static $optionMethods = array(
+        'orderBy', 'groupBy',  'limit', 'having', 'more'
     );
 
     /**
@@ -1158,9 +1154,9 @@ abstract class DatabaseModel extends ModelBase
                 $this->fields($option);
             } else {
                 foreach ($option as $key => $value) {
-                    if (array_key_exists($key, self::$optionMaps)) {
+                    if (in_array($key, self::$optionMethods)) {
                         $value = (array)$value;
-                        call_user_func_array(array($this, self::$optionMaps[$key]), $value);
+                        call_user_func_array(array($this, $key), $value);
                     }
                 }
             }
