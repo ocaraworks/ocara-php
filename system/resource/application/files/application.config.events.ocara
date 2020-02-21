@@ -33,13 +33,6 @@ return array(
         ),
 
         /*
-         * 表单使用事件
-         */
-        'form' => array(
-            'check_error'    => '', //表单检测失败时的事件
-        ),
-
-        /*
          * 数据库相关事件
          */
         'database' => array(

@@ -19,23 +19,11 @@ class FormManager extends ServiceProvider
     protected $form;
     protected $forms = array();
 
-    const EVENT_CHECK_ERROR = 'checkError';
-
     /**
      * 注册服务
      */
 	public function register()
 	{}
-
-    /**
-     * 注册事件
-     * @throws Exception
-     */
-    public function registerEvents()
-    {
-        $this->event(self::EVENT_CHECK_ERROR)
-             ->append(ocConfig(array('EVENTS', 'form', 'check_error'), null));
-    }
 
     /**
      * 新建表单
