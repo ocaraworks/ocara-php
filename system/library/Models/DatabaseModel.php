@@ -811,12 +811,34 @@ abstract class DatabaseModel extends ModelBase
             if ($this->isDebug()) {
                 return $sqlData;
             } else {
-                return $plugin->execute($sqlData);
+                return $plugin->query($sqlData);
             }
 		}
 
 		return false;
 	}
+
+    /**
+     * 直接执行查询语句查询一行
+     * @param $sql
+     * @return bool
+     * @throws Exception
+     */
+    public function queryRow($sql)
+    {
+        $plugin = $this->connect();
+
+        if ($sql) {
+            $sqlData = $this->getSqlData($plugin, $sql);
+            if ($this->isDebug()) {
+                return $sqlData;
+            } else {
+                return $plugin->queryRow($sqlData);
+            }
+        }
+
+        return false;
+    }
 
     /**
      * 获取SQL生成数据
@@ -1096,11 +1118,11 @@ abstract class DatabaseModel extends ModelBase
         if ($this->isDebug()) return $row;
 
 		if (is_object($row)) {
-			return property_exists($row, $field) ? $row->$field : null;
+			return property_exists($row, $field) ? $row->$field : false;
 		}
 
 		$row = (array)$row;
-		$result = isset($row[$field]) ? $row[$field] : OC_EMPTY;
+		$result = isset($row[$field]) ? $row[$field] : false;
 		return $result;
 	}
 
@@ -1213,6 +1235,10 @@ abstract class DatabaseModel extends ModelBase
 		} else {
             $result = $plugin->query($sqlData, $count, $isUnion, $dataType);
 		}
+
+		if ($result === false) {
+		    ocService()->errow->show('failed_database_query', array(json_encode($plugin->getError())));
+        }
 
 		if (!$count && !$queryRow && $this->isPage()) {
 			$result = array('total' => $this->getTotal(), 'data' => $result);

@@ -84,7 +84,8 @@ return array(
 	'failed_select_database'		=> array(2209, '要切换的数据库不存在或已删除！'),
 	'failed_file_lock'				=> array(2210, '文件锁定失败'),
 	'failed_make_dir'				=> array(2211, '文件或目录新建失败'),
-	'failed_database_create'		=> array(2211, '数据库新建记录失败'),
+	'failed_database_create'		=> array(2212, '数据库新建记录失败'),
+	'failed_database_query'          => array(2213, '数据库执行失败！%s'),
 
 	//有误
 	'fault_filename' 				=> array(2300, '文件名有误。'),

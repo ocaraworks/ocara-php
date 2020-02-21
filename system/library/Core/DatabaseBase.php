@@ -295,6 +295,7 @@ class DatabaseBase extends Base
 
         $this->lastSql = $sqlData;
         $result = $this->checkError($result, array($sql, $params), $required);
+
 		return $result;
 	}
 
@@ -349,8 +350,11 @@ class DatabaseBase extends Base
     public function query($sqlData, $count = false, $isUnion = false, $dataType = null)
     {
         $sqlData = $this->formatSqlData($sqlData);
-        $this->execute($sqlData);
-        $result = $this->getResult(false, $count, $isUnion, $dataType);
+        $result = $this->execute($sqlData);
+
+        if ($result !== false) {
+            $result = $this->getResult(false, $count, $isUnion, $dataType);
+        }
 
         return $result;
     }
@@ -367,8 +371,11 @@ class DatabaseBase extends Base
     public function queryRow($sqlData, $count = false, $isUnion = false, $dataType = null)
     {
         $sqlData = $this->formatSqlData($sqlData);
-        $this->execute($sqlData);
-        $result = $this->getResult(true, $count, $isUnion, $dataType);
+        $result = $this->execute($sqlData);
+
+        if ($result !== false) {
+            $result = $this->getResult(true, $count, $isUnion, $dataType);
+        }
 
         return $result;
     }
