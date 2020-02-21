@@ -58,7 +58,9 @@ abstract class DatabaseModel extends ModelBase
     protected static $optionMaps = array(
         'order' => 'orderBy',
         'group' => 'groupBy',
-        'limit' => 'limit'
+        'limit' => 'limit',
+        'having' => 'having',
+        'more' => 'more'
     );
 
     /**
