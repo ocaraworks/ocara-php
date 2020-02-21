@@ -613,7 +613,7 @@ class Sql extends Base
 		foreach ($fields as $key => $value) {
 			if (!self::isOptionFieldSql($value)) {
 				$value = $this->getFieldNameSql($value,  $alias);
-				if (!preg_match('/\sas\s/', $value, $mt)) {
+				if (!preg_match('/\sas\s/i', $value, $mt)) {
 					$value = $this->transformFields($value, $aliasFields, $currentAlias, true);
 				}
 				$fields[$key] = $value;
