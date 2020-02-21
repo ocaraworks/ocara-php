@@ -22,16 +22,16 @@ class Html extends Base
      * @param bool $checked
      * @return string
      */
-	public static function input($type, $name, $attributes = null, $checked = false)
+	public function input($type, $name, $attributes = null, $checked = false)
 	{
-		$attributes = self::parseAttributes($attributes);
+		$attributes = $this->parseAttributes($attributes);
 		$attributes['type'] = $type;
 		
 		if (($type == 'radio' || $type == 'checkbox') && $checked) {
 			$attributes['checked'] = 'checked';
 		} 
 		
-		return self::createHtmlTag('input', $name, $attributes, false);
+		return $this->createHtmlTag('input', $name, $attributes, false);
 	}
 
     /**
@@ -39,7 +39,7 @@ class Html extends Base
      * @param array $attributes
      * @return array
      */
-	protected static function parseAttributes($attributes)
+	protected function parseAttributes($attributes)
 	{
 		if (!is_array($attributes)) {
 			$attributes = array(
@@ -55,9 +55,9 @@ class Html extends Base
      * @param array|null $attributes
      * @return string
      */
-	public static function text($name, $attributes = null)
+	public function text($name, $attributes = null)
 	{
-		return self::input('text', $name, $attributes);
+		return $this->input('text', $name, $attributes);
 	}
 
     /**
@@ -66,9 +66,9 @@ class Html extends Base
      * @param array|null $attributes
      * @return string
      */
-	public static function password($name, $attributes = null)
+	public function password($name, $attributes = null)
 	{
-		return self::input('password', $name, $attributes);
+		return $this->input('password', $name, $attributes);
 	}
 
     /**
@@ -77,9 +77,9 @@ class Html extends Base
      * @param array|null $attributes
      * @return string
      */
-	public static function file($name, $attributes = null)
+	public function file($name, $attributes = null)
 	{
-		return self::input('file', $name, $attributes);
+		return $this->input('file', $name, $attributes);
 	}
 
     /**
@@ -88,9 +88,9 @@ class Html extends Base
      * @param array|null $attributes
      * @return string
      */
-	public static function hidden($name, $attributes = null)
+	public function hidden($name, $attributes = null)
 	{
-		return self::input('hidden', $name, $attributes);
+		return $this->input('hidden', $name, $attributes);
 	}
 
     /**
@@ -99,10 +99,10 @@ class Html extends Base
      * @param array|null $attributes
      * @return string
      */
-	public static function button($name, array $attributes = null)
+	public function button($name, array $attributes = null)
 	{
-        $attributes = self::parseAttributes($attributes);
-		return self::createHtmlTag('button', $name, $attributes, false);
+        $attributes = $this->parseAttributes($attributes);
+		return $this->createHtmlTag('button', $name, $attributes, false);
 	}
 
     /**
@@ -113,9 +113,9 @@ class Html extends Base
      * @param bool $checked
      * @return string
      */
-	public static function radio($name, $desc, $attributes = null, $checked = false)
+	public function radio($name, $desc, $attributes = null, $checked = false)
 	{
-		return self::input('radio', $name, $attributes, $checked) . $desc;
+		return $this->input('radio', $name, $attributes, $checked) . $desc;
 	}
 
     /**
@@ -126,9 +126,9 @@ class Html extends Base
      * @param array $attributes
      * @return array
      */
-	public static function radioMulti($name, $radios, $checked = array(), array $attributes = array())
+	public function radioMulti($name, $radios, $checked = null, array $attributes = array())
 	{
-		return self::getRadios($name, $radios, $checked, $attributes, 'radio');
+		return $this->getRadios($name, $radios, $checked, $attributes, 'radio');
 	}
 
     /**
@@ -139,9 +139,9 @@ class Html extends Base
      * @param bool $checked
      * @return string
      */
-	public static function checkbox($name, $desc, $attributes = null, $checked = false)
+	public function checkbox($name, $desc, $attributes = null, $checked = false)
 	{
-		return self::input('checkbox', $name, $attributes, $checked) . $desc;
+		return $this->input('checkbox', $name, $attributes, $checked) . $desc;
 	}
 
     /**
@@ -152,9 +152,9 @@ class Html extends Base
      * @param array $attributes
      * @return array
      */
-	public static function checkboxMulti($name, array $checkboxes, $checked = array(), array $attributes = array())
+	public function checkboxMulti($name, array $checkboxes, $checked = array(), array $attributes = array())
 	{
-		return self::getRadios($name, $checkboxes, $checked, $attributes, 'checkbox');
+		return $this->getRadios($name, $checkboxes, $checked, $attributes, 'checkbox');
 	}
 
     /**
@@ -166,7 +166,7 @@ class Html extends Base
      * @param $method
      * @return array
      */
-	protected static function getRadios($name, $data, $checked, $attributes, $method)
+	protected function getRadios($name, $data, $checked, $attributes, $method)
 	{
 		$checked = (array)$checked;
 		$boxes   = array();
@@ -205,24 +205,21 @@ class Html extends Base
      * @param bool $optgroup
      * @return string
      */
-	public static function select($name, $options = array(), $attributes = null, $nullText = false, $optgroup = false)
+	public function select($name, $options = array(), $attributes = null, $nullText = false, $optgroup = false)
 	{
 		$value = false;
 		
 		if (is_numeric($attributes) || is_string($attributes)) {
 			$value = $attributes;
 		} elseif (is_array($attributes)) {
-			$value = ocDel($attributes, 'value');
-			if (array_key_exists('(value)', $attributes)) {
-				$attributes['value'] = ocDel($attributes, '(value)');
-			}
-		} 
+			$value = isset($attributes['value']) ? $attributes['value'] : null;
+		}
 		
-		$option     = self::options($options, $value, $nullText, $optgroup);
+		$option     = $this->options($options, $value, $nullText, $optgroup);
 		$content    = $option ? : true;
 		$attributes = $attributes && is_array($attributes) ? $attributes : array();
-		$attributes = self::parseAttributes($attributes);
-		$result     = self::createHtmlTag('select', $name, $attributes, $content);
+		$attributes = $this->parseAttributes($attributes);
+		$result     = $this->createHtmlTag('select', $name, $attributes, $content);
 
 		return $result;
 	}
@@ -235,9 +232,9 @@ class Html extends Base
      * @param bool $nullText
      * @return string
      */
-	public static function selectGroup($name, $options, $attributes = null, $nullText = false)
+	public function selectGroup($name, $options, $attributes = null, $nullText = false)
 	{
-		return self::select($name, $options, $attributes, $nullText, true);
+		return $this->select($name, $options, $attributes, $nullText, true);
 	}
 
     /**
@@ -248,11 +245,11 @@ class Html extends Base
      * @param bool $optgroup
      * @return string|null
      */
-	public static function options($options, $value = null, $nullText = null, $optgroup = false)
+	public function options($options, $value = null, $nullText = null, $optgroup = false)
 	{
 		if($nullText) {
 			$attrs = array('value'=> false);
-			$nullText = self::createHtmlTag('option', false, $attrs, $nullText ? $nullText : true);
+			$nullText = $this->createHtmlTag('option', false, $attrs, $nullText ? $nullText : true);
 		}
 
 		if (is_array($options)) {
@@ -261,12 +258,12 @@ class Html extends Base
 				foreach ($options as $row) {
 					if (isset($row['optgroup']) && $row['optgroup']) {
 						$str = $str . "<optgroup label=\"{$row['optgroup']}\">";
-						$str = $str . self::getOptions($row['options'], $value);
+						$str = $str . $this->getOptions($row['options'], $value);
 						$str = $str . "</optgroup>";
 					}
 				}
 			} else {	
-				$str = $str . self::getOptions($options, $value);
+				$str = $str . $this->getOptions($options, $value);
 			}
 			return $nullText . $str;
 		}
@@ -280,7 +277,7 @@ class Html extends Base
      * @param $value
      * @return bool|string
      */
-	protected static function getOptions($options, $value) 
+	protected function getOptions($options, $value) 
 	{
 		$str = false;
 		
@@ -292,7 +289,7 @@ class Html extends Base
 				$attrs['selected'] = 'selected';
 			}
 			$str = $str .
-				self::createHtmlTag(
+				$this->createHtmlTag(
 					'option', false, $attrs, $val ? $val : true
 				);
 		}
@@ -306,24 +303,17 @@ class Html extends Base
      * @param null $attributes
      * @return string
      */
-	public static function textarea($name, $attributes = null)
+	public function textarea($name, $attributes = null)
 	{
 		if (is_array($attributes)) {
-			if (array_key_exists('value', $attributes)) {
-				$value = ocDel($attributes, 'value');
-			} else {
-				$value = false;
-			}
-			if (array_key_exists('(value)', $attributes)) {
-				$attributes['value'] = ocDel($attributes, '(value)');
-			}
+            $value = isset($attributes['value']) ? $attributes['value'] : null;
 		} else {
 			$value = $attributes;
 			$attributes = array();
 		}
 
 		$content = $value ? : true;
-		$result  = self::createHtmlTag('textarea', $name, $attributes, $content);
+		$result  = $this->createHtmlTag('textarea', $name, $attributes, $content);
 
 		return $result;
 	}
@@ -336,7 +326,7 @@ class Html extends Base
      * @param bool $content
      * @return string
      */
-	protected static function createHtmlTag($type, $name, array $attributes = array(), $content = true)
+	protected function createHtmlTag($type, $name, array $attributes = array(), $content = true)
 	{
 		$type = strtolower($type);
 
@@ -348,7 +338,7 @@ class Html extends Base
 			$attributes = array_merge($array, $attributes);
 		} 
 		
-		$html = sprintf("<%s%s", $type, self::getAttr($attributes));
+		$html = sprintf("<%s%s", $type, $this->getAttr($attributes));
 
 		if ($content) {
 			$content = $content === true ? false : $content;
@@ -367,9 +357,9 @@ class Html extends Base
      * @param bool $content
      * @return string
      */
-	public static function createElement($type, array $attributes = array(), $content = true)
+	public function createElement($type, array $attributes = array(), $content = true)
 	{
-		return self::createHtmlTag($type, false, $attributes, $content);
+		return $this->createHtmlTag($type, false, $attributes, $content);
 	}
 
 	/**
@@ -377,7 +367,7 @@ class Html extends Base
 	 * @param $name
 	 * @return string
 	 */
-	public static function createEndHtmlTag($name)
+	public function createEndHtmlTag($name)
 	{
 		return '</' . $name . '>';
 	}
@@ -387,7 +377,7 @@ class Html extends Base
      * @param array $attributes
      * @return bool|string
      */
-	public static function getAttr(array $attributes)
+	public function getAttr(array $attributes)
 	{
 		$str = false;
 		foreach ($attributes as $key => $value) {
