@@ -48,7 +48,6 @@ abstract class DatabaseModel extends ModelBase
     protected $sql = array();
     protected $fields = array();
     protected $joins = array();
-    protected $unions = array();
     protected $relateShardingData = array();
     protected $relateShardingInfo = array();
 
