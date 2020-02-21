@@ -55,6 +55,12 @@ abstract class DatabaseModel extends ModelBase
     protected static $config = array();
     protected static $configPath = array();
 
+    protected static $optionMaps = array(
+        'order' => 'orderBy',
+        'group' => 'groupBy',
+        'limit' => 'limit'
+    );
+
     /**
      * 初始化
      * DatabaseModel constructor.
@@ -1151,9 +1157,9 @@ abstract class DatabaseModel extends ModelBase
                 $this->fields($option);
             } else {
                 foreach ($option as $key => $value) {
-                    if (method_exists($this, $key)) {
+                    if (array_key_exists($key, self::$optionMaps)) {
                         $value = (array)$value;
-                        call_user_func_array(array($this, $key), $value);
+                        call_user_func_array(array($this, self::$optionMaps[$key]), $value);
                     }
                 }
             }
@@ -1622,6 +1628,24 @@ abstract class DatabaseModel extends ModelBase
 		$this->sql['option']['page'] = true;
 		return $this->limit($limitInfo['offset'], $limitInfo['rows']);
 	}
+
+    /**
+     * 清除查询选项
+     * @param array $optionName
+     * @param bool $delete
+     * @return $this
+     */
+	public function stripOptions($optionName, $delete = false)
+    {
+        if (!empty($this->sql['option'])) {
+            if ($delete) {
+                ocDel($this->sql['option'], $optionName);
+            } else {
+                ocSet($this->sql['option'], $optionName, array());
+            }
+        }
+        return $this;
+    }
 
 	/**
 	 * 绑定占位符参数

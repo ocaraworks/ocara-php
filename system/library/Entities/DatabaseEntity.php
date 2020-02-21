@@ -246,12 +246,18 @@ abstract class DatabaseEntity extends BaseEntity
      * @param null $options
      * @return $this
      */
-    public function select($values, $options = null)
+    public function select($values, array $options = array())
     {
+        if (isset($options['fields'])) {
+            $options['fields'] = null;
+            unset($options['fields']);
+        }
+
         $condition = $this->getPrimaryCondition($values);
 
         $data = $this
             ->getModel()
+            ->stripOptions('fields')
             ->getRow($condition, $options);
 
         if ($data) {
@@ -295,16 +301,15 @@ abstract class DatabaseEntity extends BaseEntity
      * @param array $options
      * @return $this
      */
-    public function selectFrom($condition, $options = array())
+    public function selectFrom($condition, array $options = array())
     {
-        $options = (array)$options;
-
         if (isset($options['fields'])) {
-            ocDel($options, 'fields');
+            $options['fields'] = null;
+            unset($options['fields']);
         }
 
-        $model = static::getModelClass();
-        $data = $model::build()
+        $data = $this->getModel()
+            ->stripOptions('fields')
             ->where($condition)
             ->limit(1)
             ->getRow(null, $options);
@@ -312,6 +317,7 @@ abstract class DatabaseEntity extends BaseEntity
         if ($data) {
             $this->data($data);
             $condition = array();
+            $model = static::getModelClass();
             $primaries = $model::getPrimaries();
             foreach ($primaries as $field) {
                 $condition[$field] = $this->$field;
