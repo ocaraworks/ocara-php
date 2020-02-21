@@ -243,7 +243,7 @@ abstract class DatabaseEntity extends BaseEntity
     /**
      * 从数据库选择记录
      * @param $values
-     * @param null $options
+     * @param array $options
      * @return $this
      */
     public function select($values, array $options = array())
