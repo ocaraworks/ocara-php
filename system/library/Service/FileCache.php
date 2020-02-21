@@ -102,7 +102,7 @@ class FileCache extends ServiceBase
      * @param int $tabNum
      * @return string
      */
-	protected function writeArray($data, $tabNum = 0)
+	public function writeArray($data, $tabNum = 0)
 	{
         $tabNum = $tabNum + 1;
 		$tab = str_repeat("\t", $tabNum);
