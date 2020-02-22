@@ -699,7 +699,8 @@ class DatabaseBase extends Base
 
     /**
      * 显示错误信息
-     * @param $error
+     * @param array|string $error
+     * @param array $params
      */
 	public function showError($error = null, $params = array())
 	{
@@ -731,7 +732,7 @@ class DatabaseBase extends Base
 		$errorExists = $this->errorExists();
 		$error = $errorExists ? $this->getError() : null;
         $params = array();
-        
+
 		if ($sqlData) {
 		    $dateFormat = ocConfig('DATE_FORMAT.datetime');
 			$params = array($sqlData, $errorExists, $error, $ret, date($dateFormat));
