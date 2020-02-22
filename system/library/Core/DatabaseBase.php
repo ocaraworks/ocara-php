@@ -730,7 +730,8 @@ class DatabaseBase extends Base
 		$this->setError();
 		$errorExists = $this->errorExists();
 		$error = $errorExists ? $this->getError() : null;
-
+        $params = array();
+        
 		if ($sqlData) {
 		    $dateFormat = ocConfig('DATE_FORMAT.datetime');
 			$params = array($sqlData, $errorExists, $error, $ret, date($dateFormat));
