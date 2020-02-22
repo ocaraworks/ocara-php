@@ -180,12 +180,14 @@ class Form extends Base
     /**
      * 添加关联Model
      * @param $class
-     * @param null $alias
+     * @param string $alias
      * @return $this
      */
-	public function model($class, $alias = null)
+	public function model($class, $alias)
 	{
-		$alias = $alias ? : $class;
+	    if (empty($alias)) {
+	        ocService()->error->show('need_model_alias');
+        }
 		$this->models[$alias] = $class;
 		return $this;
 	}

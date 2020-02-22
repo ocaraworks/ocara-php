@@ -70,6 +70,7 @@ return array(
 	'need_create_primary_data'      => array(2112, '缺少主键数据无法添加记录！'),
 	'need_entity_class'             => array(2113, '缺少实体类'),
 	'need_primary_values'           => array(2114, '查询字段列表缺少主键字段，无法新建ORM实体对象。'),
+	'need_model_alias'              => array(2115, '需要指定模型别名。'),
 
 	//失败
 	'failed_db_init'				=> array(2200, '数据库初始化失败。'),
@@ -85,7 +86,7 @@ return array(
 	'failed_file_lock'				=> array(2210, '文件锁定失败'),
 	'failed_make_dir'				=> array(2211, '文件或目录新建失败'),
 	'failed_database_create'		=> array(2212, '数据库新建记录失败'),
-	'failed_database_query'          => array(2213, '数据库执行失败！%s'),
+	'failed_database_query'         => array(2213, '数据库执行失败！%s'),
 
 	//有误
 	'fault_filename' 				=> array(2300, '文件名有误。'),
