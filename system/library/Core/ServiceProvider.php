@@ -173,10 +173,11 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 属性不存在时的处理
-     * @param string $key
+     * @param $key
+     * @param $reason
      * @return mixed|null
      */
-    public function __none($key)
+    public function __none($key, $reason)
     {
         $instance = $this->loadService($key);
         if ($instance) {

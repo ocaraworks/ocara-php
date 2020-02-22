@@ -242,19 +242,4 @@ abstract class ControllerBase extends serviceProvider
         $this->models[$class] = new $class();
         return $this->models[$class];
     }
-
-    /**
-     * 获取不可访问的属性时
-     * @param $key
-     * @param $reason
-     * @return mixed|null
-     */
-	public function _none($key, $reason)
-	{
-		if ($instance = $this->loadService($key)) {
-			return $instance;
-		}
-
-        ocService()->error->show('no_property', array($key, $reason));
-	}
 }
