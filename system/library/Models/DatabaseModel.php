@@ -610,7 +610,10 @@ abstract class DatabaseModel extends ModelBase
             $sqlData = $generator->getInsertSql($this->tableName, $data, $isFilterData);
         }
 
-        if ($this->isDebug()) return $sqlData;
+        if ($this->isDebug()) {
+            $this->debug(false);
+            return $sqlData;
+        }
 
         $this->pushTransaction($plugin);
         $result = $data ? $plugin->execute($sqlData) : false;
@@ -640,7 +643,10 @@ abstract class DatabaseModel extends ModelBase
             $sqlData = array($sql, array());
         }
 
-        if ($this->isDebug()) return $sqlData;
+        if ($this->isDebug()) {
+            $this->debug(false);
+            return $sqlData;
+        }
 
         $result = $sqlData ? $plugin->queryRow($sqlData) : 0;
         return $result ? $result['id'] : 0;
@@ -660,7 +666,10 @@ abstract class DatabaseModel extends ModelBase
         $table = $generator->getTableFullname($table);
         $sqlData = $generator->getSelectSql(1, $table, array('limit' => 1));
 
-        if ($this->isDebug()) return $sqlData;
+        if ($this->isDebug()) {
+            $this->debug(false);
+            return $sqlData;
+        }
 
         $result = $plugin->execute($sqlData);
 
@@ -789,9 +798,12 @@ abstract class DatabaseModel extends ModelBase
         $this->pushTransaction($plugin);
         $sqlData = $generator->getDeleteSql($this->tableName, $conditionSql);
 
-        if ($this->isDebug()) return $sqlData;
+        if ($this->isDebug()) {
+            $this->debug(false);
+            return $sqlData;
+        }
 
-		$result = $plugin->execute($sqlData);
+        $result = $plugin->execute($sqlData);
 		$this->clearSql();
 		return $result;
 	}
@@ -809,6 +821,7 @@ abstract class DatabaseModel extends ModelBase
 		if ($sql) {
             $sqlData = $this->getSqlData($plugin, $sql);
             if ($this->isDebug()) {
+                $this->debug(false);
                 return $sqlData;
             } else {
                 return $plugin->query($sqlData);
@@ -831,6 +844,7 @@ abstract class DatabaseModel extends ModelBase
         if ($sql) {
             $sqlData = $this->getSqlData($plugin, $sql);
             if ($this->isDebug()) {
+                $this->debug(false);
                 return $sqlData;
             } else {
                 return $plugin->queryRow($sqlData);
@@ -1060,7 +1074,8 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
-     *
+     * 设置是否$debug
+     * @param bool $debug
      * @return $this
      */
     public function debug($debug = true)
@@ -1228,7 +1243,10 @@ abstract class DatabaseModel extends ModelBase
 
         $sqlData = $generator->genSelectSql($count, $unions, $isFilterCondition);
 
-        if ($this->isDebug()) return $sqlData;
+        if ($this->isDebug()) {
+            $this->debug(false);
+            return $sqlData;
+        }
 
 		if ($queryRow) {
             $result = $plugin->queryRow($sqlData, $count, $isUnion, $dataType);
