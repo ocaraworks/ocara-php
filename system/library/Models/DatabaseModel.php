@@ -789,7 +789,7 @@ abstract class DatabaseModel extends ModelBase
         $this->pushTransaction($plugin);
         $sqlData = $generator->getDeleteSql($this->tableName, $conditionSql);
 
-        if ($this->debug()) return $sqlData;
+        if ($this->isDebug()) return $sqlData;
 
 		$result = $plugin->execute($sqlData);
 		$this->clearSql();
