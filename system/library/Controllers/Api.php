@@ -50,8 +50,8 @@ class Api extends ControllerBase implements ControllerInterface
         if (!$this->isFormSubmit()) {
             if (method_exists($this, 'isSubmit')) {
                 $this->isFormSubmit($this->isSubmit());
-            } elseif ($this->submitMethod() == 'post') {
-                $this->isFormSubmit($this->request->isPost());
+            } elseif ($this->request->isPost()) {
+                $this->isFormSubmit(true);
             }
         }
 

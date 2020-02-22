@@ -152,13 +152,12 @@ class FormManager extends ServiceProvider
 
     /**
      * 验证表单
-     * @param $data
-     * @return bool
+     * @param $requestToken
+     * @return mixed
      * @throws Exception
      */
-	public function checkForm($data)
+	public function checkForm($requestToken)
 	{
-	    $requestToken = ocGet($this->getTokenName(), $data, null);
         $postForm = $this->getSubmitForm($requestToken);
 		return $postForm;
 	}
@@ -170,7 +169,7 @@ class FormManager extends ServiceProvider
      */
     public static function getTokenName()
     {
-        return '_oc_' . ocConfig(array('FORM', 'token_tag'), '_form_token_name');
+        return '_oc_' . ocConfig(array('FORM', 'token_tag'), 'form_token_name');
     }
 
     /**

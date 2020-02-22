@@ -253,6 +253,27 @@ class Request extends Base
 		return $this->getRequestValue($_REQUEST, $key, $default);
 	}
 
+    /**
+     * 获取REQUEST参数值（优先级$_POST、$_GET和$_COOKIE）
+     * @param string $key
+     * @param mixed $default
+     * @return array|string|null
+     */
+	public function getCommonRequest($key = null, $default = null)
+    {
+        $result = $this->getPost($key);
+
+        if (!$result) {
+            $result = $this->getGet($key);
+            if (!$result) {
+                $result = $this->getCookie($key);
+            }
+        }
+
+        $result = $result ?: (isset($default) ? $default : null);
+        return $result;
+    }
+
 	/**
 	 * 获取值
 	 * @param $data

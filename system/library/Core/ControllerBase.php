@@ -14,15 +14,14 @@ defined('OC_PATH') or exit('Forbidden!');
 
 abstract class ControllerBase extends serviceProvider
 {
-	/**
-	 * @var $_provider 控制器提供者
+    /**
+     * @var $_provider 控制器提供者
      * @var $isFormSubmit 是否POST提交
      * @var $checkForm 是否检测表单
-	 */
+     */
     protected $route;
-	protected $models;
+    protected $models;
     protected $isFormSubmit = false;
-    protected $submitMethod = 'post';
     protected $checkForm = true;
     protected $hasRender = false;
     protected $contentType;
@@ -33,12 +32,12 @@ abstract class ControllerBase extends serviceProvider
     const EVENT_AFTER_ACTION = 'afterAction';
     const EVENT_AFTER_CREATE_FORM = 'afterCreateForm';
 
-	/**
-	 * 初始化设置
-	 */
-	public function initialize()
-	{
-	    if ($this instanceof \Ocara\Controllers\Api) {
+    /**
+     * 初始化设置
+     */
+    public function initialize()
+    {
+        if ($this instanceof \Ocara\Controllers\Api) {
             ocService()->exceptionHandler->setResponseFormat(ExceptionHandler::RESPONSE_FORMAT_API);
         } else {
             ocService()->exceptionHandler->setResponseFormat(ExceptionHandler::RESPONSE_FORMAT_COMMON);
@@ -52,17 +51,17 @@ abstract class ControllerBase extends serviceProvider
 
         if (!in_array(PHP_SAPI, array('cli'))) $this->setPlugin($this->view);
 
-		method_exists($this, '__start') && $this->__start();
-		method_exists($this, '__module') && $this->__module();
-		method_exists($this, '__control') && $this->__control();
-	}
+        method_exists($this, '__start') && $this->__start();
+        method_exists($this, '__module') && $this->__module();
+        method_exists($this, '__control') && $this->__control();
+    }
 
     /**
      * 注册基本组件
      */
     public function register()
     {
-        $this->container->bindSingleton('db', function(){
+        $this->container->bindSingleton('db', function () {
             DatabaseFactory::create();
         });
 
@@ -82,10 +81,10 @@ abstract class ControllerBase extends serviceProvider
     public function registerEvents()
     {
         $this->event(self::EVENT_AFTER_CREATE_FORM)
-             ->append(array($this, 'afterCreateForm'));
+            ->append(array($this, 'afterCreateForm'));
 
         $this->event(self::EVENT_AFTER_ACTION)
-             ->append(array($this, 'afterAction'));
+            ->append(array($this, 'afterAction'));
     }
 
     /**
@@ -159,20 +158,6 @@ abstract class ControllerBase extends serviceProvider
     }
 
     /**
-     * 设置和获取表单提交方式
-     * @param string $method
-     * @return string
-     */
-    public function submitMethod($method = null)
-    {
-        if (isset($method)) {
-            $method = $method == 'get' ? 'get' : 'post';
-            $this->submitMethod = $method;
-        }
-        return $this->submitMethod;
-    }
-
-    /**
      * 设置和获取是否表单提交
      * @param bool $isFormSubmit
      * @return bool
@@ -184,19 +169,6 @@ abstract class ControllerBase extends serviceProvider
         } else {
             return $this->isFormSubmit;
         }
-    }
-
-    /**
-     * 获取表单提交的数据
-     * @param null $key
-     * @param null $default
-     * @return mixed
-     */
-    public function getSubmitData($key = null, $default = null)
-    {
-        $data = $this->submitMethod == 'post' ? $_POST : $_GET;
-        $data = ocService()->request->getRequestValue($data, $key, $default);
-        return $data;
     }
 
     /**
@@ -242,11 +214,11 @@ abstract class ControllerBase extends serviceProvider
      */
     public function checkForm()
     {
-        $this->isFormSubmit();
-        if (!($this->isFormSubmit && $this->checkForm && $this->formManager->getForm()))
+        if (!($this->isFormSubmit() && $this->checkForm && $this->formManager->getForm()))
             return true;
 
-        return $this->formManager->checkForm($this->getSubmitData());
+        $token = $this->request->getCommonRequest(FormManager::getTokenName());
+        return $this->formManager->checkForm($token);
     }
 
     /**
