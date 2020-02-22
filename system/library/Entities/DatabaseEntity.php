@@ -488,7 +488,7 @@ abstract class DatabaseEntity extends BaseEntity
         $this->fire(self::EVENT_AFTER_DELETE);
 
         if ($this->isUseTransaction()) {
-            ocService()->transaction->commint();
+            ocService()->transaction->commit();
         }
 
         return $result;

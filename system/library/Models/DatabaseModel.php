@@ -1128,9 +1128,10 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getValue($field, $condition = false)
 	{
+	    $isDebug = $this->isDebug();
 		$row = $this->getRow($condition, $field);
 
-        if ($this->isDebug()) return $row;
+        if ($isDebug) return $row;
 
 		if (is_object($row)) {
 			return property_exists($row, $field) ? $row->$field : false;
@@ -1149,14 +1150,16 @@ abstract class DatabaseModel extends ModelBase
      */
 	public function getTotal($executeOptions = array())
 	{
+	    $isDebug = $this->isDebug();
 		$queryRow = true;
+
 		if (!empty($this->sql['unions']) || !empty($this->sql['option']['group'])) {
 			$queryRow = false;
 		}
 
 		$result = $this->baseFind(false, false, $queryRow, true, null, $executeOptions);
 
-        if ($this->isDebug()) return $result;
+        if ($isDebug) return $result;
 
 		if ($result) {
 			if (!$queryRow) {
