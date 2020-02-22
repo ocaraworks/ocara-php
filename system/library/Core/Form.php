@@ -183,11 +183,13 @@ class Form extends Base
      * @param string $alias
      * @return $this
      */
-	public function model($class, $alias)
+	public function model($class, $alias = null)
 	{
-	    if (empty($alias)) {
-	        ocService()->error->show('need_model_alias');
+	    if (!$alias) {
+            $modelClass = substr($class, strrpos($class, OC_NS_SEP) + 1);
+            $alias = lcfirst(ocStripTail($modelClass, 'Model'));
         }
+
 		$this->models[$alias] = $class;
 		return $this;
 	}

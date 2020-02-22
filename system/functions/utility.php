@@ -792,6 +792,25 @@ function ocSeparateDir($filePath, $separateDir)
 }
 
 /**
+ * 去除尾部字符串
+ * @param $str
+ * @param $tail
+ * @return false|string
+ */
+function ocStripTail($str, $tail)
+{
+    $modelLength = strlen($tail);
+
+    if (substr($str, -$modelLength) == $tail) {
+        $str = substr($str, 0, - $modelLength);
+    } else {
+        $str = $str;
+    }
+
+    return $str;
+}
+
+/**
  * 文件首字母大写
  * @param $path
  * @return string
