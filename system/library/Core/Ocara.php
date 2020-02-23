@@ -129,7 +129,7 @@ final class Ocara
 	{
 		ocImport(OC_ROOT . 'pass/Update.php');
 		$args = func_get_args();
-		return class_exists('Update', false) ? Update::run($args) : false;
+		return class_exists('Ocara\Core\Update', false) ? Update::run($args) : false;
 	}
 
     /**

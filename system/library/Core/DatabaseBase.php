@@ -221,7 +221,7 @@ class DatabaseBase extends Base
 			list($path, $namespace) = $classInfo;
 			include_once($path);
 			$class = $namespace . 'Databases\Driver' . OC_NS_SEP . $class;
-			if (class_exists($class, false)) {
+			if (class_exists($class)) {
 				$object = new $class();
 				return $object;
 			}

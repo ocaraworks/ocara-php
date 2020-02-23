@@ -56,7 +56,7 @@ final class Invoke
 		}
 
 		include_once($path);
-		if (!class_exists('\Ocara\Core\Ocara', false)) {
+		if (!class_exists('\Ocara\Core\Ocara')) {
             throw new Exception('Lost Ocara class!');
 		}
 

@@ -94,7 +94,7 @@ class CacheFactory extends Base
 			list($path, $namespace) = $classInfo;
 			include_once($path);
 			$class  = $namespace . 'Core\Caches' . OC_NS_SEP . $type;
-			if (class_exists($class, false)) {
+			if (class_exists($class)) {
 				$config['connect_name'] = $connectName;
 				$object = new $class($config, $required);
 				return $object;
