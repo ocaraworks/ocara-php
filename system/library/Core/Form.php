@@ -150,22 +150,7 @@ class Form extends Base
 		$formElement = $plugin->createElement('form', $this->attributes, null);
         $begin = $formElement . PHP_EOL . "\t" . $tokenElement;
 
-		$this->loadModel();
 		return $begin . PHP_EOL;
-	}
-
-    /**
-     * 加载Model的配置
-     * @return $this
-     */
-	public function loadModel()
-	{
-		foreach ($this->models as $key => $model) {
-			$this->lang = array_merge($this->lang, $model::getConfig('LANG'));
-			$this->maps = array_merge($this->maps, $model::getConfig('MAPS'));
-		}
-
-		return $this;
 	}
 
     /**
@@ -189,6 +174,9 @@ class Form extends Base
             $modelClass = substr($class, strrpos($class, OC_NS_SEP) + 1);
             $alias = lcfirst(ocStripTail($modelClass, 'Model'));
         }
+
+        $this->lang = array_merge($this->lang, $class::getConfig('LANG'));
+        $this->maps = array_merge($this->maps, $class::getConfig('MAPS'));
 
 		$this->models[$alias] = $class;
 		return $this;
