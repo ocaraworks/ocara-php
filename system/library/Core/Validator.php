@@ -162,7 +162,7 @@ class Validator extends Base
      * @param null $modelClass
      * @return $this
      */
-    public function skip($field, $modelClass = null)
+    public function skipRule($field, $modelClass = null)
     {
         if ($modelClass) {
             $modelClass = trim($modelClass, OC_NS_SEP);
