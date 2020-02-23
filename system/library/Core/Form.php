@@ -170,6 +170,10 @@ class Form extends Base
      */
 	public function model($class, $alias = null)
 	{
+	    if (class_exists($class, false)) {
+	        ocService()->error->show('not_exists_model_class', array($class));
+        }
+
 	    if (!$alias) {
             $modelClass = substr($class, strrpos($class, OC_NS_SEP) + 1);
             $alias = lcfirst(ocStripTail($modelClass, 'Model'));
@@ -177,8 +181,8 @@ class Form extends Base
 
         $this->lang = array_merge($this->lang, $class::getConfig('LANG'));
         $this->maps = array_merge($this->maps, $class::getConfig('MAPS'));
-
 		$this->models[$alias] = $class;
+
 		return $this;
 	}
 

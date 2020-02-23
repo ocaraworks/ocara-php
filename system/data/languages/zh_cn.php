@@ -126,7 +126,7 @@ return array(
 	'not_exists_cache'				=> array(2414, '%s缓存不存在。'),
 	'not_exists_font'				=> array(2415, '字体不存在'),
 	'not_exists_function_file'		=> array(2416, '函数库文件不存在'),
-	'not_exists_key'				=> array(2417, '键名“%s”不存在'),
+	'not_exists_model_class'        => array(2417, '模型类%s不存在！'),
 	'not_exists_template'			=> array(2418, '指定的模板目录%s不存在'),
 	'not_exists_http_content_type'	=> array(2419, 'HTTP返回类型不正确'),
 	'not_exists_http_status'		=> array(2420, 'HTTP状态码不正确。'),
