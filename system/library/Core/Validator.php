@@ -117,16 +117,16 @@ class Validator extends Base
 
     /**
      * 增加验证规则
-     * @param $field
+     * @param string|array $name
      * @param null $rule
      * @return $this
      */
-    public function addRule($field, $rule = null)
+    public function addRule($name, $rule = null)
     {
-        if (is_array($field)) {
-            $this->rules = array_merge($this->rules, $field);
+        if (is_array($name)) {
+            $this->rules = array_merge($this->rules, $name);
         } else {
-            $this->rules[$field] = $rule;
+            $this->rules[$name] = $rule;
         }
         return $this;
     }
