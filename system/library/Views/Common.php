@@ -34,7 +34,7 @@ class Common extends ViewBase implements ViewInterfaces
     private $useCache  = true;
     private $useLayout = true;
 
-    protected static $defaultTemplate = 'defaults';
+    protected static $defaultStyle = 'defaults';
 
     /**
      * 初始化
@@ -42,7 +42,7 @@ class Common extends ViewBase implements ViewInterfaces
     public function __construct()
     {
         $this->fileType  = ocConfig(array('TEMPLATE', 'file_type'), 'html');
-        $this->template = ocConfig(array('TEMPLATE', 'default'), self::$defaultTemplate, true);
+        $this->template = ocConfig(array('TEMPLATE', 'default_style'), self::$defaultStyle, true);
 
         $this->loadEngine();
         $this->setLayout();
@@ -214,7 +214,7 @@ class Common extends ViewBase implements ViewInterfaces
         } else {
             $path = ocPath('view', $template . OC_DIR_SEP . $subPath);
             if (!ocFileExists($path)) {
-                $path = ocPath('view', self::$defaultTemplate . OC_DIR_SEP . $subPath);
+                $path = ocPath('view', self::$defaultStyle . OC_DIR_SEP . $subPath);
             }
         }
 
@@ -262,9 +262,9 @@ class Common extends ViewBase implements ViewInterfaces
      * 设置模板风格
      * @param $dir
      */
-    public function setTemplate($dir)
+    public function setStyle($dir)
     {
-        if (!is_dir($this->getViewPath('template/' . $dir))) {
+        if (!is_dir($this->getViewPath($dir . '/template'))) {
             ocService()->error->show('not_exists_template', array($dir));
         }
         $this->template = $dir;
