@@ -28,7 +28,6 @@ class Validator extends Base
     protected $lang = array();
     protected $models = array();
     protected $skipFields = array();
-    protected $skipModelFields = array();
     protected $skipModels = array();
 
     /**
@@ -95,11 +94,6 @@ class Validator extends Base
                 $modelRules = $model::mapData($model::getConfig('RULES'));
                 $modelLang = $model::mapData($model::getConfig('LANG'));
                 $data = $model::mapData($data);
-                if (!empty($this->skipModelFields[$model])) {
-                    $skipFields = array_fill_keys($this->skipModelFields[$model], null);
-                    $modelRules = array_diff_key($modelRules, $skipFields);
-                    $modelLang = array_diff_key($modelLang, $skipFields);
-                }
                 $rules = array_merge($rules, $modelRules);
                 $lang = array_merge($lang, $modelLang);
             }
@@ -159,18 +153,11 @@ class Validator extends Base
     /**
      * 跳过字段规则
      * @param $field
-     * @param null $modelClass
      * @return $this
      */
-    public function skip($field, $modelClass = null)
+    public function skip($field)
     {
-        if ($modelClass) {
-            $modelClass = trim($modelClass, OC_NS_SEP);
-            $this->skipModelFields[$modelClass] = $field;
-        } else {
-            $this->skipFields[] = $field;
-        }
-
+        $this->skipFields[] = $field;
         return $this;
     }
 
