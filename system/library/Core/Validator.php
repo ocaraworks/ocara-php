@@ -152,12 +152,12 @@ class Validator extends Base
 
     /**
      * 跳过字段规则
-     * @param $field
+     * @param $name
      * @return $this
      */
-    public function skip($field)
+    public function skip($name)
     {
-        $this->skipFields[] = $field;
+        $this->skipFields[] = $name;
         return $this;
     }
 
