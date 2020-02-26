@@ -88,7 +88,7 @@ function gotoUrl(url, object) {
 </ul>
 </div>
 <div id="right">
-<iframe src="<?php echo ocUrl(array('generate','action'), array('target' => 'model'));?>" frameborder="no" scrolling="no" id="iframe-main" name="iframe-main"></iframe>
+<iframe src="<?php echo $urls['model'];?>" frameborder="no" scrolling="no" id="iframe-main" name="iframe-main"></iframe>
 </div>
 </div>
 <div id="footer"></div>
