@@ -12,9 +12,9 @@
 </div>
 
 <div>
-<span class="left-span">控制器名/动作名：</span>
+<span class="left-span">动作名称：</span>
 <input type="text" name="actname" id="actname" />
-<span class="right-span">有模块时：模块名/控制器名/动作名。</span>
+<span class="right-span">有模块时：模块名/控制器名/动作名；<br/>无模块时：控制器名/动作名</span>
 </div>
 
 <div>

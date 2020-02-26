@@ -8,9 +8,9 @@ div {margin: 0;}
 #sep {background-color: #13539c;height: 5px;overflow: hidden;}
 #iframe-main {width: 855px;height: 500px;}
 #logo {color: #1261f2;font-size: 22px;top: 15px;left: 20px;position: relative;font-weight: bold;}
-ul.left-menu {list-style: none;margin: 0;padding: 10px;}
-ul.left-menu li {float: left;padding: 8px 2px;text-align: left;height: 20px;margin:0;overflow:hidden;}
-ul.left-menu li a:hover {background-color: #97c8fd;color:#FFF;}
 a:link,a:visited {color: #333333;text-decoration: none;padding: 5px;display: block;}
+ul.left-menu {list-style: none;margin: 0;padding: 10px;}
+ul.left-menu li {float: left;padding: 8px 2px;text-align: left;height: 20px;line-height: 20px;margin:0;overflow:hidden;}
 ul.left-menu li a {width: 150px;}
+.hover-menu a,.current-menu a{background-color: #97c8fd;color:#FFF;}
 </style>
