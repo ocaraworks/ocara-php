@@ -19,11 +19,6 @@ return array(
     'SYS_MODEL' => 'develop',
 
     /*
-     * 开发者中心标志配置
-     */
-    'DEV_SIGN' => '_dev',
-
-    /*
      * 服务组件配置
      */
     'SERVICE' => array(
