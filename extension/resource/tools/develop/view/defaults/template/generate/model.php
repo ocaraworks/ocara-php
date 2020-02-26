@@ -28,18 +28,21 @@
 </div>
 
 <div>
-    <span class="left-span">模型名称（不填默认为表名）</span>
+    <span class="left-span">模型名称</span>
     <input type="text" value="" name="model" id="model">
+    <span class="right-span">不填默认为表名</span>
 </div>
 
 <div>
-<span class="left-span">主键字段</span>
+<span class="left-span">主键字段默认</span>
 <input type="text" value="" name="primaries" id="primaries">
+<span class="right-span">1.复合主键请求英文半角逗号“,”分隔；<br/>2.为空时自动从数据库取。</span>
 </div>
 
 <div>
-    <span class="left-span">目录分库（模型文件放在库目录下面）</span>
-    <input type="checkbox" value="1" name="dbdir" id="dbdir">
+    <span class="left-span">目录是否分库</span>
+    <span class="center-span"><input type="checkbox" value="1" name="dbdir" id="dbdir"> 是</span>
+    <span class="right-span">模型文件放在库目录下面</span>
 </div>
 
 <div>

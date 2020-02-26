@@ -117,7 +117,11 @@ class ModelService extends BaseService
 			if ($primaryFields) {
 				$this->_primaries = implode(',', $primaryFields);
 			}
-		}
+		} else {
+            if (strstr($this->_primaries, ',')) {
+                $this->_primaries = array_map('trim', explode(',', $this->_primaries));
+            }
+        }
 
         ocCheckPath($modelPath);
 

@@ -17,8 +17,8 @@ class UsersService extends BaseService
 
 	public function add()
 	{
-		$this->_username = $this->request->getPost('username');
-		$this->_password = $this->request->getPost('password');
+		$this->_username = ocService()->request->getPost('username');
+		$this->_password = ocService()->request->getPost('password');
 		$this->edit();
 	}
 
