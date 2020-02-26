@@ -22,6 +22,7 @@ $dirs = array(
 		'src/css/defaults',
 		'src/images/defaults',
 		'src/js',
+        'static'
 	),
 	'data' => array(
 	    'docs',
