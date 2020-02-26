@@ -64,6 +64,7 @@ class ControllerService extends BaseService
             $this->addAction('create');
             $this->addAction('update');
             $this->addAction('delete');
+            $this->addAction('read');
         }
     }
 

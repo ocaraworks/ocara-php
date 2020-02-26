@@ -18,7 +18,6 @@ use Ocara\Sql\Generator;
 
 class ModelService extends BaseService
 {
-    private $_dbdir;
 	private $_mdltype;
 	private $_mdlname;
 	private $_connectName;
@@ -31,7 +30,6 @@ class ModelService extends BaseService
 	{
 	    $defaultServer = DatabaseFactory::getDefaultServer();
 		$request = ocService()->request;
-        $this->_dbdir = $request->getPost('dbdir');
 		$this->_mdltype = $request->getPost('mdltype');
 		$this->_mdlname = $request->getPost('mdlname');
 		$this->_connectName = $request->getPost('connect', $defaultServer);

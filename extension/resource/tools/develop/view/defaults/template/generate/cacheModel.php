@@ -6,10 +6,10 @@
 
 <div>
     <span class="left-span">模块类型</span>
-    <input type="radio" value="" name="mdltype" id="mdltype1" checked /> 默认全局&nbsp;
-    <input type="radio" value="modules" name="mdltype" id="mdltype2" /> 普通模块
-    <input type="radio" value="console" name="mdltype" id="mdltype3" /> 命令模块
-    <input type="radio" value="tools" name="mdltype" id="mdltype4" /> 工具模块
+    <input type="radio" value="" name="mdltype" id="mdltype1" checked /> 全局控制器（默认）
+    <input type="radio" value="modules" name="mdltype" id="mdltype2" /> 普通模块（modules）
+    <input type="radio" value="console" name="mdltype" id="mdltype3" /> 命令模块（console）
+    <input type="radio" value="tools" name="mdltype" id="mdltype4" /> 工具模块（tools）
 </div>
 
 <div>
@@ -18,7 +18,7 @@
 </div>
 
 <div>
-<span class="left-span">缓存连接配置名：</span>
+<span class="left-span">缓存服务器名称：</span>
 <input type="text" name="connect" id="connect" value="<?php echo \Ocara\Core\DatabaseFactory::getDefaultServer();?>">
 </div>
 

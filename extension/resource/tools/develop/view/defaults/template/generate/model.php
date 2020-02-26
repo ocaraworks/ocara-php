@@ -6,7 +6,7 @@
 
 <div>
     <span class="left-span">模块类型</span>
-    <input type="radio" value="" name="mdltype" id="mdltype1" checked /> 默认全局&nbsp;
+    <input type="radio" value="" name="mdltype" id="mdltype1" checked /> 全局控制器（默认）
     <input type="radio" value="modules" name="mdltype" id="mdltype2" /> 普通模块（modules）
     <input type="radio" value="console" name="mdltype" id="mdltype3" /> 命令模块（console）
     <input type="radio" value="tools" name="mdltype" id="mdltype4" /> 工具模块（tools）
@@ -18,7 +18,7 @@
 </div>
 
 <div>
-<span class="left-span">数据库连接配置名：</span>
+<span class="left-span">数据库服务器名称：</span>
 <input type="text" name="connect" id="connect" value="<?php echo \Ocara\Core\DatabaseFactory::getDefaultServer();?>">
 </div>
 
@@ -37,12 +37,6 @@
 <span class="left-span">主键字段默认</span>
 <input type="text" value="" name="primaries" id="primaries">
 <span class="right-span">1.复合主键请求英文半角逗号“,”分隔；<br/>2.为空时自动从数据库取。</span>
-</div>
-
-<div>
-    <span class="left-span">目录是否分库</span>
-    <span class="center-span"><input type="checkbox" value="1" name="dbdir" id="dbdir"> 是</span>
-    <span class="right-span">模型文件放在库目录下面</span>
 </div>
 
 <div>
