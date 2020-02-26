@@ -33,7 +33,7 @@
 	<li><a href="<?php echo ocUrl(array('generate','action'), array('target' => 'module'));?>" target="iframe-main">模块(Module)</a></li>
 	<li><a href="<?php echo ocUrl(array('generate','action'), array('target' => 'fields'));?>" target="iframe-main">字段更新</a></li>
 	<?php if($isLogin && $_SESSION['OC_DEV_USERNAME'] == 'root') {?>
-	<li><a href="<?php echo ocUrl(array('generate','action'), array('target' => 'users'));?>" target="iframe-main">用户管理</a></li>
+	<li><a href="<?php echo ocUrl(array('generate','action'), array('target' => 'users'));?>" target="iframe-main">账号管理</a></li>
 	<?php } ?>
 	
 </ul>
