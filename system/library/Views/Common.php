@@ -243,7 +243,7 @@ class Common extends ViewBase implements ViewInterfaces
 
         $path = $rootPath . $template . '/' . $subPath;
         if (!ocFileExists($path)) {
-            $path = $rootPath . self::$defaultTemplate . '/' . $subPath;
+            $path = $rootPath . self::$defaultStyle . '/' . $subPath;
         }
 
         return $path;
