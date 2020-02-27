@@ -74,9 +74,14 @@ final class Invoke
      */
 	public function run($route, $params = array(), $requestMethod = 'GET')
     {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
         if ($params) {
             if ($requestMethod == 'GET'){
                 $_GET = array_merge($_GET, $params);
+            } else {
+                $_POST = array_merge($_POST, $params);
+                $_SERVER['REQUEST_METHOD'] = 'POST';
             }
         }
 
