@@ -40,6 +40,9 @@ class Route extends Base
         }
 
         if (empty($module)) {
+            if ((!defined('OC_ALLOW_GLOBAL_ROUTE') || !OC_ALLOW_GLOBAL_ROUTE) && OC_MODULE_NAMESPACE) {
+                $service->error->show('need_module');
+            }
             $moduleClass = 'app\controller\\' . 'Module';
         }
 

@@ -71,6 +71,7 @@ return array(
 	'need_entity_class'             => array(2113, '缺少实体类'),
 	'need_primary_values'           => array(2114, '查询字段列表缺少主键字段，无法新建ORM实体对象。'),
 	'need_model_alias'              => array(2115, '需要指定模型别名。'),
+    'need_module'                   => array(2115, '需要指定模块名称！'),
 
 	//失败
 	'failed_db_init'				=> array(2200, '数据库初始化失败。'),
