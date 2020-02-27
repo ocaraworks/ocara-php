@@ -60,7 +60,7 @@ class ControllerService extends BaseService
     {
         $this->addAction('index');
 
-        if ($this->vtype != 1) {
+        if ($this->mdltype != 'console' && $this->vtype != 1) {
             $this->addAction('create');
             $this->addAction('update');
             $this->addAction('delete');

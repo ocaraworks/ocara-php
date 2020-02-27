@@ -78,7 +78,7 @@ class ModuleService extends BaseService
         ocCheckPath($modulePath . '/privates/config');
         ocCheckPath($modulePath . '/privates/lang/' . $language);
 
-        if ($this->controllerType == 'Common') {
+        if ($this->mdltype != 'console' && $this->controllerType == 'Common') {
             ocCheckPath($modulePath . '/view/defaults/layout');
             ocCheckPath($modulePath . '/view/defaults/template');
             ocCheckPath($modulePath . '/view/defaults/helper');

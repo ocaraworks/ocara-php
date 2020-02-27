@@ -217,7 +217,7 @@ class ActionService extends BaseService
         $fileService->createFile($actionFile , 'wb');
         $fileService->writeFile($actionFile, $content);
 
-        if ($this->controllerType == 'Common') {
+        if ($this->mdltype != 'console' && $this->controllerType == 'Common') {
             $this->createView($actionNamespace . OC_NS_SEP . $className);
         }
 	}
