@@ -247,7 +247,7 @@ return array(
         'Ocara\Extension\Functions\\'           => OC_EXT . 'functions/',
 
         /*应用自动加载映射*/
-        'app\\' 							    => OC_ROOT . 'application/',
+        'app\\' 							    => OC_ROOT . '/application/',
     ),
 
     /*

@@ -8,13 +8,13 @@ use Ocara\Core\Ocara;
 define('OC_EXECUTE_START_TIME', microtime(true));
 
 //定义根目录
-define('OC_ROOT', dirname(__DIR__) . '/');
+define('OC_ROOT', dirname(__DIR__));
 
 /**
  * 加载框架
  * 请修改和确定以下路径
  */
-//require_once(OC_ROOT . 'ocara/system/library/Core/Ocara.php');
-require_once OC_ROOT . 'vendor/autoload.php';
+//require_once(OC_ROOT . '/ocara/system/library/Core/Ocara.php');
+require_once OC_ROOT . '/vendor/autoload.php';
 
 Ocara::start('Ocara\Bootstraps\Tests');

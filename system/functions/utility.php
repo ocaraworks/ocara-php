@@ -740,7 +740,7 @@ function ocClassName($name)
  */
 function ocPath($dir, $path = null)
 {
-    return ocService('path', true)->get($dir, $path, OC_ROOT, true, false);
+    return ocService('path', true)->get($dir, $path, OC_APP_ROOT, true, false);
 }
 
 /**
@@ -751,7 +751,7 @@ function ocPath($dir, $path = null)
  */
 function ocFile($dir, $path)
 {
-    return ocService('path', true)->get($dir, $path, OC_ROOT, true, true);
+    return ocService('path', true)->get($dir, $path, OC_APP_ROOT, true, true);
 }
 
 /**

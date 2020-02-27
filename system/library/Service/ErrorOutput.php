@@ -79,13 +79,13 @@ class ErrorOutput extends ServiceBase
     protected static function stripRootPath($errorFile)
     {
         $filePath = ocCommPath(realpath($errorFile));
-        $rootPath = ocCommPath(realpath(OC_ROOT));
+        $rootPath = ocCommPath(realpath(OC_APP_ROOT));
         $ocPath   = ocCommPath(realpath(OC_PATH)) . OC_DIR_SEP;
 
         if (strpos($filePath, $ocPath) === 0) {
             $filePath = str_ireplace($ocPath, OC_EMPTY, $filePath);
         } elseif (strpos($filePath, $rootPath) === 0) {
-            $filePath = str_ireplace(OC_ROOT, OC_EMPTY, $filePath);
+            $filePath = str_ireplace(OC_APP_ROOT, OC_EMPTY, $filePath);
         }
 
         return $filePath;

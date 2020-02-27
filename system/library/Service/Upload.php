@@ -203,7 +203,7 @@ class Upload extends ServiceBase
 				$this->clear($path);
 				return false;
 			}
-			$row['save_path'] = str_replace(OC_ROOT, OC_DIR_SEP, $save_path);
+			$row['save_path'] = str_replace(OC_APP_ROOT, OC_DIR_SEP, $save_path);
 			ocDel($row, 'tmp_name');
 			if (is_integer($i)) {
 				$this->files[$index][$i] = $row;

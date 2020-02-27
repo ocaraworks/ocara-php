@@ -127,7 +127,7 @@ final class Ocara
      */
 	public static function update(array $params = array())
 	{
-		ocImport(OC_ROOT . 'pass/Update.php');
+		ocImport(OC_APP_ROOT . 'pass/Update.php');
 		$args = func_get_args();
 		return class_exists('Ocara\Core\Update', false) ? Update::run($args) : false;
 	}

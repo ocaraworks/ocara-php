@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
-define('OC_ROOT', __DIR__ . '/');
-define('OC_MODULE_PATH', OC_ROOT . 'application/console/');
+define('OC_ROOT', __DIR__);
+define('OC_MODULE_PATH', OC_ROOT . '/application/console/');
 define('OC_MODULE_NAMESPACE', 'app\\console\\');
 
 require_once 'public/index.php';

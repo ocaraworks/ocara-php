@@ -86,14 +86,17 @@ defined('OC_CONSOLE_MODULE') or define('OC_CONSOLE_MODULE', false);
 /*
  * 应用程序常量
  */
-//应用根目录
+//应用根目录不带斜杠
 defined('OC_ROOT') or define('OC_ROOT', ocCommPath(dirname(dirname(realpath($_SERVER['SCRIPT_FILENAME'])))) . OC_DIR_SEP);
 
+//应用根目不带斜杠
+defined('OC_APP_ROOT') or define('OC_APP_ROOT', OC_ROOT . OC_DIR_SEP);
+
 //WEB根目录
-defined('OC_WEB_ROOT') or define('OC_WEB_ROOT', ocCommPath(OC_ROOT . 'public' . OC_DIR_SEP));
+defined('OC_WEB_ROOT') or define('OC_WEB_ROOT', ocCommPath(OC_APP_ROOT . 'public' . OC_DIR_SEP));
 
 //程序根目录
-defined('OC_APPLICATION_PATH') or define('OC_APPLICATION_PATH', OC_ROOT . 'application/');
+defined('OC_APPLICATION_PATH') or define('OC_APPLICATION_PATH', OC_APP_ROOT . 'application/');
 
 //模块目录
 defined('OC_MODULE_PATH') or define('OC_MODULE_PATH', OC_EMPTY);
