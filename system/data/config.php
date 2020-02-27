@@ -14,7 +14,7 @@ return array(
      * 系统默认配置
      */
     'LANGUAGE' 				=> 'zh_cn',
-    'SYS_MODEL' 			=> '',
+    'SYSTEM_RUN_MODE' 		=> '',
     'ROUTE_PARAM_NAME'	    => '_route', //路由参数名称
     
     'DEFAULT_CONTROLLER' 	=> 'home', //默认控制器

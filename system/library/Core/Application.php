@@ -89,7 +89,7 @@ class Application extends Base
     public function errorReporting($error = null)
     {
         $container = ocContainer();
-        $sysModel = $container->config->get('SYS_MODEL', 'application');
+        $sysModel = $container->config->get('SYSTEM_RUN_MODE', 'application');
         $error = $error ? : ($sysModel == 'develop' ? E_ALL : 0);
 
         set_error_handler(
