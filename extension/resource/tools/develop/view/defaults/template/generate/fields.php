@@ -5,8 +5,9 @@
 <form action="<?php echo ocUrl(array(OC_MODULE_NAME, 'generate', 'action'), array('target' => 'fields'));?>" method="post">
 
 <div>
-<span class="left-span">模型类名（注意：不分模块）：</span>
+<span class="left-span">模型类名：</span>
 <input type="text" value="" name="model" id="model">
+    <span class="right-span">包括命名空间</span>
 </div>
 
 <div>
