@@ -21,10 +21,10 @@ class Validate extends ServiceBase
      * @return array|bool
      * @throws Exception
      */
-	public static function unempty($value)
+	public static function notEmpty($value)
 	{
 		$result = !ocEmpty($value);
-		$result = self::validate($result, 'unempty');
+		$result = self::validate($result, 'not_empty');
 		return $result;
 	}
 
