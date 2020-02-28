@@ -72,11 +72,31 @@ class Common extends ControllerBase implements ControllerInterface
         if ($actionMethod == '__action') {
             $this->doClassAction();
         } else {
-            $this->$actionMethod();
-            $this->render();
+            $this->doFunctionAction($actionMethod);
         }
 
         $this->fire(self::EVENT_AFTER_ACTION);
+    }
+
+    /**
+     * 执行动作函数方法实体
+     * @param $actionMethod
+     * @throws Exception
+     */
+    protected function doFunctionAction($actionMethod)
+    {
+        $result = $this->$actionMethod();
+
+        if ($this->request->isAjax()) {
+            $this->isApi(true);
+            $this->render($result);
+        } elseif ($this->isFormSubmit()) {
+            $this->formManager->clearToken();
+            $this->render($result, false);
+        } else {
+            $this->formManager->bindToken();
+            $this->render();
+        }
     }
 
     /**

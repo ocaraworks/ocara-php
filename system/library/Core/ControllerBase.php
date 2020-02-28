@@ -81,10 +81,10 @@ abstract class ControllerBase extends serviceProvider
     public function registerEvents()
     {
         $this->event(self::EVENT_AFTER_CREATE_FORM)
-            ->append(array($this, 'afterCreateForm'));
+             ->append(array($this, 'afterCreateForm'));
 
         $this->event(self::EVENT_AFTER_ACTION)
-            ->append(array($this, 'afterAction'));
+             ->append(array($this, 'afterAction'));
     }
 
     /**
