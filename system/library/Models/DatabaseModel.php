@@ -1240,24 +1240,24 @@ abstract class DatabaseModel extends ModelBase
      * 查询数据
      * @param mixed $condition
      * @param mixed $options
-     * @param $queryRow
-     * @param bool $count
+     * @param bool $isQueryRow
+     * @param bool $isCount
      * @param null $dataType
      * @param array $executeOptions
      * @return array|mixed
      * @throws Exception
      */
-    protected function baseFind($condition, $options, $queryRow, $count = false, $dataType = null, $executeOptions = array())
+    protected function baseFind($condition, $options, $isQueryRow, $isCount = false, $dataType = null, $executeOptions = array())
 	{
 	    $isFilterCondition = $this->filterCondition();
         $plugin = $this->connect(false);
         $this->getFieldsInfo();
         $dataType = $dataType ? : ($this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY);
 
-	    $this->pushSql($condition, $options, $queryRow);
+	    $this->pushSql($condition, $options, $isQueryRow);
         $this->setJoin($this->tag, null, $this->getAlias());
 
-        $this->fire(self::EVENT_BEFORE_SELECT_QUERY, array($queryRow, $count));
+        $this->fire(self::EVENT_BEFORE_SELECT_QUERY, array($isQueryRow, $isCount));
 
         $generator = $this->getSqlGenerator($plugin);
 
@@ -1270,28 +1270,28 @@ abstract class DatabaseModel extends ModelBase
             $isUnion = !!$unions;
         }
 
-        $sqlData = $generator->genSelectSql($count, $unions, $isFilterCondition);
+        $sqlData = $generator->genSelectSql($isCount, $unions, $isFilterCondition);
 
         if ($this->isDebug()) {
             $this->debug(false);
             return $sqlData;
         }
 
-		if ($queryRow) {
-            $result = $plugin->queryRow($sqlData, $count, $isUnion, $dataType);
+		if ($isQueryRow) {
+            $result = $plugin->queryRow($sqlData, $isCount, $isUnion, $dataType);
 		} else {
-            $result = $plugin->query($sqlData, $count, $isUnion, $dataType);
+            $result = $plugin->query($sqlData, $isCount, $isUnion, $dataType);
 		}
 
 		if ($result === false) {
 		    ocService()->errow->show('failed_database_query', array(json_encode($plugin->getError())));
         }
 
-		if (!$count && !$queryRow && $this->isPage()) {
+		if (!$isCount && !$isQueryRow && $this->isPage()) {
 			$result = array('total' => $this->getTotal(), 'data' => $result);
 		}
 
-        $this->fire(self::EVENT_AFTER_SELECT_QUERY, array($result, $queryRow, $count));
+        $this->fire(self::EVENT_AFTER_SELECT_QUERY, array($result, $isQueryRow, $isCount));
 
 		$this->clearSql();
 		return $result;
