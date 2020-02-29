@@ -58,9 +58,25 @@ abstract class DatabaseModel extends ModelBase
         'orderBy', 'groupBy',  'limit', 'having', 'more'
     );
 
+    /**
+     * 连接前置事件
+     */
+    const EVENT_BEFORE_CONNECT = 'beforeConnect';
+    /**
+     * 原生SQL查询前置事件
+     */
     const EVENT_BEFORE_QUERY = 'beforeQuery';
+    /**
+     * 原生SQL查询后置事件
+     */
     const EVENT_AFTER_QUERY = 'afterQuery';
+    /**
+     * 组装SQL查询前置事件
+     */
     const EVENT_BEFORE_SELECT_QUERY = 'beforeSelectQuery';
+    /**
+     * 组装SQL查询前置事件
+     */
     const EVENT_AFTER_SELECT_QUERY = 'afterSelectQuery';
 
     /**
@@ -1322,6 +1338,8 @@ abstract class DatabaseModel extends ModelBase
         } else {
             $master = $isMaster;
         }
+
+        $this->fire(self::EVENT_BEFORE_CONNECT, array($master));
 
         if ($master) {
             $plugin = DatabaseFactory::create($this->connectName);
