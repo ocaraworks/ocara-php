@@ -58,6 +58,11 @@ abstract class DatabaseModel extends ModelBase
         'orderBy', 'groupBy',  'limit', 'having', 'more'
     );
 
+    const EVENT_BEFORE_QUERY = 'beforeQuery';
+    const EVENT_AFTER_QUERY = 'afterQuery';
+    const EVENT_BEFORE_SELECT_QUERY = 'beforeSelectQuery';
+    const EVENT_AFTER_SELECT_QUERY = 'afterSelectQuery';
+
     /**
      * 初始化
      * DatabaseModel constructor.
@@ -819,13 +824,16 @@ abstract class DatabaseModel extends ModelBase
         $plugin = $this->connect();
 
 		if ($sql) {
+		    $this->fire(self::EVENT_BEFORE_QUERY, array($sql));
             $sqlData = $this->getSqlData($plugin, $sql);
             if ($this->isDebug()) {
                 $this->debug(false);
-                return $sqlData;
+                $result = $sqlData;
             } else {
-                return $plugin->query($sqlData);
+                $result = $plugin->query($sqlData);
             }
+            $this->fire(self::EVENT_AFTER_QUERY, array($result, $sql));
+            return $result;
 		}
 
 		return false;
@@ -1233,6 +1241,8 @@ abstract class DatabaseModel extends ModelBase
 	    $this->pushSql($condition, $options, $queryRow);
         $this->setJoin($this->tag, null, $this->getAlias());
 
+        $this->fire(self::EVENT_BEFORE_SELECT_QUERY, array($queryRow, $count));
+
         $generator = $this->getSqlGenerator($plugin);
 
         $closeUnion = isset($executeOptions['close_union']) && $executeOptions['close_union'] === true;
@@ -1264,6 +1274,8 @@ abstract class DatabaseModel extends ModelBase
 		if (!$count && !$queryRow && $this->isPage()) {
 			$result = array('total' => $this->getTotal(), 'data' => $result);
 		}
+
+        $this->fire(self::EVENT_AFTER_SELECT_QUERY, array($result, $queryRow, $count));
 
 		$this->clearSql();
 		return $result;
