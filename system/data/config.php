@@ -103,7 +103,6 @@ return array(
         'session' 		    => 'Ocara\Core\Session',
         'route'			    => 'Ocara\Core\Route',
         'transaction'	    => 'Ocara\Core\Transaction',
-        'pager' 		    => 'Ocara\Service\Pager',
         'file'			    => 'Ocara\Service\File',
         'font'			    => 'Ocara\Core\Font',
         'staticPath'	    => 'Ocara\Core\StaticPath',
@@ -119,6 +118,7 @@ return array(
      * 系统服务类（非单例模式）
      */
     'SYSTEM_SERVICE_CLASS' => array(
+        'pager' 		    => 'Ocara\Service\Pager',
         'event'             => 'Ocara\Core\Event',
         'log'	            => 'Ocara\Core\Log',
         'form'              => 'Ocara\Core\Form',
