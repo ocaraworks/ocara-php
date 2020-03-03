@@ -74,7 +74,7 @@ class ModuleService extends BaseService
         $language = ocService()->app->getLanguage();
 
         ocCheckPath($modulePath . '/controller');
-        ocCheckPath($modulePath . '/services');
+        ocCheckPath($modulePath . '/service');
         ocCheckPath($modulePath . '/privates/config');
         ocCheckPath($modulePath . '/privates/lang/' . $language);
 
