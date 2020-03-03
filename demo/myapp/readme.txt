@@ -7,7 +7,7 @@ Once it visit success, the framework will create all project dirs in the applica
                                                            Yours Ocara Team.
 各位好，
 谢谢您的关注！
-   请将应用根目录设置为“public”目录，并确保正确设置框架所在的目录。
+   请将网站根目录设置为“public”目录，并确保正确设置框架所在的目录。
    然后，在浏览器中的打开首页，比如：http://localhost/index.php（如果这个地址有效的话）。
 一旦访问成功，框架会在当前目录新建好项目录。
    您可以访问www.ocara.cn或者www.ocaraframework.com了解更多。

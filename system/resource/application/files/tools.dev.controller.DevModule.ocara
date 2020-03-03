@@ -17,6 +17,10 @@ class DevModule extends Common
      */
     public function __module()
     {
+        if (ocConfig('SYSTEM_RUN_MODE') != 'develop') {
+            $this->error->show('开发运行模式禁止使用该功能！');
+        }
+
         ocContainer()->bindSingleton('fileCache', 'Ocara\Service\FileCache');
 
         ocService()->exceptionHandler
