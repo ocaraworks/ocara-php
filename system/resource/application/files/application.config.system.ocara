@@ -16,7 +16,7 @@ return array(
      * 分为开发模式和运营模式两种
      * 配置为develop时是开发模式，其他均为运营模式
      */
-    'SYSTEM_MODEL' => 'develop',
+    'SYSTEM_RUN_MODE' => 'develop',
 
     /*
      * 服务组件配置
