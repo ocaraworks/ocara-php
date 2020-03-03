@@ -16,11 +16,11 @@ class BaseService
             'registerForms' => '表单注册',
             'display'       => 'GET输出',
             'submit'        => '提交后处理',
-            'ajax'          => 'Ajax处理'
+            'api'           => 'Ajax处理'
         ),
         'controller_actions' => array(
             'Common' => array(
-                'registerForms', 'display', 'submit', 'ajax',
+                'registerForms', 'display', 'submit', 'api',
             ),
             'Task' => array(),
             'Api' => array(
