@@ -241,6 +241,7 @@ class File extends ServiceBase
     /**
      * 文件重命加一
      * @param $file
+     * @param string $separateSign
      * @return string
      */
 	public function increaseFileName($file, $separateSign = '_')
