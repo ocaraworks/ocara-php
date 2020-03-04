@@ -282,7 +282,7 @@ class Image extends ServiceBase
      */
 	public function delImage($path)
 	{
-		return ($path = ocFileExists($path, true)) ? unlink($path) : true;
+		return ($path = ocFileExists($path)) ? unlink($path) : true;
 	}
 
     /**
@@ -437,7 +437,7 @@ class Image extends ServiceBase
 			}
 		}
 		
-		if (!ocFileExists($path, true)) {
+		if (!ocFileExists($path)) {
 			$this->showError('no_mark_image');
 		}
 		

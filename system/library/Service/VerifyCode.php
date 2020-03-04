@@ -65,7 +65,7 @@ class VerifyCode extends ServiceBase
 		$this->height = $height;
 		$this->imgObj = imagecreatetruecolor($width, $height);
 		
-		if ($path = ocFileExists($source, true)) {
+		if ($path = ocFileExists($source)) {
 			$fileInfo = explode('.', ocBasename($path));
 			$this->extName = $fileInfo[1];
 

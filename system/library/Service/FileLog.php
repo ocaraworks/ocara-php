@@ -151,7 +151,7 @@ class FileLog extends ServiceBase implements LogInterface
 		}
 		
 		$path = $this->logRoot . ocDir($logName) . $this->getLastLogFile($logName);
-		$path = ocFileExists($path, true);
+		$path = ocFileExists($path);
 
 		if ($path) {
 			return ocWrite($path, OC_EMPTY);

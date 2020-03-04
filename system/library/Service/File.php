@@ -23,7 +23,7 @@ class File extends ServiceBase
 	{
         $openMode = $openMode ?: 'wb';
 
-		if (ocFileExists($filePath, true)) return $filePath;
+		if (ocFileExists($filePath)) return $filePath;
 
 		ocCheckPath(dirname($filePath), $perm);
 
@@ -52,7 +52,7 @@ class File extends ServiceBase
 	 */
 	public function openFile($filePath, $openMode, $perm = null, $createDir = true)
 	{
-		if (!ocFileExists($filePath, true)) {
+		if (!ocFileExists($filePath)) {
 			if (!$createDir || !$this->createFile($filePath, $perm)) {
 				return false;
 			} 
@@ -83,11 +83,7 @@ class File extends ServiceBase
 	 */
 	public function rename($filePath, $newName)
 	{
-		if ($filePath = ocFileExists($filePath, true)) {
-			return ocFileExists($filePath) ? false : @rename($filePath, $filePath);
-		}
-		
-		return false;
+	    return ocFileExists($filePath) ? false : @rename($filePath, $filePath);
 	}
 
 	/**
@@ -97,7 +93,7 @@ class File extends ServiceBase
 	 */
 	public function delFile($filePath)
 	{
-		if ($filePath = ocFileExists($filePath, true)) {
+		if ($filePath = ocFileExists($filePath)) {
 			return is_writable($filePath) ? @unlink($filePath) : false;
 		}
 		
@@ -148,7 +144,7 @@ class File extends ServiceBase
 	 */
 	public function copyFile($source, $destination)
 	{
-		$source = ocFileExists($source, true);
+		$source = ocFileExists($source);
 
 		if ($source) {
 			$path = dirname($destination);
@@ -168,7 +164,7 @@ class File extends ServiceBase
 	 */
 	public function moveFile($source, $destination)
 	{
-		$source = ocFileExists($source, true);
+		$source = ocFileExists($source);
 
 		if ($source) {
 			$path = dirname($destination);

@@ -82,7 +82,7 @@ class FileCache extends ServiceBase
      */
 	public function read($filePath, $name = null)
 	{
-		if ($filePath = ocFileExists($filePath, true)) {
+		if ($filePath = ocFileExists($filePath)) {
 			$result = include ($filePath);
 			if ($name) {
 				if (array_key_exists($name, get_defined_vars())) {

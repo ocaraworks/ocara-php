@@ -30,8 +30,8 @@ class Font extends Base
             $name = ocConfig('DEFAULT_FONT', 'simhei.ttf');
         }
 
-        if (($path = ocFileExists(OC_SYS . 'data/fonts/' . $name, true)) or
-            ($path = ocFileExists(OC_EXT . 'data/fonts/' . $name, true))
+        if (($path = ocFileExists(OC_SYS . 'data/fonts/' . $name)) or
+            ($path = ocFileExists(OC_EXT . 'data/fonts/' . $name))
         ) return $path;
 
         ocService()->error->show('not_exists_font');
