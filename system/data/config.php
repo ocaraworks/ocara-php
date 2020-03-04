@@ -205,7 +205,7 @@ return array(
 
             'tools'  	    => '',
             'data'          => '',
-            'doc'           => 'data',
+            'docs'          => 'data',
             'fields'        => 'data',
 
             'runtime'       => '',
