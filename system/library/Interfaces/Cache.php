@@ -19,13 +19,14 @@ interface Cache
 	 */
 	public function connect($config, $required = true);
 
-	/**
-	 * 设置变量值
-	 * @param string $name
-	 * @param boolean $value
-	 * @return bool
-	 */
-	public function set($name, $value);
+    /**
+     * 设置变量值
+     * @param $name
+     * @param $value
+     * @param int $expireTime
+     * @return mixed
+     */
+	public function set($name, $value, $expireTime = 0);
 
     /**
      * 获取变量值

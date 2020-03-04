@@ -55,18 +55,17 @@ class Redis extends CacheBase implements CacheInterface
      * 设置变量值
      * @param string $name
      * @param bool $value
+     * @param int $expireTime
      * @return bool
      */
-    public function set($name, $value)
+    public function set($name, $value, $expireTime = 0)
     {
-        $args = func_get_args();
-        $expireTime = array_key_exists(2, $args) ? $args[2] : 0;
         $plugin = $this->plugin();
 
-		$result = $plugin->set($name, $value);
-
-		if ($expireTime > 0) {
-            $plugin->setTimeout($name, $expireTime);
+        if ($expireTime > 0) {
+            $result = $plugin->setex($name, $expireTime, $value);
+        } else {
+            $result = $plugin->set($name, $value);
         }
 
 		return $result;

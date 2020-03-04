@@ -71,12 +71,12 @@ class Memcache extends CacheBase implements CacheInterface
      * 设置变量值
      * @param string $name
      * @param bool $value
+     * @param int $expireTime
      * @return bool
      */
-    public function set($name, $value)
+    public function set($name, $value, $expireTime = 0)
     {
         $args = func_get_args();
-        $expireTime = array_key_exists(2, $args) ? $args[2] : 0;
         $params = array_key_exists(3, $args) ? $args[3] : array();
         $plugin = $this->plugin(false);
 

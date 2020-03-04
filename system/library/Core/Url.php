@@ -234,14 +234,13 @@ class Url extends Base
 		return $result;
 	}
 
-	/**
-	 * 添加查询字符串参数
-	 * @param array $params
-	 * @param string $url
-	 * @param string $urlType
-	 * @return string
-	 * @throws Exception
-	 */
+    /**
+     * 添加查询字符串参数
+     * @param array $params
+     * @param string $url
+     * @param string $urlType
+     * @return string
+     */
 	public function addQuery(array $params, $url = null, $urlType = null)
 	{
 		$urlType = $urlType ? : OC_URL_ROUTE_TYPE;
