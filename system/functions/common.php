@@ -229,9 +229,6 @@ function ocWrite($filePath, $content, $append = false, $perm = null)
 
     $perm = $perm ? : 0755;
 	$dirPath  = dirname($filePath);
-	$filePath = ocCheckChineseFilePath($dirPath
-				. OC_DIR_SEP
-				. ocBasename($filePath));
 	$result   = false;
 
 	if (ocCheckPath($dirPath, $perm)) {
@@ -282,9 +279,6 @@ function ocRead($filePath, $checkPath = true)
 		ocService()->error->show('invalid_path', array($filePath));
 	}
 
-	$filePath = ocCheckChineseFilePath(dirname($filePath)
-				. OC_DIR_SEP
-				. ocBasename($filePath));
 	$content = OC_EMPTY;
 
 	if (ocFileExists($filePath)) {

@@ -26,7 +26,6 @@ class File extends ServiceBase
 		if (ocFileExists($filePath, true)) return $filePath;
 
 		ocCheckPath(dirname($filePath), $perm);
-		$filePath = ocCheckChineseFilePath($filePath);
 
 		if (function_exists('file_put_contents')) {
 			$result = @file_put_contents($filePath, OC_EMPTY);
@@ -85,8 +84,7 @@ class File extends ServiceBase
 	public function rename($filePath, $newName)
 	{
 		if ($filePath = ocFileExists($filePath, true)) {
-			$newFile = ocCheckChineseFilePath(dirname($filePath) . OC_DIR_SEP. $newName);
-			return ocFileExists($newFile) ? false : @rename($filePath, $newFile);
+			return ocFileExists($filePath) ? false : @rename($filePath, $filePath);
 		}
 		
 		return false;
@@ -151,7 +149,6 @@ class File extends ServiceBase
 	public function copyFile($source, $destination)
 	{
 		$source = ocFileExists($source, true);
-		$destination = ocCheckChineseFilePath($destination, true);
 
 		if ($source) {
 			$path = dirname($destination);
@@ -172,8 +169,7 @@ class File extends ServiceBase
 	public function moveFile($source, $destination)
 	{
 		$source = ocFileExists($source, true);
-		$destination = ocCheckChineseFilePath($destination, true);
-		
+
 		if ($source) {
 			$path = dirname($destination);
 			if (ocCheckPath($path)) {
