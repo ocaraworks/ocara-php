@@ -67,27 +67,13 @@ abstract class CacheModel extends ModelBase
 
     /**
      * 连接缓存
-     * @param bool $master
-     * @return mixed|null
+     * @return mixed
      * @throws Exception
      */
-    public function connect($master = true)
+    public function connect()
     {
-        $plugin = $this->setPlugin(null);
-
-        if (!$master) {
-            if (!is_object($this->slave)) {
-                $this->slave = CacheFactory::create($this->connectName, false, false);
-            }
-            $plugin = $this->setPlugin($this->slave);
-        }
-
-        if (!is_object($plugin)) {
-            if (!is_object($this->master)) {
-                $this->master = CacheFactory::create($this->connectName);
-            }
-            $plugin = $this->setPlugin($this->master);
-        }
+        $plugin = CacheFactory::create($this->connectName);
+        $this->setPlugin($plugin);
 
         if (!ocEmpty($this->database)) {
             $plugin->selectDatabase($this->database);
