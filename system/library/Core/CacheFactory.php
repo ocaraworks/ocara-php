@@ -28,7 +28,7 @@ class CacheFactory extends Base
      * @return mixed
      * @throws Exception
      */
-	public static function create($connectName = null, $required = true)
+	public static function getInstance($connectName = null, $required = true)
 	{
 		if (empty($connectName)) {
 			$connectName = self::$defaultServer;

@@ -62,7 +62,7 @@ abstract class ControllerBase extends serviceProvider
     public function register()
     {
         $this->container->bindSingleton('db', function () {
-            DatabaseFactory::create();
+            DatabaseFactory::getInstance();
         });
 
         $services = array_merge(

@@ -28,7 +28,7 @@ class SessionCache extends ServiceProvider
 
         $cacheName = ocConfig(array('SESSION', 'options', 'server'), CacheFactory::getDefaultServer());
         $this->container->bindSingleton('_plugin', function () use ($cacheName){
-            CacheFactory::create($cacheName);
+            CacheFactory::getInstance($cacheName);
         });
     }
 

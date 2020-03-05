@@ -33,7 +33,7 @@ class DatabaseFactory extends Base
      * @return mixed|null
      * @throws Exception
      */
-	public static function create($connectName = null, $master = true, $required = true)
+	public static function getInstance($connectName = null, $master = true, $required = true)
 	{
 		if (empty($connectName)) {
 			$connectName = self::$defaultServer;
