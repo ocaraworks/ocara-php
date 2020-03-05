@@ -118,7 +118,9 @@ function ocCheckPath($path, $perm = null, $required = false)
 			} else {
 				return false;
 			}
-		}
+		} else {
+		    chmod($path, $perm);
+        }
 	}
 
 	return is_dir($path);

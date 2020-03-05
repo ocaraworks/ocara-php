@@ -69,6 +69,9 @@ class DatabaseFactory extends Base
      */
 	private static function getDatabase($connectName, $master = true)
 	{
+        $config = self::getConfig($connectName);
+        $hosts = ocForceArray(ocDel($config, 'host'));
+
 		if ($master) {
 		    $index = 0;
         } else {
@@ -84,8 +87,6 @@ class DatabaseFactory extends Base
 		if (isset(self::$connections[$name]) && is_object(self::$connections[$name])) {
 		    $object = self::$connections[$name];
         } else {
-            $config = self::getConfig($connectName);
-            $hosts = ocForceArray(ocDel($config, 'host'));
             if (isset($hosts[$index]) && $hosts[$index]) {
                 $address = array_map('trim', explode(':', $hosts[$index]));
                 $config['host']  = isset($address[0]) ? $address[0] : null;
