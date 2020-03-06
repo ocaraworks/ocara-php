@@ -81,7 +81,7 @@ function gotoUrl(url, object) {
     <li><a href="javascript:;" url="<?php echo $urls['action'];?>">动作(Action)</a></li>
 	<li><a href="javascript:;" url="<?php echo $urls['controller'];?>">控制器(Controller)</a></li>
 	<li><a href="javascript:;" url="<?php echo $urls['module'];?>">模块(Module)</a></li>
-	<li><a href="javascript:;" url="<?php echo $urls['fields'];?>">字段更新</a></li>
+	<li><a href="javascript:;" url="<?php echo $urls['fields'];?>">更新字段缓存</a></li>
 	<?php if($isLogin && $_SESSION['OC_DEV_USERNAME'] == 'root') {?>
 	<li><a href="javascript:;" url="<?php echo $urls['users'];?>">账号管理</a></li>
 	<?php } ?>
