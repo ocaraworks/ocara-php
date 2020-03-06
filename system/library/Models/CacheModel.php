@@ -62,7 +62,7 @@ abstract class CacheModel extends ModelBase
      * @param string $separator
      * @return string
      */
-    public function getKey($name, $separator = '')
+    public function getKeyName($name = '', $separator = '')
     {
         if (is_array($name)) {
             $name = implode($separator, $name);

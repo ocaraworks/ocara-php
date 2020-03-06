@@ -127,7 +127,8 @@ return array(
         'validate' 	        => 'Ocara\Service\Validate',
         'auth'              => 'Ocara\Service\Auth',
         'xml'               => 'Ocara\Service\Xml',
-        'download'          => 'Ocara\Service\Download'
+        'download'          => 'Ocara\Service\Download',
+        'fileCache'         => 'Ocara\Service\FileCache',
     ),
 
     /*
