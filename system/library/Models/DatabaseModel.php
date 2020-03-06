@@ -63,6 +63,10 @@ abstract class DatabaseModel extends ModelBase
      */
     const EVENT_BEFORE_CONNECT = 'beforeConnect';
     /**
+     * 连接后置事件
+     */
+    const EVENT_AFTER_CONNECT = 'afterConnect';
+    /**
      * 原生SQL查询前置事件
      */
     const EVENT_BEFORE_QUERY = 'beforeQuery';
@@ -1334,14 +1338,12 @@ abstract class DatabaseModel extends ModelBase
 	public function connect($isMaster = true)
 	{
         if (isset($this->sql['option']['master'])) {
-            $master = $this->sql['option']['master'] !== false;
-        } else {
-            $master = $isMaster;
+            $isMaster = $this->sql['option']['master'] !== false;
         }
 
-        $this->fire(self::EVENT_BEFORE_CONNECT, array($master));
+        $this->fire(self::EVENT_BEFORE_CONNECT, array($isMaster));
 
-        if ($master) {
+        if ($isMaster) {
             $plugin = DatabaseFactory::getInstance($this->connectName);
         } else {
             $plugin = DatabaseFactory::getInstance($this->connectName, false, false);
@@ -1350,6 +1352,8 @@ abstract class DatabaseModel extends ModelBase
         if (!$plugin->isSelectedDatabase()) {
             $plugin->selectDatabase();
         }
+
+        $this->fire(self::EVENT_AFTER_CONNECT, array($plugin, $isMaster));
 
 		return $plugin;
 	}
