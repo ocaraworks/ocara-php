@@ -25,7 +25,7 @@ class SessionDB extends ServiceProvider
         parent::register();
 
         $location = ocConfig(array('SESSION', 'options', 'location'), '\Ocara\Service\Models\Session', true);
-        $this->container->bindSingleton('_plugin', $location);
+        $this->container->bindSingleton('plugin', $location);
 
         $plugin = $this->plugin(false);
         if (!(is_object($plugin) && $plugin instanceof ModelBase)) {
