@@ -58,29 +58,22 @@ abstract class DatabaseModel extends ModelBase
         'orderBy', 'groupBy',  'limit', 'having', 'more'
     );
 
-    /**
-     * 连接前置事件
-     */
+    //连接前置事件
     const EVENT_BEFORE_CONNECT = 'beforeConnect';
-    /**
-     * 连接后置事件
-     */
+
+    //连接后置事件
     const EVENT_AFTER_CONNECT = 'afterConnect';
-    /**
-     * 原生SQL查询前置事件
-     */
+
+    //原生SQL查询前置事件
     const EVENT_BEFORE_QUERY = 'beforeQuery';
-    /**
-     * 原生SQL查询后置事件
-     */
+
+    //原生SQL查询后置事件
     const EVENT_AFTER_QUERY = 'afterQuery';
-    /**
-     * 组装SQL查询前置事件
-     */
+
+    //组装SQL查询前置事件
     const EVENT_BEFORE_SELECT_QUERY = 'beforeSelectQuery';
-    /**
-     * 组装SQL查询前置事件
-     */
+
+    //组装SQL查询前置事件
     const EVENT_AFTER_SELECT_QUERY = 'afterSelectQuery';
 
     /**
