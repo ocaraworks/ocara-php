@@ -76,6 +76,12 @@ abstract class DatabaseModel extends ModelBase
     //组装SQL查询前置事件
     const EVENT_AFTER_SELECT_QUERY = 'afterSelectQuery';
 
+    //获取字段缓存事件
+    const EVENT_GET_FIELDS_CACHE = 'onGetCacheFields';
+
+    //保存字段缓存事件
+    const EVENT_SAVE_FIELDS_CACHE = 'onSaveCacheFields';
+
     /**
      * 初始化
      * DatabaseModel constructor.
@@ -419,7 +425,7 @@ abstract class DatabaseModel extends ModelBase
 
         if ($cache) {
             if (!$this->fields) {
-                $fieldsInfo = $this->getFieldsConfig();
+                $fieldsInfo = $this->fire(self::EVENT_GET_FIELDS_CACHE);
             }
         }
 
@@ -427,6 +433,7 @@ abstract class DatabaseModel extends ModelBase
             $generator = new Generator($plugin);
             $sqlData = $generator->getShowFieldsSql($this->tableName, $this->databaseName);
             $fieldsInfo = $plugin->getFieldsInfo($sqlData);
+            $this->fire(self::EVENT_SAVE_FIELDS_CACHE, array($fieldsInfo));
         }
 
         if ($fieldsInfo) {
@@ -435,6 +442,32 @@ abstract class DatabaseModel extends ModelBase
         }
 
         return $this;
+    }
+
+    /**
+     * 获取字段缓存事件处理
+     * @param $event
+     * @param $eventTarget
+     * @return array|mixed
+     */
+    public function onGetCacheFields($event, $eventTarget)
+    {
+        return $this->getFieldsConfig();
+    }
+
+    /**
+     * 保存字段缓存事件处理
+     * @param $fieldsConfig
+     * @param $event
+     * @param $eventTarget
+     */
+    public function onSaveCacheFields($fieldsConfig, $event, $eventTarget)
+    {
+        $paths = $this->getConfigPath();
+        $fileCache = ocService()->fileCache;
+        $fileCache->format();
+        $fileCache->setData($fieldsConfig, null, ltrim(self::getClass(), OC_NS_SEP) . ' Fields');
+        $fileCache->save($paths['fields']);
     }
 
     /**
