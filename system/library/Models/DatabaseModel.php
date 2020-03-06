@@ -401,7 +401,7 @@ abstract class DatabaseModel extends ModelBase
      * @param $name
      * @param null $primary
      */
-    public function selectTable($name, $primary = null)
+    public function setTable($name, $primary = null)
     {
         $this->tableName = $name;
         if ($primary) {
@@ -1348,7 +1348,7 @@ abstract class DatabaseModel extends ModelBase
         }
 
         if (!$plugin->isSelectedDatabase()) {
-            $plugin->selectDatabase($this->databaseName);
+            $plugin->selectDatabase();
         }
 
 		return $plugin;

@@ -36,6 +36,7 @@ class DatabaseBase extends Base
 	protected $lastSql;
 	protected $prepared;
 	protected $params;
+	protected $selectedDatabase;
 
 	private $error = array();
 	private static $connects = array();
@@ -72,7 +73,6 @@ class DatabaseBase extends Base
 
         $values = array_fill_keys($options, OC_EMPTY);
         $config = array_merge(array_combine($options, $values), $config);
-        $config['name'] = ocDel($config, 'name');
 
         if (!$config['charset']) {
             $config['charset'] = 'utf8';
@@ -437,12 +437,13 @@ class DatabaseBase extends Base
      * @param string $name
      * @return mixed
      */
-	public function selectDatabase($name)
+	public function selectDatabase($name = null)
 	{
+	    $name = $name ?: $this->config['name'];
 		$result = $this->plugin()->selectDatabase($name);
 
 		if ($result) {
-			$this->config['name'] = $name;
+			$this->selectedDatabase = $name;
 		} else {
 			$this->showError('failed_select_database');
 		}
@@ -456,7 +457,7 @@ class DatabaseBase extends Base
      */
 	public function isSelectedDatabase()
     {
-        return !!$this->config['name'];
+        return !!$this->selectedDatabase;
     }
 
 	/**
