@@ -1,0 +1,11 @@
+<?php
+/**
+ * 逻辑实体基类
+ */
+namespace Base\Model;
+
+use Ocara\Entities\LogicEntity as BaseLogicEntity;
+
+class LogicEntity extends BaseLogicEntity
+{
+}

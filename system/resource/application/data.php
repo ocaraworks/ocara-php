@@ -7,6 +7,7 @@ $dirs = array(
         'model/cache',
         'model/database',
         'model/entity/database',
+        'model/entity/logic',
         'lang/zh_cn',
         'lang/zh_cn/database',
         'modules',
@@ -68,6 +69,7 @@ $files = array(
         'Base/Model/CacheModel',
         'Base/Model/DatabaseModel',
         'Base/Model/DatabaseEntity',
+        'Base/Model/LogicEntity',
 	),
     'public' => array(
         'pass/tools/index'
