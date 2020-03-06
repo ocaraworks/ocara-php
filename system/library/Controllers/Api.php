@@ -55,7 +55,7 @@ class Api extends ControllerBase implements ControllerInterface
             }
         }
 
-        if ($actionMethod == '__action') {
+        if ($this->isActionClass()) {
             $this->doClassAction();
         } else {
             $result = $this->$actionMethod();

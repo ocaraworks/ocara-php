@@ -19,6 +19,8 @@ abstract class ControllerBase extends serviceProvider
      * @var $isFormSubmit 是否POST提交
      * @var $checkForm 是否检测表单
      */
+    private $isActionClass = false;
+
     protected $route;
     protected $models;
     protected $isFormSubmit = false;
@@ -26,7 +28,6 @@ abstract class ControllerBase extends serviceProvider
     protected $hasRender = false;
     protected $contentType;
     protected $result;
-
     protected static $controllerType;
 
     const EVENT_AFTER_ACTION = 'afterAction';
@@ -34,9 +35,12 @@ abstract class ControllerBase extends serviceProvider
 
     /**
      * 初始化设置
+     * @param $isActionClass
      */
-    public function initialize()
+    public function initialize($isActionClass)
     {
+        $this->isActionClass = $isActionClass;
+
         if ($this instanceof \Ocara\Controllers\Api) {
             ocService()->exceptionHandler->setResponseFormat(ExceptionHandler::RESPONSE_FORMAT_API);
         } else {
@@ -85,6 +89,15 @@ abstract class ControllerBase extends serviceProvider
 
         $this->event(self::EVENT_AFTER_ACTION)
              ->append(array($this, 'afterAction'));
+    }
+
+    /**
+     * 当前是否是
+     * @return bool
+     */
+    public function isActionClass()
+    {
+        return $this->isActionClass;
     }
 
     /**

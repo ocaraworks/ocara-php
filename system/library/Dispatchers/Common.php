@@ -63,6 +63,7 @@ class Common extends Base
 
         $cClass = $cNamespace . 'Controller';
         $method = $route['action'] . 'Action';
+        $isActionClass = false;
 
         if (!class_exists($cClass)) {
             $service->error->show('no_controller', array($cClass));
@@ -73,12 +74,13 @@ class Common extends Base
             if (class_exists($aClass)) {
                 $cClass = $aClass;
                 $method = '__action';
+                $isActionClass = true;
             }
         }
 
         $Control = new $cClass($params);
         $Control->setRoute($route);
-        $Control->initialize();
+        $Control->initialize($isActionClass);
 
         if (!method_exists($Control, $method)) {
             $service->error->show('no_special_action', array('Action', $uAction . 'Action'));

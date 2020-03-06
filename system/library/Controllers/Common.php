@@ -69,7 +69,7 @@ class Common extends ControllerBase implements ControllerInterface
             }
         }
 
-        if ($actionMethod == '__action') {
+        if ($this->isActionClass()) {
             $this->doClassAction();
         } else {
             $this->doFunctionAction($actionMethod);

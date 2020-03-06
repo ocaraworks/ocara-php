@@ -20,7 +20,7 @@ class Task extends ControllerBase implements ControllerInterface
      */
     public function doAction($actionMethod)
     {
-        if ($actionMethod == '__action') {
+        if ($this->isActionClass()) {
             $this->doClassAction();
         } else {
             $this->$actionMethod();
