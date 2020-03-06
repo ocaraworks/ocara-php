@@ -47,10 +47,10 @@ class ExceptionHandler extends Base
 
     /**
      * 错误处理
-     * @param \Exception $exception
+     * @param $exception
      * @throws Exception
      */
-    public function exceptionHandle(\Exception $exception)
+    public function exceptionHandle($exception)
     {
         return $this->handle($exception);
     }
@@ -82,10 +82,10 @@ class ExceptionHandler extends Base
 
     /**
      * 错误处理
-     * @param \Exception $exception
+     * @param $exception
      * @throws Exception
      */
-    public function handle(\Exception $exception)
+    public function handle($exception)
     {
         $response = ocService('response', true);
 
@@ -100,6 +100,8 @@ class ExceptionHandler extends Base
             $this->fire(self::EVENT_AFTER_OUTPUT, array($exception));
         } catch (\Exception $exception) {
             $this->output($exception, null, null);
+        } catch (\Error $error) {
+            $this->output($error, null, null);
         }
 
         $response->send();
@@ -116,12 +118,12 @@ class ExceptionHandler extends Base
 
     /**
      * 输出错误
-     * @param \Exception $exception
+     * @param $exception
      * @param $event
      * @param $object
      * @throws Exception
      */
-    public function output(\Exception $exception, $event, $object)
+    public function output($exception, $event, $object)
     {
         $error = ocGetExceptionData($exception);
         $responseFormat = $this->responseFormat ?: ocConfig('DEFAULT_RESPONSE_FORMAT', null);
@@ -148,12 +150,12 @@ class ExceptionHandler extends Base
 
     /**
      * 错误报告
-     * @param \Exception $exception
+     * @param $exception
      * @param $event
      * @param $object
      * @throws Exception
      */
-    public function report(\Exception $exception, $event, $object)
+    public function report($exception, $event, $object)
     {
         $error = ocGetExceptionData($exception);
         ocService('log', true)

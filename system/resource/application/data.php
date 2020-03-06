@@ -8,6 +8,7 @@ $dirs = array(
         'model/database',
         'model/entity/database',
         'model/entity/logic',
+        'model/enums',
         'lang/zh_cn',
         'lang/zh_cn/database',
         'modules',
