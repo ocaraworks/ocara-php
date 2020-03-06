@@ -1,6 +1,6 @@
 <div class="section">
-<div class="location">当前位置 > 字段更新</div>
-<div class="section-title">字段更新</div>
+<div class="location">当前位置 > 更新字段缓存</div>
+<div class="section-title">更新字段缓存</div>
 <div class="section-body">
 <form action="<?php echo ocUrl(array(OC_MODULE_NAME, 'generate', 'action'), array('target' => 'fields'));?>" method="post">
 
@@ -12,7 +12,7 @@
 
 <div>
 <span class="left-span">&nbsp;</span>
-<input type="submit" value="更新字段" name="submit" />
+<input type="submit" value="开始更新" name="submit" />
 </div>
 </form>
 </div>
