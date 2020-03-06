@@ -15,19 +15,10 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class DatabaseBase extends Base
 {
-	/**
-	 * 调试配置
-	 */
-	const DEBUG_NO = 0; //非调试
-	const DEBUG_RETURN = 1; //返回调试内容
+    private $error = array();
 
-    const EVENT_BEFORE_EXECUTE_SQL = 'beforeExecuteSql';
-    const EVENT_AFTER_EXECUTE_SQL = 'afterExecuteSql';
-    const EVENT_BEFORE_SHOW_ERROR = 'beforeShowError';
+    private static $connects = array();
 
-	/**
-	 * 连接属性
-	 */
 	protected $config;
 	protected $pdoName;
 	protected $connectName;
@@ -37,15 +28,17 @@ class DatabaseBase extends Base
 	protected $prepared;
 	protected $params;
 	protected $selectedDatabase;
-
-	private $error = array();
-	private static $connects = array();
+	protected $keywords = array();
 
 	protected static $paramOptions = array(
 		'set', 		'where', 	'groupBy',
 		'having', 	'limit', 	'orderBy',
 		'more',     'bind'
 	);
+
+    const EVENT_BEFORE_EXECUTE_SQL = 'beforeExecuteSql';
+    const EVENT_AFTER_EXECUTE_SQL = 'afterExecuteSql';
+    const EVENT_BEFORE_SHOW_ERROR = 'beforeShowError';
 
     /**
      * 初始化方法
@@ -69,6 +62,7 @@ class DatabaseBase extends Base
             'host', 'port', 'type', 'class',
             'name', 'username', 'prefix', 'charset',
             'timeout', 'socket', 'options', 'keywords',
+            'is_filter_keywords'
         );
 
         $values = array_fill_keys($options, OC_EMPTY);
@@ -95,11 +89,15 @@ class DatabaseBase extends Base
             $config['isPdo'] = true;
         }
 
-        if (!$config['keywords']) {
-            $config['keywords'] = array();
+        if (isset($config['is_filter_keywords']) && $config['is_filter_keywords'] === false) {
+            if (empty($config['keywords'])) {
+                $config['keywords'] = $this->keywords;
+            } else {
+                $keywords = is_array($config['keywords']) ? $config['keywords']: array();
+                $config['keywords'] = array_map('trim', $keywords);
+            }
         } else {
-            $keywords = is_array($config['keywords']) ? $config['keywords']: array();
-            $config['keywords'] = array_map('trim', $keywords);
+            $config['keywords'] = array();
         }
 
         $this->config = $config;
@@ -434,13 +432,20 @@ class DatabaseBase extends Base
 
     /**
      * 选择数据库
+     * @param null $name
+     */
+    public function baseSelectDatabase($name = null)
+    {}
+
+    /**
+     * 选择数据库
      * @param string $name
      * @return mixed
      */
 	public function selectDatabase($name = null)
 	{
 	    $name = $name ?: $this->config['name'];
-		$result = $this->plugin()->selectDatabase($name);
+		$result = $this->baseSelectDatabase($name);
 
 		if ($result) {
 			$this->selectedDatabase = $name;

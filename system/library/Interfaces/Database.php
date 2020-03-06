@@ -34,11 +34,12 @@ interface Database
 	 */
 	public function setCharset($charset);
 
-	/**
-	 * 选择数据库
-	 * @param $name
-	 */
-	public function selectDatabase($name);
+    /**
+     * 选择数据库
+     * @param string $name
+     * @return mixed
+     */
+    public function baseSelectDatabase($name = null);
 
     /**
      * 加密字符串

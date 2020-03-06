@@ -13,6 +13,7 @@ use Ocara\Core\Sql;
 use Ocara\Interfaces\Database as DatabaseInterface;
 
 use Ocara\Exceptions\Exception;
+use Ocara\Sql\Generator;
 
 class MysqliDatabase extends DatabaseBase implements DatabaseInterface
 {
@@ -22,7 +23,6 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
 	 */
 	protected $pdoName = 'pdo_mysql';
 	protected $defaultPort = '3306';
-	protected $defaultFields = '*';
 
 	/**
 	 * SQL过滤关键字
@@ -125,11 +125,13 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
      * @return array|bool|mixed
      * @throws Exception
      */
-	public function selectDatabase($name)
+	public function baseSelectDatabase($name = null)
 	{
 		if ($this->isPdo()) {
-			$sqlData = $this->getSelectDbSql($name);
-			return $this->query($sqlData);
+            $generator = new Generator($this);
+            $sql = $generator->getSelectDbSql($name);
+            $result = $this->query($sql);
+            return $result !== false;
 		}
 
 		return $this->plugin()->select_db($name);
