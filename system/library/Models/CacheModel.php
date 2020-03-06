@@ -57,6 +57,20 @@ abstract class CacheModel extends ModelBase
     }
 
     /**
+     * 获取缓存KEY
+     * @param $name
+     * @param string $separator
+     * @return string
+     */
+    public function getKey($name, $separator = '')
+    {
+        if (is_array($name)) {
+            $name = implode($separator, $name);
+        }
+        return $this->prefix . $name;
+    }
+
+    /**
      * 获取当前服务器
      * @return mixed
      */
