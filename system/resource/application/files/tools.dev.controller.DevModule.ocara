@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2018/12/12
- * Time: 23:22
+ * 开发者中心模块
  */
 namespace app\tools\dev\controller;
 
@@ -21,18 +18,24 @@ class DevModule extends Common
             $this->error->show('开发运行模式禁止使用该功能！');
         }
 
-        ocContainer()->bindSingleton('fileCache', 'Ocara\Service\FileCache');
-
-        ocService()->exceptionHandler
-            ->event(ExceptionHandler::EVENT_BEFORE_OUTPUT)
-            ->append(array($this, 'exceptionHandler'));
-
         defined('OC_MODULE_NAME') OR define('OC_MODULE_NAME', $this->getRoute('module'));
 
         $this->view
             ->setModuleRootViewPath(OC_EXT . 'resource/tools/develop/view/');
 
         $this->checkLogin();
+    }
+
+    /**
+     * 注册事件
+     */
+    public function registerEvents()
+    {
+        parent::registerEvents();
+
+        ocService()->exceptionHandler
+            ->event(ExceptionHandler::EVENT_BEFORE_OUTPUT)
+            ->append(array($this, 'exceptionHandler'));
     }
 
     /**
@@ -67,7 +70,10 @@ class DevModule extends Common
     public function exceptionHandler($exception, $event, $eventTarget)
     {
         if ($this->getRoute('action') != 'error') {
-            $this->response->jump('generate/error', array('content' => htmlspecialchars($exception->getMessage())));
+            $this->response->jump(
+                'generate/error',
+                array('content' => htmlspecialchars($exception->getMessage()))
+            );
         }
     }
 }

@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2018/12/13
- * Time: 0:29
+ * 错误输出
  */
 namespace app\tools\dev\controller\generate;
 

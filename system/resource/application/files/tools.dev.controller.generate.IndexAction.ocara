@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2018/12/13
- * Time: 0:29
+ * 首页
  */
 namespace app\tools\dev\controller\generate;
 
