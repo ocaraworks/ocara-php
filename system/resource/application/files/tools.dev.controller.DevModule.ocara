@@ -14,6 +14,8 @@ class DevModule extends Common
      */
     public function __module()
     {
+        $this->checkVisitor();
+
         if (ocConfig('SYSTEM_RUN_MODE') != 'develop') {
             $this->error->show('开发运行模式禁止使用该功能！');
         }
@@ -74,6 +76,21 @@ class DevModule extends Common
                 'generate/error',
                 array('content' => htmlspecialchars($exception->getMessage()))
             );
+        }
+    }
+
+    /**
+     * 校验访问者身份
+     * @throws Exception
+     */
+    public function checkVisitor()
+    {
+        $limitServerIp = ocConfig('LIMIT.server_ips', array('127.0.0.1'));
+        $limitServerDomain = ocConfig('LIMIT.server_domains', array('localhost'));
+        $isValid = in_array($_SERVER['SERVER_ADDR'], $limitServerIp) || in_array($_SERVER['SERVER_ADDR'], $limitServerDomain);
+
+        if (empty($isValid)) {
+            $this->error->show('invalid_develop_system_ip');
         }
     }
 }
