@@ -312,12 +312,13 @@ abstract class DatabaseModel extends ModelBase
             return self::$configPath[$tag];
         }
 
+        $modelSuffix = 'Model';
         $moduleLang = OC_EMPTY;
         $language = ocService()->app->getLanguage();
 
         $ref = new ReflectionObject($this);
         $filePath = ocCommPath($ref->getFileName());
-        $file = substr(basename($filePath), 0, -9) . '.php';
+        $file = substr(basename($filePath), 0, -(strlen($modelSuffix) + 4)) . '.php';
         $dir = dirname($filePath) . OC_DIR_SEP;
 
         if ($this->module) {
