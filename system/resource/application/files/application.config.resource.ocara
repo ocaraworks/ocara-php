@@ -14,28 +14,28 @@ return array(
          * 运行环境配置
          */
         'env' => array(
-            'get_env' => '', //获取环境类型事件回调
+            'get_env' => '', //获取环境类型回调
         ),
 
         /*
          * 表单使用
          */
         'form' => array(
-            'generate_token' => '', //表单令牌加密处理
+            'generate_token' => '', //表单令牌加密处理回调
         ),
 
         /*
          * 数据库相关
          */
         'database' => array(
-            'get_config' => '', //获取数据库配置
+            'get_config' => '', //获取数据库配置回调
         ),
 
         /*
          * 缓存相关
          */
         'cache' => array(
-            'get_config' => '', //获取缓存配置
+            'get_config' => '', //获取缓存配置回调
         ),
     )
 );

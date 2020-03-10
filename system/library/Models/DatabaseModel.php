@@ -33,7 +33,6 @@ abstract class DatabaseModel extends ModelBase
     protected static $entity;
     protected static $database;
 
-    protected $plugin;
     protected $alias;
     protected $module;
     protected $connectName = 'defaults';

@@ -16,7 +16,6 @@ defined('OC_PATH') or exit('Forbidden!');
 
 abstract class CacheModel extends ModelBase
 {
-    protected $plugin;
     protected $database;
 
     protected $tag;

@@ -171,7 +171,10 @@ class Form extends Base
 	public function model($class, $alias = null)
 	{
 	    if (!class_exists($class)) {
-	        ocService()->error->show('not_exists_model_class', array($class));
+	        $class = 'app\model\database\\' . ltrim($class, '\\');
+	        if (!class_exists($class)) {
+                ocService()->error->show('not_exists_model_class', array($class));
+            }
         }
 
 	    if (!$alias) {

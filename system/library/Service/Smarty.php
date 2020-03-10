@@ -16,8 +16,6 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Smarty extends ServiceBase implements TemplateInterface
 {
-	protected $plugin = null;
-
     /**
      * 析构函数
      * Smarty constructor.
