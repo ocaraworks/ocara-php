@@ -3,5 +3,6 @@
  * 基本语言配置
  */
 return array(
+    'invalid_run_mode' => '非开发模式禁止使用该功能！如果不是生产环境，请修改SYSTEM_RUN_MODE配置。',
     'invalid_develop_system_ip' => '当前IP非法，无法使用开发者中心！您可以修改toos/dev/privates/config/base.php中的LIMIT配置IP白名单。',
 );

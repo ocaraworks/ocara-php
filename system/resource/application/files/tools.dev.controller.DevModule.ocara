@@ -17,7 +17,7 @@ class DevModule extends Common
         $this->checkVisitor();
 
         if (ocConfig('SYSTEM_RUN_MODE') != 'develop') {
-            $this->error->show('开发运行模式禁止使用该功能！');
+            $this->error->show('invalid_run_mode');
         }
 
         defined('OC_MODULE_NAME') OR define('OC_MODULE_NAME', $this->getRoute('module'));
