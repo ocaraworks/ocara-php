@@ -15,7 +15,7 @@ class Resource implements Middleware
     /**
      * 处理函数
      * @param array $params
-     * @return mixed
+     * @return mixed|void
      */
     public function handle(array $params = array())
     {}
