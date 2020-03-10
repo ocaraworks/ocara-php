@@ -3,5 +3,5 @@
  * 基本语言配置
  */
 return array(
-    'invalid_develop_system_ip' => '当前IP非法无法使用开发者中心！您可以修改toos/dev/privates/config/base.php中的LIMIT配置IP白名单。',
+    'invalid_develop_system_ip' => '当前IP非法，无法使用开发者中心！您可以修改toos/dev/privates/config/base.php中的LIMIT配置IP白名单。',
 );
