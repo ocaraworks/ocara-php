@@ -11,6 +11,6 @@ return array(
      */
     'LIMIT' => array(
         'server_ips' => array('127.0.0.1'), //服务器IP白名单
-        'server_domains' => array('localhost'), //服务器域名
+        'server_domains' => array('localhost'), //服务器域名白名单
     ),
 );
