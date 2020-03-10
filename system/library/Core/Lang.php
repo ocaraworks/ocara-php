@@ -46,7 +46,7 @@ class Lang extends Base
     public function loadModuleConfig($route, $rootPath = null)
     {
         $subPath = sprintf(
-            'lang/%s/control/',
+            'lang/%s/',
             ocService()->app->getLanguage()
         );
         $path = $this->getConfigPath($route, $subPath, $rootPath);
