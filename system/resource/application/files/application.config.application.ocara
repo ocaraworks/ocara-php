@@ -20,7 +20,7 @@ return array(
 
     /*
      * URL类型
-     * 1  默认类型  形如/index.php?m=m1&c=c1&a=a1&id=2
+     * 1  默认类型  形如/index.php?_route=m1/c1/a1&id=2
      * 2  伪目录类型  形如/m1/c1/a1/2
      * 3  伪路径类型  形如/index.php/m1/c1/a1/2
      * 4  伪静态类型  形如/m1/c1/a1/2.html
