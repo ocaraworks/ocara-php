@@ -84,7 +84,7 @@ $files = array(
         'dev/controller/generate/LoginAction',
         'dev/controller/generate/LogoutAction',
         'dev/privates/config/base',
-        'dev/privates/lang/base',
+        'dev/privates/lang/zh_cn/control/base',
     ),
     'tests' => array(
         'bootstrap'
