@@ -13,4 +13,21 @@ ul.left-menu {list-style: none;margin: 0;padding: 10px;}
 ul.left-menu li {float: left;padding: 8px 2px;text-align: left;height: 20px;line-height: 20px;margin:0;overflow:hidden;}
 ul.left-menu li a {width: 150px;}
 .hover-menu a,.current-menu a{background-color: #97c8fd;color:#FFF;}
+input[type=text], input[type=password] {
+    width: 200px;
+    font-size: 14px;
+    height: 18px;
+    line-height: 18px;
+    padding: 2px 5px;
+}
+input[type=submit], input[type=button]{
+    font-size: 14px;
+    padding: 3px 30px;
+    /*color: #FFF;*/
+    /*background-color: #38f;*/
+    /*border: 1px solid #2e82ff;*/
+}
+.submit input[type=submit]{
+    margin-left: 12px;
+}
 </style>
