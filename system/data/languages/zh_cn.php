@@ -108,6 +108,7 @@ return array(
 	'fault_relate_config'			=> array(2317, '关联配置有误'),
 	'fault_method_param'			=> array(2318, '函数或方法参数缺失或格式错误'),
     'fault_find_value'              => array(2319, '查询字段值格式不正确！'),
+	'fault_restful_format'          => array(2320, 'Rest路由格式不正确！'),
 
 	//不存在或找不到
 	'not_exists_part' 				=> array(2400, '指定的part文件不存在：{file}.php。'),

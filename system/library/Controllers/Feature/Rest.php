@@ -42,6 +42,10 @@ class Rest extends Base implements Feature
 
         $action = ocConfig(array('CONTROLLERS', 'rest', 'action_map', $method), null);
 
+        if (empty($action)) {
+            ocService()->error->show('fault_restful_format');
+        }
+
         if (ocService()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
             $_GET = array_values($get);
         } else {
