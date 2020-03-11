@@ -182,19 +182,19 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 执行分库分表
      * @param array $data
-     * @param null $relationName
+     * @param null $relationAlias
      * @return $this
      */
-    public function sharding(array $data = array(), $relationName = null)
+    public function sharding(array $data = array(), $relationAlias = null)
     {
         if (empty($this->sql['sharding'])) {
             $this->sql['sharding'] = array();
         }
 
         if (func_num_args() >= 2) {
-            if ($relationName) {
+            if ($relationAlias) {
                 $shardingData = ocGet('relate', $this->sql['sharding'], array());
-                $this->sql['sharding']['relate'] = array_merge($shardingData, array($relationName => $data));
+                $this->sql['sharding']['relate'] = array_merge($shardingData, array($relationAlias => $data));
             }
         } else {
             $shardingData = ocGet('current', $this->sql['sharding'], array());

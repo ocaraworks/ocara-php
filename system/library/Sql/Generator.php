@@ -412,6 +412,7 @@ class Generator extends Base
 
             if (empty($param['type'])) {
                 $param['fullname'] = $this->tableName;
+                $database = $this->databaseName;
             } else {
                 $model = $param['class']::build();
                 $shardingData = !empty($shardingConfig[$alias]) ? $shardingConfig[$alias]: array();
@@ -419,6 +420,7 @@ class Generator extends Base
                     $model->sharding($shardingData);
                 }
                 $param['fullname'] = $model->getTableName();
+                $database = $model->getDatabaseName();
             }
 
             if ($unJoined) {
@@ -433,7 +435,7 @@ class Generator extends Base
                 $param['on'] = OC_EMPTY;
             }
 
-            $param['fullname'] = $this->plugin()->getTableFullname($param['fullname'], $this->databaseName);
+            $param['fullname'] = $this->plugin()->getTableFullname($param['fullname'], $database);
             $from = $from . $this->plugin()->getJoinSql($param['type'], $param['fullname'], $alias, $param['on']);
         }
 
