@@ -29,25 +29,18 @@ class Cookie extends Base
 		return $_COOKIE;
 	}
 
-	/**
-	 * 设置cookie变量
-	 * @param string|array $key
-	 * @param mixed $value
-	 */
-	public function set($key, $value = null)
+    /**
+     * 删除cookie变量
+     * @param $key
+     * @param string $path
+     * @param string $domain
+     * @param bool $secure
+     * @param bool $httponly
+     * @throws Exception
+     */
+	public function delete($key, $path = '', $domain = '', $secure = false, $httponly = true)
 	{
-		if (ocKeyExists($key, $_COOKIE)) {
-			ocSet($_COOKIE, $key, $value);
-		}
-	}
-
-	/**
-	 * 删除cookie变量
-	 * @param string|array $key
-	 */
-	public function delete($key)
-	{
-		ocDel($_COOKIE, $key);
+		$this->set($key, null, time() - 1, $path, $domain, $secure, $httponly);
 	}
 
 	/**
@@ -71,7 +64,7 @@ class Cookie extends Base
      * @param bool $httponly
      * @throws Exception
      */
-	public function create($name, $value, $expire = 0, $path = '', $domain = '', $secure = false, $httponly = true)
+	public function set($name, $value, $expire = 0, $path = '', $domain = '', $secure = false, $httponly = true)
 	{	
 		$expire   = intval($expire);
 		$expire   = $expire ? time() + $expire : 0;

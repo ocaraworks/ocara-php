@@ -185,7 +185,7 @@ class Session extends ServiceProvider
 	public function setCookie($saveTime, $path = null, $domain = false, $secure = false, $httponly = true)
 	{	
 		if (session_id()) {
-			ocService()->cookie->create(
+			ocService()->cookie->set(
 			    session_name(),
                 session_id(),
                 $saveTime,

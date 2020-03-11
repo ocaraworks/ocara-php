@@ -41,7 +41,7 @@ class LoginService extends BaseService
 		} else {
 			$_SESSION['OC_DEV_LOGIN'] = true;
 			$_SESSION['OC_DEV_USERNAME'] = $username;
-			ocService()->cookie->create(session_name(), session_id());
+			ocService()->cookie->set(session_name(), session_id());
 			header("location:" . ocUrl(array(OC_MODULE_NAME, 'generate', 'index')));
 		}
 	}
