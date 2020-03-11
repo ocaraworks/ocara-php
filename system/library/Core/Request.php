@@ -159,6 +159,16 @@ class Request extends Base
 		return $this->getMethod() == 'CONNECT';
 	}
 
+    /**
+     * 是否POST提交
+     * @return bool
+     * @throws Exception
+     */
+	public function isPostSubmit()
+    {
+        return in_array($this->getMethod(), array('POST', 'PUT', 'PATCH'));
+    }
+
 	/**
 	 * 判断是否是AJAX请求
 	 */

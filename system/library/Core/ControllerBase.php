@@ -16,14 +16,14 @@ abstract class ControllerBase extends serviceProvider
 {
     /**
      * @var $_provider 控制器提供者
-     * @var $isFormSubmit 是否POST提交
+     * @var $isPostSubmit 是否POST提交
      * @var $checkForm 是否检测表单
      */
     private $isActionClass = false;
 
     protected $route;
     protected $models;
-    protected $isFormSubmit = false;
+    protected $isPostSubmit = false;
     protected $checkForm = true;
     protected $hasRender = false;
     protected $contentType;
@@ -177,15 +177,15 @@ abstract class ControllerBase extends serviceProvider
 
     /**
      * 设置和获取是否表单提交
-     * @param bool $isFormSubmit
+     * @param bool $isPostSubmit
      * @return bool
      */
-    public function isFormSubmit($isFormSubmit = null)
+    public function isPostSubmit($isPostSubmit = null)
     {
         if (func_num_args()) {
-            $this->isFormSubmit = $isFormSubmit ? true : false;
+            $this->isPostSubmit = $isPostSubmit ? true : false;
         } else {
-            return $this->isFormSubmit;
+            return $this->isPostSubmit;
         }
     }
 
@@ -232,7 +232,7 @@ abstract class ControllerBase extends serviceProvider
      */
     public function checkForm()
     {
-        if (!($this->isFormSubmit() && $this->checkForm && $this->formManager->getForm()))
+        if (!($this->isPostSubmit() && $this->checkForm && $this->formManager->getForm()))
             return true;
 
         $token = $this->request->getCommonRequest(FormManager::getTokenName());

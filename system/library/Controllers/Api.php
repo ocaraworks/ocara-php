@@ -43,15 +43,14 @@ class Api extends ControllerBase implements ControllerInterface
     /**
      * 执行动作
      * @param string $actionMethod
-     * @throws Exception
      */
     public function doAction($actionMethod)
     {
-        if (!$this->isFormSubmit()) {
+        if (!$this->isPostSubmit()) {
             if (method_exists($this, 'isSubmit')) {
-                $this->isFormSubmit($this->isSubmit());
-            } elseif ($this->request->isPost()) {
-                $this->isFormSubmit(true);
+                $this->isPostSubmit($this->isSubmit());
+            } elseif ($this->request->isPostSubmit()) {
+                $this->isPostSubmit(true);
             }
         }
 
@@ -80,7 +79,7 @@ class Api extends ControllerBase implements ControllerInterface
 
         $this->checkForm();
 
-        if ($this->isFormSubmit() && method_exists($this, 'submit')) {
+        if ($this->isPostSubmit() && method_exists($this, 'submit')) {
             $result = $this->submit();
             $this->formManager->clearToken();
             $this->render($result, false);
@@ -95,8 +94,7 @@ class Api extends ControllerBase implements ControllerInterface
 
     /**
      * 渲染API
-     * @param null $result
-     * @throws Exception
+     * @param mixed $result
      */
     public function render($result = null)
     {

@@ -41,7 +41,7 @@ class Api extends Base
      */
     protected function getXmlResult($result)
     {
-        $xmlObj = new Xml();
+        $xmlObj = ocService()->xml;
         $xmlObj->loadArray(array('root', $result));
         $xml = $xmlObj->getResult();
 

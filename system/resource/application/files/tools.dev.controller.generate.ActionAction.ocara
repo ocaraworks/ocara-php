@@ -41,7 +41,7 @@ class ActionAction extends Controller
 
     public function afterAction()
     {
-        if ($this->isFormSubmit()) {
+        if ($this->isPostSubmit()) {
             echo '操作成功！';
         }
     }

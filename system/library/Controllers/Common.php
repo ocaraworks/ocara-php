@@ -61,11 +61,11 @@ class Common extends ControllerBase implements ControllerInterface
      */
     public function doAction($actionMethod)
     {
-        if (!$this->isFormSubmit()) {
+        if (!$this->isPostSubmit()) {
             if (method_exists($this, 'isSubmit')) {
-                $this->isFormSubmit($this->isSubmit());
-            } elseif ($this->request->isPost()) {
-                $this->isFormSubmit(true);
+                $this->isPostSubmit($this->isSubmit());
+            } elseif ($this->request->isPostSubmit()) {
+                $this->isPostSubmit(true);
             }
         }
 
@@ -90,7 +90,7 @@ class Common extends ControllerBase implements ControllerInterface
         if ($this->request->isAjax()) {
             $this->isApi(true);
             $this->render($result);
-        } elseif ($this->isFormSubmit()) {
+        } elseif ($this->isPostSubmit()) {
             $this->formManager->clearToken();
             $this->render($result, false);
         } else {
@@ -117,7 +117,7 @@ class Common extends ControllerBase implements ControllerInterface
             $result = method_exists($this, 'api') ? $this->api() : null;
             $this->isApi(true);
             $this->render($result);
-        } elseif ($this->isFormSubmit() && method_exists($this, 'submit')) {
+        } elseif ($this->isPostSubmit() && method_exists($this, 'submit')) {
             $this->checkForm();
             $result = $this->submit();
             $this->formManager->clearToken();
