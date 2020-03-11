@@ -161,19 +161,19 @@ return array(
             //路由映射
             'action_map' => array(
                 'GET' 			=> 'index', //获取记录列表
-                'GET/id' 		=> 'view', //获取记录详情
+                'GET/id' 		=> 'read', //获取记录详情
                 'POST' 			=> 'create', //添加记录
                 'PUT/id' 		=> 'update', //更新记录
                 'PATCH/id' 		=> 'update', //更新记录
                 'HEAD' 			=> 'index', //获取记录列表
-                'HEAD/id' 		=> 'view', //获取记录详情
+                'HEAD/id' 		=> 'read', //获取记录详情
                 'DELETE/id'		=> 'delete', //删除记录
             ),
             //请求成功返回状态码
             'success_code_map' => array(
                 'index' 	=> 200, //获取记录列表成功
                 'create' 	=> 201, //添加记录成功
-                'view' 		=> 200, //获取记录详情成功
+                'read' 		=> 200, //获取记录详情成功
                 'update' 	=> 200, //更新记录成功
                 'delete' 	=> 204, //删除记录成功
             ),
