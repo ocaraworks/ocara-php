@@ -166,7 +166,7 @@ class Request extends Base
      */
 	public function isPostSubmit()
     {
-        return in_array($this->getMethod(), array('POST', 'PUT', 'PATCH'));
+        return in_array($this->getMethod(), array('POST', 'PUT', 'PATCH', 'DELETE'));
     }
 
 	/**
