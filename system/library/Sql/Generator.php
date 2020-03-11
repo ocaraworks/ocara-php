@@ -21,7 +21,6 @@ class Generator extends Base
     protected $maps;
     protected $joins;
     protected $fields;
-    protected $databaseSql;
 
     /**
      * Sql constructor.
@@ -416,6 +415,9 @@ class Generator extends Base
             } else {
                 $model = $param['class']::build();
                 $shardingData = !empty($shardingConfig[$alias]) ? $shardingConfig[$alias]: array();
+                if (!$shardingData) {
+                    $shardingData = !empty($shardingConfig[$param['class']]) ? $shardingConfig[$param['class']]: array();
+                }
                 if ($shardingData) {
                     $model->sharding($shardingData);
                 }
