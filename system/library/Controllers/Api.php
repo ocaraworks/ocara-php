@@ -120,7 +120,7 @@ class Api extends ControllerBase implements ControllerInterface
         }
 
         $this->result = $this->api->getResult($data, $message, $status);
-        $contentType = $this->contentType ? : ocConfig('API_CONTENT_TYPE');
+        $contentType = $this->contentType ? : ocConfig('DEFAULT_API_CONTENT_TYPE');
 
         $this->response->setContentType($contentType);
         $this->fire(self::EVENT_BEFORE_RENDER);
@@ -138,15 +138,15 @@ class Api extends ControllerBase implements ControllerInterface
      */
     public function beforeRender()
     {
-        if (!$this->response->getHeaderOption('statusCode')) {
-            if ($this->result['status'] == 'success') {
-                $this->response->setStatusCode(Response::STATUS_OK);
-            } else {
-                $this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
+        if (ocConfig(array('API', 'send_header_code'), 0)) {
+            if (!$this->response->getHeaderOption('statusCode')) {
+                if ($this->result['status'] == 'success') {
+                    $this->response->setStatusCode(Response::STATUS_OK);
+                } else {
+                    $this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
+                }
             }
-        }
-
-        if (!ocConfig(array('API', 'send_header_code'), 0)) {
+        } else {
             $this->response->setStatusCode(Response::STATUS_OK);
             $this->result['status'] = $this->response->getHeaderOption('statusCode');
         }

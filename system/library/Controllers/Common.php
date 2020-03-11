@@ -206,7 +206,7 @@ class Common extends ControllerBase implements ControllerInterface
         }
 
         $this->result = $this->api->getResult($data, $message, $status);
-        $contentType = $this->contentType ? : ocConfig('API_CONTENT_TYPE');
+        $contentType = $this->contentType ? : ocConfig('DEFAULT_API_CONTENT_TYPE');
 
         $this->response->setContentType($contentType);
         $this->fire(self::EVENT_BEFORE_RENDER_API);

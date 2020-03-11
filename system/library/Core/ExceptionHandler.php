@@ -141,7 +141,7 @@ class ExceptionHandler extends Base
             $response = ocService('response', true);
             $contentType = $response->getHeaderOption('contentType');
             if (!$contentType) {
-                $response->setContentType('html');
+                $response->setContentType(ocConfig('DEFAULT_PAGE_CONTENT_TYPE', 'html'));
             }
             $defaultOutput = ocConfig(array('SYSTEM_SINGLETON_SERVICE_CLASS', 'errorOutput'));
             ocService('errorOutput', $defaultOutput)->display($error);
@@ -163,7 +163,7 @@ class ExceptionHandler extends Base
     }
 
     /**
-     * Ajax处理
+     * Api处理
      * @param $error
      * @throws Exception
      */
@@ -174,7 +174,7 @@ class ExceptionHandler extends Base
         $contentType = ocService()->response->getHeaderOption('contentType');
 
         if (!$contentType) {
-            $contentType = ocConfig('API_CONTENT_TYPE', 'json');
+            $contentType = ocConfig('DEFAULT_API_CONTENT_TYPE', 'json');
             $response->setContentType($contentType);
         }
 

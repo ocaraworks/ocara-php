@@ -27,21 +27,21 @@ class Rest extends Api
      */
     public function beforeRender()
     {
-        if (!$this->response->getHeaderOption('statusCode')) {
-            if ($this->result['status'] == 'success') {
-                $successCode = strtr(
-                    ocService()->app->getRoute('action'),
-                    ocConfig('CONTROLLERS.rest.success_code_map')
-                );
-                $this->response->setStatusCode($successCode);
-            } else {
-                $this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
+        if (ocConfig(array('API', 'send_header_code'), 0)) {
+            if (!$this->response->getHeaderOption('statusCode')) {
+                if ($this->result['status'] == 'success') {
+                    $successCode = strtr(
+                        ocService()->app->getRoute('action'),
+                        ocConfig('CONTROLLERS.rest.success_code_map')
+                    );
+                    $this->response->setStatusCode($successCode);
+                } else {
+                    $this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
+                }
             }
-        }
-
-        if (!ocConfig(array('API', 'send_header_code'), 0)) {
+        } else {
             $this->response->setStatusCode(Response::STATUS_OK);
-            $this->result['status'] = $this->response->getHeaderOption('status');
+            $this->result['status'] = $this->response->getHeaderOption('statusCode');
         }
     }
 }

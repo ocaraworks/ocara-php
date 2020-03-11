@@ -291,7 +291,7 @@ class Response extends Base
 	}
 
 	/**
-	 * 设置返回内容类型
+	 * 获取返回内容类型
 	 */
 	public function getContentType()
 	{

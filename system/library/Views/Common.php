@@ -624,9 +624,15 @@ class Common extends ViewBase implements ViewInterfaces
     /**
      * 输出内容
      * @param $content
+     * @throws Exception
      */
     public function outputApi($content)
     {
+        $contentType = ocService()->response->getHeaderOption('contentType');
+        if (!$contentType) {
+            $contentType = ocConfig('DEFAULT_PAGE_CONTENT_TYPE', 'html');
+            ocService()->response->setContentType($contentType);
+        }
         ocService()->response->setBody($content);
     }
 
@@ -638,6 +644,10 @@ class Common extends ViewBase implements ViewInterfaces
     public function renderApi($result)
     {
         $contentType = ocService()->response->getHeaderOption('contentType');
+        if (!$contentType) {
+            $contentType = 'json';
+            ocService()->response->setContentType($contentType);
+        }
         $content = ocService()->api->format($result, $contentType);
         return $content;
     }

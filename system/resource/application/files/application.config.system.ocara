@@ -125,8 +125,8 @@ return array(
     /*
      * 默认文档类型
      */
-    'DEFAULT_CONTENT_TYPE' => 'html', //默认页面文档类型
-    'DEFAULT_AJAX_CONTENT_TYPE' => 'json', //默认Ajax返回文档类型
+    'DEFAULT_PAGE_CONTENT_TYPE' => 'html', //默认页面文档类型
+    'DEFAULT_API_CONTENT_TYPE' => 'json', //默认Ajax返回文档类型
 
     /*
      * 默认字体（用于图片处理等）
