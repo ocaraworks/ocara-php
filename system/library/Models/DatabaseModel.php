@@ -116,7 +116,7 @@ abstract class DatabaseModel extends ModelBase
      * 获取表名
      * @return mixed
      */
-    public function getDefaultTableName()
+    public static function getDefaultTableName()
     {
         if (empty(static::$table)) {
             ocService()->error->show('no_table');
