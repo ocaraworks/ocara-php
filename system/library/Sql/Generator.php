@@ -17,6 +17,7 @@ class Generator extends Base
     protected $sql;
     protected $alias;
     protected $databaseName;
+    protected $tableName;
     protected $maps;
     protected $joins;
     protected $fields;
@@ -84,6 +85,15 @@ class Generator extends Base
     public function setDatabaseName($databaseName)
     {
         $this->databaseName = $databaseName;
+    }
+
+    /**
+     * 设置表名称
+     * @param $tableName
+     */
+    public function setTable($tableName)
+    {
+        $this->tableName = $tableName;
     }
 
     /**
@@ -395,9 +405,21 @@ class Generator extends Base
     public function getFromSql($tables, $unJoined)
     {
         $from = OC_EMPTY;
+        $shardingConfig = ocGet(array('sharding', 'relate'), $this->sql, array());
 
         foreach ($tables as $alias => $param) {
             if (empty($param['fullname'])) continue;
+
+            if (empty($param['type'])) {
+                $param['fullname'] = $this->tableName;
+            } else {
+                $model = $param['class']::build();
+                $shardingData = !empty($shardingConfig[$alias]) ? $shardingConfig[$alias]: array();
+                if ($shardingData) {
+                    $model->sharding($shardingData);
+                }
+                $param['fullname'] = $model->getTableName();
+            }
 
             if ($unJoined) {
                 $alias = null;

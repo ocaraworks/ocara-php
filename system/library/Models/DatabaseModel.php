@@ -46,9 +46,6 @@ abstract class DatabaseModel extends ModelBase
     protected $primaries = array();
     protected $sql = array();
     protected $fields = array();
-    protected $joins = array();
-    protected $relateShardingData = array();
-    protected $relateShardingInfo = array();
 
     protected static $config = array();
     protected static $configPath = array();
@@ -57,28 +54,14 @@ abstract class DatabaseModel extends ModelBase
         'orderBy', 'groupBy',  'limit', 'having', 'more'
     );
 
-    //连接前置事件
     const EVENT_BEFORE_CONNECT = 'beforeConnect';
-
-    //连接后置事件
     const EVENT_AFTER_CONNECT = 'afterConnect';
-
-    //原生SQL查询前置事件
     const EVENT_BEFORE_QUERY = 'beforeQuery';
-
-    //原生SQL查询后置事件
     const EVENT_AFTER_QUERY = 'afterQuery';
 
-    //组装SQL查询前置事件
     const EVENT_BEFORE_SELECT_QUERY = 'beforeSelectQuery';
-
-    //组装SQL查询前置事件
     const EVENT_AFTER_SELECT_QUERY = 'afterSelectQuery';
-
-    //获取字段缓存事件
     const EVENT_GET_FIELDS_CACHE = 'onGetCacheFields';
-
-    //保存字段缓存事件
     const EVENT_SAVE_FIELDS_CACHE = 'onSaveCacheFields';
 
     /**
@@ -102,7 +85,7 @@ abstract class DatabaseModel extends ModelBase
         }
 
         $this->tag = self::getClass();
-        $this->tableName = static::$table ?: lcfirst(self::getClassName());
+        $this->tableName = static::getDefaultTableName();
         $this->databaseName = static::$database ?: null;
         $this->primaries = static::getPrimaries();
 
@@ -127,6 +110,18 @@ abstract class DatabaseModel extends ModelBase
     public function getTag()
     {
         return $this->tag;
+    }
+
+    /**
+     * 获取表名
+     * @return mixed
+     */
+    public function getDefaultTableName()
+    {
+        if (empty(static::$table)) {
+            ocService()->error->show('no_table');
+        }
+        return static::$table;
     }
 
     /**
@@ -192,13 +187,20 @@ abstract class DatabaseModel extends ModelBase
      */
     public function sharding(array $data = array(), $relationName = null)
     {
+        if (empty($this->sql['sharding'])) {
+            $this->sql['sharding'] = array();
+        }
+
         if (func_num_args() >= 2) {
             if ($relationName) {
-                $this->relateShardingInfo[$relationName] = $data;
+                $shardingData = ocGet('relate', $this->sql['sharding'], array());
+                $this->sql['sharding']['relate'] = array_merge($shardingData, array($relationName => $data));
             }
         } else {
-            if (method_exists($this, '__sharding')) {
-                $this->__sharding($data);
+            $shardingData = ocGet('current', $this->sql['sharding'], array());
+            $this->sql['sharding']['current'] = array_merge($shardingData, $data);
+            if ($this->sql['sharding']['current'] && method_exists($this, '__sharding')) {
+               $this->__sharding($this->sql['sharding']['current']);
             }
         }
 
@@ -1286,12 +1288,11 @@ abstract class DatabaseModel extends ModelBase
 
 	    $this->pushSql($condition, $options, $isQueryRow);
         $this->setJoin($this->tag, null, $this->getAlias());
-
         $this->fire(self::EVENT_BEFORE_SELECT_QUERY, array($isQueryRow, $isCount));
 
         $generator = $this->getSqlGenerator($plugin);
-
         $closeUnion = isset($executeOptions['close_union']) && $executeOptions['close_union'] === true;
+
         if ($closeUnion) {
             $unions = array();
             $isUnion = false;
@@ -1337,6 +1338,7 @@ abstract class DatabaseModel extends ModelBase
         $generator = new Generator($plugin);
 
         $generator->setDatabaseName($this->databaseName);
+        $generator->setTable($this->tableName);
         $generator->setAlias($this->alias);
         $generator->setSql($this->sql);
         $generator->setFields($this->getFieldsInfo());
@@ -1492,11 +1494,43 @@ abstract class DatabaseModel extends ModelBase
 	}
 
     /**
+     * 提取条件摘录
+     * @param $data
+     * @param string $type
+     * @return $this
+     */
+    public function extractWhere($data, $type = 'where')
+    {
+        if (is_array($data)) {
+            if (empty($this->sql['extracts'][$type])) {
+                $this->sql['extracts'][$type] = array();
+            }
+            $this->sql['extracts'][$type] = array_merge($this->sql['extracts'][$type], $data);
+        }
+        return $this;
+    }
+
+    /**
+     * 获取条件摘录
+     * @return array
+     */
+    public function getExtracts()
+    {
+        $where = ocGet(array('extracts', 'where'), $this->sql, array());
+        $moreWhere = ocGet(array('extracts', 'moreWhere'), $this->sql, array());
+
+        return array(
+            'where' => $where,
+            'moreWhere' => $moreWhere
+        );
+    }
+
+    /**
      * 添加条件
      * @param $whereOrField
-     * @param null $signOrAlias
-     * @param null $value
-     * @param null $alias
+     * @param string $signOrAlias
+     * @param mixed $value
+     * @param string $alias
      * @return $this
      */
 	public function where($whereOrField, $signOrAlias = null, $value = null, $alias = null)
@@ -1507,9 +1541,11 @@ abstract class DatabaseModel extends ModelBase
                 $where = array($alias, 'where', $whereOrField, 'AND');
                 $this->sql['option']['where'][] = $where;
             }
+            $this->extractWhere($whereOrField);
         } else {
 	        $sign = array('AND', $signOrAlias);
             $this->complexWhere('where', $sign, $whereOrField, $value, $alias);
+            $this->extractWhere(array($whereOrField => $value));
         }
 
 		return $this;
@@ -1574,6 +1610,7 @@ abstract class DatabaseModel extends ModelBase
 	{
 		$link = $link ? : 'AND';
 		$this->sql['option']['moreWhere'][] = compact('where', 'link');
+        $this->extractWhere($where, 'moreWhere');
 		return $this;
 	}
 
@@ -1855,23 +1892,12 @@ abstract class DatabaseModel extends ModelBase
                 $this->sql['tables'] = $tables;
             }
 		} else {
-            $shardingData = array();
-            $relateShardingInfo = $this->getRelateShardingInfo($class);
-            if ($relateShardingInfo) {
-                list($class, $shardingData) = $relateShardingInfo;
-            }
 			$config = $this->getRelateConfig($class);
 			if ($config) {
-				$alias = $alias ? : $class;
 				$class = $config['class'];
 			}
-            $model = $class::build();
-			if ($shardingData) {
-                $model->sharding($shardingData);
-            }
-            $fullname = $model->getTableName();
-			$alias = $alias ?: $fullname;
-			$this->joins[$alias] = $model;
+            $fullname = $class::getDefaultTableName();
+            $alias = $alias ?: $fullname;
             $this->sql['tables'][$alias] = compact('type', 'fullname', 'class', 'config');
 		}
 
@@ -1883,34 +1909,6 @@ abstract class DatabaseModel extends ModelBase
 
 		return $this;
 	}
-
-    /**
-     * 通过关键字获取分库分表信息
-     * @param $keyword
-     * @return string
-     */
-	protected function getRelateShardingInfo($keyword)
-    {
-        $relationShardingInfo = array();
-
-        if (preg_match('/^[\{](\w+)[\}]$/i', $keyword, $matches)) {
-            $relationAlias = $matches[1];
-            if (array_key_exists($relationAlias, $this->relateShardingInfo)) {
-                $relationShardingInfo = $this->relateShardingInfo[$relationAlias];
-            } else {
-                if (array_key_exists($relationAlias, $this->relateShardingData)) {
-                    $config = $this->getRelateConfig($relationAlias);
-                    if ($config) {
-                        $shardingData = $this->relateShardingData[$relationAlias];
-                        $relationShardingInfo = array($config['class'], $shardingData);
-                        $this->relateShardingInfo[$relationAlias] = $relationShardingInfo;
-                    }
-                }
-            }
-        }
-
-        return $relationShardingInfo;
-    }
 
     /**
      * 获取关联配置

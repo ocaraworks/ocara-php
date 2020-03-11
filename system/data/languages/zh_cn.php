@@ -173,6 +173,7 @@ return array(
 	'no_transaction_for_commit'     => array(2532, '无法匹配的事务提交！'),
 	'no_special_action'             => array(2533, '找不到该控制器动作！'),
     'no_condition_array_value'      => array(2534, '数组型条件值缺少元素值！'),
+	'no_table'                      => array(2535, '缺少表名'),
 
 	//已存在
 	'exists_dir'		    		=> array(2601, '已存在同名的目录。'),
