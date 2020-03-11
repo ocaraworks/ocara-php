@@ -21,6 +21,7 @@ class ActionService extends BaseService
     public $mdlname;
     public $cname;
     public $actionName;
+    public $methodMaps;
 
 
 	public function __construct()
@@ -43,6 +44,7 @@ class ActionService extends BaseService
         $this->mdltype = ocGet('mdltype', $data, '');
 		$this->createview = ocGet('createview', $data, 0);
 		$this->controllerType = 'Common';
+		$this->methodMaps = !empty($data['method_maps']) ? $data['method_maps'] : array();
 
 		if (empty($actname) || empty($this->ttype)) {
 			$this->showError('控制器名称、动作名称和模板类型为必填信息！');
@@ -199,6 +201,11 @@ class ActionService extends BaseService
 		$content .= "\t{}\r\n";
 
 		$actions = self::$config['controller_actions'][$this->controllerType];
+
+		if (!empty($this->methodMaps[$this->actionName])) {
+		    $actions = $this->methodMaps[$this->actionName];
+        }
+
 		if ($actions) {
 			foreach ($actions as $actionName) {
 				$actionDesc = self::$config['actions'][$actionName];

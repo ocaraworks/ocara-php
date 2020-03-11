@@ -14,21 +14,19 @@ use Ocara\Exceptions\Exception;
 class Rest extends Api
 {
     /**
-     * @var string $controllerType
+     * 获取控制器类型
      */
-    protected static $controllerType = 'Rest';
+    public static function controllerType()
+    {
+        return static::$controllerType ? ucfirst(static::$controllerType): static::CONTROLLER_TYPE_REST;
+    }
 
     /**
      * 渲染前置事件
-     * @param $data
-     * @param $message
-     * @param $status
      * @throws Exception
      */
-    public function beforeRender($data, $message, $status)
+    public function beforeRender()
     {
-        $this->result = $this->api->getResult($data, $message, $status);
-
         if (!$this->response->getHeaderOption('statusCode')) {
             if ($this->result['status'] == 'success') {
                 $successCode = strtr(

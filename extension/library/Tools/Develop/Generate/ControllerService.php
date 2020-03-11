@@ -8,6 +8,7 @@
  ************************************************************************************************/
 namespace Ocara\Extension\Tools\Develop\Generate;
 
+use Ocara\Core\ControllerBase;
 use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -79,6 +80,16 @@ class ControllerService extends BaseService
             'mdltype' => $this->mdltype,
         );
 
+        if ($this->controllerType == ControllerBase::CONTROLLER_TYPE_REST) {
+            $data['method_maps'] = array(
+                'create' => array('registerForms', 'submit'),
+                'delete' => array('registerForms', 'submit'),
+                'index' => array('registerForms', 'display'),
+                'update' => array('registerForms', 'submit'),
+                'read' => array('registerForms', 'display')
+            );
+        }
+
         $actionService = new ActionService();
         $actionService->add($data);
     }
@@ -128,6 +139,10 @@ class ControllerService extends BaseService
         }
 
         $this->controllerType = $moduleClass::controllerType();
+
+        if ($this->controllerType == ControllerBase::CONTROLLER_TYPE_REST) {
+            $this->vtype = 2;
+        }
 
         $path = $controlPath . $this->cname . "/{$className}.php";
 		if (ocFileExists($path)) {

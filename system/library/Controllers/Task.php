@@ -11,7 +11,7 @@ class Task extends ControllerBase implements ControllerInterface
      */
     public static function controllerType()
     {
-        return self::$controllerType ? ucfirst(self::$controllerType): 'Task';
+        return self::$controllerType ? ucfirst(self::$controllerType): static::CONTROLLER_TYPE_TASK;
     }
 
     /**

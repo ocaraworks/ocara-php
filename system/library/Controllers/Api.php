@@ -23,7 +23,7 @@ class Api extends ControllerBase implements ControllerInterface
      */
     public static function controllerType()
     {
-        return self::$controllerType ? ucfirst(self::$controllerType): 'Api';
+        return static::$controllerType ? ucfirst(static::$controllerType): static::CONTROLLER_TYPE_API;
     }
 
     /**
@@ -119,29 +119,25 @@ class Api extends ControllerBase implements ControllerInterface
             $message = $this->lang->get($message);
         }
 
-        $params = array($message, $status);
+        $this->result = $this->api->getResult($data, $message, $status);
         $contentType = $this->contentType ? : ocConfig('API_CONTENT_TYPE');
 
         $this->response->setContentType($contentType);
-        $this->fire(self::EVENT_BEFORE_RENDER, $params);
+        $this->fire(self::EVENT_BEFORE_RENDER);
 
         $content = $this->view->render($this->result);
         $this->view->output($content);
 
-        $this->fire(self::EVENT_AFTER_RENDER, $params);
+        $this->fire(self::EVENT_AFTER_RENDER);
         $this->hasRender = true;
     }
 
     /**
      * 渲染前置事件
-     * @param $message
-     * @param $status
      * @throws Exception
      */
-    public function beforeRender($message, $status)
+    public function beforeRender()
     {
-        $this->result = $this->api->getResult($this->result, $message, $status);
-
         if (!$this->response->getHeaderOption('statusCode')) {
             if ($this->result['status'] == 'success') {
                 $this->response->setStatusCode(Response::STATUS_OK);

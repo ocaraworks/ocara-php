@@ -30,6 +30,11 @@ abstract class ControllerBase extends serviceProvider
     protected $result;
     protected static $controllerType;
 
+    const CONTROLLER_TYPE_COMMON = 'Common';
+    const CONTROLLER_TYPE_API = 'Api';
+    const CONTROLLER_TYPE_REST = 'Rest';
+    const CONTROLLER_TYPE_TASK = 'Task';
+
     const EVENT_AFTER_ACTION = 'afterAction';
     const EVENT_AFTER_CREATE_FORM = 'afterCreateForm';
 

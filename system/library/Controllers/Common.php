@@ -31,7 +31,7 @@ class Common extends ControllerBase implements ControllerInterface
      */
     public static function controllerType()
     {
-        return self::$controllerType ? ucfirst(self::$controllerType): 'Common';
+        return self::$controllerType ? ucfirst(self::$controllerType): static::CONTROLLER_TYPE_COMMON;
     }
 
     /**
@@ -201,35 +201,29 @@ class Common extends ControllerBase implements ControllerInterface
      */
     public function renderApi($data = null, $message = OC_EMPTY, $status = 'success')
     {
-        $this->result = $data;
-
         if (!is_array($message)) {
             $message = $this->lang->get($message);
         }
 
-        $params = array($message, $status);
+        $this->result = $this->api->getResult($data, $message, $status);
         $contentType = $this->contentType ? : ocConfig('API_CONTENT_TYPE');
 
         $this->response->setContentType($contentType);
-        $this->fire(self::EVENT_BEFORE_RENDER_API, $params);
+        $this->fire(self::EVENT_BEFORE_RENDER_API);
 
         $content = $this->view->renderApi($this->result);
         $this->view->outputApi($content);
 
-        $this->fire(self::EVENT_AFTER_RENDER_API, $params);
+        $this->fire(self::EVENT_AFTER_RENDER_API);
         $this->hasRender = true;
     }
 
     /**
      * 渲染前置事件
-     * @param $message
-     * @param $status
      * @throws Exception
      */
-    public function beforeRenderApi($message, $status)
+    public function beforeRenderApi()
     {
-        $this->result = $this->api->getResult($this->result, $message, $status);
-
         if (!$this->response->getHeaderOption('statusCode')) {
             if ($this->result['status'] == 'success') {
                 $this->response->setStatusCode(Response::STATUS_OK);
