@@ -30,10 +30,17 @@ class Api extends ViewBase implements ViewInterfaces
      * 渲染API结果
      * @param $result
      * @return mixed
+     * @throws Exception
      */
     public function render($result)
     {
         $contentType = ocService()->response->getHeaderOption('contentType');
+
+        if (!$contentType) {
+            $contentType = ocConfig('DEFAULT_API_CONTENT_TYPE', 'json');
+            ocService()->response->setContentType($contentType);
+        }
+
         $content = ocService()->api->format($result, $contentType);
         return $content;
     }

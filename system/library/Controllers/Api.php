@@ -106,10 +106,9 @@ class Api extends ControllerBase implements ControllerInterface
 
     /**
      * 渲染API数据
-     * @param null $data
-     * @param null $message
+     * @param mixed $data
+     * @param string $message
      * @param string $status
-     * @throws Exception
      */
     public function renderApi($data = null, $message = null, $status = 'success')
     {
@@ -120,9 +119,11 @@ class Api extends ControllerBase implements ControllerInterface
         }
 
         $this->result = $this->api->getResult($data, $message, $status);
-        $contentType = $this->contentType ? : ocConfig('DEFAULT_API_CONTENT_TYPE');
 
-        $this->response->setContentType($contentType);
+        if ($this->contentType) {
+            $this->response->setContentType($this->contentType);
+        }
+
         $this->fire(self::EVENT_BEFORE_RENDER);
 
         $content = $this->view->render($this->result);

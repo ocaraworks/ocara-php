@@ -197,7 +197,6 @@ class Common extends ControllerBase implements ControllerInterface
      * @param mixed $data
      * @param string $message
      * @param string $status
-     * @throws Exception
      */
     public function renderApi($data = null, $message = OC_EMPTY, $status = 'success')
     {
@@ -206,9 +205,11 @@ class Common extends ControllerBase implements ControllerInterface
         }
 
         $this->result = $this->api->getResult($data, $message, $status);
-        $contentType = $this->contentType ? : ocConfig('DEFAULT_API_CONTENT_TYPE');
 
-        $this->response->setContentType($contentType);
+        if ($this->contentType) {
+            $this->response->setContentType($this->contentType);
+        }
+
         $this->fire(self::EVENT_BEFORE_RENDER_API);
 
         $content = $this->view->renderApi($this->result);
