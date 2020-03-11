@@ -36,8 +36,7 @@ class Rest extends Base implements Feature
         $method = ocService()->request->getMethod();
         if (!ocEmpty($id)) {
             $method = $method . '/id';
-            $get[] = $idParam;
-            $get[] = $id;
+            $get = array_merge(array($idParam, $id), $get);
         }
 
         $action = ocConfig(array('CONTROLLERS', 'rest', 'action_map', $method), null);
