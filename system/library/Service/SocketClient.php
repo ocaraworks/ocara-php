@@ -39,7 +39,7 @@ class SocketClient extends SocketBase
         if (!$this->conn) {
             $errorCode = socket_last_error();
             $errorMsg = socket_strerror($errorCode);
-            $this->showSocketError('socket_error', array($errorCode, $errorMsg));
+            $this->showSocketError('connect');
         }
 
         return $this->socket;
