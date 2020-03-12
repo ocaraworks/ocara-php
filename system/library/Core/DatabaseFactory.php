@@ -93,7 +93,7 @@ class DatabaseFactory extends Base
                 $config['port']  = isset($address[1]) ? $address[1] : null;
                 $config['type']  = self::getDatabaseType($config);
                 $config['class'] = $config['type'];
-                $config['connect_name'] = $connectName;
+                $config['connect_name'] = $name;
                 $object = self::createDatabase('Databases', $config);
                 self::$connections[$name] = $object;
             }
