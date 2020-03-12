@@ -6,7 +6,9 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Extension\Service\Validates;
+
 use Ocara\Service\Validate;
 
 class Validates_MyValidate extends Validate

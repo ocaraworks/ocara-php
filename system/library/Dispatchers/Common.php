@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Dispatchers;
 
 use Ocara\Core\Base;
@@ -25,10 +26,10 @@ class Common extends Base
     public function registerEvents()
     {
         $this->event(self::EVENT_BEFORE_DISPATCH)
-             ->append(ocConfig(array('EVENTS', 'dispatch', 'before_dispatch'), null));
+            ->append(ocConfig(array('EVENTS', 'dispatch', 'before_dispatch'), null));
 
         $this->event(self::EVENT_AFTER_DISPATCH)
-             ->append(ocConfig(array('EVENTS', 'dispatch', 'after_dispatch'), null));
+            ->append(ocConfig(array('EVENTS', 'dispatch', 'after_dispatch'), null));
     }
 
     /**
@@ -40,7 +41,7 @@ class Common extends Base
     public function dispatch($route, $moduleNamespace = null, $params = array())
     {
         $service = ocService();
-        $moduleNamespace = ocNamespace($moduleNamespace ? : 'app\modules');
+        $moduleNamespace = ocNamespace($moduleNamespace ?: 'app\modules');
 
         if (empty($route['controller']) || empty($route['action'])) {
             $service->error->show('null_route');

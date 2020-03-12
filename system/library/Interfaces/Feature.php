@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Interfaces;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -19,5 +20,5 @@ interface Feature
      * @param array $get
      * @return mixed
      */
-	public function getRoute($module, $controller, array $get);
+    public function getRoute($module, $controller, array $get);
 }

@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
@@ -29,8 +30,8 @@ class Route extends Base
         $uModule = ucfirst($module);
 
         if ($uModule) {
-            $moduleNamespace = OC_MODULE_NAMESPACE ? ocNamespace(OC_MODULE_NAMESPACE): 'app\modules\\';
-            $moduleClass = sprintf($moduleNamespace .'%s\controller\%sModule', $module, ucfirst($module));
+            $moduleNamespace = OC_MODULE_NAMESPACE ? ocNamespace(OC_MODULE_NAMESPACE) : 'app\modules\\';
+            $moduleClass = sprintf($moduleNamespace . '%s\controller\%sModule', $module, ucfirst($module));
             if (ocClassExists($moduleClass)) {
                 $controller = $get ? array_shift($get) : null;
             } else {
@@ -74,11 +75,11 @@ class Route extends Base
         if (is_array(end($data))) {
             $last = array_pop($data);
         }
-        
+
         ksort($data);
         $data = array_chunk($data, 2);
 
-        foreach($data as $row) {
+        foreach ($data as $row) {
             if ($row[0]) {
                 $get[$row[0]] = isset($row[1]) ? $row[1] : null;
             }

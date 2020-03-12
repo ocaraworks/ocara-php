@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Core\Basis;
@@ -36,7 +37,7 @@ class Application extends Base
         //get environment
         $container->config->getEnvironment();
         $container->config->loadEnvironmentConfig();
-        
+
         //error report
         error_reporting($this->errorReporting());
 
@@ -90,7 +91,7 @@ class Application extends Base
     {
         $container = ocContainer();
         $sysModel = $container->config->get('SYSTEM_RUN_MODE', 'application');
-        $error = $error ? : ($sysModel == 'develop' ? E_ALL : 0);
+        $error = $error ?: ($sysModel == 'develop' ? E_ALL : 0);
 
         set_error_handler(
             array($container->exceptionHandler, 'errorHandle'),
@@ -108,7 +109,7 @@ class Application extends Base
     public function bootstrap($bootstrap = null)
     {
         if (func_num_args()) {
-            $bootstrap = $bootstrap ? : 'Ocara\Bootstraps\Common';
+            $bootstrap = $bootstrap ?: 'Ocara\Bootstraps\Common';
             $this->bootstrap = new $bootstrap();
             $this->bootstrap->init();
         }
@@ -174,7 +175,7 @@ class Application extends Base
             return isset($this->route[$name]) ? $this->route[$name] : null;
         }
 
-        return $this->route ? : array();
+        return $this->route ?: array();
     }
 
     /**
@@ -183,7 +184,7 @@ class Application extends Base
      */
     public function setRoute($route)
     {
-        $this->route = $route ? : array();
+        $this->route = $route ?: array();
     }
 
     /**
@@ -210,7 +211,7 @@ class Application extends Base
                 list($controller, $action) = $routeData;
                 if (!$isModule && isset($this->route['module'])) {
                     $module = $this->route['module'];
-                }  else {
+                } else {
                     $module = OC_EMPTY;
                 }
                 break;

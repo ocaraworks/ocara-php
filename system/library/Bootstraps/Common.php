@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Bootstraps;
 
 use Ocara\Exceptions\Exception;
@@ -37,7 +38,7 @@ class Common extends BootstrapBase implements BootstrapInterface
     public function start($route = array(), $params = array(), $moduleNamespace = null)
     {
         $service = ocService();
-        $moduleNamespace = $moduleNamespace ? : OC_MODULE_NAMESPACE;
+        $moduleNamespace = $moduleNamespace ?: OC_MODULE_NAMESPACE;
         $service->dispatcher->dispatch($route, $moduleNamespace, $params);
         return $service->response->send();
     }

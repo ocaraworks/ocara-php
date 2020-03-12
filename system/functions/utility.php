@@ -21,7 +21,7 @@ use Ocara\Exceptions\ErrorException;
  */
 function ocCommPath($path)
 {
-	return str_replace("\\", OC_DIR_SEP, $path);
+    return str_replace("\\", OC_DIR_SEP, $path);
 }
 
 /**
@@ -31,7 +31,7 @@ function ocCommPath($path)
  */
 function ocScalar($data)
 {
-	return is_scalar($data) || $data === null;
+    return is_scalar($data) || $data === null;
 }
 
 /**
@@ -52,7 +52,7 @@ function ocSimple($data)
  */
 function ocKeyExists($key, array $data)
 {
-	return !!ocCheckKey($key, $data);
+    return !!ocCheckKey($key, $data);
 }
 
 /**
@@ -116,23 +116,23 @@ function ocConfig($key, $default = null, $unEmpty = false)
     $hasDefault = $argsLength > 1;
     $key = is_array($key) ? $key : explode('.', $key);
 
-	if ($result = ocContainer()->config->arrayGet($key)) {
-	    if (!$result[0]) {
-	        if ($unEmpty) {
-	            if (ocEmpty($result[0])) return $default;
+    if ($result = ocContainer()->config->arrayGet($key)) {
+        if (!$result[0]) {
+            if ($unEmpty) {
+                if (ocEmpty($result[0])) return $default;
             } else {
                 if ($hasDefault) return $default;
             }
         }
         return $result[0];
-	}
+    }
 
-	if (!$hasDefault) {
+    if (!$hasDefault) {
         $key = implode('.', ocParseKey($key));
         throw new Exception('No config for key ' . $key . '.');
     }
 
-	return $default;
+    return $default;
 }
 
 /**
@@ -142,7 +142,7 @@ function ocConfig($key, $default = null, $unEmpty = false)
  */
 function ocParseKey($key)
 {
-	return is_array($key) ? $key : array($key);
+    return is_array($key) ? $key : array($key);
 }
 
 /**
@@ -189,7 +189,7 @@ function ocSet(array &$data, $key, $value)
     $max = count($key) - 1;
     $pointer = &$data;
 
-    for ($i = 0;$i <= $max;$i++) {
+    for ($i = 0; $i <= $max; $i++) {
         if (!is_array($pointer)) {
             ocService()->error->show('need_array_to_set');
         }
@@ -211,7 +211,7 @@ function ocSet(array &$data, $key, $value)
  */
 function ocEmpty($content)
 {
-	return !$content && $content !== 0 && $content !== '0';
+    return !$content && $content !== 0 && $content !== '0';
 }
 
 /**
@@ -222,15 +222,15 @@ function ocEmpty($content)
  */
 function ocForceArray($content, $emptyStr = false)
 {
-	if (is_array($content)) {
-		return $content;
-	}
+    if (is_array($content)) {
+        return $content;
+    }
 
-	if ($content || $emptyStr && !ocEmpty($content)) {
-		return (array)$content;
-	}
+    if ($content || $emptyStr && !ocEmpty($content)) {
+        return (array)$content;
+    }
 
-	return array();
+    return array();
 }
 
 /**
@@ -241,14 +241,14 @@ function ocForceArray($content, $emptyStr = false)
  */
 function ocArrayMap($callback, array $data)
 {
-	foreach ($data as $key => $value) {
-		if (is_array($data[$key])) {
-			$data[$key] = ocArrayMap($callback, $data[$key]);
-		} else {
-			$data[$key] = call_user_func($callback, $data[$key]);
-		}
-	}
-	return $data;
+    foreach ($data as $key => $value) {
+        if (is_array($data[$key])) {
+            $data[$key] = ocArrayMap($callback, $data[$key]);
+        } else {
+            $data[$key] = call_user_func($callback, $data[$key]);
+        }
+    }
+    return $data;
 }
 
 /**
@@ -266,12 +266,12 @@ function ocDel(array &$data, $key)
         array_shift($key);
     }
 
-	if (!$key) return null;
+    if (!$key) return null;
 
-	foreach ($key as $value) {
-		$ret = null;
-		if ($value || $value === 0 || $value === '0') {
-		    if (is_array($value)) {
+    foreach ($key as $value) {
+        $ret = null;
+        if ($value || $value === 0 || $value === '0') {
+            if (is_array($value)) {
                 $max = count($value) - 1;
                 $pointer = &$data;
                 for ($i = 0; $i <= $max; $i++) {
@@ -287,17 +287,17 @@ function ocDel(array &$data, $key)
                     }
                 }
             } elseif (is_string($value) || is_numeric($value)) {
-		        if (array_key_exists($value, $data)) {
+                if (array_key_exists($value, $data)) {
                     $ret = $data[$value];
                     $data[$value] = null;
                     unset($data[$value]);
                 }
             }
         }
-		$result[] = $ret;
-	}
+        $result[] = $ret;
+    }
 
-	return count($key) == 1 && $result ? $result[0] : $result;
+    return count($key) == 1 && $result ? $result[0] : $result;
 }
 
 /**
@@ -322,20 +322,20 @@ function ocIntersectKey($data, $keys)
  */
 function ocGetExceptionData($exception)
 {
-	$errorType = 'exception_error';
-	if ($exception instanceof ErrorException) {
-		$errorType = 'program_error';
-	}
+    $errorType = 'exception_error';
+    if ($exception instanceof ErrorException) {
+        $errorType = 'program_error';
+    }
 
-	return array(
-		'type'        	 => $errorType,
-		'code'        	 => $exception->getCode(),
-		'message'     	 => $exception->getMessage(),
-		'file'        	 => $exception->getFile(),
-		'line'        	 => $exception->getLine(),
-		'trace'       	 => $exception->getTraceAsString(),
-		'traceInfo'   	 => $exception->getTrace()
-	);
+    return array(
+        'type' => $errorType,
+        'code' => $exception->getCode(),
+        'message' => $exception->getMessage(),
+        'file' => $exception->getFile(),
+        'line' => $exception->getLine(),
+        'trace' => $exception->getTraceAsString(),
+        'traceInfo' => $exception->getTrace()
+    );
 }
 
 /**
@@ -384,14 +384,14 @@ function ocContainer()
  */
 function ocShutdownHandle()
 {
-	$error = error_get_last();
-	if ($error) {
-		if (@ini_get('display_errors') && !ocService()->response->isSent()) {
-			ocService()
+    $error = error_get_last();
+    if ($error) {
+        if (@ini_get('display_errors') && !ocService()->response->isSent()) {
+            ocService()
                 ->exceptionHandler
                 ->errorHandle($error['type'], $error['message'], $error['file'], $error['line']);
-		}
-	}
+        }
+    }
 }
 
 /**
@@ -462,21 +462,21 @@ function ocIsCallable($callback, $requirePublic = true, $requireStatic = true)
  */
 function ocGetLanguage(array $languages, $message, array $params = array())
 {
-	$result = array('code' => 0, 'message' => $message);
+    $result = array('code' => 0, 'message' => $message);
 
-	if (is_array($languages) && isset($languages[$message])) {
-		$errorCode = 0;
-		$content = ocGet($message, $languages);
-		if (is_array($content)) {
-			$errorCode = $content[0];
-			$content   = $content[1];
-		}
-		$content = ocSprintf($content, $params);
-		$content = str_ireplace('%s', OC_EMPTY, $content);
-		$result = array('code' => $errorCode, 'message' => (string)$content);
-	}
-	
-	return $result;
+    if (is_array($languages) && isset($languages[$message])) {
+        $errorCode = 0;
+        $content = ocGet($message, $languages);
+        if (is_array($content)) {
+            $errorCode = $content[0];
+            $content = $content[1];
+        }
+        $content = ocSprintf($content, $params);
+        $content = str_ireplace('%s', OC_EMPTY, $content);
+        $result = array('code' => $errorCode, 'message' => (string)$content);
+    }
+
+    return $result;
 }
 
 /**
@@ -487,18 +487,18 @@ function ocGetLanguage(array $languages, $message, array $params = array())
  */
 function ocSprintf($content, $params)
 {
-	if ($params) {
-		if (strstr($content, '%s')) {
-			$content = vsprintf($content, $params);
-		}
-		foreach ($params as $key => $value) {
-			if (is_string($key)) {
-				$content = str_ireplace("{{$key}}", $value, $content);
-			}
-		}
-	}
+    if ($params) {
+        if (strstr($content, '%s')) {
+            $content = vsprintf($content, $params);
+        }
+        foreach ($params as $key => $value) {
+            if (is_string($key)) {
+                $content = str_ireplace("{{$key}}", $value, $content);
+            }
+        }
+    }
 
-	return $content;
+    return $content;
 }
 
 /**
@@ -512,24 +512,24 @@ function ocSprintf($content, $params)
  */
 function ocImport($path, $required = true, $once = true, array $vars = array())
 {
-	if (is_string($path)) {
-		if (ocFileExists($path)) {
-			$vars && extract($vars);
-			if ($once) return include_once ($path);
-			return include ($path);
-		} else {
-			if ($required) {
-				$files = explode(OC_DIR_SEP, trim($path, OC_DIR_SEP));
-				ocService()->error->show('not_exists_file', array(end($files)));
-			}
-		}
-	} elseif (is_array($path)) {
-		$result = array();
-		foreach ($path as $file) {
-			$result[] = ocImport($file, $required, $once, $vars);
-		}
-		return $result;
-	}
+    if (is_string($path)) {
+        if (ocFileExists($path)) {
+            $vars && extract($vars);
+            if ($once) return include_once($path);
+            return include($path);
+        } else {
+            if ($required) {
+                $files = explode(OC_DIR_SEP, trim($path, OC_DIR_SEP));
+                ocService()->error->show('not_exists_file', array(end($files)));
+            }
+        }
+    } elseif (is_array($path)) {
+        $result = array();
+        foreach ($path as $file) {
+            $result[] = ocImport($file, $required, $once, $vars);
+        }
+        return $result;
+    }
 }
 
 /**
@@ -539,13 +539,13 @@ function ocImport($path, $required = true, $once = true, array $vars = array())
  */
 function ocDir($path)
 {
-	$args = is_array($path) ? $path : func_get_args();
-	
-	foreach ($args as $key => $dir) {
-		$args[$key] = $dir ? rtrim($dir, OC_DIR_SEP) . OC_DIR_SEP : $dir;
-	}
-	
-	return implode('', $args);
+    $args = is_array($path) ? $path : func_get_args();
+
+    foreach ($args as $key => $dir) {
+        $args[$key] = $dir ? rtrim($dir, OC_DIR_SEP) . OC_DIR_SEP : $dir;
+    }
+
+    return implode('', $args);
 }
 
 /**
@@ -555,13 +555,13 @@ function ocDir($path)
  */
 function ocNamespace($path)
 {
-	$args = is_array($path) ? $path : func_get_args();
+    $args = is_array($path) ? $path : func_get_args();
 
-	foreach ($args as $key => $dir) {
-		$args[$key] = $dir ? rtrim($dir, OC_NS_SEP) . OC_NS_SEP : $dir;
-	}
+    foreach ($args as $key => $dir) {
+        $args[$key] = $dir ? rtrim($dir, OC_NS_SEP) . OC_NS_SEP : $dir;
+    }
 
-	return implode('', $args);
+    return implode('', $args);
 }
 
 /**
@@ -571,7 +571,7 @@ function ocNamespace($path)
  */
 function ocBr2nl($str)
 {
-	return preg_replace('/<br\\s*?\/??>/i', '', $str);
+    return preg_replace('/<br\\s*?\/??>/i', '', $str);
 }
 
 /**
@@ -581,19 +581,19 @@ function ocBr2nl($str)
  */
 function ocJsonEncode($content)
 {
-	if (defined('JSON_UNESCAPED_UNICODE')) {
-		return json_encode($content, JSON_UNESCAPED_UNICODE);
-	}
+    if (defined('JSON_UNESCAPED_UNICODE')) {
+        return json_encode($content, JSON_UNESCAPED_UNICODE);
+    }
 
-	$content = preg_replace_callback(
-		'#\\\u([0-9a-f]{4})#i',
-		function($matches) {
-			return iconv('UCS-2BE', 'UTF-8', pack('H4', $matches[1]));
-		},
-		json_encode($content)
-	);
+    $content = preg_replace_callback(
+        '#\\\u([0-9a-f]{4})#i',
+        function ($matches) {
+            return iconv('UCS-2BE', 'UTF-8', pack('H4', $matches[1]));
+        },
+        json_encode($content)
+    );
 
-	return $content;
+    return $content;
 }
 
 /**
@@ -617,7 +617,7 @@ function ocBasename($filePath)
  */
 function ocUrl($route, $params = array(), $relative = false, $urlType = null, $static = true)
 {
-	return ocService()->url->create($route, $params, $relative, $urlType, $static);
+    return ocService()->url->create($route, $params, $relative, $urlType, $static);
 }
 
 /**
@@ -628,22 +628,22 @@ function ocUrl($route, $params = array(), $relative = false, $urlType = null, $s
  */
 function ocFileExists($filePath, $check = false)
 {
-	if ($filePath) {
-		$filePath = ocCommPath($filePath);
-		if ($check) {
-			$filePath = ocCheckChineseFilePath($filePath);
-		}
-		if (is_file($filePath)) {
-		    if (OC_IS_WIN && ocBasename(ocCommPath(realpath($filePath))) != ocBasename($filePath)) {
+    if ($filePath) {
+        $filePath = ocCommPath($filePath);
+        if ($check) {
+            $filePath = ocCheckChineseFilePath($filePath);
+        }
+        if (is_file($filePath)) {
+            if (OC_IS_WIN && ocBasename(ocCommPath(realpath($filePath))) != ocBasename($filePath)) {
                 $exists = false;
             } else {
                 $exists = true;
             }
             return $exists ? $filePath : false;
         }
-	}
-	
-	return false;
+    }
+
+    return false;
 }
 
 /**
@@ -654,7 +654,7 @@ function ocFileExists($filePath, $check = false)
  */
 function ocHump($name, $sep = OC_EMPTY)
 {
-	return implode($sep, array_map('ucfirst', explode('_', $name)));
+    return implode($sep, array_map('ucfirst', explode('_', $name)));
 }
 
 /**
@@ -665,7 +665,7 @@ function ocHump($name, $sep = OC_EMPTY)
  */
 function ocHumpToLine($str, $sep = '_')
 {
-    $str = preg_replace_callback('/([A-Z]{1})/',function($matches) use ($sep) {
+    $str = preg_replace_callback('/([A-Z]{1})/', function ($matches) use ($sep) {
         return $sep . strtolower($matches[0]);
     }, $str);
 
@@ -679,11 +679,11 @@ function ocHumpToLine($str, $sep = '_')
  */
 function ocCheckChineseFilePath($filePath)
 {
-	if (preg_match('/[\x{4e00}-\x{9fa5}]+/u', $filePath)) {
-		$filePath = iconv('UTF-8', 'GBK', $filePath);
-	}
-	
-	return $filePath;
+    if (preg_match('/[\x{4e00}-\x{9fa5}]+/u', $filePath)) {
+        $filePath = iconv('UTF-8', 'GBK', $filePath);
+    }
+
+    return $filePath;
 }
 
 /**
@@ -694,15 +694,15 @@ function ocCheckChineseFilePath($filePath)
  */
 function ocChmod($path, $perm)
 {
-	if (@chmod($path, $perm)) {
-		return true;
-	}
+    if (@chmod($path, $perm)) {
+        return true;
+    }
 
-	$oldMask = umask(0);
-	$result  = @chmod($path, $perm);
+    $oldMask = umask(0);
+    $result = @chmod($path, $perm);
 
-	umask($oldMask);
-	return $result;
+    umask($oldMask);
+    return $result;
 }
 
 /**
@@ -710,8 +710,8 @@ function ocChmod($path, $perm)
  */
 function ocExecTime()
 {
-	$runtime = microtime(true) - OC_EXECUTE_START_TIME;
-	return $runtime * 1000;
+    $runtime = microtime(true) - OC_EXECUTE_START_TIME;
+    return $runtime * 1000;
 }
 
 /**
@@ -763,7 +763,7 @@ function ocFile($dir, $path)
  */
 function ocRealUrl($dir, $subPath = null, $root = false)
 {
-    $root = $root ? : OC_ROOT_URL;
+    $root = $root ?: OC_ROOT_URL;
     return ocContainer()->path->get($dir, $subPath, $root, false, false);
 }
 
@@ -802,7 +802,7 @@ function ocStripTail($str, $tail)
     $modelLength = strlen($tail);
 
     if (substr($str, -$modelLength) == $tail) {
-        $str = substr($str, 0, - $modelLength);
+        $str = substr($str, 0, -$modelLength);
     } else {
         $str = $str;
     }
@@ -815,7 +815,8 @@ function ocStripTail($str, $tail)
  * @param $path
  * @return string
  */
-function ocUpperFile($path){
+function ocUpperFile($path)
+{
     return dirname($path) . OC_DIR_SEP . ucfirst(basename($path));
 }
 
@@ -824,6 +825,7 @@ function ocUpperFile($path){
  * @param $path
  * @return string
  */
-function ocLowerFile($path){
+function ocLowerFile($path)
+{
     return dirname($path) . OC_DIR_SEP . lcfirst(basename($path));
 }

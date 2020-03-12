@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Exceptions\Exception;
@@ -22,8 +23,9 @@ class FormManager extends ServiceProvider
     /**
      * 注册服务
      */
-	public function register()
-	{}
+    public function register()
+    {
+    }
 
     /**
      * 新建表单
@@ -31,22 +33,22 @@ class FormManager extends ServiceProvider
      * @return mixed
      * @throws Exception
      */
-	public function create($formName)
-	{
-	    if (!$this->hasForm($formName)) {
+    public function create($formName)
+    {
+        if (!$this->hasForm($formName)) {
             $form = $this->createService('form', array($formName));
             $this->addForm($formName, $form);
         }
 
         return $this->getForm($formName);
-	}
+    }
 
     /**
      * 获取表单
      * @param $name
      * @return array|mixed
      */
-	public function getForm($name = null)
+    public function getForm($name = null)
     {
         if (func_get_args()) {
             return array_key_exists($name, $this->forms) ? $this->forms[$name] : null;
@@ -133,22 +135,22 @@ class FormManager extends ServiceProvider
      * @return mixed
      * @throws Exception
      */
-	public function getSubmitForm($requestToken)
-	{
+    public function getSubmitForm($requestToken)
+    {
         if (empty($requestToken)) {
             $this->error->show('failed_validate_token');
         }
 
-		$tokens = $this->session->get($this->getTokenSaveName()) ? : array();
-		$formName = array_search($requestToken, $tokens);
+        $tokens = $this->session->get($this->getTokenSaveName()) ?: array();
+        $formName = array_search($requestToken, $tokens);
 
-		if ($formName === false || !$this->hasForm($formName)) {
+        if ($formName === false || !$this->hasForm($formName)) {
             $this->error->show('not_exists_form');
         }
 
-		$this->form = $this->getForm($formName);
-		return $this->form;
-	}
+        $this->form = $this->getForm($formName);
+        return $this->form;
+    }
 
     /**
      * 验证表单
@@ -156,11 +158,11 @@ class FormManager extends ServiceProvider
      * @return mixed
      * @throws Exception
      */
-	public function checkForm($requestToken)
-	{
+    public function checkForm($requestToken)
+    {
         $postForm = $this->getSubmitForm($requestToken);
-		return $postForm;
-	}
+        return $postForm;
+    }
 
     /**
      * 获取TOKEN参数名称

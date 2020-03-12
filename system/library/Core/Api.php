@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
@@ -54,10 +55,9 @@ class Api extends Base
      * @param $contentType
      * @return false|mixed|string
      */
-	public function format($result, $contentType)
-	{
-        switch ($contentType)
-        {
+    public function format($result, $contentType)
+    {
+        switch ($contentType) {
             case 'json':
                 if (defined('JSON_UNESCAPED_UNICODE')) {
                     $content = json_encode($result, JSON_UNESCAPED_UNICODE);
@@ -73,5 +73,5 @@ class Api extends Base
         }
 
         return $content;
-	}
+    }
 }

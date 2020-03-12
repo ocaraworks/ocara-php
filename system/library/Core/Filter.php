@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
@@ -18,22 +19,22 @@ class Filter extends Base
     const EVENT_SQL_KEYWORDS_FILTER = 'sql_keywords_filter';
     const EVENT_SCRIPT_KEYWORDS_FILTER = 'script_keywords_filter';
 
-	protected $jsEvents = array();
+    protected $jsEvents = array();
 
-	/**
-	 * 初始化
-	 * Filter constructor.
-	 */
-	public function __construct()
-	{
-		$this->jsEvents = implode('|', ocConfig('JS_EVENTS', array()));
-	}
+    /**
+     * 初始化
+     * Filter constructor.
+     */
+    public function __construct()
+    {
+        $this->jsEvents = implode('|', ocConfig('JS_EVENTS', array()));
+    }
 
     /**
      * 注册事件
      * @throws Exception
      */
-	public function registerEvents()
+    public function registerEvents()
     {
         parent::registerEvents();
 
@@ -41,7 +42,7 @@ class Filter extends Base
             ->append(ocConfig('EVENTS.filters.sql_keywords_filter', array($this, 'eventSqlKeywordsFilter')));
 
         $this->event(self::EVENT_SCRIPT_KEYWORDS_FILTER)
-             ->append(ocConfig('EVENTS.filters.script_keywords_filter', array($this, 'eventScriptKeywordsFilter')));
+            ->append(ocConfig('EVENTS.filters.script_keywords_filter', array($this, 'eventScriptKeywordsFilter')));
     }
 
     /**
@@ -96,69 +97,69 @@ class Filter extends Base
      * @param $content
      * @return array|mixed|string
      */
-	public function content($content)
-	{
-		return $this->html($this->script($content));
-	}
+    public function content($content)
+    {
+        return $this->html($this->script($content));
+    }
 
-	/**
-	 * 过滤HTML
-	 * @param string|array $content
-	 * @return array|mixed|string
-	 */
-	public function html($content)
-	{
-		if (is_array($content)) {
-			return array_map(__METHOD__, $content);
-		} else {
-			if (function_exists('htmlspecialchars')) {
-				return htmlspecialchars($content);
-			}
-			
-			$search  = array('&', '"', "'", '<', '>');
-			$replace = array('&amp;', '&quot;', '&#039;', '&lt;', '&gt;');
-			return str_replace($search, $replace, $content);
-		}
-	}
+    /**
+     * 过滤HTML
+     * @param string|array $content
+     * @return array|mixed|string
+     */
+    public function html($content)
+    {
+        if (is_array($content)) {
+            return array_map(__METHOD__, $content);
+        } else {
+            if (function_exists('htmlspecialchars')) {
+                return htmlspecialchars($content);
+            }
 
-	/**
-	 * 过滤PHP标签
-	 * @param string|array $content
-	 * @return array|mixed
-	 */
-	public function php($content)
-	{
-		if (is_array($content)) {
-			return array_map(__METHOD__, $content);
-		} else {
-			return str_replace(
-				array('<?', '?>'),
-				array('&lt;?', '?&gt;'),
-				$content
-			);
-		}
-	}
+            $search = array('&', '"', "'", '<', '>');
+            $replace = array('&amp;', '&quot;', '&#039;', '&lt;', '&gt;');
+            return str_replace($search, $replace, $content);
+        }
+    }
+
+    /**
+     * 过滤PHP标签
+     * @param string|array $content
+     * @return array|mixed
+     */
+    public function php($content)
+    {
+        if (is_array($content)) {
+            return array_map(__METHOD__, $content);
+        } else {
+            return str_replace(
+                array('<?', '?>'),
+                array('&lt;?', '?&gt;'),
+                $content
+            );
+        }
+    }
 
     /**
      * 过滤脚本
      * @param $content
      * @return array|mixed|string|string[]|null
      */
-	public function script($content)
-	{
-		if (is_array($content)) {
-			return array_map(__METHOD__, $content);
-		} else {
-			$content = preg_replace('/<script[^>]*>.*<\/script>/i', OC_EMPTY, $content);
-			$content = preg_replace('/<iframe[^>]*>.*<\/iframe>/i', OC_EMPTY, $content);
-			$content = preg_replace('/<noframes[^>]*>.*<\/norame>/i', OC_EMPTY, $content);
-			$content = preg_replace('/<object[^>]*>.*<\/object>/i', OC_EMPTY, $content);
-			$content = preg_replace('/javascript:/i', OC_EMPTY, $content);
+    public function script($content)
+    {
+        if (is_array($content)) {
+            return array_map(__METHOD__, $content);
+        } else {
+            $content = preg_replace('/<script[^>]*>.*<\/script>/i', OC_EMPTY, $content);
+            $content = preg_replace('/<iframe[^>]*>.*<\/iframe>/i', OC_EMPTY, $content);
+            $content = preg_replace('/<noframes[^>]*>.*<\/norame>/i', OC_EMPTY, $content);
+            $content = preg_replace('/<object[^>]*>.*<\/object>/i', OC_EMPTY, $content);
+            $content = preg_replace('/javascript:/i', OC_EMPTY, $content);
 
             $content = $this->fire(self::EVENT_SCRIPT_KEYWORDS_FILTER, array($content, $this->jsEvents));
-			return $content;
-		}
-	}
+            return $content;
+        }
+    }
 
     /**
      * 脚本关键字过滤事件处理
@@ -166,127 +167,127 @@ class Filter extends Base
      * @return string|string[]|null
      * @throws Exception
      */
-	public function eventScriptKeywordsFilter($content)
+    public function eventScriptKeywordsFilter($content)
     {
         $addChar = ocConfig('FILTERS.sql_keyword_add_char', '#');
-        $expression = '/(on('.$this->jsEvents.'))|(('.$this->jsEvents.')\((\s*function\()?)/i';
+        $expression = '/(on(' . $this->jsEvents . '))|((' . $this->jsEvents . ')\((\s*function\()?)/i';
         $content = preg_replace($expression, $addChar . "\${1}" . $addChar, $content);
         return $content;
     }
 
-	/**
-	 * 过滤路径
-	 * @param string|array $path
-	 * @return array|mixed
-	 */
-	public function path($path)
-	{
-		if (is_array($path)) {
-			return array_map(__METHOD__, $path);
-		} else {
-			return preg_replace(
-				'/\/{2,}|\\{1,}/',
-				OC_DIR_SEP, preg_replace('/[^\w\/\]/',
-				OC_EMPTY, $path)
-			);
-		}
-	}
+    /**
+     * 过滤路径
+     * @param string|array $path
+     * @return array|mixed
+     */
+    public function path($path)
+    {
+        if (is_array($path)) {
+            return array_map(__METHOD__, $path);
+        } else {
+            return preg_replace(
+                '/\/{2,}|\\{1,}/',
+                OC_DIR_SEP, preg_replace('/[^\w\/\]/',
+                    OC_EMPTY, $path)
+            );
+        }
+    }
 
     /**
      * 过滤Request来的数据
      * @param $content
      * @return array|string
      */
-	public function request($content)
-	{
-		if (is_array($content)) {
-			return array_map(__METHOD__, $content);
-		} else {
-			return addslashes($this->content($content));
-		}
-	}
+    public function request($content)
+    {
+        if (is_array($content)) {
+            return array_map(__METHOD__, $content);
+        } else {
+            return addslashes($this->content($content));
+        }
+    }
 
-	/**
-	 * 过滤掉空白字符
-	 * @param string|array $content
-	 * @return array|mixed
-	 */
-	public function space($content)
-	{
-		if (is_array($content)) {
-			return array_map(__METHOD__, $content);
-		} else {
-			return preg_replace('/\s+/', OC_EMPTY, $content);
-		}
-	}
+    /**
+     * 过滤掉空白字符
+     * @param string|array $content
+     * @return array|mixed
+     */
+    public function space($content)
+    {
+        if (is_array($content)) {
+            return array_map(__METHOD__, $content);
+        } else {
+            return preg_replace('/\s+/', OC_EMPTY, $content);
+        }
+    }
 
-	/**
-	 * 将空白字符全替换掉
-	 * @param string $str
-	 * @param string $replace
-	 * @return mixed
-	 */
-	public function replaceSpace($str, $replace = OC_SPACE)
-	{
-		return preg_replace('/\s+/', $replace, $str);
-	}
+    /**
+     * 将空白字符全替换掉
+     * @param string $str
+     * @param string $replace
+     * @return mixed
+     */
+    public function replaceSpace($str, $replace = OC_SPACE)
+    {
+        return preg_replace('/\s+/', $replace, $str);
+    }
 
-	/**
-	 * 清除UTF-8下字符串的BOM字符
-	 * @param string $content
-	 * @return array|string
-	 */
-	public function bom($content)
-	{
-		if (is_array($content)) {
-			return array_map(__METHOD__, $content);
-		} else {
-			if (substr($content, 0, 3) == chr(239) . chr(187) . chr(191)) {
-				return ltrim($content, chr(239) . chr(187) . chr(191));
-			}
-			return $content;
-		}
-	}
+    /**
+     * 清除UTF-8下字符串的BOM字符
+     * @param string $content
+     * @return array|string
+     */
+    public function bom($content)
+    {
+        if (is_array($content)) {
+            return array_map(__METHOD__, $content);
+        } else {
+            if (substr($content, 0, 3) == chr(239) . chr(187) . chr(191)) {
+                return ltrim($content, chr(239) . chr(187) . chr(191));
+            }
+            return $content;
+        }
+    }
 
-	/**
-	 * 转义
-	 * @param string|array $content
-	 * @return array|string
-	 */
-	public function addSlashes($content)
-	{
-		if (is_array($content)) {
-			return array_map(__METHOD__, $content);
-		} else {
-			return addslashes($content);
-		}
-	}
+    /**
+     * 转义
+     * @param string|array $content
+     * @return array|string
+     */
+    public function addSlashes($content)
+    {
+        if (is_array($content)) {
+            return array_map(__METHOD__, $content);
+        } else {
+            return addslashes($content);
+        }
+    }
 
-	/**
-	 * 去除转义
-	 * @param string|array $content
-	 * @return array|string
-	 */
-	public function stripSlashes($content)
-	{
-		if (is_array($content)) {
-			return array_map(__METHOD__, $content);
-		} else {
-			return stripslashes($content);
-		}
-	}
+    /**
+     * 去除转义
+     * @param string|array $content
+     * @return array|string
+     */
+    public function stripSlashes($content)
+    {
+        if (is_array($content)) {
+            return array_map(__METHOD__, $content);
+        } else {
+            return stripslashes($content);
+        }
+    }
 
-	/**
-	 * 去除换行符
-	 * @param string|array $content
-	 * @return array|mixed
-	 */
-	public function rn($content) 
-	{
-		if (is_array($content)) {
-			return array_map(__METHOD__, $content);
-		} else {
-			return str_replace(array("\r\n", "\r", "\n"), OC_EMPTY, $content);
-		}
-	}
+    /**
+     * 去除换行符
+     * @param string|array $content
+     * @return array|mixed
+     */
+    public function rn($content)
+    {
+        if (is_array($content)) {
+            return array_map(__METHOD__, $content);
+        } else {
+            return str_replace(array("\r\n", "\r", "\n"), OC_EMPTY, $content);
+        }
+    }
 }

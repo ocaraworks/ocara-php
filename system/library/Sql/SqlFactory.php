@@ -1,4 +1,5 @@
 <?php
+
 namespace Ocara\Sql;
 
 use Ocara\Core\DatabaseBase;

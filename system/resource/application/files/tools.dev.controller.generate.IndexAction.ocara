@@ -2,6 +2,7 @@
 /**
  * 首页
  */
+
 namespace app\tools\dev\controller\generate;
 
 use app\tools\dev\controller\generate\Controller;

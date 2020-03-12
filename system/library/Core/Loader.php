@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Exceptions\Exception;
@@ -82,11 +83,11 @@ class Loader extends Basis
             $newClass = OC_NS_SEP . preg_replace('/[\\\\]+/', '\\', $newClass);
             $keys = array_keys($this->namespaceMap);
             $values = array_values($this->namespaceMap);
-            $filePath = preg_replace($keys, $values, $newClass,1);
+            $filePath = preg_replace($keys, $values, $newClass, 1);
             if ($filePath == $newClass) {
                 $filePath = $this->defaultPath . $newClass;
             }
-        }  else {
+        } else {
             $filePath = $this->defaultPath . OC_DIR_SEP . $newClass;
         }
 

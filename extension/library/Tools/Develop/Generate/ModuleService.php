@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Extension\Tools\Develop\Generate;
 
 use Ocara\Core\Develop;
@@ -13,35 +14,34 @@ use Ocara\Core\Develop;
 class ModuleService extends BaseService
 {
     protected $mdltype;
-	protected $mdlname;
-	protected $controllerType;
+    protected $mdlname;
+    protected $controllerType;
 
-	public function add()
-	{
+    public function add()
+    {
         $this->mdltype = ocService()->request->getPost('mdltype');
-		$this->mdlname = ocService()->request->getPost('mdlname');
-		$this->controllerType = ocService()->request->getPost('controllerType');
+        $this->mdlname = ocService()->request->getPost('mdlname');
+        $this->controllerType = ocService()->request->getPost('controllerType');
 
-		$this->createModule();
-	}
+        $this->createModule();
+    }
 
-	public function createModule()
-	{
-		$mdlname   = ucfirst($this->mdlname);
-		$className = $mdlname . 'Module';
+    public function createModule()
+    {
+        $mdlname = ucfirst($this->mdlname);
+        $className = $mdlname . 'Module';
 
-		$controllerMaps = array(
-		    'console' => 'TaskController'
+        $controllerMaps = array(
+            'console' => 'TaskController'
         );
 
-		if (array_key_exists($this->mdltype, $controllerMaps)) {
+        if (array_key_exists($this->mdltype, $controllerMaps)) {
             $baseController = $controllerMaps[$this->mdltype];
         } else {
             $baseController = ucfirst($this->controllerType) . 'Controller';
         }
 
-		switch($this->mdltype)
-        {
+        switch ($this->mdltype) {
             case 'modules':
                 $namespace = 'app\\modules';
                 $modulePath = ocPath('modules', "{$this->mdlname}");
@@ -58,18 +58,18 @@ class ModuleService extends BaseService
                 $this->showError('不支持的模块类型！');
         }
 
-		$content = "<?php\r\n";
-		$content .= "namespace {$namespace}\\{$this->mdlname}\\controller;\r\n";
-		$content .= "use Base\\Controller\\{$baseController};\r\n";
-		
-		$content .= "\r\n";
-		$content .= "class {$mdlname}Module extends {$baseController}\r\n";
-		$content .= "{\r\n";
-		$content .= "\t/**\r\n";
-		$content .= "\t * 初始化模块\r\n";
-		$content .= "\t */\r\n";
-		$content .= "\tpublic function __module()\r\n\t{}\r\n";
-		$content .= "}";
+        $content = "<?php\r\n";
+        $content .= "namespace {$namespace}\\{$this->mdlname}\\controller;\r\n";
+        $content .= "use Base\\Controller\\{$baseController};\r\n";
+
+        $content .= "\r\n";
+        $content .= "class {$mdlname}Module extends {$baseController}\r\n";
+        $content .= "{\r\n";
+        $content .= "\t/**\r\n";
+        $content .= "\t * 初始化模块\r\n";
+        $content .= "\t */\r\n";
+        $content .= "\tpublic function __module()\r\n\t{}\r\n";
+        $content .= "}";
 
         $language = ocService()->app->getLanguage();
 
@@ -85,18 +85,18 @@ class ModuleService extends BaseService
             ocCheckPath($modulePath . '/view/defaults/part');
         }
 
-		if (empty($this->mdlname)) {
-			$this->showError('模块名称为必填信息！');
-		}
-		
-		if (ocFileExists($path = $modulePath . "/controller/{$className}.php")) {
+        if (empty($this->mdlname)) {
+            $this->showError('模块名称为必填信息！');
+        }
+
+        if (ocFileExists($path = $modulePath . "/controller/{$className}.php")) {
             $this->showError('模块(Module)文件已存在，如果需要覆盖，请先手动删除！');
-		}
+        }
 
         $fileService = ocService()->file;
         $fileService->createFile($path, 'wb');
         $fileService->writeFile($path, $content);
-	}
+    }
 }
 
 ?>

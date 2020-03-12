@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use \Closure;
@@ -141,7 +142,7 @@ class Event extends Basis implements EventInterface
             if (isset($this->registry[$name])) {
                 $key = $this->registry[$name];
             }
-        } elseif(is_integer($name)) {
+        } elseif (is_integer($name)) {
             $name = $name - 1;
             if (isset($this->handlers[$name])) {
                 $key = $name;
@@ -258,7 +259,7 @@ class Event extends Basis implements EventInterface
         } elseif ($this->defaultHandler) {
             $handlerLength = 2;
             $this->running = true;
-            if (is_object($this->defaultHandler) || ocIsCallable($this->defaultHandler)){
+            if (is_object($this->defaultHandler) || ocIsCallable($this->defaultHandler)) {
                 $results[] = $this->runCallback($this->defaultHandler, $params);
             }
         }

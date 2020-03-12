@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Core\Basis;
@@ -15,43 +16,43 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class Config extends Basis
 {
-	/**
-	 * 开关配置
-	 */
-	const YES = 1;
-	const NO = 0;
+    /**
+     * 开关配置
+     */
+    const YES = 1;
+    const NO = 0;
 
-	/**
-	 * 数据变量
-	 */
-	protected $environment;
-	protected $frameworkConfig = array();
-	protected $data = array();
+    /**
+     * 数据变量
+     */
+    protected $environment;
+    protected $frameworkConfig = array();
+    protected $data = array();
 
-	/**
-	 * 初始化
+    /**
+     * 初始化
      *
-	 */
-	public function __construct()
-	{
+     */
+    public function __construct()
+    {
         $path = OC_SYS . 'data/config.php';
-		if (!file_exists($path)) {
-			throw new Exception('Lost ocara config file: config.php.');
-		}
+        if (!file_exists($path)) {
+            throw new Exception('Lost ocara config file: config.php.');
+        }
 
-        $OC_CONF = include ($path);
+        $OC_CONF = include($path);
 
-		if (isset($OC_CONF)) {
+        if (isset($OC_CONF)) {
             $this->frameworkConfig = $OC_CONF;
         } else {
             throw new Exception('Lost config : $OC_CONF.');
         }
-	}
+    }
 
     /**
      * 获取系统环境
      */
-	public function getEnvironment()
+    public function getEnvironment()
     {
         if (!isset($this->environment)) {
             $environmentResource = ocConfig('RESOURCE.env.get_env', null);
@@ -67,7 +68,7 @@ class Config extends Basis
      * 加载全局配置
      * @throws Exception
      */
-	public function loadGlobalConfig()
+    public function loadGlobalConfig()
     {
         $path = ocPath('config');
         if (is_dir($path)) {
@@ -116,8 +117,8 @@ class Config extends Basis
      * @param array $route
      * @param string $rootPath
      */
-	public function loadControllerConfig($route = array(), $rootPath = null)
-	{
+    public function loadControllerConfig($route = array(), $rootPath = null)
+    {
         $subPath = sprintf('config/control/%s/', $route['controller']);
         $path = $this->getConfigPath($route, $subPath, $rootPath);
 
@@ -125,7 +126,7 @@ class Config extends Basis
             $this->load($path);
             $this->loadEnvironmentConfig($path);
         }
-	}
+    }
 
     /**
      * 加载控制器动作配置
@@ -151,7 +152,7 @@ class Config extends Basis
      * @param $rootPath
      * @return mixed|string
      */
-	protected function getConfigPath($route, $subPath, $rootPath)
+    protected function getConfigPath($route, $subPath, $rootPath)
     {
         if ($route['module']) {
             $subPath = $route['module'] . '/privates/' . $subPath;
@@ -174,11 +175,11 @@ class Config extends Basis
         return $path;
     }
 
-	/**
-	 * 加载配置
-	 * @param string|array $paths
-	 */
-	public function load($paths)
+    /**
+     * 加载配置
+     * @param string|array $paths
+     */
+    public function load($paths)
     {
         if ($paths) {
             $paths = ocForceArray($paths);
@@ -213,10 +214,10 @@ class Config extends Basis
      * @param $key
      * @param $value
      */
-	public function set($key, $value)
-	{
-		ocSet($this->data, $key, $value);
-	}
+    public function set($key, $value)
+    {
+        ocSet($this->data, $key, $value);
+    }
 
     /**
      * 获取配置
@@ -233,7 +234,7 @@ class Config extends Basis
             } elseif (ocKeyExists($key, $this->frameworkConfig)) {
                 $result = $this->getDefault($key);
             }
-            $result = $result ? : (func_num_args() >= 2 ? $default: $result);
+            $result = $result ?: (func_num_args() >= 2 ? $default : $result);
             return $result;
         }
 
@@ -245,7 +246,8 @@ class Config extends Basis
      * @param string|array $key
      * @return array|bool|null
      */
-    public function arrayGet($key){
+    public function arrayGet($key)
+    {
         if (($result = ocCheckKey($key, $this->data))
             || ($result = ocCheckKey($key, $this->frameworkConfig))
         ) {
@@ -268,22 +270,22 @@ class Config extends Basis
      * @param string|array $key
      * @return array|bool|mixed|null
      */
-	public function getDefault($key = null)
-	{
-		if (isset($key)) {
-			return ocGet($key, $this->frameworkConfig);
-		}
+    public function getDefault($key = null)
+    {
+        if (isset($key)) {
+            return ocGet($key, $this->frameworkConfig);
+        }
 
-		return $this->frameworkConfig;
-	}
+        return $this->frameworkConfig;
+    }
 
     /**
      * 检查配置键名是否存在
      * @param string|array $key
      * @return bool
      */
-	public function has($key)
-	{
-		return ocKeyExists($key, $this->data) || ocKeyExists($key, $this->frameworkConfig);
-	}
+    public function has($key)
+    {
+        return ocKeyExists($key, $this->data) || ocKeyExists($key, $this->frameworkConfig);
+    }
 }

@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
@@ -33,31 +34,31 @@ class DatabaseFactory extends Base
      * @return mixed|null
      * @throws Exception
      */
-	public static function getInstance($connectName = null, $master = true, $required = true)
-	{
-		if (empty($connectName)) {
-			$connectName = self::$defaultServer;
-		}
+    public static function getInstance($connectName = null, $master = true, $required = true)
+    {
+        if (empty($connectName)) {
+            $connectName = self::$defaultServer;
+        }
 
-		$database = self::getDatabase($connectName, $master);
-		if (is_object($database) && $database instanceof DatabaseBase) {
-			return $database;
-		}
+        $database = self::getDatabase($connectName, $master);
+        if (is_object($database) && $database instanceof DatabaseBase) {
+            return $database;
+        }
 
-		if ($required) {
-			ocService()->error->show('not_exists_database', array($connectName));
-		}
+        if ($required) {
+            ocService()->error->show('not_exists_database', array($connectName));
+        }
 
-		return $database;
-	}
+        return $database;
+    }
 
     /**
      * 获取默认服务器名称
      * @return string
      */
-	public static function getDefaultServer()
+    public static function getDefaultServer()
     {
-	    return self::$defaultServer;
+        return self::$defaultServer;
     }
 
     /**
@@ -67,31 +68,31 @@ class DatabaseFactory extends Base
      * @return mixed|null
      * @throws Exception
      */
-	private static function getDatabase($connectName, $master = true)
-	{
+    private static function getDatabase($connectName, $master = true)
+    {
         $config = self::getConfig($connectName);
         $hosts = ocForceArray(ocDel($config, 'host'));
 
-		if ($master) {
-		    $index = 0;
+        if ($master) {
+            $index = 0;
         } else {
             $index = 1;
-		    if (!isset($hosts[$index])) {
-		        $index = 0;
+            if (!isset($hosts[$index])) {
+                $index = 0;
             }
         }
 
-		$object = null;
-		$name = $connectName . '_' . $index;
+        $object = null;
+        $name = $connectName . '_' . $index;
 
-		if (isset(self::$connections[$name]) && is_object(self::$connections[$name])) {
-		    $object = self::$connections[$name];
+        if (isset(self::$connections[$name]) && is_object(self::$connections[$name])) {
+            $object = self::$connections[$name];
         } else {
             if (isset($hosts[$index]) && $hosts[$index]) {
                 $address = array_map('trim', explode(':', $hosts[$index]));
-                $config['host']  = isset($address[0]) ? $address[0] : null;
-                $config['port']  = isset($address[1]) ? $address[1] : null;
-                $config['type']  = self::getDatabaseType($config);
+                $config['host'] = isset($address[0]) ? $address[0] : null;
+                $config['port'] = isset($address[1]) ? $address[1] : null;
+                $config['type'] = self::getDatabaseType($config);
                 $config['class'] = $config['type'];
                 $config['connect_name'] = $name;
                 $object = self::createDatabase('Databases', $config);
@@ -99,8 +100,8 @@ class DatabaseFactory extends Base
             }
         }
 
-		return $object;
-	}
+        return $object;
+    }
 
     /**
      * 获取数据库配置信息
@@ -108,34 +109,34 @@ class DatabaseFactory extends Base
      * @return array|mixed
      * @throws Exception
      */
-	public static function getConfig($connectName = null)
-	{
-		if (empty($connectName)) {
-			$connectName = self::$defaultServer;
-		}
+    public static function getConfig($connectName = null)
+    {
+        if (empty($connectName)) {
+            $connectName = self::$defaultServer;
+        }
 
         $config = ocForceArray(ocConfig(array('DATABASE', $connectName)));
 
-		if ($callback = ocConfig(array('RESOURCE', 'database', 'get_config'), null)) {
-			$config = array_merge(
-			    $config,
+        if ($callback = ocConfig(array('RESOURCE', 'database', 'get_config'), null)) {
+            $config = array_merge(
+                $config,
                 call_user_func_array($callback, array($connectName))
             );
-		}
+        }
 
-		return $config;
-	}
+        return $config;
+    }
 
     /**
      * 获取数据库对象类名
      * @param array $config
      * @return string
      */
-	public static function getDatabaseType(array $config)
-	{
-		$type = isset($config['type']) ? ucfirst($config['type']) : OC_EMPTY;
-		return isset(self::$databaseMaps[$type]) ? self::$databaseMaps[$type] : $type;
-	}
+    public static function getDatabaseType(array $config)
+    {
+        $type = isset($config['type']) ? ucfirst($config['type']) : OC_EMPTY;
+        return isset(self::$databaseMaps[$type]) ? self::$databaseMaps[$type] : $type;
+    }
 
     /**
      * 获取数据库对象
@@ -143,22 +144,22 @@ class DatabaseFactory extends Base
      * @param array $config
      * @return mixed
      */
-	private static function createDatabase($dir, $config)
-	{
-		$class = $config['class'] . 'Database';
-		$classFile = $dir . OC_DIR_SEP . $class . '.php';
-		$classInfo = ServiceBase::classFileExists($classFile);
+    private static function createDatabase($dir, $config)
+    {
+        $class = $config['class'] . 'Database';
+        $classFile = $dir . OC_DIR_SEP . $class . '.php';
+        $classInfo = ServiceBase::classFileExists($classFile);
 
-		if ($classInfo) {
-			list($path, $namespace) = $classInfo;
-			include_once($path);
-			$class =  $namespace . 'Databases' . OC_NS_SEP . $class;
-			if (class_exists($class)) {
-				$object = new $class($config);
-				return $object;
-			}
-		}
+        if ($classInfo) {
+            list($path, $namespace) = $classInfo;
+            include_once($path);
+            $class = $namespace . 'Databases' . OC_NS_SEP . $class;
+            if (class_exists($class)) {
+                $object = new $class($config);
+                return $object;
+            }
+        }
 
-		ocService()->error->show('not_exists_database');
-	}
+        ocService()->error->show('not_exists_database');
+    }
 }

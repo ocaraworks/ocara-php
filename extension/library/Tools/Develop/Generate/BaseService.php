@@ -5,18 +5,19 @@
  * Date: 2018/12/9
  * Time: 16:03
  */
+
 namespace Ocara\Extension\Tools\Develop\Generate;
 
 use Ocara\Exceptions\Exception;
 
 class BaseService
 {
-    public static $config =  array(
+    public static $config = array(
         'actions' => array(
             'registerForms' => '表单注册',
-            'display'       => 'GET输出',
-            'submit'        => '提交后处理',
-            'api'           => 'Ajax处理'
+            'display' => 'GET输出',
+            'submit' => '提交后处理',
+            'api' => 'Ajax处理'
         ),
         'controller_actions' => array(
             'Common' => array(
@@ -47,8 +48,7 @@ class BaseService
 
     public function getModuleRootPath($mdltype)
     {
-        switch($mdltype)
-        {
+        switch ($mdltype) {
             case 'modules':
                 $rootNamespace = "app\\modules";
                 $rootModulePath = ocPath('modules') . OC_DIR_SEP;

@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Views;
 
 use Ocara\Core\Response;
@@ -31,7 +32,7 @@ class Common extends ViewBase implements ViewInterfaces
     private $layout;
     private $parentLayout;
 
-    private $useCache  = true;
+    private $useCache = true;
     private $useLayout = true;
 
     protected static $defaultStyle = 'defaults';
@@ -41,7 +42,7 @@ class Common extends ViewBase implements ViewInterfaces
      */
     public function __construct()
     {
-        $this->fileType  = ocConfig(array('TEMPLATE', 'file_type'), 'html');
+        $this->fileType = ocConfig(array('TEMPLATE', 'file_type'), 'html');
         $this->template = ocConfig(array('TEMPLATE', 'default_style'), self::$defaultStyle, true);
 
         $this->loadEngine();
@@ -72,7 +73,7 @@ class Common extends ViewBase implements ViewInterfaces
     {
         if ($pluginClass = ocConfig(array('TEMPLATE', 'engine'), false)) {
             $route = ocService()->app->getRoute();
-            $path  = $this->getViewPath(ocDir(array(
+            $path = $this->getViewPath(ocDir(array(
                 'template',
                 $route['module'],
                 $route['controller']
@@ -157,7 +158,7 @@ class Common extends ViewBase implements ViewInterfaces
             ocService()->error->show('not_exists_template_var', array($name));
         }
 
-        return $vars ? : array();
+        return $vars ?: array();
     }
 
     /**
@@ -205,11 +206,11 @@ class Common extends ViewBase implements ViewInterfaces
      */
     public function getViewPath($subPath = null, $template = null)
     {
-        $template = $template ? : $this->template;
+        $template = $template ?: $this->template;
         $module = $this->getRoute('module');
 
         if ($module) {
-            $rootPath = $this->rootPath ? : null;
+            $rootPath = $this->rootPath ?: null;
             $path = $this->getModuleViewPath($module, $subPath, $template, $rootPath);
         } else {
             $path = ocPath('view', $template . OC_DIR_SEP . $subPath);
@@ -231,13 +232,13 @@ class Common extends ViewBase implements ViewInterfaces
      */
     public function getModuleViewPath($module, $subPath = null, $template = null, $rootPath = null)
     {
-        $template = $template ? : $this->template;
+        $template = $template ?: $this->template;
 
         if (empty($rootPath)) {
             if (OC_MODULE_PATH) {
                 $rootPath = ocDir(array(OC_MODULE_PATH, $module, 'view'));
             } else {
-                $rootPath = ocPath('modules', $module .'/view/');
+                $rootPath = ocPath('modules', $module . '/view/');
             }
         }
 
@@ -309,12 +310,12 @@ class Common extends ViewBase implements ViewInterfaces
             if (ocFileExists($path)) {
                 if ($show) {
                     ($vars = $this->getVar()) && extract($vars);
-                    include ($path);
+                    include($path);
                 } else {
                     $html[] = $this->readFile($path, true);
                 }
             } else {
-                ocService()->error->show('not_exists_part', array('file' => ltrim($value,OC_DIR_SEP)));
+                ocService()->error->show('not_exists_part', array('file' => ltrim($value, OC_DIR_SEP)));
             }
         }
 
@@ -454,7 +455,7 @@ class Common extends ViewBase implements ViewInterfaces
      */
     public function renderFile($file = null, array $vars = array(), $required = true)
     {
-        $file = $file ? : $this->tpl;
+        $file = $file ?: $this->tpl;
 
         if ($vars && is_array($vars)) {
             $this->assign($vars);
@@ -601,14 +602,14 @@ class Common extends ViewBase implements ViewInterfaces
                 $value = $value . "?time=" . date('YmdHis') . mt_rand(0, 1000) . '.' . $type;
             }
             if ($type == 'js') {
-                $attr  = array(
+                $attr = array(
                     'src' => $value,
                     'type' => 'text/javascript',
                     'language' => 'javascript'
                 );
                 $value = ocService()->html->createElement('script', $attr, true);
             } else {
-                $attr  = array(
+                $attr = array(
                     'href' => $value,
                     'type' => 'text/css',
                     'rel' => 'stylesheet'

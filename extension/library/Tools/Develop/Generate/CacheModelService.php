@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Extension\Tools\Develop\Generate;
 
 use Ocara\Core\Develop;
@@ -16,37 +17,37 @@ use Ocara\Extension\Tools\Develop\Generate\BaseService;
 
 class CacheModelService extends BaseService
 {
-	private $_mdltype;
-	private $_mdlname;
-	private $_connectName;
-	private $_prefix;
-	private $_model;
-	private $_database;
+    private $_mdltype;
+    private $_mdlname;
+    private $_connectName;
+    private $_prefix;
+    private $_model;
+    private $_database;
 
-	public function add()
-	{
-	    $defaultServer = CacheFactory::getDefaultServer();
-		$request = ocService()->request;
+    public function add()
+    {
+        $defaultServer = CacheFactory::getDefaultServer();
+        $request = ocService()->request;
 
-		$this->_mdltype = $request->getPost('mdltype');
-		$this->_mdlname = $request->getPost('mdlname');
-		$this->_connectName = $request->getPost('connect', $defaultServer);
-		$this->_prefix = $request->getPost('prefix');
-		$this->_model = $request->getPost('model');
+        $this->_mdltype = $request->getPost('mdltype');
+        $this->_mdlname = $request->getPost('mdlname');
+        $this->_connectName = $request->getPost('connect', $defaultServer);
+        $this->_prefix = $request->getPost('prefix');
+        $this->_model = $request->getPost('model');
 
         if (empty($this->_model)) {
             $this->showError('请输入缓存模型名称！');
         }
 
         $this->createCacheModel();
-	}
+    }
 
-	public function createCacheModel()
-	{
-		$connect = ucfirst($this->_connectName);
-		$modelBase = 'CacheModel';
-		$connectPath = $this->_connectName . OC_DIR_SEP;
-		$moduleModelDir = "{$this->_mdlname}/privates/model/cache/";
+    public function createCacheModel()
+    {
+        $connect = ucfirst($this->_connectName);
+        $modelBase = 'CacheModel';
+        $connectPath = $this->_connectName . OC_DIR_SEP;
+        $moduleModelDir = "{$this->_mdlname}/privates/model/cache/";
 
         $cacheType = ucfirst(strtolower(ocConfig(array('CACHE', $this->_connectName, 'type'))));
         if (!in_array($cacheType, array('Redis', 'Memcache'))) {
@@ -57,8 +58,7 @@ class CacheModelService extends BaseService
             $this->_database = ocService()->request->getPost('database', 0);
         }
 
-        switch($this->_mdltype)
-        {
+        switch ($this->_mdltype) {
             case 'modules':
                 $rootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\model\\cache";
                 $modelPath = ocPath('application', 'modules/' . $moduleModelDir);
@@ -77,15 +77,15 @@ class CacheModelService extends BaseService
         }
 
         $namespace = $rootNamespace;
-		$modelName = ucfirst($this->_model) . 'Model';
+        $modelName = ucfirst($this->_model) . 'Model';
         $modelClass = $namespace . OC_NS_SEP . $modelName;
 
-		if (empty($this->_prefix)) {
-			$this->showError('请填写前缀名！');
-		}
+        if (empty($this->_prefix)) {
+            $this->showError('请填写前缀名！');
+        }
 
         ocCheckPath($modelPath);
-        if (ocFileExists($path = $modelPath .  "{$modelName}.php")) {
+        if (ocFileExists($path = $modelPath . "{$modelName}.php")) {
             $this->showError('缓存Model文件已存在，请先手动删除！');
         }
 
@@ -112,7 +112,7 @@ class CacheModelService extends BaseService
         $fileService = ocService()->file;
         $fileService->createFile($path, 'wb');
         $fileService->writeFile($path, $content);
-	}
+    }
 }
 
 ?>

@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Controllers;
 
 use Ocara\Core\Response;
@@ -18,7 +19,7 @@ class Rest extends Api
      */
     public static function controllerType()
     {
-        return static::$controllerType ? ucfirst(static::$controllerType): static::CONTROLLER_TYPE_REST;
+        return static::$controllerType ? ucfirst(static::$controllerType) : static::CONTROLLER_TYPE_REST;
     }
 
     /**

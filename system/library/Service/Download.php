@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
@@ -20,26 +21,26 @@ class Download extends ServiceBase
      * @param string $encode
      * @throws Exception
      */
-	public function download($filePath, $saveName = null, $encode = 'utf-8')
-	{
+    public function download($filePath, $saveName = null, $encode = 'utf-8')
+    {
         $expression = '/^.+\.(\w{2,4})$/';
 
         if (!preg_match($expression, $filePath)) {
             $this->showError('fault_path');
         }
 
-		if (!ocFileExists($filePath)) {
-			$this->showError('not_exists_file');
-		}
-	
-		if(!$saveName){
-			$options = ocService()->filter->path($filePath);
-			$saveName = end($options);	
-		}
+        if (!ocFileExists($filePath)) {
+            $this->showError('not_exists_file');
+        }
 
-		$content = ocRead($filePath);
-		$this->downloadContent($content, $saveName, $encode);
-	}
+        if (!$saveName) {
+            $options = ocService()->filter->path($filePath);
+            $saveName = end($options);
+        }
+
+        $content = ocRead($filePath);
+        $this->downloadContent($content, $saveName, $encode);
+    }
 
     /**
      * 下载内容
@@ -49,7 +50,7 @@ class Download extends ServiceBase
      * @return bool
      * @throws Exception
      */
-	public function downloadContent($content, $saveName, $encode = 'utf-8')
+    public function downloadContent($content, $saveName, $encode = 'utf-8')
     {
         if (!$content) return false;
 

@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 use Ocara\Core\Url;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -23,17 +24,17 @@ defined('OC_INDEX_FILE') OR define('OC_INDEX_FILE', $config->get('OC_INDEX_FILE'
 //根目录URL
 defined('OC_ROOT_URL') or define('OC_ROOT_URL',
     PHP_SAPI == 'cli' || OC_INVOKE ?
-    OC_DIR_SEP :
-    OC_PROTOCOL
-    . '://'
-    . ocDir(OC_HOST, ltrim(ocCommPath(dirname($_SERVER['SCRIPT_NAME'])), OC_DIR_SEP))
+        OC_DIR_SEP :
+        OC_PROTOCOL
+        . '://'
+        . ocDir(OC_HOST, ltrim(ocCommPath(dirname($_SERVER['SCRIPT_NAME'])), OC_DIR_SEP))
 );
 
 //URL路由类型
 defined('OC_URL_ROUTE_TYPE') OR define(
-  'OC_URL_ROUTE_TYPE',
-  PHP_SAPI == 'cli' || OC_INVOKE ?
-      Url::ROUTE_TYPE_DIR
-      :
-      $config->get('URL_ROUTE_TYPE', Url::ROUTE_TYPE_DEFAULT)
+    'OC_URL_ROUTE_TYPE',
+    PHP_SAPI == 'cli' || OC_INVOKE ?
+        Url::ROUTE_TYPE_DIR
+        :
+        $config->get('URL_ROUTE_TYPE', Url::ROUTE_TYPE_DEFAULT)
 );

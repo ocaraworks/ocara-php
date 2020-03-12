@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Interfaces;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -16,23 +17,23 @@ defined('OC_PATH') or exit('Forbidden!');
  */
 interface Database
 {
-	/**
-	 * 获取PDO参数
-	 * @param array $config
-	 */
-	public function getPdoParams($config);
-	
-	/**
-	 * 获取以表字段名为键值的数组
-	 * @param string $table
-	 */
-	public function getFieldsInfo($table);
+    /**
+     * 获取PDO参数
+     * @param array $config
+     */
+    public function getPdoParams($config);
 
-	/**
-	 * 设置数据库编码
-	 * @param $charset
-	 */
-	public function setCharset($charset);
+    /**
+     * 获取以表字段名为键值的数组
+     * @param string $table
+     */
+    public function getFieldsInfo($table);
+
+    /**
+     * 设置数据库编码
+     * @param $charset
+     */
+    public function setCharset($charset);
 
     /**
      * 选择数据库
@@ -55,5 +56,5 @@ interface Database
      * @param $value
      * @return mixed
      */
-	public function formatOneFieldValue($fieldsData, $field, $value);
+    public function formatOneFieldValue($fieldsData, $field, $value);
 }

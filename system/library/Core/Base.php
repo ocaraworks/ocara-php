@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Exceptions\Exception;
@@ -40,24 +41,24 @@ abstract class Base extends Basis
      * @param $params
      * @return mixed
      */
-	public function __call($name, $params)
-	{
-		$obj = $this;
+    public function __call($name, $params)
+    {
+        $obj = $this;
 
-		while (isset($obj->plugin) && is_object($obj->plugin)) {
-			if (method_exists($obj->plugin, $name)) {
-				return call_user_func_array(array(&$obj->plugin, $name), $params);
-			} else {
-				$obj = $obj->plugin;
-			}
-		}
+        while (isset($obj->plugin) && is_object($obj->plugin)) {
+            if (method_exists($obj->plugin, $name)) {
+                return call_user_func_array(array(&$obj->plugin, $name), $params);
+            } else {
+                $obj = $obj->plugin;
+            }
+        }
 
         if (isset($this->traits[$name])) {
             return call_user_func_array($this->traits[$name], $params);
         }
 
         ocService()->error->show('no_method', array($name));
-	}
+    }
 
     /**
      * 魔术方法-调用未定义的静态方法时
@@ -122,28 +123,28 @@ abstract class Base extends Basis
      * @param $logName
      * @return mixed
      */
-	public static function log($logName)
-	{
-		return ocContainer()->create('log', array($logName));
-	}
+    public static function log($logName)
+    {
+        return ocContainer()->create('log', array($logName));
+    }
 
     /**
      * 获取插件
      * @param bool $required
      * @return object|null
      */
-	public function plugin($required = true)
-	{
-		if (is_object($this->plugin)) {
-			return $this->plugin;
-		}
+    public function plugin($required = true)
+    {
+        if (is_object($this->plugin)) {
+            return $this->plugin;
+        }
 
-		if ($required) {
+        if ($required) {
             ocService()->error->show('no_plugin');
         }
 
-		return null;
-	}
+        return null;
+    }
 
     /**
      * 设置插件
@@ -159,8 +160,9 @@ abstract class Base extends Basis
     /**
      * 事件注册
      */
-	public function registerEvents()
-    {}
+    public function registerEvents()
+    {
+    }
 
     /**
      * 设置或获取事件

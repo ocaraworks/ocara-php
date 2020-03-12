@@ -13,14 +13,14 @@ return array(
     'DATABASE' => array(
         //默认服务器
         'defaults' => array(
-            'type' 		=> 'mysql', //数据库类型
-            'host' 		=> '127.0.0.1', //数据库服务器主机和端口，默认端口可以省略
-            'username' 	=> '', //数据库用户名
-            'password' 	=> '', //数据库用户密码
-            'name' 		=> '', //数据库名称
-            'charset' 	=> '', //数据库编码，如果是utf8不要写成utf-8
-            'prefix' 	=> '', //表名前缀
-            'keywords'  => array(), //要过滤的SQL关键字
+            'type' => 'mysql', //数据库类型
+            'host' => '127.0.0.1', //数据库服务器主机和端口，默认端口可以省略
+            'username' => '', //数据库用户名
+            'password' => '', //数据库用户密码
+            'name' => '', //数据库名称
+            'charset' => '', //数据库编码，如果是utf8不要写成utf-8
+            'prefix' => '', //表名前缀
+            'keywords' => array(), //要过滤的SQL关键字
         )
     )
 );

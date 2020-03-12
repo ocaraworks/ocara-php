@@ -8,9 +8,9 @@ return array(
          * 默认缓存（名称不可更改）
          */
         'defaults' => array(
-            'open' 		=> 0, //是否启用
-            'type' 		=> 'memcache',
-            'servers' 	=> array(
+            'open' => 0, //是否启用
+            'type' => 'memcache',
+            'servers' => array(
                 array('127.0.0.1', 11211)
             ),
         ),
@@ -19,10 +19,10 @@ return array(
          * Redis缓存
          */
         'redis' => array(
-            'open' 		=> 0, //是否启用
-            'type' 		=> 'redis',
-            'host'		=> '127.0.0.1',
-            'password'	=> ''
+            'open' => 0, //是否启用
+            'type' => 'redis',
+            'host' => '127.0.0.1',
+            'password' => ''
         )
     ),
 );

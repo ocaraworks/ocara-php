@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
@@ -29,7 +30,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     public function __construct(array $data = array(), Container $container = null)
     {
         $this->setProperty($data);
-        $this->setContainer($container ? : new Container());
+        $this->setContainer($container ?: new Container());
         $this->register();
         $this->init();
     }
@@ -61,13 +62,15 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      * 注册服务组件
      */
     public function register()
-    {}
+    {
+    }
 
     /**
      * 初始化
      */
     public function init()
-    {}
+    {
+    }
 
     /**
      * 获取容器

@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core\Caches;
 
 use Ocara\Core\CacheBase;
@@ -24,30 +25,30 @@ class Redis extends CacheBase implements CacheInterface
      * @param bool $required
      * @return mixed
      */
-	public function connect($config, $required = true)
-	{
-	    $this->config = $config;
+    public function connect($config, $required = true)
+    {
+        $this->config = $config;
 
-		if (!ocGet('open', $this->config, false)) {
-			return ocService()->error->check('no_open_service_config', array('Redis'), $required);
-		}
+        if (!ocGet('open', $this->config, false)) {
+            return ocService()->error->check('no_open_service_config', array('Redis'), $required);
+        }
 
-		if (!class_exists('Redis', false)) {
-			return ocService()->error->check('no_extension', array('Redis'), $required);
-		}
+        if (!class_exists('Redis', false)) {
+            return ocService()->error->check('no_extension', array('Redis'), $required);
+        }
 
-		ocCheckExtension('redis');
+        ocCheckExtension('redis');
 
         $host = ocGet('host', $this->config, $this->defaultHost);
         $port = ocGet('port', $this->config, $this->defaultPort);
 
-		$plugin = $this->baseConnect($host, $port,  $required);
+        $plugin = $this->baseConnect($host, $port, $required);
         $this->setPlugin($plugin);
 
         if (isset($this->config['name']) && !ocEmpty($this->config['name'])) {
             $this->selectDatabase($this->config['name']);
         }
-	}
+    }
 
     /**
      * 立即连接
@@ -101,8 +102,8 @@ class Redis extends CacheBase implements CacheInterface
             $result = $plugin->set($name, $value);
         }
 
-		return $result;
-	}
+        return $result;
+    }
 
     /**
      * 获取变量值
@@ -114,31 +115,31 @@ class Redis extends CacheBase implements CacheInterface
     {
         $plugin = $this->plugin(false);
 
-		if (is_object($plugin) && method_exists($plugin, 'get')) {
-			return $plugin->get($name);
-		}
+        if (is_object($plugin) && method_exists($plugin, 'get')) {
+            return $plugin->get($name);
+        }
 
-		return null;
-	}
+        return null;
+    }
 
     /**
      * 删除KEY
      * @param string $name
      * @return mixed
      */
-	public function delete($name)
-	{
-		return $this->plugin()->delete($name);
-	}
+    public function delete($name)
+    {
+        return $this->plugin()->delete($name);
+    }
 
     /**
      * 选择数据库
      * @param string $databaseName
      * @return mixed
      */
-	public function selectDatabase($databaseName)
-	{
-	    $this->databaseName = $databaseName;
-	    return $this->plugin()->select($this->databaseName);
-	}
+    public function selectDatabase($databaseName)
+    {
+        $this->databaseName = $databaseName;
+        return $this->plugin()->select($this->databaseName);
+    }
 }

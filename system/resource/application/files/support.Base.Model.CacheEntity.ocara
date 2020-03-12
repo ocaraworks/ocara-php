@@ -2,6 +2,7 @@
 /**
  * 缓存实体基类
  */
+
 namespace Base\Model;
 
 use Ocara\Entities\CacheEntity as BaseCacheEntity;

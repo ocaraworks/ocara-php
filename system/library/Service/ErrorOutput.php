@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
@@ -24,12 +25,12 @@ class ErrorOutput extends ServiceBase
         }
 
         if (function_exists('ocLang')) {
-            $error['desc'] 	= ocLang($error['type']);
+            $error['desc'] = ocLang($error['type']);
         } else {
-            $error['desc'] 	= ucfirst($error['type']) . ': ';
+            $error['desc'] = ucfirst($error['type']) . ': ';
         }
 
-        $error['code']  = $error['code'] ? "[{$error['code']}]" : null;
+        $error['code'] = $error['code'] ? "[{$error['code']}]" : null;
         $error['class'] = $error['type'] == 'program_error' ? 'oc-error' : 'oc-exception';
 
         if (isset($error['traceInfo'][0])) {
@@ -38,7 +39,7 @@ class ErrorOutput extends ServiceBase
             $error['line'] = isset($lastTrace['line']) ? $lastTrace['line'] : $error['line'];
         }
 
-        $error['file']  = trim(ocCommPath(self::stripRootPath($error['file'])), OC_DIR_SEP);
+        $error['file'] = trim(ocCommPath(self::stripRootPath($error['file'])), OC_DIR_SEP);
         $error['trace'] = nl2br(ocCommPath($error['trace']));
 
         if (PHP_SAPI == 'cli') {
@@ -80,7 +81,7 @@ class ErrorOutput extends ServiceBase
     {
         $filePath = ocCommPath(realpath($errorFile));
         $rootPath = ocCommPath(realpath(OC_APP_ROOT));
-        $ocPath   = ocCommPath(realpath(OC_PATH)) . OC_DIR_SEP;
+        $ocPath = ocCommPath(realpath(OC_PATH)) . OC_DIR_SEP;
 
         if (strpos($filePath, $ocPath) === 0) {
             $filePath = str_ireplace($ocPath, OC_EMPTY, $filePath);

@@ -8,6 +8,6 @@
  ************************************************************************************************/
 
 return array(
-	'invalid_email_address' => array(4350, '邮件地址格式有误！'), 
-	'no_receiver' 			=> array(4351, '缺少收件人！')
+    'invalid_email_address' => array(4350, '邮件地址格式有误！'),
+    'no_receiver' => array(4351, '缺少收件人！')
 );

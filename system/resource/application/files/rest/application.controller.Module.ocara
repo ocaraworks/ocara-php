@@ -2,6 +2,7 @@
 /**
  * Default module class Module
  */
+
 namespace app\controller;
 
 use Base\Controller\RestController;
@@ -12,5 +13,6 @@ class Module extends RestController
      * 模块初始化函数
      */
     public function __module()
-    {}
+    {
+    }
 }

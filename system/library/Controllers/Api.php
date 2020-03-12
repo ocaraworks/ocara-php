@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Controllers;
 
 use Ocara\Core\ControllerBase;
@@ -23,7 +24,7 @@ class Api extends ControllerBase implements ControllerInterface
      */
     public static function controllerType()
     {
-        return static::$controllerType ? ucfirst(static::$controllerType): static::CONTROLLER_TYPE_API;
+        return static::$controllerType ? ucfirst(static::$controllerType) : static::CONTROLLER_TYPE_API;
     }
 
     /**
@@ -34,10 +35,10 @@ class Api extends ControllerBase implements ControllerInterface
         parent::registerEvents();
 
         $this->event(self::EVENT_BEFORE_RENDER)
-             ->setDefault(array($this, 'beforeRender'));
+            ->setDefault(array($this, 'beforeRender'));
 
         $this->event(self::EVENT_AFTER_RENDER)
-             ->setDefault(array($this, 'afterRender'));
+            ->setDefault(array($this, 'afterRender'));
     }
 
     /**

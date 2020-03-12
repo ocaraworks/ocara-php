@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
@@ -18,28 +19,28 @@ use Ocara\Exceptions\Exception;
  */
 class Xml extends ServiceBase
 {
-	/**
-	 * @var $xmlObj SimpleXMLElement对象
-	 * @var $xmlData XML数据数组
-	 */
-	public $xmlObj;
-	public $xmlPath;
-	public $xmlData;
-	public $encoding;
+    /**
+     * @var $xmlObj SimpleXMLElement对象
+     * @var $xmlData XML数据数组
+     */
+    public $xmlObj;
+    public $xmlPath;
+    public $xmlData;
+    public $encoding;
 
-	/**
-	 * 析构函数
-	 * @param string $encoding
-	 */
-	public function __construct($encoding = 'utf-8')
-	{
-		$this->encoding  = $encoding;
-	}
+    /**
+     * 析构函数
+     * @param string $encoding
+     */
+    public function __construct($encoding = 'utf-8')
+    {
+        $this->encoding = $encoding;
+    }
 
     /**
      * @return resource 新建XML解析器
      */
-	public function createXmlParser()
+    public function createXmlParser()
     {
         $xmlParser = xml_parser_create($this->encoding);
         xml_parser_set_option($xmlParser, XML_OPTION_CASE_FOLDING, 0);
@@ -53,40 +54,40 @@ class Xml extends ServiceBase
      * @param null $perm
      * @return bool|int
      */
-	public function save($filePath, $perm = null)
-	{
-		return ocWrite($filePath, $this->xmlData, false, $perm);
-	}
+    public function save($filePath, $perm = null)
+    {
+        return ocWrite($filePath, $this->xmlData, false, $perm);
+    }
 
     /**
      * 导出（下载 ）
      * @param $fileName
      */
-	public function export($fileName)
-	{
-		if (!pathinfo($fileName, PATHINFO_EXTENSION)) {
-			$fileName = $fileName . '.xml';
-		}
-		
-		header("Content-Type: text/xml;encoding={$this->encoding};name={$fileName}");
-		header("Content-Disposition: attachment; filename={$fileName}");
-		header("Pragma: no-cache");
-		header("Cache-Control: no-cache, must-revalidate");
-		header("Expires: 0");
+    public function export($fileName)
+    {
+        if (!pathinfo($fileName, PATHINFO_EXTENSION)) {
+            $fileName = $fileName . '.xml';
+        }
+
+        header("Content-Type: text/xml;encoding={$this->encoding};name={$fileName}");
+        header("Content-Disposition: attachment; filename={$fileName}");
+        header("Pragma: no-cache");
+        header("Cache-Control: no-cache, must-revalidate");
+        header("Expires: 0");
 
         $response = ocService()->response;
         $response->setBody($this->xmlData);
         $response->send();
-	}
+    }
 
     /**
      * 获取处理后的XML内容
      * @return mixed
      */
-	public function getResult()
-	{
-		return $this->xmlData;
-	}
+    public function getResult()
+    {
+        return $this->xmlData;
+    }
 
     /**
      * 加载并解析XML字符串
@@ -94,14 +95,14 @@ class Xml extends ServiceBase
      * @throws Exception
      */
     public function loadString($xmlString)
-	{
-		if (!($this->parseXml($xmlString, 'string'))) {
-			$this->showError('failed_xml_parse');
-		}
-		
-		$this->xmlObj = simplexml_load_string($xmlString);
-		$this->xmlData = $xmlString;
-	}
+    {
+        if (!($this->parseXml($xmlString, 'string'))) {
+            $this->showError('failed_xml_parse');
+        }
+
+        $this->xmlObj = simplexml_load_string($xmlString);
+        $this->xmlData = $xmlString;
+    }
 
     /**
      * 加载并解析XML数组
@@ -124,13 +125,13 @@ class Xml extends ServiceBase
             $xmlData[] = "<?xml version=\"1.0\" encoding=\"{$this->encoding}\"?>";
         }
 
-        $xmlData[] = "<{$root}>" ;
+        $xmlData[] = "<{$root}>";
 
         if (is_array($list)) {
             $xmlData[] = $this->makeXml($list);
         }
 
-        $xmlData[]= "</{$root}>";
+        $xmlData[] = "</{$root}>";
         $xmlData = implode(PHP_EOL, $xmlData);
 
         $this->loadString($xmlData);
@@ -164,53 +165,53 @@ class Xml extends ServiceBase
      * @throws Exception
      */
     public function parseXml($xmlSource, $type = 'file')
-	{
-		$xmlParser = $this->createXmlParser();
-		$result = false;
-		
-		if ($type == 'file') {
-			$fo = @fopen($xmlSource, 'rb');
-			while ($xmlData = @fread($fo, 4096)) {
-				if (!$result = @xml_parse($xmlParser, $xmlData, feof($fo))) break;
-			}
-		} elseif ($type == 'string') {
-			$result = @xml_parse($xmlParser, $xmlSource, true);
-		}
+    {
+        $xmlParser = $this->createXmlParser();
+        $result = false;
 
-		if (!$result) {
-			$error 	= xml_get_error_code($xmlParser);
-			$line 	= xml_get_current_line_number($xmlParser);
-			$column = xml_get_current_column_number($xmlParser);
-			$this->showError('xml_parse_error', array($error, $line, $column));
-		}
-		
-		xml_parser_free($xmlParser);
-		return $result;
-	}
+        if ($type == 'file') {
+            $fo = @fopen($xmlSource, 'rb');
+            while ($xmlData = @fread($fo, 4096)) {
+                if (!$result = @xml_parse($xmlParser, $xmlData, feof($fo))) break;
+            }
+        } elseif ($type == 'string') {
+            $result = @xml_parse($xmlParser, $xmlSource, true);
+        }
+
+        if (!$result) {
+            $error = xml_get_error_code($xmlParser);
+            $line = xml_get_current_line_number($xmlParser);
+            $column = xml_get_current_column_number($xmlParser);
+            $this->showError('xml_parse_error', array($error, $line, $column));
+        }
+
+        xml_parser_free($xmlParser);
+        return $result;
+    }
 
     /**
      * 生成XML字符串
      * @param array $xmlArray
      * @return string|null
      */
-	public function makeXml(array $xmlArray)
-	{
-		$xmlData = null;
-		
-		foreach ($xmlArray as $xmlKey => $xmlVal) {
+    public function makeXml(array $xmlArray)
+    {
+        $xmlData = null;
+
+        foreach ($xmlArray as $xmlKey => $xmlVal) {
             $xmlString = "<{$xmlKey}>";
-			if (is_array($xmlVal) && $xmlVal) {
+            if (is_array($xmlVal) && $xmlVal) {
                 $xmlString .= "\t" . $this->makeXml($xmlVal, $xmlData);
-			} else {
+            } else {
                 $xmlString .= "{$xmlVal}";
-			}
+            }
             $xmlString .= "</{$xmlKey}>";
-			$xmlData[] = $xmlString;
-		}
+            $xmlData[] = $xmlString;
+        }
 
         $xmlData = implode(PHP_EOL, $xmlData);
-		return $xmlData;
-	}
+        return $xmlData;
+    }
 
     /**
      * 转换成XML数组

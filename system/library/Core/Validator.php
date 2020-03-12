@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use \ReflectionClass;
@@ -172,63 +173,63 @@ class Validator extends Base
         return $this;
     }
 
-	/**
-	 * 增加语言文本
-	 * @param $key
-	 * @param null $value
-	 * @return $this
-	 */
-	public function addLang($key, $value = null)
-	{
+    /**
+     * 增加语言文本
+     * @param $key
+     * @param null $value
+     * @return $this
+     */
+    public function addLang($key, $value = null)
+    {
         if (is_array($key)) {
             $this->lang = array_merge($this->lang, $key);
         } else {
             $this->lang[$key] = $value;
         }
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * 普通验证
-	 * @param string $field
-	 * @param string $value
-	 * @param mixed $validates
-	 * @return bool
-	 */
-	public function common($field, $value, $validates)
-	{
-		if (is_string($validates)) {
-			$validates = $validates ? explode('|', trim($validates)) : array();
-		}
+    /**
+     * 普通验证
+     * @param string $field
+     * @param string $value
+     * @param mixed $validates
+     * @return bool
+     */
+    public function common($field, $value, $validates)
+    {
+        if (is_string($validates)) {
+            $validates = $validates ? explode('|', trim($validates)) : array();
+        }
 
-		$validates = array_map('trim', $validates);
-		$count = count($value);
+        $validates = array_map('trim', $validates);
+        $count = count($value);
 
-		foreach ($validates as $validate) {
-			$params = array();
-			if (preg_match('/^([a-zA-Z]+)\:(.+)?$/', $validate, $matches)) {
-				$matches = array_map('trim', $matches);
-				$method = $matches[1];
-				if (isset($matches[2])) {
-					$params = array_map('trim', explode(',', $matches[2]));
-				}
-			} else {
-				$method = $validate;
-			}
+        foreach ($validates as $validate) {
+            $params = array();
+            if (preg_match('/^([a-zA-Z]+)\:(.+)?$/', $validate, $matches)) {
+                $matches = array_map('trim', $matches);
+                $method = $matches[1];
+                if (isset($matches[2])) {
+                    $params = array_map('trim', explode(',', $matches[2]));
+                }
+            } else {
+                $method = $validate;
+            }
 
-			for ($i = 0; $i < $count; $i++) {
-				$val   = $value[$i];
-				$args  = array_merge(array($val), $params);
-				$error = call_user_func_array(array(&$this->validate, $method), $args);
-				if ($error) {
-					$this->prepareError($error, $field, $val, $i, $params);
-					return false;
-				}
-			}
-		}
-		
-		return true;
-	}
+            for ($i = 0; $i < $count; $i++) {
+                $val = $value[$i];
+                $args = array_merge(array($val), $params);
+                $error = call_user_func_array(array(&$this->validate, $method), $args);
+                if ($error) {
+                    $this->prepareError($error, $field, $val, $i, $params);
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 
     /**
      * 正则表达式验证
@@ -237,30 +238,30 @@ class Validator extends Base
      * @param $expression
      * @return bool
      */
-	public function expression($field, $value, $expression)
-	{
-		$count = count($value);
-		
-		for ($i = 0; $i < $count; $i++) {
-			$val 		= $value[$i];
-			$expression = (array)$expression;
-			$rule 		= reset($expression);
-			$newError 	= ocGet(1, $expression);
+    public function expression($field, $value, $expression)
+    {
+        $count = count($value);
 
-			$error = call_user_func_array(
-				array(&$this->validate, 'regExp'),
-				array($val, $rule)
-			);
+        for ($i = 0; $i < $count; $i++) {
+            $val = $value[$i];
+            $expression = (array)$expression;
+            $rule = reset($expression);
+            $newError = ocGet(1, $expression);
 
-			if ($error) {
-				$error = $newError ? : $error;
-				$this->prepareError($error, $field, $val, $i);
-				return false;
-			}
-		}
-		
-		return true;
-	}
+            $error = call_user_func_array(
+                array(&$this->validate, 'regExp'),
+                array($val, $rule)
+            );
+
+            if ($error) {
+                $error = $newError ?: $error;
+                $this->prepareError($error, $field, $val, $i);
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     /**
      * 回调函数验证
@@ -269,88 +270,88 @@ class Validator extends Base
      * @param string|array $callback
      * @return bool
      */
-	public function callback($field, $value, $callback)
-	{
-		if(empty($callback)) {
-			ocService()->error->show('fault_callback_validate');
-		}
+    public function callback($field, $value, $callback)
+    {
+        if (empty($callback)) {
+            ocService()->error->show('fault_callback_validate');
+        }
 
-		$count = count($value);
-		for ($i = 0; $i < $count; $i++) {
-			$val   = $value[$i];
-			$error = call_user_func_array($callback, array($field, $val, $i));
-			if ($error) {
-				$this->prepareError($error, $field, $val, $i);
-				return false;
-			}
-		}
-		
-		return true;
-	}
+        $count = count($value);
+        for ($i = 0; $i < $count; $i++) {
+            $val = $value[$i];
+            $error = call_user_func_array($callback, array($field, $val, $i));
+            if ($error) {
+                $this->prepareError($error, $field, $val, $i);
+                return false;
+            }
+        }
 
-	/**
-	 * 是否验证错误
-	 */
-	public function errorExists()
-	{
-		return $this->errorExists;
-	}
+        return true;
+    }
 
-	/**
-	 * 获取错误消息
-	 */
-	public function getError()
-	{
-		return $this->error;
-	}
-	
-	/**
-	 * 获取错误字段
-	 */
-	public function getErrorSource()
-	{
-		return $this->errorSource;
-	}
-	
-	/**
-	 * 设置验证错误
-	 * @param string $errorData
-	 * @param string $field
-	 * @param string $value
-	 * @param integer $index
-	 * @param array $params
-	 */
-	public function prepareError($errorData, $field, $value, $index, $params = array())
-	{
-		list($error, $message) = $errorData;
-		$params = array_values($params);
-		$this->errorLocation = array($error, $message, $field, $value, $index, $params);
-	}
+    /**
+     * 是否验证错误
+     */
+    public function errorExists()
+    {
+        return $this->errorExists;
+    }
+
+    /**
+     * 获取错误消息
+     */
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    /**
+     * 获取错误字段
+     */
+    public function getErrorSource()
+    {
+        return $this->errorSource;
+    }
+
+    /**
+     * 设置验证错误
+     * @param string $errorData
+     * @param string $field
+     * @param string $value
+     * @param integer $index
+     * @param array $params
+     */
+    public function prepareError($errorData, $field, $value, $index, $params = array())
+    {
+        list($error, $message) = $errorData;
+        $params = array_values($params);
+        $this->errorLocation = array($error, $message, $field, $value, $index, $params);
+    }
 
     /**
      * 绑定错误
      * @param array $lang
      */
-	public function setError(array $lang)
-	{
-		list($error, $message, $field, $value, $index, $params) = $this->errorLocation;
-		$desc = ocGet($field, $lang, $field);
+    public function setError(array $lang)
+    {
+        list($error, $message, $field, $value, $index, $params) = $this->errorLocation;
+        $desc = ocGet($field, $lang, $field);
 
-		if (is_array($error)) {
-			$error = ocGet('message', $error);
-		}
+        if (is_array($error)) {
+            $error = ocGet('message', $error);
+        }
 
-		if (isset($lang[$error])) {
-			$message = $lang[$error];
-		}
+        if (isset($lang[$error])) {
+            $message = $lang[$error];
+        }
 
-		$error = str_ireplace('{field}', $desc, $message);
-		foreach ($params as $key => $value) {
-			str_ireplace('{'.($key + 1).'}', $value, $message);
-		}
+        $error = str_ireplace('{field}', $desc, $message);
+        foreach ($params as $key => $value) {
+            str_ireplace('{' . ($key + 1) . '}', $value, $message);
+        }
 
-		$this->errorExists	= true;
-		$this->error = $error;
-		$this->errorSource = array($field, $value, $index);
-	}
+        $this->errorExists = true;
+        $this->error = $error;
+        $this->errorSource = array($field, $value, $index);
+    }
 }

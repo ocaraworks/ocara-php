@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Controllers;
 
 use Ocara\Core\ControllerBase;
@@ -31,7 +32,7 @@ class Common extends ControllerBase implements ControllerInterface
      */
     public static function controllerType()
     {
-        return self::$controllerType ? ucfirst(self::$controllerType): static::CONTROLLER_TYPE_COMMON;
+        return self::$controllerType ? ucfirst(self::$controllerType) : static::CONTROLLER_TYPE_COMMON;
     }
 
     /**
@@ -42,16 +43,16 @@ class Common extends ControllerBase implements ControllerInterface
         parent::registerEvents();
 
         $this->event(self::EVENT_BEFORE_RENDER_FILE)
-             ->setDefault(array($this, 'beforeRenderFile'));
+            ->setDefault(array($this, 'beforeRenderFile'));
 
         $this->event(self::EVENT_AFTER_RENDER_FILE)
-             ->setDefault(array($this, 'afterRenderFile'));
+            ->setDefault(array($this, 'afterRenderFile'));
 
         $this->event(self::EVENT_BEFORE_RENDER_API)
-             ->setDefault(array($this, 'beforeRenderApi'));
+            ->setDefault(array($this, 'beforeRenderApi'));
 
         $this->event(self::EVENT_AFTER_RENDER_API)
-             ->setDefault(array($this, 'afterRenderApi'));
+            ->setDefault(array($this, 'afterRenderApi'));
     }
 
     /**
@@ -155,7 +156,7 @@ class Common extends ControllerBase implements ControllerInterface
     {
         if ($this->hasRender() || $this->response->isSent()) return;
 
-        if ($this->isApi()){
+        if ($this->isApi()) {
             $this->renderApi($result);
         } else {
             if ($useDefault) {

@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
@@ -28,20 +29,20 @@ class CacheFactory extends Base
      * @return mixed
      * @throws Exception
      */
-	public static function getInstance($connectName = null, $required = true)
-	{
-		if (empty($connectName)) {
-			$connectName = self::$defaultServer;
-		}
+    public static function getInstance($connectName = null, $required = true)
+    {
+        if (empty($connectName)) {
+            $connectName = self::$defaultServer;
+        }
 
-		$object = self::baseConnect($connectName, $required);
-		if (is_object($object) && $object instanceof CacheBase) {
-			return $object;
-		}
+        $object = self::baseConnect($connectName, $required);
+        if (is_object($object) && $object instanceof CacheBase) {
+            return $object;
+        }
 
-		return ocService()->error
-                    ->check('not_exists_cache', array($connectName), $required);
-	}
+        return ocService()->error
+            ->check('not_exists_cache', array($connectName), $required);
+    }
 
     /**
      * 获取默认服务器名称
@@ -58,24 +59,24 @@ class CacheFactory extends Base
      * @return array|mixed
      * @throws Exception
      */
-	public static function getConfig($connectName = null)
-	{
-		if (empty($connectName)) {
-			$connectName = self::$defaultServer;
-		}
+    public static function getConfig($connectName = null)
+    {
+        if (empty($connectName)) {
+            $connectName = self::$defaultServer;
+        }
 
-		$config = array();
+        $config = array();
 
-		if ($callback = ocConfig(array('RESOURCE', 'cache', 'get_config'), null)) {
-			$config = call_user_func_array($callback, array($connectName));
-		}
+        if ($callback = ocConfig(array('RESOURCE', 'cache', 'get_config'), null)) {
+            $config = call_user_func_array($callback, array($connectName));
+        }
 
-		if (empty($config)) {
-			$config = ocForceArray(ocConfig(array('CACHE', $connectName)));
-		}
+        if (empty($config)) {
+            $config = ocForceArray(ocConfig(array('CACHE', $connectName)));
+        }
 
-		return $config;
-	}
+        return $config;
+    }
 
     /**
      * 连接缓存
@@ -84,21 +85,21 @@ class CacheFactory extends Base
      * @return mixed
      * @throws Exception
      */
-	private static function baseConnect($connectName, $required = true)
-	{
-		$config = self::getConfig($connectName);
-		$type = ucfirst(ocConfig(array('CACHE', $connectName, 'type')));
+    private static function baseConnect($connectName, $required = true)
+    {
+        $config = self::getConfig($connectName);
+        $type = ucfirst(ocConfig(array('CACHE', $connectName, 'type')));
 
-		$classInfo = ServiceBase::classFileExists("Caches/{$type}.php");
-		if ($classInfo) {
-			list($path, $namespace) = $classInfo;
-			include_once($path);
-			$class  = $namespace . 'Core\Caches' . OC_NS_SEP . $type;
-			if (class_exists($class)) {
-				$config['connect_name'] = $connectName;
-				$object = new $class($config, $required);
-				return $object;
-			}
-		}
-	}
+        $classInfo = ServiceBase::classFileExists("Caches/{$type}.php");
+        if ($classInfo) {
+            list($path, $namespace) = $classInfo;
+            include_once($path);
+            $class = $namespace . 'Core\Caches' . OC_NS_SEP . $type;
+            if (class_exists($class)) {
+                $config['connect_name'] = $connectName;
+                $object = new $class($config, $required);
+                return $object;
+            }
+        }
+    }
 }

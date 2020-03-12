@@ -1,4 +1,5 @@
 <?php
+
 namespace Ocara\Entities;
 
 use Ocara\Iterators\Database\EachQueryRecords;
@@ -49,44 +50,51 @@ abstract class DatabaseEntity extends BaseEntity
      * 创建记录前置事件
      */
     public function beforeCreate()
-    {}
+    {
+    }
 
     /**
      * 创建记录后置事件
      */
     public function afterCreate()
-    {}
+    {
+    }
 
     /**
      * 更新记录前置事件
      */
     public function beforeUpdate()
-    {}
+    {
+    }
 
     /**
      * 更新记录后置事件
      */
     public function afterUpdate()
-    {}
+    {
+    }
 
     /**
      * 删除记录前置事件
      */
     public function beforeDelete()
-    {}
+    {
+    }
 
     /**
      * 删除记录后置事件
      */
     public function afterDelete()
-    {}
+    {
+    }
 
     /**
      * 获取模型类名
      * @return mixed
      */
     public static function source()
-    {}
+    {
+    }
 
     /**
      * 获取模型类名
@@ -94,7 +102,7 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function getModel()
     {
-       return $this->plugin();
+        return $this->plugin();
     }
 
     /**
@@ -153,7 +161,7 @@ abstract class DatabaseEntity extends BaseEntity
      */
     protected function clearProperties(array $fields = array())
     {
-        $fields = $fields ? : array_keys($this->toArray());
+        $fields = $fields ?: array_keys($this->toArray());
 
         foreach ($fields as $field) {
             if (isset($this->$field)) {
@@ -171,7 +179,7 @@ abstract class DatabaseEntity extends BaseEntity
     public function getOld($key = null)
     {
         if (func_num_args()) {
-            if (array_key_exists($key, $this->oldData)){
+            if (array_key_exists($key, $this->oldData)) {
                 return $this->oldData[$key];
             }
             return null;
@@ -289,7 +297,7 @@ abstract class DatabaseEntity extends BaseEntity
             $defaultData = array_fill_keys($fields, null);
             $data = array_merge($defaultData, $data);
         }
-        
+
         $this->data($data);
 
         return $this;
@@ -389,7 +397,7 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function isUseTransaction()
     {
-        return  $this->useTransaction || !empty($this->relations);
+        return $this->useTransaction || !empty($this->relations);
     }
 
     /**
@@ -571,7 +579,7 @@ abstract class DatabaseEntity extends BaseEntity
                 ocService()->error->show('no_relate_primary_key');
             }
             $where = array($config['foreignKey'] => $this->$config['primaryKey']);
-            if (in_array($config['joinType'], array('hasOne','belongsTo'))) {
+            if (in_array($config['joinType'], array('hasOne', 'belongsTo'))) {
                 $result = $config['class']::build()
                     ->where($where)
                     ->where($config['condition'])

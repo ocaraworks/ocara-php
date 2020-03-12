@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Core\Basis;
@@ -17,23 +18,23 @@ class Path extends Basis
     protected $maps = array();
     protected $data = array();
 
-	/**
-	 * 初始化
-	 */
-	public function __construct()
-	{
-	    $config = ocContainer()->config;
-		$this->data = $config->get('APP_PATH_INFO', array());
-	}
+    /**
+     * 初始化
+     */
+    public function __construct()
+    {
+        $config = ocContainer()->config;
+        $this->data = $config->get('APP_PATH_INFO', array());
+    }
 
     /**
      * 路径映射
      * @param $dir
      * @param $path
      */
-	public function setMap($dir, $path)
+    public function setMap($dir, $path)
     {
-	    $this->maps[$dir] = $path;
+        $this->maps[$dir] = $path;
     }
 
     /**
@@ -63,14 +64,14 @@ class Path extends Basis
         }
 
         return $path;
-	}
+    }
 
     /**
      * 获取映射路径
      * @param $dir
      * @return mixed|null
      */
-	public function getMap($dir)
+    public function getMap($dir)
     {
         return array_key_exists($dir, $this->maps) ? $this->maps[$dir] : null;
     }
@@ -81,7 +82,7 @@ class Path extends Basis
      * @param $local
      * @return string
      */
-	public function getConfigMapDir($dir, $local)
+    public function getConfigMapDir($dir, $local)
     {
         $mapDir = $dir;
 

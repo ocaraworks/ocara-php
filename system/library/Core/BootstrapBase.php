@@ -5,6 +5,7 @@
  * Date: 2017/6/25 0025
  * Time: 下午 1:50
  */
+
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
@@ -21,7 +22,7 @@ abstract class BootstrapBase extends Base
     public function registerEvents()
     {
         $this->event(self::EVENT_BEFORE_BOOTSTRAP)
-             ->append(ocConfig(array('EVENTS', 'bootstrap', 'before_bootstrap'), null));
+            ->append(ocConfig(array('EVENTS', 'bootstrap', 'before_bootstrap'), null));
     }
 
     /**

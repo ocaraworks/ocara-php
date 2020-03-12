@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Extension\Tools\Develop\Generate;
 
 use Ocara\Core\Develop;
@@ -18,24 +19,24 @@ use Ocara\Sql\Generator;
 
 class ModelService extends BaseService
 {
-	private $_mdltype;
-	private $_mdlname;
-	private $_connectName;
-	private $_table;
-	private $_model;
-	private $_database;
-	private $_primaries;
+    private $_mdltype;
+    private $_mdlname;
+    private $_connectName;
+    private $_table;
+    private $_model;
+    private $_database;
+    private $_primaries;
 
-	public function add()
-	{
-	    $defaultServer = DatabaseFactory::getDefaultServer();
-		$request = ocService()->request;
-		$this->_mdltype = $request->getPost('mdltype');
-		$this->_mdlname = $request->getPost('mdlname');
-		$this->_connectName = $request->getPost('connect', $defaultServer);
-		$this->_table = $request->getPost('table');
-		$this->_model = $request->getPost('model');
-		$this->_primaries = $request->getPost('primaries');
+    public function add()
+    {
+        $defaultServer = DatabaseFactory::getDefaultServer();
+        $request = ocService()->request;
+        $this->_mdltype = $request->getPost('mdltype');
+        $this->_mdlname = $request->getPost('mdlname');
+        $this->_connectName = $request->getPost('connect', $defaultServer);
+        $this->_table = $request->getPost('table');
+        $this->_model = $request->getPost('model');
+        $this->_primaries = $request->getPost('primaries');
 
         if (empty($this->_model)) {
             $this->_model = ocHump($this->_table);
@@ -43,10 +44,10 @@ class ModelService extends BaseService
 
         $this->_database = ocService()->request->getPost('database');
         $this->createDatabaseModel();
-	}
+    }
 
-	public function createDatabaseModel()
-	{
+    public function createDatabaseModel()
+    {
         $connectName = null;
         if ($this->_connectName && $this->_connectName != DatabaseFactory::getDefaultServer()) {
             $connectName = $this->_connectName;
@@ -54,13 +55,12 @@ class ModelService extends BaseService
 
         $connectNameDir = ($connectName ? $connectName . '/' : null);
         $connectNamespace = $connectName ? OC_NS_SEP . $connectName : null;
-		$modelBase = 'DatabaseModel';
+        $modelBase = 'DatabaseModel';
 
-		$moduleModelDir = "{$this->_mdlname}/privates/model/database/" . $connectNameDir;
+        $moduleModelDir = "{$this->_mdlname}/privates/model/database/" . $connectNameDir;
         $entityModelDir = "{$this->_mdlname}/privates/entity/database/" . $connectNameDir;
 
-        switch($this->_mdltype)
-        {
+        switch ($this->_mdltype) {
             case 'modules':
                 $rootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\model\\database";
                 $entityRootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\entity\\database";
@@ -91,31 +91,31 @@ class ModelService extends BaseService
 
         $namespace = $rootNamespace . $connectNamespace;
         $entityNamespace = $entityRootNamespace . $connectNamespace;
-		$modelName = ucfirst($this->_model) . 'Model';
+        $modelName = ucfirst($this->_model) . 'Model';
         $entityName = ucfirst($this->_model) . 'Entity';
         $entityClass = $entityNamespace . OC_NS_SEP . $entityName;
         $modelClass = $namespace . OC_NS_SEP . $modelName;
 
-		if (empty($this->_table)) {
-			$this->showError('请填写表名！');
-		}
+        if (empty($this->_table)) {
+            $this->showError('请填写表名！');
+        }
 
-		if (empty($this->_primaries)) {
-			$connect = DatabaseFactory::getInstance($this->_connectName);
+        if (empty($this->_primaries)) {
+            $connect = DatabaseFactory::getInstance($this->_connectName);
             $generator = new Generator($connect);
             $sqlData = $generator->getShowFieldsSql($this->_table, $this->_database);
             $fieldsInfo = $connect->getFieldsInfo($sqlData);
-			$fields = $fieldsInfo['list'];
-			$primaryFields = array();
-			foreach ($fields as $fieldName => $fieldInfo) {
-				if ($fieldInfo['isPrimary']) {
-					$primaryFields[] = $fieldName;
-				}
-			}
-			if ($primaryFields) {
-				$this->_primaries = implode(',', $primaryFields);
-			}
-		} else {
+            $fields = $fieldsInfo['list'];
+            $primaryFields = array();
+            foreach ($fields as $fieldName => $fieldInfo) {
+                if ($fieldInfo['isPrimary']) {
+                    $primaryFields[] = $fieldName;
+                }
+            }
+            if ($primaryFields) {
+                $this->_primaries = implode(',', $primaryFields);
+            }
+        } else {
             if (strstr($this->_primaries, ',')) {
                 $this->_primaries = array_map('trim', explode(',', $this->_primaries));
             }
@@ -123,43 +123,43 @@ class ModelService extends BaseService
 
         ocCheckPath($modelPath);
 
-        if (ocFileExists($path = $modelPath .  "{$modelName}.php")) {
+        if (ocFileExists($path = $modelPath . "{$modelName}.php")) {
             $this->showError('Model文件已存在，请先手动删除！');
         }
 
         ocCheckPath($entityPath);
-        if (ocFileExists($entityPath = $entityPath .  "{$entityName}.php")) {
+        if (ocFileExists($entityPath = $entityPath . "{$entityName}.php")) {
             $this->showError('Entity文件已存在，请先手动删除！');
         }
 
         //新建模型
-		$content = "<?php\r\n";
-		$content .= "namespace {$namespace};\r\n";
-		$content .= "use Base\\Model\\{$modelBase};\r\n";
-		$content .= "\r\n";
-		$content .= "class {$modelName} extends {$modelBase}\r\n";
-		$content .= "{\r\n";
+        $content = "<?php\r\n";
+        $content .= "namespace {$namespace};\r\n";
+        $content .= "use Base\\Model\\{$modelBase};\r\n";
+        $content .= "\r\n";
+        $content .= "class {$modelName} extends {$modelBase}\r\n";
+        $content .= "{\r\n";
 
-		if ($this->_connectName != 'defaults') {
+        if ($this->_connectName != 'defaults') {
             $content .= "\tprotected \$connectName = '{$this->_connectName}';\r\n";
         }
 
-		if ($this->_mdltype && $this->_mdlname) {
+        if ($this->_mdltype && $this->_mdlname) {
             $content .= "\tprotected \$module = '{$this->_mdlname}';\r\n";
         }
 
-		if ($this->_database) {
+        if ($this->_database) {
             $content .= "\tprotected static \$database = '{$this->_database}';\r\n";
         }
 
-		$content .= "\tprotected static \$table = '{$this->_table}';\r\n";
-		$content .= "\tprotected static \$primary = '{$this->_primaries}';\r\n";
+        $content .= "\tprotected static \$table = '{$this->_table}';\r\n";
+        $content .= "\tprotected static \$primary = '{$this->_primaries}';\r\n";
         $content .= "\tprotected static \$entity = '{$entityClass}';\r\n";
-		$content .= "\r\n";
-		$content .= "\t/**\r\n";
-		$content .= "\t * 初始化模型\r\n";
-		$content .= "\t */\r\n";
-		$content .= "\tpublic function __model()\r\n\t{}\r\n";
+        $content .= "\r\n";
+        $content .= "\t/**\r\n";
+        $content .= "\t * 初始化模型\r\n";
+        $content .= "\t */\r\n";
+        $content .= "\tpublic function __model()\r\n\t{}\r\n";
         $content .= "\r\n";
         $content .= "\t/**\r\n";
         $content .= "\t * 字段别名映射配置\r\n";
@@ -180,7 +180,7 @@ class ModelService extends BaseService
 //        $content .= "\t * 查询结果行过滤\r\n";
 //        $content .= "\t */\r\n";
 //        $content .= "\tpublic function rowFilters()\r\n\t{}\r\n";
-		$content .= "}";
+        $content .= "}";
 
         $fileService = ocService()->file;
         $fileService->createFile($path, 'wb');
@@ -201,7 +201,7 @@ class ModelService extends BaseService
         $content .= "\tpublic static function source()\r\n";
         $content .= "\t{\r\n";
         $content .= "\t\treturn '{$modelClass}';\r\n";
-	    $content .= "\t}\r\n";
+        $content .= "\t}\r\n";
         $content .= "}";
 
         $fileService->createFile($entityPath, 'wb');
@@ -217,20 +217,20 @@ class ModelService extends BaseService
             $langPath = $paths['lang'];
         }
 
-		//新建字段配置
-		$fileCache = ocService()->fileCache;
+        //新建字段配置
+        $fileCache = ocService()->fileCache;
 
-		//新建字段数据文件
+        //新建字段数据文件
         $fieldsService = new FieldsService();
         $fieldsService->add(array(
             'model' => $modelClass
         ));
 
-		//新建语言文件
-		$fileCache->setData(array(), null, $namespace . "\\{$modelName} language config");
-		$fileCache->format();
-		$fileCache->save($langPath);
-	}
+        //新建语言文件
+        $fileCache->setData(array(), null, $namespace . "\\{$modelName} language config");
+        $fileCache->format();
+        $fileCache->save($langPath);
+    }
 }
 
 ?>

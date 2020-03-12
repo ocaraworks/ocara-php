@@ -2,6 +2,7 @@
 /**
  * 应用首页
  */
+
 use Ocara\Core\Ocara;
 
 //程序执行开始时间

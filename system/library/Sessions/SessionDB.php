@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Sessions;
 
 use Ocara\Core\ModelBase;
@@ -20,7 +21,7 @@ class SessionDB extends ServiceProvider
      * 注册服务
      * @throws Exception
      */
-	public function register()
+    public function register()
     {
         parent::register();
 
@@ -37,38 +38,38 @@ class SessionDB extends ServiceProvider
      * session打开
      * @return bool
      */
-	public function open()
-	{
+    public function open()
+    {
         $plugin = $this->plugin(false);
-		return is_object($plugin) && $plugin instanceof ModelBase;
-	}
+        return is_object($plugin) && $plugin instanceof ModelBase;
+    }
 
     /**
      * session关闭
      * @return bool
      */
-	public function close()
-	{
-		$this->setPlugin(null);
-		return true;
-	}
+    public function close()
+    {
+        $this->setPlugin(null);
+        return true;
+    }
 
     /**
      * 读取session信息
      * @param $id
      * @return string
      */
-	public function read($id)
-	{
+    public function read($id)
+    {
         $plugin = $this->plugin(false);
 
         if (!is_object($plugin)) return OC_EMPTY;
 
-		$sessionData = $plugin->read($id);
-		$result = $sessionData ? stripslashes($sessionData) : OC_EMPTY;
+        $sessionData = $plugin->read($id);
+        $result = $sessionData ? stripslashes($sessionData) : OC_EMPTY;
 
-		return $result;
-	}
+        return $result;
+    }
 
     /**
      * 保存session
@@ -77,51 +78,51 @@ class SessionDB extends ServiceProvider
      * @return bool
      * @throws Exception
      */
-	public function write($id, $data)
-	{
-		$datetimeFormat = ocConfig(array('DATE_FORMAT', 'datetime'));
-		$maxLifeTime = @ini_get('session.gc_maxlifetime');
-		$now = date($datetimeFormat);
-		$expires = date($datetimeFormat, strtotime("{$now} + {$maxLifeTime} second"));
+    public function write($id, $data)
+    {
+        $datetimeFormat = ocConfig(array('DATE_FORMAT', 'datetime'));
+        $maxLifeTime = @ini_get('session.gc_maxlifetime');
+        $now = date($datetimeFormat);
+        $expires = date($datetimeFormat, strtotime("{$now} + {$maxLifeTime} second"));
 
-		$data = array(
-			'session_id' 	  	  => $id,
-			'session_expire_time' => $expires,
-			'session_data' 	  	  => stripslashes($data)
-		);
+        $data = array(
+            'session_id' => $id,
+            'session_expire_time' => $expires,
+            'session_data' => stripslashes($data)
+        );
 
         $plugin = $this->plugin();
         $plugin->write($data);
-		$result = $plugin->errorExists();
+        $result = $plugin->errorExists();
 
-		return $result === true;
-	}
+        return $result === true;
+    }
 
     /**
      * 销毁session
      * @param $id
      * @return bool
      */
-	public function destroy($id)
-	{
+    public function destroy($id)
+    {
         $plugin = $this->plugin();
         $plugin->destory($id);
-		$result = $plugin->errorExists();
+        $result = $plugin->errorExists();
 
-		return $result === true;
-	}
+        return $result === true;
+    }
 
     /**
      * Session垃圾回收
      * @param null $saveTime
      * @return bool
      */
-	public function gc($saveTime = null)
-	{
+    public function gc($saveTime = null)
+    {
         $plugin = $this->plugin();
         $plugin->clear();
-		$result = $plugin->errorExists();
+        $result = $plugin->errorExists();
 
-		return $result === true;
-	}
+        return $result === true;
+    }
 }

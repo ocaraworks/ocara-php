@@ -51,7 +51,6 @@ return array(
         /*
          * 数据模型Model相关事件
          */
-            'model' => array(
-        ),
+        'model' => array(),
     )
 );

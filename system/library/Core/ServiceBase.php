@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use \ReflectionClass;
@@ -16,29 +17,29 @@ defined('OC_PATH') or exit('Forbidden!');
 
 class ServiceBase extends Base
 {
-	private static $lang = null;
-	private $error;
+    private static $lang = null;
+    private $error;
 
     /**
-	 * 加载语言文件
-	 * @param string $filePath
-	 */
-	public static function loadLanguage($filePath)
-	{
+     * 加载语言文件
+     * @param string $filePath
+     */
+    public static function loadLanguage($filePath)
+    {
         $parentPath = ocCommPath(dirname($filePath));
-	    $subPath = str_replace($parentPath, '', ocCommPath($filePath));
+        $subPath = str_replace($parentPath, '', ocCommPath($filePath));
 
         $path = $parentPath . '/Languages/'
-			. ucfirst(ocService()->app->getLanguage())
-			. $subPath;
+            . ucfirst(ocService()->app->getLanguage())
+            . $subPath;
 
-		if (ocFileExists($path)) {
-			$config = include($path);
-			if ($config && is_array($config)) {
+        if (ocFileExists($path)) {
+            $config = include($path);
+            if ($config && is_array($config)) {
                 self::$lang[self::getClass()] = $config;
-			}
-		}
-	}
+            }
+        }
+    }
 
     /**
      * 获取语言配置信息
@@ -47,9 +48,9 @@ class ServiceBase extends Base
      * @return array
      * @throws Exception
      */
-	public static function getLanguage($key, array $params = array())
-	{				
-		$class = self::getClass();
+    public static function getLanguage($key, array $params = array())
+    {
+        $class = self::getClass();
 
         if (!isset(self::$lang[$class])) {
             try {
@@ -61,36 +62,36 @@ class ServiceBase extends Base
             self::loadLanguage($fileName);
         }
 
-		if ($class && array_key_exists($class, self::$lang)) {
-			$languages = self::$lang[$class];
-		} else {
-			$languages = array();
-		}
+        if ($class && array_key_exists($class, self::$lang)) {
+            $languages = self::$lang[$class];
+        } else {
+            $languages = array();
+        }
 
-		return ocGetLanguage($languages, $key, $params);
-	}
+        return ocGetLanguage($languages, $key, $params);
+    }
 
-	/**
-	 * 类文件是否存在
-	 * @param string $classFile
-	 * @return array
-	 */
-	public static function classFileExists($classFile)
-	{
-		if ($classFile) {
-			if (ocFileExists($path = OC_LIB . $classFile)) {
-				return array($path, 'Ocara' . OC_NS_SEP);
-			}
-			if (ocFileExists($path = OC_EXT . $classFile)) {
-				return array($path, 'Ocara\Core\Extension' . OC_NS_SEP);
-			}
-			if (ocFileExists($path = ocPath('support', $classFile))) {
-				return array($path, OC_NS_SEP);
-			}
-		}
+    /**
+     * 类文件是否存在
+     * @param string $classFile
+     * @return array
+     */
+    public static function classFileExists($classFile)
+    {
+        if ($classFile) {
+            if (ocFileExists($path = OC_LIB . $classFile)) {
+                return array($path, 'Ocara' . OC_NS_SEP);
+            }
+            if (ocFileExists($path = OC_EXT . $classFile)) {
+                return array($path, 'Ocara\Core\Extension' . OC_NS_SEP);
+            }
+            if (ocFileExists($path = ocPath('support', $classFile))) {
+                return array($path, OC_NS_SEP);
+            }
+        }
 
-		return array();
-	}
+        return array();
+    }
 
     /**
      * 获取语言内容
@@ -99,11 +100,11 @@ class ServiceBase extends Base
      * @return mixed
      * @throws Exception
      */
-	public static function getMessage($key, array $params = array())
-	{
-		$language = self::getLanguage($key, $params);
-		return $language['message'];
-	}
+    public static function getMessage($key, array $params = array())
+    {
+        $language = self::getLanguage($key, $params);
+        return $language['message'];
+    }
 
     /**
      * 显示错误信息
@@ -111,30 +112,30 @@ class ServiceBase extends Base
      * @param array $params
      * @throws Exception
      */
-	public static function showError($error, array $params = array())
-	{
-		$error = self::getLanguage($error, $params);
+    public static function showError($error, array $params = array())
+    {
+        $error = self::getLanguage($error, $params);
 
-		throw new Exception(
-			str_ireplace('%s', OC_EMPTY, $error['message']), $error['code']
-		);
-	}
-	
-	/**
-	 * 错误是否存在
-	 */
-	public function errorExists()
-	{
-		return empty($this->error) ? false : true;
-	}
-	
-	/**
-	 * 获取错误信息
-	 */
-	public function getError()
-	{
-		return $this->error;
-	}
+        throw new Exception(
+            str_ireplace('%s', OC_EMPTY, $error['message']), $error['code']
+        );
+    }
+
+    /**
+     * 错误是否存在
+     */
+    public function errorExists()
+    {
+        return empty($this->error) ? false : true;
+    }
+
+    /**
+     * 获取错误信息
+     */
+    public function getError()
+    {
+        return $this->error;
+    }
 
     /**
      * 设置错误信息
@@ -143,9 +144,9 @@ class ServiceBase extends Base
      * @return bool
      * @throws Exception
      */
-	protected function setError($name, array $params = array())
-	{
-		$this->error = self::getLanguage($name, $params);
-		return false;
-	}
+    protected function setError($name, array $params = array())
+    {
+        $this->error = self::getLanguage($name, $params);
+        return false;
+    }
 }

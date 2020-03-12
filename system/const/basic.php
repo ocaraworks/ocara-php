@@ -54,7 +54,7 @@ defined('OC_PHP_SELF') or define('OC_PHP_SELF', basename($_SERVER['PHP_SELF']));
 defined('OC_HOST') or define('OC_HOST', ocGet('HTTP_HOST', $_SERVER));
 
 //协议类型
-defined('OC_PROTOCOL') or define('OC_PROTOCOL', strtolower(ocGet('HTTPS', $_SERVER)) == 'on'? 'https' : 'http');
+defined('OC_PROTOCOL') or define('OC_PROTOCOL', strtolower(ocGet('HTTPS', $_SERVER)) == 'on' ? 'https' : 'http');
 
 //当前URL
 defined('OC_REQ_URI') or define('OC_REQ_URI', ocCommPath(ocGet('REQUEST_URI', $_SERVER)));

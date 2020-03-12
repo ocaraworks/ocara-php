@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Sql;
 
 use Ocara\Core\Base;
@@ -414,9 +415,9 @@ class Generator extends Base
                 $database = $this->databaseName;
             } else {
                 $model = $param['class']::build();
-                $shardingData = !empty($shardingConfig[$alias]) ? $shardingConfig[$alias]: array();
+                $shardingData = !empty($shardingConfig[$alias]) ? $shardingConfig[$alias] : array();
                 if (!$shardingData) {
-                    $shardingData = !empty($shardingConfig[$param['class']]) ? $shardingConfig[$param['class']]: array();
+                    $shardingData = !empty($shardingConfig[$param['class']]) ? $shardingConfig[$param['class']] : array();
                 }
                 if ($shardingData) {
                     $model->sharding($shardingData);

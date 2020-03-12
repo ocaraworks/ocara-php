@@ -1,4 +1,5 @@
 <?php
+
 namespace Ocara\Controllers\Feature;
 
 use Ocara\Interfaces\Feature;

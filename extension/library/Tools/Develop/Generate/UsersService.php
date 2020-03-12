@@ -6,51 +6,52 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Extension\Tools\Develop\Generate;
 
 use Ocara\Core\Develop;
 
 class UsersService extends BaseService
 {
-	private $_username;
-	private $_password;
+    private $_username;
+    private $_password;
 
-	public function add()
-	{
-		$this->_username = ocService()->request->getPost('username');
-		$this->_password = ocService()->request->getPost('password');
-		$this->edit();
-	}
+    public function add()
+    {
+        $this->_username = ocService()->request->getPost('username');
+        $this->_password = ocService()->request->getPost('password');
+        $this->edit();
+    }
 
-	public function edit()
-	{
-		if (empty($this->_username) || empty($this->_password)) {
+    public function edit()
+    {
+        if (empty($this->_username) || empty($this->_password)) {
             $this->showError('请填满信息！');
-		}
-		
-		$path = OC_EXT . 'resource/tools/develop/data/users_data.php';
+        }
 
-		if(ocFileExists($path)){
-			include_once ($path);
-		}
+        $path = OC_EXT . 'resource/tools/develop/data/users_data.php';
 
-		$devUsers[$this->_username] = array(
-			'password' => md5($this->_password)
-		);
+        if (ocFileExists($path)) {
+            include_once($path);
+        }
 
-		$content = "<?php\r\n";
+        $devUsers[$this->_username] = array(
+            'password' => md5($this->_password)
+        );
 
-		foreach ($devUsers as $key => $value) {
-			$content .= "\r\n";
-			$content .= "\$devUsers['{$key}'] = array(\r\n";
-			$content .= "\t'password' => '{$value['password']}'\r\n";
-			$content .= ");";
-		}
+        $content = "<?php\r\n";
 
-		$fileService = ocService()->file;
+        foreach ($devUsers as $key => $value) {
+            $content .= "\r\n";
+            $content .= "\$devUsers['{$key}'] = array(\r\n";
+            $content .= "\t'password' => '{$value['password']}'\r\n";
+            $content .= ");";
+        }
+
+        $fileService = ocService()->file;
         $fileService->createFile($path, 'wb');
         $fileService->writeFile($path, $content);
-	}
+    }
 }
 
 ?>

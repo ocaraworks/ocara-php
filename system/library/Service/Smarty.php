@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
@@ -23,75 +24,75 @@ class Smarty extends ServiceBase implements TemplateInterface
      * @param null $perm
      * @throws Exception
      */
-	public function __construct($templateDir, $perm = null)
-	{
-		ocImport(OC_SYS . 'modules/smarty/Smarty.class.php');
+    public function __construct($templateDir, $perm = null)
+    {
+        ocImport(OC_SYS . 'modules/smarty/Smarty.class.php');
 
-		if (!class_exists('smarty', false)) {
+        if (!class_exists('smarty', false)) {
             ocService()->error->show('no_the_special_class', array('smarty'));
-		}
+        }
 
         $plugin = $this->setPlugin(new \Smarty());
-		$compileDir   = ocPath('runtime', 'smarty/cmp/');
-		$cacheDir     = ocPath('runtime', 'smarty/cache/');
+        $compileDir = ocPath('runtime', 'smarty/cmp/');
+        $cacheDir = ocPath('runtime', 'smarty/cache/');
 
-        $perm = $perm ? : 0755;
-		ocCheckPath($templateDir, $perm, true);
-		ocCheckPath($compileDir, $perm, true);
-		ocCheckPath($cacheDir, $perm, true);
+        $perm = $perm ?: 0755;
+        ocCheckPath($templateDir, $perm, true);
+        ocCheckPath($compileDir, $perm, true);
+        ocCheckPath($cacheDir, $perm, true);
 
         $plugin->setTemplateDir($templateDir);
         $plugin->setCompileDir($compileDir);
         $plugin->setCacheDir($cacheDir);
 
-		if (ocConfig(array('SMARTY', 'use_cache'), false)) {
+        if (ocConfig(array('SMARTY', 'use_cache'), false)) {
             $plugin->cache_lifetime = 60;
             $plugin->caching = true;
-		} else {
+        } else {
             $plugin->caching = false;
-		}
+        }
 
         $plugin->left_delimiter = ocConfig(array('SMARTY', 'left_sign'));
         $plugin->right_delimiter = ocConfig(array('SMARTY', 'right_sign'));
-	}
+    }
 
     /**
      * 设置变量
      * @param string $name
      * @param mixed $value
      */
-	public function set($name, $value)
-	{
-		$this->plugin()->assign($name, $value);
-	}
+    public function set($name, $value)
+    {
+        $this->plugin()->assign($name, $value);
+    }
 
     /**
      * 获取变量
      * @param null $name
      * @return string
      */
-	public function get($name = null)
-	{
-		return $this->plugin()->getTemplateVars($name);
-	}
+    public function get($name = null)
+    {
+        return $this->plugin()->getTemplateVars($name);
+    }
 
     /**
      * 注册对象
      * @param array $params
      */
-	public function registerObject($params)
-	{
+    public function registerObject($params)
+    {
         $plugin = $this->plugin();
-		call_user_func_array(array(&$plugin, 'registerObject'), $params);
-	}
+        call_user_func_array(array(&$plugin, 'registerObject'), $params);
+    }
 
     /**
      * 注册插件
      * @param string $params
      */
-	public function registerPlugin($params)
-	{
+    public function registerPlugin($params)
+    {
         $plugin = $this->plugin();
-		call_user_func_array(array(&$plugin, 'registerPlugin'), $params);
-	}
+        call_user_func_array(array(&$plugin, 'registerPlugin'), $params);
+    }
 }

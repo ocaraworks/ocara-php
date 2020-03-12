@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use \ErrorException;
@@ -33,13 +34,13 @@ class ExceptionHandler extends Base
     public function registerEvents()
     {
         $this->event(self::EVENT_REPORT)
-             ->append(ocConfig(array('EVENTS', 'error', 'report'), array($this, 'report')));
+            ->append(ocConfig(array('EVENTS', 'error', 'report'), array($this, 'report')));
 
         $this->event(self::EVENT_BEFORE_OUTPUT)
             ->append(ocConfig(array('EVENTS', 'error', 'before_output'), null));
 
         $this->event(self::EVENT_OUTPUT)
-             ->append(ocConfig(array('EVENTS', 'error', 'output'), array($this, 'output')));
+            ->append(ocConfig(array('EVENTS', 'error', 'output'), array($this, 'output')));
 
         $this->event(self::EVENT_AFTER_OUTPUT)
             ->append(ocConfig(array('EVENTS', 'error', 'after_output'), null));

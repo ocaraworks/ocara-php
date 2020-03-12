@@ -8,8 +8,8 @@
  ************************************************************************************************/
 
 return array(
-	'failed_connect' 	=> array(4450,'Socket连接失败！'), 
-	'no_connect' 		=> array(4451,'没有Socket连接！'), 
-	'no_accept_connect' => array(4452,'没有接收方的连接！'), 
-	'socket_error' 		=> array(4453,'Socket $errorType 出错：Error msg:[%s] %s！')
+    'failed_connect' => array(4450, 'Socket连接失败！'),
+    'no_connect' => array(4451, '没有Socket连接！'),
+    'no_accept_connect' => array(4452, '没有接收方的连接！'),
+    'socket_error' => array(4453, 'Socket $errorType 出错：Error msg:[%s] %s！')
 );

@@ -19,7 +19,7 @@ defined('OC_PATH') or exit('Forbidden!');
  */
 function ocReplaceSpace($string, $replace = '')
 {
-	return preg_replace('/[\s\v]+/', $replace, $string);
+    return preg_replace('/[\s\v]+/', $replace, $string);
 }
 
 /**
@@ -30,14 +30,14 @@ function ocReplaceSpace($string, $replace = '')
  */
 function ocCheckExtension($extension, $required = true)
 {
-	if (!extension_loaded($extension)) {
-		if ($required) {
-			ocService()->error->show('failed_load_extension', array($extension));
-		}
-		return false;
-	}
-	
-	return true;
+    if (!extension_loaded($extension)) {
+        if ($required) {
+            ocService()->error->show('failed_load_extension', array($extension));
+        }
+        return false;
+    }
+
+    return true;
 }
 
 /**
@@ -48,13 +48,13 @@ function ocCheckExtension($extension, $required = true)
  */
 function ocGlobal($name, $value = null)
 {
-	$globals = ocService()->globals;
+    $globals = ocService()->globals;
 
-	if (func_num_args() >= 2) {
+    if (func_num_args() >= 2) {
         $globals->set($name, $value);
-	} else {
-		return $globals->get($name);
-	}
+    } else {
+        return $globals->get($name);
+    }
 }
 
 /**
@@ -64,15 +64,15 @@ function ocGlobal($name, $value = null)
  */
 function ocArray($data)
 {
-	if (is_object($data)) {
-		$data = get_object_vars($data);
-	}
-	
-	if (is_array($data)) {
-		return array_map(__FUNCTION__, $data);
-	} else {
-		return $data;
-	}
+    if (is_object($data)) {
+        $data = get_object_vars($data);
+    }
+
+    if (is_array($data)) {
+        return array_map(__FUNCTION__, $data);
+    } else {
+        return $data;
+    }
 }
 
 /**
@@ -82,7 +82,7 @@ function ocArray($data)
  */
 function ocAssoc(array $data)
 {
-	return array_keys($data) !== range(0, count($data) - 1);
+    return array_keys($data) !== range(0, count($data) - 1);
 }
 
 /**
@@ -92,11 +92,11 @@ function ocAssoc(array $data)
  */
 function ocObject($data)
 {
-	if (is_array($data)) {
-		return (object)array_map(__FUNCTION__, $data);
-	} else {
-		return $data;
-	}
+    if (is_array($data)) {
+        return (object)array_map(__FUNCTION__, $data);
+    } else {
+        return $data;
+    }
 }
 
 /**
@@ -108,22 +108,22 @@ function ocObject($data)
  */
 function ocCheckPath($path, $perm = null, $required = false)
 {
-	if (empty($path)) return false;
+    if (empty($path)) return false;
 
-	if (!is_dir($path)) {
-		$perm = $perm ?: 0755;
-		if (!@mkdir($path, $perm, true)) {
-			if ($required) {
-				ocService()->error->show('failed_make_dir');
-			} else {
-				return false;
-			}
-		} else {
-		    chmod($path, $perm);
+    if (!is_dir($path)) {
+        $perm = $perm ?: 0755;
+        if (!@mkdir($path, $perm, true)) {
+            if ($required) {
+                ocService()->error->show('failed_make_dir');
+            } else {
+                return false;
+            }
+        } else {
+            chmod($path, $perm);
         }
-	}
+    }
 
-	return is_dir($path);
+    return is_dir($path);
 }
 
 /**
@@ -135,18 +135,18 @@ function ocCheckPath($path, $perm = null, $required = false)
  */
 function ocClass($name, array $params = array())
 {
-	if ($params) {
-	    try {
+    if ($params) {
+        try {
             $reflection = new ReflectionClass($name);
             $object = $reflection->newInstanceArgs($params);
         } catch (\Exception $exception) {
-	        throw new Exception($exception->getMessage(), $exception->getCode());
+            throw new Exception($exception->getMessage(), $exception->getCode());
         }
-	} else {
-		$object = new $name();
-	}
-	
-	return $object;
+    } else {
+        $object = new $name();
+    }
+
+    return $object;
 }
 
 /**
@@ -156,13 +156,13 @@ function ocClass($name, array $params = array())
  */
 function ocClassExists($class)
 {
-	try {
-		$result = class_exists($class);
-	} catch (\Exception $exception) {
-		return false;
-	}
+    try {
+        $result = class_exists($class);
+    } catch (\Exception $exception) {
+        return false;
+    }
 
-	return $result;
+    return $result;
 }
 
 /**
@@ -172,17 +172,17 @@ function ocClassExists($class)
  */
 function ocFunc($filePath)
 {
-	$filePath = ocCommPath($filePath);
-	$filePath = $filePath . '.php';
+    $filePath = ocCommPath($filePath);
+    $filePath = $filePath . '.php';
 
-	if (ocFileExists($file = ocPath('functions', $filePath)) ||
-		ocFileExists($file = OC_SYS . 'service/functions/' . $filePath) ||
-		ocFileExists($file = OC_SYS . '../extension/service/functions/' . $filePath)
-	) {
-		ocImport($filePath);
-	}
+    if (ocFileExists($file = ocPath('functions', $filePath)) ||
+        ocFileExists($file = OC_SYS . 'service/functions/' . $filePath) ||
+        ocFileExists($file = OC_SYS . '../extension/service/functions/' . $filePath)
+    ) {
+        ocImport($filePath);
+    }
 
-	ocService()->error->show('not_exists_function_file');
+    ocService()->error->show('not_exists_function_file');
 }
 
 /**
@@ -192,12 +192,12 @@ function ocFunc($filePath)
  */
 function ocSql($sql)
 {
-	if (is_string($sql) || is_numeric($sql)) {
-		$sql = ocService()->request->stripSqlTag($sql);
-		return OC_SQL_TAG . $sql;
-	}
+    if (is_string($sql) || is_numeric($sql)) {
+        $sql = ocService()->request->stripSqlTag($sql);
+        return OC_SQL_TAG . $sql;
+    }
 
-	return $sql;
+    return $sql;
 }
 
 /**
@@ -207,7 +207,7 @@ function ocSql($sql)
  */
 function ocIsStandardName($name)
 {
-	return preg_match('/^[^\d]\w*$/', $name);
+    return preg_match('/^[^\d]\w*$/', $name);
 }
 
 
@@ -225,48 +225,48 @@ function ocIsStandardName($name)
  */
 function ocWrite($filePath, $content, $append = false, $perm = null)
 {
-	if (is_dir($filePath)) {
-		ocService()->error->show('exists_dir');
-	}
+    if (is_dir($filePath)) {
+        ocService()->error->show('exists_dir');
+    }
 
-    $perm = $perm ? : 0755;
-	$dirPath  = dirname($filePath);
-	$result   = false;
+    $perm = $perm ?: 0755;
+    $dirPath = dirname($filePath);
+    $result = false;
 
-	if (ocCheckPath($dirPath, $perm)) {
+    if (ocCheckPath($dirPath, $perm)) {
 
-		if (!is_writable($dirPath)) {
-			ocService()->error->show('no_dir_write_perm');
-		}
+        if (!is_writable($dirPath)) {
+            ocService()->error->show('no_dir_write_perm');
+        }
 
-		if($fo = @fopen($filePath, $append ? 'ab' : 'wb')) {
-			if (false === flock($fo, LOCK_EX | LOCK_NB)) {
-				ocService()->error->show('failed_file_lock');
-			}
-			if (is_array($content)) {
-				foreach ($content as $row){
-					$result = @fwrite($fo, $row . PHP_EOL);
-					if (!$result) break;
-				}
-			} else {
-				$result = @fwrite($fo, $content);
-			}
-			flock($fo, LOCK_UN);
-			@fclose($fo);
-		} else {
-			if (ocFileExists($filePath)) {
-				if (function_exists('file_put_contents')) {
-					$writeMode = $append ? FILE_APPEND : LOCK_EX;
-					if (is_array($content)) {
-						$content = implode(PHP_EOL, $content);
-					}
-					$result = @file_put_contents($filePath, $content, $writeMode);
-				}
-			}
-		}
-	}
-	
-	return $result;
+        if ($fo = @fopen($filePath, $append ? 'ab' : 'wb')) {
+            if (false === flock($fo, LOCK_EX | LOCK_NB)) {
+                ocService()->error->show('failed_file_lock');
+            }
+            if (is_array($content)) {
+                foreach ($content as $row) {
+                    $result = @fwrite($fo, $row . PHP_EOL);
+                    if (!$result) break;
+                }
+            } else {
+                $result = @fwrite($fo, $content);
+            }
+            flock($fo, LOCK_UN);
+            @fclose($fo);
+        } else {
+            if (ocFileExists($filePath)) {
+                if (function_exists('file_put_contents')) {
+                    $writeMode = $append ? FILE_APPEND : LOCK_EX;
+                    if (is_array($content)) {
+                        $content = implode(PHP_EOL, $content);
+                    }
+                    $result = @file_put_contents($filePath, $content, $writeMode);
+                }
+            }
+        }
+    }
+
+    return $result;
 }
 
 /**
@@ -277,34 +277,34 @@ function ocWrite($filePath, $content, $append = false, $perm = null)
  */
 function ocRead($filePath, $checkPath = true)
 {
-	if ($checkPath && !preg_match('/^(.+)?\.\w+$/', $filePath)) {
-		ocService()->error->show('invalid_path', array($filePath));
-	}
+    if ($checkPath && !preg_match('/^(.+)?\.\w+$/', $filePath)) {
+        ocService()->error->show('invalid_path', array($filePath));
+    }
 
-	$content = OC_EMPTY;
+    $content = OC_EMPTY;
 
-	if (ocFileExists($filePath)) {
-		if (!is_readable($filePath)) {
-			ocService()->error->show('no_file_read_perm');
-		}
-		if ($fo = @fopen($filePath, 'rb')) {
-			if (false === flock($fo, LOCK_SH | LOCK_NB)) {
-				ocService()->error->show('failed_file_lock');
-			}
-			@fseek($fo, 0);
-			while (!@feof($fo)) {
-				$content = $content . @fgets($fo);
-			}
-			flock($fo, LOCK_UN);
-			@fclose($fo);
-		} else {
-			if (function_exists('file_get_contents')) {
-				$content = @file_get_contents($filePath);
-			}
-		}
-	}
-	
-	return $content;
+    if (ocFileExists($filePath)) {
+        if (!is_readable($filePath)) {
+            ocService()->error->show('no_file_read_perm');
+        }
+        if ($fo = @fopen($filePath, 'rb')) {
+            if (false === flock($fo, LOCK_SH | LOCK_NB)) {
+                ocService()->error->show('failed_file_lock');
+            }
+            @fseek($fo, 0);
+            while (!@feof($fo)) {
+                $content = $content . @fgets($fo);
+            }
+            flock($fo, LOCK_UN);
+            @fclose($fo);
+        } else {
+            if (function_exists('file_get_contents')) {
+                $content = @file_get_contents($filePath);
+            }
+        }
+    }
+
+    return $content;
 }
 
 /**
@@ -330,7 +330,7 @@ function ocGetContents($target)
  */
 function ocRemote($url, $data = null, array $headers = array())
 {
-	if (!@ini_get('allow_url_fopen')) return null;
+    if (!@ini_get('allow_url_fopen')) return null;
 
     if (!function_exists('file_get_contents')) return ocCurl($url, $data, $headers);
 
@@ -354,8 +354,8 @@ function ocRemote($url, $data = null, array $headers = array())
     }
 
     $context['http'] = array(
-        'method'  => 'POST',
-        'header'  => $header,
+        'method' => 'POST',
+        'header' => $header,
         'content' => $data
     );
 
@@ -374,7 +374,7 @@ function ocRemote($url, $data = null, array $headers = array())
  */
 function ocCurl($url, $data = null, array $headers = array(), $showError = false, $method = null)
 {
-	if (!function_exists('curl_init')) return null;
+    if (!function_exists('curl_init')) return null;
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -419,7 +419,7 @@ function ocCurl($url, $data = null, array $headers = array(), $showError = false
             ocService()->error->show('failed_curl_return', array($error));
         }
     }
-    
+
     return $content;
 }
 
@@ -431,22 +431,23 @@ function ocCurl($url, $data = null, array $headers = array(), $showError = false
  */
 function ocColumn(array $array, $field)
 {
-	$data = array();
-	foreach ($array as $key => $value) {
-		$data[$key] = $value[$field];
-	}
-	return $data;
+    $data = array();
+    foreach ($array as $key => $value) {
+        $data[$key] = $value[$field];
+    }
+    return $data;
 }
 
 /**
  * 兼容函数
  */
 if (!function_exists('array_column')) {
-	function array_column($array, $field) {
-		$data = array();
-		foreach ($array as $key => $value) {
-			$data[] = $value[$field];
-		}
-		return $data;
-	}
+    function array_column($array, $field)
+    {
+        $data = array();
+        foreach ($array as $key => $value) {
+            $data[] = $value[$field];
+        }
+        return $data;
+    }
 }

@@ -6,118 +6,119 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
 
 class StaticBuilder extends ServiceBase
 {
-	private $dir;
-	
-	/**
-	 * 析构函数
-	 */
-	public function __construct()
-	{
-		if (empty(ocService()->staticPath->open)) {
-			$this->showError('not_exists_open_config');
-		}
+    private $dir;
 
-		$this->dir = ocPath('static');
-	}
+    /**
+     * 析构函数
+     */
+    public function __construct()
+    {
+        if (empty(ocService()->staticPath->open)) {
+            $this->showError('not_exists_open_config');
+        }
+
+        $this->dir = ocPath('static');
+    }
 
     /**
      * 全部静态生成
      * @param $callback
      */
-	public function genAll($callback)
-	{
-		$params = ocService()->staticPath->params;
+    public function genAll($callback)
+    {
+        $params = ocService()->staticPath->params;
 
-		if (empty($params)) return;
+        if (empty($params)) return;
 
-		foreach ($params as $module => $controller) {
-			if (!is_array($controller)) continue;
-			foreach ($controller as $action => $config) {
-				if (is_array($config)) {
-					foreach ($config as $key => $value) {
-						$this->genHtml($value, $module, $action, $key, $callback);
-					}
-				} elseif (is_string($config)) {
-					$this->genHtml($config, false, $module, $action, $callback);
-				}
-			}
-		}
-	}
+        foreach ($params as $module => $controller) {
+            if (!is_array($controller)) continue;
+            foreach ($controller as $action => $config) {
+                if (is_array($config)) {
+                    foreach ($config as $key => $value) {
+                        $this->genHtml($value, $module, $action, $key, $callback);
+                    }
+                } elseif (is_string($config)) {
+                    $this->genHtml($config, false, $module, $action, $callback);
+                }
+            }
+        }
+    }
 
     /**
      * 按动作action生成HTML
      * @param $route
      * @param $data
      */
-	public function genAction($route, $data)
-	{
-		extract(ocService()->app->formatRoute($route));
-		
-		foreach ($data as $row) {
-			list($file, $param) = ocService()->staticPath->getStaticFile($module, $controller, $action, $row);
-			$url = ocUrl(array($module, $controller, $action), $param, false, false, false);
-			$this->createHtml($file, $url);
-		}
-	}
-	
-	/**
-	 * 生成HTML
-	 * @param arary  $params
-	 * @param string $module
-	 * @param string $controller
-	 * @param string  $action
-	 * @param string|array  $callback
-	 */
-	private function genHtml($params, $module, $controller, $action, $callback)
-	{
-		$args = preg_match_all('/{(\w+)}/i', $params, $mt) ? $mt[1] : array();
-		$args = array($module, $controller, $action, $args);
+    public function genAction($route, $data)
+    {
+        extract(ocService()->app->formatRoute($route));
 
-		$data    = $callback ? call_user_func_array($callback, $args) : null;
-		$pathMap = ocService()->staticPath->getMvcPathMap($module, $controller, $action);
+        foreach ($data as $row) {
+            list($file, $param) = ocService()->staticPath->getStaticFile($module, $controller, $action, $row);
+            $url = ocUrl(array($module, $controller, $action), $param, false, false, false);
+            $this->createHtml($file, $url);
+        }
+    }
 
-		$this->genRow($pathMap, $params, $module, $controller, $action, $data);
-	}
+    /**
+     * 生成HTML
+     * @param arary $params
+     * @param string $module
+     * @param string $controller
+     * @param string $action
+     * @param string|array $callback
+     */
+    private function genHtml($params, $module, $controller, $action, $callback)
+    {
+        $args = preg_match_all('/{(\w+)}/i', $params, $mt) ? $mt[1] : array();
+        $args = array($module, $controller, $action, $args);
 
-	/**
-	 * 生成一行
-	 * @param string $mvcPathMap
-	 * @param array  $params
-	 * @param string $module
-	 * @param string $controller
-	 * @param string $action
-	 * @param array  $data
-	 */
-	private function genRow($mvcPathMap, $params, $module, $controller, $action, $data)
-	{
-		$route = array($module, $controller, $action);
+        $data = $callback ? call_user_func_array($callback, $args) : null;
+        $pathMap = ocService()->staticPath->getMvcPathMap($module, $controller, $action);
 
-		if ($data) {
-			foreach ($data as $row) {
-				if (is_array($row) && $row) {
-					$paramsPathMap = ocService()->staticPath->getParamsPathMap(
-						$params, $module, $controller, $action, $row
-					);
-					list($file, $param) = $paramsPathMap;
-					if ($file = str_ireplace('{p}', $file, $mvcPathMap)) {
-						$url = ocUrl($route, $param, false, false, false);
-						$this->createHtml($file, $url);
-					}
-				}
-			}
-		} else {
-			$url  = ocUrl($route, array(), false, false, false);
-			$file = trim(str_ireplace('{p}', OC_EMPTY, $mvcPathMap), OC_DIR_SEP);
-			$file = $file. '.' . ocService()->staticPath->fileType;
-			$this->createHtml($file, $url);
-		}
-	}
+        $this->genRow($pathMap, $params, $module, $controller, $action, $data);
+    }
+
+    /**
+     * 生成一行
+     * @param string $mvcPathMap
+     * @param array $params
+     * @param string $module
+     * @param string $controller
+     * @param string $action
+     * @param array $data
+     */
+    private function genRow($mvcPathMap, $params, $module, $controller, $action, $data)
+    {
+        $route = array($module, $controller, $action);
+
+        if ($data) {
+            foreach ($data as $row) {
+                if (is_array($row) && $row) {
+                    $paramsPathMap = ocService()->staticPath->getParamsPathMap(
+                        $params, $module, $controller, $action, $row
+                    );
+                    list($file, $param) = $paramsPathMap;
+                    if ($file = str_ireplace('{p}', $file, $mvcPathMap)) {
+                        $url = ocUrl($route, $param, false, false, false);
+                        $this->createHtml($file, $url);
+                    }
+                }
+            }
+        } else {
+            $url = ocUrl($route, array(), false, false, false);
+            $file = trim(str_ireplace('{p}', OC_EMPTY, $mvcPathMap), OC_DIR_SEP);
+            $file = $file . '.' . ocService()->staticPath->fileType;
+            $this->createHtml($file, $url);
+        }
+    }
 
     /**
      * 单页面生成
@@ -125,16 +126,16 @@ class StaticBuilder extends ServiceBase
      * @param string $url
      * @return bool|int
      */
-	private function createHtml($file, $url)
-	{
-		if ($file && $url) {
-			$path = $file ? $this->dir . $file : false;
+    private function createHtml($file, $url)
+    {
+        if ($file && $url) {
+            $path = $file ? $this->dir . $file : false;
 
-			if ($content = ocRemote($url)) {
-				return ocWrite($path, $content);
-			}
-		}
+            if ($content = ocRemote($url)) {
+                return ocWrite($path, $content);
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

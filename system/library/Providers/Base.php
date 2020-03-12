@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Providers;
 
 use Ocara\Core\ServiceProvider;
@@ -29,7 +30,7 @@ class Base extends ServiceProvider
     protected function initService($services, $method)
     {
         foreach ($services as $name => $namespace) {
-            $this->container->$method($name, function() use($namespace) {
+            $this->container->$method($name, function () use ($namespace) {
                 $args = func_get_args();
                 if (class_exists($namespace)) {
                     if (method_exists($namespace, 'getInstance')) {

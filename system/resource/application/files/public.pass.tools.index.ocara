@@ -6,4 +6,4 @@ define('OC_MODULE_NAMESPACE', 'app\\tools\\');
 define('OC_DEFAULT_MODULE', 'dev');
 define('OC_WEB_ROOT', __DIR__);
 
-require_once dirname(dirname(dirname(__FILE__))). '/index.php';
+require_once dirname(dirname(dirname(__FILE__))) . '/index.php';

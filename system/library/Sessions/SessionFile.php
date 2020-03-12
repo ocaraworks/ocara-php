@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Sessions;
 
 use Ocara\Exceptions\Exception;
@@ -25,14 +26,14 @@ class SessionFile extends ServiceProvider
     {
         $savePath = ocConfig(array('SESSION', 'options', 'location'), null);
 
-   	 	if ($savePath) {
+        if ($savePath) {
             $savePath = ocPath('runtime', $savePath);
             if (!ocCheckPath($savePath)) {
                 if (!ocCheckPath($savePath)) {
                     ocService()->error->show('no_session_path');
                 }
             }
-    	} else {
+        } else {
             $savePath = session_save_path();
         }
 
@@ -70,17 +71,17 @@ class SessionFile extends ServiceProvider
      */
     public function read($id)
     {
-    	$file = "{$this->savePath}/sess_$id";
+        $file = "{$this->savePath}/sess_$id";
 
-    	if (ocFileExists($file)) {
-    		$time = filemtime($file);
-    		$maxLifeTime  = @ini_get('session.gc_maxlifetime');
-    		if ($time + $maxLifeTime >= time()) {
-    			return stripslashes(ocRead($file, false));
-    		}
-    	}
+        if (ocFileExists($file)) {
+            $time = filemtime($file);
+            $maxLifeTime = @ini_get('session.gc_maxlifetime');
+            if ($time + $maxLifeTime >= time()) {
+                return stripslashes(ocRead($file, false));
+            }
+        }
 
-    	return OC_EMPTY;
+        return OC_EMPTY;
     }
 
     /**
@@ -93,7 +94,7 @@ class SessionFile extends ServiceProvider
     {
         try {
             ocWrite("{$this->savePath}/sess_$id", stripslashes($data));
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             ocService()->error->show($exception->getMessage());
         }
 

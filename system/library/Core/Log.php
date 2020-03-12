@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
@@ -19,13 +20,13 @@ class Log extends Base
     protected $name;
 
     const EMERGENCY = 'emergency';
-    const ALERT     = 'alert';
-    const CRITICAL  = 'critical';
-    const ERROR     = 'error';
-    const WARNING   = 'warning';
-    const NOTICE    = 'notice';
-    const INFO      = 'info';
-    const DEBUG     = 'debug';
+    const ALERT = 'alert';
+    const CRITICAL = 'critical';
+    const ERROR = 'error';
+    const WARNING = 'warning';
+    const NOTICE = 'notice';
+    const INFO = 'info';
+    const DEBUG = 'debug';
 
     /**
      * 初始化
@@ -35,7 +36,7 @@ class Log extends Base
      */
     public function __construct($logName = null)
     {
-        $this->name = $logName ? : 'common';
+        $this->name = $logName ?: 'common';
         $plugin = $this->setPlugin(ocService('fileLog', true));
         $plugin->setOption(ocConfig(array('Log', 'root'), 'logs'));
     }
@@ -66,8 +67,8 @@ class Log extends Base
 
         try {
             $plugin->write($this->name, $content);
-        } catch (\Exception $e)
-        {}
+        } catch (\Exception $e) {
+        }
     }
 
     /**
@@ -197,14 +198,14 @@ class Log extends Base
         $content = OC_EMPTY;
 
         if (isset($row['function']) && $row['function']) {
-            $file     = isset($row['file']) && $row['file'] ? $row['file'] : false;
-            $line     = isset($row['line']) && $row['line'] ? "({$row['line']})" : false;
+            $file = isset($row['file']) && $row['file'] ? $row['file'] : false;
+            $line = isset($row['line']) && $row['line'] ? "({$row['line']})" : false;
 
-            $class    = isset($row['class']) && $row['class'] ? $row['class'] : false;
-            $type     = isset($row['type']) && $row['type'] ? $row['type'] : false;
+            $class = isset($row['class']) && $row['class'] ? $row['class'] : false;
+            $type = isset($row['type']) && $row['type'] ? $row['type'] : false;
 
             $function = isset($row['function']) && $row['function'] ? $row['function'] : false;
-            $args     = isset($row['args']) && $row['args'] ? self::getTraceArgs($row['args']) : false;
+            $args = isset($row['args']) && $row['args'] ? self::getTraceArgs($row['args']) : false;
 
             if ($file) {
                 $line = $file ? $line . ': ' : $line;
@@ -225,14 +226,14 @@ class Log extends Base
     {
         $content = array();
 
-        foreach ($args as $value)  {
+        foreach ($args as $value) {
             if (is_scalar($value)) {
                 $value = var_export($value, true);
             } else {
                 $type = gettype($value);
                 if ($type == 'array') {
                     $value = 'Array';
-                } elseif ($type == 'resource')  {
+                } elseif ($type == 'resource') {
                     $value = get_resource_type($value);
                 } elseif ($type == 'object') {
                     try {

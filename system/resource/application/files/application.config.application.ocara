@@ -36,17 +36,17 @@ return array(
      * 纯静态生成配置
      */
     'STATIC' => array(
-        'open' 			=> 1, //是否开启静态生成
-        'file_type'		=> 'html' //静态文件扩展名，html或htm
+        'open' => 1, //是否开启静态生成
+        'file_type' => 'html' //静态文件扩展名，html或htm
     ),
 
     /*
      * 邮箱配置
      */
     'EMAIL' => array(
-        'sender'   => '', //发送人，如myname@163.com
-        'host'     => '', //SMTP地址，如smtp.163.com
-        'port'     => '', //SMTP端口，如25
+        'sender' => '', //发送人，如myname@163.com
+        'host' => '', //SMTP地址，如smtp.163.com
+        'port' => '', //SMTP端口，如25
         'username' => '', //登录用户名，如myname，有的可能是邮箱地址
         'password' => '', //登录密码，如my123456
     )

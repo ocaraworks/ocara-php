@@ -2,6 +2,7 @@
 /**
  * 服务层业务逻辑基类
  */
+
 namespace Base\Service;
 
 use Ocara\Core\Base;

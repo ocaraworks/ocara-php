@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use \ReflectionClass;
@@ -166,7 +167,7 @@ class Container extends Basis
             } elseif ($this->hasBindSingleton($name)) {
                 $instance = $this->make($name, $params, $deps);
                 $this->setInstance($name, $instance);
-            } elseif ($this->hasBind($name)){
+            } elseif ($this->hasBind($name)) {
                 $instance = $this->create($name, $params, $deps);
             }
             return $instance;
@@ -307,7 +308,7 @@ class Container extends Basis
         if ($instance) {
             foreach ($deps as $name => $object) {
                 $method = 'set' . ucfirst($name);
-                if (method_exists($instance, $method)){
+                if (method_exists($instance, $method)) {
                     $instance->$method($object);
                 }
             }
@@ -411,9 +412,9 @@ class Container extends Basis
                     $class = $params[$key];
                 } elseif ($this->hasBind($name)) {
                     $class = $this->create($name);
-                } elseif ($this->hasBindSingleton($name)){
+                } elseif ($this->hasBindSingleton($name)) {
                     $class = $this->get($name);
-                }elseif ($this !== self::$default && self::$default && self::$default->has($name)) {
+                } elseif ($this !== self::$default && self::$default && self::$default->has($name)) {
                     $class = self::$default->create($name);
                 }
             }

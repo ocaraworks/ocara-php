@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Caches;
 
 use Ocara\Exceptions\Exception;
@@ -20,52 +21,52 @@ class Memcache extends CacheBase implements CacheInterface
      * @param bool $required
      * @return mixed
      */
-	public function connect($config, $required = true)
-	{
-	    if (empty($config['servers'])) {
+    public function connect($config, $required = true)
+    {
+        if (empty($config['servers'])) {
             ocService()->error->check('null_cache_host', array(), $required);
         }
-		if (!ocGet('open', $config, false)) {
-			return ocService()->error->check('no_open_service_config', array('Memcache'), $required);
-		}
+        if (!ocGet('open', $config, false)) {
+            return ocService()->error->check('no_open_service_config', array('Memcache'), $required);
+        }
 
-		if (class_exists($class = 'Memcache', false)) {
-			ocCheckExtension('memcache');
-		} elseif (class_exists($class = 'Memcached', false)) {
-			ocCheckExtension('memcached');
-		} else {
-			return ocService()->error->check('no_extension', array('Memcache'), $required);
-		}
+        if (class_exists($class = 'Memcache', false)) {
+            ocCheckExtension('memcache');
+        } elseif (class_exists($class = 'Memcached', false)) {
+            ocCheckExtension('memcached');
+        } else {
+            return ocService()->error->check('no_extension', array('Memcache'), $required);
+        }
 
-		$this->setPlugin(new $class());
-		$this->addServers($config, $class);
-	}
+        $this->setPlugin(new $class());
+        $this->addServers($config, $class);
+    }
 
     /**
      * 添加服务器
      * @param $config
      * @param $class
      */
-	private function addServers($config, $class)
-	{
+    private function addServers($config, $class)
+    {
         $plugin = $this->plugin();
         $servers = ocGet('servers', $config, array());
-		
-		if ($class == 'Memcached') {
+
+        if ($class == 'Memcached') {
             $plugin->addServers($servers);
-			if ($options = ocGet('options', $config, array())) {
-				foreach ($options as $key => $value) {
+            if ($options = ocGet('options', $config, array())) {
+                foreach ($options as $key => $value) {
                     $plugin->setOption($key, $value);
-				}
-			}
-		} else {
-			foreach ($servers as $serve) {
-				call_user_func_array(
-					array(&$plugin, 'addServer'), $serve
-				);
-			}
-		}
-	}
+                }
+            }
+        } else {
+            foreach ($servers as $serve) {
+                call_user_func_array(
+                    array(&$plugin, 'addServer'), $serve
+                );
+            }
+        }
+    }
 
     /**
      * 设置变量值
@@ -80,12 +81,12 @@ class Memcache extends CacheBase implements CacheInterface
         $params = array_key_exists(3, $args) ? $args[3] : array();
         $plugin = $this->plugin(false);
 
-		if (is_object($plugin)) {
-			return $plugin->set($name, $value, $params, $expireTime);
-		}
+        if (is_object($plugin)) {
+            return $plugin->set($name, $value, $params, $expireTime);
+        }
 
-		return false;
-	}
+        return false;
+    }
 
     /**
      * 获取变量值
@@ -93,33 +94,33 @@ class Memcache extends CacheBase implements CacheInterface
      * @param mixed $args
      * @return null
      */
-	public function get($name, $args = null)
-	{
-	    $plugin = $this->plugin(false);
-		if (is_object($plugin) && method_exists($plugin, 'get')) {
-			return $plugin->get($name);
-		}
+    public function get($name, $args = null)
+    {
+        $plugin = $this->plugin(false);
+        if (is_object($plugin) && method_exists($plugin, 'get')) {
+            return $plugin->get($name);
+        }
 
-		return null;
-	}
+        return null;
+    }
 
     /**
      * 删除KEY
      * @param string $name
      * @return mixed
      */
-	public function delete($name)
-	{
-		return $this->plugin()->delete($name);
-	}
+    public function delete($name)
+    {
+        return $this->plugin()->delete($name);
+    }
 
-	/**
-	 * 选择数据库
-	 * @param string $name
-	 * @return bool
-	 */
-	public function selectDatabase($name)
-	{
-		return true;
-	}
+    /**
+     * 选择数据库
+     * @param string $name
+     * @return bool
+     */
+    public function selectDatabase($name)
+    {
+        return true;
+    }
 }

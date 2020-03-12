@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use \Exception;
@@ -29,15 +30,15 @@ final class Invoke
         return self::$instance;
     }
 
-	/**
-	 * 目录分隔符替换
-	 * @param $path
-	 * @return mixed
-	 */
-	protected function getCommPath($path)
-	{
-		return str_replace(DIRECTORY_SEPARATOR, '/', $path);
-	}
+    /**
+     * 目录分隔符替换
+     * @param $path
+     * @return mixed
+     */
+    protected function getCommPath($path)
+    {
+        return str_replace(DIRECTORY_SEPARATOR, '/', $path);
+    }
 
     /**
      * 初始化
@@ -45,25 +46,25 @@ final class Invoke
      * @return mixed
      * @throws Exception
      */
-	public function init($bootstrap = null)
-	{
+    public function init($bootstrap = null)
+    {
         defined('OC_EXECUTE_START_TIME') OR define('OC_EXECUTE_START_TIME', microtime(true));
         defined('OC_PATH') OR define('OC_PATH', $this->getCommPath(realpath(dirname(dirname(dirname(__DIR__))))) . '/');
         defined('OC_INVOKE') OR define('OC_INVOKE', true);
 
-		if (!is_file($path = OC_PATH . 'system/library/Core/Ocara.php')) {
-			throw new Exception('Lost ocara file!');
-		}
+        if (!is_file($path = OC_PATH . 'system/library/Core/Ocara.php')) {
+            throw new Exception('Lost ocara file!');
+        }
 
-		include_once($path);
-		if (!class_exists('\Ocara\Core\Ocara')) {
+        include_once($path);
+        if (!class_exists('\Ocara\Core\Ocara')) {
             throw new Exception('Lost Ocara class!');
-		}
+        }
 
-		Ocara::getInstance();
+        Ocara::getInstance();
         ocContainer()->app->bootstrap($bootstrap);
         return $this;
-	}
+    }
 
     /**
      * 运行路由
@@ -72,12 +73,12 @@ final class Invoke
      * @param string $requestMethod
      * @return mixed
      */
-	public function run($route, $params = array(), $requestMethod = 'GET')
+    public function run($route, $params = array(), $requestMethod = 'GET')
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
 
         if ($params) {
-            if ($requestMethod == 'GET'){
+            if ($requestMethod == 'GET') {
                 $_GET = array_merge($_GET, $params);
             } else {
                 $_POST = array_merge($_POST, $params);

@@ -1,8 +1,8 @@
 <?php
 $dirs = array(
-	'application' => array(
-	    'config/env',
-	    'console',
+    'application' => array(
+        'config/env',
+        'console',
         'controller',
         'model/cache',
         'model/database',
@@ -17,20 +17,20 @@ $dirs = array(
         'view/defaults/part',
         'view/defaults/layout',
         'view/defaults/template',
-	),
-	'public' => array(
-		'attachments',
-		'pass',
-		'src/css/defaults',
-		'src/images/defaults',
-		'src/js',
+    ),
+    'public' => array(
+        'attachments',
+        'pass',
+        'src/css/defaults',
+        'src/images/defaults',
+        'src/js',
         'static'
-	),
-	'data' => array(
-	    'docs',
+    ),
+    'data' => array(
+        'docs',
         'fields'
     ),
-	'runtime' => array(
+    'runtime' => array(
         'logs',
         'session',
         'temp'
@@ -61,17 +61,17 @@ $files = array(
         'service/BaseService',
         'view/defaults/layout/layout',
     ),
-	'support' => array(
+    'support' => array(
         'Base/Service/CommonService',
         'Base/Controller/ApiController',
-		'Base/Controller/CommonController',
+        'Base/Controller/CommonController',
         'Base/Controller/RestController',
         'Base/Controller/TaskController',
         'Base/Model/CacheModel',
         'Base/Model/DatabaseModel',
         'Base/Model/DatabaseEntity',
         'Base/Model/LogicEntity',
-	),
+    ),
     'public' => array(
         'pass/tools/index'
     ),

@@ -1,4 +1,5 @@
 <?php
+
 namespace Ocara\Entities;
 
 use Ocara\Core\BaseEntity;

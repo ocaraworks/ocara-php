@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Interfaces\Middleware;
@@ -18,5 +19,6 @@ class Resource implements Middleware
      * @return mixed|void
      */
     public function handle(array $params = array())
-    {}
+    {
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Ocara\Controllers;
 
 use Ocara\Core\ControllerBase;
@@ -11,7 +12,7 @@ class Task extends ControllerBase implements ControllerInterface
      */
     public static function controllerType()
     {
-        return self::$controllerType ? ucfirst(self::$controllerType): static::CONTROLLER_TYPE_TASK;
+        return self::$controllerType ? ucfirst(self::$controllerType) : static::CONTROLLER_TYPE_TASK;
     }
 
     /**

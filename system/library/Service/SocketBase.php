@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
@@ -13,19 +14,19 @@ use Ocara\Exceptions\Exception;
 
 class SocketBase extends ServiceBase
 {
-	public $host;
-	public $port;
-	public $socket;
-	public $conn;
-	public $error;
+    public $host;
+    public $port;
+    public $socket;
+    public $conn;
+    public $error;
 
-	/**
-	 * 析构函数
-	 */
-	public function __construct()
-	{
-		ocCheckExtension('sockets');
-	}
+    /**
+     * 析构函数
+     */
+    public function __construct()
+    {
+        ocCheckExtension('sockets');
+    }
 
     /**
      * 显示错误
@@ -33,16 +34,16 @@ class SocketBase extends ServiceBase
      * @param string $connId
      * @throws Exception
      */
-	protected function showSocketError($errorType, $connId = 'conn')
-	{
-		$this->error = $connId === null ? socket_last_error() : socket_last_error($this->$connId);
-		
-		if (preg_match('/^[\x{4e00}-\x{9fa5}A-Za-z0-9_]+$/u', $this->error)) {
-			$errorMsg = iconv('gbk', 'utf-8', socket_strerror($this->error));
-		} else {
-			$errorMsg = $this->error;
-		}
-		
-		$this->showError('socket_error', array($errorType, $this->error, $errorMsg));
-	}
+    protected function showSocketError($errorType, $connId = 'conn')
+    {
+        $this->error = $connId === null ? socket_last_error() : socket_last_error($this->$connId);
+
+        if (preg_match('/^[\x{4e00}-\x{9fa5}A-Za-z0-9_]+$/u', $this->error)) {
+            $errorMsg = iconv('gbk', 'utf-8', socket_strerror($this->error));
+        } else {
+            $errorMsg = $this->error;
+        }
+
+        $this->showError('socket_error', array($errorType, $this->error, $errorMsg));
+    }
 }

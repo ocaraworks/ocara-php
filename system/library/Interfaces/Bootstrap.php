@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Interfaces;
 
 use Ocara\Core\Container;
@@ -14,15 +15,15 @@ defined('OC_PATH') or exit('Forbidden!');
 
 interface Bootstrap
 {
-	/**
-	 * 初始化
-	 */
-	public function init();
+    /**
+     * 初始化
+     */
+    public function init();
 
     /**
      * 开发启动
      * @param array $route
      * @return mixed
      */
-	public function start($route = array());
+    public function start($route = array());
 }

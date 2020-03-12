@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Core;
 
 use Ocara\Core\ServiceProvider;
@@ -35,21 +36,22 @@ class Session extends ServiceProvider
         $class = ocConfig(array('SESSION', 'handler'), 'file');
         $class = self::$sessionProvidersMap[$class] ?: $class;
 
-        $this->container->bindSingleton('sessionHandler', function() use ($class) {
+        $this->container->bindSingleton('sessionHandler', function () use ($class) {
             $handler = new $class();
             return $handler;
         });
     }
+
     /**
      * Session初始化处理
      * @param bool $start
      * @throws Exception
      */
-	public function boot($start = true)
-	{
+    public function boot($start = true)
+    {
         $handler = $this->sessionHandler;
 
-        if ($handler){
+        if ($handler) {
             session_set_save_handler(
                 array(&$handler, 'open'),
                 array(&$handler, 'close'),
@@ -61,32 +63,32 @@ class Session extends ServiceProvider
             register_shutdown_function('session_write_close');
         }
 
-		$this->start($start);
-	}
+        $this->start($start);
+    }
 
     /**
      * 启动Session
      * @param $start
      * @throws Exception
      */
-	private function start($start)
-	{
-		$saveTime = intval(ocConfig(array('SESSION', 'options', 'save_time'), false));
+    private function start($start)
+    {
+        $saveTime = intval(ocConfig(array('SESSION', 'options', 'save_time'), false));
 
-		if ($saveTime) {
-			$this->setSaveTime($saveTime);
-		}
+        if ($saveTime) {
+            $this->setSaveTime($saveTime);
+        }
 
-		if ($start && !isset($_SESSION)) {
-			if (!headers_sent()) {
-				session_start();
-			}
-		}
-		
-		if ($saveTime) {
-			$this->setCookie($saveTime);
-		}
-	}
+        if ($start && !isset($_SESSION)) {
+            if (!headers_sent()) {
+                session_start();
+            }
+        }
+
+        if ($saveTime) {
+            $this->setCookie($saveTime);
+        }
+    }
 
     /**
      * 获取session变量值
@@ -107,72 +109,72 @@ class Session extends ServiceProvider
      * @param $name
      * @param $value
      */
-	public function set($name, $value)
-	{
-		ocSet($_SESSION, $name, $value);
-	}
+    public function set($name, $value)
+    {
+        ocSet($_SESSION, $name, $value);
+    }
 
     /**
      * 删除session变量
      * @param $name
      */
-	public function delete($name)
-	{
-		ocDel($_SESSION, $name);
-	}
+    public function delete($name)
+    {
+        ocDel($_SESSION, $name);
+    }
 
-	/**
-	 * 获取session ID
-	 */
-	public function getId()
-	{
-		return session_id();
-	}
+    /**
+     * 获取session ID
+     */
+    public function getId()
+    {
+        return session_id();
+    }
 
-	/**
-	 * 获取session Name
-	 */
-	public function getName()
-	{
-		return session_name();
-	}
+    /**
+     * 获取session Name
+     */
+    public function getName()
+    {
+        return session_name();
+    }
 
     /**
      * 清空session数组
      * @param null $args
      */
-	public function clear($args = null)
-	{
-		session_unset();
-	}
+    public function clear($args = null)
+    {
+        session_unset();
+    }
 
-	/**
-	 * > PHP7 回收session
-	 */
-	public function gc()
-	{
-		session_gc();
-	}
+    /**
+     * > PHP7 回收session
+     */
+    public function gc()
+    {
+        session_gc();
+    }
 
     /**
      * 检测session是否设置
      * @param $name
      * @return array|bool|mixed|null
      */
-	public function has($name)
-	{
-		return ocKeyExists($name, $_SESSION);
-	}
+    public function has($name)
+    {
+        return ocKeyExists($name, $_SESSION);
+    }
 
-	/**
-	 * 释放session，删除session文件
-	 */
-	public function destroy()
-	{
-		if (session_id()) {
-			return session_destroy();
-		}
-	}
+    /**
+     * 释放session，删除session文件
+     */
+    public function destroy()
+    {
+        if (session_id()) {
+            return session_destroy();
+        }
+    }
 
     /**
      * cookie保存session设置
@@ -182,11 +184,11 @@ class Session extends ServiceProvider
      * @param bool $secure
      * @param bool $httponly
      */
-	public function setCookie($saveTime, $path = null, $domain = false, $secure = false, $httponly = true)
-	{	
-		if (session_id()) {
-			ocService()->cookie->set(
-			    session_name(),
+    public function setCookie($saveTime, $path = null, $domain = false, $secure = false, $httponly = true)
+    {
+        if (session_id()) {
+            ocService()->cookie->set(
+                session_name(),
                 session_id(),
                 $saveTime,
                 $path,
@@ -194,34 +196,34 @@ class Session extends ServiceProvider
                 $secure,
                 $httponly
             );
-		}
-	}
+        }
+    }
 
-	/**
-	 * 设置session有效期(单位为秒)
-	 * @param integer $saveTime
-	 * @return string
-	 */
-	public function setSaveTime($saveTime)
-	{
-		return @ini_set('session.gc_maxlifetime', $saveTime);
-	}
+    /**
+     * 设置session有效期(单位为秒)
+     * @param integer $saveTime
+     * @return string
+     */
+    public function setSaveTime($saveTime)
+    {
+        return @ini_set('session.gc_maxlifetime', $saveTime);
+    }
 
-	/**
-	 * 序列化session数组
-	 */
-	public function serialize()
-	{
-		return session_encode();
-	}
+    /**
+     * 序列化session数组
+     */
+    public function serialize()
+    {
+        return session_encode();
+    }
 
-	/**
-	 * 反序列化session串
-	 * @param string $data
-	 * @return bool
-	 */
-	public function unserialize($data)
-	{
-		return session_decode($data);
-	}
+    /**
+     * 反序列化session串
+     * @param string $data
+     * @return bool
+     */
+    public function unserialize($data)
+    {
+        return session_decode($data);
+    }
 }
