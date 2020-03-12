@@ -191,6 +191,17 @@ abstract class ControllerBase extends serviceProvider
     }
 
     /**
+     * 发送响应输出
+     * @param string $body
+     * @return mixed
+     */
+    public function send($body = null)
+    {
+        $this->response->setBody($body);
+        return $this->response->send();
+    }
+
+    /**
      * 获取表单并自动验证
      * @param null $name
      * @return mixed
