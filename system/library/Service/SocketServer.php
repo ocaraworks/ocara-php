@@ -34,10 +34,10 @@ class SocketServer extends SocketBase
             $this->host = gethostbyname($host);
             $this->port = $port;
             if (!@socket_bind($this->socket, $this->host, $this->port)) {
-                $this->showSocketError('bind', 'conn');
+                $this->showSocketError('bind');
             }
             if (!@socket_listen($this->socket)) {
-                $this->showSocketError('listen', 'conn');
+                $this->showSocketError('listen');
             }
             return $this->socket;
         }

@@ -396,7 +396,7 @@ class Image extends ServiceBase
             $location = 'right-down';
         }
 
-        $color = self::parseColor($color);
+        $color = $this->parseColor($color);
         $color = @imagecolorallocate($thumb->dstObj, $color[0], $color[1], $color[2]);
         list($textLx, $textLy) = $this->getLocation($location, $imgW, $imgH, $contentW, $contentH);
 
@@ -589,10 +589,10 @@ class Image extends ServiceBase
      * @return array
      * @throws Exception
      */
-    public static function parseColor($color)
+    public function parseColor($color)
     {
         if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $color)) {
-            self::showError('fault_color');
+            $this->showError('fault_color');
         }
 
         $colorArray = array();

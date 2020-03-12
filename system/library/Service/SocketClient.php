@@ -28,17 +28,18 @@ class SocketClient extends SocketBase
         if ($limitTime) @set_time_limit($limitTime);
 
         $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+
         socket_set_option(
             $this->socket, SOL_SOCKET, SO_RCVTIMEO, array('sec' => $receiveTimeout, 'usec' => 0)
         );
+
         socket_set_option(
             $this->socket, SOL_SOCKET, SO_SNDTIMEO, array('sec' => $sendTimeout, 'usec' => 0)
         );
 
         $this->conn = @socket_connect($this->socket, gethostbyname($host), $port);
+
         if (!$this->conn) {
-            $errorCode = socket_last_error();
-            $errorMsg = socket_strerror($errorCode);
             $this->showSocketError('connect');
         }
 

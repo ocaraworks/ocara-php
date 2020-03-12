@@ -22,9 +22,10 @@ class ServiceBase extends Base
 
     /**
      * 加载语言文件
-     * @param string $filePath
+     * @param $filePath
+     * @param string $languageClass
      */
-    public static function loadLanguage($filePath)
+    public static function loadLanguage($filePath, $languageClass = null)
     {
         $parentPath = ocCommPath(dirname($filePath));
         $subPath = str_replace($parentPath, '', ocCommPath($filePath));
@@ -32,6 +33,10 @@ class ServiceBase extends Base
         $path = $parentPath . '/Languages/'
             . ucfirst(ocService()->app->getLanguage())
             . $subPath;
+
+        if ($languageClass) {
+            $path = dirname($path) . OC_DIR_SEP . $languageClass . '.php';
+        }
 
         if (ocFileExists($path)) {
             $config = include($path);
@@ -45,10 +50,11 @@ class ServiceBase extends Base
      * 获取语言配置信息
      * @param $key
      * @param array $params
+     * @param null $languageClass
      * @return array
      * @throws Exception
      */
-    public static function getLanguage($key, array $params = array())
+    public static function getLanguage($key, array $params = array(), $languageClass = null)
     {
         $class = self::getClass();
 
@@ -59,7 +65,7 @@ class ServiceBase extends Base
             } catch (\Exception $exception) {
                 throw new Exception($exception->getMessage(), $exception->getCode());
             }
-            self::loadLanguage($fileName);
+            self::loadLanguage($fileName, $languageClass);
         }
 
         if ($class && array_key_exists($class, self::$lang)) {
@@ -110,11 +116,12 @@ class ServiceBase extends Base
      * 显示错误信息
      * @param $error
      * @param array $params
+     * @param null $languageClass
      * @throws Exception
      */
-    public static function showError($error, array $params = array())
+    public function showError($error, array $params = array(), $languageClass = null)
     {
-        $error = self::getLanguage($error, $params);
+        $error = self::getLanguage($error, $params, $languageClass);
 
         throw new Exception(
             str_ireplace('%s', OC_EMPTY, $error['message']), $error['code']

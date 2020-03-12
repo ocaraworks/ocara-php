@@ -34,9 +34,9 @@ class SocketBase extends ServiceBase
      * @param string $connId
      * @throws Exception
      */
-    protected function showSocketError($errorType, $connId = 'conn')
+    protected function showSocketError($errorType, $connId = 'socket')
     {
-        $this->error = $connId === null ? socket_last_error() : socket_last_error($this->$connId);
+        $this->error = $connId ? socket_last_error($this->$connId) : socket_last_error();
 
         if (preg_match('/^[\x{4e00}-\x{9fa5}A-Za-z0-9_]+$/u', $this->error)) {
             $errorMsg = iconv('gbk', 'utf-8', socket_strerror($this->error));
@@ -44,6 +44,7 @@ class SocketBase extends ServiceBase
             $errorMsg = $this->error;
         }
 
-        $this->showError('socket_error', array($errorType, $this->error, $errorMsg));
+        $params = array('errorType' => $errorType, $this->error, $errorMsg);
+        $this->showError('socket_error', $params, 'Socket');
     }
 }
