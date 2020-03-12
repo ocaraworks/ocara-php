@@ -23,7 +23,7 @@ class Excel extends ServiceBase
     public function export($fileName, $content, $charset = 'gbk')
     {
         $charset = strtolower($charset);
-        $charset = $charset == 'utf-8' ? 'gbk' : $charset;
+        $charset = $charset ?: 'gbk';
 
         header("Content-Type: application/vnd.ms-execl;charset=$charset;name=$fileName");
         header("Content-Disposition: attachment; filename=$fileName");
