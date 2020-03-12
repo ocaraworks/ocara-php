@@ -6,6 +6,7 @@
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
+
 namespace Ocara\Models;
 
 use Ocara\Core\DriverBase;
@@ -51,7 +52,7 @@ abstract class DatabaseModel extends ModelBase
     protected static $configPath = array();
 
     protected static $optionMethods = array(
-        'orderBy', 'groupBy',  'limit', 'having', 'more'
+        'orderBy', 'groupBy', 'limit', 'having', 'more'
     );
 
     const EVENT_BEFORE_CONNECT = 'beforeConnect';
@@ -200,7 +201,7 @@ abstract class DatabaseModel extends ModelBase
             $shardingData = ocGet('current', $this->sql['sharding'], array());
             $this->sql['sharding']['current'] = array_merge($shardingData, $data);
             if ($this->sql['sharding']['current'] && method_exists($this, '__sharding')) {
-               $this->__sharding($this->sql['sharding']['current']);
+                $this->__sharding($this->sql['sharding']['current']);
             }
         }
 
@@ -744,21 +745,21 @@ abstract class DatabaseModel extends ModelBase
         }
     }
 
-	/**
-	 * 预处理
-	 * @param bool $prepare
-	 */
-	public function prepare($prepare = true)
-	{
-		$this->plugin()->is_prepare($prepare);
-	}
+    /**
+     * 预处理
+     * @param bool $prepare
+     */
+    public function prepare($prepare = true)
+    {
+        $this->plugin()->is_prepare($prepare);
+    }
 
     /**
      * 推入事务池中
      * @param DatabaseBase|null $plugin
      * @throws Exception
      */
-	public function pushTransaction(DatabaseBase $plugin = null)
+    public function pushTransaction(DatabaseBase $plugin = null)
     {
         if (!$plugin) {
             $plugin = $this->connect();
@@ -771,13 +772,13 @@ abstract class DatabaseModel extends ModelBase
      * @param array $data
      * @return mixed
      */
-	public function create(array $data)
-	{
-	    $entityClass = $this->getEntityClass();
+    public function create(array $data)
+    {
+        $entityClass = $this->getEntityClass();
         $entity = new $entityClass();
         $result = $entity->create($data);
-		return $result;
-	}
+        return $result;
+    }
 
     /**
      * 批量更新记录
@@ -786,11 +787,11 @@ abstract class DatabaseModel extends ModelBase
      * @return bool|mixed
      * @throws Exception
      */
-	public function update(array $data, $batchLimit = 1000)
-	{
+    public function update(array $data, $batchLimit = 1000)
+    {
         $batchLimit = $batchLimit ?: 1000;
 
-		if ($batchLimit) {
+        if ($batchLimit) {
             $dataType = $this->getDataType();
             if (!$dataType || in_array($dataType, DriverBase::base_diver_types())) {
                 $this->asEntity();
@@ -807,7 +808,7 @@ abstract class DatabaseModel extends ModelBase
         } else {
             return $this->baseSave($data, true);
         }
-	}
+    }
 
     /**
      * 批量删除记录
@@ -844,9 +845,9 @@ abstract class DatabaseModel extends ModelBase
      * @return mixed
      * @throws Exception
      */
-	public function baseDelete($conditionSql = null, $requireCondition = true)
-	{
-	    $isFilterCondition = $this->filterCondition();
+    public function baseDelete($conditionSql = null, $requireCondition = true)
+    {
+        $isFilterCondition = $this->filterCondition();
         $plugin = $this->connect();
         $this->getFieldsInfo();
         $generator = $this->getSqlGenerator($plugin);
@@ -868,9 +869,9 @@ abstract class DatabaseModel extends ModelBase
         }
 
         $result = $plugin->execute($sqlData);
-		$this->clearSql();
-		return $result;
-	}
+        $this->clearSql();
+        return $result;
+    }
 
     /**
      * 直接执行查询语句
@@ -878,12 +879,12 @@ abstract class DatabaseModel extends ModelBase
      * @return bool
      * @throws Exception
      */
-	public function query($sql)
-	{
+    public function query($sql)
+    {
         $plugin = $this->connect();
 
-		if ($sql) {
-		    $this->fire(self::EVENT_BEFORE_QUERY, array($sql));
+        if ($sql) {
+            $this->fire(self::EVENT_BEFORE_QUERY, array($sql));
             $sqlData = $this->getSqlData($plugin, $sql);
             if ($this->isDebug()) {
                 $this->debug(false);
@@ -893,10 +894,10 @@ abstract class DatabaseModel extends ModelBase
             }
             $this->fire(self::EVENT_AFTER_QUERY, array($result, $sql));
             return $result;
-		}
+        }
 
-		return false;
-	}
+        return false;
+    }
 
     /**
      * 直接执行查询语句查询一行
@@ -927,7 +928,7 @@ abstract class DatabaseModel extends ModelBase
      * @param $sql
      * @return array
      */
-	protected function getSqlData(DatabaseBase $database, $sql)
+    protected function getSqlData(DatabaseBase $database, $sql)
     {
         if (is_array($sql)) {
             $sqlData = $sql;
@@ -938,31 +939,31 @@ abstract class DatabaseModel extends ModelBase
         return $sqlData;
     }
 
-	/**
-	 * 获取SQL
-	 * @return array
-	 */
-	public function getSql()
-	{
-		return $this->sql;
-	}
+    /**
+     * 获取SQL
+     * @return array
+     */
+    public function getSql()
+    {
+        return $this->sql;
+    }
 
     /**
      * 设置SQL
      * @param $sql
      * @return $this
      */
-	public function setSql($sql)
-	{
-		$this->sql = $sql;
-		return $this;
-	}
+    public function setSql($sql)
+    {
+        $this->sql = $sql;
+        return $this;
+    }
 
     /**
      * 默认查询字段列表
      * @return $this
      */
-	public function defaultFields()
+    public function defaultFields()
     {
         if (method_exists($this, '__fields')) {
             $fields = $this->__fields();
@@ -995,13 +996,13 @@ abstract class DatabaseModel extends ModelBase
      * @return $this|array|null
      * @throws Exception
      */
-	public function selectOne($condition = false, $options = null)
-	{
+    public function selectOne($condition = false, $options = null)
+    {
         $result = $this
             ->asEntity()
             ->baseFind($condition, $options, true);
         return $result;
-	}
+    }
 
     /**
      * 选择多条记录
@@ -1010,13 +1011,13 @@ abstract class DatabaseModel extends ModelBase
      * @return array
      * @throws Exception
      */
-	public function selectAll($condition = null, $options = null)
-	{
+    public function selectAll($condition = null, $options = null)
+    {
         $records = $this
             ->asEntity()
             ->baseFind($condition, $options, false);
-		return $records;
-	}
+        return $records;
+    }
 
     /**
      * 返回对象
@@ -1031,7 +1032,7 @@ abstract class DatabaseModel extends ModelBase
      * 返回对象
      * @return $this
      */
-	public function asObject()
+    public function asObject()
     {
         return $this->setDataType(DriverBase::DATA_TYPE_OBJECT);
     }
@@ -1077,7 +1078,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function batch($batchLimit, $totalLimit = 0)
     {
-        $sql = $this->sql ? : array();
+        $sql = $this->sql ?: array();
         $model = new static();
 
         if (!empty($this->sql['sharding']['current'])) {
@@ -1098,7 +1099,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function each()
     {
-        $sql = $this->sql ? : array();
+        $sql = $this->sql ?: array();
         $model = new static();
 
         if (!empty($this->sql['sharding']['current'])) {
@@ -1176,10 +1177,10 @@ abstract class DatabaseModel extends ModelBase
      * @return array
      * @throws Exception
      */
-	public function getAll($condition = null, $option = null, $executeOptions = array())
-	{
-		return $this->baseFind($condition, $option, false, false, null, $executeOptions);
-	}
+    public function getAll($condition = null, $option = null, $executeOptions = array())
+    {
+        return $this->baseFind($condition, $option, false, false, null, $executeOptions);
+    }
 
     /**
      * 查询一条记录
@@ -1189,10 +1190,10 @@ abstract class DatabaseModel extends ModelBase
      * @return array
      * @throws Exception
      */
-	public function getRow($condition = null, $option = null, $executeOptions = array())
-	{
-		return $this->baseFind($condition, $option, true, false, null, $executeOptions);
-	}
+    public function getRow($condition = null, $option = null, $executeOptions = array())
+    {
+        return $this->baseFind($condition, $option, true, false, null, $executeOptions);
+    }
 
     /**
      * 获取某个字段值
@@ -1201,21 +1202,21 @@ abstract class DatabaseModel extends ModelBase
      * @return array|mixed|string|null
      * @throws Exception
      */
-	public function getValue($field, $condition = false)
-	{
-	    $isDebug = $this->isDebug();
-		$row = $this->getRow($condition, $field);
+    public function getValue($field, $condition = false)
+    {
+        $isDebug = $this->isDebug();
+        $row = $this->getRow($condition, $field);
 
         if ($isDebug) return $row;
 
-		if (is_object($row)) {
-			return property_exists($row, $field) ? $row->$field : false;
-		}
+        if (is_object($row)) {
+            return property_exists($row, $field) ? $row->$field : false;
+        }
 
-		$row = (array)$row;
-		$result = isset($row[$field]) ? $row[$field] : false;
-		return $result;
-	}
+        $row = (array)$row;
+        $result = isset($row[$field]) ? $row[$field] : false;
+        return $result;
+    }
 
     /**
      * 查询总数
@@ -1223,28 +1224,28 @@ abstract class DatabaseModel extends ModelBase
      * @return array|int|mixed
      * @throws Exception
      */
-	public function getTotal($executeOptions = array())
-	{
-	    $isDebug = $this->isDebug();
-		$queryRow = true;
+    public function getTotal($executeOptions = array())
+    {
+        $isDebug = $this->isDebug();
+        $queryRow = true;
 
-		if (!empty($this->sql['unions']) || !empty($this->sql['option']['group'])) {
-			$queryRow = false;
-		}
+        if (!empty($this->sql['unions']) || !empty($this->sql['option']['group'])) {
+            $queryRow = false;
+        }
 
-		$result = $this->baseFind(false, false, $queryRow, true, null, $executeOptions);
+        $result = $this->baseFind(false, false, $queryRow, true, null, $executeOptions);
 
         if ($isDebug) return $result;
 
-		if ($result) {
-			if (!$queryRow) {
-				$result = reset($result);
-			}
-			return (integer)$result['total'];
-		}
+        if ($result) {
+            if (!$queryRow) {
+                $result = reset($result);
+            }
+            return (integer)$result['total'];
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
     /**
      * 推入SQL选项
@@ -1252,7 +1253,7 @@ abstract class DatabaseModel extends ModelBase
      * @param $option
      * @param $queryRow
      */
-	public function pushSql($condition, $option, $queryRow)
+    public function pushSql($condition, $option, $queryRow)
     {
         if ($condition) $this->where($condition);
 
@@ -1299,13 +1300,13 @@ abstract class DatabaseModel extends ModelBase
      * @throws Exception
      */
     protected function baseFind($condition, $options, $isQueryRow, $isCount = false, $dataType = null, $executeOptions = array())
-	{
-	    $isFilterCondition = $this->filterCondition();
+    {
+        $isFilterCondition = $this->filterCondition();
         $plugin = $this->connect(false);
         $this->getFieldsInfo();
-        $dataType = $dataType ? : ($this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY);
+        $dataType = $dataType ?: ($this->getDataType() ?: DriverBase::DATA_TYPE_ARRAY);
 
-	    $this->pushSql($condition, $options, $isQueryRow);
+        $this->pushSql($condition, $options, $isQueryRow);
         $this->setJoin($this->tag, null, $this->getAlias());
         $this->fire(self::EVENT_BEFORE_SELECT_QUERY, array($isQueryRow, $isCount));
 
@@ -1328,32 +1329,32 @@ abstract class DatabaseModel extends ModelBase
         }
 
         $shardingCurrent = ocGet(array('sharding', 'current'), $this->sql, array());
-		if ($isQueryRow) {
+        if ($isQueryRow) {
             $result = $plugin->queryRow($sqlData, $isCount, $isUnion, $dataType, $shardingCurrent);
-		} else {
+        } else {
             $result = $plugin->query($sqlData, $isCount, $isUnion, $dataType, $shardingCurrent);
-		}
-
-		if ($result === false) {
-		    ocService()->errow->show('failed_database_query', array(json_encode($plugin->getError())));
         }
 
-		if (!$isCount && !$isQueryRow && $this->isPage()) {
-			$result = array('total' => $this->getTotal(), 'data' => $result);
-		}
+        if ($result === false) {
+            ocService()->errow->show('failed_database_query', array(json_encode($plugin->getError())));
+        }
+
+        if (!$isCount && !$isQueryRow && $this->isPage()) {
+            $result = array('total' => $this->getTotal(), 'data' => $result);
+        }
 
         $this->fire(self::EVENT_AFTER_SELECT_QUERY, array($result, $isQueryRow, $isCount));
 
-		$this->clearSql();
-		return $result;
-	}
+        $this->clearSql();
+        return $result;
+    }
 
     /**
      * 获取SQL生成器
      * @param $plugin
      * @return Generator
      */
-	public function getSqlGenerator($plugin)
+    public function getSqlGenerator($plugin)
     {
         $generator = new Generator($plugin);
 
@@ -1372,7 +1373,7 @@ abstract class DatabaseModel extends ModelBase
      * 是否分页
      * @return bool
      */
-	public function isPage()
+    public function isPage()
     {
         return ocGet(array('option', 'page'), $this->sql) ? true : false;
     }
@@ -1383,8 +1384,8 @@ abstract class DatabaseModel extends ModelBase
      * @return mixed|null
      * @throws Exception
      */
-	public function connect($isMaster = true)
-	{
+    public function connect($isMaster = true)
+    {
         if (isset($this->sql['option']['master'])) {
             $isMaster = $this->sql['option']['master'] !== false;
         }
@@ -1403,8 +1404,8 @@ abstract class DatabaseModel extends ModelBase
 
         $this->fire(self::EVENT_AFTER_CONNECT, array($plugin, $isMaster));
 
-		return $plugin;
-	}
+        return $plugin;
+    }
 
     /**
      * 左联接
@@ -1413,10 +1414,10 @@ abstract class DatabaseModel extends ModelBase
      * @param string $on
      * @return DatabaseModel
      */
-	public function leftJoin($class, $alias = null, $on = null)
-	{
-		return $this->setJoin($class, 'left', $alias, $on);
-	}
+    public function leftJoin($class, $alias = null, $on = null)
+    {
+        return $this->setJoin($class, 'left', $alias, $on);
+    }
 
     /**
      * 右联接
@@ -1425,10 +1426,10 @@ abstract class DatabaseModel extends ModelBase
      * @param string $on
      * @return DatabaseModel
      */
-	public function rightJoin($class, $alias = null, $on = null)
-	{
-		return $this->setJoin($class, 'right', $alias, $on);
-	}
+    public function rightJoin($class, $alias = null, $on = null)
+    {
+        return $this->setJoin($class, 'right', $alias, $on);
+    }
 
     /**
      * 内全联接
@@ -1437,81 +1438,81 @@ abstract class DatabaseModel extends ModelBase
      * @param string $on
      * @return DatabaseModel
      */
-	public function innerJoin($class, $alias = null, $on = null)
-	{
-		return $this->setJoin($class, 'inner', $alias, $on);
-	}
+    public function innerJoin($class, $alias = null, $on = null)
+    {
+        return $this->setJoin($class, 'inner', $alias, $on);
+    }
 
     /**
      * 设置别名
      * @param $alias
      * @return $this
      */
-	public function alias($alias)
+    public function alias($alias)
     {
         $this->sql['alias'] = $alias;
         return $this;
     }
 
-	/**
-	 * 附加字段
-	 * @param string|array $fields
-	 * @param string $alias
-	 * @return $this
-	 */
-	public function fields($fields, $alias = null)
-	{
-		if ($fields) {
-			$fields = array($alias, $fields);
-			$this->sql['option']['fields'][] = $fields;
-		}
+    /**
+     * 附加字段
+     * @param string|array $fields
+     * @param string $alias
+     * @return $this
+     */
+    public function fields($fields, $alias = null)
+    {
+        if ($fields) {
+            $fields = array($alias, $fields);
+            $this->sql['option']['fields'][] = $fields;
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * 附加联接关系
-	 * @param string $on
-	 * @param string $alias
-	 * @return $this
-	 */
+    /**
+     * 附加联接关系
+     * @param string $on
+     * @param string $alias
+     * @return $this
+     */
     protected function addOn($on, $alias = null)
-	{
-		$this->sql['tables'][$alias]['on'] = $on;
-		return $this;
-	}
+    {
+        $this->sql['tables'][$alias]['on'] = $on;
+        return $this;
+    }
 
-	/**
-	 * 生成AND Between条件
-	 * @param string $field
-	 * @param string $value1
-	 * @param string $value2
-	 * @param string $alias
-	 * @return $this
-	 */
-	public function between($field, $value1, $value2, $alias = null)
-	{
-		$where = array($alias, 'between', array($field, $value1, $value2), 'AND');
-		$this->sql['option']['where'][] = $where;
+    /**
+     * 生成AND Between条件
+     * @param string $field
+     * @param string $value1
+     * @param string $value2
+     * @param string $alias
+     * @return $this
+     */
+    public function between($field, $value1, $value2, $alias = null)
+    {
+        $where = array($alias, 'between', array($field, $value1, $value2), 'AND');
+        $this->sql['option']['where'][] = $where;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * 生成OR Between条件
-	 * @param string $field
-	 * @param string $value1
-	 * @param string $value2
-	 * @param string $alias
-	 * @return $this
-	 */
-	public function orBetween($field, $value1, $value2, $alias = null)
-	{
+    /**
+     * 生成OR Between条件
+     * @param string $field
+     * @param string $value1
+     * @param string $value2
+     * @param string $alias
+     * @return $this
+     */
+    public function orBetween($field, $value1, $value2, $alias = null)
+    {
         $where = array($alias, 'between', array($field, $value1, $value2), 'OR');
         $this->sql['option']['where'][] = $where;
 
         return $this;
-	}
+    }
 
     /**
      * 提取条件摘录
@@ -1553,23 +1554,23 @@ abstract class DatabaseModel extends ModelBase
      * @param string $alias
      * @return $this
      */
-	public function where($whereOrField, $signOrAlias = null, $value = null, $alias = null)
-	{
-	    if (func_num_args() < 3) {
-	        $alias = $signOrAlias;
+    public function where($whereOrField, $signOrAlias = null, $value = null, $alias = null)
+    {
+        if (func_num_args() < 3) {
+            $alias = $signOrAlias;
             if (!ocEmpty($whereOrField)) {
                 $where = array($alias, 'where', $whereOrField, 'AND');
                 $this->sql['option']['where'][] = $where;
             }
             $this->extractWhere($whereOrField);
         } else {
-	        $sign = array('AND', $signOrAlias);
+            $sign = array('AND', $signOrAlias);
             $this->complexWhere('where', $sign, $whereOrField, $value, $alias);
             $this->extractWhere(array($whereOrField => $value));
         }
 
-		return $this;
-	}
+        return $this;
+    }
 
     /**
      * 添加OR条件
@@ -1579,8 +1580,8 @@ abstract class DatabaseModel extends ModelBase
      * @param null $alias
      * @return $this
      */
-	public function orWhere($whereOrField, $signOrAlias = null, $value = null, $alias = null)
-	{
+    public function orWhere($whereOrField, $signOrAlias = null, $value = null, $alias = null)
+    {
         if (func_num_args() < 3) {
             $alias = $signOrAlias;
             if (!ocEmpty($whereOrField)) {
@@ -1593,7 +1594,7 @@ abstract class DatabaseModel extends ModelBase
         }
 
         return $this;
-	}
+    }
 
     /**
      * 生成复杂条件
@@ -1604,62 +1605,62 @@ abstract class DatabaseModel extends ModelBase
      * @param null $alias
      * @return $this
      */
-	public function complexWhere($type, array $signInfo, $field, $value, $alias = null)
-	{
-		if (isset($signInfo[1])) {
-			list($linkSign, $operator) = $signInfo;
-		} else {
-			$linkSign = 'AND';
-			$operator = $signInfo[0];
-		}
+    public function complexWhere($type, array $signInfo, $field, $value, $alias = null)
+    {
+        if (isset($signInfo[1])) {
+            list($linkSign, $operator) = $signInfo;
+        } else {
+            $linkSign = 'AND';
+            $operator = $signInfo[0];
+        }
 
-		$linkSign = strtoupper($linkSign);
-		$where = array($alias, 'cWhere', array($operator, $field, $value), $linkSign);
-		$this->sql['option'][$type][] = $where;
+        $linkSign = strtoupper($linkSign);
+        $where = array($alias, 'cWhere', array($operator, $field, $value), $linkSign);
+        $this->sql['option'][$type][] = $where;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * 更多条件
-	 * @param string $where
-	 * @param string $link
-	 * @return $this
-	 */
-	public function moreWhere($where, $link = null)
-	{
-		$link = $link ? : 'AND';
-		$this->sql['option']['moreWhere'][] = compact('where', 'link');
+    /**
+     * 更多条件
+     * @param string $where
+     * @param string $link
+     * @return $this
+     */
+    public function moreWhere($where, $link = null)
+    {
+        $link = $link ?: 'AND';
+        $this->sql['option']['moreWhere'][] = compact('where', 'link');
         $this->extractWhere($where, 'moreWhere');
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * 尾部更多SQL语句
-	 * @param string $sql
-	 * @return $this
-	 */
-	public function more($sql)
-	{
-		$sql = (array)$sql;
-		foreach ($sql as $value) {
-			$this->sql['option']['more'][] = $value;
-		}
-		return $this;
-	}
+    /**
+     * 尾部更多SQL语句
+     * @param string $sql
+     * @return $this
+     */
+    public function more($sql)
+    {
+        $sql = (array)$sql;
+        foreach ($sql as $value) {
+            $this->sql['option']['more'][] = $value;
+        }
+        return $this;
+    }
 
-	/**
-	 * 分组
-	 * @param string $groupBy
-	 * @return $this
-	 */
-	public function groupBy($groupBy)
-	{
-		if ($groupBy) {
-			$this->sql['option']['group'] = $groupBy;
-		}
-		return $this;
-	}
+    /**
+     * 分组
+     * @param string $groupBy
+     * @return $this
+     */
+    public function groupBy($groupBy)
+    {
+        if ($groupBy) {
+            $this->sql['option']['group'] = $groupBy;
+        }
+        return $this;
+    }
 
     /**
      * AND分组条件
@@ -1668,8 +1669,8 @@ abstract class DatabaseModel extends ModelBase
      * @param null $value
      * @return $this
      */
-	public function having($whereOrField, $sign = null, $value = null)
-	{
+    public function having($whereOrField, $sign = null, $value = null)
+    {
         if (func_num_args() < 3) {
             if (!ocEmpty($whereOrField)) {
                 $where = array(false, 'where', $whereOrField, 'AND');
@@ -1680,8 +1681,8 @@ abstract class DatabaseModel extends ModelBase
             $this->complexWhere('having', $sign, $whereOrField, $value, false);
         }
 
-		return $this;
-	}
+        return $this;
+    }
 
     /**
      * OR分组条件
@@ -1690,8 +1691,8 @@ abstract class DatabaseModel extends ModelBase
      * @param null $value
      * @return $this
      */
-	public function orHaving($whereOrField, $sign = null, $value = null)
-	{
+    public function orHaving($whereOrField, $sign = null, $value = null)
+    {
         if (func_num_args() < 3) {
             if (!ocEmpty($whereOrField)) {
                 $where = array(false, 'where', $whereOrField, 'OR');
@@ -1702,21 +1703,21 @@ abstract class DatabaseModel extends ModelBase
             $this->complexWhere('having', $sign, $whereOrField, $value, false);
         }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * 添加排序
-	 * @param string $orderBy
-	 * @return $this
-	 */
-	public function orderBy($orderBy)
-	{
-		if ($orderBy) {
-			$this->sql['option']['order'] = $orderBy;
-		}
-		return $this;
-	}
+    /**
+     * 添加排序
+     * @param string $orderBy
+     * @return $this
+     */
+    public function orderBy($orderBy)
+    {
+        if ($orderBy) {
+            $this->sql['option']['order'] = $orderBy;
+        }
+        return $this;
+    }
 
     /**
      * 添加union排序
@@ -1731,24 +1732,24 @@ abstract class DatabaseModel extends ModelBase
         return $this;
     }
 
-	/**
-	 * 添加limit
-	 * @param int $offset
-	 * @param int $rows
-	 * @return $this
-	 */
-	public function limit($offset, $rows = null)
-	{
-		if (isset($rows)) {
-		    $rows = $rows ? : 1;
-		} else {
-		    if (is_array($offset)) {
-		        if (isset($offset[1])) {
+    /**
+     * 添加limit
+     * @param int $offset
+     * @param int $rows
+     * @return $this
+     */
+    public function limit($offset, $rows = null)
+    {
+        if (isset($rows)) {
+            $rows = $rows ?: 1;
+        } else {
+            if (is_array($offset)) {
+                if (isset($offset[1])) {
                     $rows = $offset[1];
-		            $offset = $offset[0];
+                    $offset = $offset[0];
                 } else {
-		            $rows = isset($offset[0]) ? $offset[0] : 0;
-		            $offset = 0;
+                    $rows = isset($offset[0]) ? $offset[0] : 0;
+                    $offset = 0;
                 }
             } else {
                 $rows = $offset;
@@ -1756,9 +1757,9 @@ abstract class DatabaseModel extends ModelBase
             }
         }
 
-		$this->sql['option']['limit'] = array($offset, $rows);
-		return $this;
-	}
+        $this->sql['option']['limit'] = array($offset, $rows);
+        return $this;
+    }
 
     /**
      * 添加union limit
@@ -1769,7 +1770,7 @@ abstract class DatabaseModel extends ModelBase
     public function unionLimit($offset, $rows = null)
     {
         if (isset($rows)) {
-            $rows = $rows ? : 1;
+            $rows = $rows ?: 1;
         } else {
             $rows = $offset;
             $offset = 0;
@@ -1784,11 +1785,11 @@ abstract class DatabaseModel extends ModelBase
      * @param array $limitInfo
      * @return DatabaseModel
      */
-	public function page(array $limitInfo)
-	{
-		$this->sql['option']['page'] = true;
-		return $this->limit($limitInfo['offset'], $limitInfo['rows']);
-	}
+    public function page(array $limitInfo)
+    {
+        $this->sql['option']['page'] = true;
+        return $this->limit($limitInfo['offset'], $limitInfo['rows']);
+    }
 
     /**
      * 清除查询选项
@@ -1796,7 +1797,7 @@ abstract class DatabaseModel extends ModelBase
      * @param bool $delete
      * @return $this
      */
-	public function stripOptions($optionName, $delete = false)
+    public function stripOptions($optionName, $delete = false)
     {
         if (!empty($this->sql['option'])) {
             if ($delete) {
@@ -1808,28 +1809,28 @@ abstract class DatabaseModel extends ModelBase
         return $this;
     }
 
-	/**
-	 * 绑定占位符参数
-	 * @param string $name
-	 * @param string $value
-	 * @return $this
-	 */
-	public function bind($name, $value)
-	{
-	    $this->sql['binds'][$name] = $value;
-		return $this;
-	}
+    /**
+     * 绑定占位符参数
+     * @param string $name
+     * @param string $value
+     * @return $this
+     */
+    public function bind($name, $value)
+    {
+        $this->sql['binds'][$name] = $value;
+        return $this;
+    }
 
-	/**
-	 * * 设置统计字段
-	 * @param string $field
-	 * @return $this
-	 */
-	public function countField($field)
-	{
-		$this->sql['countField'] = $field;
-		return $this;
-	}
+    /**
+     * * 设置统计字段
+     * @param string $field
+     * @return $this
+     */
+    public function countField($field)
+    {
+        $this->sql['countField'] = $field;
+        return $this;
+    }
 
     /**
      * 获取最后执行的SQL
@@ -1839,55 +1840,55 @@ abstract class DatabaseModel extends ModelBase
         return $this->connect()->getLastSql();
     }
 
-	/**
-	 * 获取表名
-	 * @return mixed
-	 */
-	public static function getTable()
-	{
-		return static::$table;
-	}
+    /**
+     * 获取表名
+     * @return mixed
+     */
+    public static function getTable()
+    {
+        return static::$table;
+    }
 
     /**
      * 合并查询（去除重复值）
      * @param DatabaseModel $model
      * @return $this
      */
-	public function union(DatabaseModel $model)
-	{
-		$this->baseUnion($model, false);
-		return $this;
-	}
+    public function union(DatabaseModel $model)
+    {
+        $this->baseUnion($model, false);
+        return $this;
+    }
 
     /**
      * 合并查询
      * @param DatabaseModel $model
      * @return $this
      */
-	public function unionAll(DatabaseModel $model)
-	{
-		$this->baseUnion($model, true);
-		return $this;
-	}
+    public function unionAll(DatabaseModel $model)
+    {
+        $this->baseUnion($model, true);
+        return $this;
+    }
 
-	/**
-	 * 合并查询
-	 * @param $model
-	 * @param bool $unionAll
-	 */
-	public function baseUnion($model, $unionAll = false)
-	{
+    /**
+     * 合并查询
+     * @param $model
+     * @param bool $unionAll
+     */
+    public function baseUnion($model, $unionAll = false)
+    {
         $this->sql['unions']['models'][] = compact('model', 'unionAll');
-	}
+    }
 
-	/**
-	 * 获取合并设置
-	 * @return array
-	 */
-	public function getUnions()
-	{
-		return !empty($this->sql['unions']) ? $this->sql['unions'] : array();
-	}
+    /**
+     * 获取合并设置
+     * @return array
+     */
+    public function getUnions()
+    {
+        return !empty($this->sql['unions']) ? $this->sql['unions'] : array();
+    }
 
     /**
      * 联接查询
@@ -1898,10 +1899,10 @@ abstract class DatabaseModel extends ModelBase
      * @return $this
      */
     protected function setJoin($class, $type, $alias, $on = false)
-	{
-		$config = array();
+    {
+        $config = array();
 
-		if ($type == false) {
+        if ($type == false) {
             $fullname = $this->getTableName();
             $alias = $alias ?: $fullname;
             $class = $this->tag;
@@ -1911,24 +1912,24 @@ abstract class DatabaseModel extends ModelBase
             } else {
                 $this->sql['tables'] = $tables;
             }
-		} else {
-			$config = $this->getRelateConfig($class);
-			if ($config) {
-				$class = $config['class'];
-			}
+        } else {
+            $config = $this->getRelateConfig($class);
+            if ($config) {
+                $class = $config['class'];
+            }
             $fullname = $class::getDefaultTableName();
             $alias = $alias ?: $fullname;
             $this->sql['tables'][$alias] = compact('type', 'fullname', 'class', 'config');
-		}
+        }
 
-		if ($on) {
+        if ($on) {
             $this->addOn($on, $alias);
-        } elseif($config) {
+        } elseif ($config) {
             $this->addOn(OC_EMPTY, $alias);
         }
 
-		return $this;
-	}
+        return $this;
+    }
 
     /**
      * 获取关联配置
@@ -1936,36 +1937,36 @@ abstract class DatabaseModel extends ModelBase
      * @return array
      */
     public function getRelateConfig($key)
-	{
+    {
         $relations = $this->getConfig('RELATIONS');
 
-		if (empty($relations[$key])) {
-			return array();
-		}
+        if (empty($relations[$key])) {
+            return array();
+        }
 
-		$config = $relations[$key];
-		if (count($config) < 3) {
-			ocService()->error->show('fault_relate_config');
-		}
+        $config = $relations[$key];
+        if (count($config) < 3) {
+            ocService()->error->show('fault_relate_config');
+        }
 
-		list($joinType, $class, $joinOn) = $config;
-		$condition = isset($config[3]) ? $config[3]: null;
+        list($joinType, $class, $joinOn) = $config;
+        $condition = isset($config[3]) ? $config[3] : null;
 
-		if (!is_array($joinOn)) {
+        if (!is_array($joinOn)) {
             $joinOn = explode(',', $joinOn);
         }
 
-		$joinOn = array_map('trim', $joinOn);
+        $joinOn = array_map('trim', $joinOn);
 
-		if (isset($joinOn[1])) {
-			list($primaryKey, $foreignKey) = $joinOn;
-		} else {
-			$primaryKey = $foreignKey = reset($joinOn);
-		}
+        if (isset($joinOn[1])) {
+            list($primaryKey, $foreignKey) = $joinOn;
+        } else {
+            $primaryKey = $foreignKey = reset($joinOn);
+        }
 
-		$config = compact('joinType', 'class', 'primaryKey', 'foreignKey', 'condition');
-		return $config;
-	}
+        $config = compact('joinType', 'class', 'primaryKey', 'foreignKey', 'condition');
+        return $config;
+    }
 
     /**
      * 魔术方法-调用未定义的静态方法时
@@ -2008,7 +2009,7 @@ abstract class DatabaseModel extends ModelBase
         $fields = $model->getFieldsInfo();
         $fieldName = ocHumpToLine($fieldName);
 
-        if (array_key_exists($fieldName, $fields)){
+        if (array_key_exists($fieldName, $fields)) {
             $result = $model
                 ->where(array($fieldName => $value))
                 ->$method();
