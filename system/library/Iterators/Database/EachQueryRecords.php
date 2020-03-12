@@ -37,7 +37,7 @@ class EachQueryRecords implements Iterator
     function rewind()
     {
         $this->position = 0;
-        $this->getResult();
+        $this->data = $this->getResult();
     }
 
     /**
