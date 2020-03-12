@@ -67,7 +67,7 @@ class BatchQueryRecords implements Iterator
         $data = $this->data;
 
         if ($this->isEntity) {
-            $data = new EntityRecords($data, $this->dataType);
+            $data = new EntityRecords($data, $this->dataType, $this->model->getSharding());
         }
 
         return $data;

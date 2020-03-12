@@ -68,13 +68,14 @@ class DriverBase extends Base
 		return $this->prepared;
 	}
 
-	/**
-	 * 获取结果集数据
-	 * @param $dataType
-	 * @param bool $queryRow
-	 * @return array
-	 */
-	public function get_all_result($dataType, $queryRow = false)
+    /**
+     * 获取结果集数据
+     * @param int|string $dataType
+     * @param bool $queryRow
+     * @param array $shardingCurrent
+     * @return array
+     */
+	public function get_all_result($dataType = DriverBase::DATA_TYPE_ARRAY, $queryRow = false, $shardingCurrent = array())
 	{
 		$result = array();
 
@@ -92,7 +93,7 @@ class DriverBase extends Base
 			} else {
                 if (class_exists($dataType)) {
                     while ($row = $this->fetch_assoc()) {
-                        $result[] = $this->load_object($dataType, $row);
+                        $result[] = $this->load_object($dataType, $row, $shardingCurrent);
                         if ($queryRow) break;
                     }
                 }
@@ -108,14 +109,18 @@ class DriverBase extends Base
      * 新建类对象
      * @param $class
      * @param $data
+     * @param array $shardingCurrent
      * @return mixed
      */
-	public function load_object($class, $data)
+	public function load_object($class, $data, $shardingCurrent = array())
     {
         $object = new $class();
 
         if ($object instanceof BaseEntity) {
             $object->dataFrom($data);
+            if ($shardingCurrent && method_exists($object->plugin(), 'sharding')) {
+                $object->sharding($shardingCurrent);
+            }
         } else {
             foreach ($data as $key => $value) {
                 $object->$key = $value;

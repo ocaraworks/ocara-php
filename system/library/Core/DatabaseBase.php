@@ -303,10 +303,11 @@ class DatabaseBase extends Base
      * @param bool $queryRow
      * @param bool $count
      * @param bool $isUnion
-     * @param string $dataType
+     * @param int|string $dataType
+     * @param array $shardingCurrent
      * @return array|mixed
      */
-	public function getResult($queryRow = false, $count = false, $isUnion = false, $dataType = null)
+	public function getResult($queryRow = false, $count = false, $isUnion = false, $dataType = null, $shardingCurrent = array())
     {
         $dataType = $dataType ? : DriverBase::DATA_TYPE_ARRAY;
         $plugin = $this->plugin();
@@ -327,7 +328,7 @@ class DatabaseBase extends Base
             }
             $result = array(array('total' => $total));
         } else {
-            $result = $plugin->get_all_result($dataType, $queryRow);
+            $result = $plugin->get_all_result($dataType, $queryRow, $shardingCurrent);
         }
 
         if ($queryRow && $result) {
@@ -339,20 +340,21 @@ class DatabaseBase extends Base
 
     /**
      * 查询多行记录
-     * @param string|array $sqlData
+     * @param $sqlData
      * @param bool $count
      * @param bool $isUnion
-     * @param null $dataType
-     * @return array|mixed
+     * @param int|string $dataType
+     * @param array $shardingCurrent
+     * @return array|mixed|void|null
      * @throws Exception
      */
-    public function query($sqlData, $count = false, $isUnion = false, $dataType = null)
+    public function query($sqlData, $count = false, $isUnion = false, $dataType = null, $shardingCurrent = array())
     {
         $sqlData = $this->formatSqlData($sqlData);
         $result = $this->execute($sqlData);
 
         if ($result !== false) {
-            $result = $this->getResult(false, $count, $isUnion, $dataType);
+            $result = $this->getResult(false, $count, $isUnion, $dataType, $shardingCurrent);
         }
 
         return $result;
@@ -360,20 +362,21 @@ class DatabaseBase extends Base
 
     /**
      * 查询一行
-     * @param string|array $sqlData
+     * @param $sqlData
      * @param bool $count
      * @param bool $isUnion
-     * @param null $dataType
-     * @return array|mixed
+     * @param int|string $dataType
+     * @param array $shardingCurrent
+     * @return array|mixed|void|null
      * @throws Exception
      */
-    public function queryRow($sqlData, $count = false, $isUnion = false, $dataType = null)
+    public function queryRow($sqlData, $count = false, $isUnion = false, $dataType = null, $shardingCurrent = array())
     {
         $sqlData = $this->formatSqlData($sqlData);
         $result = $this->execute($sqlData);
 
         if ($result !== false) {
-            $result = $this->getResult(true, $count, $isUnion, $dataType);
+            $result = $this->getResult(true, $count, $isUnion, $dataType, $shardingCurrent);
         }
 
         return $result;

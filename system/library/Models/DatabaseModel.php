@@ -208,6 +208,17 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
+     * 获取分表信息
+     * @param string $type
+     * @return array|bool|mixed|null
+     */
+    public function getSharding($type = 'current')
+    {
+        $type = $type ?: 'current';
+        return ocGet(array('sharding', $type), $this->sql, array());
+    }
+
+    /**
      * 加载配置文件
      */
     public static function loadConfig()
@@ -1069,6 +1080,10 @@ abstract class DatabaseModel extends ModelBase
         $sql = $this->sql ? : array();
         $model = new static();
 
+        if (!empty($this->sql['sharding']['current'])) {
+            $model->sharding($this->sql['sharding']['current']);
+        }
+
         $model->setSql($sql);
         $model->clearSql(false);
         $this->clearSql();
@@ -1085,6 +1100,10 @@ abstract class DatabaseModel extends ModelBase
     {
         $sql = $this->sql ? : array();
         $model = new static();
+
+        if (!empty($this->sql['sharding']['current'])) {
+            $model->sharding($this->sql['sharding']['current']);
+        }
 
         $model->setSql($sql);
         $model->clearSql(false);
@@ -1308,10 +1327,11 @@ abstract class DatabaseModel extends ModelBase
             return $sqlData;
         }
 
+        $shardingCurrent = ocGet(array('sharding', 'current'), $this->sql, array());
 		if ($isQueryRow) {
-            $result = $plugin->queryRow($sqlData, $isCount, $isUnion, $dataType);
+            $result = $plugin->queryRow($sqlData, $isCount, $isUnion, $dataType, $shardingCurrent);
 		} else {
-            $result = $plugin->query($sqlData, $isCount, $isUnion, $dataType);
+            $result = $plugin->query($sqlData, $isCount, $isUnion, $dataType, $shardingCurrent);
 		}
 
 		if ($result === false) {

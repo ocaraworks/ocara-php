@@ -429,9 +429,10 @@ class PdoDriver extends DriverBase implements DriverInterface
      * 获取结果集数据
      * @param int|string $dataType
      * @param bool $queryRow
+     * @param array $shardingCurrent
      * @return array
      */
-	public function get_all_result($dataType = DriverBase::DATA_TYPE_ARRAY, $queryRow = false)
+	public function get_all_result($dataType = DriverBase::DATA_TYPE_ARRAY, $queryRow = false, $shardingCurrent = array())
 	{
 		$result = array();
 
@@ -449,7 +450,7 @@ class PdoDriver extends DriverBase implements DriverInterface
             } else {
                 if (class_exists($dataType)) {
                     while ($row = $this->stmt->fetch(PDO::FETCH_ASSOC)) {
-                        $result[] = $this->load_object($dataType, $row);
+                        $result[] = $this->load_object($dataType, $row, $shardingCurrent);
                         if ($queryRow) break;
                     }
                 }

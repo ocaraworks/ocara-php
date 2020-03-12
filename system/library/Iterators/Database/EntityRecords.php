@@ -17,17 +17,19 @@ class EntityRecords implements Iterator
     protected $position = 0;
     protected $data = array();
     protected $entity;
+    protected $sharding;
 
     /**
      * EntityRecords constructor.
      * @param $data
      * @param $entity
      */
-    public function __construct($data, $entity)
+    public function __construct($data, $entity, $sharding)
     {
         $this->data = $data;
         $this->entity = $entity;
         $this->length = count($this->data);
+        $this->sharding = $sharding;
     }
 
     /**
@@ -45,6 +47,11 @@ class EntityRecords implements Iterator
     function current()
     {
         $entity = new $this->entity();
+
+        if ($this->sharding) {
+            $entity->sharding($this->sharding);
+        }
+
         $entity->dataFrom($this->data[$this->key()]);
         return $entity;
     }
