@@ -112,6 +112,8 @@ return array(
         'formToken'         => 'Ocara\Core\FormToken',
         'validator'         => 'Ocara\Core\Validator',
         'code'              => 'Ocara\Service\Code',
+        'excel'             => 'Ocara\Service\Excel',
+        'date'              => 'Ocara\Service\Date',
     ),
 
     /*

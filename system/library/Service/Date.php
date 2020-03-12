@@ -14,7 +14,7 @@ use Ocara\Exceptions\Exception;
 
 class Date extends ServiceBase
 {
-    protected static $maps = array(
+    protected $maps = array(
         'year' => 'year',
         'month' => 'mon',
         'day' => 'mday',
@@ -34,10 +34,11 @@ class Date extends ServiceBase
         $dateInfo = array();
 
         if (is_string($time)) {
-            $dateInfo = $this->baseGetDateInfo($time);
+            $dateInfo = $this->baseGetDateInfo($time, 'ymd');
+            $dateInfo = array_merge($this->maps, $dateInfo);
         } elseif (is_numeric($time)) {
             $data = getdate($time);
-            foreach ($this->$maps as $key => $value) {
+            foreach ($this->maps as $key => $value) {
                 $dateInfo[$key] = $data[$value];
             }
         }
@@ -59,7 +60,7 @@ class Date extends ServiceBase
         $dateInfo = $this->getDateInfo($time);
 
         if ($dateInfo) {
-            if (array_key_exists($type, $this->$maps)) {
+            if (array_key_exists($type, $this->maps)) {
                 $dateInfo[$type] = abs($number);
                 $this->checkDate($dateInfo);
             }
@@ -80,7 +81,7 @@ class Date extends ServiceBase
     {
         $dateInfo = $this->getDateInfo($time);
 
-        if (array_key_exists($type, $this->$maps)) {
+        if (array_key_exists($type, $this->maps)) {
             return ocGet($type, $dateInfo, 0);
         }
 
@@ -99,7 +100,7 @@ class Date extends ServiceBase
         $time = $this->getDate($time, $format);
 
         if ($time) {
-            if (array_key_exists($type, $this->$maps)) {
+            if (array_key_exists($type, $this->maps)) {
                 $sign = $number < 0 ? '-' : '+';
                 $number = abs($number);
                 return $this->getDate(strtotime("{$time} {$sign} {$number} {$type}"), $format);
@@ -148,7 +149,7 @@ class Date extends ServiceBase
         } else
             list($days, $hours, $minutes, $seconds) = array_fill(0, 4, 0);
 
-        if (array_key_exists(rtrim($type, 's'), $this->$maps)) {
+        if (array_key_exists(rtrim($type, 's'), $this->maps)) {
             return $$type;
         } else {
             return compact('days', 'hours', 'minutes', 'seconds');
