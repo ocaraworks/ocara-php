@@ -133,6 +133,7 @@ return array(
         'fileCache'         => 'Ocara\Service\FileCache',
         'verifyCode'        => 'Ocara\Service\VerifyCode',
         'mail'              => 'Ocara\Service\Mail',
+        'ftp'               => 'Ocara\Service\Ftp',
     ),
 
     /*

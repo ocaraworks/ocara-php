@@ -220,9 +220,9 @@ class Ftp extends ServiceBase
      */
     public function chDir($path)
     {
-        Ocara::errorReporting(E_ALL ^ E_WARNING);
+        ocService()->app->errorReporting(E_ALL ^ E_WARNING);
         $result = @ftp_chdir($this->connection, $path);
-        Ocara::errorReporting();
+        ocService()->app->errorReporting();
 
         return $result;
     }
@@ -237,7 +237,7 @@ class Ftp extends ServiceBase
         $pathArray = explode(OC_DIR_SEP, str_replace('\\', OC_DIR_SEP, $path));
         $pwd = $this->getPwd();
 
-        Ocara::errorReporting(E_ALL ^ E_WARNING);
+        ocService()->app->errorReporting(E_ALL ^ E_WARNING);
 
         foreach ($pathArray as $dir) {
             if ($dir == '.' || $dir == '..') $dir .= OC_DIR_SEP;
@@ -249,7 +249,7 @@ class Ftp extends ServiceBase
         }
 
         @ftp_chdir($this->connection, $pwd);
-        Ocara::errorReporting();
+        ocService()->app->errorReporting();
 
         return true;
     }
