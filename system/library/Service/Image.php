@@ -691,14 +691,19 @@ class Image extends ServiceBase
     {
         $result = null;
         $type = strtoupper($type);
-        $imagePath = $this->getImagePath($image);
+
+        if (!is_resource($this->srcObj)) {
+            $this->showError('no_src_image');
+        }
+
+        $srcPath = $this->srcPath;
         $thumb = new Image();
-        $thumb->setSrcImage($imagePath);
+        $thumb->setSrcImage($srcPath);
 
         if ($suffix) {
-            $dstPath = ocDir(dirname($imagePath)) . $thumb->srcName . $suffix . '.' . $thumb->srcExtName;
+            $dstPath = ocDir(dirname($srcPath)) . $thumb->srcName . $suffix . '.' . $thumb->srcExtName;
         } else {
-            $dstPath = $imagePath;
+            $dstPath = $this->getImagePath('dst');
         }
 
         $thumb->setDstImage($dstPath);
