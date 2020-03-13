@@ -21,6 +21,7 @@ return array(
     'DEFAULT_ACTION'                => 'index', //默认动作
     'COOKIE_DOMAIN'                 => '',
 
+    'DEFAULT_PAGE_CONTENT_TYPE'     => 'html', //页面默认返回格式
     'DEFAULT_API_CONTENT_TYPE'      => 'json', //API默认返回格式
 
     /*
