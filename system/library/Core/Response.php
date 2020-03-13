@@ -93,13 +93,29 @@ class Response extends Base
     }
 
     /**
+     * 清理头信息和消息体
+     */
+    public function clear()
+    {
+        $this->headers = array();
+        $this->body = OC_EMPTY;
+    }
+
+    /**
      * 设置响应体
      * @param $body
+     * @param bool $replace
      */
-    public function setBody($body)
+    public function setBody($body, $replace = false)
     {
         if (!$this->body) {
             $this->body = $body;
+        } else {
+            if ($replace) {
+                $this->body = $body;
+            } else {
+                $this->body .= $body;
+            }
         }
     }
 

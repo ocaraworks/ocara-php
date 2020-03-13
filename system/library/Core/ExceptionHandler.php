@@ -90,9 +90,8 @@ class ExceptionHandler extends Base
     {
         $response = ocService('response', true);
 
-        if (!$response->getHeaderOption('statusCode')) {
-            $response->setStatusCode(Response::STATUS_SERVER_ERROR);
-        }
+        $response->clear();
+        $response->setStatusCode(Response::STATUS_SERVER_ERROR);
 
         try {
             $this->fire(self::EVENT_REPORT, array($exception));
@@ -100,9 +99,9 @@ class ExceptionHandler extends Base
             $this->fire(self::EVENT_OUTPUT, array($exception));
             $this->fire(self::EVENT_AFTER_OUTPUT, array($exception));
         } catch (\Exception $exception) {
-            $this->output($exception, null, null);
+            $this->output($exception);
         } catch (\Error $error) {
-            $this->output($error, null, null);
+            $this->output($error);
         }
 
         $response->send();
@@ -124,7 +123,7 @@ class ExceptionHandler extends Base
      * @param $object
      * @throws Exception
      */
-    public function output($exception, $event, $object)
+    public function output($exception, $event = null, $object = null)
     {
         $error = ocGetExceptionData($exception);
         $responseFormat = $this->responseFormat ?: ocConfig('DEFAULT_RESPONSE_FORMAT', null);
@@ -181,6 +180,6 @@ class ExceptionHandler extends Base
 
         $content = ocService('api', true)->format($message, $contentType);
         $response->setStatusCode(Response::STATUS_SERVER_ERROR);
-        $response->setBody($content);
+        $response->setBody($content, true);
     }
 }
