@@ -76,7 +76,7 @@ class Download extends ServiceBase
             'Expires: 0',
         );
 
-        ocService()->response->setHeader();
+        ocService()->response->setHeader($headers);
         ocService()->response->setBody($content);
     }
 
