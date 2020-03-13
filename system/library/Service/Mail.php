@@ -108,7 +108,6 @@ class Mail extends ServiceBase
 
     /**
      * 本机smtp方式发送邮件
-     * :TODO 未测试
      * @param string $header
      * @param array $params
      * @return bool
@@ -116,7 +115,9 @@ class Mail extends ServiceBase
     public function localSend($header = null, $params = null)
     {
         if ($this->host) @ini_set('SMTP', $this->host);
-        if ($this->port) @ini_set('smtp_port', $this->port);
+        if ($this->port) @ini_set('smtp_port', $this->port ?: 25);
+
+        @ini_set('sendmail_from',$this->sender);
 
         $this->params = $params;
         $contentType = 'multipart/alternative';
