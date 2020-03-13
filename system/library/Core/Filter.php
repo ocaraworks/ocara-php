@@ -176,24 +176,6 @@ class Filter extends Base
     }
 
     /**
-     * 过滤路径
-     * @param string|array $path
-     * @return array|mixed
-     */
-    public function path($path)
-    {
-        if (is_array($path)) {
-            return array_map(__METHOD__, $path);
-        } else {
-            return preg_replace(
-                '/\/{2,}|\\{1,}/',
-                OC_DIR_SEP, preg_replace('/[^\w\/\]/',
-                    OC_EMPTY, $path)
-            );
-        }
-    }
-
-    /**
      * 过滤Request来的数据
      * @param $content
      * @return array|string

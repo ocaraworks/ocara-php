@@ -115,6 +115,7 @@ return array(
         'code'              => 'Ocara\Service\Code',
         'excel'             => 'Ocara\Service\Excel',
         'date'              => 'Ocara\Service\Date',
+        'download'          => 'Ocara\Service\Download',
     ),
 
     /*
@@ -130,7 +131,6 @@ return array(
         'validate'          => 'Ocara\Service\Validate',
         'auth'              => 'Ocara\Service\Auth',
         'xml'               => 'Ocara\Service\Xml',
-        'download'          => 'Ocara\Service\Download',
         'fileCache'         => 'Ocara\Service\FileCache',
         'verifyCode'        => 'Ocara\Service\VerifyCode',
         'mail'              => 'Ocara\Service\Mail',

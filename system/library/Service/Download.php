@@ -34,8 +34,7 @@ class Download extends ServiceBase
         }
 
         if (!$saveName) {
-            $options = ocService()->filter->path($filePath);
-            $saveName = end($options);
+            $saveName = basename($filePath);
         }
 
         $content = ocRead($filePath);
