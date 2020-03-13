@@ -84,7 +84,7 @@ class File extends ServiceBase
      */
     public function rename($filePath, $newName)
     {
-        return ocFileExists($filePath) ? false : @rename($filePath, $filePath);
+        return ocFileExists($filePath) ? @rename($filePath, $newName) : false;
     }
 
     /**

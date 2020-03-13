@@ -109,7 +109,6 @@ return array(
         'staticPath'        => 'Ocara\Core\StaticPath',
         'globals'           => 'Ocara\Core\Globals',
         'errorOutput'       => 'Ocara\Service\ErrorOutput',
-        'fileLog'           => 'Ocara\Service\FileLog',
         'formToken'         => 'Ocara\Core\FormToken',
         'validator'         => 'Ocara\Core\Validator',
         'code'              => 'Ocara\Service\Code',
@@ -136,6 +135,7 @@ return array(
         'mail'              => 'Ocara\Service\Mail',
         'ftp'               => 'Ocara\Service\Ftp',
         'image'             => 'Ocara\Service\Image',
+        'fileLog'           => 'Ocara\Service\FileLog',
     ),
 
     /*
@@ -218,9 +218,9 @@ return array(
             'fonts'           => 'data',
 
             'runtime'         => '',
-            'temp'            => 'data/runtime',
-            'logs'            => 'data/runtime',
-            'sessions'        => 'data/runtime',
+            'temp'            => 'runtime',
+            'logs'            => 'runtime',
+            'sessions'        => 'runtime',
 
             'support'         => '',
             'functions'       => '',

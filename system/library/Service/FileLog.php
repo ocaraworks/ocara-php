@@ -113,8 +113,7 @@ class FileLog extends ServiceBase implements LogInterface
             return ocRead($this->sysLogPath);
         }
 
-        $file = $this->logRoot . ocDir($logName) . $this->getLastLogFile($logName);
-
+        $file = $this->getLastLogFile($logName);
         return ocFileExists($file) ? ocRead($file) : null;
     }
 
@@ -151,8 +150,7 @@ class FileLog extends ServiceBase implements LogInterface
             return ocWrite($this->sysLogPath, OC_EMPTY);
         }
 
-        $path = $this->logRoot . ocDir($logName) . $this->getLastLogFile($logName);
-        $path = ocFileExists($path);
+        $path = $this->getLastLogFile($logName);
 
         if ($path) {
             return ocWrite($path, OC_EMPTY);
