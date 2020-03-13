@@ -24,7 +24,7 @@ class Font extends Base
     public function get($name = null, $args = null)
     {
         if (!$name) {
-            $name = ocConfig('DEFAULT_FONT', 'simhei');
+            $name = ocConfig('DEFAULT_FONT', 'Verdana');
         }
 
         if (!preg_match('/^.*\.\w{2,5}$/i', $name)) {

@@ -211,6 +211,7 @@ return array(
             'data'            => '',
             'docs'            => 'data',
             'fields'          => 'data',
+            'fonts'           => 'data',
 
             'runtime'         => '',
             'temp'            => 'data/runtime',

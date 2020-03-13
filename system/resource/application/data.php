@@ -28,7 +28,8 @@ $dirs = array(
     ),
     'data' => array(
         'docs',
-        'fields'
+        'fields',
+        'fonts'
     ),
     'runtime' => array(
         'logs',

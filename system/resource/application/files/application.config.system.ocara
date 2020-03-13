@@ -131,7 +131,7 @@ return array(
     /*
      * 默认字体（用于图片处理等）
      */
-    'DEFAULT_FONT' => 'simhei',
+    'DEFAULT_FONT' => 'Verdana',
 
     /*
      * 时间格式设置
