@@ -23,17 +23,20 @@ class Font extends Base
      */
     public function get($name = null, $args = null)
     {
-        if ($name) {
-            if (!preg_match('/^.*\.\w{2,5}$/i', $name)) {
-                $name = $name . '.ttf';
-            }
-        } else {
-            $name = ocConfig('DEFAULT_FONT', 'simhei.ttf');
+        if (!$name) {
+            $name = ocConfig('DEFAULT_FONT', 'simhei');
         }
 
-        if (($path = ocFileExists(OC_SYS . 'data/fonts/' . $name)) or
-            ($path = ocFileExists(OC_EXT . 'data/fonts/' . $name))
-        ) return $path;
+        if (!preg_match('/^.*\.\w{2,5}$/i', $name)) {
+            $name = $name . '.ttf';
+        }
+
+        $path = ocFileExists(OC_SYS . 'data/fonts/' . $name);
+        if (!$path) {
+            $path = ocFileExists(OC_EXT . 'data/fonts/' . $name);
+        }
+
+        if ($path) return $path;
 
         ocService()->error->show('not_exists_font');
     }

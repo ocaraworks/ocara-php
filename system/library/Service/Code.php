@@ -14,7 +14,7 @@ use Ocara\Core\ServiceBase;
 class Code extends ServiceBase
 {
     /**
-     * 生成随机友好字符（Ascii码值从 33到126）
+     * 生成随机友好字符（Ascii码值从33到126）
      * @param $length
      * @return string|null
      */
