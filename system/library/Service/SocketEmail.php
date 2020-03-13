@@ -72,22 +72,27 @@ class SocketEmail extends ServiceBase
             $this->writeLog('Email send error on HELO.');
             return false;
         }
+
         if (!$this->putCmd("AUTH LOGIN " . base64_encode($this->username), 334)) {
             $this->writeLog('Email send error on AUTH LOGIN.');
             return false;
         }
+
         if (!$this->putCmd(base64_encode($this->password), 235)) {
             $this->writeLog('Email send error on password.');
             return false;
         }
+
         if (!$this->putCmd("MAIL FROM:<{$this->sender}>", 250)) {
             $this->writeLog('Email send error on MAIL FROM.');
             return false;
         }
+
         if (!$this->putCmd("RCPT TO:<{$receiver}>", 250)) {
             $this->writeLog('Email send error on AUTH RCPT TO.');
             return false;
         }
+
         if (!$this->putCmd("DATA", 354)) {
             $this->writeLog('Email send error on AUTH DATA.');
             return false;
