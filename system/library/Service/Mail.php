@@ -89,8 +89,11 @@ class Mail extends ServiceBase
      */
     public function setReceiver($receiver, $cc = null, $bcc = null)
     {
-        $this->cc = $this->packCc(ocForceArray($cc));
-        $this->bcc = $this->packBcc(ocForceArray($bcc));
+        $cc = ocForceArray($cc);
+        $bcc = ocForceArray($bcc);
+
+        $this->cc = $this->packCc($cc);
+        $this->bcc = $this->packBcc($bcc);
         $this->receiver = $receiver;
     }
 

@@ -33,6 +33,8 @@ class SocketEmail extends ServiceBase
      */
     public function __construct($sender, $host, $port, $username, $password, $timeout = 20)
     {
+        $port = $port ?: 25;
+
         $this->fo = @fsockopen(gethostbyname($host), $port, $errNo, $errMsg, $timeout);
 
         if (empty($this->fo)) {
@@ -62,25 +64,32 @@ class SocketEmail extends ServiceBase
 
         $this->lastResult = fgets($this->fo, 512);
         if (!preg_match('/^220/', $this->lastResult)) {
+            $this->writeLog('Email send error on 220 validate.');
             return false;
         }
 
         if (!$this->putCmd("HELO 127.0.0.1", 250)) {
+            $this->writeLog('Email send error on HELO.');
             return false;
         }
         if (!$this->putCmd("AUTH LOGIN " . base64_encode($this->username), 334)) {
+            $this->writeLog('Email send error on AUTH LOGIN.');
             return false;
         }
         if (!$this->putCmd(base64_encode($this->password), 235)) {
+            $this->writeLog('Email send error on password.');
             return false;
         }
         if (!$this->putCmd("MAIL FROM:<{$this->sender}>", 250)) {
+            $this->writeLog('Email send error on MAIL FROM.');
             return false;
         }
         if (!$this->putCmd("RCPT TO:<{$receiver}>", 250)) {
+            $this->writeLog('Email send error on AUTH RCPT TO.');
             return false;
         }
         if (!$this->putCmd("DATA", 354)) {
+            $this->writeLog('Email send error on AUTH DATA.');
             return false;
         }
 
@@ -88,11 +97,21 @@ class SocketEmail extends ServiceBase
         fputs($this->fo, $header . "\r\n" . $content);
 
         if (!$this->putCmd("QUIT", 250)) {
+            $this->writeLog('Email send error on QUIT.');
             return false;
         }
 
         fclose($this->fo);
         return true;
+    }
+
+    /**
+     * 写日志
+     * @param $message
+     */
+    public function writeLog($message)
+    {
+        ocService()->log->write($message . '|message: ' . $this->lastResult);
     }
 
     /**
@@ -110,7 +129,7 @@ class SocketEmail extends ServiceBase
         $this->lastResult = @fgets($this->fo, 1024);
 
         if (preg_match('/^' . $errorStatus . OC_DIR_SEP, $this->lastResult)) {
-            return true;
+            return $this->lastResult;
         }
 
         @fclose($this->fo);
