@@ -82,7 +82,6 @@ class Common extends ControllerBase implements ControllerInterface
     /**
      * 执行动作函数方法实体
      * @param $actionMethod
-     * @throws Exception
      */
     protected function doFunctionAction($actionMethod)
     {
@@ -150,7 +149,6 @@ class Common extends ControllerBase implements ControllerInterface
      * 渲染API
      * @param mixed $result
      * @param bool $useDefault
-     * @throws Exception
      */
     public function render($result = null, $useDefault = true)
     {

@@ -157,7 +157,7 @@ class VerifyCode extends ServiceBase
 
         $imageFunc = $this->functions[$this->extName];
 
-        echo $imageFunc($this->imgObj);
+        ocService()->response->setBody($imageFunc($this->imgObj));
     }
 
     /**

@@ -131,7 +131,8 @@ return array(
         'xml'               => 'Ocara\Service\Xml',
         'download'          => 'Ocara\Service\Download',
         'fileCache'         => 'Ocara\Service\FileCache',
-        'verifyCode'        => 'Ocara\Service\VerifyCode'
+        'verifyCode'        => 'Ocara\Service\VerifyCode',
+        'mail'              => 'Ocara\Service\Mail',
     ),
 
     /*

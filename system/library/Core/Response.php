@@ -88,7 +88,8 @@ class Response extends Base
      */
     public function isSent()
     {
-        return $this->isSent;
+        $output = $this->getOutput();
+        return $this->isSent || !empty($output);
     }
 
     /**
@@ -109,6 +110,15 @@ class Response extends Base
     public function getBody()
     {
         return $this->body;
+    }
+
+    /**
+     * 获取缓冲输出
+     * @return false|string
+     */
+    public function getOutput()
+    {
+        return ob_get_contents();
     }
 
     /**

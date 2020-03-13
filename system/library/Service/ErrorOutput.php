@@ -16,12 +16,15 @@ class ErrorOutput extends ServiceBase
     /**
      * 打印错误
      * @param $error
+     * @return mixed
      */
     public function display($error)
     {
         if ($error['type'] == 'program_error') {
             $displayError = @ini_get('display_errors');
-            if (empty($displayError)) die();
+            if (empty($displayError)) {
+                return ocService()->response->send();
+            }
         }
 
         if (function_exists('ocLang')) {
