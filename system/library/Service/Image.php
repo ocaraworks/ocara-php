@@ -529,24 +529,22 @@ class Image extends ServiceBase
 
     /**
      * 水平翻转
-     * @param string $image
-     * @param null $suffix
+     * @param string $suffix
      * @throws Exception
      */
-    public function flipH($image = 'src', $suffix = null)
+    public function flipH($suffix = null)
     {
-        $this->flip('h', $image, $suffix);
+        $this->flip('h', $suffix);
     }
 
     /**
      * 垂直翻转
-     * @param string $image
-     * @param null $suffix
+     * @param string $suffix
      * @throws Exception
      */
-    public function flipV($image = 'src', $suffix = null)
+    public function flipV($suffix = null)
     {
-        $this->flip('v', $image, $suffix);
+        $this->flip('v', $suffix);
     }
 
     /**
@@ -682,12 +680,11 @@ class Image extends ServiceBase
     /**
      * 图片翻转
      * @param $type
-     * @param $image
      * @param null $suffix
      * @return bool|int|mixed
      * @throws Exception
      */
-    protected function flip($type, $image, $suffix = null)
+    protected function flip($type, $suffix = null)
     {
         $result = null;
         $type = strtoupper($type);
