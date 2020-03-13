@@ -32,8 +32,13 @@ class Font extends Base
         }
 
         $path = ocFileExists(OC_SYS . 'data/fonts/' . $name);
+
         if (!$path) {
             $path = ocFileExists(OC_EXT . 'data/fonts/' . $name);
+        }
+
+        if (!$path) {
+            $path = ocPath('data', 'fonts/' . $name);
         }
 
         if ($path) return $path;
