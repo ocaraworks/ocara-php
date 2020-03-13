@@ -134,6 +134,7 @@ return array(
         'verifyCode'        => 'Ocara\Service\VerifyCode',
         'mail'              => 'Ocara\Service\Mail',
         'ftp'               => 'Ocara\Service\Ftp',
+        'image'             => 'Ocara\Service\Image',
     ),
 
     /*

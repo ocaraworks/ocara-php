@@ -29,6 +29,7 @@ class ErrorOutput extends ServiceBase
 
         if (function_exists('ocLang')) {
             $error['desc'] = ocLang($error['type']);
+            $error['message'] = ocLang($error['message']);
         } else {
             $error['desc'] = ucfirst($error['type']) . ': ';
         }

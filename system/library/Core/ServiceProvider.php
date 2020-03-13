@@ -127,20 +127,19 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 新建动态服务组件
-     * @param string $name
+     * @param $name
      * @param array $params
      * @param array $deps
      * @return mixed
-     * @throws Exception
      */
     public function createService($name, $params = array(), $deps = array())
     {
         if ($this->container && $this->container->has($name)) {
             return $this->container->create($name, $params, $deps);
-        } elseif (ocContainer()->hasBind($name)) {
+        } elseif (ocContainer()->hasBindAll($name)) {
             return ocContainer()->create($name, $params, $deps);
         } else {
-            throw new Exception('no_service', array($name));
+            ocService()->error->show('no_service', array($name));
         }
     }
 

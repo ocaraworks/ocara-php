@@ -343,7 +343,7 @@ class Container extends Basis
                     throw new Exception($exception->getMessage(), $exception->getCode());
                 }
                 if (!$isStatic) {
-                    throw new Exception("invalid_class_static_method", $source);
+                    throw new Exception("invalid_class_static_method");
                 }
             }
         }

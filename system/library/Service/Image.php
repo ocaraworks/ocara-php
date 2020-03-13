@@ -147,24 +147,25 @@ class Image extends ServiceBase
     /**
      * 新建缩略图
      * @param $proportion
-     * @param null $dstPath
-     * @return bool|int|void
+     * @param string $dstDir
+     * @return bool|int|void|null
      * @throws Exception
      */
-    public function zoomImage($proportion, $dstPath = null)
+    public function zoomImage($proportion, $dstDir = null)
     {
         $result = null;
+
         if (!(is_array($proportion) && !empty($proportion))) return false;
 
-        if (!$dstPath) {
-            if (!$this->dstPath) {
-                $this->showError('need_image_path');
-            }
-            $dstPath = $this->dstPath;
+        if (!is_resource($this->srcObj)) {
+            $this->showError('no_src_image');
         }
 
-        $thumb = new Image();
-        $thumb->setSrcImage($dstPath);
+        $srcPath = $this->srcPath;
+        $dstDir = $dstDir ?: dirname($srcPath);
+
+        $thumb = new static();
+        $thumb->setSrcImage($srcPath);
 
         foreach ($proportion as $key => $val) {
             if (!(is_array($val) && !empty($val))) continue;
@@ -180,10 +181,13 @@ class Image extends ServiceBase
                 $h = $thumb->srcHeight;
             }
 
-            $dstPath = ocDir(dirname($dstPath)) . $thumb->srcName . $suffix . '.' . $thumb->srcExtName;
+            ocCheckPath($dstDir);
+
+            $dstPath = ocDir($dstDir) . $thumb->srcName . $suffix . '.' . $thumb->srcExtName;
             $thumb->setDstImage($dstPath);
             $result = $thumb->clipImage($thumb->srcWidth, $thumb->srcHeight, 0, 0, $w, $h);
         }
+
         return $result;
     }
 
@@ -204,8 +208,10 @@ class Image extends ServiceBase
         $createFunc = 'imagecreatefrom' . ($this->srcExtName == 'jpg' ? 'jpeg' : $this->srcExtName);
         $this->srcObj = $createFunc($srcPath);
         $this->srcPath = $srcPath;
+
         $this->srcWidth = $this->getInfo($this->srcObj, 'w');
         $this->srcHeight = $this->getInfo($this->srcObj, 'h');
+
         return $this->srcObj;
     }
 
@@ -224,45 +230,45 @@ class Image extends ServiceBase
 
     /**
      * 添加水印
-     * @param $dstImage
      * @param $markInfo
      * @param null $suffix
      * @return array|bool|false
      * @throws Exception
      */
-    public function addMark($dstImage, $markInfo, $suffix = null)
+    public function addMark($markInfo, $suffix = null)
     {
         if (!(is_array($markInfo) && !empty($markInfo))) return false;
 
-        $imagePath = $this->getImagePath($dstImage);
-        $thumb = new Image();
-        $thumb->setSrcImage($imagePath);
+        if (!is_resource($this->srcObj)) {
+            $this->showError('no_src_image');
+        }
+
+        $srcPath = $this->srcPath;
+
+        $thumb = new static();
+        $thumb->setSrcImage($srcPath);
 
         if (!array_key_exists(0, $markInfo) || !array_key_exists(1, $markInfo)) {
             $this->showError('fault_mark_param', $markInfo);
         }
 
         if ($suffix) {
-            $dstPath = ocDir(dirname($imagePath)) . $thumb->srcName . $suffix . '.' . $thumb->srcExtName;
+            $dstPath = ocDir(dirname($srcPath)) . $thumb->srcName . $suffix . '.' . $thumb->srcExtName;
         } else {
-            $dstPath = $imagePath;
+            $dstPath = $this->getImagePath('dst');
         }
 
         $thumb->setDstImage($dstPath);
+        $thumb->dstObj = $thumb->createImage($thumb->srcWidth, $thumb->srcHeight);
 
-        if ($suffix) {
-            $thumb->dstObj = $thumb->createImage($thumb->srcWidth, $thumb->srcHeight);
-            @imagecopy(
-                $thumb->dstObj, $thumb->srcObj, 0, 0, 0, 0, $thumb->srcWidth, $thumb->srcHeight
-            );
-            if ($thumb->basePrint()) {
-                $thumb->baseSave();
-            } else {
-                $this->showError('failed_create_image');
-            }
+        @imagecopy(
+            $thumb->dstObj, $thumb->srcObj, 0, 0, 0, 0, $thumb->srcWidth, $thumb->srcHeight
+        );
+
+        if ($thumb->basePrint()) {
+            $thumb->baseSave();
         } else {
-            $thumb->dstPath = $thumb->srcPath;
-            $thumb->dstObj = $thumb->srcObj;
+            $this->showError('failed_create_image');
         }
 
         $imgW = $this->getInfo($thumb->dstObj, 'w');
