@@ -126,7 +126,7 @@ class Mail extends ServiceBase
             $contentType = 'multipart/mixed';
         }
 
-        $this->header = $this->getHeader($contentType);
+        $this->header = $header ?: $this->getHeader($contentType);
         $this->content = $this->getContent();
 
         return mail($this->receiver, $this->subject, $this->content, $this->header, $this->params);
