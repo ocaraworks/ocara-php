@@ -52,14 +52,14 @@ class Form extends Base
      */
     public function init($action = null, array $attributes = array())
     {
-        $this->attributes = array(
+        $initAttributes = array(
             'id' => $this->name,
             'name' => $this->name,
             'action' => $action ?: '#',
         );
 
+        $this->attributes = array_merge($this->attributes, $initAttributes, $attributes);
         $this->method('POST');
-        $this->attributes = array_merge($this->attributes, $attributes);
 
         return $this;
     }
