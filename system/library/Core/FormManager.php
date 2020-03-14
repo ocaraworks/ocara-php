@@ -165,8 +165,7 @@ class FormManager extends ServiceProvider
      */
     public function checkForm($requestToken)
     {
-        $postForm = $this->getSubmitForm($requestToken);
-        return $postForm;
+        return $this->getSubmitForm($requestToken);
     }
 
     /**
