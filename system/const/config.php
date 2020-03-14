@@ -12,7 +12,9 @@ use Ocara\Core\Url;
 defined('OC_PATH') or exit('Forbidden!');
 
 $config = ocContainer()->config;
+$webHost = $config->get('WEB_HOST', OC_EMPTY);
 
+//是否外部引入模式
 defined('OC_INVOKE') OR define('OC_INVOKE', false);
 
 //系统语言
@@ -23,11 +25,9 @@ defined('OC_INDEX_FILE') OR define('OC_INDEX_FILE', $config->get('OC_INDEX_FILE'
 
 //根目录URL
 defined('OC_ROOT_URL') or define('OC_ROOT_URL',
-    PHP_SAPI == 'cli' || OC_INVOKE ?
-        OC_DIR_SEP :
-        OC_PROTOCOL
-        . '://'
-        . ocDir(OC_HOST, ltrim(ocCommPath(dirname($_SERVER['SCRIPT_NAME'])), OC_DIR_SEP))
+    PHP_SAPI == 'cli' || OC_INVOKE
+        ? ocHost($webHost, false)
+        : ocHost($webHost ?: OC_HOST) . ocDir(ltrim(ocCommPath(dirname($_SERVER['SCRIPT_NAME'])), OC_DIR_SEP))
 );
 
 //URL路由类型

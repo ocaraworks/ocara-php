@@ -173,7 +173,7 @@ class Url extends Base
             $params = array();
         }
 
-        if ($static && ocService()->staticPath->open) {
+        if ($static && ocService()->staticPath->isOpen()) {
             list($file, $args) = ocService()->staticPath->getStaticFile($module, $controller, $action, $params);
             if ($file && is_file(ocPath('static', $file))) {
                 return $relative ? OC_DIR_SEP . $file : OC_ROOT_URL . $file;

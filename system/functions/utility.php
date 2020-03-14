@@ -731,6 +731,19 @@ function ocClassName($name)
 /*************************************************************************************************
  * 路径获取函数
  ************************************************************************************************/
+/**
+ * 获取协议主机
+ * @param $host
+ * @param bool $requireProtocol
+ * @return string
+ */
+function ocHost($host, $requireProtocol = true)
+{
+    if ($requireProtocol) {
+        return OC_PROTOCOL . '://' . ($host ? $host . OC_DIR_SEP: OC_EMPTY);
+    }
+    return ($host ? OC_PROTOCOL . '://' . $host : OC_EMPTY) . OC_DIR_SEP;
+}
 
 /**
  * 获取完整路径
