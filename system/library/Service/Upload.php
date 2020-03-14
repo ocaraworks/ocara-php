@@ -196,7 +196,7 @@ class Upload extends ServiceBase
      */
     private function uploadFile($row, $path, $index, $i)
     {
-        $key = is_integer($i) ? $index . '.' . $i : $index;
+        $key = is_integer($i) ? array($index, $i) : $index;
         $save_path = $row['save_path'];
 
         if ($row['tmp_name'] && ocKeyExists($key, $this->files)) {

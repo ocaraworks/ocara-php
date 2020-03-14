@@ -136,6 +136,7 @@ return array(
         'ftp'               => 'Ocara\Service\Ftp',
         'image'             => 'Ocara\Service\Image',
         'fileLog'           => 'Ocara\Service\FileLog',
+        'upload'            => 'Ocara\Service\Upload',
     ),
 
     /*
