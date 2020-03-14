@@ -146,10 +146,14 @@ class StaticPath extends Base
         $pathParams = $pathStr ? explode(OC_DIR_SEP, trim($pathStr, OC_DIR_SEP)) : array();
         $fileParams = $fileStr ? explode($this->delimiter, trim($fileStr, $this->delimiter)) : array();
 
-        list($pathStr, $paramData) = $this->getParams($offset, $pathParams, $data, $pathStr, true);
-        list($fileStr, $paramData) = $this->getParams($offset + count($pathParams), $fileParams, $data, $fileStr);
+        list($pathStr, $dirParamData) = $this->getParams($offset, $pathParams, $data, $pathStr);
+        list($fileStr, $fileParamData) = $this->getParams($offset + count($pathParams), $fileParams, $data, $fileStr);
 
-        $path = ($fileStr ? $fileStr : $action) . $extensionName;
+        $paramData = array_merge($dirParamData, $fileParamData);
+
+        $path = $pathStr ? ocDir($pathStr) : OC_EMPTY;
+        $path = $path . ($fileStr ? $fileStr : $action) . $extensionName;
+
         return array($path, $paramData);
     }
 
