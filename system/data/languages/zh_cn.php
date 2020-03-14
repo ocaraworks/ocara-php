@@ -95,7 +95,7 @@ return array(
     'fault_callback_validate'          => array(2301, '字段%s的回调验证配置有误！'),
     'fault_debug_param'                => array(2302, '调试参数不正确！'),
     'fault_static_field'               => array(2303, '静态生成的参数字符或分隔符不正确。'),
-    'fault_static_route'               => array(2304, '静态生成路由配置有误，应包含{c}控制器，{a}动作，{p}查询字符串，并且以斜杠“/”或横杠“-”分隔，如：{c}/{a}-{p}。'),
+    'fault_static_route'               => array(2304, '静态生成路由配置有误，应包含{c}控制器，{a}动作，{p}查询字符串，并且以斜杠“/”或横杠“{delimiter}”分隔，如：{c}/{a}-{p}。'),
     'fault_url'                        => array(2305, '抱歉，您输入的网址有误！'),
     'fault_primary_num'                => array(2306, '主键与值数目不匹配。'),
     'fault_save_data'                  => array(2307, '保存数据为空，请检查是否存在字段或别名！'),
