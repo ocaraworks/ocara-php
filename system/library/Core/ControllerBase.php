@@ -16,7 +16,6 @@ defined('OC_PATH') or exit('Forbidden!');
 abstract class ControllerBase extends serviceProvider
 {
     /**
-     * @var $_provider 控制器提供者
      * @var $isPostSubmit 是否POST提交
      * @var $checkForm 是否检测表单
      */
