@@ -166,8 +166,9 @@ class Form extends Base
     /**
      * 添加关联Model
      * @param $class
-     * @param string $alias
+     * @param null $alias
      * @return $this
+     * @throws Exception
      */
     public function model($class, $alias = null)
     {

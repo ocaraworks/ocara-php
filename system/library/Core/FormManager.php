@@ -144,11 +144,16 @@ class FormManager extends ServiceProvider
         $tokens = $this->session->get($this->getTokenSaveName()) ?: array();
         $formName = array_search($requestToken, $tokens);
 
-        if ($formName === false || !$this->hasForm($formName)) {
-            $this->error->show('not_exists_form');
+        if (ocConfig('check_repeat_submit', false)) {
+            if ($formName === false || !$this->hasForm($formName)) {
+                $this->error->show('not_exists_form');
+            }
         }
 
-        $this->form = $this->getForm($formName);
+        if ($formName) {
+            $this->form = $this->getForm($formName);
+        }
+
         return $this->form;
     }
 
