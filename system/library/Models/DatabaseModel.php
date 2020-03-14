@@ -326,7 +326,7 @@ abstract class DatabaseModel extends ModelBase
             return self::$configPath[$tag];
         }
 
-        $modelSuffix = 'Model';
+        $modelSuffix = ocConfig('MODEL_SUFFIX');
         $moduleLang = OC_EMPTY;
         $language = ocService()->app->getLanguage();
 

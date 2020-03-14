@@ -203,8 +203,9 @@ abstract class ControllerBase extends serviceProvider
 
     /**
      * 获取表单并自动验证
-     * @param null $name
+     * @param string $name
      * @return mixed
+     * @throws Exception
      */
     public function form($name = null)
     {
@@ -253,13 +254,16 @@ abstract class ControllerBase extends serviceProvider
 
     /**
      * 获取或设置Model-静态属性保存
-     * @param null $class
+     * @param string $class
      * @return mixed
+     * @throws Exception
      */
     public function model($class = null)
     {
         if (empty($class)) {
-            $class = 'app\model\database\\' . ucfirst($this->getRoute('controller'));
+            $class = 'app\model\database\\'
+                . ucfirst($this->getRoute('controller'))
+                . ocConfig('MODEL_SUFFIX');
         }
 
         if (isset($this->models[$class])) {

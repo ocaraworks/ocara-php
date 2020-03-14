@@ -180,7 +180,7 @@ class Form extends Base
 
         if (!$alias) {
             $modelClass = substr($class, strrpos($class, OC_NS_SEP) + 1);
-            $alias = lcfirst(ocStripTail($modelClass, 'Model'));
+            $alias = lcfirst(ocStripTail($modelClass, ocConfig('MODEL_SUFFIX')));
         }
 
         $this->lang = array_merge($this->lang, $class::getConfig('LANG'));

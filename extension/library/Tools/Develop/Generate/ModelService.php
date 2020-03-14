@@ -91,7 +91,7 @@ class ModelService extends BaseService
 
         $namespace = $rootNamespace . $connectNamespace;
         $entityNamespace = $entityRootNamespace . $connectNamespace;
-        $modelName = ucfirst($this->_model) . 'Model';
+        $modelName = ucfirst($this->_model) . ocConfig('MODEL_SUFFIX');
         $entityName = ucfirst($this->_model) . 'Entity';
         $entityClass = $entityNamespace . OC_NS_SEP . $entityName;
         $modelClass = $namespace . OC_NS_SEP . $modelName;

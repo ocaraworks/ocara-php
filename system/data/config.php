@@ -20,6 +20,7 @@ return array(
     'DEFAULT_CONTROLLER'            => 'home', //默认控制器
     'DEFAULT_ACTION'                => 'index', //默认动作
     'COOKIE_DOMAIN'                 => '',
+    'MODEL_SUFFIX'                  => 'Model', //模型类后缀
 
     'DEFAULT_PAGE_CONTENT_TYPE'     => 'html', //页面默认返回格式
     'DEFAULT_API_CONTENT_TYPE'      => 'json', //API默认返回格式
