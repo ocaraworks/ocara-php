@@ -35,6 +35,15 @@ class StaticPath extends Base
     }
 
     /**
+     * 是否开启
+     * @return null
+     */
+    public function isOpen()
+    {
+        return $this->open;
+    }
+
+    /**
      * 获取静态文件
      * @param string $module
      * @param string $controller

@@ -53,6 +53,7 @@ return array(
     'invalid_entity_database'          => array(1904, '实体的数据表模型不正确！'),
     'invalid_entity_cache'             => array(1905, '实体的缓存模型不正确！'),
     'invalid_middleware'               => array(1906, '非法的事件处理对象！事件处理对象需要handler()方法。'),
+    'invalid_source'                   => array(1907, '容器中该类实例配置不正确！'),
 
     //必需
     'need_condition'                   => array(2100, '查询条件不存在或为空。'),

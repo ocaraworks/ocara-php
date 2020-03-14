@@ -116,6 +116,7 @@ return array(
         'excel'             => 'Ocara\Service\Excel',
         'date'              => 'Ocara\Service\Date',
         'download'          => 'Ocara\Service\Download',
+        'staticBuilder'     => 'Ocara\Service\StaticBuilder',
     ),
 
     /*

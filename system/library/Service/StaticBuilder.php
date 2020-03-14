@@ -20,7 +20,7 @@ class StaticBuilder extends ServiceBase
      */
     public function __construct()
     {
-        if (empty(ocService()->staticPath->open)) {
+        if (!ocService()->staticPath->isOpen()) {
             $this->showError('not_exists_open_config');
         }
 
