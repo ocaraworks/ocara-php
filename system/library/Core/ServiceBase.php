@@ -146,14 +146,14 @@ class ServiceBase extends Base
 
     /**
      * 设置错误信息
-     * @param $name
+     * @param $message
      * @param array $params
      * @return bool
      * @throws Exception
      */
-    protected function setError($name, array $params = array())
+    protected function setError($message, array $params = array())
     {
-        $this->error = self::getLanguage($name, $params);
+        $this->error = self::getLanguage($message, $params);
         return false;
     }
 }
