@@ -24,7 +24,7 @@ return array(
         /**
          * 路由格式
          */
-        'route' => '{c}/{a}-{p}',
+        'route' => '{controller}/{action}-{params}',
 
         /**
          * 参数格式
