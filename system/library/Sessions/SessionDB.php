@@ -39,8 +39,7 @@ class SessionDB extends ServiceProvider
      */
     public function open()
     {
-        $plugin = $this->plugin;
-        return is_object($plugin) && $plugin instanceof ModelBase;
+        return is_object($this->plugin);
     }
 
     /**
@@ -88,9 +87,7 @@ class SessionDB extends ServiceProvider
             'session_data' => stripslashes($data)
         );
 
-        $plugin = $this->plugin;
-        $result = $plugin->write($data);
-        return $result;
+        return $this->plugin->write($data);
     }
 
     /**
@@ -100,9 +97,7 @@ class SessionDB extends ServiceProvider
      */
     public function destroy($id)
     {
-        $plugin = $this->plugin;
-        $result = $plugin->destory($id);
-        return $result;
+        return $this->plugin->destory($id);
     }
 
     /**
@@ -112,8 +107,6 @@ class SessionDB extends ServiceProvider
      */
     public function gc($saveTime = null)
     {
-        $plugin = $this->plugin;
-        $result = $plugin->clear();
-        return $result;
+        return $this->plugin->clear();
     }
 }
