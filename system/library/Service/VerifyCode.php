@@ -49,7 +49,7 @@ class VerifyCode extends ServiceBase
         if (is_string($name) && $name) {
             $this->sessionName = $name;
         } else {
-            $this->sessionName = ocConfig('VERIFYCODE_NAME', 'OCSESSCODE');
+            $this->sessionName = ocConfig('VERIFY_CODE_NAME', 'OCSESSCODE');
         }
     }
 

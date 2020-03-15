@@ -124,8 +124,9 @@ class SessionFile extends ServiceProvider
      */
     public function gc($maxLifeTime)
     {
-        $files = glob("{$this->savePath}/sess_*");
-        foreach ($files as $file) {
+        $keyword = "{$this->savePath}/sess_*";
+
+        foreach (glob($keyword) as $file) {
             if (ocFileExists($file) && filemtime($file) + $maxLifeTime < time()) {
                 @unlink($file);
             }
