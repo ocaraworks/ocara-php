@@ -166,7 +166,7 @@ class StaticPath extends Base
      */
     public function getMvcPathMap($module, $controller, $action)
     {
-        if ($this->route && preg_match('/^{c}[\/'. $this->delimiter . ']{a}[\/' . $this->delimiter . ']{p}$/i', $this->route)) {
+        if ($this->route && preg_match('/^{c}[\/\\'. $this->delimiter . ']{a}[\/\\' . $this->delimiter . ']{p}$/i', $this->route)) {
             $search = array('{c}', '{a}');
             $replace = array($controller, $action);
             $module = $module ? $module . OC_DIR_SEP : false;
