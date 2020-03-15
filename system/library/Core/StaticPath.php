@@ -76,7 +76,7 @@ class StaticPath extends Base
         $params = $params[$action];
         $mvcPathMap = $this->getMvcPathMap($module, $controller, $action);
         list($file, $param) = $this->getParamsPathMap($params, $module, $controller, $action, $data);
-        $file = str_ireplace('{p}', $file, $mvcPathMap);
+        $file = str_ireplace('{params}', $file, $mvcPathMap);
 
         return array($file, $param);
     }

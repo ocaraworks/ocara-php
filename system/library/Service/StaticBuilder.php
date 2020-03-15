@@ -106,7 +106,7 @@ class StaticBuilder extends ServiceBase
                         $params, $module, $controller, $action, $row
                     );
                     list($file, $param) = $paramsPathMap;
-                    if ($file = str_ireplace('{p}', $file, $mvcPathMap)) {
+                    if ($file = str_ireplace('{params}', $file, $mvcPathMap)) {
                         $url = ocUrl($route, $param, false, false, false);
                         $this->createHtml($file, $url);
                     }
@@ -114,7 +114,7 @@ class StaticBuilder extends ServiceBase
             }
         } else {
             $url = ocUrl($route, array(), false, false, false);
-            $file = trim(str_ireplace('{p}', OC_EMPTY, $mvcPathMap), OC_DIR_SEP);
+            $file = trim(str_ireplace('{params}', OC_EMPTY, $mvcPathMap), OC_DIR_SEP);
             $file = $file . '.' . ocService()->staticPath->fileType;
             $this->createHtml($file, $url);
         }
