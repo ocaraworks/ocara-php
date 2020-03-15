@@ -50,8 +50,7 @@ class SessionCache extends ServiceProvider
      */
     public function open()
     {
-        $plugin = $this->plugin;
-        return is_object($plugin);
+        return is_object($this->plugin);
     }
 
     /**
@@ -70,8 +69,7 @@ class SessionCache extends ServiceProvider
      */
     public function read($id)
     {
-        $this->plugin->get($this->prefix . $id);
-        return false;
+        return $this->plugin->get($this->prefix . $id);
     }
 
     /**
@@ -98,8 +96,7 @@ class SessionCache extends ServiceProvider
      */
     public function destroy($id)
     {
-        $this->plugin->delete($this->prefix . $id);
-        return true;
+        return $this->plugin->delete($this->prefix . $id);
     }
 
     /**
