@@ -31,7 +31,7 @@ class SessionCache extends ServiceProvider
         $cacheName = ocConfig(array('SESSION', 'options', 'server'), CacheFactory::getDefaultServer());
 
         $this->container->bindSingleton('plugin', function () use ($cacheName) {
-            CacheFactory::getInstance($cacheName);
+            return CacheFactory::getInstance($cacheName);
         });
     }
 
@@ -40,7 +40,7 @@ class SessionCache extends ServiceProvider
      */
     public function init()
     {
-        $this->prefix = ocConfig(array('SESSION', 'options', 'location'), 'session_');
+        $this->prefix = ocConfig(array('SESSION', 'options', 'location'), 'session:');
         $this->saveTime = ocConfig(array('SESSION', 'options', 'save_time'), 0);
     }
 
@@ -50,10 +50,8 @@ class SessionCache extends ServiceProvider
      */
     public function open()
     {
-        if (is_object($this->plugin(false))) {
-            return true;
-        }
-        return false;
+        $plugin = $this->plugin;
+        return is_object($plugin);
     }
 
     /**
@@ -72,7 +70,7 @@ class SessionCache extends ServiceProvider
      */
     public function read($id)
     {
-        $this->plugin()->get($this->prefix . $id);
+        $this->plugin->get($this->prefix . $id);
         return false;
     }
 
@@ -85,7 +83,7 @@ class SessionCache extends ServiceProvider
     public function write($id, $data)
     {
         try {
-            $this->plugin()->set($this->prefix . $id, $data, $this->saveTime);
+            $this->plugin->set($this->prefix . $id, stripslashes($data), $this->saveTime);
         } catch (\Exception $exception) {
             ocService()->error->show($exception->getMessage());
         }
@@ -100,7 +98,7 @@ class SessionCache extends ServiceProvider
      */
     public function destroy($id)
     {
-        $this->plugin()->delete($this->prefix . $id);
+        $this->plugin->delete($this->prefix . $id);
         return true;
     }
 
