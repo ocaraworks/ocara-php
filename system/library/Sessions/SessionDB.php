@@ -26,9 +26,9 @@ class SessionDB extends ServiceProvider
         parent::register();
 
         $location = ocConfig(array('SESSION', 'options', 'location'));
-        $this->container->bindSingleton('plugin', $location);
+        $this->container->bindSingleton('handler', $location);
 
-        if (!is_object($this->plugin)) {
+        if (!is_object($this->handler)) {
             ocService()->error->show('failed_db_connect');
         }
     }
@@ -39,7 +39,7 @@ class SessionDB extends ServiceProvider
      */
     public function open()
     {
-        return is_object($this->plugin);
+        return is_object($this->handler);
     }
 
     /**
@@ -58,11 +58,11 @@ class SessionDB extends ServiceProvider
      */
     public function read($id)
     {
-        $plugin = $this->plugin;
+        $handler = $this->handler;
 
-        if (!is_object($plugin)) return OC_EMPTY;
+        if (!is_object($handler)) return OC_EMPTY;
 
-        $sessionData = $plugin->read($id);
+        $sessionData = $handler->read($id);
         $result = $sessionData ? stripslashes($sessionData) : OC_EMPTY;
         return $result;
     }
@@ -87,7 +87,7 @@ class SessionDB extends ServiceProvider
             'session_data' => stripslashes($data)
         );
 
-        return $this->plugin->write($data);
+        return $this->handler->write($data);
     }
 
     /**
@@ -97,7 +97,7 @@ class SessionDB extends ServiceProvider
      */
     public function destroy($id)
     {
-        return $this->plugin->destory($id);
+        return $this->handler->destory($id);
     }
 
     /**
@@ -107,6 +107,6 @@ class SessionDB extends ServiceProvider
      */
     public function gc($saveTime = null)
     {
-        return $this->plugin->clear();
+        return $this->handler->clear();
     }
 }

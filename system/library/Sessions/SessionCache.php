@@ -30,7 +30,7 @@ class SessionCache extends ServiceProvider
 
         $cacheName = ocConfig(array('SESSION', 'options', 'server'), CacheFactory::getDefaultServer());
 
-        $this->container->bindSingleton('plugin', function () use ($cacheName) {
+        $this->container->bindSingleton('handler', function () use ($cacheName) {
             return CacheFactory::getInstance($cacheName);
         });
     }
@@ -50,7 +50,7 @@ class SessionCache extends ServiceProvider
      */
     public function open()
     {
-        return is_object($this->plugin);
+        return is_object($this->handler);
     }
 
     /**
@@ -69,7 +69,7 @@ class SessionCache extends ServiceProvider
      */
     public function read($id)
     {
-        return $this->plugin->get($this->prefix . $id);
+        return $this->handler->get($this->prefix . $id);
     }
 
     /**
@@ -81,7 +81,7 @@ class SessionCache extends ServiceProvider
     public function write($id, $data)
     {
         try {
-            $this->plugin->set($this->prefix . $id, stripslashes($data), $this->saveTime);
+            $this->handler->set($this->prefix . $id, stripslashes($data), $this->saveTime);
         } catch (\Exception $exception) {
             ocService()->error->show($exception->getMessage());
         }
@@ -96,7 +96,7 @@ class SessionCache extends ServiceProvider
      */
     public function destroy($id)
     {
-        return $this->plugin->delete($this->prefix . $id);
+        return $this->handler->delete($this->prefix . $id);
     }
 
     /**
