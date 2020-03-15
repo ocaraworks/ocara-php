@@ -18,9 +18,10 @@ abstract class BaseEntity extends Base
     /**
      * 加载数据
      * @param array $data
+     * @param bool $initialize
      * @return $this
      */
-    public function data(array $data)
+    public function data(array $data, $initialize = false)
     {
         if ($data) {
             $this->setProperty($data);

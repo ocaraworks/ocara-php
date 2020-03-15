@@ -68,12 +68,10 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 初始化
      * DatabaseModel constructor.
-     * @param array $data
      */
-    public function __construct(array $data = array())
+    public function __construct()
     {
         $this->initialize();
-        if ($data) $this->data($data);
     }
 
     /**
@@ -178,6 +176,20 @@ abstract class DatabaseModel extends ModelBase
     public static function getPrimaries()
     {
         return static::$primary ? explode(',', static::$primary) : array();
+    }
+
+    /**
+     * 过滤掉主键
+     * @param array $data
+     * @return array
+     */
+    public function stripPrimaries(array $data)
+    {
+        $primaries = static::getPrimaries();
+        $result = array_diff_key($data, array_fill_keys($primaries, null));
+        print_r($data);
+        print_r($result);die;
+        return $result;
     }
 
     /**
@@ -664,6 +676,7 @@ abstract class DatabaseModel extends ModelBase
             if ($requireCondition && !$conditionSql) {
                 ocService()->error->show('need_condition');
             }
+            $data = $this->stripPrimaries($data);
             $sqlData = $generator->getUpdateSql($this->tableName, $data, $conditionSql, $isFilterData);
         } else {
             $autoIncrementField = $this->getAutoIncrementField();
@@ -797,9 +810,7 @@ abstract class DatabaseModel extends ModelBase
                 $this->asEntity();
             }
 
-            $batchData = $this->batch($batchLimit);
-
-            foreach ($batchData as $entityList) {
+            foreach ($this->batch($batchLimit) as $entityList) {
                 foreach ($entityList as $entity) {
                     $entity->data($data);
                     $entity->update();
@@ -826,9 +837,7 @@ abstract class DatabaseModel extends ModelBase
                 $this->asEntity();
             }
 
-            $batchData = $this->batch($batchLimit);
-
-            foreach ($batchData as $entityList) {
+            foreach ($this->batch($batchLimit) as $entityList) {
                 foreach ($entityList as $entity) {
                     $entity->delete();
                 }

@@ -129,13 +129,17 @@ abstract class DatabaseEntity extends BaseEntity
     /**
      * 加载数据
      * @param array $data
-     * @return $this
+     * @param bool $initialize
+     * @return $this|BaseEntity
      */
-    public function data(array $data)
+    public function data(array $data, $initialize = false)
     {
         if ($data) {
             $this->setProperty($data);
             if ($this->selected) {
+                if ($initialize) {
+                    $this->changes = array();
+                }
                 $this->replaceOld($data);
             }
         }
@@ -269,7 +273,7 @@ abstract class DatabaseEntity extends BaseEntity
             ->getRow($condition, $options);
 
         if ($data) {
-            $this->data($data);
+            $this->data($data, true);
         }
 
         return $this;
@@ -298,7 +302,7 @@ abstract class DatabaseEntity extends BaseEntity
             $data = array_merge($defaultData, $data);
         }
 
-        $this->data($data);
+        $this->data($data, true);
 
         return $this;
     }
@@ -323,7 +327,7 @@ abstract class DatabaseEntity extends BaseEntity
             ->getRow(null, $options);
 
         if ($data) {
-            $this->data($data);
+            $this->data($data, true);
             $condition = array();
             $model = static::getModelClass();
             $primaries = $model::getPrimaries();
@@ -414,7 +418,6 @@ abstract class DatabaseEntity extends BaseEntity
         if (empty($this->selected)) {
             ocService()->error->show('need_condition');
         }
-
         $changes = array_merge($this->getChanged(), $data);
 
         if ($changes) {
