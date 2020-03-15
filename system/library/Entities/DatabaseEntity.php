@@ -429,9 +429,6 @@ abstract class DatabaseEntity extends BaseEntity
             $model->where($this->selected);
             $this->fire(self::EVENT_BEFORE_UPDATE);
             $data = $this->toArray();
-
-            call_user_func_array('ocDel', array(&$data, $model::getPrimaries()));
-
             $result = $model->baseSave($data, true);
 
             $this->relateSave();

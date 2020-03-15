@@ -185,11 +185,8 @@ abstract class DatabaseModel extends ModelBase
      */
     public function stripPrimaries(array $data)
     {
-        $primaries = static::getPrimaries();
-        $result = array_diff_key($data, array_fill_keys($primaries, null));
-        print_r($data);
-        print_r($result);die;
-        return $result;
+        call_user_func_array('ocDel', array(&$data, static::getPrimaries()));
+        return $data;
     }
 
     /**
