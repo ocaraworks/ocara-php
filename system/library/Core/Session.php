@@ -35,8 +35,9 @@ class Session extends ServiceProvider
 
         $class = ocConfig(array('SESSION', 'handler'), OC_EMPTY);
         $class = !empty(self::$sessionProvidersMap[$class]) ? self::$sessionProvidersMap[$class] : $class;
+        $customizeSession = defined('OC_CUSTOMIZE_SESSION') ? OC_CUSTOMIZE_SESSION : true;
 
-        if ($class) {
+        if ($class && $customizeSession) {
             $this->container->bindSingleton('sessionHandler', function () use ($class) {
                 $handler = new $class();
                 return $handler;
