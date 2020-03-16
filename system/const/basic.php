@@ -87,10 +87,10 @@ defined('OC_CONSOLE_MODULE') or define('OC_CONSOLE_MODULE', false);
  * 应用程序常量
  */
 //应用根目录不带斜杠
-defined('OC_ROOT') or define('OC_ROOT', ocCommPath(dirname(dirname(realpath($_SERVER['SCRIPT_FILENAME'])))) . OC_DIR_SEP);
+defined('OC_ROOT') or define('OC_ROOT', ocDir(ocCommPath(dirname(dirname(realpath($_SERVER['SCRIPT_FILENAME']))))));
 
 //应用根目不带斜杠
-defined('OC_APP_ROOT') or define('OC_APP_ROOT', OC_ROOT);
+defined('OC_APP_ROOT') or define('OC_APP_ROOT', ocDir(OC_ROOT));
 
 //WEB根目录
 defined('OC_WEB_ROOT') or define('OC_WEB_ROOT', ocCommPath(OC_APP_ROOT . 'public' . OC_DIR_SEP));
