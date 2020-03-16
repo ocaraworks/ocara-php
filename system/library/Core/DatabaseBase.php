@@ -332,8 +332,15 @@ class DatabaseBase extends Base
             $result = $plugin->get_all_result($dataType, $queryRow, $shardingCurrent);
         }
 
-        if ($queryRow && $result) {
-            $result = reset($result);
+        if ($queryRow) {
+            if ($result) {
+                $result = reset($result);
+            } else {
+                $result = null;
+                if ($dataType == DriverBase::DATA_TYPE_ARRAY) {
+                    $result = array();
+                }
+            }
         }
 
         return $result;
