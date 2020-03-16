@@ -26,9 +26,7 @@ class Smarty extends ServiceBase implements TemplateInterface
      */
     public function __construct($templateDir, $perm = null)
     {
-        ocImport(OC_SYS . 'resource/smarty/Smarty.class.php');
-
-        if (!class_exists('smarty', false)) {
+        if (!class_exists('\Smarty')) {
             ocService()->error->show('no_the_special_class', array('smarty'));
         }
 
