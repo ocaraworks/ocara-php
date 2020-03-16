@@ -72,6 +72,7 @@ $files = array(
         'Base/Model/DatabaseModel',
         'Base/Model/DatabaseEntity',
         'Base/Model/LogicEntity',
+        'Middleware'
     ),
     'public' => array(
         'pass/tools/index'
