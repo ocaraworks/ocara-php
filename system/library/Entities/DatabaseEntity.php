@@ -575,10 +575,11 @@ abstract class DatabaseEntity extends BaseEntity
         $result = null;
 
         if ($config) {
-            if (!isset($this->$config['primaryKey'])) {
+            $primaryKey = $config['primaryKey'];
+            if (!isset($this->$primaryKey)) {
                 ocService()->error->show('no_relate_primary_key');
             }
-            $where = array($config['foreignKey'] => $this->$config['primaryKey']);
+            $where = array($config['foreignKey'] => $this->$primaryKey);
             if (in_array($config['joinType'], array('hasOne', 'belongsTo'))) {
                 $result = $config['class']::build()
                     ->where($where)
@@ -608,7 +609,9 @@ abstract class DatabaseEntity extends BaseEntity
         $model = $this->getModel();
         foreach ($this->relations as $key => $object) {
             $config = $model->getRelateConfig($key);
-            if ($config && isset($this->$config['primaryKey'])) {
+            $primaryKey = $config['primaryKey'];
+            $foreignKey = $config['foreignKey'];
+            if ($config && isset($this->$primaryKey)) {
                 $data = array();
                 if ($config['joinType'] == 'hasOne' && is_object($object)) {
                     $data = array($object);
@@ -621,7 +624,7 @@ abstract class DatabaseEntity extends BaseEntity
                 }
                 foreach ($data as $key => $entity) {
                     if ($entity->hasChanged() && is_object($entity) && $entity instanceof DatabaseEntity) {
-                        $entity->$config['foreignKey'] = $this->$config['primaryKey'];
+                        $entity->$foreignKey = $this->$primaryKey;
                         if ($config['condition']) {
                             foreach ($config['condition'] as $field => $value) {
                                 $entity->$field = $value;

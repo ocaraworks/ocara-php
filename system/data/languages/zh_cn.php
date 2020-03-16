@@ -170,7 +170,7 @@ return array(
     'no_old_field'                     => array(2528, '找不到旧值。'),
     'no_changed_field'                 => array(2529, '找不到已改变值。'),
     'no_curl_extension'                => array(2530, '找不到Curl扩展，并且没有开启allow_url_open！'),
-    'no_relate_primary_key'            => array(2531, '关联主键不存在或为null！'),
+    'no_relate_primary_key'            => array(2531, '主表记录不存在或为主键为空！'),
     'no_transaction_for_commit'        => array(2532, '无法匹配的事务提交！'),
     'no_special_action'                => array(2533, '找不到该控制器动作！'),
     'no_condition_array_value'         => array(2534, '数组型条件值缺少元素值！'),
