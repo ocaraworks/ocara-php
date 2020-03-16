@@ -58,7 +58,6 @@ class Common extends ControllerBase implements ControllerInterface
     /**
      * 执行动作
      * @param string $actionMethod
-     * @throws Exception
      */
     public function doAction($actionMethod)
     {
@@ -173,7 +172,6 @@ class Common extends ControllerBase implements ControllerInterface
      */
     public function renderFile($file = null, array $vars = array(), $required = true)
     {
-        $this->view->assign('route', $this->getRoute());
         $this->response->setContentType($this->contentType);
 
         if (empty($file)) {

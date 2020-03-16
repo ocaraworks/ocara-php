@@ -80,7 +80,7 @@ abstract class ControllerBase extends serviceProvider
         );
 
         foreach ($services as $name => $class) {
-            $this->container->bindSingleton($name, $class, array());
+            $this->container->bindSingleton($name, $class, array($this->getRoute()));
         }
     }
 

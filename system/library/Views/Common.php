@@ -39,12 +39,16 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 初始化
+     * Common constructor.
+     * @param array $route
+     * @throws Exception
      */
-    public function __construct()
+    public function __construct($route = array())
     {
         $this->fileType = ocConfig(array('TEMPLATE', 'file_type'), 'html');
         $this->template = ocConfig(array('TEMPLATE', 'default_style'), self::$defaultStyle, true);
 
+        $this->assign('route', $route);
         $this->loadEngine();
         $this->setLayout();
         return $this;

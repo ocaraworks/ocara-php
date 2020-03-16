@@ -62,25 +62,25 @@ class Common extends Base
             $cNamespace = sprintf('app\controller\%s\\', $route['controller']);
         }
 
-        $cClass = $cNamespace . 'Controller';
+        $controllerClass = $cNamespace . 'Controller';
         $method = $route['action'] . 'Action';
         $isActionClass = false;
 
-        if (!class_exists($cClass)) {
-            $service->error->show('no_controller', array($cClass));
+        if (!class_exists($controllerClass)) {
+            $service->error->show('no_controller', array($controllerClass));
         }
 
-        if (!method_exists($cClass, $method)) {
-            $aClass = $cNamespace . $uAction . 'Action';
-            if (class_exists($aClass)) {
-                $cClass = $aClass;
+        if (!method_exists($controllerClass, $method)) {
+            $actionClass = $cNamespace . $uAction . 'Action';
+            if (class_exists($actionClass)) {
+                $controllerClass = $actionClass;
                 $method = '__action';
                 $isActionClass = true;
             }
         }
 
-        $Control = new $cClass($params);
-        $Control->setRoute($route);
+        $params['route'] = $route;
+        $Control = new $controllerClass($params);
         $Control->initialize($isActionClass);
 
         if (!method_exists($Control, $method)) {
