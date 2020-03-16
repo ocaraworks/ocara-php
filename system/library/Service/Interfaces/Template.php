@@ -42,4 +42,10 @@ interface Template
      * @param string $name
      */
     function get($name = null);
+
+    /**
+     * 显示文件
+     * @param $file
+     */
+    public function display($file);
 }

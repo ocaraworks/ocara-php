@@ -24,6 +24,7 @@ class Common extends ViewBase implements ViewInterfaces
      */
     protected $rootPath;
 
+    private $route = array();
     private $tpl;
     private $fileType;
     private $template;
@@ -48,7 +49,7 @@ class Common extends ViewBase implements ViewInterfaces
         $this->fileType = ocConfig(array('TEMPLATE', 'file_type'), 'html');
         $this->template = ocConfig(array('TEMPLATE', 'default_style'), self::$defaultStyle, true);
 
-        $this->assign('route', $route);
+        $this->route = $route;
         $this->loadEngine();
         $this->setLayout();
         return $this;
@@ -61,28 +62,27 @@ class Common extends ViewBase implements ViewInterfaces
      */
     public function getRoute($name = null)
     {
-        $route = $this->getVar('route');
-
         if (func_get_args()) {
-            return isset($route[$name]) ? $route[$name] : null;
+            return isset($this->route[$name]) ? $this->route[$name] : null;
         }
 
-        return $route;
+        return $this->route;
     }
 
     /**
      * 加载模板插件
+     * @throws Exception
      */
     public function loadEngine()
     {
         if ($pluginClass = ocConfig(array('TEMPLATE', 'engine'), false)) {
-            $route = ocService()->app->getRoute();
             $path = $this->getViewPath(ocDir(array(
                 'template',
-                $route['module'],
-                $route['controller']
+                $this->route['module'],
+                $this->route['controller']
             )));
-            $this->setPlugin(new $pluginClass($path));
+            $plugin = new $pluginClass($path);
+            $this->setPlugin($plugin);
         }
     }
 
@@ -146,10 +146,10 @@ class Common extends ViewBase implements ViewInterfaces
      * @param string $default
      * @return array|mixed|null
      */
-    public function getVar($name = null, $default = null)
+    public function get($name = null, $default = null)
     {
         $plugin = $this->plugin(false);
-        $vars = $plugin === null ? $this->vars : $plugin->getVar();
+        $vars = $plugin === null ? $this->vars : $plugin->get();
 
         if ($name) {
             $vars = (array)$vars;
@@ -170,7 +170,7 @@ class Common extends ViewBase implements ViewInterfaces
      * @param string $name
      * @return bool
      */
-    public function hasVar($name)
+    public function has($name)
     {
         return array_key_exists($name, $this->vars);
     }
@@ -200,7 +200,6 @@ class Common extends ViewBase implements ViewInterfaces
     {
         $this->parentLayout = $layout;
     }
-
 
     /**
      * 获取当前模块的视图路径
@@ -313,7 +312,7 @@ class Common extends ViewBase implements ViewInterfaces
 
             if (ocFileExists($path)) {
                 if ($show) {
-                    ($vars = $this->getVar()) && extract($vars);
+                    ($vars = $this->get()) && extract($vars);
                     include($path);
                 } else {
                     $html[] = $this->readFile($path, true);
@@ -580,7 +579,7 @@ class Common extends ViewBase implements ViewInterfaces
         if ($this->engine() && empty($ban)) {
             $this->plugin()->display($path);
         } else {
-            ($vars = $this->getVar()) && extract($vars);
+            ($vars = $this->get()) && extract($vars);
             include($path);
         }
 

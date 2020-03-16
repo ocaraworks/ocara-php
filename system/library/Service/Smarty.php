@@ -93,4 +93,13 @@ class Smarty extends ServiceBase implements TemplateInterface
         $plugin = $this->plugin();
         call_user_func_array(array(&$plugin, 'registerPlugin'), $params);
     }
+
+    /**
+     * 显示文件
+     * @param $file
+     */
+    public function display($file)
+    {
+        $this->plugin()->display($file.'.tpl');
+    }
 }
