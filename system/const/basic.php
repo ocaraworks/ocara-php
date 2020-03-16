@@ -90,7 +90,7 @@ defined('OC_CONSOLE_MODULE') or define('OC_CONSOLE_MODULE', false);
 defined('OC_ROOT') or define('OC_ROOT', ocCommPath(dirname(dirname(realpath($_SERVER['SCRIPT_FILENAME'])))) . OC_DIR_SEP);
 
 //应用根目不带斜杠
-defined('OC_APP_ROOT') or define('OC_APP_ROOT', OC_ROOT . OC_DIR_SEP);
+defined('OC_APP_ROOT') or define('OC_APP_ROOT', OC_ROOT);
 
 //WEB根目录
 defined('OC_WEB_ROOT') or define('OC_WEB_ROOT', ocCommPath(OC_APP_ROOT . 'public' . OC_DIR_SEP));
