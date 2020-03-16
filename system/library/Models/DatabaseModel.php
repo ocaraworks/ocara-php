@@ -179,17 +179,6 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
-     * 过滤掉主键
-     * @param array $data
-     * @return array
-     */
-    public function stripPrimaries(array $data)
-    {
-        call_user_func_array('ocDel', array(&$data, static::getPrimaries()));
-        return $data;
-    }
-
-    /**
      * 执行分库分表
      * @param array $data
      * @param null $relationModel
@@ -673,7 +662,6 @@ abstract class DatabaseModel extends ModelBase
             if ($requireCondition && !$conditionSql) {
                 ocService()->error->show('need_condition');
             }
-            $data = $this->stripPrimaries($data);
             $sqlData = $generator->getUpdateSql($this->tableName, $data, $conditionSql, $isFilterData);
         } else {
             $autoIncrementField = $this->getAutoIncrementField();
@@ -1368,6 +1356,7 @@ abstract class DatabaseModel extends ModelBase
         $generator->setTable($this->tableName);
         $generator->setAlias($this->alias);
         $generator->setSql($this->sql);
+        $generator->setPrimaries(static::getPrimaries());
         $generator->setFields($this->getFieldsInfo());
         $generator->setMaps(static::getConfig('MAPS'));
         $generator->setJoins(static::getConfig('JOINS'));

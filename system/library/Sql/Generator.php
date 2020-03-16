@@ -19,9 +19,10 @@ class Generator extends Base
     protected $alias;
     protected $databaseName;
     protected $tableName;
-    protected $maps;
-    protected $joins;
-    protected $fields;
+    protected $maps = array();
+    protected $joins = array();
+    protected $fields = array();
+    protected $primaries = array();
 
     /**
      * Sql constructor.
@@ -94,6 +95,15 @@ class Generator extends Base
     public function setTable($tableName)
     {
         $this->tableName = $tableName;
+    }
+
+    /**
+     * 设置主键
+     * @param $primaries
+     */
+    public function setPrimaries($primaries)
+    {
+        $this->primaries = $primaries;
     }
 
     /**
@@ -556,9 +566,21 @@ class Generator extends Base
         if ($isFilterData) {
             $data = $this->filterData($data);
         }
+        $data = $this->stripPrimaries($data);
         $data = $this->formatFields($data);
         $tableName = $this->getTableFullname($table, $this->databaseName);
         return $this->plugin()->getUpdateSql($tableName, $data, $where);
+    }
+
+    /**
+     * 过滤掉主键
+     * @param array $data
+     * @return array
+     */
+    public function stripPrimaries(array $data)
+    {
+        call_user_func_array('ocDel', array(&$data, $this->primaries));
+        return $data;
     }
 
     /**

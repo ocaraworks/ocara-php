@@ -212,10 +212,12 @@ abstract class DatabaseEntity extends BaseEntity
     public function getChanged($key = null)
     {
         if (func_num_args()) {
-            return $this->hasChanged($key) ? $this->$key : null;
+            $changes = $this->getChanged();
+            return array_key_exists($key, $changes) ? $changes[$key] : null;
         }
 
-        $changes = $this->changes;
+        $publicData = json_decode(json_encode($this), true);
+        $changes = array_merge($publicData, $this->changes);
 
         foreach ($this->oldData as $key => $value) {
             if (isset($this->$key)) {
@@ -237,15 +239,7 @@ abstract class DatabaseEntity extends BaseEntity
     public function hasChanged($key = null)
     {
         if (func_num_args()) {
-            if (array_key_exists($key, $this->changes)) return true;
-            if (array_key_exists($key, $this->oldData)) {
-                $value = $this->oldData[$key];
-                if (isset($this->$key)) {
-                    $dataValue = $this->$key;
-                    return $value && $value != $dataValue || $value !== $dataValue;
-                }
-            }
-            return false;
+            return array_key_exists($key, $this->getChanged());
         }
 
         $changes = $this->getChanged();
@@ -428,8 +422,7 @@ abstract class DatabaseEntity extends BaseEntity
             $this->data($data);
             $model->where($this->selected);
             $this->fire(self::EVENT_BEFORE_UPDATE);
-            $data = $this->toArray();
-            $result = $model->baseSave($data, true);
+            $result = $model->baseSave($changes, true);
 
             $this->relateSave();
             $this->fire(self::EVENT_AFTER_UPDATE);
