@@ -139,6 +139,8 @@ abstract class DatabaseEntity extends BaseEntity
             if ($this->selected) {
                 if ($initialize) {
                     $this->changes = array();
+                } else {
+                    $this->changes = array_merge($this->changes, $data);
                 }
                 $this->replaceOld($data);
             }
@@ -406,30 +408,30 @@ abstract class DatabaseEntity extends BaseEntity
      */
     public function update(array $data = array())
     {
-        $result = false;
         $model = $this->getModel();
 
         if (empty($this->selected)) {
             ocService()->error->show('need_condition');
         }
-        $changes = array_merge($this->getChanged(), $data);
 
-        if ($changes) {
-            if ($this->isUseTransaction()) {
-                ocService()->transaction->begin();
-            }
+        $model->where($this->selected);
 
+        if ($data) {
             $this->data($data);
-            $model->where($this->selected);
-            $this->fire(self::EVENT_BEFORE_UPDATE);
-            $result = $model->baseSave($changes, true);
+        }
 
-            $this->relateSave();
-            $this->fire(self::EVENT_AFTER_UPDATE);
+        if ($this->isUseTransaction()) {
+            ocService()->transaction->begin();
+        }
 
-            if ($this->isUseTransaction()) {
-                ocService()->transaction->commit();
-            }
+        $this->fire(self::EVENT_BEFORE_UPDATE);
+        $result = $model->baseSave($this->getChanged(), true);
+
+        $this->relateSave();
+        $this->fire(self::EVENT_AFTER_UPDATE);
+
+        if ($this->isUseTransaction()) {
+            ocService()->transaction->commit();
         }
 
         return $result;
