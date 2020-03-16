@@ -364,6 +364,7 @@ abstract class DatabaseEntity extends BaseEntity
         }
 
         $this->dataFrom($this->toArray(), true);
+        $this->relateSave();
         $this->fire(self::EVENT_AFTER_CREATE);
 
         if ($this->isUseTransaction()) {
@@ -571,21 +572,20 @@ abstract class DatabaseEntity extends BaseEntity
 
         if ($config) {
             $primaryKey = $config['primaryKey'];
-            if (!isset($this->$primaryKey)) {
-                ocService()->error->show('no_relate_primary_key');
-            }
-            $where = array($config['foreignKey'] => $this->$primaryKey);
-            if (in_array($config['joinType'], array('hasOne', 'belongsTo'))) {
-                $result = $config['class']::build()
-                    ->where($where)
-                    ->where($config['condition'])
-                    ->selectOne();
-            } elseif ($config['joinType'] == 'hasMany') {
-                $result = $config['class']::build()
-                    ->where($where)
-                    ->where($config['condition'])
-                    ->asEntity()
-                    ->each();
+            if (isset($this->$primaryKey)) {
+                $where = array($config['foreignKey'] => $this->$primaryKey);
+                if (in_array($config['joinType'], array('hasOne', 'belongsTo'))) {
+                    $result = $config['class']::build()
+                        ->where($where)
+                        ->where($config['condition'])
+                        ->selectOne();
+                } elseif ($config['joinType'] == 'hasMany') {
+                    $result = $config['class']::build()
+                        ->where($where)
+                        ->where($config['condition'])
+                        ->asEntity()
+                        ->each();
+                }
             }
         }
 
