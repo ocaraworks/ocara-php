@@ -583,8 +583,7 @@ abstract class DatabaseEntity extends BaseEntity
                     $result = $config['class']::build()
                         ->where($where)
                         ->where($config['condition'])
-                        ->asEntity()
-                        ->each();
+                        ->selectAll();
                 }
             }
         }
