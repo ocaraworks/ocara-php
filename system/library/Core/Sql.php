@@ -500,7 +500,7 @@ class Sql extends Base
      * @param bool $isGroup
      * @return array|string
      */
-    public function getCountSql($countFiled, $fieldName = 'total', $isGroup = false)
+    public function getCountSql($countFiled = null, $fieldName = 'total', $isGroup = false)
     {
         $fieldName = $this->filterName($fieldName);
 
@@ -858,13 +858,32 @@ class Sql extends Base
     /**
      * 获取子查询SQL
      * @param $sql
-     * @param $orderBy
-     * @param array $limit
+     * @param array|string $options
      * @return string
      */
-    public function getSubQuerySql($sql, $orderBy = null, array $limit = array())
+    public function getSubQuerySql($sql, $options = null)
     {
-        $querySql = "SELECT * FROM ($sql) AS a";
+        $fields = '*';
+        $orderBy = null;
+        $limit = array();
+
+        if (is_string($options)) {
+            if ($options) {
+                $fields = $options;
+            }
+        } else {
+            if (!empty($options['fields'])) {
+                $fields = $options['fields'];
+            }
+            if (!empty($options['orderBy'])) {
+                $orderBy = $options['orderBy'];
+            }
+            if (!empty($options['limit'])) {
+                $limit = $options['limit'];
+            }
+        }
+
+        $querySql = "SELECT {$fields} FROM ({$sql}) AS a";
 
         if ($orderBy) {
             $querySql .= ' ORDER BY ' . $orderBy;

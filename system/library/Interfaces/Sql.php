@@ -109,11 +109,13 @@ interface Sql
     public function getBetweenSql($field, $value1, $value2);
 
     /**
-     * 生成统计字段SQL
+     * 获取统计字段SQL
      * @param string $countFiled
      * @param string $fieldName
+     * @param bool $isGroup
+     * @return array|string
      */
-    public function getCountSql($countFiled, $fieldName);
+    public function getCountSql($countFiled = null, $fieldName = 'total', $isGroup = false);
 
     /**
      * 格式化键值数组

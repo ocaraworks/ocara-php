@@ -132,7 +132,7 @@ class Generator extends Base
 
         $from = $this->getFromSql($tables, $unJoined);
 
-        if ($count) {
+        if ($count && empty($unions['models'])) {
             $countField = ocGet('countField', $this->sql, null);
             $isGroup = !empty($option['group']);
             $fields = $plugin->getCountSql($countField, 'total', $isGroup);
@@ -485,19 +485,19 @@ class Generator extends Base
             $sql = $plugin->wrapSql($sql);
             foreach ($unions['models'] as $union) {
                 $executeOptions = array('close_union' => true);
-                if ($count) {
-                    $unionData = $union['model']->debug()->getTotal($executeOptions);
-                } else {
-                    $unionData = $union['model']->debug()->getAll(null, null, $executeOptions);
-                }
+                $unionData = $union['model']->debug()->getAll(null, null, $executeOptions);
                 list($unionSql, $unionParams) = $unionData;
                 $sql .= $plugin->getUnionSql($unionSql, $union['unionAll']);
                 $params = array_merge($params, $unionParams);
             }
-            if (!$count && !empty($unions['option'])) {
-                $orderBy = isset($unions['option']['order']) ? $unions['option']['order'] : null;
-                $limit = isset($unions['option']['limit']) ? $unions['option']['limit'] : array();
-                $sql = $plugin->getSubQuerySql($sql, $orderBy, $limit);
+            if ($count) {
+                $sql = $plugin->getSubQuerySql($sql, $plugin->getCountSql());
+            } elseif (!empty($unions['option'])) {
+                $option = array(
+                    'orderBy' => isset($unions['option']['order']) ? $unions['option']['order'] : null,
+                    'limit' => isset($unions['option']['limit']) ? $unions['option']['limit'] : array()
+                );
+                $sql = $plugin->getSubQuerySql($sql, $option);
             }
         }
 

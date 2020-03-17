@@ -1223,7 +1223,7 @@ abstract class DatabaseModel extends ModelBase
         $isDebug = $this->isDebug();
         $queryRow = true;
 
-        if (!empty($this->sql['unions']) || !empty($this->sql['option']['group'])) {
+        if (!empty($this->sql['option']['group'])) {
             $queryRow = false;
         }
 
