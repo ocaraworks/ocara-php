@@ -131,7 +131,6 @@ class Common extends ViewBase implements ViewInterfaces
         if ($plugin === null) {
             foreach ($variables as $name => $value) {
                 $this->vars[$name] = $value;
-                ocGlobal('View', $this);
             }
         } else {
             foreach ($variables as $name => $value) {
