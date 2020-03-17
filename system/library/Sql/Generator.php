@@ -495,8 +495,8 @@ class Generator extends Base
                 $params = array_merge($params, $unionParams);
             }
             if (!$count && !empty($unions['option'])) {
-                $orderBy = $unions['option']['order'];
-                $limit = $unions['option']['limit'];
+                $orderBy = isset($unions['option']['order']) ? $unions['option']['order'] : null;
+                $limit = isset($unions['option']['limit']) ? $unions['option']['limit'] : array();
                 $sql = $plugin->getSubQuerySql($sql, $orderBy, $limit);
             }
         }
