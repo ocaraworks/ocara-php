@@ -315,6 +315,7 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 获取配置文件路径
      * @return array|mixed
+     * @throws Exception
      */
     public function getConfigPath()
     {
