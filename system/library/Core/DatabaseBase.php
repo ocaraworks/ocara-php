@@ -114,10 +114,10 @@ class DatabaseBase extends Base
     public function registerEvents()
     {
         $this->event(self::EVENT_BEFORE_EXECUTE_SQL)
-            ->append(ocConfig(array('EVENTS', 'database', 'before_execute_sql'), null));
+            ->appendAll(ocConfig(array('EVENTS', 'database', 'before_execute_sql'), array()));
 
         $this->event(self::EVENT_AFTER_EXECUTE_SQL)
-            ->append(ocConfig(array('EVENTS', 'database', 'after_execute_sql'), null));
+            ->appendAll(ocConfig(array('EVENTS', 'database', 'after_execute_sql'), array()));
 
         $this->event(self::EVENT_BEFORE_SHOW_ERROR)
             ->setDefault(array($this, 'beforeShowError'));
@@ -739,12 +739,12 @@ class DatabaseBase extends Base
 
     /**
      * 检测错误
-     * @param $ret
+     * @param $result
      * @param $sqlData
      * @param bool $required
      * @throws Exception
      */
-    public function checkError($ret, $sqlData, $required = true)
+    public function checkError($result, $sqlData, $required = true)
     {
         $this->setError();
         $errorExists = $this->errorExists();
@@ -752,15 +752,15 @@ class DatabaseBase extends Base
         $params = array();
 
         if ($sqlData) {
-            $dateFormat = ocConfig('DATE_FORMAT.datetime');
-            $params = array($sqlData, $errorExists, $error, $ret, date($dateFormat));
-            $this->fire(self::EVENT_AFTER_EXECUTE_SQL, $params);
+            $datetime = date(ocConfig('DATE_FORMAT.datetime'));
+            $params = compact('sqlData', 'errorExists', 'error', 'result', 'datetime');
+            $this->fire(self::EVENT_AFTER_EXECUTE_SQL, array($params));
         }
 
         if ($required && $errorExists) {
             return $this->showError($error, $params);
         }
 
-        return $ret;
+        return $result;
     }
 }

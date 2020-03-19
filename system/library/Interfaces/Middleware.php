@@ -14,9 +14,9 @@ defined('OC_PATH') or exit('Forbidden!');
 interface Middleware
 {
     /**
-     * 处理函数
-     * @param mixed $params
+     * 处理
+     * @param mixed $args
      * @return mixed
      */
-    public function handle(array $params = array());
+    public function handle($args = null);
 }

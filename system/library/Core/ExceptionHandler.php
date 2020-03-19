@@ -34,16 +34,16 @@ class ExceptionHandler extends Base
     public function registerEvents()
     {
         $this->event(self::EVENT_REPORT)
-            ->append(ocConfig(array('EVENTS', 'error', 'report'), array($this, 'report')));
+            ->appendAll(ocConfig(array('EVENTS', 'error', 'report'), array(array($this, 'report'))));
 
         $this->event(self::EVENT_BEFORE_OUTPUT)
-            ->append(ocConfig(array('EVENTS', 'error', 'before_output'), null));
+            ->appendAll(ocConfig(array('EVENTS', 'error', 'before_output'), array()));
 
         $this->event(self::EVENT_OUTPUT)
-            ->append(ocConfig(array('EVENTS', 'error', 'output'), array($this, 'output')));
+            ->appendAll(ocConfig(array('EVENTS', 'error', 'output'), array(array($this, 'output'))));
 
         $this->event(self::EVENT_AFTER_OUTPUT)
-            ->append(ocConfig(array('EVENTS', 'error', 'after_output'), null));
+            ->appendAll(ocConfig(array('EVENTS', 'error', 'after_output'), array()));
     }
 
     /**

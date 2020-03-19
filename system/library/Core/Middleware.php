@@ -6,8 +6,12 @@ use Ocara\Interfaces\Middleware as MiddlewareInterface;
 
 class Middleware extends ServiceProvider implements MiddlewareInterface
 {
-    public function handle(array $params = array())
+    /**
+     * 处理
+     * @param mixed $args
+     * @return mixed
+     */
+    public function handle($args = null)
     {
-        // TODO: Implement handle() method.
     }
 }

@@ -27,13 +27,34 @@ class Event extends Basis implements EventInterface
     /**
      * 添加事件处理器
      * @param $callback
-     * @param int $args
-     * @return $this
+     * @param null $name
+     * @param int $priority
+     * @return $this|EventInterface
      */
-    public function append($callback, $args = 0)
+    public function append($callback, $name = null, $priority = 0)
     {
         if ($callback) {
-            call_user_func_array(array(&$this, 'create'), func_get_args());
+            $this->create($callback, $name, $priority);
+        }
+
+        return $this;
+    }
+
+    /**
+     * 批量绑定事件处理器
+     * @param array $callbackList
+     * @param $groupName
+     * @param $priority
+     * @return $this
+     */
+    public function appendAll(array $callbackList, $groupName = null, $priority = 0)
+    {
+        if ($groupName) {
+            $this->create($callbackList, $groupName, $priority, true);
+        } else {
+            foreach($callbackList as $callback) {
+                call_user_func_array(array(&$this, 'create'), array($callback));
+            }
         }
 
         return $this;
@@ -71,9 +92,11 @@ class Event extends Basis implements EventInterface
     /**
      * 新建事件处理器
      * @param $callback
-     * @param int $args
+     * @param null $name
+     * @param int $priority
+     * @param bool $isGroup
      */
-    protected function create($callback, $args = 0)
+    protected function create($callback, $name = null, $priority = 0, $isGroup = false)
     {
         if (is_string($callback)
             && preg_match('/^[\w\\\\]+$/', $callback)
@@ -86,26 +109,15 @@ class Event extends Basis implements EventInterface
             ocService()->error->show('invalid_middleware');
         }
 
-        $params = func_get_args();
-        $name = null;
-        $priority = 0;
-
-        if (isset($params[2])) {
-            $name = $args;
-            $priority = (integer)$params[2];
-        } else {
-            if (is_string($args)) {
-                $name = $args;
-            } else {
-                $priority = $args;
-            }
-        }
+        $name = $name ?: null;
+        $priority = $priority ?: 0;
 
         $count = count($this->handlers);
         $this->handlers[$count] = array(
             'callback' => $callback,
             'index' => $count,
             'priority' => $priority,
+            'is_group' => $isGroup
         );
 
         if ($name) {
@@ -252,14 +264,26 @@ class Event extends Basis implements EventInterface
             $this->running = true;
             foreach ($handlers as $key => $row) {
                 $callback = $row['callback'];
-                if ($this->running && (is_object($callback) || ocIsCallable($callback))) {
-                    $results[$key] = $this->runCallback($callback, $params);
+                if (is_array($callback) && $row['is_group']) {
+                    $callbackResult = array();
+                    foreach ($callback as $oneKey => $one) {
+                        if ($this->canCallback($one)) {
+                            $callbackResult[$oneKey] = $this->runCallback($one, $params);
+                        }
+                    }
+                    if ($callbackResult) {
+                        $results[$key] = $callbackResult;
+                    }
+                } else {
+                    if ($this->canCallback($callback)) {
+                        $results[$key] = $this->runCallback($callback, $params);
+                    }
                 }
             }
         } elseif ($this->defaultHandler) {
             $handlerLength = 2;
             $this->running = true;
-            if (is_object($this->defaultHandler) || ocIsCallable($this->defaultHandler)) {
+            if ($this->canCallback($this->defaultHandler)) {
                 $results[] = $this->runCallback($this->defaultHandler, $params);
             }
         }
@@ -289,6 +313,17 @@ class Event extends Basis implements EventInterface
         }
 
         return call_user_func_array($callback, $params);
+    }
+
+    /**
+     * 是否可回调
+     * @param $callback
+     * @return bool
+     * @throws ReflectionException
+     */
+    public function canCallback($callback)
+    {
+        return $this->running && is_object($callback) || ocIsCallable($callback);
     }
 
     /**

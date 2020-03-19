@@ -22,7 +22,7 @@ abstract class BootstrapBase extends Base
     public function registerEvents()
     {
         $this->event(self::EVENT_BEFORE_BOOTSTRAP)
-            ->append(ocConfig(array('EVENTS', 'bootstrap', 'before_bootstrap'), null));
+            ->appendAll(ocConfig(array('EVENTS', 'bootstrap', 'before_bootstrap'), array()));
     }
 
     /**

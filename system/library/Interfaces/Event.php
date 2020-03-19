@@ -14,10 +14,20 @@ interface Event
     /**
      * 添加事件处理器
      * @param $callback
-     * @param int $args
+     * @param null $name
+     * @param int $priority
+     * @return $this|EventInterface
+     */
+    public function append($callback, $name = null, $priority = 0);
+
+    /**
+     * 批量绑定事件处理器
+     * @param array $callbackList
+     * @param $groupName
+     * @param $priority
      * @return $this
      */
-    public function append($callback, $args = 0);
+    public function appendAll(array $callbackList, $groupName = null, $priority = 0);
 
     /**
      * 设置名称

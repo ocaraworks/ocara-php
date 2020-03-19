@@ -13,12 +13,4 @@ use Ocara\Interfaces\Middleware;
 
 class Resource implements Middleware
 {
-    /**
-     * 处理函数
-     * @param array $params
-     * @return mixed|void
-     */
-    public function handle(array $params = array())
-    {
-    }
 }
