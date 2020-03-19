@@ -98,9 +98,7 @@ class Event extends Basis implements EventInterface
     protected function create($callback, $name = null, $priority = 0, $isGroup = false)
     {
         if ($isGroup && is_array($callback)) {
-            print_r($callback);
             array_walk($callback, array($this, 'checkCallback'));
-            print_r($callback);die;
         } else {
             $this->checkCallback($callback);
         }
