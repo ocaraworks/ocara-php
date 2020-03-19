@@ -21,7 +21,6 @@ class Event extends Basis implements EventInterface
     protected $running;
     protected $registry;
     protected $defaultHandler;
-
     protected $handlers = array();
 
     /**
@@ -98,15 +97,12 @@ class Event extends Basis implements EventInterface
      */
     protected function create($callback, $name = null, $priority = 0, $isGroup = false)
     {
-        if (is_string($callback)
-            && preg_match('/^[\w\\\\]+$/', $callback)
-            && class_exists($callback)
-        ) {
-            $callback = new $callback();
-        }
-
-        if ($this->isClass($callback) && !($callback instanceof Middleware)) {
-            ocService()->error->show('invalid_middleware');
+        if ($isGroup && is_array($callback)) {
+            print_r($callback);
+            array_walk($callback, array($this, 'checkCallback'));
+            print_r($callback);die;
+        } else {
+            $this->checkCallback($callback);
         }
 
         $name = $name ?: null;
@@ -313,6 +309,39 @@ class Event extends Basis implements EventInterface
         }
 
         return call_user_func_array($callback, $params);
+    }
+
+    /**
+     * 回调检测
+     * @param $callback
+     * @param $key
+     * @return array
+     */
+    public function checkCallback(&$callback, $key = 0)
+    {
+        if (is_string($callback)) {
+            if (strstr($callback, OC_NS_SEP)) {
+                $callback = new $callback();
+            }
+        } elseif (is_array($callback)) {
+            if ($callback) {
+                $class = array_shift($callback);
+                if (is_object($class)) {
+                    $object = $class;
+                } else {
+                    $object = new $class();
+                }
+                array_unshift($callback, $object);
+            }
+        }
+
+        if ($this->isClass($callback)) {
+            if (!$callback instanceof Middleware) {
+                ocService()->error->show('invalid_middleware');
+            }
+        }
+
+        return $callback;
     }
 
     /**

@@ -52,7 +52,7 @@ return array(
     'invalid_class_static_method'      => array(1903, '缺少静态方法！请使用类对象代替类名传递。'),
     'invalid_entity_database'          => array(1904, '实体的数据表模型不正确！'),
     'invalid_entity_cache'             => array(1905, '实体的缓存模型不正确！'),
-    'invalid_middleware'               => array(1906, '非法的事件处理对象！事件处理对象需要handler()方法。'),
+    'invalid_middleware'               => array(1906, '事件处理对象应当是中间件类。'),
     'invalid_source'                   => array(1907, '容器中该类实例配置不正确！'),
 
     //必需
