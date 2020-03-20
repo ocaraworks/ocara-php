@@ -45,7 +45,7 @@ class Url extends Base
     {
         if (empty($url)) {
             if (PHP_SAPI == 'cli') {
-                $url = trim(ocGet(array('argv', '1'), $_SERVER), OC_DIR_SEP);
+                $url = trim(isset($_SERVER['argv']['1']) ? $_SERVER['argv']['1'] : OC_EMPTY, OC_DIR_SEP);
             } else {
                 $webRoot = ocCommPath(OC_WEB_ROOT);
                 $documentRoot = ocCommPath($_SERVER['DOCUMENT_ROOT']);
@@ -84,16 +84,9 @@ class Url extends Base
                 $get[] = $extends;
             }
         } else {
-            $params = explode('&', $result);
-            $get = array();
-            foreach ($params as $param) {
-                $row = explode('=', $param);
-                $key = ocGet(0, $row);
-                $value = ocGet(1, $row);
-                $get[$key] = $value;
-            }
-
+            parse_str($result, $get);
             $routeParamName = ocConfig('ROUTE_PARAM_NAME', '_route');
+
             if (isset($get[$routeParamName])) {
                 $route = explode(OC_DIR_SEP, ocDel($get, $routeParamName));
                 $route[1] = isset($route[1]) ? $route[1] : null;
@@ -118,8 +111,8 @@ class Url extends Base
         $get = null;
 
         if (PHP_SAPI == 'cli') {
-            $get = ocGet(array('argv', '2'), $_SERVER);
-            $get = explode(OC_DIR_SEP, trim($get, OC_DIR_SEP));
+            $get = isset($_SERVER['argv']['2']) ? $_SERVER['argv']['2'] : OC_EMPTY;
+            $get = $get ? explode(OC_DIR_SEP, trim($get, OC_DIR_SEP)) : array();
         } elseif ($this->isVirtualUrl($urlType)) {
             $str = $urlType == self::ROUTE_TYPE_PATH ? 'index\.php[\/]?' : false;
             $el = '[^\/\&\?]';

@@ -299,7 +299,7 @@ class Pager extends ServiceBase
         if (is_string($this->url)) {
             return $this->url;
         } elseif (is_array($this->url)) {
-            $extParams = ocGet(1, $this->url, array());
+            $extParams = isset($this->url[1]) ? $this->url[1] : array();
             $extParams = array_merge($extParams, array(
                 $this->pageParam => $pageNumber
             ));

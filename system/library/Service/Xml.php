@@ -112,14 +112,14 @@ class Xml extends ServiceBase
     public function loadArray(array $xmlArray)
     {
         $xmlData = array();
-        $root = ocGet(0, $xmlArray);
+        $root = isset($xmlArray[0]) ? $xmlArray[0] : null;
 
         if (!is_string($root) || empty($root)) {
             $this->showError('need_root_node');
         }
 
-        $list = ocGet(1, $xmlArray);
-        $hasStatement = ocGet(2, $xmlArray, true);
+        $list = !empty($xmlArray[1]) ? $xmlArray[1] : array();
+        $hasStatement = isset($xmlArray[2]) ? $xmlArray[2] : true;
 
         if ($hasStatement) {
             $xmlData[] = "<?xml version=\"1.0\" encoding=\"{$this->encoding}\"?>";
@@ -127,7 +127,7 @@ class Xml extends ServiceBase
 
         $xmlData[] = "<{$root}>";
 
-        if (is_array($list)) {
+        if ($list && is_array($list)) {
             $xmlData[] = $this->makeXml($list);
         }
 

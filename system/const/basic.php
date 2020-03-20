@@ -51,13 +51,13 @@ defined('OC_IS_WIN') or define('OC_IS_WIN', strstr(PHP_OS, 'WIN'));
 defined('OC_PHP_SELF') or define('OC_PHP_SELF', basename($_SERVER['PHP_SELF']));
 
 //当前主机或域名
-defined('OC_HOST') or define('OC_HOST', ocGet('HTTP_HOST', $_SERVER));
+defined('OC_HOST') or define('OC_HOST', isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null);
 
 //协议类型
-defined('OC_PROTOCOL') or define('OC_PROTOCOL', strtolower(ocGet('HTTPS', $_SERVER)) == 'on' ? 'https' : 'http');
+defined('OC_PROTOCOL') or define('OC_PROTOCOL', strtolower(isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : OC_EMPTY) == 'on' ? 'https' : 'http');
 
 //当前URL
-defined('OC_REQ_URI') or define('OC_REQ_URI', ocCommPath(ocGet('REQUEST_URI', $_SERVER)));
+defined('OC_REQ_URI') or define('OC_REQ_URI', ocCommPath(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : OC_EMPTY));
 
 /*
  * 框架常量

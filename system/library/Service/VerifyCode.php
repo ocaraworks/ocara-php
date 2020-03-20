@@ -135,8 +135,8 @@ class VerifyCode extends ServiceBase
             }
         }
 
-        $type = ocGet('type', $format, 'both');
-        $filter = ocGet('filter', $format);
+        $type = !empty($format['type']) ? $format['type'] : 'both';
+        $filter = !empty($format['filter']) ? $format['filter'] : array();
         $verifyCode = ocService()->code->getRandCode($type, $length, $filter);
 
         $this->addText($verifyCode, $format, $left);
@@ -194,9 +194,13 @@ class VerifyCode extends ServiceBase
      */
     protected function addText($content, array $fontInfo = array(), array $location = array())
     {
-        $size = ocGet('size', $fontInfo, 12);
-        $color = ocGet('color', $fontInfo, '#FFFFFF');
-        $font = ocService()->font->get(ocGet('font', $fontInfo));
+        $size = !empty($fontInfo['size']) ? $fontInfo['size'] : 12;
+        $color = !empty($fontInfo['color']) ? $fontInfo['color'] : '#FFFFFF';
+        $font = null;
+
+        if (array_key_exists('font', $fontInfo)) {
+            $font = ocService()->font->get($fontInfo['font']);
+        }
 
         $contentInfo = imagettfbbox($size, 0, $font, $content);
         $contentW = $contentInfo[4] - $contentInfo[6];

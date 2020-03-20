@@ -225,7 +225,7 @@ class Application extends Base
                     $action = OC_EMPTY;
                 } else {
                     $module = OC_EMPTY;
-                    $controller = ocGet('controller', $this->route, OC_EMPTY);
+                    $controller = !empty($this->route['controller']) ? $this->route['controller'] : OC_EMPTY;
                     $action = $routeData[0];
                 }
                 break;

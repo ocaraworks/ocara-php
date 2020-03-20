@@ -232,7 +232,7 @@ class Form extends Base
 
         $fields = explode('.', $field);
         if (!isset($fields[1])) {
-            return ocGet($fields[0], $config);
+            return isset($config[$fields[0]]) ? $config[$fields[0]] : null;
         }
 
         $field = $fields[1];

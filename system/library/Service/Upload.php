@@ -77,7 +77,7 @@ class Upload extends ServiceBase
         foreach ($rules as $value) {
             if (is_string($value) && $value) {
                 $info = explode(',', $value);
-                $this->rules[$info[0]] = floatval(ocGet(1, $info, $this->maxSize));
+                $this->rules[$info[0]] = floatval(isset($info[1]) ? $info[1] : $this->maxSize);
             }
         }
     }

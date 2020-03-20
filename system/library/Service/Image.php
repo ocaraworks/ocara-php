@@ -356,13 +356,13 @@ class Image extends ServiceBase
 
         if ($type == 'src') {
             $sizeInfo = getimagesize($path);
-            $mime = ocGet(1, $imageType);
+            $mime = isset($imageType[1]) ? $imageType[1] : null;
             if (!($sizeInfo && $mime == $sizeInfo['mime'])) {
                 $this->showError('invalid_image');
             }
         }
 
-        $imageId = ocGet(2, $imageType);
+        $imageId = isset($imageType[2]) ? $imageType[2] : null;
 
         if (!($imageId && ($this->sysImageType & $imageId))) {
             $this->showError('invalid_filename', array($str, $extName));
@@ -632,7 +632,11 @@ class Image extends ServiceBase
      */
     protected function basePrint($isDestroy = false)
     {
-        $contentType = ocGet(0, self::$imageTypes[$this->srcExtName]);
+        $contentType = isset(self::$imageTypes[$this->srcExtName][0]) ? self::$imageTypes[$this->srcExtName][0] : null;
+
+        if (empty($contentType)) {
+            $this->showError('invalid_content_type');
+        }
 
         header("Content-Type:{$contentType};charset=utf-8");
         $path = ocDir(dirname($this->dstPath));

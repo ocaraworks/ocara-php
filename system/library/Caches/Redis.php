@@ -28,8 +28,9 @@ class Redis extends CacheBase implements CacheInterface
     public function connect($config, $required = true)
     {
         $this->config = $config;
+        $isOpen = !empty($this->config['open']) ? $this->config['open'] : false;
 
-        if (!ocGet('open', $this->config, false)) {
+        if (!$isOpen) {
             return ocService()->error->check('no_open_service_config', array('Redis'), $required);
         }
 
@@ -39,8 +40,8 @@ class Redis extends CacheBase implements CacheInterface
 
         ocCheckExtension('redis');
 
-        $host = ocGet('host', $this->config, $this->defaultHost);
-        $port = ocGet('port', $this->config, $this->defaultPort);
+        $host = !empty($this->config['host']) ? $this->config['host'] : $this->defaultHost;
+        $port = !empty($this->config['port']) ? $this->config['port'] : $this->defaultPort;
 
         $plugin = $this->baseConnect($host, $port, $required);
         $this->setPlugin($plugin);
@@ -60,8 +61,8 @@ class Redis extends CacheBase implements CacheInterface
     public function baseConnect($host, $port, $required)
     {
         $plugin = null;
-        $timeout = ocGet('timeout', $this->config, false);
-        $password = ocGet('password', $this->config, false);
+        $timeout = !empty($this->config['timeout']) ? $this->config['timeout'] : 0.0;
+        $password = !empty($this->config['password']) ? $this->config['password'] : 0.0;
 
         if (empty($host)) {
             return ocService()->error->check('null_cache_host', array(), $required);

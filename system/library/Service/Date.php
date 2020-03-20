@@ -82,7 +82,7 @@ class Date extends ServiceBase
         $dateInfo = $this->getDateInfo($time);
 
         if (array_key_exists($type, $this->maps)) {
-            return ocGet($type, $dateInfo, 0);
+            return array_key_exists($type, $dateInfo) ? $dateInfo[$type] : 0;
         }
 
         return 0;

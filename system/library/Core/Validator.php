@@ -55,7 +55,7 @@ class Validator extends Base
                 $rule = array('common' => $rule);
             }
 
-            $value = ocGet($field, $rules['data']);
+            $value = isset($rules['data'][$field]) ? $rules['data'][$field] : OC_EMPTY;
             $value = $value === null ? OC_EMPTY : $value;
             $value = (array)$value;
 
@@ -246,7 +246,7 @@ class Validator extends Base
             $val = $value[$i];
             $expression = (array)$expression;
             $rule = reset($expression);
-            $newError = ocGet(1, $expression);
+            $newError = isset($expression[1]) ? $expression[1] : null;
 
             $error = call_user_func_array(
                 array(&$this->validate, 'regExp'),
@@ -335,10 +335,10 @@ class Validator extends Base
     public function setError(array $lang)
     {
         list($error, $message, $field, $value, $index, $params) = $this->errorLocation;
-        $desc = ocGet($field, $lang, $field);
+        $desc = array_key_exists('message', $error) ? $error['message'] : $field;
 
         if (is_array($error)) {
-            $error = ocGet('message', $error);
+            $error = isset($error['message']) ? $error['message'] : null;
         }
 
         if (isset($lang[$error])) {

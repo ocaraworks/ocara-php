@@ -192,12 +192,12 @@ abstract class DatabaseModel extends ModelBase
 
         if (func_num_args() >= 2) {
             if ($relationModel) {
-                $shardingData = ocGet('relate', $this->sql['sharding'], array());
-                $this->sql['sharding']['relate'] = array_merge($shardingData, array($relationModel => $data));
+                $relateData = $this->getSharding('relate');
+                $this->sql['sharding']['relate'] = array_merge($relateData, array($relationModel => $data));
             }
         } else {
-            $shardingData = ocGet('current', $this->sql['sharding'], array());
-            $this->sql['sharding']['current'] = array_merge($shardingData, $data);
+            $currentData = $this->getSharding();
+            $this->sql['sharding']['current'] = array_merge($currentData, $data);
             if ($this->sql['sharding']['current'] && method_exists($this, '__sharding')) {
                 $this->__sharding($this->sql['sharding']['current']);
             }
@@ -214,7 +214,7 @@ abstract class DatabaseModel extends ModelBase
     public function getSharding($type = 'current')
     {
         $type = $type ?: 'current';
-        return ocGet(array('sharding', $type), $this->sql, array());
+        return !empty($this->sql['sharding'][$type]) ? $this->sql['sharding'][$type] : array();
     }
 
     /**
@@ -232,7 +232,8 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取Model的配置
-     * @return array|mixed
+     * @return array
+     * @throws Exception
      */
     public function getModelConfig()
     {
@@ -300,13 +301,14 @@ abstract class DatabaseModel extends ModelBase
     {
         self::loadConfig();
         $tag = self::getClass();
+        $length = func_num_args();
 
-        if (isset($key)) {
+        if ($length) {
             $key = strtoupper($key);
-            if ($field) {
-                return ocGet(array($key, $field), self::$config[$tag]);
+            if ($length >= 2) {
+                return isset(self::$config[$tag][$key][$field]) ? self::$config[$tag][$key][$field] : null;
             }
-            return ocGet($key, self::$config[$tag], array());
+            return isset(self::$config[$tag][$key]) ? self::$config[$tag][$key] : array();
         }
 
         return self::$config[$tag];
@@ -450,8 +452,8 @@ abstract class DatabaseModel extends ModelBase
         }
 
         if ($fieldsInfo) {
-            $this->autoIncrementField = ocGet('autoIncrementField', $fieldsInfo, OC_EMPTY);
-            $this->fields = ocGet('list', $fieldsInfo, array());
+            $this->autoIncrementField = !empty($fieldsInfo['autoIncrementField']) ? $fieldsInfo['autoIncrementField'] : OC_EMPTY;
+            $this->fields = !empty($fieldsInfo['list']) ? $fieldsInfo['list'] : array();
         }
 
         return $this;
@@ -462,6 +464,7 @@ abstract class DatabaseModel extends ModelBase
      * @param $event
      * @param $eventTarget
      * @return array|mixed
+     * @throws Exception
      */
     public function onGetCacheFields($event, $eventTarget)
     {
@@ -473,6 +476,7 @@ abstract class DatabaseModel extends ModelBase
      * @param $fieldsConfig
      * @param $event
      * @param $eventTarget
+     * @throws Exception
      */
     public function onSaveCacheFields($fieldsConfig, $event, $eventTarget)
     {
@@ -486,6 +490,7 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 获取字段配置
      * @return array|mixed
+     * @throws Exception
      */
     public function getFieldsConfig()
     {
@@ -1062,7 +1067,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function getDataType()
     {
-        return ocGet(array('option', 'dataType'), $this->sql, null);
+        return isset($this->sql['option']['dataType']) ? $this->sql['option']['dataType'] : null;
     }
 
     /**
@@ -1323,7 +1328,7 @@ abstract class DatabaseModel extends ModelBase
             return $sqlData;
         }
 
-        $shardingCurrent = ocGet(array('sharding', 'current'), $this->sql, array());
+        $shardingCurrent = $this->getSharding();
         if ($isQueryRow) {
             $result = $plugin->queryRow($sqlData, $isCount, $isUnion, $dataType, $shardingCurrent);
         } else {
@@ -1371,7 +1376,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function isPage()
     {
-        return ocGet(array('option', 'page'), $this->sql) ? true : false;
+        return !empty($this->sql['option']['page']);
     }
 
     /**
@@ -1533,8 +1538,8 @@ abstract class DatabaseModel extends ModelBase
      */
     public function getExtracts()
     {
-        $where = ocGet(array('extracts', 'where'), $this->sql, array());
-        $moreWhere = ocGet(array('extracts', 'moreWhere'), $this->sql, array());
+        $where = !empty($this->sql['extracts']['where']) ? $this->sql['extracts']['where'] : array();
+        $moreWhere = !empty($this->sql['extracts']['moreWhere']) ? $this->sql['extracts']['moreWhere'] : array();
 
         return array(
             'where' => $where,

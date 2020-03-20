@@ -148,7 +148,7 @@ class DatabaseBase extends Base
      */
     public function init(array $config)
     {
-        $config['password'] = ocGet('password', $config);
+        $config['password'] = isset($config['password']) ? $config['password'] : null;
         $connectName = $config['connect_name'];
         $this->setConnectName($connectName);
 
@@ -240,7 +240,8 @@ class DatabaseBase extends Base
             if (ocEmpty($name)) {
                 return null;
             }
-            return ocGet((string)$name, $this->config);
+            $name = (string)$name;
+            return isset($this->config[$name]) ? $this->config[$name] : null;
         }
 
         return $this->config;
@@ -688,7 +689,7 @@ class DatabaseBase extends Base
      */
     public function getErrorCode()
     {
-        return ocGet('errorCode', $this->error);
+        return isset($this->error['errorCode']) ? $this->error['errorCode'] : null;
     }
 
     /**
@@ -696,7 +697,7 @@ class DatabaseBase extends Base
      */
     public function getError()
     {
-        return ocGet('errorMessage', $this->error);
+        return isset($this->error['errorMessage']) ? $this->error['errorMessage'] : null;
     }
 
     /**
@@ -704,7 +705,7 @@ class DatabaseBase extends Base
      */
     public function getErrorList()
     {
-        return ocGet('errorList', $this->error);
+        return !empty($this->error['errorList']) ? $this->error['errorList'] : array();
     }
 
     /**

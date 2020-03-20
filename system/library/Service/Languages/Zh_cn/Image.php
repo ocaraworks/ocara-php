@@ -32,4 +32,5 @@ return array(
     'failed_create_image' => array(4271, '无法生成指定后缀的图片。'),
     'invalid_image' => array(4272, '指定的图片文件不符合目标图片格式，或者不是有效的图片文件'),
     'no_mark_image' => array(4272, '水印文件不存在'),
+    'invalid_content_type' => array(4273, '不支持的图片格式输出！')
 );

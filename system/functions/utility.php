@@ -466,13 +466,15 @@ function ocGetLanguage(array $languages, $message, array $params = array())
 
     if (is_array($languages) && isset($languages[$message])) {
         $errorCode = 0;
-        $content = ocGet($message, $languages);
-        if (is_array($content)) {
-            $errorCode = $content[0];
-            $content = $content[1];
+        $content = isset($languages[$message]) ? $languages[$message] : null;
+        if ($content) {
+            if (is_array($content)) {
+                $errorCode = $content[0];
+                $content = $content[1];
+            }
+            $content = ocSprintf($content, $params);
+            $content = str_ireplace('%s', OC_EMPTY, $content);
         }
-        $content = ocSprintf($content, $params);
-        $content = str_ireplace('%s', OC_EMPTY, $content);
         $result = array('code' => $errorCode, 'message' => (string)$content);
     }
 

@@ -228,11 +228,9 @@ class Config extends Basis
     public function get($key = null, $default = null)
     {
         if (isset($key)) {
-            $result = null;
-            if (ocKeyExists($key, $this->data)) {
-                $result = ocGet($key, $this->data);
-            } elseif (ocKeyExists($key, $this->frameworkConfig)) {
-                $result = $this->getDefault($key);
+            $result = ocGet($key, $this->data);
+            if (!$result) {
+                $result = ocGet($key, $this->frameworkConfig);
             }
             $result = $result ?: (func_num_args() >= 2 ? $default : $result);
             return $result;
@@ -272,7 +270,7 @@ class Config extends Basis
      */
     public function getDefault($key = null)
     {
-        if (isset($key)) {
+        if (func_num_args()) {
             return ocGet($key, $this->frameworkConfig);
         }
 

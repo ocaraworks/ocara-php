@@ -126,14 +126,14 @@ class Generator extends Base
     {
         $plugin = $this->plugin();
 
-        $option = ocGet('option', $this->sql, array());
-        $tables = ocGet('tables', $this->sql, array());
+        $option = !empty($this->sql['option']) ? $this->sql['option'] : array();
+        $tables = !empty($this->sql['tables']) ? $this->sql['tables'] : array();
         $unJoined = count($tables) <= 1;
 
         $from = $this->getFromSql($tables, $unJoined);
 
         if ($count && empty($unions['models'])) {
-            $countField = ocGet('countField', $this->sql, null);
+            $countField = !empty($this->sql['countField']) ? $this->sql['countField'] : null;
             $isGroup = !empty($option['group']);
             $fields = $plugin->getCountSql($countField, 'total', $isGroup);
         } else {
@@ -301,7 +301,7 @@ class Generator extends Base
      */
     public function genWhereSql($isFilterCondition = null)
     {
-        $option = ocGet('option', $this->sql, array());
+        $option = !empty($this->sql['option']) ? $this->sql['option'] : array();
         $where = array();
 
         if (!empty($option['where'])) {
@@ -415,7 +415,7 @@ class Generator extends Base
     public function getFromSql($tables, $unJoined)
     {
         $from = OC_EMPTY;
-        $shardingConfig = ocGet(array('sharding', 'relate'), $this->sql, array());
+        $shardingConfig = !empty($this->sql['sharding']['relate']) ? $this->sql['sharding']['relate'] : array();
 
         foreach ($tables as $alias => $param) {
             if (empty($param['fullname'])) continue;

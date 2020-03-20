@@ -26,7 +26,9 @@ class Memcache extends CacheBase implements CacheInterface
         if (empty($config['servers'])) {
             ocService()->error->check('null_cache_host', array(), $required);
         }
-        if (!ocGet('open', $config, false)) {
+
+        $isOpen = !empty($config['open']) ? $config['open'] : false;
+        if (!$isOpen) {
             return ocService()->error->check('no_open_service_config', array('Memcache'), $required);
         }
 
@@ -50,14 +52,13 @@ class Memcache extends CacheBase implements CacheInterface
     private function addServers($config, $class)
     {
         $plugin = $this->plugin();
-        $servers = ocGet('servers', $config, array());
+        $servers = !empty($config['servers']) ? $config['servers'] : array();
 
         if ($class == 'Memcached') {
             $plugin->addServers($servers);
-            if ($options = ocGet('options', $config, array())) {
-                foreach ($options as $key => $value) {
-                    $plugin->setOption($key, $value);
-                }
+            $options = !empty($config['options']) ? $config['options'] : array();
+            foreach ($options as $key => $value) {
+                $plugin->setOption($key, $value);
             }
         } else {
             foreach ($servers as $serve) {
