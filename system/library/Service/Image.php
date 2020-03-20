@@ -31,6 +31,7 @@ class Image extends ServiceBase
     public $srcPath;
     public $dstPath;
     public $sysImageType;
+    public $srcTemp;
 
     public $srcWidth;
     public $srcHeight;

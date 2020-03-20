@@ -335,7 +335,7 @@ class Validator extends Base
     public function setError(array $lang)
     {
         list($error, $message, $field, $value, $index, $params) = $this->errorLocation;
-        $desc = array_key_exists('message', $error) ? $error['message'] : $field;
+        $desc = array_key_exists('message', $lang) ? $lang['message'] : $field;
 
         if (is_array($error)) {
             $error = isset($error['message']) ? $error['message'] : null;
