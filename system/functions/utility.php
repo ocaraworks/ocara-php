@@ -466,7 +466,7 @@ function ocGetLanguage(array $languages, $message, array $params = array())
 
     if (is_array($languages) && isset($languages[$message])) {
         $errorCode = 0;
-        $content = isset($languages[$message]) ? $languages[$message] : null;
+        $content = $languages[$message] ?: null;
         if ($content) {
             if (is_array($content)) {
                 $errorCode = $content[0];
