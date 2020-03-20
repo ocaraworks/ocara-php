@@ -48,7 +48,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 获取默认服务提供器
-     * @return mixed
+     * @return $this
      */
     public static function getDefault()
     {

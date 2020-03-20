@@ -30,8 +30,7 @@ class FormManager extends ServiceProvider
     /**
      * 新建表单
      * @param $formName
-     * @return mixed
-     * @throws Exception
+     * @return array|mixed
      */
     public function create($formName)
     {
@@ -144,7 +143,7 @@ class FormManager extends ServiceProvider
         $tokens = $this->session->get($this->getTokenSaveName()) ?: array();
         $formName = array_search($requestToken, $tokens);
 
-        if (ocConfig('check_repeat_submit', false)) {
+        if (ocConfig('FORM.check_repeat_submit', false)) {
             if ($formName === false || !$this->hasForm($formName)) {
                 $this->error->show('not_exists_form');
             }
