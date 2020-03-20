@@ -9,7 +9,7 @@
 namespace Ocara\Core;
 
 use Ocara\Core\Base;
-use \Ocara\Exceptions\Exception;
+use Ocara\Exceptions\Exception;
 
 abstract class BootstrapBase extends Base
 {

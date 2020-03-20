@@ -19,13 +19,6 @@ return array(
     'SYSTEM_RUN_MODE' => 'develop',
 
     /*
-     * 服务组件配置
-     */
-    'SERVICE' => array(
-        'validate' => '\Ocara\Service\Validate'
-    ),
-
-    /*
      * session配置
      */
     'SESSION' => array(
@@ -51,15 +44,9 @@ return array(
     ),
 
     /*
-     * 安全配置
-     */
-    'SQL_FILTER_KEYWORDS' => 0, //是否过滤SQL关键词
-
-    /*
      * 日志配置
      */
     'LOG' => array(
-        'engine' => '\Ocara\Service\FileLog', //日志插件
         'root' => 'logs', //日志保存根路径，文件日志会放在resource/data目录下面
         'format' => '[{type}]|{time}|{message}', //日志格式
     ),
