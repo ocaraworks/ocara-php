@@ -199,7 +199,8 @@ class Request extends Base
     public function getMethod()
     {
         if (PHP_SAPI == 'cli') {
-            $method = isset($_SERVER['argv']['2']) ? $_SERVER['argv']['2'] : OC_EMPTY;
+            $method = isset($_SERVER['argv']['3']) ? $_SERVER['argv']['3'] : OC_EMPTY;
+
             if ($method) {
                 $method = strtoupper($method);
                 if (in_array($method, ocConfig('ALLOWED_HTTP_METHODS'))) {
