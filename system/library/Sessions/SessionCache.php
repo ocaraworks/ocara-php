@@ -69,7 +69,7 @@ class SessionCache extends ServiceProvider
      */
     public function read($id)
     {
-        return $this->handler->get($this->prefix . $id);
+        return $this->handler->get($this->prefix . $id) ?: OC_EMPTY;
     }
 
     /**
