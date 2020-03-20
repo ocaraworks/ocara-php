@@ -196,11 +196,8 @@ class VerifyCode extends ServiceBase
     {
         $size = !empty($fontInfo['size']) ? $fontInfo['size'] : 12;
         $color = !empty($fontInfo['color']) ? $fontInfo['color'] : '#FFFFFF';
-        $font = null;
-
-        if (array_key_exists('font', $fontInfo)) {
-            $font = ocService()->font->get($fontInfo['font']);
-        }
+        $font = array_key_exists('font', $fontInfo) ? $fontInfo['font'] : null;
+        $font = ocService()->font->get($font);
 
         $contentInfo = imagettfbbox($size, 0, $font, $content);
         $contentW = $contentInfo[4] - $contentInfo[6];
