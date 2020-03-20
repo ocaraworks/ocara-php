@@ -201,7 +201,7 @@ class Xml extends ServiceBase
         foreach ($xmlArray as $xmlKey => $xmlVal) {
             $xmlString = "<{$xmlKey}>";
             if (is_array($xmlVal) && $xmlVal) {
-                $xmlString .= "\t" . $this->makeXml($xmlVal, $xmlData);
+                $xmlString .= PHP_EOL . $this->makeXml($xmlVal, $xmlData) . PHP_EOL;
             } else {
                 $xmlString .= "{$xmlVal}";
             }
