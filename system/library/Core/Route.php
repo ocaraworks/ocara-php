@@ -61,6 +61,13 @@ class Route extends Base
             $_GET = $this->formatGet($_GET);
         }
 
+        if (PHP_SAPI == 'cli') {
+            if (ocService()->request->isPost()) {
+                $_POST = $_GET;
+                $_GET = array();
+            }
+        }
+
         return $route;
     }
 
