@@ -13,7 +13,7 @@ use \Closure;
 use \ReflectionException;
 use Ocara\Core\Basis;
 use Ocara\Interfaces\Event as EventInterface;
-use Ocara\Interfaces\Middleware;
+use Ocara\Interfaces\Middleware as MiddlewareInterface;
 
 class Event extends Basis implements EventInterface
 {
@@ -334,7 +334,7 @@ class Event extends Basis implements EventInterface
         }
 
         if ($this->isClass($callback)) {
-            if (!$callback instanceof Middleware) {
+            if (!$callback instanceof MiddlewareInterface) {
                 ocService()->error->show('invalid_middleware');
             }
         }
