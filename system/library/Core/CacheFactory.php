@@ -70,8 +70,12 @@ class CacheFactory extends Base
             $config = call_user_func_array($callback, array($connectName));
         }
 
-        if (empty($config)) {
-            $config = ocForceArray(ocConfig(array('CACHE', $connectName)));
+        if (!$config) {
+            $config = ocForceArray(ocConfig(array('CACHE', $connectName), array()));
+        }
+
+        if (!$config) {
+            ocService()->error->show('not_exists_cahce_config', array($connectName));
         }
 
         return $config;

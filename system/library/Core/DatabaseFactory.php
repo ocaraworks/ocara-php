@@ -114,7 +114,11 @@ class DatabaseFactory extends Base
             $connectName = self::$defaultServer;
         }
 
-        $config = ocForceArray(ocConfig(array('DATABASE', $connectName)));
+        $config = ocForceArray(ocConfig(array('DATABASE', $connectName), array()));
+
+        if (!$config) {
+            ocService()->error->show('not_exists_database_config', array($connectName));
+        }
 
         if ($callback = ocConfig(array('RESOURCE', 'database', 'get_config'), null)) {
             $config = array_merge(

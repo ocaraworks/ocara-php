@@ -57,37 +57,46 @@ class ModelService extends BaseService
         $connectNamespace = $connectName ? OC_NS_SEP . $connectName : null;
         $modelBase = 'DatabaseModel';
 
-        $moduleModelDir = "{$this->_mdlname}/privates/model/database/" . $connectNameDir;
-        $entityModelDir = "{$this->_mdlname}/privates/entity/database/" . $connectNameDir;
+        $moduleModelDir = "{$this->_mdlname}/model/database/" . $connectNameDir;
+        $entityModelDir = "{$this->_mdlname}/model/entity/database/" . $connectNameDir;
+
+        if ($this->_mdltype) {
+            if (empty($this->_mdlname)) {
+                $this->showError('请填写模块名！');
+            }
+        }
 
         switch ($this->_mdltype) {
             case 'modules':
-                $rootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\model\\database";
-                $entityRootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\entity\\database";
+                $rootNamespace = "app\\modules\\{$this->_mdlname}\\model\\database";
+                $entityRootNamespace = "app\\modules\\{$this->_mdlname}\\model\\entity\\database";
                 $modelPath = ocPath('application', 'modules/' . $moduleModelDir);
                 $entityPath = ocPath('application', 'modules/' . $entityModelDir);
+                $modulePath = ocPath('modules');
                 break;
             case 'console':
-                $rootNamespace = "app\console\\{$this->_mdlname}\\privates\\model\\database";
-                $entityRootNamespace = "app\console\\{$this->_mdlname}\\privates\\entity\\database";
+                $rootNamespace = "app\console\\{$this->_mdlname}\\model\\database";
+                $entityRootNamespace = "app\console\\{$this->_mdlname}\\model\\entity\\database";
                 $modelPath = ocPath('application', 'console/' . $moduleModelDir);
                 $entityPath = ocPath('application', 'console/' . $entityModelDir);
                 break;
             case 'tools':
-                $rootNamespace = "app\\tools\\{$this->_mdlname}\\privates\\model\\database";
-                $entityRootNamespace = "app\\tools\\{$this->_mdlname}\\privates\\entity\\database";
+                $rootNamespace = "app\\tools\\{$this->_mdlname}\\model\\database";
+                $entityRootNamespace = "app\\tools\\{$this->_mdlname}\\model\\entity\\database";
                 $modelPath = ocPath('tools', $moduleModelDir);
                 $entityPath = ocPath('tools', $entityModelDir);
+                $modulePath = ocPath('tools');
                 break;
             default:
                 $rootNamespace = "app\\model\\database";
                 $entityRootNamespace = "app\\model\\entity\\database";
                 $modelPath = ocPath('model', 'database/');
                 $entityPath = ocPath('entity', 'database/');
+                $modelPath = $modelPath . $connectNameDir;
+                $entityPath = $entityPath . $connectNameDir;
+                $moduleModelDir = ocPath('module');
+                $modulePath = null;
         }
-
-        $modelPath = $modelPath . $connectNameDir;
-        $entityPath = $entityPath . $connectNameDir;
 
         $namespace = $rootNamespace . $connectNamespace;
         $entityNamespace = $entityRootNamespace . $connectNamespace;
@@ -124,12 +133,12 @@ class ModelService extends BaseService
         ocCheckPath($modelPath);
 
         if (ocFileExists($path = $modelPath . "{$modelName}.php")) {
-            $this->showError('Model文件已存在，请先手动删除！');
+            //$this->showError('Model文件已存在，请先手动删除！');
         }
 
         ocCheckPath($entityPath);
         if (ocFileExists($entityPath = $entityPath . "{$entityName}.php")) {
-            $this->showError('Entity文件已存在，请先手动删除！');
+            //$this->showError('Entity文件已存在，请先手动删除！');
         }
 
         //新建模型
@@ -188,7 +197,8 @@ class ModelService extends BaseService
 
         //新建实体模型
         $model = new $modelClass();
-        $paths = $model->getConfigPath();
+
+        $paths = $model->getConfigPath($modulePath);
         $fieldsInfo = $model->getFieldsInfo();
 
         $modelBase = 'DatabaseEntity';
@@ -201,7 +211,7 @@ class ModelService extends BaseService
 
         //显示注释
         $content .= "/**" . "\r\n";
-        $content .= " * Class UsersEntity". "\r\n";
+        $content .= " * Class {$entityName}". "\r\n";
         $content .= " * @package ". $entityNamespace . "\r\n";
 
         foreach ($fieldsInfo as $row) {
@@ -215,7 +225,7 @@ class ModelService extends BaseService
         $content .= "{\r\n";
         $content .= "\tpublic function __entity()\r\n";
         $content .= "\t{\r\n";
-        $content .= "}\r\n";
+        $content .= "\t}\r\n";
         $content .= "\r\n";
         $content .= "\tpublic static function source()\r\n";
         $content .= "\t{\r\n";
@@ -229,7 +239,7 @@ class ModelService extends BaseService
         if (!empty($this->_mdltype)) {
             $langPath = $paths['moduleLang'];
         } else {
-            $paths = $model->getConfigPath();
+            $paths = $model->getConfigPath($modulePath);
             $langPath = $paths['lang'];
         }
 

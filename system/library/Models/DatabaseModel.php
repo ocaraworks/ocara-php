@@ -316,10 +316,11 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取配置文件路径
+     * @param string $modulePath
      * @return array|mixed
      * @throws Exception
      */
-    public function getConfigPath()
+    public function getConfigPath($modulePath = null)
     {
         $tag = $this->tag;
 
@@ -337,9 +338,9 @@ abstract class DatabaseModel extends ModelBase
         $dir = dirname($filePath) . OC_DIR_SEP;
 
         if ($this->module) {
-            list($rootPath, $subDir) = ocSeparateDir($dir, '/privates/model/database/');
-            $modulePath = OC_MODULE_PATH ?: ocPath('modules');
-            $moduleLang = $modulePath . '/' . $this->module . '/privates/lang/' . $language . '/database/' . $subDir . $file;
+            list($rootPath, $subDir) = ocSeparateDir($dir, '/model/database/');
+            $modulePath = $modulePath ?: (OC_MODULE_PATH ?: ocPath('modules'));
+            $moduleLang = $modulePath . '/' . $this->module . '/lang/' . $language . '/database/' . $subDir . $file;
         } else {
             list($rootPath, $subDir) = ocSeparateDir($dir, '/application/model/database/');
         }
@@ -1917,6 +1918,9 @@ abstract class DatabaseModel extends ModelBase
             $config = $this->getRelateConfig($class);
             if ($config) {
                 $class = $config['class'];
+            }
+            if (empty($class) || !class_exists($class)) {
+                ocService()->error->show('not_exists_model_join', array($class));
             }
             $fullname = $class::getDefaultTableName();
             $alias = $alias ?: $fullname;

@@ -38,7 +38,7 @@ $dirs = array(
     ),
     'tools' => array(
         'dev/controller/generate',
-        'dev/privates/config'
+        'dev/config'
     ),
     'tests' => array(),
 );
@@ -85,8 +85,8 @@ $files = array(
         'dev/controller/generate/IndexAction',
         'dev/controller/generate/LoginAction',
         'dev/controller/generate/LogoutAction',
-        'dev/privates/config/base',
-        'dev/privates/lang/zh_cn/control/base',
+        'dev/config/base',
+        'dev/lang/zh_cn/control/base',
     ),
     'tests' => array(
         'bootstrap'

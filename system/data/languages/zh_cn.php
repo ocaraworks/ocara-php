@@ -54,6 +54,7 @@ return array(
     'invalid_entity_cache'             => array(1905, '实体的缓存模型不正确！'),
     'invalid_middleware'               => array(1906, '事件处理对象应当是中间件类。'),
     'invalid_source'                   => array(1907, '容器中该类实例配置不正确！'),
+    'invalid_dir_file_path'            => array(1908, '目录不能作为文件路径！'),
 
     //必需
     'need_condition'                   => array(2100, '查询条件不存在或为空。'),
@@ -138,7 +139,10 @@ return array(
     'not_exists_find_field'            => array(2423, '查询字段不存在！'),
     'not_exists_mime_config'           => array(2425, '缺少MIME类型%s的配置！'),
     'not_writeable_htaccess'           => array(2426, 'htaccess无法写入！'),
-
+    'not_exists_model_join'            => array(2417, '%s关联模型类或配置不存在！'),
+    'not_exists_database_config'       => array(2536, '%s数据库配置不存在！'),
+    'not_exists_cahce_config'          => array(2536, '%s缓存配置不存在！'),
+    
     //没有
     'no_config'                        => array(2501, '找不到该配置：%s。'),
     'no_controller'                    => array(2502, '找不到控制器%s。'),

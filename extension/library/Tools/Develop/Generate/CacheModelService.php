@@ -47,7 +47,7 @@ class CacheModelService extends BaseService
         $connect = ucfirst($this->_connectName);
         $modelBase = 'CacheModel';
         $connectPath = $this->_connectName . OC_DIR_SEP;
-        $moduleModelDir = "{$this->_mdlname}/privates/model/cache/";
+        $moduleModelDir = "{$this->_mdlname}/model/cache/";
 
         $cacheType = ucfirst(strtolower(ocConfig(array('CACHE', $this->_connectName, 'type'))));
         if (!in_array($cacheType, array('Redis', 'Memcache'))) {
@@ -60,15 +60,15 @@ class CacheModelService extends BaseService
 
         switch ($this->_mdltype) {
             case 'modules':
-                $rootNamespace = "app\\modules\\{$this->_mdlname}\\privates\\model\\cache";
+                $rootNamespace = "app\\modules\\{$this->_mdlname}\\model\\cache";
                 $modelPath = ocPath('application', 'modules/' . $moduleModelDir);
                 break;
             case 'console':
-                $rootNamespace = "app\console\\{$this->_mdlname}\\privates\\model\\cache";
+                $rootNamespace = "app\console\\{$this->_mdlname}\\model\\cache";
                 $modelPath = ocPath('application', 'console/' . $moduleModelDir);
                 break;
             case 'tools':
-                $rootNamespace = "app\\tools\\privates\\model\\cache";
+                $rootNamespace = "app\\tools\\model\\cache";
                 $modelPath = ocPath('tools', $moduleModelDir);
                 break;
             default:

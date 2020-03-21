@@ -101,7 +101,7 @@ class Lang extends Base
     protected function getConfigPath($route, $subPath, $rootPath)
     {
         if ($route['module']) {
-            $subPath = $route['module'] . '/privates/' . $subPath;
+            $subPath = $route['module'] . OC_NS_SEP . $subPath;
         }
 
         if ($rootPath) {

@@ -226,7 +226,7 @@ function ocIsStandardName($name)
 function ocWrite($filePath, $content, $append = false, $perm = null)
 {
     if (is_dir($filePath)) {
-        ocService()->error->show('exists_dir');
+        ocService()->error->show('invalid_dir_file_path');
     }
 
     $perm = $perm ?: 0755;
