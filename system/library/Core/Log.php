@@ -1,15 +1,14 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   全局日志处理类Log
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * Ocara开源框架 全局日志处理类Log
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
 namespace Ocara\Core;
 
-use Ocara\Core\Base;
 use \ReflectionClass;
 use Ocara\Exceptions\Exception;
 

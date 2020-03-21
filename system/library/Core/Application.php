@@ -2,18 +2,15 @@
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
  * Ocara开源框架  应用生成类ApplicationGenerator
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
 namespace Ocara\Core;
 
-use Ocara\Core\Basis;
-
 defined('OC_PATH') or exit('Forbidden');
 
-use Ocara\Core\ServiceProvider;
 use Ocara\Exceptions\Exception;
 
 class Application extends Base
@@ -147,6 +144,7 @@ class Application extends Base
     /**
      * 解析路由
      * @return array
+     * @throws Exception
      */
     public function parseRoute()
     {

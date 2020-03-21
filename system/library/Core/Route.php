@@ -1,16 +1,13 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   路由处理类Route
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * Ocara开源框架 路由处理类Route
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
 namespace Ocara\Core;
-
-use Ocara\Core\Base;
-use Ocara\Core\ControllerBase;
 
 defined('OC_PATH') or exit('Forbidden!');
 

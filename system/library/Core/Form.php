@@ -1,15 +1,14 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   表单生成类Form
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * Ocara开源框架 表单生成类Form
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
 namespace Ocara\Core;
 
-use Ocara\Core\Base;
 use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -134,6 +133,7 @@ class Form extends Base
     /**
      * 表单开始
      * @return string
+     * @throws Exception
      */
     public function begin()
     {
@@ -157,6 +157,7 @@ class Form extends Base
     /**
      * 表单结束
      * @return string
+     * @throws Exception
      */
     public function end()
     {
@@ -284,8 +285,9 @@ class Form extends Base
     /**
      * 用未定义的方法
      * @param string $name
-     * @param $params
+     * @param array $params
      * @return mixed
+     * @throws Exception
      */
     public function __call($name, $params)
     {

@@ -2,18 +2,59 @@
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
  * Ocara开源框架 服务提供器类Provider
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
 namespace Ocara\Core;
 
-use Ocara\Core\Base;
-use Ocara\Core\Container;
-use Ocara\Exceptions\Exception;
 use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
+use Ocara\Exceptions\Exception;
 
+/**
+ * Class ServiceProvider
+ * @property \Ocara\Core\Request $request
+ * @property \Ocara\Core\Response $response
+ * @property \Ocara\Core\Api $api
+ * @property \Ocara\Core\Error $error
+ * @property \Ocara\Dispatchers\Common $dispatcher
+ * @property \Ocara\Core\Filter $filter
+ * @property \Ocara\Core\Url $url
+ * @property \Ocara\Core\Lang $lang
+ * @property \Ocara\Core\Cookie $cookie
+ * @property \Ocara\Core\Session $session
+ * @property \Ocara\Core\Route $route
+ * @property \Ocara\Core\Transaction $transaction
+ * @property \Ocara\Service\File $file
+ * @property \Ocara\Core\Font $font
+ * @property \Ocara\Core\StaticPath $staticPath
+ * @property \Ocara\Core\Globals $globals
+ * @property \Ocara\Service\ErrorOutput $errorOutput
+ * @property \Ocara\Core\FormToken $formToken
+ * @property \Ocara\Core\Validator $validator
+ * @property \Ocara\Service\Code $code
+ * @property \Ocara\Service\Excel $excel
+ * @property \Ocara\Service\Date $date
+ * @property \Ocara\Service\Download $download
+ * @property \Ocara\Service\StaticBuilder $staticBuilder
+ * @property \Ocara\Service\Pager $pager
+ * @property \Ocara\Core\Event $event
+ * @property \Ocara\Core\Log $log
+ * @property \Ocara\Core\Form $form
+ * @property \Ocara\Core\Html $html
+ * @property \Ocara\Core\FormManager $formManager
+ * @property \Ocara\Service\Validate $validate
+ * @property \Ocara\Service\Auth $auth
+ * @property \Ocara\Service\Xml $xml
+ * @property \Ocara\Service\FileCache $fileCache
+ * @property \Ocara\Service\VerifyCode $verifyCode
+ * @property \Ocara\Service\Mail $mail
+ * @property \Ocara\Service\Ftp $ftp
+ * @property \Ocara\Service\Image $image
+ * @property \Ocara\Service\FileLog $fileLog
+ * @property \Ocara\Service\Upload $upload
+ */
 class ServiceProvider extends Base implements ServiceProviderInterface
 {
     protected $container;
@@ -25,7 +66,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      * 初始化
      * ServiceProvider constructor.
      * @param array $data
-     * @param \Ocara\Core\Container|null $container
+     * @param Container|null $container
      */
     public function __construct(array $data = array(), Container $container = null)
     {
@@ -106,7 +147,8 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      * @param string $name
      * @param array $params
      * @param array $deps
-     * @return mixed|null
+     * @return array|mixed|object|void|null
+     * @throws Exception
      */
     public function loadService($name, $params = array(), $deps = array())
     {
@@ -130,7 +172,8 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      * @param $name
      * @param array $params
      * @param array $deps
-     * @return mixed
+     * @return array|mixed|object|void|null
+     * @throws Exception
      */
     public function createService($name, $params = array(), $deps = array())
     {
@@ -177,7 +220,8 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      * 属性不存在时的处理
      * @param $key
      * @param $reason
-     * @return mixed|null
+     * @return array|mixed|object|void|null
+     * @throws Exception
      */
     public function __none($key, $reason)
     {

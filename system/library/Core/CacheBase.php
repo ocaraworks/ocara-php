@@ -2,14 +2,14 @@
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
  * Ocara开源框架 缓存客户端接口基类CacheBase
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
 namespace Ocara\Core;
 
-use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -27,6 +27,7 @@ class CacheBase extends Base
      * CacheBase constructor.
      * @param array $config
      * @param bool $required
+     * @throws Exception
      */
     public function __construct(array $config, $required = true)
     {

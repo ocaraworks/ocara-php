@@ -2,14 +2,13 @@
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
  * Ocara开源框架  框架引导类Ocara
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
 namespace Ocara\Core;
 
-use Ocara\Core\Container;
 use Ocara\Exceptions\Exception;
 
 final class Ocara
@@ -68,7 +67,7 @@ final class Ocara
             ->bindSingleton('app', '\Ocara\Core\Application')
             ->bindSingleton('exceptionHandler', '\Ocara\Core\ExceptionHandler');
 
-        $config = $container->config;
+        $container->config;
         $loader = $container->loader;
 
         spl_autoload_register(array($loader, 'autoload'));

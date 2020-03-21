@@ -2,7 +2,7 @@
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
  * Ocara开源框架 数据库接口基类DatabaseBase
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
@@ -182,6 +182,7 @@ class DatabaseBase extends Base
     /**
      * 是否PDO连接
      * @return bool
+     * @throws Exception
      */
     public function isPdo()
     {
@@ -307,7 +308,8 @@ class DatabaseBase extends Base
      * @param bool $isUnion
      * @param int|string $dataType
      * @param array $shardingCurrent
-     * @return array|mixed
+     * @return array|mixed|null
+     * @throws Exception
      */
     public function getResult($queryRow = false, $count = false, $isUnion = false, $dataType = null, $shardingCurrent = array())
     {
@@ -416,8 +418,9 @@ class DatabaseBase extends Base
 
     /**
      * 是否长连接
-     * @param bool $pConnect
+     * @param null $pConnect
      * @return bool
+     * @throws Exception
      */
     public function isPconnect($pConnect = null)
     {
@@ -432,6 +435,7 @@ class DatabaseBase extends Base
      * 是否预处理
      * @param bool $prepare
      * @return bool
+     * @throws Exception
      */
     public function isPrepare($prepare = null)
     {
@@ -596,6 +600,7 @@ class DatabaseBase extends Base
     /**
      * 绑定参数
      * @param array $params
+     * @throws Exception
      */
     protected function bindParams(array $params)
     {
@@ -718,8 +723,9 @@ class DatabaseBase extends Base
 
     /**
      * 显示错误信息
-     * @param array|string $error
+     * @param string $error
      * @param array $params
+     * @throws Exception
      */
     public function showError($error = null, $params = array())
     {
@@ -732,6 +738,7 @@ class DatabaseBase extends Base
      * 显示错误前置事件
      * @param $error
      * @param $params
+     * @throws Exception
      */
     public function beforeShowError($error, $params)
     {

@@ -1,15 +1,14 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   静态路径生成类StaticPath
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * Ocara开源框架 静态路径生成类StaticPath
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
 namespace Ocara\Core;
 
-use Ocara\Core\Base;
 use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -83,11 +82,12 @@ class StaticPath extends Base
 
     /**
      * 获取参数
-     * @param integer $offset
-     * @param array $params
-     * @param array $data
-     * @param string $paramsStr
+     * @param $offset
+     * @param $params
+     * @param $data
+     * @param $paramsStr
      * @return array
+     * @throws Exception
      */
     private function getParams($offset, $params, $data, $paramsStr)
     {
@@ -123,12 +123,13 @@ class StaticPath extends Base
 
     /**
      * 获取参数数据路径
-     * @param array $params
-     * @param string $module
-     * @param string $controller
-     * @param string $action
-     * @param array $data
+     * @param $params
+     * @param $module
+     * @param $controller
+     * @param $action
+     * @param $data
      * @return array
+     * @throws Exception
      */
     public function getParamsPathMap($params, $module, $controller, $action, $data)
     {
@@ -163,6 +164,7 @@ class StaticPath extends Base
      * @param $controller
      * @param $action
      * @return string
+     * @throws Exception
      */
     public function getMvcPathMap($module, $controller, $action)
     {

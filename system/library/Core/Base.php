@@ -1,8 +1,8 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架    基类Base
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * Ocara开源框架 基类Base
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
@@ -37,9 +37,10 @@ abstract class Base extends Basis
 
     /**
      * 魔术方法-调用未定义的方法时
-     * @param string $name
+     * @param $name
      * @param $params
      * @return mixed
+     * @throws Exception
      */
     public function __call($name, $params)
     {
@@ -62,9 +63,9 @@ abstract class Base extends Basis
 
     /**
      * 魔术方法-调用未定义的静态方法时
-     * @param string $name
-     * @param array $params
-     * @return mixed
+     * @param $name
+     * @param $params
+     * @throws Exception
      */
     public static function __callStatic($name, $params)
     {
@@ -80,8 +81,9 @@ abstract class Base extends Basis
 
     /**
      * 魔术方法获取自定义属性
-     * @param string $property
+     * @param $property
      * @return mixed
+     * @throws Exception
      */
     public function __get($property)
     {
@@ -121,7 +123,8 @@ abstract class Base extends Basis
     /**
      * 获取日志对象
      * @param $logName
-     * @return mixed
+     * @return array|mixed|object|void|null
+     * @throws Exception
      */
     public static function log($logName)
     {
@@ -132,6 +135,7 @@ abstract class Base extends Basis
      * 获取插件
      * @param bool $required
      * @return object|null
+     * @throws Exception
      */
     public function plugin($required = true)
     {
@@ -148,7 +152,7 @@ abstract class Base extends Basis
 
     /**
      * 设置插件
-     * @param $plugin
+     * @param object $plugin
      * @return mixed
      */
     public function setPlugin($plugin)
@@ -167,7 +171,8 @@ abstract class Base extends Basis
     /**
      * 设置或获取事件
      * @param $eventName
-     * @return \Ocara\Core\Event
+     * @return mixed
+     * @throws Exception
      */
     public function event($eventName)
     {
@@ -188,9 +193,10 @@ abstract class Base extends Basis
 
     /**
      * 触发事件
-     * @param string $eventName
+     * @param $eventName
      * @param array $params
      * @return mixed
+     * @throws Exception
      */
     public function fire($eventName, array $params = array())
     {

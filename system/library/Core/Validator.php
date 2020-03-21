@@ -1,18 +1,14 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架     验证器类Validator
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * Ocara开源框架  验证器类Validator
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
 namespace Ocara\Core;
 
-use \ReflectionClass;
-use \ReflectionObject;
-use Ocara\Core\Base;
-use Ocara\Core\Form;
 use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -43,7 +39,8 @@ class Validator extends Base
      * 表单验证
      * @param array $data
      * @param bool $showError
-     * @return bool|Validator
+     * @return bool
+     * @throws Exception
      */
     public function validate(array $data, $showError = true)
     {
@@ -128,7 +125,7 @@ class Validator extends Base
 
     /**
      * 绑定表单
-     * @param \Ocara\Core\Form $form
+     * @param Form $form
      * @return $this
      */
     public function addForm(Form $form)
@@ -265,10 +262,11 @@ class Validator extends Base
 
     /**
      * 回调函数验证
-     * @param string $field
-     * @param string $value
-     * @param string|array $callback
+     * @param $field
+     * @param $value
+     * @param $callback
      * @return bool
+     * @throws Exception
      */
     public function callback($field, $value, $callback)
     {

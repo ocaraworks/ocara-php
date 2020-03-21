@@ -1,8 +1,8 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   服务容器类Container
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * Ocara开源框架 服务容器类Container
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
@@ -12,7 +12,6 @@ namespace Ocara\Core;
 use \ReflectionClass;
 use \ReflectionMethod;
 use Ocara\Exceptions\Exception;
-use Ocara\Core\Basis;
 
 defined('OC_PATH') or exit('Forbidden!');
 

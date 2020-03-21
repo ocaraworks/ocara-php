@@ -2,7 +2,7 @@
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
  * Ocara开源框架 事件处理器类EventHandler
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
@@ -11,7 +11,8 @@ namespace Ocara\Core;
 
 use \Closure;
 use \ReflectionException;
-use Ocara\Core\Basis;
+use Ocara\Exceptions\Exception;
+
 use Ocara\Interfaces\Event as EventInterface;
 use Ocara\Interfaces\Middleware as MiddlewareInterface;
 
@@ -91,9 +92,10 @@ class Event extends Basis implements EventInterface
     /**
      * 新建事件处理器
      * @param $callback
-     * @param null $name
+     * @param string $name
      * @param int $priority
      * @param bool $isGroup
+     * @throws Exception
      */
     protected function create($callback, $name = null, $priority = 0, $isGroup = false)
     {
@@ -312,8 +314,9 @@ class Event extends Basis implements EventInterface
     /**
      * 回调检测
      * @param $callback
-     * @param $key
+     * @param int $key
      * @return array
+     * @throws \Ocara\Exceptions\Exception
      */
     public function checkCallback(&$callback, $key = 0)
     {

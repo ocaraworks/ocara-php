@@ -2,14 +2,13 @@
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
  * Ocara开源框架 数据库接口类Database
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
 namespace Ocara\Core;
 
-use Ocara\Core\Base;
 use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -140,9 +139,10 @@ class DatabaseFactory extends Base
 
     /**
      * 获取数据库对象
-     * @param string $dir
-     * @param array $config
+     * @param $dir
+     * @param $config
      * @return mixed
+     * @throws Exception
      */
     private static function createDatabase($dir, $config)
     {

@@ -2,7 +2,7 @@
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
  * Ocara开源框架 资源管理器类Resource
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
@@ -13,4 +13,12 @@ use Ocara\Interfaces\Middleware;
 
 class Resource implements Middleware
 {
+    /**
+     * 处理
+     * @param mixed $args
+     * @return mixed
+     */
+    public function handle($args = null)
+    {
+    }
 }

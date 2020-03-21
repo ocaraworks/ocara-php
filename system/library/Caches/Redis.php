@@ -1,14 +1,15 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架    Redis客户端插件Redis
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * Ocara开源框架 Redis客户端插件Redis
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
 namespace Ocara\Core\Caches;
 
+use Ocara\Exceptions\Exception;
 use Ocara\Core\CacheBase;
 use Ocara\Interfaces\Cache as CacheInterface;
 
@@ -24,6 +25,7 @@ class Redis extends CacheBase implements CacheInterface
      * @param array $config
      * @param bool $required
      * @return mixed
+     * @throws Exception
      */
     public function connect($config, $required = true)
     {
@@ -56,7 +58,8 @@ class Redis extends CacheBase implements CacheInterface
      * @param $host
      * @param $port
      * @param $required
-     * @return mixed
+     * @return \Redis|null
+     * @throws Exception
      */
     public function baseConnect($host, $port, $required)
     {

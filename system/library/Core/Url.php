@@ -1,15 +1,14 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   URL类Url
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * Ocara开源框架 URL类Url
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
 namespace Ocara\Core;
 
-use Ocara\Core\Base;
 use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -234,6 +233,7 @@ class Url extends Base
      * @param string $url
      * @param string $urlType
      * @return string
+     * @throws Exception
      */
     public function addQuery(array $params, $url = null, $urlType = null)
     {

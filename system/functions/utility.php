@@ -1,8 +1,8 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   应用程序公共函数
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * Ocara开源框架 应用程序公共函数
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
@@ -340,9 +340,9 @@ function ocGetExceptionData($exception)
 
 /**
  * 获取默认服务提供器
- * @param null $name
+ * @param string $name
  * @param bool $getDefault
- * @return mixed|null
+ * @return Ocara\Core\ServiceProvider
  */
 function ocService($name = null, $getDefault = false)
 {
@@ -372,7 +372,7 @@ function ocService($name = null, $getDefault = false)
 
 /**
  * 获取默认容器
- * @return mixed
+ * @return Ocara\Core\Container
  */
 function ocContainer()
 {

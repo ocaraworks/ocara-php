@@ -1,18 +1,16 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   AJAX请求处理类Ajax
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * Ocara开源框架 AJAX请求处理类Ajax
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
 namespace Ocara\Core;
 
-use Ocara\Exceptions\Exception;
 use \ReflectionClass;
-use Ocara\Core\Basis;
-use Ocara\Core\Container;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 

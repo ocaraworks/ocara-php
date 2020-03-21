@@ -1,14 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: BORUI-DIY
- * Date: 2017/6/25 0025
- * Time: 下午 1:50
- */
+/*************************************************************************************************
+ * -----------------------------------------------------------------------------------------------
+ * Ocara开源框架 启动基类Base
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
+ * -----------------------------------------------------------------------------------------------
+ * @author Lin YiHu <linyhtianwa@163.com>
+ ************************************************************************************************/
 
 namespace Ocara\Core;
 
-use Ocara\Core\Base;
 use Ocara\Exceptions\Exception;
 
 abstract class BootstrapBase extends Base

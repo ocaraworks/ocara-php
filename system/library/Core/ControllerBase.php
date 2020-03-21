@@ -1,8 +1,8 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   应用控制器基类Controller
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * Ocara开源框架 应用控制器基类Controller
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
@@ -40,7 +40,8 @@ abstract class ControllerBase extends serviceProvider
 
     /**
      * 初始化设置
-     * @param $isActionClass
+     * @param bool $isActionClass
+     * @throws Exception
      */
     public function initialize($isActionClass)
     {

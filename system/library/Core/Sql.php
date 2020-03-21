@@ -1,15 +1,15 @@
 <?php
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
- * Ocara开源框架   SQL语句生成类Sql
- * Copyright (c) http://www.ocara.cn All rights reserved.
+ * Ocara开源框架 SQL语句生成类Sql
+ * @Copyright (c) http://www.ocara.cn All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
 
 namespace Ocara\Core;
 
-use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -59,9 +59,10 @@ class Sql extends Base
 
     /**
      * 给逗号分隔的列表加引号
-     * @param array|string $list
+     * @param $list
      * @param string $quote
      * @return array|bool|mixed|string
+     * @throws Exception
      */
     public function quoteList($list, $quote = OC_QUOTE)
     {
@@ -143,12 +144,12 @@ class Sql extends Base
 
     /**
      * 值格式解析
-     * @param string $value
+     * @param $value
      * @param string $paramType
      * @param bool $ifQuote
      * @param bool $prepare
      * @return array|bool|mixed|string
-     * @throws Exception
+     * @throws \Ocara\Exceptions\Exception
      */
     public function parseValue($value, $paramType = 'where', $ifQuote = true, $prepare = true)
     {
@@ -194,10 +195,11 @@ class Sql extends Base
 
     /**
      * SQL过滤
-     * @param string $content
+     * @param $content
      * @param bool $addSlashes
      * @param bool $equal
      * @return array|bool|mixed|string
+     * @throws Exception
      */
     public function filterSql($content, $addSlashes = true, $equal = false)
     {
@@ -297,9 +299,10 @@ class Sql extends Base
 
     /**
      * INSERT语句
-     * @param string $table
-     * @param array $data
+     * @param $table
+     * @param $data
      * @return array
+     * @throws Exception
      */
     public function getInsertSql($table, $data)
     {
@@ -311,8 +314,9 @@ class Sql extends Base
      * INSERT基本语句
      * @param string $type
      * @param string $table
-     * @param array $data
+     * @param string|array $data
      * @return string
+     * @throws Exception
      */
     public function getInsertSqlBase($type, $table, $data)
     {
@@ -330,11 +334,11 @@ class Sql extends Base
     }
 
     /**
-     * UPDATE语句
-     * @param string $table
+     * @param $table
      * @param string|array $data
      * @param string|array $where
      * @return array
+     * @throws Exception
      */
     public function getUpdateSql($table, $data, $where)
     {
@@ -358,9 +362,10 @@ class Sql extends Base
 
     /**
      * REPLACE语句
-     * @param string $table
+     * @param $table
      * @param string|array $data
      * @return array
+     * @throws Exception
      */
     public function getReplaceSql($table, $data)
     {
@@ -372,8 +377,9 @@ class Sql extends Base
      * DELETE语句
      * @param $table
      * @param $where
-     * @param null $option
+     * @param string $option
      * @return array
+     * @throws Exception
      */
     public function getDeleteSql($table, $where, $option = null)
     {
@@ -387,8 +393,8 @@ class Sql extends Base
 
     /**
      * 获取表的字段信息
-     * @param
-     * @param $database
+     * @param string $table
+     * @param string $database
      * @return string
      */
     public function getShowFieldsSql($table, $database = null)
@@ -437,6 +443,7 @@ class Sql extends Base
      * 获取limit字符串
      * @param $limit
      * @return array|bool|mixed|string
+     * @throws Exception
      */
     public function getLimitSql($limit)
     {
@@ -454,11 +461,12 @@ class Sql extends Base
 
     /**
      * 获取In语句
-     * @param $field
-     * @param $list
+     * @param string $field
+     * @param string $list
      * @param string $alias
      * @param string $sign
      * @return string
+     * @throws Exception
      */
     public function getInSql($field, $list, $alias = null, $sign = 'IN')
     {
@@ -484,6 +492,7 @@ class Sql extends Base
      * @param mixed $value2
      * @param string $alias
      * @return string
+     * @throws Exception
      */
     public function getBetweenSql($field, $value1, $value2, $alias = null)
     {
@@ -519,6 +528,7 @@ class Sql extends Base
      * @param $type
      * @param $options
      * @return array|bool|mixed|string
+     * @throws Exception
      */
     public function getOptionSql($type, $options)
     {
@@ -712,6 +722,7 @@ class Sql extends Base
      * @param $val
      * @param bool $ifQuote
      * @return array|bool|mixed|string
+     * @throws Exception
      */
     public function getValueSql($val, $ifQuote = true)
     {
@@ -765,11 +776,12 @@ class Sql extends Base
 
     /**
      * 格式化键值数组
-     * @param mixed $data
+     * @param $data
      * @param string $link
      * @param string $sign
      * @param string $alias
      * @return string
+     * @throws Exception
      */
     public function getFieldCondition($data, $link = ',', $sign = '=', $alias = null)
     {
