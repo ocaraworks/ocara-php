@@ -29,7 +29,7 @@ class FormManager extends ServiceProvider
     /**
      * 新建表单
      * @param $formName
-     * @return array|mixed
+     * @return Form[]|Form
      */
     public function create($formName)
     {
@@ -44,7 +44,7 @@ class FormManager extends ServiceProvider
     /**
      * 获取表单
      * @param $name
-     * @return array|mixed
+     * @return Form[]|Form
      */
     public function getForm($name = null)
     {
@@ -130,7 +130,7 @@ class FormManager extends ServiceProvider
     /**
      * 获取提交的表单
      * @param $requestToken
-     * @return mixed
+     * @return Form
      * @throws Exception
      */
     public function getSubmitForm($requestToken)

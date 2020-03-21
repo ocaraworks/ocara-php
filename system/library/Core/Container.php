@@ -31,7 +31,7 @@ class Container extends Basis
 
     /**
      * 获取默认容器
-     * @return mixed
+     * @return Container
      */
     public static function getDefault()
     {

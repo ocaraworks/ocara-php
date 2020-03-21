@@ -12,6 +12,7 @@ namespace Ocara\Core;
 defined('OC_PATH') or exit('Forbidden');
 
 use Ocara\Exceptions\Exception;
+use Ocara\Interfaces\Bootstrap;
 
 class Application extends Base
 {
@@ -100,8 +101,8 @@ class Application extends Base
 
     /**
      * 获取或设置启动器
-     * @param null $bootstrap
-     * @return mixed
+     * @param string $bootstrap
+     * @return Bootstrap
      */
     public function bootstrap($bootstrap = null)
     {

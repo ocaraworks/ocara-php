@@ -10,6 +10,7 @@
 namespace Ocara\Core;
 
 use Ocara\Exceptions\Exception;
+use Ocara\Models\DatabaseModel;
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -204,7 +205,7 @@ abstract class ControllerBase extends serviceProvider
     /**
      * 获取表单并自动验证
      * @param string $name
-     * @return mixed
+     * @return Form
      * @throws Exception
      */
     public function form($name = null)
@@ -229,7 +230,7 @@ abstract class ControllerBase extends serviceProvider
 
     /**
      * 开启/关闭/检测表单令牌功能
-     * @param null $check
+     * @param bool $check
      * @return bool
      */
     public function isCheckForm($check = null)
@@ -255,7 +256,7 @@ abstract class ControllerBase extends serviceProvider
     /**
      * 获取或设置Model-静态属性保存
      * @param string $class
-     * @return mixed
+     * @return DatabaseModel
      * @throws Exception
      */
     public function model($class = null)

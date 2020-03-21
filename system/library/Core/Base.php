@@ -171,7 +171,7 @@ abstract class Base extends Basis
     /**
      * 设置或获取事件
      * @param $eventName
-     * @return mixed
+     * @return Event
      * @throws Exception
      */
     public function event($eventName)

@@ -54,12 +54,12 @@ use Ocara\Exceptions\Exception;
  * @property \Ocara\Service\Image $image
  * @property \Ocara\Service\FileLog $fileLog
  * @property \Ocara\Service\Upload $upload
+ * @property \Ocara\Views\Common|\Ocara\Views\Api $view;
  */
 class ServiceProvider extends Base implements ServiceProviderInterface
 {
     protected $container;
     protected $services = array();
-
     private static $default;
 
     /**
@@ -89,7 +89,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 获取默认服务提供器
-     * @return $this
+     * @return ServiceProvider
      */
     public static function getDefault()
     {
@@ -115,6 +115,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 获取容器
+     * @return Container
      */
     public function container()
     {
