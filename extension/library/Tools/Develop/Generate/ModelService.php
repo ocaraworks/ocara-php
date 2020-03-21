@@ -193,6 +193,7 @@ class ModelService extends BaseService
 
         $modelBase = 'DatabaseEntity';
         $content = "<?php\r\n";
+        $content .= "\r\n";
         $content .= "namespace {$entityNamespace};\r\n";
         $content .= "\r\n";
         $content .= "use Base\\Model\\{$modelBase};\r\n";
@@ -213,7 +214,8 @@ class ModelService extends BaseService
         $content .= "class {$entityName} extends {$modelBase}\r\n";
         $content .= "{\r\n";
         $content .= "\tpublic function __entity()\r\n";
-        $content .= "\t{}\r\n";
+        $content .= "\t{\r\n";
+        $content .= "}\r\n";
         $content .= "\r\n";
         $content .= "\tpublic static function source()\r\n";
         $content .= "\t{\r\n";
