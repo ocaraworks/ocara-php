@@ -802,7 +802,8 @@ function ocSimpleUrl($dir, $subPath)
 function ocSeparateDir($filePath, $separateDir)
 {
     $rootPath = strstr($filePath, $separateDir, true) . ocDir($separateDir);
-    $subDir = str_replace($rootPath, OC_EMPTY, $filePath) . OC_DIR_SEP;
+    $subDir = str_replace($rootPath, OC_EMPTY, $filePath);
+    $subDir = $subDir ? $subDir. OC_DIR_SEP : OC_EMPTY;
     return array($rootPath, $subDir);
 }
 

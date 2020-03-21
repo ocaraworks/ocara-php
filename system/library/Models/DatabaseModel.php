@@ -334,13 +334,13 @@ abstract class DatabaseModel extends ModelBase
 
         $ref = new ReflectionObject($this);
         $filePath = ocCommPath($ref->getFileName());
-        $file = substr(basename($filePath), 0, -(strlen($modelSuffix) + 4)) . '.php';
+        $file = lcfirst(substr(basename($filePath), 0, -(strlen($modelSuffix) + 4))). '.php';
         $dir = dirname($filePath) . OC_DIR_SEP;
 
         if ($this->module) {
             list($rootPath, $subDir) = ocSeparateDir($dir, '/model/database/');
             $modulePath = $modulePath ?: (OC_MODULE_PATH ?: ocPath('modules'));
-            $moduleLang = $modulePath . '/' . $this->module . '/lang/' . $language . '/database/' . $subDir . $file;
+            $moduleLang = ocDir($modulePath, $this->module . '/lang/' . $language . '/database/', $subDir) . $file;
         } else {
             list($rootPath, $subDir) = ocSeparateDir($dir, '/application/model/database/');
         }
@@ -482,6 +482,14 @@ abstract class DatabaseModel extends ModelBase
     public function onSaveCacheFields($fieldsConfig, $event, $eventTarget)
     {
         $paths = $this->getConfigPath();
+
+        if (ocFileExists($paths['fields'])) {
+            $content = ocRead($paths['fields']);
+            if ($content) {
+                return true;
+            }
+        }
+
         $fileCache = ocService()->fileCache;
         $fileCache->format();
         $fileCache->setData($fieldsConfig, null, ltrim(self::getClass(), OC_NS_SEP) . ' Fields');
