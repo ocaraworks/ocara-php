@@ -187,12 +187,29 @@ class ModelService extends BaseService
         $fileService->writeFile($path, $content);
 
         //新建实体模型
+        $model = new $modelClass();
+        $paths = $model->getConfigPath();
+        $fieldsInfo = $model->getFieldsInfo();
+
         $modelBase = 'DatabaseEntity';
         $content = "<?php\r\n";
         $content .= "namespace {$entityNamespace};\r\n";
         $content .= "\r\n";
         $content .= "use Base\\Model\\{$modelBase};\r\n";
         $content .= "\r\n";
+
+        //显示注释
+        $content .= "/**" . "\r\n";
+        $content .= " * Class UsersEntity". "\r\n";
+        $content .= " * @package ". $entityNamespace . "\r\n";
+
+        foreach ($fieldsInfo as $row) {
+            $propertyDefine = implode(OC_SPACE, $model->connect()->getFieldDefinesData($row));
+            $content .= OC_SPACE . "* @property {$propertyDefine}". "\r\n";
+        }
+
+        $content .= " */". "\r\n";
+
         $content .= "class {$entityName} extends {$modelBase}\r\n";
         $content .= "{\r\n";
         $content .= "\tpublic function __entity()\r\n";
@@ -206,9 +223,6 @@ class ModelService extends BaseService
 
         $fileService->createFile($entityPath, 'wb');
         $fileService->writeFile($entityPath, $content);
-
-        $model = new $modelClass();
-        $paths = $model->getConfigPath();
 
         if (!empty($this->_mdltype)) {
             $langPath = $paths['moduleLang'];

@@ -174,4 +174,40 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
 
         return $value;
     }
+
+    /**
+     * 获取字段定义描述
+     * @param $fieldInfo
+     * @param array $exceptKeys
+     * @return array
+     */
+    public function getFieldDefinesData($fieldInfo, $exceptKeys = array())
+    {
+        $data = array('$' . $fieldInfo['name']);
+
+        $data['type'] = $fieldInfo['type'] . ($fieldInfo['length'] ? "({$fieldInfo['length']})" : OC_EMPTY);
+        $data['isNull'] = ($fieldInfo['isNull'] ? 'null' : 'not null');
+
+        if ($fieldInfo['isPrimary']) {
+            $data['isPrimary'] = 'primary key';
+        }
+
+        if (!ocEmpty($fieldInfo['defaultValue'])) {
+            $data['defaultValue'] = 'default ' . $fieldInfo['defaultValue'];
+        }
+
+        if ($fieldInfo['extra']) {
+            $data['extra'] = $fieldInfo['extra'];
+        }
+
+        if ($fieldInfo['lang']) {
+            $data['lang'] = $fieldInfo['lang'];
+        }
+
+        if ($exceptKeys) {
+            $data = array_diff_key($data, array_fill_keys($exceptKeys, null));
+        }
+
+        return $data;
+    }
 }
