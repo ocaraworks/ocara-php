@@ -689,7 +689,7 @@ abstract class DatabaseModel extends ModelBase
             $sqlData = $generator->getInsertSql($this->tableName, $data, $isFilterData);
         }
 
-        $this->lastSql = $sqlData;
+        $this->lastSql = array($sqlData);
 
         if ($this->isDebug()) {
             $this->debug(false);
@@ -701,7 +701,7 @@ abstract class DatabaseModel extends ModelBase
 
         if (!$isUpdate) {
             $result = $result ? $this->getInsertId(null, false) : false;
-            $this->lastSql = array($sqlData, $this->getLastSql());
+            $this->lastSql = array($sqlData, reset($this->getLastSql()));
         }
 
         $this->clearSql();
@@ -725,7 +725,7 @@ abstract class DatabaseModel extends ModelBase
             $sqlData = array($sql, array());
         }
 
-        $this->lastSql = $sqlData;
+        $this->lastSql = array($sqlData);
 
         if ($this->isDebug()) {
             $this->debug(false);
@@ -749,7 +749,7 @@ abstract class DatabaseModel extends ModelBase
         $generator = $this->getSqlGenerator($plugin);
         $table = $generator->getTableFullname($table);
         $sqlData = $generator->getSelectSql(1, $table, array('limit' => 1));
-        $this->lastSql = $sqlData;
+        $this->lastSql = array($sqlData);
 
         if ($this->isDebug()) {
             $this->debug(false);
@@ -823,7 +823,7 @@ abstract class DatabaseModel extends ModelBase
                     $entity->update();
                 }
             }
-            $this->lastSql = $batchObject->getLastSql();
+            $this->lastSql = array($batchObject->getLastSql());
         } else {
             return $this->baseSave($data, true);
         }
@@ -850,7 +850,7 @@ abstract class DatabaseModel extends ModelBase
                     $entity->delete();
                 }
             }
-            $this->lastSql = $batchObject->getLastSql();
+            $this->lastSql = array($batchObject->getLastSql());
         } else {
             return $this->baseDelete();
         }
@@ -880,7 +880,7 @@ abstract class DatabaseModel extends ModelBase
 
         $this->pushTransaction($plugin);
         $sqlData = $generator->getDeleteSql($this->tableName, $conditionSql);
-        $this->lastSql = $sqlData;
+        $this->lastSql = array($sqlData);
 
         if ($this->isDebug()) {
             $this->debug(false);
@@ -905,7 +905,7 @@ abstract class DatabaseModel extends ModelBase
         if ($sql) {
             $this->fire(self::EVENT_BEFORE_QUERY, array($sql));
             $sqlData = $this->getSqlData($plugin, $sql);
-            $this->lastSql = $sqlData;
+            $this->lastSql = array($sqlData);
             if ($this->isDebug()) {
                 $this->debug(false);
                 $result = false;
@@ -931,7 +931,7 @@ abstract class DatabaseModel extends ModelBase
 
         if ($sql) {
             $sqlData = $this->getSqlData($plugin, $sql);
-            $this->lastSql = $sqlData;
+            $this->lastSql = array($sqlData);
             if ($this->isDebug()) {
                 $this->debug(false);
             } else {
@@ -1340,7 +1340,7 @@ abstract class DatabaseModel extends ModelBase
 
         $isDebug = $this->isDebug();
         $sqlData = $generator->genSelectSql($isCount, $unions, $isFilterCondition);
-        $this->lastSql = $sqlData;
+        $this->lastSql = array($sqlData);
 
         if ($isDebug) {
             $this->debug(false);
