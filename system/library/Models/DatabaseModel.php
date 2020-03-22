@@ -701,6 +701,7 @@ abstract class DatabaseModel extends ModelBase
 
         if (!$isUpdate) {
             $result = $result ? $this->getInsertId(null, false) : false;
+            $this->lastSql = array($sqlData, $this->getLastSql());
         }
 
         $this->clearSql();
@@ -710,11 +711,10 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 获取最后一次插入记录的自增ID
      * @param string $sql
-     * @param bool $cacheLastSql
      * @return array|int|mixed
      * @throws Exception
      */
-    public function getInsertId($sql = null, $cacheLastSql = true)
+    public function getInsertId($sql = null)
     {
         $plugin = $this->connect();
 
@@ -725,9 +725,7 @@ abstract class DatabaseModel extends ModelBase
             $sqlData = array($sql, array());
         }
 
-        if ($cacheLastSql) {
-            $this->lastSql = $sqlData;
-        }
+        $this->lastSql = $sqlData;
 
         if ($this->isDebug()) {
             $this->debug(false);
@@ -1243,11 +1241,10 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 查询总数
      * @param array $executeOptions
-     * @param bool $cacheLastSql
      * @return int
      * @throws Exception
      */
-    public function getTotal($executeOptions = array(), $cacheLastSql = true)
+    public function getTotal($executeOptions = array())
     {
         $queryRow = true;
 
@@ -1255,15 +1252,7 @@ abstract class DatabaseModel extends ModelBase
             $queryRow = false;
         }
 
-        $result = $this->baseFind(
-            false,
-            false,
-            $queryRow,
-            true,
-            null,
-            $executeOptions,
-            $cacheLastSql
-        );
+        $result = $this->baseFind(false, false, $queryRow, true, null, $executeOptions);
 
         if ($result) {
             if (!$queryRow) {
@@ -1327,15 +1316,7 @@ abstract class DatabaseModel extends ModelBase
      * @return array|mixed
      * @throws Exception
      */
-    protected function baseFind(
-        $condition,
-        $options,
-        $isQueryRow,
-        $isCount = false,
-        $dataType = null,
-        $executeOptions = array(),
-        $cacheLastSql = true
-    )
+    protected function baseFind($condition, $options, $isQueryRow, $isCount = false, $dataType = null, $executeOptions = array())
     {
         $isFilterCondition = $this->filterCondition();
         $plugin = $this->connect(false);
@@ -1358,10 +1339,7 @@ abstract class DatabaseModel extends ModelBase
         }
 
         $sqlData = $generator->genSelectSql($isCount, $unions, $isFilterCondition);
-
-        if ($cacheLastSql) {
-            $this->lastSql = $sqlData;
-        }
+        $this->lastSql = $sqlData;
 
         if ($this->isDebug()) {
             $this->debug(false);
@@ -1380,7 +1358,8 @@ abstract class DatabaseModel extends ModelBase
         }
 
         if (!$isCount && !$isQueryRow && $this->isPage()) {
-            $result = array('total' => $this->getTotal(array(), false), 'data' => $result);
+            $result = array('total' => $this->getTotal(), 'data' => $result);
+            $this->lastSql = array($sqlData, $this->getLastSql());
         }
 
         $this->fire(self::EVENT_AFTER_SELECT_QUERY, array($result, $isQueryRow, $isCount));
