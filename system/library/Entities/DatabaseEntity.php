@@ -356,19 +356,22 @@ abstract class DatabaseEntity extends BaseEntity
         }
 
         $result = $model->baseSave($this->toArray());
-        $this->insertId = $result;
-        $autoIncrementField = $model->getAutoIncrementField();
 
-        if ($autoIncrementField) {
-            $this->$autoIncrementField = $this->insertId;
-        }
+        if ($result !== false) {
+            $this->insertId = $result;
+            $autoIncrementField = $model->getAutoIncrementField();
 
-        $this->dataFrom($this->toArray(), true);
-        $this->relateSave();
-        $this->fire(self::EVENT_AFTER_CREATE);
+            if ($autoIncrementField) {
+                $this->$autoIncrementField = $this->insertId;
+            }
 
-        if ($this->isUseTransaction()) {
-            ocService()->transaction->commit();
+            $this->dataFrom($this->toArray(), true);
+            $this->relateSave();
+            $this->fire(self::EVENT_AFTER_CREATE);
+
+            if ($this->isUseTransaction()) {
+                ocService()->transaction->commit();
+            }
         }
 
         return $result;

@@ -731,7 +731,7 @@ abstract class DatabaseModel extends ModelBase
 
         if ($this->isDebug()) {
             $this->debug(false);
-            return 0;
+            return false;
         }
 
         $result = $sqlData ? $plugin->queryRow($sqlData) : 0;
