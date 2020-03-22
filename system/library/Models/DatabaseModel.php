@@ -335,7 +335,7 @@ abstract class DatabaseModel extends ModelBase
 
         $ref = new ReflectionObject($this);
         $filePath = ocCommPath($ref->getFileName());
-        $file = lcfirst(substr(basename($filePath), 0, -(strlen($modelSuffix) + 4))). '.php';
+        $file = lcfirst(substr(basename($filePath), 0, -(strlen($modelSuffix) + 4))) . '.php';
         $dir = dirname($filePath) . OC_DIR_SEP;
 
         if ($this->module) {
@@ -1241,10 +1241,11 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 查询总数
      * @param array $executeOptions
-     * @return array|int|mixed
+     * @param bool $cacheLastSql
+     * @return int
      * @throws Exception
      */
-    public function getTotal($executeOptions = array())
+    public function getTotal($executeOptions = array(), $cacheLastSql = true)
     {
         $queryRow = true;
 
@@ -1252,7 +1253,15 @@ abstract class DatabaseModel extends ModelBase
             $queryRow = false;
         }
 
-        $result = $this->baseFind(false, false, $queryRow, true, null, $executeOptions);
+        $result = $this->baseFind(
+            false,
+            false,
+            $queryRow,
+            true,
+            null,
+            $executeOptions,
+            $cacheLastSql
+        );
 
         if ($result) {
             if (!$queryRow) {
@@ -1316,7 +1325,15 @@ abstract class DatabaseModel extends ModelBase
      * @return array|mixed
      * @throws Exception
      */
-    protected function baseFind($condition, $options, $isQueryRow, $isCount = false, $dataType = null, $executeOptions = array())
+    protected function baseFind(
+        $condition,
+        $options,
+        $isQueryRow,
+        $isCount = false,
+        $dataType = null,
+        $executeOptions = array(),
+        $cacheLastSql = true
+    )
     {
         $isFilterCondition = $this->filterCondition();
         $plugin = $this->connect(false);
@@ -1339,7 +1356,10 @@ abstract class DatabaseModel extends ModelBase
         }
 
         $sqlData = $generator->genSelectSql($isCount, $unions, $isFilterCondition);
-        $this->lastSql = $sqlData;
+
+        if ($cacheLastSql) {
+            $this->lastSql = $sqlData;
+        }
 
         if ($this->isDebug()) {
             $this->debug(false);
@@ -1358,7 +1378,7 @@ abstract class DatabaseModel extends ModelBase
         }
 
         if (!$isCount && !$isQueryRow && $this->isPage()) {
-            $result = array('total' => $this->getTotal(), 'data' => $result);
+            $result = array('total' => $this->getTotal(array(), false), 'data' => $result);
         }
 
         $this->fire(self::EVENT_AFTER_SELECT_QUERY, array($result, $isQueryRow, $isCount));
