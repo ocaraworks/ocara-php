@@ -1,6 +1,6 @@
 <?php
 /**
- * Ocara开源框架 通过配置定义部分常量
+ * 通过配置定义部分常量
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
  * @author Lin YiHu <linyhtianwa@163.com>
  */

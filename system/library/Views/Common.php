@@ -1,6 +1,6 @@
 <?php
 /**
- * Ocara开源框架 普通同步渲染视图类View
+ * 普通同步渲染视图类View
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
  * @author Lin YiHu <linyhtianwa@163.com>
  */

@@ -1,6 +1,6 @@
 <?php
 /**
- * Ocara开源框架 XML处理插件 中文简体版错误提示
+ * XML处理插件 中文简体版错误提示
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
  * @author Lin YiHu <linyhtianwa@147.com>
  */

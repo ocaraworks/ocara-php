@@ -1,6 +1,6 @@
 <?php
 /**
- * Ocara开源框架 Restful控制器特性类
+ * Restful控制器特性类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
  * @author Lin YiHu <linyhtianwa@163.com>
  */

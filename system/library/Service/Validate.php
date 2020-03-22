@@ -1,6 +1,6 @@
 <?php
 /**
- * Ocara开源框架 表单验证插件类
+ * 表单验证插件类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
  * @author Lin YiHu <linyhtianwa@163.com>
  */

@@ -1,6 +1,6 @@
 <?php
 /**
- * Ocara开源框架 数据库结果记录迭代器
+ * 数据库结果记录迭代器
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
  * @author Lin YiHu <linyhtianwa@163.com>
  */

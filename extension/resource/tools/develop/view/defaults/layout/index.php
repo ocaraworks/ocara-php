@@ -1,6 +1,6 @@
 <?php
 /**
- * Ocara开源框架 开发者中心主页Layout
+ * 开发者中心主页Layout
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
  * @author Lin YiHu <linyhtianwa@163.com>
  */

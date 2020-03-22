@@ -1,6 +1,6 @@
 <?php
 /**
- * Ocara开源框架 PDO数据库驱动类
+ * PDO数据库驱动类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
  * @author Lin YiHu <linyhtianwa@163.com>
  */

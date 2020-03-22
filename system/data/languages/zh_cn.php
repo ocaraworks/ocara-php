@@ -1,6 +1,6 @@
 <?php
 /**
- * Ocara开源框架 框架提示中文简体版《请勿修改》
+ * 框架提示中文简体版《请勿修改》
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved。
  * @author Lin YiHu <linyhtianwa@163。com>
  */

@@ -1,6 +1,6 @@
 <?php
 /**
- * Ocara开源框架 静态生成插件类
+ * 静态生成插件类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
  * @author Lin YiHu <linyhtianwa@163.com>
  */
