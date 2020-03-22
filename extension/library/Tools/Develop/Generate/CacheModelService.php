@@ -49,9 +49,9 @@ class CacheModelService extends BaseService
         $connectPath = $this->_connectName . OC_DIR_SEP;
         $moduleModelDir = "{$this->_mdlname}/model/cache/";
 
-        $cacheType = ucfirst(strtolower(ocConfig(array('CACHE', $this->_connectName, 'type'))));
+        $cacheType = ucfirst(strtolower(ocConfig(array('CACHE', $this->_connectName, 'type'), OC_EMPTY)));
         if (!in_array($cacheType, array('Redis', 'Memcache'))) {
-            $this->showError('缓存配置类型非法！');
+            $this->showError('缓存服务器名称不存在！请检查缓存配置是否存在。');
         }
 
         if ($cacheType == 'Redis') {
