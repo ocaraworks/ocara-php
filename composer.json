@@ -1,23 +1,23 @@
 {
-    "name": "linyihu/ocara",
-    "description": "Ocara Framework",
-    "license": "Apache-2.0",
-    "authors": [
-        {
-            "name": "linyihu",
-            "email": "linyhtianwa@163.com"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {
-        "php": ">=5.3.0"
-    },
-    "autoload": {
-        "psr-4": {
-			"Ocara\\":"system/library/",
-			"Ocara\\Functions\\":"system/functions/",
-			"Ocara\\Extension\\":"extension/library/",
-            "Ocara\\Extension\\Functions\\":"extension/functions/"
-        }
+  "name": "ocaraworks/ocara-php",
+  "description": "Ocara Framework",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "linyihu",
+      "email": "linyhtianwa@163.com"
     }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ocara\\": "system/library/",
+      "Ocara\\Functions\\": "system/functions/",
+      "Ocara\\Extension\\": "extension/library/",
+      "Ocara\\Extension\\Functions\\": "extension/functions/"
+    }
+  }
 }
