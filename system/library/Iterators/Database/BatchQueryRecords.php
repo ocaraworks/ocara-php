@@ -127,4 +127,13 @@ class BatchQueryRecords implements Iterator
 
         $this->data = $this->model->getAll();
     }
+
+    /**
+     * 获取最后的SQL
+     * @return mixed
+     */
+    public function getLastSql()
+    {
+        return $this->model->getLastSql();
+    }
 }

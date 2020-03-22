@@ -819,12 +819,13 @@ abstract class DatabaseModel extends ModelBase
                 $this->asEntity();
             }
 
-            foreach ($this->batch($batchLimit) as $entityList) {
+            foreach ($batchObject = $this->batch($batchLimit) as $entityList) {
                 foreach ($entityList as $entity) {
                     $entity->data($data);
                     $entity->update();
                 }
             }
+            $this->lastSql = $batchObject->getLastSql();
         } else {
             return $this->baseSave($data, true);
         }
@@ -851,6 +852,7 @@ abstract class DatabaseModel extends ModelBase
                     $entity->delete();
                 }
             }
+            $this->lastSql = $batchObject->getLastSql();
         } else {
             return $this->baseDelete();
         }
