@@ -1,11 +1,9 @@
 <?php
-/*************************************************************************************************
- * -----------------------------------------------------------------------------------------------
+/**
  * Ocara开源框架 应用程序公共函数
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
- ************************************************************************************************/
+ */
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -730,9 +728,9 @@ function ocClassName($name)
     return $name;
 }
 
-/*************************************************************************************************
+/**
  * 路径获取函数
- ************************************************************************************************/
+ */
 /**
  * 获取协议主机
  * @param $host
@@ -742,7 +740,7 @@ function ocClassName($name)
 function ocHost($host, $requireProtocol = true)
 {
     if ($requireProtocol) {
-        return OC_PROTOCOL . '://' . ($host ? $host . OC_DIR_SEP: OC_EMPTY);
+        return OC_PROTOCOL . '://' . ($host ? $host . OC_DIR_SEP : OC_EMPTY);
     }
     return ($host ? OC_PROTOCOL . '://' . $host : OC_EMPTY) . OC_DIR_SEP;
 }
@@ -803,7 +801,7 @@ function ocSeparateDir($filePath, $separateDir)
 {
     $rootPath = strstr($filePath, $separateDir, true) . ocDir($separateDir);
     $subDir = str_replace($rootPath, OC_EMPTY, $filePath);
-    $subDir = $subDir ? $subDir. OC_DIR_SEP : OC_EMPTY;
+    $subDir = $subDir ? $subDir . OC_DIR_SEP : OC_EMPTY;
     return array($rootPath, $subDir);
 }
 

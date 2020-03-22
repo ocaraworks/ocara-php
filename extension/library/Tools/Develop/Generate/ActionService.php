@@ -1,11 +1,9 @@
 <?php
-/*************************************************************************************************
- * -----------------------------------------------------------------------------------------------
- * Ocara开源框架  开发者中心控制器管理类controller_admin
+/**
+ * Ocara开源框架 开发者中心动作生成类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
- ************************************************************************************************/
+ */
 
 namespace Ocara\Extension\Tools\Develop\Generate;
 
@@ -24,7 +22,10 @@ class ActionService extends BaseService
     public $actionName;
     public $methodMaps;
 
-
+    /**
+     * ActionService constructor.
+     * @throws Exception
+     */
     public function __construct()
     {
         $this->tplType = ocConfig('TEMPLATE.file_type', 'html');

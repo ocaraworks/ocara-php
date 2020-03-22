@@ -1,11 +1,9 @@
 <?php
-/*************************************************************************************************
- * -----------------------------------------------------------------------------------------------
- * Ocara开源框架  开发者中心模型管理类model_admin
+/**
+ * Ocara开源框架 开发者中心模型管理类model_admin
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
- ************************************************************************************************/
+ */
 
 namespace Ocara\Extension\Tools\Develop\Generate;
 
@@ -214,15 +212,15 @@ class ModelService extends BaseService
 
         //显示注释
         $content .= "/**" . "\r\n";
-        $content .= " * Class {$entityName}". "\r\n";
-        $content .= " * @package ". $entityNamespace . "\r\n";
+        $content .= " * Class {$entityName}" . "\r\n";
+        $content .= " * @package " . $entityNamespace . "\r\n";
 
         foreach ($fieldsInfo as $row) {
             $propertyDefine = implode(OC_SPACE, $model->connect()->getFieldDefinesData($row));
-            $content .= OC_SPACE . "* @property {$propertyDefine}". "\r\n";
+            $content .= OC_SPACE . "* @property {$propertyDefine}" . "\r\n";
         }
 
-        $content .= " */". "\r\n";
+        $content .= " */" . "\r\n";
 
         $content .= "class {$entityName} extends {$modelBase}\r\n";
         $content .= "{\r\n";

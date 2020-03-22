@@ -1,3 +1,10 @@
+<?php
+/**
+ * Ocara开源框架 开发者中心缓存模型生成模板
+ * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
+ * @author Lin YiHu <linyhtianwa@163.com>
+ */
+?>
 <div class="section">
     <div class="location">当前位置 > 缓存模型(CacheModel)</div>
     <div class="section-title">添加缓存模型</div>

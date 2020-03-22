@@ -1,4 +1,7 @@
 <?php
+/**
+ * Base service
+ */
 
 namespace app\service;
 

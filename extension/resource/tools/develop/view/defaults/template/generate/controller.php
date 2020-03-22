@@ -1,3 +1,10 @@
+<?php
+/**
+* Ocara开源框架 开发者中心控制器生成模板
+* @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
+* @author Lin YiHu <linyhtianwa@163.com>
+*/
+?>
 <div class="section">
     <div class="location">当前位置 > 控制器(Controller)</div>
     <div class="section-title">添加控制器</div>

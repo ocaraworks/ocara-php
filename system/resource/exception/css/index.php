@@ -1,3 +1,10 @@
+<?php
+/**
+ * Ocara开源框架 异常显示主页CSS样式
+ * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
+ * @author Lin YiHu <linyhtianwa@163.com>
+ */
+?>
 <style type="text/css">
     body {
         margin: 0;

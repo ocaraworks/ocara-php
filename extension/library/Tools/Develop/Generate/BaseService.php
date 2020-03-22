@@ -1,11 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2018/12/9
- * Time: 16:03
+ * Ocara开源框架 开发者中心控制器管理类controller_admin
+ * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
+ * @author Lin YiHu <linyhtianwa@163.com>
  */
-
 namespace Ocara\Extension\Tools\Develop\Generate;
 
 use Ocara\Exceptions\Exception;
@@ -46,6 +44,11 @@ class BaseService
         throw new Exception($msg . $back);
     }
 
+    /**
+     * 获取模块根目录
+     * @param $mdltype
+     * @return array
+     */
     public function getModuleRootPath($mdltype)
     {
         switch ($mdltype) {

@@ -1,11 +1,9 @@
 <?php
-/*************************************************************************************************
- * -----------------------------------------------------------------------------------------------
+/**
  * Ocara开源框架 默认配置 《请勿直接修改本文件》
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
- ************************************************************************************************/
+ */
 
 defined('OC_PATH') or exit('Forbidden!');
 
@@ -13,26 +11,26 @@ return array(
     /*
      * 系统默认配置
      */
-    'LANGUAGE'                      => 'zh_cn',
-    'SYSTEM_RUN_MODE'               => '',
-    'ROUTE_PARAM_NAME'              => '_route', //路由参数名称
+    'LANGUAGE' => 'zh_cn',
+    'SYSTEM_RUN_MODE' => '',
+    'ROUTE_PARAM_NAME' => '_route', //路由参数名称
 
-    'DEFAULT_CONTROLLER'            => 'home', //默认控制器
-    'DEFAULT_ACTION'                => 'index', //默认动作
-    'COOKIE_DOMAIN'                 => '',
-    'MODEL_SUFFIX'                  => 'Model', //模型类后缀
+    'DEFAULT_CONTROLLER' => 'home', //默认控制器
+    'DEFAULT_ACTION' => 'index', //默认动作
+    'COOKIE_DOMAIN' => '',
+    'MODEL_SUFFIX' => 'Model', //模型类后缀
 
-    'DEFAULT_PAGE_CONTENT_TYPE'     => 'html', //页面默认返回格式
-    'DEFAULT_API_CONTENT_TYPE'      => 'json', //API默认返回格式
+    'DEFAULT_PAGE_CONTENT_TYPE' => 'html', //页面默认返回格式
+    'DEFAULT_API_CONTENT_TYPE' => 'json', //API默认返回格式
 
     /*
      * 时间格式设置
      */
     'DATE_FORMAT' => array(
-        'timezone'  => 'PRC', //时区设置
-        'date'      => 'Y-m-d', //日期格式
-        'datetime'  => 'Y-m-d H:i:s', //日期时间格式
-        'time'      => 'H:i:s', //时间格式
+        'timezone' => 'PRC', //时区设置
+        'date' => 'Y-m-d', //日期格式
+        'datetime' => 'Y-m-d H:i:s', //日期时间格式
+        'time' => 'H:i:s', //时间格式
     ),
 
     /*
@@ -61,7 +59,7 @@ return array(
      */
     'DATABASE_MODEL' => array(
         //是否在保存数据时自动过滤非字段数据
-        'auto_filter_data'      => true,
+        'auto_filter_data' => true,
         //是否自动过滤非字段条件
         'auto_filter_condition' => false,
     ),
@@ -70,8 +68,8 @@ return array(
      * 应用配置
      */
     'STATIC' => array(
-        'open'       => 0,      //是否开启静态生成
-        'file_type'  => 'html' //静态文件扩展名，html或htm
+        'open' => 0,      //是否开启静态生成
+        'file_type' => 'html' //静态文件扩展名，html或htm
     ),
 
     /*
@@ -93,52 +91,52 @@ return array(
      * 系统服务类（单例模式）
      */
     'SYSTEM_SINGLETON_SERVICE_CLASS' => array(
-        'request'           => 'Ocara\Core\Request',
-        'response'          => 'Ocara\Core\Response',
-        'api'               => 'Ocara\Core\Api',
-        'error'             => 'Ocara\Core\Error',
-        'dispatcher'        => 'Ocara\Dispatchers\Common',
-        'filter'            => 'Ocara\Core\Filter',
-        'url'               => 'Ocara\Core\Url',
-        'lang'              => 'Ocara\Core\Lang',
-        'cookie'            => 'Ocara\Core\Cookie',
-        'session'           => 'Ocara\Core\Session',
-        'route'             => 'Ocara\Core\Route',
-        'transaction'       => 'Ocara\Core\Transaction',
-        'file'              => 'Ocara\Service\File',
-        'font'              => 'Ocara\Core\Font',
-        'staticPath'        => 'Ocara\Core\StaticPath',
-        'globals'           => 'Ocara\Core\Globals',
-        'errorOutput'       => 'Ocara\Service\ErrorOutput',
-        'formToken'         => 'Ocara\Core\FormToken',
-        'validator'         => 'Ocara\Core\Validator',
-        'code'              => 'Ocara\Service\Code',
-        'excel'             => 'Ocara\Service\Excel',
-        'date'              => 'Ocara\Service\Date',
-        'download'          => 'Ocara\Service\Download',
-        'staticBuilder'     => 'Ocara\Service\StaticBuilder',
+        'request' => 'Ocara\Core\Request',
+        'response' => 'Ocara\Core\Response',
+        'api' => 'Ocara\Core\Api',
+        'error' => 'Ocara\Core\Error',
+        'dispatcher' => 'Ocara\Dispatchers\Common',
+        'filter' => 'Ocara\Core\Filter',
+        'url' => 'Ocara\Core\Url',
+        'lang' => 'Ocara\Core\Lang',
+        'cookie' => 'Ocara\Core\Cookie',
+        'session' => 'Ocara\Core\Session',
+        'route' => 'Ocara\Core\Route',
+        'transaction' => 'Ocara\Core\Transaction',
+        'file' => 'Ocara\Service\File',
+        'font' => 'Ocara\Core\Font',
+        'staticPath' => 'Ocara\Core\StaticPath',
+        'globals' => 'Ocara\Core\Globals',
+        'errorOutput' => 'Ocara\Service\ErrorOutput',
+        'formToken' => 'Ocara\Core\FormToken',
+        'validator' => 'Ocara\Core\Validator',
+        'code' => 'Ocara\Service\Code',
+        'excel' => 'Ocara\Service\Excel',
+        'date' => 'Ocara\Service\Date',
+        'download' => 'Ocara\Service\Download',
+        'staticBuilder' => 'Ocara\Service\StaticBuilder',
     ),
 
     /*
      * 系统服务类（非单例模式）
      */
     'SYSTEM_SERVICE_CLASS' => array(
-        'pager'             => 'Ocara\Service\Pager',
-        'event'             => 'Ocara\Core\Event',
-        'log'               => 'Ocara\Core\Log',
-        'form'              => 'Ocara\Core\Form',
-        'html'              => 'Ocara\Core\Html',
-        'formManager'       => 'Ocara\Core\FormManager',
-        'validate'          => 'Ocara\Service\Validate',
-        'auth'              => 'Ocara\Service\Auth',
-        'xml'               => 'Ocara\Service\Xml',
-        'fileCache'         => 'Ocara\Service\FileCache',
-        'verifyCode'        => 'Ocara\Service\VerifyCode',
-        'mail'              => 'Ocara\Service\Mail',
-        'ftp'               => 'Ocara\Service\Ftp',
-        'image'             => 'Ocara\Service\Image',
-        'fileLog'           => 'Ocara\Service\FileLog',
-        'upload'            => 'Ocara\Service\Upload',
+        'pager' => 'Ocara\Service\Pager',
+        'event' => 'Ocara\Core\Event',
+        'log' => 'Ocara\Core\Log',
+        'form' => 'Ocara\Core\Form',
+        'html' => 'Ocara\Core\Html',
+        'formManager' => 'Ocara\Core\FormManager',
+        'validate' => 'Ocara\Service\Validate',
+        'auth' => 'Ocara\Service\Auth',
+        'xml' => 'Ocara\Service\Xml',
+        'fileCache' => 'Ocara\Service\FileCache',
+        'verifyCode' => 'Ocara\Service\VerifyCode',
+        'mail' => 'Ocara\Service\Mail',
+        'ftp' => 'Ocara\Service\Ftp',
+        'image' => 'Ocara\Service\Image',
+        'fileLog' => 'Ocara\Service\FileLog',
+        'upload' => 'Ocara\Service\Upload',
     ),
 
     /*
@@ -170,22 +168,22 @@ return array(
 
             //路由映射
             'action_map' => array(
-                'GET'        => 'index', //获取记录列表
-                'GET/id'     => 'read', //获取记录详情
-                'POST'       => 'create', //添加记录
-                'PUT/id'     => 'update', //更新记录
-                'PATCH/id'   => 'update', //更新记录
-                'HEAD'       => 'index', //获取记录列表
-                'HEAD/id'    => 'read', //获取记录详情
-                'DELETE/id'  => 'delete', //删除记录
+                'GET' => 'index', //获取记录列表
+                'GET/id' => 'read', //获取记录详情
+                'POST' => 'create', //添加记录
+                'PUT/id' => 'update', //更新记录
+                'PATCH/id' => 'update', //更新记录
+                'HEAD' => 'index', //获取记录列表
+                'HEAD/id' => 'read', //获取记录详情
+                'DELETE/id' => 'delete', //删除记录
             ),
             //请求成功返回状态码
             'success_code_map' => array(
-                'index'    => 200, //获取记录列表成功
-                'create'   => 201, //添加记录成功
-                'read'     => 200, //获取记录详情成功
-                'update'   => 200, //更新记录成功
-                'delete'   => 204, //删除记录成功
+                'index' => 200, //获取记录列表成功
+                'create' => 201, //添加记录成功
+                'read' => 200, //获取记录详情成功
+                'update' => 200, //更新记录成功
+                'delete' => 204, //删除记录成功
             ),
         )
     ),
@@ -200,49 +198,49 @@ return array(
 
         /*所属目录*/
         'belongs' => array(
-            'config'          => 'application',
-            'console'         => 'application',
-            'controller'      => 'application',
-            'lang'            => 'application',
-            'model'           => 'application',
-            'modules'         => 'application',
-            'service'         => 'application',
-            'view'            => 'application',
+            'config' => 'application',
+            'console' => 'application',
+            'controller' => 'application',
+            'lang' => 'application',
+            'model' => 'application',
+            'modules' => 'application',
+            'service' => 'application',
+            'view' => 'application',
 
-            'entity'          => 'application/model',
-            'enums'           => 'application/model',
-            'cache'           => 'application/cache',
-            'database'        => 'application/database',
+            'entity' => 'application/model',
+            'enums' => 'application/model',
+            'cache' => 'application/cache',
+            'database' => 'application/database',
 
-            'tools'           => '',
-            'data'            => '',
-            'docs'            => 'data',
-            'fields'          => 'data',
-            'fonts'           => 'data',
+            'tools' => '',
+            'data' => '',
+            'docs' => 'data',
+            'fields' => 'data',
+            'fonts' => 'data',
 
-            'runtime'         => '',
-            'temp'            => 'runtime',
-            'logs'            => 'runtime',
-            'sessions'        => 'runtime',
+            'runtime' => '',
+            'temp' => 'runtime',
+            'logs' => 'runtime',
+            'sessions' => 'runtime',
 
-            'support'         => '',
-            'functions'       => '',
-            'pass'            => '',
+            'support' => '',
+            'functions' => '',
+            'pass' => '',
 
-            'attachments'     => 'public',
-            'src'             => 'public',
-            'static'          => 'public',
-            'css'             => 'public/src',
-            'images'          => 'public/src',
-            'js'              => 'public/src',
+            'attachments' => 'public',
+            'src' => 'public',
+            'static' => 'public',
+            'css' => 'public/src',
+            'images' => 'public/src',
+            'js' => 'public/src',
         ),
         'remote_belongs' => array(
             'attachments' => '',
-            'css'         => 'src',
-            'images'      => 'src',
-            'js'          => 'src',
-            'static'      => '',
-            'function'    => 'functions'
+            'css' => 'src',
+            'images' => 'src',
+            'js' => 'src',
+            'static' => '',
+            'function' => 'functions'
         ),
     ),
 
@@ -290,97 +288,97 @@ return array(
      * MIME类型配置
      */
     'MINE_TYPES' => array(
-        'chm'        => 'application/octet-stream',
-        'ppt'        => 'application/vnd.ms-powerpoint',
-        'xls'        => 'application/vnd.ms-excel',
-        'doc'        => 'application/msword',
-        'exe'        => 'application/octet-stream',
-        'rar'        => 'application/octet-stream',
-        'js'         => 'javascript/js',
-        'css'        => 'text/css',
-        'hqx'        => 'application/mac-binhex40',
-        'bin'        => 'application/octet-stream',
-        'oda'        => 'application/oda',
-        'pdf'        => 'application/pdf',
-        'ai'         => 'application/postsrcipt',
-        'eps'        => 'application/postsrcipt',
-        'es'         => 'application/postsrcipt',
-        'rtf'        => 'application/rtf',
-        'mif'        => 'application/x-mif',
-        'csh'        => 'application/x-csh',
-        'dvi'        => 'application/x-dvi',
-        'hdf'        => 'application/x-hdf',
-        'nc'         => 'application/x-netcdf',
-        'cdf'        => 'application/x-netcdf',
-        'latex'      => 'application/x-latex',
-        'ts'         => 'application/x-troll-ts',
-        'src'        => 'application/x-wais-source',
-        'zip'        => 'application/zip',
-        'bcpio'      => 'application/x-bcpio',
-        'cpio'       => 'application/x-cpio',
-        'gtar'       => 'application/x-gtar',
-        'shar'       => 'application/x-shar',
-        'sv4cpio'    => 'application/x-sv4cpio',
-        'sv4crc'     => 'application/x-sv4crc',
-        'tar'        => 'application/x-tar',
-        'ustar'      => 'application/x-ustar',
-        'man'        => 'application/x-troff-man',
-        'sh'         => 'application/x-sh',
-        'tcl'        => 'application/x-tcl',
-        'tex'        => 'application/x-tex',
-        'texi'       => 'application/x-texinfo',
-        'texinfo'    => 'application/x-texinfo',
-        't'          => 'application/x-troff',
-        'tr'         => 'application/x-troff',
-        'roff'       => 'application/x-troff',
-        'shar'       => 'application/x-shar',
-        'me'         => 'application/x-troll-me',
-        'ts'         => 'application/x-troll-ts',
-        'gif'        => 'image/gif',
-        'jpeg'       => 'image/jpeg',
-        'jpg'        => 'image/jpeg',
-        'jpe'        => 'image/jpeg',
-        'ras'        => 'image/x-cmu-raster',
-        'pbm'        => 'image/x-portable-bitmap',
-        'ppm'        => 'image/x-portable-pixmap',
-        'xbm'        => 'image/x-xbitmap',
-        'xwd'        => 'image/x-xwindowdump',
-        'ief'        => 'image/ief',
-        'tif'        => 'image/tiff',
-        'tiff'       => 'image/tiff',
-        'pnm'        => 'image/x-portable-anymap',
-        'pgm'        => 'image/x-portable-graymap',
-        'rgb'        => 'image/x-rgb',
-        'xpm'        => 'image/x-xpixmap',
-        'txt'        => 'text/plain',
-        'c'          => 'text/plain',
-        'cc'         => 'text/plain',
-        'h'          => 'text/plain',
-        'html'       => 'text/html',
-        'htm'        => 'text/html',
-        'htl'        => 'text/html',
-        'rtx'        => 'text/richtext',
-        'etx'        => 'text/x-setext',
-        'tsv'        => 'text/tab-separated-values',
-        'mpeg'       => 'video/mpeg',
-        'mpg'        => 'video/mpeg',
-        'mpe'        => 'video/mpeg',
-        'avi'        => 'video/x-msvideo',
-        'qt'         => 'video/quicktime',
-        'mov'        => 'video/quicktime',
-        'moov'       => 'video/quicktime',
-        'movie'      => 'video/x-sgi-movie',
-        'au'         => 'audio/basic',
-        'snd'        => 'audio/basic',
-        'wav'        => 'audio/x-wav',
-        'aif'        => 'audio/x-aiff',
-        'aiff'       => 'audio/x-aiff',
-        'aifc'       => 'audio/x-aiff',
-        'swf'        => 'application/x-shockwave-flash',
-        'json'       => 'application/json',
-        'plain'      => 'text/plain',
-        'xml'        => 'text/xml',
-        'gz'         => 'application/x-gzip',
+        'chm' => 'application/octet-stream',
+        'ppt' => 'application/vnd.ms-powerpoint',
+        'xls' => 'application/vnd.ms-excel',
+        'doc' => 'application/msword',
+        'exe' => 'application/octet-stream',
+        'rar' => 'application/octet-stream',
+        'js' => 'javascript/js',
+        'css' => 'text/css',
+        'hqx' => 'application/mac-binhex40',
+        'bin' => 'application/octet-stream',
+        'oda' => 'application/oda',
+        'pdf' => 'application/pdf',
+        'ai' => 'application/postsrcipt',
+        'eps' => 'application/postsrcipt',
+        'es' => 'application/postsrcipt',
+        'rtf' => 'application/rtf',
+        'mif' => 'application/x-mif',
+        'csh' => 'application/x-csh',
+        'dvi' => 'application/x-dvi',
+        'hdf' => 'application/x-hdf',
+        'nc' => 'application/x-netcdf',
+        'cdf' => 'application/x-netcdf',
+        'latex' => 'application/x-latex',
+        'ts' => 'application/x-troll-ts',
+        'src' => 'application/x-wais-source',
+        'zip' => 'application/zip',
+        'bcpio' => 'application/x-bcpio',
+        'cpio' => 'application/x-cpio',
+        'gtar' => 'application/x-gtar',
+        'shar' => 'application/x-shar',
+        'sv4cpio' => 'application/x-sv4cpio',
+        'sv4crc' => 'application/x-sv4crc',
+        'tar' => 'application/x-tar',
+        'ustar' => 'application/x-ustar',
+        'man' => 'application/x-troff-man',
+        'sh' => 'application/x-sh',
+        'tcl' => 'application/x-tcl',
+        'tex' => 'application/x-tex',
+        'texi' => 'application/x-texinfo',
+        'texinfo' => 'application/x-texinfo',
+        't' => 'application/x-troff',
+        'tr' => 'application/x-troff',
+        'roff' => 'application/x-troff',
+        'shar' => 'application/x-shar',
+        'me' => 'application/x-troll-me',
+        'ts' => 'application/x-troll-ts',
+        'gif' => 'image/gif',
+        'jpeg' => 'image/jpeg',
+        'jpg' => 'image/jpeg',
+        'jpe' => 'image/jpeg',
+        'ras' => 'image/x-cmu-raster',
+        'pbm' => 'image/x-portable-bitmap',
+        'ppm' => 'image/x-portable-pixmap',
+        'xbm' => 'image/x-xbitmap',
+        'xwd' => 'image/x-xwindowdump',
+        'ief' => 'image/ief',
+        'tif' => 'image/tiff',
+        'tiff' => 'image/tiff',
+        'pnm' => 'image/x-portable-anymap',
+        'pgm' => 'image/x-portable-graymap',
+        'rgb' => 'image/x-rgb',
+        'xpm' => 'image/x-xpixmap',
+        'txt' => 'text/plain',
+        'c' => 'text/plain',
+        'cc' => 'text/plain',
+        'h' => 'text/plain',
+        'html' => 'text/html',
+        'htm' => 'text/html',
+        'htl' => 'text/html',
+        'rtx' => 'text/richtext',
+        'etx' => 'text/x-setext',
+        'tsv' => 'text/tab-separated-values',
+        'mpeg' => 'video/mpeg',
+        'mpg' => 'video/mpeg',
+        'mpe' => 'video/mpeg',
+        'avi' => 'video/x-msvideo',
+        'qt' => 'video/quicktime',
+        'mov' => 'video/quicktime',
+        'moov' => 'video/quicktime',
+        'movie' => 'video/x-sgi-movie',
+        'au' => 'audio/basic',
+        'snd' => 'audio/basic',
+        'wav' => 'audio/x-wav',
+        'aif' => 'audio/x-aiff',
+        'aiff' => 'audio/x-aiff',
+        'aifc' => 'audio/x-aiff',
+        'swf' => 'application/x-shockwave-flash',
+        'json' => 'application/json',
+        'plain' => 'text/plain',
+        'xml' => 'text/xml',
+        'gz' => 'application/x-gzip',
     ),
 
     /*

@@ -1,3 +1,10 @@
+<?php
+/**
+ * Ocara开源框架 异常显示主页
+ * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
+ * @author Lin YiHu <linyhtianwa@163.com>
+ */
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
