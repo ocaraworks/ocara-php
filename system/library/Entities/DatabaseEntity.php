@@ -357,7 +357,7 @@ abstract class DatabaseEntity extends BaseEntity
 
         $result = $model->baseSave($this->toArray());
         $this->insertId = $result;
-        $autoIncrementField = $this->getModel()->getAutoIncrementField();
+        $autoIncrementField = $model->getAutoIncrementField();
 
         if ($autoIncrementField) {
             $this->$autoIncrementField = $this->insertId;
