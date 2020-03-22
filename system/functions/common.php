@@ -2,7 +2,7 @@
 /*************************************************************************************************
  * -----------------------------------------------------------------------------------------------
  * Ocara开源框架 公用函数
- * @Copyright (c) http://www.ocara.cn All rights reserved.
+ * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
  * -----------------------------------------------------------------------------------------------
  * @author Lin YiHu <linyhtianwa@163.com>
  ************************************************************************************************/
@@ -24,9 +24,10 @@ function ocReplaceSpace($string, $replace = '')
 
 /**
  * 检查扩展
- * @param string $extension
+ * @param $extension
  * @param bool $required
  * @return bool
+ * @throws Exception
  */
 function ocCheckExtension($extension, $required = true)
 {
@@ -101,10 +102,11 @@ function ocObject($data)
 
 /**
  * 检查路径是否存在，如果不存在则新建
- * @param string $path
+ * @param string$path
  * @param integer $perm
  * @param bool $required
  * @return bool
+ * @throws Exception
  */
 function ocCheckPath($path, $perm = null, $required = false)
 {
@@ -221,7 +223,8 @@ function ocIsStandardName($name)
  * @param string $content
  * @param bool $append
  * @param int $perm
- * @return bool|int
+ * @return bool|false|int
+ * @throws Exception
  */
 function ocWrite($filePath, $content, $append = false, $perm = null)
 {
@@ -274,6 +277,7 @@ function ocWrite($filePath, $content, $append = false, $perm = null)
  * @param string $filePath
  * @param bool $checkPath
  * @return false|string
+ * @throws Exception
  */
 function ocRead($filePath, $checkPath = true)
 {
@@ -366,11 +370,12 @@ function ocRemote($url, $data = null, array $headers = array())
 /**
  * 使用CURL扩展获取远程内容
  * @param string $url
- * @param null $data
+ * @param mixed $data
  * @param array $headers
  * @param bool $showError
  * @param string $method
  * @return bool|string|null
+ * @throws Exception
  */
 function ocCurl($url, $data = null, array $headers = array(), $showError = false, $method = null)
 {
