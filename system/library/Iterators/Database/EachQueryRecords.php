@@ -91,4 +91,13 @@ class EachQueryRecords implements Iterator
 
         return $result;
     }
+
+    /**
+     * 获取最后的SQL
+     * @return mixed
+     */
+    public function getLastSql()
+    {
+        return $this->model->getLastSql();
+    }
 }

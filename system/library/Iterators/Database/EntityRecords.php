@@ -47,7 +47,8 @@ class EntityRecords implements Iterator
      */
     function current()
     {
-        $entity = new $this->entity();
+        $class = $this->entity;
+        $entity = new $class();
 
         if ($this->sharding) {
             $entity->sharding($this->sharding);
