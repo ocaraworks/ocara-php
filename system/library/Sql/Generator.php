@@ -485,8 +485,8 @@ class Generator extends Base
             $sql = $plugin->wrapSql($sql);
             foreach ($unions['models'] as $union) {
                 $executeOptions = array('close_union' => true);
-                $unionData = $union['model']->debug()->getAll(null, null, $executeOptions);
-                list($unionSql, $unionParams) = $unionData;
+                $union['model']->debug()->getAll(null, null, $executeOptions);
+                list($unionSql, $unionParams) = $union['model']->getLastSql();
                 $sql .= $plugin->getUnionSql($unionSql, $union['unionAll']);
                 $params = array_merge($params, $unionParams);
             }
