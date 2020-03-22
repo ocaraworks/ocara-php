@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 数据库类接口Database
+ * Ocara开源框架 数据库类接口
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

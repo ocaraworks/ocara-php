@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 服务组件基类ServiceBase
+ * Ocara开源框架 服务组件基类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

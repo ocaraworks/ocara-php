@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 Sql生成器类Generator
+ * Ocara开源框架 Sql生成器类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

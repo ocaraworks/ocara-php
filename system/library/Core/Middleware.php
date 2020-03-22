@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 中间件基类Log
+ * Ocara开源框架 中间件基类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

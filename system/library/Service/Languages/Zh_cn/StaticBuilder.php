@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 静态生成插件StaticBuilder 中文简体版错误提示
+ * Ocara开源框架 静态生成插件 中文简体版错误提示
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

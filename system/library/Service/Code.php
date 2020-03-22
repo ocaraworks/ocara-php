@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 字符码生成插件Code
+ * Ocara开源框架 字符码生成插件
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

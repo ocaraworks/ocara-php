@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 事件处理器类EventHandler
+ * Ocara开源框架 事件处理类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 
@@ -52,7 +50,7 @@ class Event extends Basis implements EventInterface
         if ($groupName) {
             $this->create($callbackList, $groupName, $priority, true);
         } else {
-            foreach($callbackList as $callback) {
+            foreach ($callbackList as $callback) {
                 call_user_func_array(array(&$this, 'create'), array($callback));
             }
         }

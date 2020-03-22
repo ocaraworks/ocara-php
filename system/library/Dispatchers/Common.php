@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 Dispatcher路由分发器类
+ * Ocara开源框架 普通路由分发器类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

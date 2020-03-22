@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 语言配置控制类Lang
+ * Ocara开源框架 语言配置处理类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

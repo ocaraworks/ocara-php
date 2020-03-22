@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 Mysql数据库扩展驱动类MysqliDriver
+ * Ocara开源框架 Mysql数据库原生驱动类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

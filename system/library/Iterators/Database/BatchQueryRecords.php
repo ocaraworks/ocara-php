@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 数据库结果对象迭代器\Ocara\Iterators\Database\BatchQueryRecords
+ * Ocara开源框架 数据库批量查询结果对象迭代器
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

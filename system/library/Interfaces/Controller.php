@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 控制器类接口Controller
+ * Ocara开源框架 控制器类接口
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

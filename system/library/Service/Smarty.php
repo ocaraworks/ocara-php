@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 smarty模板调用插件Smarty
+ * Ocara开源框架 Smarty模板调用插件类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 
@@ -100,6 +98,6 @@ class Smarty extends ServiceBase implements TemplateInterface
      */
     public function display($file)
     {
-        $this->plugin()->display($file.'.tpl');
+        $this->plugin()->display($file . '.tpl');
     }
 }

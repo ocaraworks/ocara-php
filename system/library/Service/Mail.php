@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 Email发送服务插件Mail
+ * Ocara开源框架 邮件发送服务插件类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 
@@ -117,7 +115,7 @@ class Mail extends ServiceBase
         if ($this->host) @ini_set('SMTP', $this->host);
         if ($this->port) @ini_set('smtp_port', $this->port ?: 25);
 
-        @ini_set('sendmail_from',$this->sender);
+        @ini_set('sendmail_from', $this->sender);
 
         $this->params = $params;
         $contentType = 'multipart/alternative';

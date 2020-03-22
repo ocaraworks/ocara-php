@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 Excel导出插件Excel
+ * Ocara开源框架 Excel处理插件类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

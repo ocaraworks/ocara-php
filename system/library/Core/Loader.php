@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 AJAX请求处理类Ajax
+ * Ocara开源框架 自动加截处理类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

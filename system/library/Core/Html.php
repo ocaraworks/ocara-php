@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 表单生成基类Html
+ * Ocara开源框架 表单元素生成类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

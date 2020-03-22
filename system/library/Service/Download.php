@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 文件PHP即时下载插件Download
+ * Ocara开源框架 文件下载插件类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

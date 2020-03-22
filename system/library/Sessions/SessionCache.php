@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 Session文件方式处理类SessionFile
+ * Ocara开源框架 Session缓存处理类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 

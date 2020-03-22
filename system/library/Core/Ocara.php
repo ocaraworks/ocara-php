@@ -1,9 +1,7 @@
 <?php
 /**
- 
- * Ocara开源框架 框架引导类Ocara
+ * Ocara开源框架 框架引导类
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- 
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 
