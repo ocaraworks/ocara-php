@@ -47,6 +47,7 @@ abstract class DatabaseModel extends ModelBase
     protected $primaries = array();
     protected $sql = array();
     protected $fields = array();
+    protected $lastSql = array();
 
     protected static $config = array();
     protected static $configPath = array();
@@ -688,6 +689,8 @@ abstract class DatabaseModel extends ModelBase
             $sqlData = $generator->getInsertSql($this->tableName, $data, $isFilterData);
         }
 
+        $this->lastSql = $sqlData;
+
         if ($this->isDebug()) {
             $this->debug(false);
             return $sqlData;
@@ -871,6 +874,7 @@ abstract class DatabaseModel extends ModelBase
 
         $this->pushTransaction($plugin);
         $sqlData = $generator->getDeleteSql($this->tableName, $conditionSql);
+        $this->lastSql = $sqlData;
 
         if ($this->isDebug()) {
             $this->debug(false);
@@ -1331,6 +1335,7 @@ abstract class DatabaseModel extends ModelBase
         }
 
         $sqlData = $generator->genSelectSql($isCount, $unions, $isFilterCondition);
+        $this->lastSql = $sqlData;
 
         if ($this->isDebug()) {
             $this->debug(false);
@@ -1847,7 +1852,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function getLastSql()
     {
-        return $this->connect()->getLastSql();
+        return $this->lastSql;
     }
 
     /**
