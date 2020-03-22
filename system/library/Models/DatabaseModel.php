@@ -693,14 +693,14 @@ abstract class DatabaseModel extends ModelBase
 
         if ($this->isDebug()) {
             $this->debug(false);
-            return $sqlData;
+            return false;
         }
 
         $this->pushTransaction($plugin);
         $result = $data ? $plugin->execute($sqlData) : false;
 
         if (!$isUpdate) {
-            $result = $result ? $this->getInsertId() : false;
+            $result = $result ? $this->getInsertId(null, false) : false;
         }
 
         $this->clearSql();
@@ -710,10 +710,11 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 获取最后一次插入记录的自增ID
      * @param string $sql
-     * @return bool|mixed
+     * @param bool $cacheLastSql
+     * @return array|int|mixed
      * @throws Exception
      */
-    public function getInsertId($sql = null)
+    public function getInsertId($sql = null, $cacheLastSql = true)
     {
         $plugin = $this->connect();
 
@@ -724,11 +725,13 @@ abstract class DatabaseModel extends ModelBase
             $sqlData = array($sql, array());
         }
 
-        $this->lastSql = $sqlData;
+        if ($cacheLastSql) {
+            $this->lastSql = $sqlData;
+        }
 
         if ($this->isDebug()) {
             $this->debug(false);
-            return $sqlData;
+            return 0;
         }
 
         $result = $sqlData ? $plugin->queryRow($sqlData) : 0;
@@ -752,7 +755,7 @@ abstract class DatabaseModel extends ModelBase
 
         if ($this->isDebug()) {
             $this->debug(false);
-            return $sqlData;
+            return false;
         }
 
         $result = $plugin->execute($sqlData);
@@ -881,7 +884,7 @@ abstract class DatabaseModel extends ModelBase
 
         if ($this->isDebug()) {
             $this->debug(false);
-            return $sqlData;
+            return false;
         }
 
         $result = $plugin->execute($sqlData);
@@ -905,7 +908,7 @@ abstract class DatabaseModel extends ModelBase
             $this->lastSql = $sqlData;
             if ($this->isDebug()) {
                 $this->debug(false);
-                $result = $sqlData;
+                $result = false;
             } else {
                 $result = $plugin->query($sqlData);
             }
@@ -931,7 +934,6 @@ abstract class DatabaseModel extends ModelBase
             $this->lastSql = $sqlData;
             if ($this->isDebug()) {
                 $this->debug(false);
-                return $sqlData;
             } else {
                 return $plugin->queryRow($sqlData);
             }
@@ -1225,7 +1227,7 @@ abstract class DatabaseModel extends ModelBase
         $isDebug = $this->isDebug();
         $row = $this->getRow($condition, $field);
 
-        if ($isDebug) return $row;
+        if ($isDebug) return false;
 
         if (is_object($row)) {
             return property_exists($row, $field) ? $row->$field : false;
@@ -1244,7 +1246,6 @@ abstract class DatabaseModel extends ModelBase
      */
     public function getTotal($executeOptions = array())
     {
-        $isDebug = $this->isDebug();
         $queryRow = true;
 
         if (!empty($this->sql['option']['group'])) {
@@ -1252,8 +1253,6 @@ abstract class DatabaseModel extends ModelBase
         }
 
         $result = $this->baseFind(false, false, $queryRow, true, null, $executeOptions);
-
-        if ($isDebug) return $result;
 
         if ($result) {
             if (!$queryRow) {
@@ -1344,7 +1343,7 @@ abstract class DatabaseModel extends ModelBase
 
         if ($this->isDebug()) {
             $this->debug(false);
-            return $sqlData;
+            return false;
         }
 
         $shardingCurrent = $this->getSharding();
