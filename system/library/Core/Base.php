@@ -9,6 +9,7 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
@@ -195,8 +196,9 @@ abstract class Base extends Basis
      * 触发事件
      * @param $eventName
      * @param array $params
-     * @return mixed
+     * @return array|mixed
      * @throws Exception
+     * @throws ReflectionException
      */
     public function fire($eventName, array $params = array())
     {
