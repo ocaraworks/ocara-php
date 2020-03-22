@@ -431,11 +431,12 @@ abstract class DatabaseEntity extends BaseEntity
         $this->fire(self::EVENT_BEFORE_UPDATE);
         $result = $model->baseSave($this->getChanged(), true);
 
-        $this->relateSave();
-        $this->fire(self::EVENT_AFTER_UPDATE);
-
-        if ($this->isUseTransaction()) {
-            ocService()->transaction->commit();
+        if ($result !== false) {
+            $this->relateSave();
+            $this->fire(self::EVENT_AFTER_UPDATE);
+            if ($this->isUseTransaction()) {
+                ocService()->transaction->commit();
+            }
         }
 
         return $result;
@@ -492,10 +493,12 @@ abstract class DatabaseEntity extends BaseEntity
         $this->fire(self::EVENT_BEFORE_DELETE);
 
         $result = $model->baseDelete();
-        $this->fire(self::EVENT_AFTER_DELETE);
 
-        if ($this->isUseTransaction()) {
-            ocService()->transaction->commit();
+        if ($result !== false) {
+            $this->fire(self::EVENT_AFTER_DELETE);
+            if ($this->isUseTransaction()) {
+                ocService()->transaction->commit();
+            }
         }
 
         return $result;
