@@ -724,6 +724,8 @@ abstract class DatabaseModel extends ModelBase
             $sqlData = array($sql, array());
         }
 
+        $this->lastSql = $sqlData;
+
         if ($this->isDebug()) {
             $this->debug(false);
             return $sqlData;
@@ -746,6 +748,7 @@ abstract class DatabaseModel extends ModelBase
         $generator = $this->getSqlGenerator($plugin);
         $table = $generator->getTableFullname($table);
         $sqlData = $generator->getSelectSql(1, $table, array('limit' => 1));
+        $this->lastSql = $sqlData;
 
         if ($this->isDebug()) {
             $this->debug(false);
@@ -899,6 +902,7 @@ abstract class DatabaseModel extends ModelBase
         if ($sql) {
             $this->fire(self::EVENT_BEFORE_QUERY, array($sql));
             $sqlData = $this->getSqlData($plugin, $sql);
+            $this->lastSql = $sqlData;
             if ($this->isDebug()) {
                 $this->debug(false);
                 $result = $sqlData;
@@ -924,6 +928,7 @@ abstract class DatabaseModel extends ModelBase
 
         if ($sql) {
             $sqlData = $this->getSqlData($plugin, $sql);
+            $this->lastSql = $sqlData;
             if ($this->isDebug()) {
                 $this->debug(false);
                 return $sqlData;
