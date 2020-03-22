@@ -1338,10 +1338,11 @@ abstract class DatabaseModel extends ModelBase
             $isUnion = !!$unions;
         }
 
+        $isDebug = $this->isDebug();
         $sqlData = $generator->genSelectSql($isCount, $unions, $isFilterCondition);
         $this->lastSql = $sqlData;
 
-        if ($this->isDebug()) {
+        if ($isDebug) {
             $this->debug(false);
             return false;
         }
