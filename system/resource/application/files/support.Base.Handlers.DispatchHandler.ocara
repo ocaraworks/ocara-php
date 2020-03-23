@@ -1,0 +1,31 @@
+<?php
+/**
+ * 路由分发事件处理器
+ */
+
+namespace Handlers;
+
+use Ocara\Core\Base;
+
+class DispatchHandler extends Base
+{
+    /**
+     * 前置事件
+     * @param array $route
+     * @param null $event
+     * @param null $eventTarget
+     */
+    public function beforeDispatch($route = array(), $event = null, $eventTarget = null)
+    {
+    }
+
+    /**
+     * 后置事件
+     * @param array $route
+     * @param null $event
+     * @param null $eventTarget
+     */
+    public function afterDispatch($route = array(), $event = null, $eventTarget = null)
+    {
+    }
+}

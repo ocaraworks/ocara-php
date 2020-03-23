@@ -18,6 +18,9 @@ class Url extends Base
     const ROUTE_TYPE_PATH = 3; //伪路径类型
     const ROUTE_TYPE_STATIC = 4; //伪静态类型
 
+    const EVENT_PARSE_URL_PARAMS = 'parseUrlParams';
+    const EVENT_FORMAT_URL_PARAMS = 'formatUrlParams';
+
     /**
      * 是否虚拟URL地址
      * @param string $urlType
@@ -61,7 +64,7 @@ class Url extends Base
 
         if (empty($url)) return array();
 
-        $result = $this->check($url, OC_URL_ROUTE_TYPE);
+        $result = $this->parseUrlParams($url, OC_URL_ROUTE_TYPE);
         if ($result === null) {
             ocService()->error->show('fault_url');
         }
@@ -101,7 +104,7 @@ class Url extends Base
      * @param string $urlType
      * @return null
      */
-    public function check($url, $urlType)
+    public function parseUrlParams($url, $urlType)
     {
         $url = str_replace('\\', OC_DIR_SEP, $url);
         $el = '[^\/\&\?]';
@@ -236,7 +239,7 @@ class Url extends Base
     public function addQuery(array $params, $url = null, $urlType = null)
     {
         $urlType = $urlType ?: OC_URL_ROUTE_TYPE;
-        $data = $this->parseUrl($url);
+        $data = $this->parseUrlInfo($url);
 
         if ($url) {
             $uri = $data['path'] . ($data['query'] ? '?' . $data['query'] : false);
@@ -244,7 +247,7 @@ class Url extends Base
             $uri = OC_REQ_URI;
         }
 
-        $result = $this->check($uri, $urlType);
+        $result = $this->parseUrlParams($uri, $urlType);
         if ($result === null) {
             ocService()->error->show('fault_url');
         }
@@ -260,11 +263,11 @@ class Url extends Base
     }
 
     /**
-     * 解析URL
+     * 获取URL详情
      * @param string $url
      * @return array
      */
-    public function parseUrl($url = null)
+    public function parseUrlInfo($url = null)
     {
         $fields = array(
             'scheme', 'host', 'port',
