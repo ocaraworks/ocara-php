@@ -843,7 +843,7 @@ abstract class DatabaseModel extends ModelBase
                 $this->asEntity();
             }
 
-            foreach ($this->batch($batchLimit) as $entityList) {
+            foreach ($batchObject = $this->batch($batchLimit) as $entityList) {
                 foreach ($entityList as $entity) {
                     $entity->delete();
                 }

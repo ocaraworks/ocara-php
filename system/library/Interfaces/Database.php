@@ -55,4 +55,12 @@ interface Database
      * @return mixed
      */
     public function formatOneFieldValue($fieldsData, $field, $value);
+
+    /**
+     * 获取字段定义描述
+     * @param $fieldInfo
+     * @param array $exceptKeys
+     * @return array
+     */
+    public function getFieldDefinesData($fieldInfo, $exceptKeys = array());
 }
