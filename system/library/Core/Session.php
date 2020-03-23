@@ -119,7 +119,7 @@ class Session extends ServiceProvider
      */
     public function delete($name)
     {
-        ocDel($_SESSION, $name);
+        return ocDel($_SESSION, $name);
     }
 
     /**
