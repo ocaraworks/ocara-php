@@ -13,6 +13,10 @@ use Ocara\Exceptions\Exception;
 
 defined('OC_PATH') or exit('Forbidden!');
 
+/**
+ * Class ServiceProvider
+ * @property \Ocara\Core\Application $app
+ */
 class Container extends Basis
 {
     /**
