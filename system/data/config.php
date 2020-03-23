@@ -13,6 +13,8 @@ return array(
      */
     'LANGUAGE' => 'zh_cn',
     'SYSTEM_RUN_MODE' => '',
+
+    'EXTEND_VIRTUAL_ROOT_TYPE' => array(), //扩展虚拟路由类型
     'ROUTE_PARAM_NAME' => '_route', //路由参数名称
 
     'DEFAULT_CONTROLLER' => 'home', //默认控制器

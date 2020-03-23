@@ -28,11 +28,14 @@ class Url extends Base
      */
     public function isVirtualUrl($urlType)
     {
-        return in_array($urlType, array(
-                self::ROUTE_TYPE_DIR,
-                self::ROUTE_TYPE_PATH,
-                self::ROUTE_TYPE_STATIC)
+        $urlTypes = array(
+            self::ROUTE_TYPE_DIR,
+            self::ROUTE_TYPE_PATH,
+            self::ROUTE_TYPE_STATIC
         );
+
+        $urlTypes = array_merge($urlTypes, ocConfig('EXTEND_VIRTUAL_ROOT_TYPE', array()));
+        return in_array($urlType, $urlTypes);
     }
 
     /**
@@ -65,28 +68,25 @@ class Url extends Base
         if (empty($url)) return array();
 
         $result = $this->parseUrlParams($url, OC_URL_ROUTE_TYPE);
-        if ($result === null) {
+
+        if ($result['is_valid'] !== true) {
             ocService()->error->show('fault_url');
         }
 
+        $get = $result['params'];
+
         if (PHP_SAPI == 'cli') {
             $route = explode(OC_DIR_SEP, trim($url, OC_DIR_SEP));
-            $get = array_merge($route, $result);
+            $get = array_merge($route, $get);
         } elseif ($this->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
-            $get = trim($result[3]);
-            if ($get) {
-                $get = explode(OC_DIR_SEP, trim($result[3], OC_DIR_SEP));
-            } else {
+            if (!$get) {
                 $get[0] = null;
             }
-            if (isset($result[11])) {
-                parse_str($result[11], $extends);
-                $get[] = $extends;
+            if ($result['extends']) {
+                $get[] = $result['extends'];
             }
         } else {
-            parse_str($result, $get);
             $routeParamName = ocConfig('ROUTE_PARAM_NAME', '_route');
-
             if (isset($get[$routeParamName])) {
                 $route = explode(OC_DIR_SEP, ocDel($get, $routeParamName));
                 $route[1] = isset($route[1]) ? $route[1] : null;
@@ -106,20 +106,36 @@ class Url extends Base
      */
     public function parseUrlParams($url, $urlType)
     {
-        $url = str_replace('\\', OC_DIR_SEP, $url);
-        $el = '[^\/\&\?]';
-        $get = null;
+        $result = array(
+            'is_valid' => true,
+            'params' => array(),
+            'extends' => array(),
+        );
 
         if (PHP_SAPI == 'cli') {
-            $get = isset($_SERVER['argv']['2']) ? $_SERVER['argv']['2'] : OC_EMPTY;
-            $get = $get ? explode(OC_DIR_SEP, trim($get, OC_DIR_SEP)) : array();
-        } elseif ($this->isVirtualUrl($urlType)) {
+            $paramsString = isset($_SERVER['argv']['2']) ? $_SERVER['argv']['2'] : OC_EMPTY;
+            if ($paramsString) {
+                $result['params'] = explode(OC_DIR_SEP, trim($paramsString, OC_DIR_SEP));
+            }
+            return $result;
+        }
+
+        $paramsString = str_replace(OC_NS_SEP, OC_DIR_SEP, $url);
+
+        if ($callback = ocConfig(array('RESOURCE', 'url', 'parse_query_params'), null)) {
+            $customResult = call_user_func_array($callback, array($paramsString));
+            if (!empty($customResult[$urlType])) {
+                return $customResult[$urlType];
+            }
+        }
+
+        if ($this->isVirtualUrl($urlType)) {
             $str = $urlType == self::ROUTE_TYPE_PATH ? 'index\.php[\/]?' : false;
             $el = '[^\/\&\?]';
             $mvc = '\w*';
             $mvcs = $mvc . '\/';
 
-            if ($urlType == self::ROUTE_TYPE_STATIC && $url != OC_DIR_SEP) {
+            if ($urlType == self::ROUTE_TYPE_STATIC && $paramsString != OC_DIR_SEP) {
                 $file = "\.html?";
             } else {
                 $file = OC_EMPTY;
@@ -128,14 +144,22 @@ class Url extends Base
             $tail = "(\/\w+\.\w+)?";
             $tail = $file . "({$tail}\?(\w+={$el}*(&\w+={$el}*)*)?(#.*)?)?";
             $exp = "/^(\w+:\/\/\w+(\.\w)*)?{$str}(({$mvc})|({$mvcs}{$mvc})|({$mvcs}{$mvcs}{$mvc}(\/({$el}*\/?)+)*))?{$tail}$/i";
-            if (preg_match($exp, $url, $mt)) {
-                $get = $mt;
+            if (preg_match($exp, $paramsString, $matches)) {
+                if ($matches[3]) {
+                    $result['params'] = explode(OC_DIR_SEP, trim($matches[3], OC_DIR_SEP));
+                }
+                if (isset($matches[11])) {
+                    parse_str($matches[11], $result['extends']);
+                }
+            } else {
+                $result['is_valid'] = false;
             }
         } else {
-            $get = parse_url($url, PHP_URL_QUERY);
+            $get = parse_url($paramsString, PHP_URL_QUERY);
+            parse_str($get, $result['params']);
         }
 
-        return $get;
+        return $result;
     }
 
     /**

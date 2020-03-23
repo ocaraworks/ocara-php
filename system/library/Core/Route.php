@@ -20,6 +20,11 @@ class Route extends Base
         $moduleClass = OC_EMPTY;
         $controller = OC_EMPTY;
 
+        $last = array();
+        if (is_array(end($get))) {
+            $last = array_pop($get);
+        }
+
         $service = ocService();
         $module = array_shift($get);
         $uModule = ucfirst($module);
@@ -50,10 +55,12 @@ class Route extends Base
         }
 
         $feature = new $featureClass();
-        $route = $feature->getRoute($module, $controller, $get);
 
         if ($service->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
-            $_GET = $this->formatGet($_GET);
+            $route = $feature->getRoute($module, $controller, $get, $last);
+            $_GET = $this->formatGet($_GET, $last);
+        } else {
+            $route = $feature->getRoute($module, $controller, $get);
         }
 
         if (PHP_SAPI == 'cli') {
@@ -71,12 +78,9 @@ class Route extends Base
      * @param array $data
      * @return array
      */
-    public function formatGet(array $data)
+    public function formatGet(array $data, array $last = array())
     {
-        $last = $get = array();
-        if (is_array(end($data))) {
-            $last = array_pop($data);
-        }
+        $get = array();
 
         ksort($data);
         $data = array_chunk($data, 2);
