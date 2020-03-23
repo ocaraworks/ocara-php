@@ -28,6 +28,8 @@ abstract class BootstrapBase extends Base
      */
     public function init()
     {
+        @ini_set('register_globals', 'Off');
+
         if (empty($_SERVER['REQUEST_METHOD'])) {
             $_SERVER['REQUEST_METHOD'] = 'GET';
         }

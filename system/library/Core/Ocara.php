@@ -69,7 +69,6 @@ final class Ocara
         $loader = $container->loader;
 
         spl_autoload_register(array($loader, 'autoload'));
-        @ini_set('register_globals', 'Off');
     }
 
     /**
