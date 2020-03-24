@@ -14,7 +14,7 @@ class Transaction extends Base
 
     /**
      * 推入数据库
-     * @param $database
+     * @param DatabaseBase $database
      */
     public function push($database)
     {

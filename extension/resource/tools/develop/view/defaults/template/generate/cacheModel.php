@@ -27,7 +27,7 @@
 
             <div>
                 <span class="left-span">缓存服务器名称：</span>
-                <input type="text" name="connect" id="connect"
+                <input type="text" name="server" id="server"
                        value="<?php echo \Ocara\Core\DatabaseFactory::getDefaultServer(); ?>">
             </div>
 

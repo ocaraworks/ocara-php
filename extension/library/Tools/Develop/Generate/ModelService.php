@@ -19,7 +19,7 @@ class ModelService extends BaseService
 {
     private $_mdltype;
     private $_mdlname;
-    private $_connectName;
+    private $_serverName;
     private $_table;
     private $_model;
     private $_database;
@@ -31,7 +31,7 @@ class ModelService extends BaseService
         $request = ocService()->request;
         $this->_mdltype = $request->getPost('mdltype');
         $this->_mdlname = $request->getPost('mdlname');
-        $this->_connectName = $request->getPost('connect', $defaultServer);
+        $this->_serverName = $request->getPost('server', $defaultServer);
         $this->_table = $request->getPost('table');
         $this->_model = $request->getPost('model');
         $this->_primaries = $request->getPost('primaries');
@@ -46,17 +46,17 @@ class ModelService extends BaseService
 
     public function createDatabaseModel()
     {
-        $connectName = null;
-        if ($this->_connectName && $this->_connectName != DatabaseFactory::getDefaultServer()) {
-            $connectName = $this->_connectName;
+        $serverName = null;
+        if ($this->_serverName && $this->_serverName != DatabaseFactory::getDefaultServer()) {
+            $serverName = $this->_serverName;
         }
 
-        $connectNameDir = ($connectName ? $connectName . '/' : null);
-        $connectNamespace = $connectName ? OC_NS_SEP . $connectName : null;
+        $serverNameDir = ($serverName ? $serverName . '/' : null);
+        $serverNamespace = $serverName ? OC_NS_SEP . $serverName : null;
         $modelBase = 'DatabaseModel';
 
-        $moduleModelDir = "{$this->_mdlname}/model/database/" . $connectNameDir;
-        $entityModelDir = "{$this->_mdlname}/model/entity/database/" . $connectNameDir;
+        $moduleModelDir = "{$this->_mdlname}/model/database/" . $serverNameDir;
+        $entityModelDir = "{$this->_mdlname}/model/entity/database/" . $serverNameDir;
 
         if ($this->_mdltype) {
             if (empty($this->_mdlname)) {
@@ -90,14 +90,14 @@ class ModelService extends BaseService
                 $entityRootNamespace = "app\\model\\entity\\database";
                 $modelPath = ocPath('model', 'database/');
                 $entityPath = ocPath('entity', 'database/');
-                $modelPath = $modelPath . $connectNameDir;
-                $entityPath = $entityPath . $connectNameDir;
+                $modelPath = $modelPath . $serverNameDir;
+                $entityPath = $entityPath . $serverNameDir;
                 $moduleModelDir = ocPath('module');
                 $modulePath = null;
         }
 
-        $namespace = $rootNamespace . $connectNamespace;
-        $entityNamespace = $entityRootNamespace . $connectNamespace;
+        $namespace = $rootNamespace . $serverNamespace;
+        $entityNamespace = $entityRootNamespace . $serverNamespace;
         $modelName = ucfirst($this->_model) . ocConfig('MODEL_SUFFIX');
         $entityName = ucfirst($this->_model) . 'Entity';
         $entityClass = $entityNamespace . OC_NS_SEP . $entityName;
@@ -108,7 +108,7 @@ class ModelService extends BaseService
         }
 
         if (empty($this->_primaries)) {
-            $connect = DatabaseFactory::getInstance($this->_connectName);
+            $connect = DatabaseFactory::getInstance($this->_serverName);
             $generator = new Generator($connect);
             $sqlData = $generator->getShowFieldsSql($this->_table, $this->_database);
             $fieldsInfo = $connect->getFieldsInfo($sqlData);
@@ -147,8 +147,8 @@ class ModelService extends BaseService
         $content .= "class {$modelName} extends {$modelBase}\r\n";
         $content .= "{\r\n";
 
-        if ($this->_connectName != 'defaults') {
-            $content .= "\tprotected \$connectName = '{$this->_connectName}';\r\n";
+        if ($this->_serverName != 'defaults') {
+            $content .= "\tprotected \$serverName = '{$this->_serverName}';\r\n";
         }
 
         if ($this->_mdltype && $this->_mdlname) {

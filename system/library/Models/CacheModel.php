@@ -19,7 +19,7 @@ abstract class CacheModel extends ModelBase
     protected $prefix;
     protected $master;
     protected $slave;
-    protected $connectName;
+    protected $serverName;
 
     /**
      * Model constructor.
@@ -72,7 +72,7 @@ abstract class CacheModel extends ModelBase
      */
     public function getConnectName()
     {
-        return $this->connectName;
+        return $this->serverName;
     }
 
     /**
@@ -82,7 +82,7 @@ abstract class CacheModel extends ModelBase
      */
     public function connect()
     {
-        $plugin = CacheFactory::getInstance($this->connectName);
+        $plugin = CacheFactory::getInstance($this->serverName);
         $this->setPlugin($plugin);
 
         if (!ocEmpty($this->database)) {

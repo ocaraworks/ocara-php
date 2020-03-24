@@ -17,7 +17,7 @@ class CacheModelService extends BaseService
 {
     private $_mdltype;
     private $_mdlname;
-    private $_connectName;
+    private $_serverName;
     private $_prefix;
     private $_model;
     private $_database;
@@ -29,7 +29,7 @@ class CacheModelService extends BaseService
 
         $this->_mdltype = $request->getPost('mdltype');
         $this->_mdlname = $request->getPost('mdlname');
-        $this->_connectName = $request->getPost('connect', $defaultServer);
+        $this->_serverName = $request->getPost('server', $defaultServer);
         $this->_prefix = $request->getPost('prefix');
         $this->_model = $request->getPost('model');
 
@@ -42,12 +42,12 @@ class CacheModelService extends BaseService
 
     public function createCacheModel()
     {
-        $connect = ucfirst($this->_connectName);
+        $connect = ucfirst($this->_serverName);
         $modelBase = 'CacheModel';
-        $connectPath = $this->_connectName . OC_DIR_SEP;
+        $connectPath = $this->_serverName . OC_DIR_SEP;
         $moduleModelDir = "{$this->_mdlname}/model/cache/";
 
-        $cacheType = ucfirst(strtolower(ocConfig(array('CACHE', $this->_connectName, 'type'), OC_EMPTY)));
+        $cacheType = ucfirst(strtolower(ocConfig(array('CACHE', $this->_serverName, 'type'), OC_EMPTY)));
         if (!in_array($cacheType, array('Redis', 'Memcache'))) {
             $this->showError('缓存服务器名称不存在！请检查缓存配置是否存在。');
         }
@@ -93,7 +93,7 @@ class CacheModelService extends BaseService
         $content .= "\r\n";
         $content .= "class {$modelName} extends {$modelBase}\r\n";
         $content .= "{\r\n";
-        $content .= "\tprotected \$connectName = '{$this->_connectName}';\r\n";
+        $content .= "\tprotected \$serverName = '{$this->_serverName}';\r\n";
         $content .= "\tprotected \$prefix = '{$this->_prefix}';\r\n";
 
         if ($cacheType == 'Redis') {

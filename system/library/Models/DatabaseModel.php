@@ -32,7 +32,7 @@ abstract class DatabaseModel extends ModelBase
 
     protected $alias;
     protected $module;
-    protected $connectName = 'defaults';
+    protected $serverName = 'defaults';
 
     protected $tag;
     protected $databaseName;
@@ -145,7 +145,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function getConnectName()
     {
-        return $this->connectName;
+        return $this->serverName;
     }
 
     /**
@@ -1410,9 +1410,9 @@ abstract class DatabaseModel extends ModelBase
         $this->fire(self::EVENT_BEFORE_CONNECT, array($isMaster));
 
         if ($isMaster) {
-            $plugin = DatabaseFactory::getInstance($this->connectName);
+            $plugin = DatabaseFactory::getInstance($this->serverName);
         } else {
-            $plugin = DatabaseFactory::getInstance($this->connectName, false, false);
+            $plugin = DatabaseFactory::getInstance($this->serverName, false, false);
         }
 
         if (!$plugin->isSelectedDatabase()) {
