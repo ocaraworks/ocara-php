@@ -27,7 +27,7 @@ class SessionCache extends ServiceProvider
         $cacheName = ocConfig(array('SESSION', 'options', 'server'), CacheFactory::getDefaultServer());
 
         $this->container->bindSingleton('handler', function () use ($cacheName) {
-            return CacheFactory::getInstance($cacheName);
+            return CacheFactory::make($cacheName);
         });
     }
 

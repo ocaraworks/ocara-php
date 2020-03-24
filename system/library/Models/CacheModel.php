@@ -82,7 +82,7 @@ abstract class CacheModel extends ModelBase
      */
     public function connect()
     {
-        $plugin = CacheFactory::getInstance($this->serverName);
+        $plugin = CacheFactory::make($this->serverName);
         $this->setPlugin($plugin);
 
         if (!ocEmpty($this->database)) {

@@ -108,7 +108,7 @@ class ModelService extends BaseService
         }
 
         if (empty($this->_primaries)) {
-            $connect = DatabaseFactory::getInstance($this->_serverName);
+            $connect = DatabaseFactory::make($this->_serverName);
             $generator = new Generator($connect);
             $sqlData = $generator->getShowFieldsSql($this->_table, $this->_database);
             $fieldsInfo = $connect->getFieldsInfo($sqlData);

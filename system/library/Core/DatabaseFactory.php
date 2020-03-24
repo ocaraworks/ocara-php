@@ -29,7 +29,7 @@ class DatabaseFactory extends Base
      * @return mixed|null
      * @throws Exception
      */
-    public static function getInstance($serverName = null, $master = true, $required = true)
+    public static function make($serverName = null, $master = true, $required = true)
     {
         if (empty($serverName)) {
             $serverName = self::$defaultServer;

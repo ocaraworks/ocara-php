@@ -1410,9 +1410,9 @@ abstract class DatabaseModel extends ModelBase
         $this->fire(self::EVENT_BEFORE_CONNECT, array($isMaster));
 
         if ($isMaster) {
-            $plugin = DatabaseFactory::getInstance($this->serverName);
+            $plugin = DatabaseFactory::make($this->serverName);
         } else {
-            $plugin = DatabaseFactory::getInstance($this->serverName, false, false);
+            $plugin = DatabaseFactory::make($this->serverName, false, false);
         }
 
         if (!$plugin->isSelectedDatabase()) {

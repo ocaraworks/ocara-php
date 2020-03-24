@@ -24,7 +24,7 @@ class CacheFactory extends Base
      * @return mixed
      * @throws Exception
      */
-    public static function getInstance($serverName = null, $required = true)
+    public static function make($serverName = null, $required = true)
     {
         if (empty($serverName)) {
             $serverName = self::$defaultServer;
