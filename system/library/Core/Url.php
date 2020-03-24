@@ -263,7 +263,7 @@ class Url extends Base
      * @return string
      * @throws Exception
      */
-    public function addQuery(array $params, $url = null, $urlType = null)
+    public function appendQuery(array $params, $url = null, $urlType = null)
     {
         $urlType = $urlType ?: OC_URL_ROUTE_TYPE;
         $data = $this->parseUrlInfo($url);
@@ -279,8 +279,16 @@ class Url extends Base
             ocService()->error->show('fault_url');
         }
 
+        if ($callback = ocConfig(array('RESOURCE', 'url', 'append_query_params'), null)) {
+            $customResult = call_user_func_array($callback, array($urlType, $result, $data, $params));
+            if ($customResult) {
+                return $customResult;
+            }
+        }
+
         if ($this->isVirtualUrl($urlType)) {
-            $data['path'] = $result[3] . OC_DIR_SEP . implode(OC_DIR_SEP, $this->divideQuery($params));
+            $params = array_merge($result['params'], $params);
+            $data['path'] = implode(OC_DIR_SEP, $this->divideQuery($params));
         } else {
             parse_str($data['query'], $query);
             $data['query'] = $this->buildQuery(array_merge($query, $params));
