@@ -23,25 +23,25 @@ class DatabaseFactory extends Base
 
     /**
      * 获取数据库实例
-     * @param string $connectName
+     * @param string $serverName
      * @param bool $master
      * @param bool $required
      * @return mixed|null
      * @throws Exception
      */
-    public static function getInstance($connectName = null, $master = true, $required = true)
+    public static function getInstance($serverName = null, $master = true, $required = true)
     {
-        if (empty($connectName)) {
-            $connectName = self::$defaultServer;
+        if (empty($serverName)) {
+            $serverName = self::$defaultServer;
         }
 
-        $database = self::getDatabase($connectName, $master);
+        $database = self::getDatabase($serverName, $master);
         if (is_object($database) && $database instanceof DatabaseBase) {
             return $database;
         }
 
         if ($required) {
-            ocService()->error->show('not_exists_database', array($connectName));
+            ocService()->error->show('not_exists_database', array($serverName));
         }
 
         return $database;
@@ -58,14 +58,14 @@ class DatabaseFactory extends Base
 
     /**
      * 获取数据库对象
-     * @param $connectName
+     * @param $serverName
      * @param bool $master
      * @return mixed|null
      * @throws Exception
      */
-    private static function getDatabase($connectName, $master = true)
+    private static function getDatabase($serverName, $master = true)
     {
-        $config = self::getConfig($connectName);
+        $config = self::getConfig($serverName);
         $hosts = ocForceArray(ocDel($config, 'host'));
 
         if ($master) {
@@ -78,7 +78,7 @@ class DatabaseFactory extends Base
         }
 
         $object = null;
-        $name = $connectName . '_' . $index;
+        $name = $serverName . '_' . $index;
 
         if (isset(self::$connections[$name]) && is_object(self::$connections[$name])) {
             $object = self::$connections[$name];
@@ -100,27 +100,27 @@ class DatabaseFactory extends Base
 
     /**
      * 获取数据库配置信息
-     * @param null $connectName
+     * @param null $serverName
      * @return array|mixed
      * @throws Exception
      */
-    public static function getConfig($connectName = null)
+    public static function getConfig($serverName = null)
     {
-        if (empty($connectName)) {
-            $connectName = self::$defaultServer;
+        if (empty($serverName)) {
+            $serverName = self::$defaultServer;
         }
 
-        $config = ocForceArray(ocConfig(array('DATABASE', $connectName), array()));
+        $config = ocForceArray(ocConfig(array('DATABASE', $serverName), array()));
 
         if (!$config) {
-            ocService()->error->show('not_exists_database_config', array($connectName));
+            ocService()->error->show('not_exists_database_config', array($serverName));
         }
 
         if (ocService()->resources->contain('database.get_config')) {
             $callbackConfig = ocService()
                 ->resources
                 ->get('database.get_config')
-                ->handler($connectName);
+                ->handler($serverName);
             $config = array_merge($config, $callbackConfig);
         }
 

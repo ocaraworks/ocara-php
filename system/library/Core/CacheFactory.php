@@ -19,24 +19,24 @@ class CacheFactory extends Base
 
     /**
      * 新建缓存实例
-     * @param string $connectName
+     * @param string $serverName
      * @param bool $required
      * @return mixed
      * @throws Exception
      */
-    public static function getInstance($connectName = null, $required = true)
+    public static function getInstance($serverName = null, $required = true)
     {
-        if (empty($connectName)) {
-            $connectName = self::$defaultServer;
+        if (empty($serverName)) {
+            $serverName = self::$defaultServer;
         }
 
-        $object = self::baseConnect($connectName, $required);
+        $object = self::baseConnect($serverName, $required);
         if (is_object($object) && $object instanceof CacheBase) {
             return $object;
         }
 
         return ocService()->error
-            ->check('not_exists_cache', array($connectName), $required);
+            ->check('not_exists_cache', array($serverName), $required);
     }
 
     /**
@@ -50,14 +50,14 @@ class CacheFactory extends Base
 
     /**
      * 获取配置信息
-     * @param string $connectName
+     * @param string $serverName
      * @return array|mixed
      * @throws Exception
      */
-    public static function getConfig($connectName = null)
+    public static function getConfig($serverName = null)
     {
-        if (empty($connectName)) {
-            $connectName = self::$defaultServer;
+        if (empty($serverName)) {
+            $serverName = self::$defaultServer;
         }
 
         $config = array();
@@ -66,15 +66,15 @@ class CacheFactory extends Base
             $config = ocService()
                 ->resources
                 ->get('cache.get_config')
-                ->handler($connectName);
+                ->handler($serverName);
         }
 
         if (!$config) {
-            $config = ocForceArray(ocConfig(array('CACHE', $connectName), array()));
+            $config = ocForceArray(ocConfig(array('CACHE', $serverName), array()));
         }
 
         if (!$config) {
-            ocService()->error->show('not_exists_cahce_config', array($connectName));
+            ocService()->error->show('not_exists_cahce_config', array($serverName));
         }
 
         return $config;
@@ -82,15 +82,15 @@ class CacheFactory extends Base
 
     /**
      * 连接缓存
-     * @param string $connectName
+     * @param string $serverName
      * @param bool $required
      * @return mixed
      * @throws Exception
      */
-    private static function baseConnect($connectName, $required = true)
+    private static function baseConnect($serverName, $required = true)
     {
-        $config = self::getConfig($connectName);
-        $type = ucfirst(ocConfig(array('CACHE', $connectName, 'type')));
+        $config = self::getConfig($serverName);
+        $type = ucfirst(ocConfig(array('CACHE', $serverName, 'type')));
 
         $classInfo = ServiceBase::classFileExists("Caches/{$type}.php");
         if ($classInfo) {
@@ -98,7 +98,7 @@ class CacheFactory extends Base
             include_once($path);
             $class = $namespace . 'Core\Caches' . OC_NS_SEP . $type;
             if (class_exists($class)) {
-                $config['connect_name'] = $connectName;
+                $config['connect_name'] = $serverName;
                 $object = new $class($config, $required);
                 return $object;
             }
