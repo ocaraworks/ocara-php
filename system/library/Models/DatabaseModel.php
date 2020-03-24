@@ -696,7 +696,8 @@ abstract class DatabaseModel extends ModelBase
 
         if (!$isUpdate) {
             $result = $result ? $this->getInsertId(null, false) : false;
-            $this->lastSql = array($sqlData, reset($this->getLastSql()));
+            $lastSql = $this->getLastSql();
+            $this->lastSql = array($sqlData, reset($lastSql));
         }
 
         $this->clearSql();
