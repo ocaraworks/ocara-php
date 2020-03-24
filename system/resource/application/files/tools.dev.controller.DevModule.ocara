@@ -15,6 +15,10 @@ class DevModule extends Common
      */
     public function __module()
     {
+        if (ocConfig('OPEN_DEVELOP_CENTER', false)) {
+            $this->error->show('not_open_module');
+        }
+
         $this->checkVisitor();
 
         if (ocConfig('SYSTEM_RUN_MODE') != 'develop') {

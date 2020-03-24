@@ -123,7 +123,7 @@ class Url extends Base
         $paramsString = str_replace(OC_NS_SEP, OC_DIR_SEP, $url);
 
         if ($callback = ocConfig(array('RESOURCE', 'url', 'parse_query_params'), null)) {
-            $customResult = call_user_func_array($callback, array($paramsString));
+            $customResult = call_user_func_array($callback, array($urlType, $paramsString));
             if (!empty($customResult[$urlType])) {
                 return $customResult[$urlType];
             }
@@ -197,6 +197,13 @@ class Url extends Base
             }
         }
 
+        if ($callback = ocConfig(array('RESOURCE', 'url', 'create_url'), null)) {
+            $customResult = call_user_func_array($callback, array($urlType, $route, $params));
+            if ($customResult) {
+                return $customResult;
+            }
+        }
+
         if ($this->isVirtualUrl($urlType)) {
             if ($module) {
                 $query = array($module, $controller, $action);
@@ -210,7 +217,7 @@ class Url extends Base
             $paramPath = $paramPath . $route . $query;
             $paramPath = $urlType == self::ROUTE_TYPE_STATIC ? $paramPath . '.html' : $paramPath;
         } else {
-            $route = $query = array();
+            $route = array();
             if ($module) {
                 $route[] = $module;
             }
@@ -221,12 +228,8 @@ class Url extends Base
             $route = implode(OC_DIR_SEP, $route);
             $routeParam = ocConfig('ROUTE_PARAM_NAME');
 
-            $query[] = $routeParam . '=' . $route;
-            foreach ($params as $key => $value) {
-                $query[] = $key . '=' . $value;
-            }
-
-            $paramPath = OC_INDEX_FILE . '?' . implode('&', $query);
+            $queryString = $this->buildQuery(array_merge(array($routeParam => $route), $params));
+            $paramPath = OC_INDEX_FILE . '?' . $queryString;
         }
 
         return $relative ? OC_DIR_SEP . $paramPath : OC_ROOT_URL . $paramPath;
@@ -280,7 +283,7 @@ class Url extends Base
             $data['path'] = $result[3] . OC_DIR_SEP . implode(OC_DIR_SEP, $this->divideQuery($params));
         } else {
             parse_str($data['query'], $query);
-            $data['query'] = $this->buildQuery($query, $params);
+            $data['query'] = $this->buildQuery(array_merge($query, $params));
         }
 
         return $this->buildUrl($data);
@@ -321,17 +324,15 @@ class Url extends Base
     /**
      * 生成查询字符串
      * @param array $params
+     * @param string $numeric_prefix
+     * @param string $arg_separator
+     * @param int $enc_type
      * @return string
      */
-    public function buildQuery(array $params)
+    public function buildQuery(array $params, $numericPrefix = null, $argSeparator = null)
     {
-        $array = array();
-
-        foreach ($params as $key => $value) {
-            $array[] = $key . '=' . $value;
-        }
-
-        return implode('&', $array);
+        $argSeparator = $argSeparator ?: '&';
+        return urldecode(http_build_query($params, $numericPrefix, $argSeparator));
     }
 
     /**

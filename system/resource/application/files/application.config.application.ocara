@@ -10,9 +10,9 @@ return array(
     'WEB_HOST' => '',
 
     /*
-     * 工具配置
+     * 是否开启开发者中心
      */
-    'USE_OCBACK' => 1,
+    'OPEN_DEVELOP_CENTER' => 1,
 
     /*
      * URL类型
