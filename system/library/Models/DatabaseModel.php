@@ -433,7 +433,6 @@ abstract class DatabaseModel extends ModelBase
      */
     public function loadFields($cache = true)
     {
-        $plugin = $this->connect();
         $fieldsInfo = array();
 
         if ($cache) {
@@ -443,6 +442,7 @@ abstract class DatabaseModel extends ModelBase
         }
 
         if (!$fieldsInfo) {
+            $plugin = $this->connect();
             $generator = new Generator($plugin);
             $sqlData = $generator->getShowFieldsSql($this->tableName, $this->databaseName);
             $fieldsInfo = $plugin->getFieldsInfo($sqlData);
@@ -508,7 +508,6 @@ abstract class DatabaseModel extends ModelBase
         } else {
             $paths = $this->getConfigPath();
             $path = ocLowerFile($paths['fields']);
-
             if (ocFileExists($path)) {
                 return @include($path);
             }
