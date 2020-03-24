@@ -355,7 +355,8 @@ function ocGetExceptionData($exception, $lastError = false)
  * 获取默认服务提供器
  * @param string $name
  * @param bool $getDefault
- * @return Ocara\Core\ServiceProvider
+ * @return ServiceProvider
+ * @throws Exception
  */
 function ocService($name = null, $getDefault = false)
 {
@@ -385,7 +386,7 @@ function ocService($name = null, $getDefault = false)
 
 /**
  * 获取默认容器
- * @return Ocara\Core\Container
+ * @return Container
  */
 function ocContainer()
 {
@@ -411,7 +412,8 @@ function ocShutdownHandle()
  * 输出错误或返回错误处理类
  * @param null $error
  * @param array $params
- * @return mixed|null
+ * @return mixed|\Ocara\Core\Error|null
+ * @throws Exception
  */
 function ocError($error = null, array $params = array())
 {
