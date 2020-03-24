@@ -287,8 +287,8 @@ class Url extends Base
         }
 
         if ($this->isVirtualUrl($urlType)) {
-            $params = array_merge($result['params'], $params);
-            $data['path'] = implode(OC_DIR_SEP, $this->divideQuery($params));
+            $params = array_merge($result['params'], $this->divideQuery($params));
+            $data['path'] = implode(OC_DIR_SEP, $params);
         } else {
             parse_str($data['query'], $query);
             $data['query'] = $this->buildQuery(array_merge($query, $params));
@@ -360,7 +360,7 @@ class Url extends Base
             $url = $url . ($data['port'] == '80' ? false : ':' . $data['port']);
         }
 
-        $url = $url . $data['path'];
+        $url = ocDir($url) . $data['path'];
         if ($data['query']) {
             $url = $url . '?' . $data['query'];
         }
