@@ -66,7 +66,7 @@ class CacheFactory extends Base
             $config = ocService()
                 ->resources
                 ->get('cache.get_config')
-                ->handler($serverName);
+                ->handle($serverName);
         }
 
         if (!$config) {

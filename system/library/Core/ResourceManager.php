@@ -46,6 +46,6 @@ class ResourceManager extends ServiceProvider
      */
     public function get($name)
     {
-        return $this->loadService('database.get_config');
+        return $this->loadService($name);
     }
 }

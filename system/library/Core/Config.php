@@ -54,7 +54,7 @@ class Config extends Basis
                 $this->environment = ocService()
                     ->resources
                     ->get('env.get_env')
-                    ->handler();
+                    ->handle();
             }
         }
         return $this->environment;

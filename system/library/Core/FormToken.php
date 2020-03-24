@@ -27,7 +27,7 @@ class FormToken extends Base
             $token = ocService()
                 ->resources
                 ->get('form.generate_token')
-                ->handler($formName, $route);
+                ->handle($formName, $route);
         }
 
         if (empty($token)) {

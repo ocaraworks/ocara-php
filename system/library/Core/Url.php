@@ -124,7 +124,7 @@ class Url extends Base
             $customResult = ocService()
                 ->resources
                 ->get('url.parse_query_params')
-                ->handler($urlType, $paramsString);
+                ->handle($urlType, $paramsString);
             if (!empty($customResult[$urlType])) {
                 return $customResult[$urlType];
             }
@@ -202,7 +202,7 @@ class Url extends Base
             $customResult = ocService()
                 ->resources
                 ->get('url.create_url')
-                ->handler($urlType, $route, $params);
+                ->handle($urlType, $route, $params);
             if ($customResult) {
                 return $customResult;
             }
@@ -287,7 +287,7 @@ class Url extends Base
             $customResult = ocService()
                 ->resources
                 ->get('url.append_query_params')
-                ->handler($urlType, $result, $urlInfo, $params);
+                ->handle($urlType, $result, $urlInfo, $params);
             if ($customResult) {
                 return $customResult;
             }

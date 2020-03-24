@@ -120,7 +120,7 @@ class DatabaseFactory extends Base
             $callbackConfig = ocService()
                 ->resources
                 ->get('database.get_config')
-                ->handler($serverName);
+                ->handle($serverName);
             $config = array_merge($config, $callbackConfig);
         }
 
