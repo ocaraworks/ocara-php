@@ -236,7 +236,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
      */
     public function get($name)
     {
-        return $this->loadService('database.get_config');
+        return $this->loadService($name);
     }
 
     /**

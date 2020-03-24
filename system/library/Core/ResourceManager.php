@@ -37,15 +37,4 @@ class ResourceManager extends ServiceProvider
             $this->container->bind($name . '.' . $key, $value);
         }
     }
-
-    /**
-     * 获取资源服务
-     * @param $name
-     * @return array|mixed|object|void|null
-     * @throws Exception
-     */
-    public function get($name)
-    {
-        return $this->loadService($name);
-    }
 }
