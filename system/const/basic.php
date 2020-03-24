@@ -5,8 +5,6 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 
-defined('OC_PATH') or exit('Forbidden!');
-
 /*
  * 开始执行时间
  */

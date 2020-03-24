@@ -11,8 +11,6 @@ use Ocara\Exceptions\Exception;
 use Ocara\Core\CacheFactory;
 use Ocara\Core\ModelBase;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 abstract class CacheModel extends ModelBase
 {
     protected $database;

@@ -9,8 +9,6 @@ namespace Ocara\Controllers\Feature;
 
 use Ocara\Core\Base as ClassBase;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class Base extends ClassBase
 {
     /**

@@ -10,8 +10,6 @@ namespace Ocara\Core;
 use Ocara\Exceptions\Exception;
 use Ocara\Models\DatabaseModel;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 abstract class ControllerBase extends serviceProvider
 {
     /**

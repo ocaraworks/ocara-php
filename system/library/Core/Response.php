@@ -7,10 +7,7 @@
 
 namespace Ocara\Core;
 
-
 use \Ocara\Exceptions\Exception;
-
-defined('OC_PATH') or exit('Forbidden!');
 
 class Response extends Base
 {

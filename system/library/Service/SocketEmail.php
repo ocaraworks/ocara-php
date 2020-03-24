@@ -9,8 +9,6 @@ namespace Ocara\Service;
 
 use Ocara\Core\ServiceBase;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class SocketEmail extends ServiceBase
 {
     public $lastResult;

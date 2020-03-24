@@ -5,8 +5,6 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 
-defined('OC_PATH') or exit('Forbidden!');
-
 use Ocara\Core\Container;
 use Ocara\Core\ServiceProvider;
 use Ocara\Exceptions\Exception;

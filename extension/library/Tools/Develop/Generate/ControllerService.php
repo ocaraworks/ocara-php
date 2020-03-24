@@ -10,7 +10,6 @@ namespace Ocara\Extension\Tools\Develop\Generate;
 use Ocara\Core\ControllerBase;
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
 
 class ControllerService extends BaseService
 {

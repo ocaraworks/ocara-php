@@ -12,8 +12,6 @@ use \ReflectionObject;
 use Ocara\Core\BaseEntity;
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 abstract class DatabaseEntity extends BaseEntity
 {
     private $selected = array();

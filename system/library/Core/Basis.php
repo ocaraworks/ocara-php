@@ -9,8 +9,6 @@ namespace Ocara\Core;
 
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 abstract class Basis
 {
     /**

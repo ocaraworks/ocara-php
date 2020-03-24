@@ -7,12 +7,12 @@
 
 namespace Ocara\Core;
 
-use Ocara\Interfaces\Middleware;
+use Ocara\Interfaces\Resource as ResourceInterface;
 
-class Resource implements Middleware
+class Resource extends ServiceProvider implements ResourceInterface
 {
     /**
-     * 处理
+     * 获取资源
      * @param mixed $args
      * @return mixed
      */

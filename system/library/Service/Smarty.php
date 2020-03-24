@@ -11,8 +11,6 @@ use Ocara\Core\ServiceBase;
 use Ocara\Exceptions\Exception;
 use Ocara\Service\Interfaces\Template as TemplateInterface;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class Smarty extends ServiceBase implements TemplateInterface
 {
     /**

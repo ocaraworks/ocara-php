@@ -9,8 +9,6 @@ namespace Ocara\Core;
 
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class DatabaseFactory extends Base
 {
     /**
@@ -118,11 +116,12 @@ class DatabaseFactory extends Base
             ocService()->error->show('not_exists_database_config', array($connectName));
         }
 
-        if ($callback = ocConfig(array('RESOURCE', 'database', 'get_config'), null)) {
-            $config = array_merge(
-                $config,
-                call_user_func_array($callback, array($connectName))
-            );
+        if (ocService()->resources->contain('database.get_config')) {
+            $callbackConfig = ocService()
+                ->resources
+                ->get('database.get_config')
+                ->handler($connectName);
+            $config = array_merge($config, $callbackConfig);
         }
 
         return $config;

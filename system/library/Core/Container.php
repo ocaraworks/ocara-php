@@ -11,11 +11,12 @@ use \ReflectionClass;
 use \ReflectionMethod;
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 /**
  * Class ServiceProvider
  * @property \Ocara\Core\Application $app
+ * @property \Ocara\Core\Config $config
+ * @property \Ocara\Core\Lang $lang
+ * @property \Ocara\Core\ResourceManager $resources
  */
 class Container extends Basis
 {
@@ -54,18 +55,24 @@ class Container extends Basis
      */
     public function bindSingleton($name, $source = null, array $params = array(), array $deps = array())
     {
-        $name = ocClassName($name);
-        if ($this->hasBind($name)) {
-            throw new Exception('exists_bind_class');
-        }
+        if (is_array($name)) {
+            foreach ($name as $row) {
+                call_user_func_array(array($this, __METHOD__), $row);
+            }
+        } else {
+            $name = ocClassName($name);
+            if ($this->hasBind($name)) {
+                throw new Exception('exists_bind_class');
+            }
 
-        if (empty($source)) {
-            $source = $name;
-        }
+            if (empty($source)) {
+                $source = $name;
+            }
 
-        $matter = $this->getMatterArray($source, $params, $deps);
-        if ($matter) {
-            $this->bindSingletons[$name] = $matter;
+            $matter = $this->getMatterArray($source, $params, $deps);
+            if ($matter) {
+                $this->bindSingletons[$name] = $matter;
+            }
         }
 
         return $this;
@@ -82,18 +89,24 @@ class Container extends Basis
      */
     public function bind($name, $source = null, array $params = array(), array $deps = array())
     {
-        $name = ocClassName($name);
-        if ($this->hasBindSingleton($name)) {
-            throw new Exception('exists_singleton_bind_class');
-        }
+        if (is_array($name)) {
+            foreach ($name as $row) {
+                call_user_func_array(array($this, __METHOD__), $row);
+            }
+        } else {
+            $name = ocClassName($name);
+            if ($this->hasBindSingleton($name)) {
+                throw new Exception('exists_singleton_bind_class');
+            }
 
-        if (empty($source)) {
-            $source = $name;
-        }
+            if (empty($source)) {
+                $source = $name;
+            }
 
-        $matter = $this->getMatterArray($source, $params, $deps);
-        if ($matter) {
-            $this->binds[$name] = $matter;
+            $matter = $this->getMatterArray($source, $params, $deps);
+            if ($matter) {
+                $this->binds[$name] = $matter;
+            }
         }
 
         return $this;

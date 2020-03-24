@@ -10,8 +10,6 @@ namespace Ocara\Core;
 use \ReflectionClass;
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class ServiceBase extends Base
 {
     private static $lang = null;

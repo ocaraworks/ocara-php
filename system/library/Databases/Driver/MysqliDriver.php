@@ -12,8 +12,6 @@ use Ocara\Exceptions\Exception;
 use Ocara\Core\DriverBase;
 use Ocara\Interfaces\Driver as DriverInterface;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class MysqliDriver extends DriverBase implements DriverInterface
 {
     /**

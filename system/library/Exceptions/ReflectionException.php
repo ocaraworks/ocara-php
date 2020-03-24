@@ -10,8 +10,6 @@ namespace Ocara\Exceptions;
 use \ReflectionException as BaseReflectionException;
 use Ocara\Interfaces\Exception as ExceptionInterface;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class ReflectionException extends BaseReflectionException implements ExceptionInterface
 {
 }

@@ -12,8 +12,6 @@ use Ocara\Core\ViewBase;
 use Ocara\Exceptions\Exception;
 use Ocara\Interfaces\View as ViewInterfaces;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class Api extends ViewBase implements ViewInterfaces
 {
     /**

@@ -7,8 +7,6 @@
 
 namespace Ocara\Service\Interfaces;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 /**
  * 模板插件接口
  * @author Administrator

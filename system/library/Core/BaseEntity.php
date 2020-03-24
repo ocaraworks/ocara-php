@@ -7,8 +7,6 @@
 
 namespace Ocara\Core;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 abstract class BaseEntity extends Base
 {
     /**

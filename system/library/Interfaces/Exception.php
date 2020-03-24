@@ -7,8 +7,6 @@
 
 namespace Ocara\Interfaces;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 interface Exception
 {
 }

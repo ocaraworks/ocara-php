@@ -9,8 +9,6 @@ namespace Ocara\Core;
 
 use \Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class Config extends Basis
 {
     /**
@@ -52,10 +50,11 @@ class Config extends Basis
     public function getEnvironment()
     {
         if (!isset($this->environment)) {
-            $environmentResource = ocConfig('RESOURCE.env.get_env', null);
-            if ($environmentResource) {
-                $object = new $environmentResource();
-                $this->environment = call_user_func_array(array($object, 'handle'), array()) ?: OC_EMPTY;
+            if (ocContainer()->resources->contain('env.get_env')) {
+                $this->environment = ocService()
+                    ->resources
+                    ->get('env.get_env')
+                    ->handler();
             }
         }
         return $this->environment;

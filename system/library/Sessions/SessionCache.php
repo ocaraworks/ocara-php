@@ -11,8 +11,6 @@ use Ocara\Core\CacheFactory;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceProvider;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class SessionCache extends ServiceProvider
 {
     protected $prefix;

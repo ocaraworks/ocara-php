@@ -7,8 +7,6 @@
 
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 /**
  * 替换空白字符
  * @param string $string

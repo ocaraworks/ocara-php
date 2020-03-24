@@ -9,8 +9,6 @@ namespace Ocara\Core;
 
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class FormToken extends Base
 {
     /**
@@ -22,11 +20,17 @@ class FormToken extends Base
      */
     public function generate($formName, $route)
     {
+        $token = null;
         $routeStr = implode(OC_EMPTY, $route);
 
-        if ($config = ocConfig(array('RESOURCE', 'form', 'generate_token'), null)) {
-            $token = call_user_func_array($config, array($formName, $route));
-        } else {
+        if (ocService()->resources->contain('form.generate_token')) {
+            $token = ocService()
+                ->resources
+                ->get('form.generate_token')
+                ->handler($formName, $route);
+        }
+
+        if (empty($token)) {
             $token = md5($routeStr . $formName . md5(ocService()->code->getRandNumber(5)) . uniqid(mt_rand()));
         }
 

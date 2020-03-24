@@ -10,8 +10,6 @@ namespace Ocara\Dispatchers;
 use Ocara\Core\Base;
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class Common extends Base
 {
     const EVENT_BEFORE_DISPATCH = 'beforeDispatch';

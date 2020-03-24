@@ -7,8 +7,6 @@
 
 namespace Ocara\Service;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceBase;
 

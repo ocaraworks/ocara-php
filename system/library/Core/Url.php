@@ -9,8 +9,6 @@ namespace Ocara\Core;
 
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class Url extends Base
 {
     const ROUTE_TYPE_DEFAULT = 1; //默认类型
@@ -122,8 +120,11 @@ class Url extends Base
 
         $paramsString = str_replace(OC_NS_SEP, OC_DIR_SEP, $url);
 
-        if ($callback = ocConfig(array('RESOURCE', 'url', 'parse_query_params'), null)) {
-            $customResult = call_user_func_array($callback, array($urlType, $paramsString));
+        if (ocService()->resources->contain('url.parse_query_params')) {
+            $customResult = ocService()
+                ->resources
+                ->get('url.parse_query_params')
+                ->handler($urlType, $paramsString);
             if (!empty($customResult[$urlType])) {
                 return $customResult[$urlType];
             }
@@ -197,8 +198,11 @@ class Url extends Base
             }
         }
 
-        if ($callback = ocConfig(array('RESOURCE', 'url', 'create_url'), null)) {
-            $customResult = call_user_func_array($callback, array($urlType, $route, $params));
+        if (ocService()->resources->contain('url.create_url')) {
+            $customResult = ocService()
+                ->resources
+                ->get('url.create_url')
+                ->handler($urlType, $route, $params);
             if ($customResult) {
                 return $customResult;
             }
@@ -266,10 +270,10 @@ class Url extends Base
     public function appendQuery(array $params, $url = null, $urlType = null)
     {
         $urlType = $urlType ?: OC_URL_ROUTE_TYPE;
-        $data = $this->parseUrlInfo($url);
+        $urlInfo = $this->parseUrlInfo($url);
 
         if ($url) {
-            $uri = $data['path'] . ($data['query'] ? '?' . $data['query'] : false);
+            $uri = $urlInfo['path'] . ($urlInfo['query'] ? '?' . $urlInfo['query'] : false);
         } else {
             $uri = OC_REQ_URI;
         }
@@ -279,8 +283,11 @@ class Url extends Base
             ocService()->error->show('fault_url');
         }
 
-        if ($callback = ocConfig(array('RESOURCE', 'url', 'append_query_params'), null)) {
-            $customResult = call_user_func_array($callback, array($urlType, $result, $data, $params));
+        if (ocService()->resources->contain('url.append_query_params')) {
+            $customResult = ocService()
+                ->resources
+                ->get('url.append_query_params')
+                ->handler($urlType, $result, $urlInfo, $params);
             if ($customResult) {
                 return $customResult;
             }
@@ -288,13 +295,13 @@ class Url extends Base
 
         if ($this->isVirtualUrl($urlType)) {
             $params = array_merge($result['params'], $this->divideQuery($params));
-            $data['path'] = implode(OC_DIR_SEP, $params);
+            $urlInfo['path'] = implode(OC_DIR_SEP, $params);
         } else {
-            parse_str($data['query'], $query);
-            $data['query'] = $this->buildQuery(array_merge($query, $params));
+            parse_str($urlInfo['query'], $query);
+            $urlInfo['query'] = $this->buildQuery(array_merge($query, $params));
         }
 
-        return $this->buildUrl($data);
+        return $this->buildUrl($urlInfo);
     }
 
     /**

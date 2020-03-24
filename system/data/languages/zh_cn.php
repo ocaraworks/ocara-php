@@ -5,8 +5,6 @@
  * @author Lin YiHu <linyhtianwa@163。com>
  */
 
-defined('OC_PATH') or exit('Forbidden！');
-
 return array(
     //异常提示
     'unknow_exception' => array(1100, 'Ocara异常提示'),

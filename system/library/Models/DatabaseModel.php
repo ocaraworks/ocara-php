@@ -18,8 +18,6 @@ use Ocara\Core\ModelBase;
 use Ocara\Iterators\Database\BatchQueryRecords;
 use Ocara\Iterators\Database\EachQueryRecords;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 abstract class DatabaseModel extends ModelBase
 {
 

@@ -63,6 +63,7 @@ final class Ocara
             ->bindSingleton('loader', '\Ocara\Core\Loader')
             ->bindSingleton('path', '\Ocara\Core\Path')
             ->bindSingleton('app', '\Ocara\Core\Application')
+            ->bindSingleton('resources', '\Ocara\Core\ResourceManager')
             ->bindSingleton('exceptionHandler', '\Ocara\Core\ExceptionHandler');
 
         $container->config;

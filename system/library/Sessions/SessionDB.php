@@ -11,8 +11,6 @@ use Ocara\Core\ModelBase;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceProvider;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class SessionDB extends ServiceProvider
 {
     /**

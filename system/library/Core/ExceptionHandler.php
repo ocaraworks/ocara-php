@@ -11,8 +11,6 @@ use \ErrorException;
 
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class ExceptionHandler extends Base
 {
     protected $responseFormat;

@@ -9,8 +9,6 @@ namespace Ocara\Core;
 
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class CacheFactory extends Base
 {
     /**
@@ -64,8 +62,11 @@ class CacheFactory extends Base
 
         $config = array();
 
-        if ($callback = ocConfig(array('RESOURCE', 'cache', 'get_config'), null)) {
-            $config = call_user_func_array($callback, array($connectName));
+        if (ocService()->resources->contain('cache.get_config')) {
+            $config = ocService()
+                ->resources
+                ->get('cache.get_config')
+                ->handler($connectName);
         }
 
         if (!$config) {

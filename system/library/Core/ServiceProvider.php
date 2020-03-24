@@ -12,6 +12,7 @@ use Ocara\Exceptions\Exception;
 
 /**
  * Class ServiceProvider
+ * @property \Ocara\Core\Container $container
  * @property \Ocara\Core\Request $request
  * @property \Ocara\Core\Response $response
  * @property \Ocara\Core\Api $api
@@ -52,7 +53,8 @@ use Ocara\Exceptions\Exception;
  * @property \Ocara\Service\Image $image
  * @property \Ocara\Service\FileLog $fileLog
  * @property \Ocara\Service\Upload $upload
- * @property \Ocara\Views\Common|\Ocara\Views\Api $view;
+ * @property \Ocara\Views\Common|\Ocara\Views\Api $view
+ * @property \Ocara\Core\ResourceManager $resources
  */
 class ServiceProvider extends Base implements ServiceProviderInterface
 {
@@ -142,6 +144,17 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     }
 
     /**
+     * 检测包含可提供服务组件
+     * @param $name
+     * @return bool
+     */
+    public function contain($name)
+    {
+        return array_key_exists($name, $this->services)
+            || $this->container->has($name);
+    }
+
+    /**
      * 获取服务组件，如果没有就加载和新建
      * @param string $name
      * @param array $params
@@ -216,6 +229,17 @@ class ServiceProvider extends Base implements ServiceProviderInterface
     }
 
     /**
+     * 获取资源服务
+     * @param $name
+     * @return array|mixed|object|void|null
+     * @throws Exception
+     */
+    public function get($name)
+    {
+        return $this->loadService('database.get_config');
+    }
+
+    /**
      * 属性不存在时的处理
      * @param $key
      * @param $reason
@@ -229,6 +253,6 @@ class ServiceProvider extends Base implements ServiceProviderInterface
             return $instance;
         }
 
-        ocService()->error->show('no_service', array($key));
+        ocService('error', true)->show('no_service', array($key));
     }
 }

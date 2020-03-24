@@ -7,7 +7,7 @@
 
 namespace Ocara\Interfaces;
 
-interface Middleware
+interface Resource
 {
     /**
      * 处理

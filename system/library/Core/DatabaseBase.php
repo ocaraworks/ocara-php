@@ -10,8 +10,6 @@ namespace Ocara\Core;
 use Ocara\Exceptions\Exception;
 use Ocara\Sql\Generator;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class DatabaseBase extends Base
 {
     private $error = array();

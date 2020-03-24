@@ -5,8 +5,6 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 
-defined('OC_PATH') or exit('Forbidden!');
-
 /*
  * --------------------------------------------------
  * 框架配置-请勿修改

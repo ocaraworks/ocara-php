@@ -7,8 +7,6 @@
 
 use Ocara\Core\Url;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 $config = ocContainer()->config;
 $webHost = $config->get('WEB_HOST', OC_EMPTY);
 

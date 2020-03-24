@@ -10,8 +10,6 @@ namespace Ocara\Core;
 use \ReflectionException;
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 abstract class Base extends Basis
 {
     private $plugin;

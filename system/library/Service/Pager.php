@@ -10,8 +10,6 @@ namespace Ocara\Service;
 use Ocara\Core\ServiceBase;
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class Pager extends ServiceBase
 {
     /**

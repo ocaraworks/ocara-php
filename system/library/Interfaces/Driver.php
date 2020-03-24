@@ -7,8 +7,6 @@
 
 namespace Ocara\Interfaces;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 /**
  * 数据库对象接口
  * @author Administrator

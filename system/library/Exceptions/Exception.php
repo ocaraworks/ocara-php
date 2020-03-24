@@ -10,8 +10,6 @@ namespace Ocara\Exceptions;
 use \Exception as ExceptionBase;
 use Ocara\Interfaces\Exception as ExceptionInterface;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class Exception extends ExceptionBase implements ExceptionInterface
 {
 }

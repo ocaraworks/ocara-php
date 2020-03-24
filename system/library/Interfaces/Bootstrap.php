@@ -9,8 +9,6 @@ namespace Ocara\Interfaces;
 
 use Ocara\Core\Container;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 interface Bootstrap
 {
     /**

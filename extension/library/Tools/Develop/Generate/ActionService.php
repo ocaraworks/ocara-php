@@ -9,8 +9,6 @@ namespace Ocara\Extension\Tools\Develop\Generate;
 
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class ActionService extends BaseService
 {
     public $tplType;

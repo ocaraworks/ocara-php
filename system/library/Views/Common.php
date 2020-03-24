@@ -13,8 +13,6 @@ use Ocara\Exceptions\Exception;
 use Ocara\Interfaces\View as ViewInterfaces;
 use Ocara\Service\Interfaces\Template as TemplateInterface;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class Common extends ViewBase implements ViewInterfaces
 {
     /**

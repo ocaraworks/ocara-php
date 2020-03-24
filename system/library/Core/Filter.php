@@ -9,8 +9,6 @@ namespace Ocara\Core;
 
 use Ocara\Exceptions\Exception;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class Filter extends Base
 {
     const EVENT_SQL_KEYWORDS_FILTER = 'sql_keywords_filter';

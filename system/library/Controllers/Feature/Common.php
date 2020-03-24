@@ -9,8 +9,6 @@ namespace Ocara\Controllers\Feature;
 
 use Ocara\Interfaces\Feature;
 
-defined('OC_PATH') or exit('Forbidden!');
-
 class Common extends Base implements Feature
 {
 }
