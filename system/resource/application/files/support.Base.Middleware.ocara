@@ -1,0 +1,12 @@
+<?php
+/**
+ * 中间件基类
+ */
+
+namespace Base;
+
+use Ocara\Core\Middleware as BaseMiddleware;
+
+class Middleware extends BaseMiddleware
+{
+}

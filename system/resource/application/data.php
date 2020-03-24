@@ -42,6 +42,11 @@ $dirs = array(
         'session',
         'temp'
     ),
+    'support' => array(
+        'Middleware',
+        'Resource',
+        'Providers'
+    ),
     'tools' => array(
         'dev/controller/generate',
         'dev/config'
@@ -78,7 +83,8 @@ $files = array(
         'Base/Model/DatabaseModel',
         'Base/Model/DatabaseEntity',
         'Base/Model/LogicEntity',
-        'Middleware'
+        'Base/Middleware',
+        'Base/Resource',
     ),
     'public' => array(
         'pass/tools/index'
