@@ -34,13 +34,6 @@ class ErrorOutput extends ServiceBase
 
         $error['code'] = $error['code'] ? "[{$error['code']}]" : null;
         $error['class'] = $error['type'] == 'program_error' ? 'oc-error' : 'oc-exception';
-
-        if (isset($error['traceInfo'][0])) {
-            $lastTrace = $error['traceInfo'][0];
-            $error['file'] = isset($lastTrace['file']) ? $lastTrace['file'] : $error['file'];
-            $error['line'] = isset($lastTrace['line']) ? $lastTrace['line'] : $error['line'];
-        }
-
         $error['file'] = trim(ocCommPath(self::stripRootPath($error['file'])), OC_DIR_SEP);
         $error['trace'] = nl2br(ocCommPath($error['trace']));
 

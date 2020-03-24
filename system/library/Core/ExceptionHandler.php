@@ -45,11 +45,12 @@ class ExceptionHandler extends Base
     /**
      * 错误处理
      * @param $exception
+     * @param bool $lastError
      * @throws Exception
      */
-    public function exceptionHandle($exception)
+    public function exceptionHandle($exception, $lastError = false)
     {
-        return $this->handle($exception);
+        return $this->handle($exception, $lastError);
     }
 
     /**
@@ -59,41 +60,41 @@ class ExceptionHandler extends Base
      * @param $file
      * @param $line
      * @param string $context
+     * @param bool $lastError
      * @return bool
      * @throws Exception
      */
-    public function errorHandle($level, $message, $file, $line, $context = '')
+    public function errorHandle($level, $message, $file, $line, $context = '', $lastError = false)
     {
-        try {
-            throw new ErrorException($message, $level, $level, $file, $line);
-        } catch (ErrorException $exception) {
-            $exceptErrors = ocForceArray(ocConfig(array('ERROR_HANDLER', 'except_error_list'), array()));
-            if (!in_array($level, $exceptErrors)) {
-                $handler = new static();
-                $handler->exceptionHandle($exception);
-            }
+        $errorException = new ErrorException($message, $level, $level, $file, $line);
+        $exceptErrors = ocForceArray(ocConfig(array('ERROR_HANDLER', 'except_error_list'), array()));
+
+        if (!in_array($level, $exceptErrors)) {
+            $handler = new static();
+            $handler->exceptionHandle($errorException, $lastError);
         }
 
         return false;
     }
 
     /**
-     * 错误处理
      * @param $exception
+     * @param bool $lastError
      * @throws Exception
      */
-    public function handle($exception)
+    public function handle($exception, $lastError = false)
     {
+        $error = ocGetExceptionData($exception, $lastError);
         $response = ocService('response', true);
 
         $response->clear();
         $response->setStatusCode(Response::STATUS_SERVER_ERROR);
 
         try {
-            $this->fire(self::EVENT_REPORT, array($exception));
-            $this->fire(self::EVENT_BEFORE_OUTPUT, array($exception));
-            $this->fire(self::EVENT_OUTPUT, array($exception));
-            $this->fire(self::EVENT_AFTER_OUTPUT, array($exception));
+            $this->fire(self::EVENT_REPORT, array($error));
+            $this->fire(self::EVENT_BEFORE_OUTPUT, array($error));
+            $this->fire(self::EVENT_OUTPUT, array($error));
+            $this->fire(self::EVENT_AFTER_OUTPUT, array($error));
         } catch (\Exception $exception) {
             $this->output($exception);
         } catch (\Error $error) {
@@ -119,9 +120,8 @@ class ExceptionHandler extends Base
      * @param $object
      * @throws Exception
      */
-    public function output($exception, $event = null, $object = null)
+    public function output($error, $event = null, $object = null)
     {
-        $error = ocGetExceptionData($exception);
         $responseFormat = $this->responseFormat ?: ocConfig('DEFAULT_RESPONSE_FORMAT', null);
         $isAPi = $responseFormat == self::RESPONSE_FORMAT_API;
 
@@ -151,9 +151,8 @@ class ExceptionHandler extends Base
      * @param $object
      * @throws Exception
      */
-    public function report($exception, $event, $object)
+    public function report($error, $event, $object)
     {
-        $error = ocGetExceptionData($exception);
         ocService('log', true)
             ->error($error['message'] . PHP_EOL . Log::getTraceString($error['traceInfo']));
     }

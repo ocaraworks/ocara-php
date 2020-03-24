@@ -314,23 +314,40 @@ function ocIntersectKey($data, $keys)
 /**
  * 获取异常错误数据
  * @param $exception
+ * @param bool $lastError
  * @return array
  */
-function ocGetExceptionData($exception)
+function ocGetExceptionData($exception, $lastError = false)
 {
     $errorType = 'exception_error';
     if ($exception instanceof ErrorException) {
         $errorType = 'program_error';
     }
 
+    $traceInfo = $exception->getTrace();
+    $file = $exception->getFile();
+    $line = $exception->getLine();
+
+    if (!$lastError && $traceInfo) {
+        if (isset($traceInfo[0])) {
+            $lastTrace = $traceInfo[0];
+            if (isset($lastTrace['file'])) {
+                $file = $lastTrace['file'];
+            }
+            if (isset($lastTrace['line'])) {
+                $line = $lastTrace['line'];
+            }
+        }
+    }
+
     return array(
         'type' => $errorType,
         'code' => $exception->getCode(),
         'message' => $exception->getMessage(),
-        'file' => $exception->getFile(),
-        'line' => $exception->getLine(),
+        'file' => $file,
+        'line' => $line,
         'trace' => $exception->getTraceAsString(),
-        'traceInfo' => $exception->getTrace()
+        'traceInfo' => $traceInfo
     );
 }
 
@@ -385,7 +402,7 @@ function ocShutdownHandle()
         if (@ini_get('display_errors') && !ocService()->response->isSent()) {
             ocService()
                 ->exceptionHandler
-                ->errorHandle($error['type'], $error['message'], $error['file'], $error['line']);
+                ->errorHandle($error['type'], $error['message'], $error['file'], $error['line'], null, true);
         }
     }
 }
