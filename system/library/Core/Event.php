@@ -239,17 +239,17 @@ class Event extends Basis implements EventInterface
 
     /**
      * 触发事件
-     * @param object $eventObject
+     * @param object $eventSource
      * @param array $params
      * @return array|mixed|null
      * @throws Exception
      * @throws ReflectionException
      */
-    public function trigger($eventObject, array $params = array())
+    public function trigger($eventSource, array $params = array())
     {
         $result = null;
         $handlerLength = 0;
-        $params = array_merge($params, array($this, $eventObject));
+        $params = array_merge($params, array($this, $eventSource));
         $results = array();
 
         if ($this->handlers) {
@@ -325,7 +325,7 @@ class Event extends Basis implements EventInterface
     public function formatCallback(&$callback, $key = 0)
     {
         if (is_string($callback)) {
-            if (class_exists($callback)) {
+            if (strstr($callback, OC_NS_SEP) || class_exists($callback)) {
                 $callback = new $callback();
             }
         } elseif (is_array($callback)) {
