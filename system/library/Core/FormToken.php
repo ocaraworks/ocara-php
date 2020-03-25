@@ -7,28 +7,35 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Exceptions\Exception;
 
 class FormToken extends Base
 {
+    const EVENT_GENERATE_TOKEN = 'generateToken';
+
+    /**
+     * @throws Exception
+     */
+    public function registerEvents()
+    {
+        $this->event(self::EVENT_GENERATE_TOKEN)
+            ->resource()
+            ->append(ocConfig('RESOURCE.form.generate_token', null));
+    }
+
     /**
      * 生成表单令牌
      * @param $formName
      * @param $route
-     * @return mixed|string
+     * @return array|mixed|string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function generate($formName, $route)
     {
-        $token = null;
         $routeStr = implode(OC_EMPTY, $route);
-
-        if (ocService()->resources->contain('form.generate_token')) {
-            $token = ocService()
-                ->resources
-                ->get('form.generate_token')
-                ->handle($formName, $route);
-        }
+        $token = $this->fire(self::EVENT_GENERATE_TOKEN, array($formName, $route));
 
         if (empty($token)) {
             $token = md5($routeStr . $formName . md5(ocService()->code->getRandNumber(5)) . uniqid(mt_rand()));

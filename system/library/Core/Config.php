@@ -50,11 +50,8 @@ class Config extends Basis
     public function getEnvironment()
     {
         if (!isset($this->environment)) {
-            if (ocContainer()->resources->contain('env.get_env')) {
-                $this->environment = ocService()
-                    ->resources
-                    ->get('env.get_env')
-                    ->handle();
+            if ($callback = ocConfig('RESOURCE.env.get_env', null)) {
+                $this->environment = call_user_func_array($callback, array());
             }
         }
         return $this->environment;

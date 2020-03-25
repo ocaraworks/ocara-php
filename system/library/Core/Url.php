@@ -7,6 +7,7 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Exceptions\Exception;
 
 class Url extends Base
@@ -17,12 +18,32 @@ class Url extends Base
     const ROUTE_TYPE_STATIC = 4; //伪静态类型
 
     const EVENT_PARSE_URL_PARAMS = 'parseUrlParams';
-    const EVENT_FORMAT_URL_PARAMS = 'formatUrlParams';
+    const EVENT_CREATE_URL = 'createUrl';
+    const EVENT_APPEND_QUERY_PARAMS = 'appendQueryParams';
+
+    /**
+     * @throws Exception
+     */
+    public function registerEvents()
+    {
+        $this->event(self::EVENT_PARSE_URL_PARAMS)
+            ->resource()
+            ->append(ocConfig('RESOURCE.url.parse_query_params', null));
+
+        $this->event(self::EVENT_CREATE_URL)
+            ->resource()
+            ->append(ocConfig('RESOURCE.url.create_url', null));
+
+        $this->event(self::EVENT_APPEND_QUERY_PARAMS)
+            ->resource()
+            ->append(ocConfig('RESOURCE.url.append_query_params', null));
+    }
 
     /**
      * 是否虚拟URL地址
-     * @param string $urlType
+     * @param $urlType
      * @return bool
+     * @throws Exception
      */
     public function isVirtualUrl($urlType)
     {
@@ -39,8 +60,9 @@ class Url extends Base
     /**
      * URL请求参数解析
      * @param string $url
-     * @return array|string
+     * @return array|mixed
      * @throws Exception
+     * @throws ReflectionException
      */
     public function parseGet($url = null)
     {
@@ -97,10 +119,12 @@ class Url extends Base
     }
 
     /**
-     * 检测URL
-     * @param string $url
-     * @param string $urlType
-     * @return null
+     * 解析URL
+     * @param $url
+     * @param $urlType
+     * @return array|mixed
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function parseUrlParams($url, $urlType)
     {
@@ -120,14 +144,9 @@ class Url extends Base
 
         $paramsString = str_replace(OC_NS_SEP, OC_DIR_SEP, $url);
 
-        if (ocService()->resources->contain('url.parse_query_params')) {
-            $customResult = ocService()
-                ->resources
-                ->get('url.parse_query_params')
-                ->handle($urlType, $paramsString);
-            if (!empty($customResult[$urlType])) {
-                return $customResult[$urlType];
-            }
+        $customResult = $this->fire(self::EVENT_PARSE_URL_PARAMS, array($urlType, $paramsString));
+        if ($customResult) {
+            return $customResult;
         }
 
         if ($this->isVirtualUrl($urlType)) {
@@ -168,10 +187,11 @@ class Url extends Base
      * @param $route
      * @param array $params
      * @param bool $relative
-     * @param null $urlType
+     * @param int $urlType
      * @param bool $static
-     * @return bool|string
+     * @return array|bool|mixed|string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function create($route, $params = array(), $relative = false, $urlType = null, $static = true)
     {
@@ -198,14 +218,9 @@ class Url extends Base
             }
         }
 
-        if (ocService()->resources->contain('url.create_url')) {
-            $customResult = ocService()
-                ->resources
-                ->get('url.create_url')
-                ->handle($urlType, $route, $params);
-            if ($customResult) {
-                return $customResult;
-            }
+        $customResult = $this->fire(self::EVENT_CREATE_URL, array($urlType, $route, $params));
+        if ($customResult) {
+            return $customResult;
         }
 
         if ($this->isVirtualUrl($urlType)) {
@@ -263,9 +278,10 @@ class Url extends Base
      * 添加查询字符串参数
      * @param array $params
      * @param string $url
-     * @param string $urlType
-     * @return string
+     * @param int $urlType
+     * @return array|mixed|string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function appendQuery(array $params, $url = null, $urlType = null)
     {
@@ -283,14 +299,9 @@ class Url extends Base
             ocService()->error->show('fault_url');
         }
 
-        if (ocService()->resources->contain('url.append_query_params')) {
-            $customResult = ocService()
-                ->resources
-                ->get('url.append_query_params')
-                ->handle($urlType, $result, $urlInfo, $params);
-            if ($customResult) {
-                return $customResult;
-            }
+        $customResult = $this->fire(self::EVENT_APPEND_QUERY_PARAMS, array($urlType, $result, $urlInfo, $params));
+        if ($customResult) {
+            return $customResult;
         }
 
         if ($this->isVirtualUrl($urlType)) {
@@ -307,7 +318,8 @@ class Url extends Base
     /**
      * 获取URL详情
      * @param string $url
-     * @return array
+     * @return array|false
+     * @throws Exception
      */
     public function parseUrlInfo($url = null)
     {
@@ -339,9 +351,8 @@ class Url extends Base
     /**
      * 生成查询字符串
      * @param array $params
-     * @param string $numeric_prefix
-     * @param string $arg_separator
-     * @param int $enc_type
+     * @param null $numericPrefix
+     * @param null $argSeparator
      * @return string
      */
     public function buildQuery(array $params, $numericPrefix = null, $argSeparator = null)

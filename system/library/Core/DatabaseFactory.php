@@ -7,6 +7,7 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Exceptions\Exception;
 
 class DatabaseFactory extends Base
@@ -21,6 +22,18 @@ class DatabaseFactory extends Base
         'Mysql' => 'Mysqli',
     );
 
+    const EVENT_GET_CONFIG = 'getConfig';
+
+    /**
+     * @throws Exception
+     */
+    public function registerEvents()
+    {
+        $this->event(self::EVENT_GET_CONFIG)
+            ->resource()
+            ->append(ocConfig('RESOURCE.database.get_config', null));
+    }
+
     /**
      * 获取数据库实例
      * @param string $serverName
@@ -28,6 +41,7 @@ class DatabaseFactory extends Base
      * @param bool $required
      * @return mixed|null
      * @throws Exception
+     * @throws ReflectionException
      */
     public function make($serverName = null, $master = true, $required = true)
     {
@@ -36,6 +50,7 @@ class DatabaseFactory extends Base
         }
 
         $database = $this->getDatabase($serverName, $master);
+
         if (is_object($database) && $database instanceof DatabaseBase) {
             return $database;
         }
@@ -58,12 +73,13 @@ class DatabaseFactory extends Base
 
     /**
      * 获取数据库对象
-     * @param $serverName
+     * @param string $serverName
      * @param bool $master
      * @return mixed|null
      * @throws Exception
+     * @throws ReflectionException
      */
-    private function getDatabase($serverName, $master = true)
+    protected function getDatabase($serverName, $master = true)
     {
         $config = $this->getConfig($serverName);
         $hosts = ocForceArray(ocDel($config, 'host'));
@@ -100,9 +116,10 @@ class DatabaseFactory extends Base
 
     /**
      * 获取数据库配置信息
-     * @param null $serverName
+     * @param string $serverName
      * @return array|mixed
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getConfig($serverName = null)
     {
@@ -110,18 +127,14 @@ class DatabaseFactory extends Base
             $serverName = $this->defaultServer;
         }
 
-        $config = ocForceArray(ocConfig(array('DATABASE', $serverName), array()));
+        $config = $this->fire(self::EVENT_GET_CONFIG, array($serverName));
+
+        if (!$config) {
+            $config = ocForceArray(ocConfig(array('DATABASE', $serverName), array()));
+        }
 
         if (!$config) {
             ocService()->error->show('not_exists_database_config', array($serverName));
-        }
-
-        if (ocService()->resources->contain('database.get_config')) {
-            $callbackConfig = ocService()
-                ->resources
-                ->get('database.get_config')
-                ->handle($serverName);
-            $config = array_merge($config, $callbackConfig);
         }
 
         return $config;
@@ -145,7 +158,7 @@ class DatabaseFactory extends Base
      * @return mixed
      * @throws Exception
      */
-    private static function createDatabase($dir, $config)
+    protected function createDatabase($dir, $config)
     {
         $class = $config['class'] . 'Database';
         $classFile = $dir . OC_DIR_SEP . $class . '.php';

@@ -7,6 +7,7 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Exceptions\Exception;
 
 class CacheFactory extends Base
@@ -17,12 +18,25 @@ class CacheFactory extends Base
      */
     protected $defaultServer = 'defaults';
 
+    const EVENT_GET_CONFIG = 'getConfig';
+
+    /**
+     * @throws Exception
+     */
+    public function registerEvents()
+    {
+        $this->event(self::EVENT_GET_CONFIG)
+            ->resource()
+            ->append(ocConfig('RESOURCE.cache.get_config', null));
+    }
+
     /**
      * 新建缓存实例
      * @param string $serverName
      * @param bool $required
-     * @return mixed
+     * @return mixed|null
      * @throws Exception
+     * @throws ReflectionException
      */
     public function make($serverName = null, $required = true)
     {
@@ -52,6 +66,7 @@ class CacheFactory extends Base
      * @param string $serverName
      * @return array|mixed
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getConfig($serverName = null)
     {
@@ -59,14 +74,7 @@ class CacheFactory extends Base
             $serverName = $this->defaultServer;
         }
 
-        $config = array();
-
-        if (ocService()->resources->contain('cache.get_config')) {
-            $config = ocService()
-                ->resources
-                ->get('cache.get_config')
-                ->handle($serverName);
-        }
+        $config = $this->fire(self::EVENT_GET_CONFIG, array($serverName));
 
         if (!$config) {
             $config = ocForceArray(ocConfig(array('CACHE', $serverName), array()));
@@ -85,6 +93,7 @@ class CacheFactory extends Base
      * @param bool $required
      * @return mixed
      * @throws Exception
+     * @throws ReflectionException
      */
     private function baseConnect($serverName, $required = true)
     {

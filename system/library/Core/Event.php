@@ -20,14 +20,16 @@ class Event extends Basis implements EventInterface
     protected $running;
     protected $registry;
     protected $defaultHandler;
+    protected $isResource;
     protected $handlers = array();
 
     /**
      * 添加事件处理器
      * @param $callback
-     * @param null $name
+     * @param string $name
      * @param int $priority
-     * @return $this|EventInterface
+     * @return $this|EventInterface|\Ocara\Interfaces\EventInterface
+     * @throws Exception
      */
     public function append($callback, $name = null, $priority = 0)
     {
@@ -41,9 +43,10 @@ class Event extends Basis implements EventInterface
     /**
      * 批量绑定事件处理器
      * @param array $callbackList
-     * @param $groupName
-     * @param $priority
-     * @return $this
+     * @param string $groupName
+     * @param int $priority
+     * @return $this|EventInterface
+     * @throws Exception
      */
     public function appendAll(array $callbackList, $groupName = null, $priority = 0)
     {
@@ -85,6 +88,17 @@ class Event extends Basis implements EventInterface
     public function isClass($callback)
     {
         return is_object($callback) && !$callback instanceof Closure;
+    }
+
+    /**
+     * 是否资源事件
+     * @param bool $isResource
+     * @return $this
+     */
+    public function resource($isResource = true)
+    {
+        $this->isResource = !!$isResource;
+        return $this;
     }
 
     /**
