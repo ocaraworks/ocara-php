@@ -328,7 +328,7 @@ class Event extends Basis implements EventInterface
      * @param $callback
      * @param int $key
      * @return array
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function checkCallback(&$callback, $key = 0)
     {

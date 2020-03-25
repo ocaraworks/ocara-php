@@ -86,6 +86,7 @@ final class Ocara
      * 运行路由
      * @param string $bootstrap
      * @return mixed
+     * @throws Exception
      */
     public static function run($bootstrap = null)
     {

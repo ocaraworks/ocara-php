@@ -89,10 +89,11 @@ class Redis extends CacheBase implements CacheInterface
 
     /**
      * 设置变量值
-     * @param string $name
-     * @param bool $value
+     * @param $name
+     * @param $value
      * @param int $expireTime
-     * @return bool
+     * @return mixed
+     * @throws Exception
      */
     public function set($name, $value, $expireTime = 0)
     {
@@ -110,8 +111,9 @@ class Redis extends CacheBase implements CacheInterface
     /**
      * 获取变量值
      * @param string $name
-     * @param mixed $args
-     * @return null
+     * @param null $args
+     * @return object|null
+     * @throws Exception
      */
     public function get($name, $args = null)
     {
@@ -128,6 +130,7 @@ class Redis extends CacheBase implements CacheInterface
      * 删除KEY
      * @param string $name
      * @return mixed
+     * @throws Exception
      */
     public function delete($name)
     {
@@ -138,6 +141,7 @@ class Redis extends CacheBase implements CacheInterface
      * 选择数据库
      * @param string $databaseName
      * @return mixed
+     * @throws Exception
      */
     public function selectDatabase($databaseName)
     {
