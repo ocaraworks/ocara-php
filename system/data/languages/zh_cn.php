@@ -48,7 +48,7 @@ return array(
     'invalid_class_static_method' => array(1903, '缺少静态方法！请使用类对象代替类名传递。'),
     'invalid_entity_database' => array(1904, '实体的数据表模型不正确！'),
     'invalid_entity_cache' => array(1905, '实体的缓存模型不正确！'),
-    'invalid_middleware' => array(1906, '事件处理对象应当是中间件类。'),
+    'invalid_event_class_handler' => array(1906, '事件处理器类不是中间件或缺少同名回调方法。'),
     'invalid_source' => array(1907, '容器中该类实例配置不正确！'),
     'invalid_dir_file_path' => array(1908, '目录不能作为文件路径！'),
 

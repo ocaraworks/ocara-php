@@ -8,9 +8,9 @@
 namespace Ocara\Core;
 
 use \Closure;
+use \ReflectionClass;
 use \ReflectionException;
 use Ocara\Exceptions\Exception;
-
 use Ocara\Interfaces\Event as EventInterface;
 use Ocara\Interfaces\Middleware as MiddlewareInterface;
 
@@ -26,10 +26,9 @@ class Event extends Basis implements EventInterface
     /**
      * 添加事件处理器
      * @param $callback
-     * @param string $name
+     * @param null $name
      * @param int $priority
-     * @return $this|EventInterface|\Ocara\Interfaces\EventInterface
-     * @throws Exception
+     * @return $this|EventInterface
      */
     public function append($callback, $name = null, $priority = 0)
     {
@@ -43,10 +42,9 @@ class Event extends Basis implements EventInterface
     /**
      * 批量绑定事件处理器
      * @param array $callbackList
-     * @param string $groupName
+     * @param null $groupName
      * @param int $priority
      * @return $this|EventInterface
-     * @throws Exception
      */
     public function appendAll(array $callbackList, $groupName = null, $priority = 0)
     {
@@ -85,7 +83,7 @@ class Event extends Basis implements EventInterface
      * @param $callback
      * @return bool
      */
-    public function isClass($callback)
+    public function isClassObject($callback)
     {
         return is_object($callback) && !$callback instanceof Closure;
     }
@@ -104,19 +102,12 @@ class Event extends Basis implements EventInterface
     /**
      * 新建事件处理器
      * @param $callback
-     * @param string $name
+     * @param null $name
      * @param int $priority
      * @param bool $isGroup
-     * @throws Exception
      */
     protected function create($callback, $name = null, $priority = 0, $isGroup = false)
     {
-        if ($isGroup && is_array($callback)) {
-            array_walk($callback, array($this, 'checkCallback'));
-        } else {
-            $this->checkCallback($callback);
-        }
-
         $name = $name ?: null;
         $priority = $priority ?: 0;
 
@@ -250,7 +241,8 @@ class Event extends Basis implements EventInterface
      * 触发事件
      * @param object $eventObject
      * @param array $params
-     * @return array|mixed
+     * @return array|mixed|null
+     * @throws Exception
      * @throws ReflectionException
      */
     public function trigger($eventObject, array $params = array())
@@ -272,7 +264,8 @@ class Event extends Basis implements EventInterface
             $this->running = true;
             foreach ($handlers as $key => $row) {
                 $callback = $row['callback'];
-                if (is_array($callback) && $row['is_group']) {
+                if ($row['is_group'] && is_array($callback)) {
+                    array_walk($callback, array($this, 'formatCallback'));
                     $callbackResult = array();
                     foreach ($callback as $oneKey => $one) {
                         if ($this->canCallback($one)) {
@@ -283,6 +276,7 @@ class Event extends Basis implements EventInterface
                         $results[$key] = $callbackResult;
                     }
                 } else {
+                    $callback = $this->formatCallback($callback);
                     if ($this->canCallback($callback)) {
                         $results[$key] = $this->runCallback($callback, $params);
                     }
@@ -291,8 +285,9 @@ class Event extends Basis implements EventInterface
         } elseif ($this->defaultHandler) {
             $handlerLength = 2;
             $this->running = true;
-            if ($this->canCallback($this->defaultHandler)) {
-                $results[] = $this->runCallback($this->defaultHandler, $params);
+            $callback = $this->formatCallback($this->defaultHandler);
+            if ($this->canCallback($callback)) {
+                $results[] = $this->runCallback($callback, $params);
             }
         }
 
@@ -316,10 +311,6 @@ class Event extends Basis implements EventInterface
      */
     public function runCallback($callback, $params)
     {
-        if ($this->isClass($callback)) {
-            $callback = array($callback, 'handle');
-        }
-
         return call_user_func_array($callback, $params);
     }
 
@@ -329,8 +320,9 @@ class Event extends Basis implements EventInterface
      * @param int $key
      * @return array
      * @throws Exception
+     * @throws ReflectionException
      */
-    public function checkCallback(&$callback, $key = 0)
+    public function formatCallback(&$callback, $key = 0)
     {
         if (is_string($callback)) {
             if (strstr($callback, OC_NS_SEP)) {
@@ -348,10 +340,17 @@ class Event extends Basis implements EventInterface
             }
         }
 
-        if ($this->isClass($callback)) {
-            if (!$callback instanceof MiddlewareInterface) {
-                ocService()->error->show('invalid_middleware');
+        if ($this->isClassObject($callback)) {
+            if ($callback instanceof MiddlewareInterface) {
+                $method = 'handle';
+            } else {
+                $method = $this->name;
             }
+            $reflection = new ReflectionClass($callback);
+            if (!$reflection->hasMethod($method)) {
+                ocService()->error->show('invalid_event_class_handler');
+            }
+            $callback = array($callback, $method);
         }
 
         return $callback;
