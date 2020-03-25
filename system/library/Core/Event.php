@@ -325,7 +325,7 @@ class Event extends Basis implements EventInterface
     public function formatCallback(&$callback, $key = 0)
     {
         if (is_string($callback)) {
-            if (strstr($callback, OC_NS_SEP)) {
+            if (class_exists($callback)) {
                 $callback = new $callback();
             }
         } elseif (is_array($callback)) {
