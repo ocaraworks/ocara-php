@@ -7,9 +7,7 @@
 
 namespace Ocara\Extension\Tools\Develop\Generate;
 
-use Ocara\Core\Develop;
 use Ocara\Service\FileCache;
-use Ocara\Core\CacheFactory;
 use Ocara\Exceptions\Exception;
 use Ocara\Extension\Tools\Develop\Generate\BaseService;
 
@@ -24,7 +22,7 @@ class CacheModelService extends BaseService
 
     public function add()
     {
-        $defaultServer = CacheFactory::getDefaultServer();
+        $defaultServer = ocService()->caches->getDefaultServer();
         $request = ocService()->request;
 
         $this->_mdltype = $request->getPost('mdltype');

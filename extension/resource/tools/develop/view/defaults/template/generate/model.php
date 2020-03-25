@@ -28,7 +28,7 @@
             <div>
                 <span class="left-span">数据库服务器名称：</span>
                 <input type="text" name="server" id="server"
-                       value="<?php echo \Ocara\Core\DatabaseFactory::getDefaultServer(); ?>">
+                       value="<?php echo ocService()->databases->getDefaultServer(); ?>">
             </div>
 
             <div>

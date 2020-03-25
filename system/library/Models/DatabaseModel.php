@@ -11,8 +11,6 @@ use Ocara\Core\DriverBase;
 use Ocara\Sql\Generator;
 use \ReflectionObject;
 use Ocara\Exceptions\Exception;
-use Ocara\Core\CacheFactory;
-use Ocara\Core\DatabaseFactory;
 use Ocara\Core\DatabaseBase;
 use Ocara\Core\ModelBase;
 use Ocara\Iterators\Database\BatchQueryRecords;
@@ -579,7 +577,7 @@ abstract class DatabaseModel extends ModelBase
      */
     public function cache($server = null, $required = false)
     {
-        $server = $server ?: DatabaseFactory::getDefaultServer();
+        $server = $server ?: ocService()->databases->getDefaultServer();
         $this->sql['cache'] = array($server, $required);
         return $this;
     }
@@ -1410,9 +1408,9 @@ abstract class DatabaseModel extends ModelBase
         $this->fire(self::EVENT_BEFORE_CONNECT, array($isMaster));
 
         if ($isMaster) {
-            $plugin = DatabaseFactory::make($this->serverName);
+            $plugin = ocService()->databases->make($this->serverName);
         } else {
-            $plugin = DatabaseFactory::make($this->serverName, false, false);
+            $plugin = ocService()->databases->make($this->serverName, false, false);
         }
 
         if (!$plugin->isSelectedDatabase()) {

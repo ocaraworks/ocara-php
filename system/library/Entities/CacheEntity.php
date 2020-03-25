@@ -8,7 +8,6 @@
 namespace Ocara\Entities;
 
 use Ocara\Core\BaseEntity;
-use Ocara\Core\Models\CacheFactory;
 use Ocara\Exceptions\Exception;
 
 abstract class CacheEntity extends BaseEntity

@@ -15,7 +15,7 @@ class CacheFactory extends Base
      * 默认服务器名
      * @var string
      */
-    protected static $defaultServer = 'defaults';
+    protected $defaultServer = 'defaults';
 
     /**
      * 新建缓存实例
@@ -24,28 +24,27 @@ class CacheFactory extends Base
      * @return mixed
      * @throws Exception
      */
-    public static function make($serverName = null, $required = true)
+    public function make($serverName = null, $required = true)
     {
         if (empty($serverName)) {
-            $serverName = self::$defaultServer;
+            $serverName = $this->defaultServer;
         }
 
-        $object = self::baseConnect($serverName, $required);
+        $object = $this->baseConnect($serverName, $required);
         if (is_object($object) && $object instanceof CacheBase) {
             return $object;
         }
 
-        return ocService()->error
-            ->check('not_exists_cache', array($serverName), $required);
+        return ocService()->error->check('not_exists_cache', array($serverName), $required);
     }
 
     /**
      * 获取默认服务器名称
      * @return string
      */
-    public static function getDefaultServer()
+    public function getDefaultServer()
     {
-        return self::$defaultServer;
+        return $this->defaultServer;
     }
 
     /**
@@ -54,10 +53,10 @@ class CacheFactory extends Base
      * @return array|mixed
      * @throws Exception
      */
-    public static function getConfig($serverName = null)
+    public function getConfig($serverName = null)
     {
         if (empty($serverName)) {
-            $serverName = self::$defaultServer;
+            $serverName = $this->defaultServer;
         }
 
         $config = array();
@@ -74,7 +73,7 @@ class CacheFactory extends Base
         }
 
         if (!$config) {
-            ocService()->error->show('not_exists_cahce_config', array($serverName));
+            ocService()->error->show('not_exists_cache_config', array($serverName));
         }
 
         return $config;
@@ -87,9 +86,9 @@ class CacheFactory extends Base
      * @return mixed
      * @throws Exception
      */
-    private static function baseConnect($serverName, $required = true)
+    private function baseConnect($serverName, $required = true)
     {
-        $config = self::getConfig($serverName);
+        $config = $this->getConfig($serverName);
         $type = ucfirst(ocConfig(array('CACHE', $serverName, 'type')));
 
         $classInfo = ServiceBase::classFileExists("Caches/{$type}.php");

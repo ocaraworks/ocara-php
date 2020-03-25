@@ -91,6 +91,8 @@ return array(
      * 系统服务类（单例模式）
      */
     'SYSTEM_SINGLETON_SERVICE_CLASS' => array(
+        'caches' => 'Ocara\Core\CacheFactory',
+        'databases' => 'Ocara\Core\DatabaseFactory',
         'request' => 'Ocara\Core\Request',
         'response' => 'Ocara\Core\Response',
         'api' => 'Ocara\Core\Api',

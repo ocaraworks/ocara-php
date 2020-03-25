@@ -8,7 +8,6 @@
 namespace Ocara\Models;
 
 use Ocara\Exceptions\Exception;
-use Ocara\Core\CacheFactory;
 use Ocara\Core\ModelBase;
 
 abstract class CacheModel extends ModelBase
@@ -82,7 +81,7 @@ abstract class CacheModel extends ModelBase
      */
     public function connect()
     {
-        $plugin = CacheFactory::make($this->serverName);
+        $plugin = ocService()->caches->make($this->serverName);
         $this->setPlugin($plugin);
 
         if (!ocEmpty($this->database)) {

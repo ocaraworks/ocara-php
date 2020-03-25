@@ -13,6 +13,8 @@ use Ocara\Exceptions\Exception;
 /**
  * Class ServiceProvider
  * @property \Ocara\Core\Container $container
+ * @property \Ocara\Core\CacheFactory $caches;
+ * @property \Ocara\Core\DatabaseFactory $databases;
  * @property \Ocara\Core\Request $request
  * @property \Ocara\Core\Response $response
  * @property \Ocara\Core\Api $api

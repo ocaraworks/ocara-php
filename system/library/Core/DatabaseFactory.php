@@ -15,9 +15,9 @@ class DatabaseFactory extends Base
      * 默认服务器名
      * @var string
      */
-    protected static $defaultServer = 'defaults';
-    protected static $connections = array();
-    protected static $databaseMaps = array(
+    protected $defaultServer = 'defaults';
+    protected $connections = array();
+    protected $databaseMaps = array(
         'Mysql' => 'Mysqli',
     );
 
@@ -29,13 +29,13 @@ class DatabaseFactory extends Base
      * @return mixed|null
      * @throws Exception
      */
-    public static function make($serverName = null, $master = true, $required = true)
+    public function make($serverName = null, $master = true, $required = true)
     {
         if (empty($serverName)) {
-            $serverName = self::$defaultServer;
+            $serverName = $this->defaultServer;
         }
 
-        $database = self::getDatabase($serverName, $master);
+        $database = $this->getDatabase($serverName, $master);
         if (is_object($database) && $database instanceof DatabaseBase) {
             return $database;
         }
@@ -51,9 +51,9 @@ class DatabaseFactory extends Base
      * 获取默认服务器名称
      * @return string
      */
-    public static function getDefaultServer()
+    public function getDefaultServer()
     {
-        return self::$defaultServer;
+        return $this->defaultServer;
     }
 
     /**
@@ -63,9 +63,9 @@ class DatabaseFactory extends Base
      * @return mixed|null
      * @throws Exception
      */
-    private static function getDatabase($serverName, $master = true)
+    private function getDatabase($serverName, $master = true)
     {
-        $config = self::getConfig($serverName);
+        $config = $this->getConfig($serverName);
         $hosts = ocForceArray(ocDel($config, 'host'));
 
         if ($master) {
@@ -80,18 +80,18 @@ class DatabaseFactory extends Base
         $object = null;
         $name = $serverName . '_' . $index;
 
-        if (isset(self::$connections[$name]) && is_object(self::$connections[$name])) {
-            $object = self::$connections[$name];
+        if (isset($this->connections[$name]) && is_object($this->connections[$name])) {
+            $object = $this->connections[$name];
         } else {
             if (isset($hosts[$index]) && $hosts[$index]) {
                 $address = array_map('trim', explode(':', $hosts[$index]));
                 $config['host'] = isset($address[0]) ? $address[0] : null;
                 $config['port'] = isset($address[1]) ? $address[1] : null;
-                $config['type'] = self::getDatabaseType($config);
+                $config['type'] = $this->getDatabaseType($config);
                 $config['class'] = $config['type'];
                 $config['connect_name'] = $name;
-                $object = self::createDatabase('Databases', $config);
-                self::$connections[$name] = $object;
+                $object = $this->createDatabase('Databases', $config);
+                $this->connections[$name] = $object;
             }
         }
 
@@ -104,10 +104,10 @@ class DatabaseFactory extends Base
      * @return array|mixed
      * @throws Exception
      */
-    public static function getConfig($serverName = null)
+    public function getConfig($serverName = null)
     {
         if (empty($serverName)) {
-            $serverName = self::$defaultServer;
+            $serverName = $this->defaultServer;
         }
 
         $config = ocForceArray(ocConfig(array('DATABASE', $serverName), array()));
@@ -132,10 +132,10 @@ class DatabaseFactory extends Base
      * @param array $config
      * @return string
      */
-    public static function getDatabaseType(array $config)
+    public function getDatabaseType(array $config)
     {
         $type = isset($config['type']) ? ucfirst($config['type']) : OC_EMPTY;
-        return isset(self::$databaseMaps[$type]) ? self::$databaseMaps[$type] : $type;
+        return isset($this->databaseMaps[$type]) ? $this->databaseMaps[$type] : $type;
     }
 
     /**

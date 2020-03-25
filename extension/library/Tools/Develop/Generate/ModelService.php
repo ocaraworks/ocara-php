@@ -7,12 +7,6 @@
 
 namespace Ocara\Extension\Tools\Develop\Generate;
 
-use Ocara\Core\Develop;
-use Ocara\Service\FileCache;
-use Ocara\Core\DatabaseFactory;
-use Ocara\Exceptions\Exception;
-use Ocara\Extension\Tools\Develop\Generate\BaseService;
-use Ocara\Extension\Tools\Develop\Generate\FieldsService;
 use Ocara\Sql\Generator;
 
 class ModelService extends BaseService
@@ -27,7 +21,7 @@ class ModelService extends BaseService
 
     public function add()
     {
-        $defaultServer = DatabaseFactory::getDefaultServer();
+        $defaultServer = ocService()->databases->getDefaultServer();
         $request = ocService()->request;
         $this->_mdltype = $request->getPost('mdltype');
         $this->_mdlname = $request->getPost('mdlname');
@@ -47,7 +41,7 @@ class ModelService extends BaseService
     public function createDatabaseModel()
     {
         $serverName = null;
-        if ($this->_serverName && $this->_serverName != DatabaseFactory::getDefaultServer()) {
+        if ($this->_serverName && $this->_serverName != ocService()->databases->getDefaultServer()) {
             $serverName = $this->_serverName;
         }
 
@@ -108,7 +102,7 @@ class ModelService extends BaseService
         }
 
         if (empty($this->_primaries)) {
-            $connect = DatabaseFactory::make($this->_serverName);
+            $connect = ocService()->databases->make($this->_serverName);
             $generator = new Generator($connect);
             $sqlData = $generator->getShowFieldsSql($this->_table, $this->_database);
             $fieldsInfo = $connect->getFieldsInfo($sqlData);
