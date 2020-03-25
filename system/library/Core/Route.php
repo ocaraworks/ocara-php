@@ -56,7 +56,6 @@ class Route extends Base
 
         if ($service->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
             $route = $feature->getRoute($module, $controller, $get, $last);
-            $_GET = $this->formatGet($_GET, $last);
         } else {
             $route = $feature->getRoute($module, $controller, $get);
         }
@@ -69,26 +68,5 @@ class Route extends Base
         }
 
         return $route;
-    }
-
-    /**
-     * 格式化GET参数
-     * @param array $data
-     * @return array
-     */
-    public function formatGet(array $data, array $last = array())
-    {
-        $get = array();
-
-        ksort($data);
-        $data = array_chunk($data, 2);
-
-        foreach ($data as $row) {
-            if ($row[0]) {
-                $get[$row[0]] = isset($row[1]) ? $row[1] : null;
-            }
-        }
-
-        return $last ? $get + $last : $get;
     }
 }

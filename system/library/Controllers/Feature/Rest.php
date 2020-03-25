@@ -14,45 +14,41 @@ class Rest extends Base implements Feature
 {
     /**
      * 获取路由
-     * @param string $module
-     * @param string $controller
+     * @param $module
+     * @param $controller
      * @param array $get
+     * @param array $last
      * @return array|mixed
      * @throws Exception
      */
-    public function getRoute($module, $controller, array $get)
+    public function getRoute($module, $controller, array $get, $last = array())
     {
-        $id = null;
         $idParam = ocConfig(array('CONTROLLERS', 'rest', 'id_param'), 'id');
+        $method = ocService()->request->getMethod();
+        $idData = array();
 
         if (ocService()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
-            $count = count($get);
-            $end = end($get);
-            if ($count == 1 && !is_array($end) || $count == 2 && is_array($end)) {
-                $id = array_shift($get);
+            if ($get) {
+                $remainGet = array_splice($get, 1);
+                $idData = array($idParam => reset($get));
+                $_GET = array_merge($idData, $this->formatGet($remainGet, $last));
+            } else {
+                $_GET = $this->formatGet(array(), $last);
             }
         } else {
             if (array_key_exists($idParam, $get)) {
-                $id = ocService()->request->getGet($idParam);
+                $idData = array($idParam => $get[$idParam]);
             }
         }
 
-        $method = ocService()->request->getMethod();
-        if (!ocEmpty($id)) {
-            $method = $method . '/id';
-            $get = array_merge(array($idParam, $id), $get);
+        if ($idData) {
+            $method = $method . OC_DIR_SEP . $idParam;
         }
 
         $action = ocConfig(array('CONTROLLERS', 'rest', 'action_map', $method), null);
 
         if (empty($action)) {
             ocService()->error->show('fault_restful_format');
-        }
-
-        if (ocService()->url->isVirtualUrl(OC_URL_ROUTE_TYPE)) {
-            $_GET = array_values($get);
-        } else {
-            $_GET = $get;
         }
 
         $route = array($module, $controller, $action);
