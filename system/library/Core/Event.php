@@ -110,8 +110,8 @@ class Event extends Basis implements EventInterface
     {
         $name = $name ?: null;
         $priority = $priority ?: 0;
-
         $count = count($this->handlers);
+
         $this->handlers[$count] = array(
             'callback' => $callback,
             'index' => $count,
