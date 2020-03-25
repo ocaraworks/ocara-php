@@ -14,8 +14,8 @@ class Download extends ServiceBase
 {
     /**
      * 下载文件
-     * @param $filePath
-     * @param null $saveName
+     * @param string $filePath
+     * @param string $saveName
      * @param string $encode
      * @throws Exception
      */
@@ -41,8 +41,8 @@ class Download extends ServiceBase
 
     /**
      * 下载内容
-     * @param $content
-     * @param $saveName
+     * @param string $content
+     * @param string $saveName
      * @param string $encode
      * @return bool
      * @throws Exception
@@ -79,7 +79,7 @@ class Download extends ServiceBase
 
     /**
      * 显示文件内容
-     * @param $fileName
+     * @param string $fileName
      * @param string $encode
      * @throws Exception
      */
@@ -91,8 +91,8 @@ class Download extends ServiceBase
 
     /**
      * 显示内容
-     * @param $content
-     * @param $fileOrType
+     * @param string $content
+     * @param string $fileOrType
      * @param string $encode
      * @throws Exception
      */

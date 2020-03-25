@@ -48,9 +48,10 @@ class Xml extends ServiceBase
 
     /**
      * 保存XML文件
-     * @param $filePath
-     * @param null $perm
-     * @return bool|int
+     * @param string $filePath
+     * @param int $perm
+     * @return bool|false|int
+     * @throws Exception
      */
     public function save($filePath, $perm = null)
     {
@@ -59,7 +60,8 @@ class Xml extends ServiceBase
 
     /**
      * 导出（下载 ）
-     * @param $fileName
+     * @param string $fileName
+     * @throws Exception
      */
     public function export($fileName)
     {
@@ -157,7 +159,7 @@ class Xml extends ServiceBase
 
     /**
      * 解析XML文件
-     * @param $xmlSource
+     * @param string $xmlSource
      * @param string $type
      * @return bool|int
      * @throws Exception

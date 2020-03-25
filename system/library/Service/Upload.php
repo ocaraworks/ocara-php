@@ -26,7 +26,7 @@ class Upload extends ServiceBase
     /**
      * 析构函数
      * Upload constructor.
-     * @param null $savePath
+     * @param string $savePath
      * @param array $rules
      * @throws Exception
      */
@@ -39,8 +39,8 @@ class Upload extends ServiceBase
 
     /**
      * 设置上传路径
-     * @param $savePath
-     * @param null $prefix
+     * @param string $savePath
+     * @param string $prefix
      * @param int $perm
      * @return bool
      * @throws Exception
@@ -82,6 +82,7 @@ class Upload extends ServiceBase
 
     /**
      * 是否存在上传的文件
+     * @return bool
      */
     public function existsFile()
     {
@@ -152,7 +153,7 @@ class Upload extends ServiceBase
 
     /**
      * 上传所有文件
-     * @param $files
+     * @param array $files
      * @return bool
      * @throws Exception
      */
@@ -216,7 +217,7 @@ class Upload extends ServiceBase
 
     /**
      * 检查文件的合法性
-     * @param $file
+     * @param string $file
      * @return bool
      * @throws Exception
      */

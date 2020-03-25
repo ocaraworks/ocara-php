@@ -13,7 +13,7 @@ class Code extends ServiceBase
 {
     /**
      * 生成随机友好字符（Ascii码值从33到126）
-     * @param $length
+     * @param int $length
      * @return string|null
      */
     public function getRandNumber($length)

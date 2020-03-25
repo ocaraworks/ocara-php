@@ -47,6 +47,7 @@ abstract class Basis
 
     /**
      * 转换成公有属性对象
+     * @return object
      */
     public function toObject()
     {
@@ -69,7 +70,7 @@ abstract class Basis
 
     /**
      * 魔术方法-读取不可访问属性的值时
-     * @param $property
+     * @param string $property
      * @return mixed
      * @throws Exception
      */
@@ -90,8 +91,8 @@ abstract class Basis
 
     /**
      * 在给不可访问属性赋值时
-     * @param $property
-     * @param $value
+     * @param string $property
+     * @param mixed $value
      * @return bool
      * @throws Exception
      */
@@ -107,7 +108,7 @@ abstract class Basis
 
     /**
      * 当对不可访问属性调用 unset() 时
-     * @param $property
+     * @param string $property
      * @return bool
      * @throws Exception
      */
@@ -126,7 +127,7 @@ abstract class Basis
 
     /**
      * 找不到属性
-     * @param $property
+     * @param string $property
      * @throws Exception
      */
     protected function throwAccessPropertyError($property)

@@ -53,9 +53,9 @@ class VerifyCode extends ServiceBase
 
     /**
      * 画背景
-     * @param $width
-     * @param $height
-     * @param null $source
+     * @param float $width
+     * @param float $height
+     * @param string $source
      * @throws Exception
      */
     public function drawBack($width, $height, $source = null)
@@ -91,11 +91,11 @@ class VerifyCode extends ServiceBase
 
     /**
      * 画线条
-     * @param $color
-     * @param $startX
-     * @param $startY
-     * @param null $endX
-     * @param null $endY
+     * @param string $color
+     * @param float $startX
+     * @param float $startY
+     * @param float $endX
+     * @param float $endY
      * @return bool
      * @throws Exception
      */
@@ -118,7 +118,7 @@ class VerifyCode extends ServiceBase
 
     /**
      * 画文字
-     * @param $length
+     * @param int $length
      * @param array $format
      * @param array $left
      * @throws Exception
@@ -174,7 +174,7 @@ class VerifyCode extends ServiceBase
 
     /**
      * 检查验证码是否正确
-     * @param $code
+     * @param string $code
      * @return bool
      * @throws Exception
      */
@@ -185,7 +185,7 @@ class VerifyCode extends ServiceBase
 
     /**
      * 添加文字
-     * @param $content
+     * @param string $content
      * @param array $fontInfo
      * @param array $location
      * @throws Exception
@@ -225,7 +225,7 @@ class VerifyCode extends ServiceBase
 
     /**
      * 获取颜色值信息
-     * @param $color
+     * @param string $color
      * @return array
      * @throws Exception
      */

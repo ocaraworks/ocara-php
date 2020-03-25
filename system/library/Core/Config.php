@@ -7,7 +7,7 @@
 
 namespace Ocara\Core;
 
-use \Exception;
+use Ocara\Exceptions\Exception;
 
 class Config extends Basis
 {
@@ -26,13 +26,14 @@ class Config extends Basis
 
     /**
      * 初始化
-     *
+     * Config constructor.
+     * @throws \Exception
      */
     public function __construct()
     {
         $path = OC_SYS . 'data/config.php';
         if (!file_exists($path)) {
-            throw new Exception('Lost ocara config file: config.php.');
+            throw new \Exception('Lost ocara config file: config.php.');
         }
 
         $OC_CONF = include($path);
@@ -40,12 +41,14 @@ class Config extends Basis
         if (isset($OC_CONF)) {
             $this->frameworkConfig = $OC_CONF;
         } else {
-            throw new Exception('Lost config : $OC_CONF.');
+            throw new \Exception('Lost config : $OC_CONF.');
         }
     }
 
     /**
      * 获取系统环境
+     * @return mixed
+     * @throws Exception
      */
     public function getEnvironment()
     {
@@ -59,7 +62,7 @@ class Config extends Basis
 
     /**
      * 加载全局配置
-     * @throws Exception
+     * @throws \Exception
      */
     public function loadGlobalConfig()
     {
@@ -69,13 +72,14 @@ class Config extends Basis
         }
 
         if (empty($this->data)) {
-            throw new Exception('Lost config : $CONF.');
+            throw new \Exception('Lost config : $CONF.');
         }
     }
 
     /**
      * 获取环境配置
-     * @param null $path
+     * @param string $path
+     * @throws Exception
      */
     public function loadEnvironmentConfig($path = null)
     {
@@ -92,8 +96,9 @@ class Config extends Basis
 
     /**
      * 加载模块配置
-     * @param string $route
+     * @param $route
      * @param string $rootPath
+     * @throws Exception
      */
     public function loadModuleConfig($route, $rootPath = null)
     {
@@ -109,6 +114,7 @@ class Config extends Basis
      * 加载控制器动作配置
      * @param array $route
      * @param string $rootPath
+     * @throws Exception
      */
     public function loadControllerConfig($route = array(), $rootPath = null)
     {
@@ -125,6 +131,7 @@ class Config extends Basis
      * 加载控制器动作配置
      * @param array $route
      * @param string $rootPath
+     * @throws Exception
      */
     public function loadActionConfig($route = array(), $rootPath = null)
     {
@@ -140,10 +147,11 @@ class Config extends Basis
 
     /**
      * 获取配置文件路径
-     * @param $route
-     * @param $subPath
-     * @param $rootPath
-     * @return mixed|string
+     * @param string $route
+     * @param string $subPath
+     * @param string $rootPath
+     * @return array|mixed|object|string|void|null
+     * @throws Exception
      */
     protected function getConfigPath($route, $subPath, $rootPath)
     {
@@ -204,8 +212,9 @@ class Config extends Basis
 
     /**
      * 设置配置
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param mixed $value
+     * @throws Exception
      */
     public function set($key, $value)
     {
@@ -214,9 +223,10 @@ class Config extends Basis
 
     /**
      * 获取配置
-     * @param null $key
-     * @param null $default
-     * @return array|bool|mixed|null
+     * @param string $key
+     * @param mixed $default
+     * @return array|mixed|null
+     * @throws Exception
      */
     public function get($key = null, $default = null)
     {
@@ -234,8 +244,8 @@ class Config extends Basis
 
     /**
      * 存在配置时返回值数组
-     * @param string|array $key
-     * @return array|bool|null
+     * @param string $key
+     * @return array|bool
      */
     public function arrayGet($key)
     {
@@ -249,7 +259,7 @@ class Config extends Basis
 
     /**
      * 删除配置
-     * @param string|array $key
+     * @param string $key
      */
     public function delete($key)
     {
@@ -258,8 +268,9 @@ class Config extends Basis
 
     /**
      * 获取默认配置
-     * @param string|array $key
-     * @return array|bool|mixed|null
+     * @param string $key
+     * @return array|mixed|null
+     * @throws Exception
      */
     public function getDefault($key = null)
     {
@@ -272,7 +283,7 @@ class Config extends Basis
 
     /**
      * 检查配置键名是否存在
-     * @param string|array $key
+     * @param string $key
      * @return bool
      */
     public function has($key)

@@ -7,6 +7,8 @@
 
 namespace Ocara\Service;
 
+use \ReflectionException;
+use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceBase;
 
 class StaticBuilder extends ServiceBase
@@ -14,7 +16,8 @@ class StaticBuilder extends ServiceBase
     private $dir;
 
     /**
-     * 析构函数
+     * StaticBuilder constructor.
+     * @throws Exception
      */
     public function __construct()
     {
@@ -27,7 +30,8 @@ class StaticBuilder extends ServiceBase
 
     /**
      * 全部静态生成
-     * @param $callback
+     * @param mixed $callback
+     * @throws Exception
      */
     public function genAll($callback)
     {
@@ -51,8 +55,10 @@ class StaticBuilder extends ServiceBase
 
     /**
      * 按动作action生成HTML
-     * @param $route
-     * @param $data
+     * @param string|array $route
+     * @param array $data
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function genAction($route, $data)
     {
@@ -67,11 +73,13 @@ class StaticBuilder extends ServiceBase
 
     /**
      * 生成HTML
-     * @param arary $params
+     * @param array $params
      * @param string $module
      * @param string $controller
      * @param string $action
-     * @param string|array $callback
+     * @param mixed $callback
+     * @throws Exception
+     * @throws ReflectionException
      */
     private function genHtml($params, $module, $controller, $action, $callback)
     {
@@ -92,6 +100,8 @@ class StaticBuilder extends ServiceBase
      * @param string $controller
      * @param string $action
      * @param array $data
+     * @throws Exception
+     * @throws ReflectionException
      */
     private function genRow($mvcPathMap, $params, $module, $controller, $action, $data)
     {
@@ -122,7 +132,8 @@ class StaticBuilder extends ServiceBase
      * 单页面生成
      * @param string $file
      * @param string $url
-     * @return bool|int
+     * @return bool|false|int
+     * @throws Exception
      */
     private function createHtml($file, $url)
     {

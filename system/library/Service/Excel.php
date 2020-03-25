@@ -7,6 +7,7 @@
 
 namespace Ocara\Service;
 
+use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceBase;
 
 class Excel extends ServiceBase
@@ -14,9 +15,10 @@ class Excel extends ServiceBase
 
     /**
      * 导出excel文件
-     * @param string $fileName
-     * @param string $content
+     * @param $fileName
+     * @param $content
      * @param string $charset
+     * @throws Exception
      */
     public function export($fileName, $content, $charset = 'gbk')
     {
@@ -37,10 +39,11 @@ class Excel extends ServiceBase
     /**
      * 保存为文件
      * @param string $filePath
-     * @param string $content
+     * @param 保存为文件 $content
      * @param string $charset
-     * @param integer $perm
-     * @return bool|int
+     * @param null $perm
+     * @return bool|false|int
+     * @throws Exception
      */
     public function save($filePath, $content, $charset = 'gbk', $perm = null)
     {

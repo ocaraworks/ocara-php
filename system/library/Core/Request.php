@@ -85,6 +85,8 @@ class Request extends Base
 
     /**
      * 判断是否是GET请求
+     * @return bool
+     * @throws Exception
      */
     public function isGet()
     {
@@ -93,6 +95,8 @@ class Request extends Base
 
     /**
      * 判断是否是POST请求
+     * @return bool
+     * @throws Exception
      */
     public function isPost()
     {
@@ -101,6 +105,8 @@ class Request extends Base
 
     /**
      * 判断是否是PUT请求
+     * @return bool
+     * @throws Exception
      */
     public function isPut()
     {
@@ -109,6 +115,8 @@ class Request extends Base
 
     /**
      * 判断是否是PUT请求
+     * @return bool
+     * @throws Exception
      */
     public function isPatch()
     {
@@ -117,6 +125,8 @@ class Request extends Base
 
     /**
      * 判断是否是DELETE请求
+     * @return bool
+     * @throws Exception
      */
     public function isDelete()
     {
@@ -125,6 +135,8 @@ class Request extends Base
 
     /**
      * 判断是否是PUT请求
+     * @return bool
+     * @throws Exception
      */
     public function isHead()
     {
@@ -133,6 +145,8 @@ class Request extends Base
 
     /**
      * 判断是否是OPTIONS请求
+     * @return bool
+     * @throws Exception
      */
     public function isOptions()
     {
@@ -141,6 +155,8 @@ class Request extends Base
 
     /**
      * 判断是否是TRACE请求
+     * @return bool
+     * @throws Exception
      */
     public function isTrace()
     {
@@ -149,6 +165,8 @@ class Request extends Base
 
     /**
      * 判断是否是CONNECT请求
+     * @return bool
+     * @throws Exception
      */
     public function isConnect()
     {
@@ -167,6 +185,7 @@ class Request extends Base
 
     /**
      * 判断是否是AJAX请求
+     * @return bool
      */
     public function isAjax()
     {
@@ -214,8 +233,9 @@ class Request extends Base
     /**
      * 获取GET参数值
      * @param string $key
-     * @param string|array $default
-     * @return array|null|string
+     * @param string $default
+     * @return array|string|null
+     * @throws Exception
      */
     public function getGet($key = null, $default = null)
     {
@@ -227,6 +247,7 @@ class Request extends Base
      * @param string $key
      * @param string $default
      * @return array|null|string
+     * @throws Exception
      */
     public function getPost($key = null, $default = null)
     {
@@ -235,6 +256,7 @@ class Request extends Base
 
     /**
      * 获取输入流数据
+     * @return false|int|string
      */
     public function getInput()
     {
@@ -246,6 +268,7 @@ class Request extends Base
      * @param string $key
      * @param string|array $default
      * @return array|null|string
+     * @throws Exception
      */
     public function getCookie($key = null, $default = null)
     {
@@ -257,6 +280,7 @@ class Request extends Base
      * @param string $key
      * @param string|array $default
      * @return array|null|string
+     * @throws Exception
      */
     public function getRequest($key = null, $default = null)
     {
@@ -268,6 +292,7 @@ class Request extends Base
      * @param string $key
      * @param mixed $default
      * @return array|string|null
+     * @throws Exception
      */
     public function getCommonRequest($key = null, $default = null)
     {
@@ -286,10 +311,11 @@ class Request extends Base
 
     /**
      * 获取值
-     * @param $data
+     * @param array $data
      * @param string $key
-     * @param string|array $default
-     * @return array|null|string
+     * @param string $default
+     * @return array|string|null
+     * @throws Exception
      */
     public function getRequestValue(array $data, $key = null, $default = null)
     {
@@ -333,7 +359,7 @@ class Request extends Base
 
     /**
      * 解析Json参数
-     * @param $param
+     * @param mixed $param
      * @return mixed
      */
     public function decodeJson($param)

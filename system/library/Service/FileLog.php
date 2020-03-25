@@ -61,7 +61,8 @@ class FileLog extends ServiceBase implements LogInterface
     /**
      * 新建日志（目录）
      * @param string $logName
-     * @return mixed
+     * @return bool
+     * @throws Exception
      */
     public function create($logName)
     {
@@ -70,7 +71,7 @@ class FileLog extends ServiceBase implements LogInterface
 
     /**
      * 检测日志是否存在
-     * @param $logName
+     * @param string $logName
      * @return bool
      */
     public function has($logName)
@@ -82,7 +83,8 @@ class FileLog extends ServiceBase implements LogInterface
      * 向最近日志文件写入一行
      * @param string $logName
      * @param string $content
-     * @return mixed
+     * @return bool|false|int
+     * @throws Exception
      */
     public function write($logName, $content)
     {
@@ -104,6 +106,7 @@ class FileLog extends ServiceBase implements LogInterface
      * 读取日志内容
      * @param string $logName
      * @return false|string|null
+     * @throws Exception
      */
     public function read($logName)
     {
@@ -119,6 +122,7 @@ class FileLog extends ServiceBase implements LogInterface
      * 清理日志文件
      * @param string $logName
      * @return bool
+     * @throws Exception
      */
     public function clear($logName = null)
     {
@@ -130,6 +134,7 @@ class FileLog extends ServiceBase implements LogInterface
      * 删除日志（目录）
      * @param string $logName
      * @return bool
+     * @throws Exception
      */
     public function delete($logName)
     {
@@ -140,7 +145,8 @@ class FileLog extends ServiceBase implements LogInterface
     /**
      * 清空最近日志文件内容
      * @param string $logName
-     * @return bool|int
+     * @return bool|false|int
+     * @throws Exception
      */
     public function flush($logName)
     {
@@ -161,7 +167,8 @@ class FileLog extends ServiceBase implements LogInterface
      * 获取最近日志文件
      * @param string $logName
      * @param bool $create
-     * @return bool|mixed|string
+     * @return string
+     * @throws Exception
      */
     protected function getLastLogFile($logName, $create = true)
     {

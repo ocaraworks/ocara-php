@@ -13,8 +13,8 @@ class SocketServer extends SocketBase
 {
     /**
      * 启动服务端
-     * @param $host
-     * @param $port
+     * @param string $host
+     * @param int $port
      * @param int $timeout
      * @return resource
      * @throws Exception
@@ -85,7 +85,7 @@ class SocketServer extends SocketBase
 
     /**
      * 发送数据
-     * @param $content
+     * @param string $content
      * @param int $length
      * @return int
      * @throws Exception

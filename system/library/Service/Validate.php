@@ -14,7 +14,7 @@ class Validate extends ServiceBase
 {
     /**
      * 不能为非0的空值
-     * @param $value
+     * @param mixed $value
      * @return array|bool
      * @throws Exception
      */
@@ -27,7 +27,7 @@ class Validate extends ServiceBase
 
     /**
      * 标准命名方式
-     * @param $value
+     * @param mixed $value
      * @return array|false|int
      * @throws Exception
      */
@@ -40,7 +40,7 @@ class Validate extends ServiceBase
 
     /**
      * 最长字符
-     * @param $value
+     * @param mixed $value
      * @param int $length
      * @return array|bool
      * @throws Exception
@@ -54,7 +54,7 @@ class Validate extends ServiceBase
 
     /**
      * 最短字符
-     * @param $value
+     * @param mixed $value
      * @param int $length
      * @return array|bool
      * @throws Exception
@@ -68,7 +68,7 @@ class Validate extends ServiceBase
 
     /**
      * 字符字数
-     * @param $value
+     * @param mixed $value
      * @param int $min
      * @param int $max
      * @return array|bool
@@ -84,7 +84,7 @@ class Validate extends ServiceBase
 
     /**
      * email验证
-     * @param $value
+     * @param mixed $value
      * @return array|mixed
      * @throws Exception
      */
@@ -97,7 +97,7 @@ class Validate extends ServiceBase
 
     /**
      * IP验证
-     * @param $value
+     * @param mixed $value
      * @return array|mixed
      * @throws Exception
      */
@@ -110,7 +110,7 @@ class Validate extends ServiceBase
 
     /**
      * URL验证
-     * @param $value
+     * @param mixed $value
      * @return array|mixed
      * @throws Exception
      */
@@ -123,7 +123,7 @@ class Validate extends ServiceBase
 
     /**
      * 正则表达式验证
-     * @param $value
+     * @param mixed $value
      * @param string $expression
      * @return array|false|int
      * @throws Exception
@@ -137,7 +137,7 @@ class Validate extends ServiceBase
 
     /**
      * 身份证验证
-     * @param $value
+     * @param mixed $value
      * @return array|false|int
      * @throws Exception
      */
@@ -150,7 +150,7 @@ class Validate extends ServiceBase
 
     /**
      * 验证手机号码
-     * @param $value
+     * @param mixed $value
      * @return array|false|int
      * @throws Exception
      */
@@ -163,7 +163,7 @@ class Validate extends ServiceBase
 
     /**
      * 验证是否全部是中文
-     * @param $value
+     * @param mixed $value
      * @return array|false|int
      * @throws Exception
      */
@@ -176,7 +176,7 @@ class Validate extends ServiceBase
 
     /**
      * 验证是否含有中文
-     * @param $value
+     * @param mixed $value
      * @return array|bool
      * @throws Exception
      */
@@ -189,7 +189,7 @@ class Validate extends ServiceBase
 
     /**
      * 验证邮政编码
-     * @param $value
+     * @param mixed $value
      * @return array|bool
      * @throws Exception
      */
@@ -202,8 +202,8 @@ class Validate extends ServiceBase
 
     /**
      * 验证
-     * @param $expression
-     * @param $error
+     * @param string $expression
+     * @param string $error
      * @param array $params
      * @return array
      * @throws Exception

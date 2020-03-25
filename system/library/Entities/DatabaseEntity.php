@@ -7,8 +7,9 @@
 
 namespace Ocara\Entities;
 
-use Ocara\Iterators\Database\EachQueryRecords;
+use \ReflectionException;
 use \ReflectionObject;
+use Ocara\Iterators\Database\EachQueryRecords;
 use Ocara\Core\BaseEntity;
 use Ocara\Exceptions\Exception;
 
@@ -43,6 +44,9 @@ abstract class DatabaseEntity extends BaseEntity
         }
     }
 
+    /**
+     * 注册事件
+     */
     public function registerEvents()
     {
         parent::registerEvents();
@@ -101,7 +105,8 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 获取模型类名
-     * @return mixed
+     * @return object|null
+     * @throws Exception
      */
     public function getModel()
     {
@@ -110,8 +115,9 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 修改数据来源
-     * @param $model
+     * @param string $model
      * @return mixed
+     * @throws Exception
      */
     public function setModel($model)
     {
@@ -182,7 +188,7 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 获取旧值
-     * @param null $key
+     * @param string $key
      * @return array|mixed
      */
     public function getOld($key = null)
@@ -211,7 +217,7 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 获取新值
-     * @param null $key
+     * @param string $key
      * @return array|mixed
      */
     public function getChanged($key = null)
@@ -253,9 +259,10 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 从数据库选择记录
-     * @param $values
+     * @param array $values
      * @param array $options
      * @return $this
+     * @throws Exception
      */
     public function select($values, array $options = array())
     {
@@ -280,9 +287,10 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 以数据选择记录
-     * @param $data
+     * @param array $data
      * @param bool $getFullFields
      * @return $this
+     * @throws Exception
      */
     public function dataFrom($data, $getFullFields = false)
     {
@@ -308,9 +316,10 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 获取一行对象
-     * @param $condition
+     * @param string|array $condition
      * @param array $options
      * @return $this
+     * @throws Exception
      */
     public function selectFrom($condition, array $options = array())
     {
@@ -343,6 +352,8 @@ abstract class DatabaseEntity extends BaseEntity
      * 新建
      * @param array $data
      * @return mixed
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function create(array $data = array())
     {
@@ -382,7 +393,7 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 获取最后插入的记录ID
-     * @return mixed
+     * @return int
      */
     public function getInsertId()
     {
@@ -410,8 +421,9 @@ abstract class DatabaseEntity extends BaseEntity
     /**
      * 更新
      * @param array $data
-     * @return bool
+     * @return mixed
      * @throws Exception
+     * @throws ReflectionException
      */
     public function update(array $data = array())
     {
@@ -448,8 +460,9 @@ abstract class DatabaseEntity extends BaseEntity
     /**
      * 保存
      * @param array $data
-     * @return bool
+     * @return mixed
      * @throws Exception
+     * @throws ReflectionException
      */
     public function save(array $data = array())
     {
@@ -462,8 +475,8 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 保存旧值
-     * @param $key
-     * @param null $value
+     * @param string $key
+     * @param mixed $value
      * @return $this
      */
     public function replaceOld($key, $value = null)
@@ -479,6 +492,8 @@ abstract class DatabaseEntity extends BaseEntity
     /**
      * 删除
      * @return mixed
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function delete()
     {
@@ -509,7 +524,7 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 主键映射
-     * @param $data
+     * @param array $data
      * @return array
      */
     protected static function mapPrimary($data)
@@ -522,8 +537,9 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 获取主键条件
-     * @param $condition
-     * @return array
+     * @param string $condition
+     * @return array|false
+     * @throws Exception
      */
     public function getPrimaryCondition($condition)
     {
@@ -571,7 +587,8 @@ abstract class DatabaseEntity extends BaseEntity
     /**
      * 关联查询
      * @param $alias
-     * @return null|entity|EachQueryRecords
+     * @return mixed
+     * @throws Exception
      */
     protected function relateFind($alias)
     {
@@ -604,6 +621,7 @@ abstract class DatabaseEntity extends BaseEntity
      * 关联保存
      * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     protected function relateSave()
     {
@@ -647,6 +665,7 @@ abstract class DatabaseEntity extends BaseEntity
      * 获取无法访问的属性
      * @param string $key
      * @return mixed
+     * @throws Exception
      */
     public function &__get($key)
     {
@@ -666,8 +685,8 @@ abstract class DatabaseEntity extends BaseEntity
 
     /**
      * 设置无法访问的属性
-     * @param $name
-     * @param $value
+     * @param string $name
+     * @param string|object|array $value
      * @return bool|void
      * @throws Exception
      */

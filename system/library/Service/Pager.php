@@ -7,6 +7,7 @@
 
 namespace Ocara\Service;
 
+use \ReflectionException;
 use Ocara\Core\ServiceBase;
 use Ocara\Exceptions\Exception;
 
@@ -96,7 +97,7 @@ class Pager extends ServiceBase
 
     /**
      * 设置每页显示多少条记录
-     * @param $perPage
+     * @param int $perPage
      * @return $this
      */
     public function setPerPage($perPage)
@@ -107,7 +108,7 @@ class Pager extends ServiceBase
 
     /**
      * 设置每次显示多少页
-     * @param $perShow
+     * @param int $perShow
      * @return $this
      */
     public function setPerShow($perShow)
@@ -118,7 +119,7 @@ class Pager extends ServiceBase
 
     /**
      * 设置分页URL
-     * @param $url
+     * @param string $url
      * @return $this
      */
     public function setUrl($url)
@@ -129,7 +130,7 @@ class Pager extends ServiceBase
 
     /**
      * 设置当前页CSS样式
-     * @param $class
+     * @param string $class
      * @return $this
      */
     public function setActiveClass($class)
@@ -140,11 +141,12 @@ class Pager extends ServiceBase
 
     /**
      * 形成页码的主函数
-     * @param $total
-     * @param $url
+     * @param int $total
+     * @param string $url
      * @param array $attr
      * @return $this|bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function setHtml($total, $url, array $attr = array())
     {
@@ -198,6 +200,7 @@ class Pager extends ServiceBase
     /**
      * 计算分页信息
      * @return array
+     * @throws Exception
      */
     public function getInfo()
     {
@@ -217,6 +220,7 @@ class Pager extends ServiceBase
      * 生成HTML
      * @return string
      * @throws Exception
+     * @throws ReflectionException
      */
     protected function setPageHtml()
     {
@@ -247,6 +251,8 @@ class Pager extends ServiceBase
     /**
      * 生成数字页码HTML
      * @return string|null
+     * @throws Exception
+     * @throws ReflectionException
      */
     protected function getPages()
     {
@@ -261,10 +267,12 @@ class Pager extends ServiceBase
 
     /**
      * 获取超链接HTML
-     * @param $page
-     * @param $text
-     * @param null $class
+     * @param int $page
+     * @param string $text
+     * @param string $class
      * @return string
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function getLink($page, $text, $class = null)
     {
@@ -287,8 +295,10 @@ class Pager extends ServiceBase
 
     /**
      * 获取页码链接URL
-     * @param $pageNumber
-     * @return mixed|string|null
+     * @param int $pageNumber
+     * @return array|bool|mixed|string|null
+     * @throws Exception
+     * @throws ReflectionException
      */
     protected function getUrl($pageNumber)
     {
@@ -308,6 +318,7 @@ class Pager extends ServiceBase
     /**
      * 获取当前页
      * @return int
+     * @throws Exception
      */
     public function getPage()
     {

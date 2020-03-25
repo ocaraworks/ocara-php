@@ -7,10 +7,14 @@
 
 namespace Ocara\Core;
 
+use Ocara\Exceptions\Exception;
+
 class Route extends Base
 {
     /**
      * 解析路由
+     * @return mixed
+     * @throws Exception
      */
     public function parseRouteInfo()
     {

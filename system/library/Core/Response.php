@@ -7,6 +7,7 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use \Ocara\Exceptions\Exception;
 
 class Response extends Base
@@ -152,8 +153,8 @@ class Response extends Base
 
     /**
      * 设置头部选项
-     * @param $name
-     * @param null $value
+     * @param string $name
+     * @param mixed $value
      */
     public function setOption($name, $value = null)
     {
@@ -162,7 +163,7 @@ class Response extends Base
 
     /**
      * 移除头部信息项
-     * @param $name
+     * @param string $name
      */
     public function deleteOption($name)
     {
@@ -171,7 +172,7 @@ class Response extends Base
 
     /**
      * 移除已发送头部
-     * @param $name
+     * @param string $name
      */
     public function remove($name)
     {
@@ -180,7 +181,7 @@ class Response extends Base
 
     /**
      * 设置状态
-     * @param $code
+     * @param int $code
      * @throws Exception
      */
     public function setStatusCode($code)
@@ -211,9 +212,10 @@ class Response extends Base
 
     /**
      * 转移到另一个控制器动作
-     * @param $route
+     * @param string|array $route
      * @param array $params
      * @param null $moduleNamespace
+     * @throws Exception
      */
     public function transfer($route, array $params = array(), $moduleNamespace = null)
     {
@@ -226,8 +228,10 @@ class Response extends Base
 
     /**
      * 跳转到另一个控制器动作
-     * @param $route
+     * @param string|array $route
      * @param array $params
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function jump($route, array $params = array())
     {
@@ -236,7 +240,8 @@ class Response extends Base
 
     /**
      * 打开外部URL链接
-     * @param $url
+     * @param string $url
+     * @throws Exception
      */
     public function redirect($url)
     {
@@ -284,7 +289,7 @@ class Response extends Base
     /**
      * 获取设置选项
      * @param $name
-     * @return null
+     * @return string|null
      */
     public function getHeaderOption($name)
     {
@@ -297,6 +302,8 @@ class Response extends Base
 
     /**
      * 返回状态码
+     * @return int|null
+     * @throws Exception
      */
     public function getStatusCode()
     {
@@ -314,6 +321,8 @@ class Response extends Base
 
     /**
      * 获取返回内容类型
+     * @return string|null
+     * @throws Exception
      */
     public function getContentType()
     {

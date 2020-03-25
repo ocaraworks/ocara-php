@@ -22,7 +22,7 @@ class Redis extends CacheBase implements CacheInterface
      * 连接数据库实例
      * @param array $config
      * @param bool $required
-     * @return mixed
+     * @return null
      * @throws Exception
      */
     public function connect($config, $required = true)
@@ -53,8 +53,8 @@ class Redis extends CacheBase implements CacheInterface
 
     /**
      * 立即连接
-     * @param $host
-     * @param $port
+     * @param string $host
+     * @param int $port
      * @param $required
      * @return \Redis|null
      * @throws Exception
@@ -89,8 +89,8 @@ class Redis extends CacheBase implements CacheInterface
 
     /**
      * 设置变量值
-     * @param $name
-     * @param $value
+     * @param string $name
+     * @param mixed $value
      * @param int $expireTime
      * @return mixed
      * @throws Exception
@@ -112,7 +112,7 @@ class Redis extends CacheBase implements CacheInterface
      * 获取变量值
      * @param string $name
      * @param null $args
-     * @return object|null
+     * @return string|null
      * @throws Exception
      */
     public function get($name, $args = null)

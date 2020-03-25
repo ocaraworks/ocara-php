@@ -41,7 +41,7 @@ interface Template
 
     /**
      * 显示文件
-     * @param $file
+     * @param string $file
      */
     public function display($file);
 }

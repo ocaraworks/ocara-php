@@ -42,8 +42,8 @@ class SessionFile extends ServiceProvider
 
     /**
      * session打开
-     * @param $savePath
-     * @param $sessName
+     * @param string $savePath
+     * @param string $sessName
      * @return bool
      */
     public function open($savePath, $sessName)
@@ -62,8 +62,9 @@ class SessionFile extends ServiceProvider
 
     /**
      * 读取session信息
-     * @param $id
-     * @return bool|string
+     * @param string $id
+     * @return string
+     * @throws Exception
      */
     public function read($id)
     {
@@ -81,10 +82,11 @@ class SessionFile extends ServiceProvider
     }
 
     /**
-     * 保存session
-     * @param $id
-     * @param $data
+     * 写session数据
+     * @param string $id
+     * @param string $data
      * @return bool
+     * @throws Exception
      */
     public function write($id, $data)
     {
@@ -99,7 +101,7 @@ class SessionFile extends ServiceProvider
 
     /**
      * 销毁session
-     * @param $id
+     * @param string $id
      * @return bool
      */
     public function destroy($id)
@@ -115,7 +117,7 @@ class SessionFile extends ServiceProvider
 
     /**
      * Session垃圾回收
-     * @param $maxLifeTime
+     * @param int $maxLifeTime
      * @return bool
      */
     public function gc($maxLifeTime)

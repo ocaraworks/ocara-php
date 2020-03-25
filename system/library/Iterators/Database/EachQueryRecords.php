@@ -92,7 +92,7 @@ class EachQueryRecords implements Iterator
 
     /**
      * 获取最后的SQL
-     * @return mixed
+     * @return array
      */
     public function getLastSql()
     {

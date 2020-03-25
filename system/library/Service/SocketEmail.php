@@ -7,6 +7,7 @@
 
 namespace Ocara\Service;
 
+use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceBase;
 
 class SocketEmail extends ServiceBase
@@ -20,12 +21,14 @@ class SocketEmail extends ServiceBase
 
     /**
      * 析构函数
+     * SocketEmail constructor.
      * @param string $sender
      * @param string $host
-     * @param string $port
+     * @param int $port
      * @param string $username
      * @param string $password
-     * @param integer $timeout
+     * @param int $timeout
+     * @throws Exception
      */
     public function __construct($sender, $host, $port, $username, $password, $timeout = 20)
     {
@@ -49,9 +52,9 @@ class SocketEmail extends ServiceBase
 
     /**
      * 发送邮件
-     * @param $receiver
-     * @param $header
-     * @param $content
+     * @param string $receiver
+     * @param string $header
+     * @param string $content
      * @return bool
      */
     public function send($receiver, $header, $content)
@@ -109,6 +112,7 @@ class SocketEmail extends ServiceBase
     /**
      * 写日志
      * @param $message
+     * @throws Exception
      */
     public function writeLog($message)
     {
@@ -117,8 +121,8 @@ class SocketEmail extends ServiceBase
 
     /**
      * 执行命令
-     * @param $command
-     * @param $errorStatus
+     * @param string $command
+     * @param string $errorStatus
      * @return bool
      */
     public function putCmd($command, $errorStatus)

@@ -12,7 +12,7 @@ interface Event
     /**
      * 添加事件处理器
      * @param $callback
-     * @param null $name
+     * @param string $name
      * @param int $priority
      * @return $this|EventInterface
      */
@@ -29,29 +29,29 @@ interface Event
 
     /**
      * 设置名称
-     * @param $name
+     * @param string $name
      */
     public function setName($name);
 
     /**
      * 修改事件处理器
-     * @param $name
-     * @param $callback
+     * @param string $name
+     * @param mixed $callback
      * @return $this
      */
     public function modify($name, $callback);
 
     /**
      * 修改事件处事理器的优先级
-     * @param $name
-     * @param $priority
+     * @param string $name
+     * @param int $priority
      * @return $this
      */
     public function setPriority($name, $priority);
 
     /**
      * 删除事件处理器
-     * @param $name
+     * @param string $name
      * @return array|bool
      */
     public function delete($name);
@@ -65,7 +65,7 @@ interface Event
 
     /**
      * 检测是否存在事件处理器
-     * @param $name
+     * @param string $name
      * @return mixed
      */
     public function has($name);

@@ -7,9 +7,15 @@
 
 namespace Ocara\Sessions;
 
+use \Closure;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceProvider;
 
+/**
+ * Class SessionCache
+ * @package Ocara\Sessions
+ * @property Closure $handler
+ */
 class SessionCache extends ServiceProvider
 {
     protected $prefix;
@@ -59,7 +65,7 @@ class SessionCache extends ServiceProvider
 
     /**
      * 读取session信息
-     * @param $id
+     * @param string $id
      * @return bool
      */
     public function read($id)
@@ -69,9 +75,10 @@ class SessionCache extends ServiceProvider
 
     /**
      * 保存session
-     * @param $id
-     * @param $data
+     * @param string $id
+     * @param string $data
      * @return bool
+     * @throws Exception
      */
     public function write($id, $data)
     {
@@ -96,7 +103,7 @@ class SessionCache extends ServiceProvider
 
     /**
      * 垃圾回收
-     * @param $maxlifetime
+     * @param int $maxlifetime
      * @return bool
      */
     public function gc($maxlifetime)

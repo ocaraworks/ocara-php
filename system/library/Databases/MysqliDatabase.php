@@ -7,6 +7,7 @@
 
 namespace Ocara\Databases;
 
+use \ReflectionException;
 use Ocara\Core\DatabaseBase;
 use Ocara\Core\Sql;
 use Ocara\Interfaces\Database as DatabaseInterface;
@@ -68,6 +69,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
      * @param string $sqlData
      * @return array
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getFieldsInfo($sqlData)
     {
@@ -110,8 +112,9 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
 
     /**
      * 加密字符串
-     * @param $content
+     * @param string $content
      * @return mixed
+     * @throws Exception
      */
     public function escapeString($content)
     {
@@ -121,8 +124,9 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
     /**
      * 选择数据库
      * @param string $name
-     * @return array|bool|mixed
+     * @return bool|mixed|void
      * @throws Exception
+     * @throws ReflectionException
      */
     public function baseSelectDatabase($name = null)
     {
@@ -138,9 +142,9 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
 
     /**
      * 单个字段值格式化为适合类型
-     * @param $fieldsData
-     * @param $field
-     * @param $value
+     * @param array $fieldsData
+     * @param string $field
+     * @param string $value
      * @return mixed
      */
     public function formatOneFieldValue($fieldsData, $field, $value)
@@ -175,7 +179,7 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
 
     /**
      * 获取字段定义描述
-     * @param $fieldInfo
+     * @param array $fieldInfo
      * @param array $exceptKeys
      * @return array
      */

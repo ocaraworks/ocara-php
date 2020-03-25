@@ -22,8 +22,8 @@ class Base extends ServiceProvider
 
     /**
      * 初始化服务组件
-     * @param $services
-     * @param $method
+     * @param array $services
+     * @param string $method
      */
     protected function initService($services, $method)
     {

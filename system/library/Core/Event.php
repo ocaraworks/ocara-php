@@ -26,7 +26,7 @@ class Event extends Basis implements EventInterface
     /**
      * 添加事件处理器
      * @param $callback
-     * @param null $name
+     * @param string $name
      * @param int $priority
      * @return $this|EventInterface
      */
@@ -42,7 +42,7 @@ class Event extends Basis implements EventInterface
     /**
      * 批量绑定事件处理器
      * @param array $callbackList
-     * @param null $groupName
+     * @param string $groupName
      * @param int $priority
      * @return $this|EventInterface
      */
@@ -61,7 +61,7 @@ class Event extends Basis implements EventInterface
 
     /**
      * 设置默认处理器
-     * @param $callback
+     * @param mixed $callback
      * @return $this
      */
     public function setDefault($callback)
@@ -72,7 +72,7 @@ class Event extends Basis implements EventInterface
 
     /**
      * 设置名称
-     * @param $name
+     * @param string $name
      */
     public function setName($name)
     {
@@ -80,7 +80,7 @@ class Event extends Basis implements EventInterface
     }
 
     /**
-     * @param $callback
+     * @param mixed $callback
      * @return bool
      */
     public function isClassObject($callback)
@@ -101,8 +101,8 @@ class Event extends Basis implements EventInterface
 
     /**
      * 新建事件处理器
-     * @param $callback
-     * @param null $name
+     * @param mixed $callback
+     * @param string $name
      * @param int $priority
      * @param bool $isGroup
      */
@@ -126,8 +126,8 @@ class Event extends Basis implements EventInterface
 
     /**
      * 修改事件处理器
-     * @param $name
-     * @param $callback
+     * @param string $name
+     * @param mixed $callback
      * @return $this
      */
     public function modify($name, $callback)
@@ -142,7 +142,7 @@ class Event extends Basis implements EventInterface
 
     /**
      * 获取KEY
-     * @param $name
+     * @param string $name
      * @return int|null
      */
     protected function getKey($name)
@@ -165,8 +165,8 @@ class Event extends Basis implements EventInterface
 
     /**
      * 修改事件处事理器的优先级
-     * @param $name
-     * @param $priority
+     * @param string $name
+     * @param int $priority
      * @return $this
      */
     public function setPriority($name, $priority)
@@ -181,7 +181,7 @@ class Event extends Basis implements EventInterface
 
     /**
      * 删除事件处理器
-     * @param $name
+     * @param string $name
      * @return $this|array|bool
      */
     public function delete($name)
@@ -214,7 +214,7 @@ class Event extends Basis implements EventInterface
 
     /**
      * 检测是否存在事件处理器
-     * @param $name
+     * @param string $name
      * @return mixed
      */
     public function has($name = null)
@@ -305,8 +305,8 @@ class Event extends Basis implements EventInterface
 
     /**
      * 运行回调函数
-     * @param $callback
-     * @param $params
+     * @param mixed $callback
+     * @param array $params
      * @return mixed
      */
     public function runCallback($callback, $params)
@@ -316,7 +316,7 @@ class Event extends Basis implements EventInterface
 
     /**
      * 回调检测
-     * @param $callback
+     * @param mixed $callback
      * @param int $key
      * @return array
      * @throws Exception
@@ -358,7 +358,7 @@ class Event extends Basis implements EventInterface
 
     /**
      * 是否可回调
-     * @param $callback
+     * @param mixed $callback
      * @return bool
      * @throws ReflectionException
      */
@@ -369,6 +369,7 @@ class Event extends Basis implements EventInterface
 
     /**
      * 停止事件
+     * @return $this
      */
     public function stop()
     {

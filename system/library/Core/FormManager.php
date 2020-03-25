@@ -7,6 +7,7 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Exceptions\Exception;
 
 class FormManager extends ServiceProvider
@@ -25,7 +26,8 @@ class FormManager extends ServiceProvider
     /**
      * 新建表单
      * @param $formName
-     * @return Form[]|Form
+     * @return Form|Form[]
+     * @throws Exception
      */
     public function create($formName)
     {
@@ -39,8 +41,8 @@ class FormManager extends ServiceProvider
 
     /**
      * 获取表单
-     * @param $name
-     * @return Form[]|Form
+     * @param string $name
+     * @return Form|Form[]
      */
     public function getForm($name = null)
     {
@@ -52,8 +54,8 @@ class FormManager extends ServiceProvider
 
     /**
      * 设置表单
-     * @param $formName
-     * @param $form
+     * @param string $formName
+     * @param Form $form
      */
     public function addForm($formName, $form)
     {
@@ -62,8 +64,8 @@ class FormManager extends ServiceProvider
 
     /**
      * 是否存在表单
-     * @param $name
-     * @return array
+     * @param string $name
+     * @return bool
      */
     public function hasForm($name)
     {
@@ -73,6 +75,7 @@ class FormManager extends ServiceProvider
     /**
      * 保存表单令牌
      * @throws Exception
+     * @throws ReflectionException
      */
     public function bindToken()
     {
@@ -125,7 +128,7 @@ class FormManager extends ServiceProvider
 
     /**
      * 获取提交的表单
-     * @param $requestToken
+     * @param string $requestToken
      * @return Form
      * @throws Exception
      */
@@ -153,7 +156,7 @@ class FormManager extends ServiceProvider
 
     /**
      * 验证表单
-     * @param $requestToken
+     * @param string $requestToken
      * @return mixed
      * @throws Exception
      */
@@ -184,8 +187,8 @@ class FormManager extends ServiceProvider
 
     /**
      * 保存TOKEN
-     * @param $formName
-     * @param $token
+     * @param string $formName
+     * @param string $token
      * @throws Exception
      */
     public function saveToken($formName, $token)
@@ -195,7 +198,7 @@ class FormManager extends ServiceProvider
 
     /**
      * 设置路由
-     * @param $route
+     * @param array $route
      */
     public function setRoute($route)
     {

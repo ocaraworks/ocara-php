@@ -38,7 +38,8 @@ class Mail extends ServiceBase
     public $boundary;
 
     /**
-     * 析构函数
+     * Mail constructor.
+     * @throws Exception
      */
     public function __construct()
     {
@@ -350,7 +351,7 @@ class Mail extends ServiceBase
     /**
      * 获取附件MIME类型
      * @param $extName
-     * @return null
+     * @return string
      * @throws Exception
      */
     public function getMimeType($extName)

@@ -34,7 +34,7 @@ class CacheFactory extends Base
      * 新建缓存实例
      * @param string $serverName
      * @param bool $required
-     * @return mixed|null
+     * @return object|null
      * @throws Exception
      * @throws ReflectionException
      */
@@ -64,7 +64,7 @@ class CacheFactory extends Base
     /**
      * 获取配置信息
      * @param string $serverName
-     * @return array|mixed
+     * @return array
      * @throws Exception
      * @throws ReflectionException
      */
@@ -91,7 +91,7 @@ class CacheFactory extends Base
      * 连接缓存
      * @param string $serverName
      * @param bool $required
-     * @return mixed
+     * @return object|null
      * @throws Exception
      * @throws ReflectionException
      */

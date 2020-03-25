@@ -7,6 +7,7 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Exceptions\Exception;
 use Ocara\Sql\Generator;
 
@@ -189,6 +190,7 @@ class DatabaseBase extends Base
      * 获取数据库驱动类
      * @param array $data
      * @return mixed
+     * @throws Exception
      */
     public function getDriver(array $data)
     {
@@ -207,6 +209,7 @@ class DatabaseBase extends Base
      * 加载数据库驱动类
      * @param string $class
      * @return mixed
+     * @throws Exception
      */
     public function loadDatabase($class)
     {
@@ -254,11 +257,12 @@ class DatabaseBase extends Base
     }
 
     /**
-     * 执行SQL语句
+     * 获取数据库类型
      * @param array $sqlData
      * @param bool $required
      * @return mixed|void|null
      * @throws Exception
+     * @throws ReflectionException
      */
     public function execute(array $sqlData, $required = true)
     {
@@ -347,13 +351,14 @@ class DatabaseBase extends Base
 
     /**
      * 查询多行记录
-     * @param $sqlData
+     * @param string|array $sqlData
      * @param bool $count
      * @param bool $isUnion
-     * @param int|string $dataType
+     * @param null $dataType
      * @param array $shardingCurrent
      * @return array|mixed|void|null
      * @throws Exception
+     * @throws ReflectionException
      */
     public function query($sqlData, $count = false, $isUnion = false, $dataType = null, $shardingCurrent = array())
     {
@@ -369,13 +374,14 @@ class DatabaseBase extends Base
 
     /**
      * 查询一行
-     * @param $sqlData
+     * @param string|array $sqlData
      * @param bool $count
      * @param bool $isUnion
-     * @param int|string $dataType
+     * @param null $dataType
      * @param array $shardingCurrent
      * @return array|mixed|void|null
      * @throws Exception
+     * @throws ReflectionException
      */
     public function queryRow($sqlData, $count = false, $isUnion = false, $dataType = null, $shardingCurrent = array())
     {
@@ -400,7 +406,7 @@ class DatabaseBase extends Base
 
     /**
      * 格式化SQL
-     * @param $sqlData
+     * @param string|array $sqlData
      * @return array|string
      */
     protected function formatSqlData($sqlData)
@@ -414,7 +420,7 @@ class DatabaseBase extends Base
 
     /**
      * 是否长连接
-     * @param null $pConnect
+     * @param bool $pConnect
      * @return bool
      * @throws Exception
      */
@@ -444,7 +450,7 @@ class DatabaseBase extends Base
 
     /**
      * 选择数据库
-     * @param null $name
+     * @param string $name
      */
     public function baseSelectDatabase($name = null)
     {
@@ -453,7 +459,7 @@ class DatabaseBase extends Base
     /**
      * 选择数据库
      * @param string $name
-     * @return mixed
+     * @throws Exception
      */
     public function selectDatabase($name = null)
     {
@@ -480,6 +486,7 @@ class DatabaseBase extends Base
 
     /**
      * 获取关键字
+     * @return array
      */
     public function getKeywords()
     {
@@ -488,6 +495,8 @@ class DatabaseBase extends Base
 
     /**
      * 事务开始
+     * @return mixed
+     * @throws Exception
      */
     public function beginTransaction()
     {
@@ -510,6 +519,7 @@ class DatabaseBase extends Base
      * 是否自动提交事务
      * @param bool $autocommit
      * @return mixed
+     * @throws Exception
      */
     public function autocommit($autocommit = true)
     {
@@ -519,6 +529,8 @@ class DatabaseBase extends Base
 
     /**
      * 事务提交
+     * @return mixed
+     * @throws Exception
      */
     public function commit()
     {
@@ -529,6 +541,8 @@ class DatabaseBase extends Base
 
     /**
      * 事务回滚
+     * @return mixed
+     * @throws Exception
      */
     public function rollback()
     {
@@ -539,9 +553,9 @@ class DatabaseBase extends Base
 
     /**
      * 绑定参数
-     * @param $option
-     * @param $type
-     * @param $params
+     * @param string $option
+     * @param string $type
+     * @param array $params
      */
     public function bindParam($option, $type, &$params)
     {
@@ -577,6 +591,7 @@ class DatabaseBase extends Base
      * 解析参数类型
      * @param mixed $value
      * @return mixed
+     * @throws Exception
      */
     private function parseParamType($value)
     {
@@ -642,7 +657,7 @@ class DatabaseBase extends Base
 
     /**
      * 格式化字段值为适合的数据类型
-     * @param $fields
+     * @param array $fields
      * @param array $data
      * @param bool $isCondition
      * @return array
@@ -687,6 +702,7 @@ class DatabaseBase extends Base
 
     /**
      * 获取错误代码
+     * @return numric|null
      */
     public function getErrorCode()
     {
@@ -695,6 +711,7 @@ class DatabaseBase extends Base
 
     /**
      * 获取错误信息
+     * @return string|null
      */
     public function getError()
     {
@@ -703,6 +720,7 @@ class DatabaseBase extends Base
 
     /**
      * 获取错误列表
+     * @return array
      */
     public function getErrorList()
     {
@@ -711,6 +729,7 @@ class DatabaseBase extends Base
 
     /**
      * 检测是否出错
+     * @return bool
      */
     public function errorExists()
     {
@@ -722,6 +741,7 @@ class DatabaseBase extends Base
      * @param string $error
      * @param array $params
      * @throws Exception
+     * @throws ReflectionException
      */
     public function showError($error = null, $params = array())
     {
@@ -732,8 +752,8 @@ class DatabaseBase extends Base
 
     /**
      * 显示错误前置事件
-     * @param $error
-     * @param $params
+     * @param string $error
+     * @param array $params
      * @throws Exception
      */
     public function beforeShowError($error, $params)
@@ -744,9 +764,10 @@ class DatabaseBase extends Base
     /**
      * 检测错误
      * @param $result
-     * @param $sqlData
+     * @param array $sqlData
      * @param bool $required
      * @throws Exception
+     * @throws ReflectionException
      */
     public function checkError($result, $sqlData, $required = true)
     {

@@ -18,8 +18,8 @@ interface Cache
 
     /**
      * 设置变量值
-     * @param $name
-     * @param $value
+     * @param string $name
+     * @param mixed $value
      * @param int $expireTime
      * @return mixed
      */

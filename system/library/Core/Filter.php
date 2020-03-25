@@ -7,6 +7,7 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Exceptions\Exception;
 
 class Filter extends Base
@@ -48,6 +49,7 @@ class Filter extends Base
      * @param bool $equal
      * @return array|bool|mixed|string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function sql($content, $addSlashes = true, array $keywords = array(), $equal = false)
     {
@@ -71,8 +73,8 @@ class Filter extends Base
 
     /**
      * SQL过滤事件
-     * @param $content
-     * @param $keywords
+     * @param string $content
+     * @param array $keywords
      * @return string|string[]|null
      * @throws Exception
      */
@@ -89,8 +91,9 @@ class Filter extends Base
 
     /**
      * 过滤内容
-     * @param $content
+     * @param string $content
      * @return array|mixed|string
+     * @throws Exception
      */
     public function content($content)
     {
@@ -137,9 +140,10 @@ class Filter extends Base
 
     /**
      * 过滤脚本
-     * @param $content
+     * @param string|array $content
      * @return array|mixed|string|string[]|null
      * @throws Exception
+     * @throws ReflectionException
      */
     public function script($content)
     {
@@ -159,7 +163,7 @@ class Filter extends Base
 
     /**
      * 脚本关键字过滤事件处理
-     * @param $content
+     * @param string $content
      * @return string|string[]|null
      * @throws Exception
      */
@@ -175,6 +179,7 @@ class Filter extends Base
      * 过滤Request来的数据
      * @param $content
      * @return array|string
+     * @throws Exception
      */
     public function request($content)
     {

@@ -7,7 +7,7 @@
 
 namespace Ocara\Core;
 
-use \Exception;
+use Ocara\Exceptions\Exception;
 
 final class Invoke
 {
@@ -40,9 +40,9 @@ final class Invoke
 
     /**
      * 初始化
-     * @param string $bootstrap
-     * @return mixed
-     * @throws Exception
+     * @param null $bootstrap
+     * @return $this
+     * @throws \Exception
      */
     public function init($bootstrap = null)
     {
@@ -51,12 +51,12 @@ final class Invoke
         defined('OC_INVOKE') OR define('OC_INVOKE', true);
 
         if (!is_file($path = OC_PATH . 'system/library/Core/Ocara.php')) {
-            throw new Exception('Lost ocara file!');
+            throw new \Exception('Lost ocara file!');
         }
 
         include_once($path);
         if (!class_exists('\Ocara\Core\Ocara')) {
-            throw new Exception('Lost Ocara class!');
+            throw new \Exception('Lost Ocara class!');
         }
 
         Ocara::getInstance();
@@ -70,6 +70,7 @@ final class Invoke
      * @param array $params
      * @param string $requestMethod
      * @return mixed
+     * @throws Exception
      */
     public function run($route, $params = array(), $requestMethod = 'GET')
     {

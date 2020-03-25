@@ -7,6 +7,8 @@
 
 namespace Ocara\Core;
 
+use Ocara\Exceptions\Exception;
+
 class Lang extends Base
 {
     protected $frameworkConfig = array();
@@ -15,6 +17,7 @@ class Lang extends Base
     /**
      * 初始化
      * Lang constructor.
+     * @throws Exception
      */
     public function __construct()
     {
@@ -34,8 +37,9 @@ class Lang extends Base
 
     /**
      * 加载模块配置
-     * @param $route
-     * @param null $rootPath
+     * @param array $route
+     * @param string $rootPath
+     * @throws Exception
      */
     public function loadModuleConfig($route, $rootPath = null)
     {
@@ -50,7 +54,8 @@ class Lang extends Base
     /**
      * 加载控制器动作配置
      * @param array $route
-     * @param null $rootPath
+     * @param string $rootPath
+     * @throws Exception
      */
     public function loadControllerConfig($route = array(), $rootPath = null)
     {
@@ -69,7 +74,8 @@ class Lang extends Base
     /**
      * 加载控制器动作配置
      * @param array $route
-     * @param null $rootPath
+     * @param string $rootPath
+     * @throws Exception
      */
     public function loadActionConfig($route = array(), $rootPath = null)
     {
@@ -89,10 +95,11 @@ class Lang extends Base
 
     /**
      * 获取配置文件路径
-     * @param $route
-     * @param $subPath
-     * @param $rootPath
-     * @return mixed|string
+     * @param array $route
+     * @param string $subPath
+     * @param string $rootPath
+     * @return array|mixed|object|string|void|null
+     * @throws Exception
      */
     protected function getConfigPath($route, $subPath, $rootPath)
     {
@@ -185,8 +192,9 @@ class Lang extends Base
 
     /**
      * 设置语言
-     * @param $key
-     * @param null $value
+     * @param string|array $key
+     * @param mixed $value
+     * @throws Exception
      */
     public function set($key, $value = null)
     {

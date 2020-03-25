@@ -75,8 +75,9 @@ class Validator extends Base
 
     /**
      * 获取字段验证规则
-     * @param $data
+     * @param array $data
      * @return array
+     * @throws Exception
      */
     protected function getModelFieldsRules($data)
     {
@@ -106,7 +107,7 @@ class Validator extends Base
     /**
      * 增加验证规则
      * @param string|array $name
-     * @param null $rule
+     * @param string $rule
      * @return $this
      */
     public function addRule($name, $rule = null)
@@ -135,7 +136,7 @@ class Validator extends Base
 
     /**
      * 绑定模型
-     * @param $model
+     * @param ModelBase $model
      * @return $this
      */
     public function addModel($model)
@@ -146,7 +147,7 @@ class Validator extends Base
 
     /**
      * 跳过字段规则
-     * @param $fieldName
+     * @param string $fieldName
      * @return $this
      */
     public function skip($fieldName)
@@ -157,7 +158,7 @@ class Validator extends Base
 
     /**
      * 忽略模型
-     * @param $class
+     * @param string $class
      * @return $this
      */
     public function skipModel($class)
@@ -168,8 +169,8 @@ class Validator extends Base
 
     /**
      * 增加语言文本
-     * @param $key
-     * @param null $value
+     * @param string $key
+     * @param string $value
      * @return $this
      */
     public function addLang($key, $value = null)
@@ -226,8 +227,8 @@ class Validator extends Base
 
     /**
      * 正则表达式验证
-     * @param $field
-     * @param $value
+     * @param string $field
+     * @param string $value
      * @param $expression
      * @return bool
      */
@@ -258,8 +259,8 @@ class Validator extends Base
 
     /**
      * 回调函数验证
-     * @param $field
-     * @param $value
+     * @param string $field
+     * @param string $value
      * @param $callback
      * @return bool
      * @throws Exception
@@ -285,6 +286,7 @@ class Validator extends Base
 
     /**
      * 是否验证错误
+     * @return mixed
      */
     public function errorExists()
     {
@@ -293,6 +295,7 @@ class Validator extends Base
 
     /**
      * 获取错误消息
+     * @return mixed
      */
     public function getError()
     {
@@ -301,6 +304,7 @@ class Validator extends Base
 
     /**
      * 获取错误字段
+     * @return mixed
      */
     public function getErrorSource()
     {

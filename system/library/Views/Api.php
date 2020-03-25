@@ -17,6 +17,7 @@ class Api extends ViewBase implements ViewInterfaces
     /**
      * 输出内容
      * @param $content
+     * @throws Exception
      */
     public function output($content)
     {

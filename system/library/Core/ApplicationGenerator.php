@@ -7,6 +7,8 @@
 
 namespace Ocara\Core;
 
+use Ocara\Exceptions\Exception;
+
 final class ApplicationGenerator
 {
     public static $root;
@@ -15,7 +17,8 @@ final class ApplicationGenerator
 
     /**
      * 应用生成
-     * @param $moduleType
+     * @param string $moduleType
+     * @throws Exception
      */
     public static function create($moduleType = 'common')
     {
@@ -35,6 +38,7 @@ final class ApplicationGenerator
 
     /**
      * 新建目录
+     * @throws Exception
      */
     public static function createDir()
     {
@@ -52,7 +56,8 @@ final class ApplicationGenerator
 
     /**
      * 新建文件
-     * @param $moduleType
+     * @param string $moduleType
+     * @throws Exception
      */
     public static function createFile($moduleType)
     {
@@ -85,9 +90,9 @@ final class ApplicationGenerator
 
     /**
      * 获取文件来源
-     * @param $moduleType
-     * @param $key
-     * @param $value
+     * @param string $moduleType
+     * @param string $key
+     * @param string $value
      * @param string $fileType
      * @return string
      */
@@ -124,8 +129,8 @@ final class ApplicationGenerator
 
     /**
      * 文件或目录不可写错误
-     * @param $path
-     * @param $type
+     * @param string $path
+     * @param string $type
      */
     private static function error($path, $type)
     {

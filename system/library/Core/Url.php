@@ -41,7 +41,7 @@ class Url extends Base
 
     /**
      * 是否虚拟URL地址
-     * @param $urlType
+     * @param int $urlType
      * @return bool
      * @throws Exception
      */
@@ -120,8 +120,8 @@ class Url extends Base
 
     /**
      * 解析URL
-     * @param $url
-     * @param $urlType
+     * @param string $url
+     * @param int $urlType
      * @return array|mixed
      * @throws Exception
      * @throws ReflectionException
@@ -184,7 +184,7 @@ class Url extends Base
 
     /**
      * 新建URL
-     * @param $route
+     * @param string $route
      * @param array $params
      * @param bool $relative
      * @param int $urlType
@@ -351,8 +351,8 @@ class Url extends Base
     /**
      * 生成查询字符串
      * @param array $params
-     * @param null $numericPrefix
-     * @param null $argSeparator
+     * @param string $numericPrefix
+     * @param string $argSeparator
      * @return string
      */
     public function buildQuery(array $params, $numericPrefix = null, $argSeparator = null)

@@ -13,7 +13,7 @@ class Api extends Base
 {
     /**
      * 获取结果
-     * @param $data
+     * @param mixed $data
      * @param array $message
      * @param $status
      * @return array
@@ -32,7 +32,7 @@ class Api extends Base
 
     /**
      * 获取XML结果
-     * @param $result
+     * @param array|string $result
      * @return mixed
      * @throws Exception
      */
@@ -47,8 +47,8 @@ class Api extends Base
 
     /**
      * 格式化响应内容
-     * @param $result
-     * @param $contentType
+     * @param mixed $result
+     * @param string $contentType
      * @return false|mixed|string
      * @throws Exception
      */

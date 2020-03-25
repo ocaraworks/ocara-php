@@ -7,6 +7,7 @@
 
 namespace Ocara\Service;
 
+use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceBase;
 
 class File extends ServiceBase
@@ -14,9 +15,10 @@ class File extends ServiceBase
     /**
      * 新建空文件
      * @param string $filePath
-     * @param integer $perm
-     * @param null $openMode
-     * @return bool|mixed|string
+     * @param int $perm
+     * @param string $openMode
+     * @return bool
+     * @throws Exception
      */
     public function createFile($filePath, $perm = null, $openMode = null)
     {
@@ -43,11 +45,13 @@ class File extends ServiceBase
     }
 
     /**
+     * 打开文件
      * @param string $filePath
+     * @param int $perm
      * @param string $openMode
-     * @param integer $perm
      * @param bool $createDir
-     * @return bool|resource
+     * @return bool|false|resource
+     * @throws Exception
      */
     public function openFile($filePath, $openMode, $perm = null, $createDir = true)
     {
@@ -62,7 +66,7 @@ class File extends ServiceBase
 
     /**
      * 关闭文件
-     * @param source $source
+     * @param resource $source
      * @return bool
      */
     public function closeFile($source)
@@ -101,8 +105,9 @@ class File extends ServiceBase
 
     /**
      * 读文件的所有内容
-     * @param $filePath
+     * @param string $filePath
      * @return false|string
+     * @throws Exception
      */
     public function readFile($filePath)
     {
@@ -113,9 +118,10 @@ class File extends ServiceBase
      * 向文件写入内容
      * @param string $path
      * @param string $content
-     * @param integer $perm
+     * @param int $perm
      * @param bool $trim
-     * @return bool|int|void
+     * @return bool|false|int
+     * @throws Exception
      */
     public function writeFile($path, $content, $perm = null, $trim = false)
     {
@@ -126,9 +132,10 @@ class File extends ServiceBase
      * 向文件追加一行
      * @param string $path
      * @param string $content
-     * @param integer $perm
+     * @param int $perm
      * @param bool $trim
-     * @return bool|int|void
+     * @return bool|false|int
+     * @throws Exception
      */
     public function appendFile($path, $content, $perm = null, $trim = false)
     {
@@ -140,6 +147,7 @@ class File extends ServiceBase
      * @param string $source
      * @param string $destination
      * @return bool
+     * @throws Exception
      */
     public function copyFile($source, $destination)
     {
@@ -160,6 +168,7 @@ class File extends ServiceBase
      * @param string $source
      * @param string $destination
      * @return bool
+     * @throws Exception
      */
     public function moveFile($source, $destination)
     {
@@ -199,8 +208,9 @@ class File extends ServiceBase
     /**
      * 检查并新建目录
      * @param string $path
-     * @param integer $perm
+     * @param int $perm
      * @return bool
+     * @throws Exception
      */
     public function createDir($path, $perm = null)
     {
@@ -231,7 +241,7 @@ class File extends ServiceBase
 
     /**
      * 文件重命加一
-     * @param $file
+     * @param string $file
      * @param string $separateSign
      * @return string
      */
@@ -294,6 +304,7 @@ class File extends ServiceBase
      * @param string|array $content
      * @param bool $trim
      * @return mixed
+     * @throws Exception
      */
     private function getContent($content, $trim)
     {

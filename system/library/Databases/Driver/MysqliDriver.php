@@ -196,7 +196,6 @@ class MysqliDriver extends DriverBase implements DriverInterface
         $this->connection->close();
     }
 
-
     /**
      * 开始一个事务
      * @return mixed
@@ -499,6 +498,7 @@ class MysqliDriver extends DriverBase implements DriverInterface
      * @param string $name
      * @param array $params
      * @return mixed
+     * @throws Exception
      */
     public function __call($name, $params)
     {

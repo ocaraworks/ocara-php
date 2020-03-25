@@ -47,7 +47,7 @@ class Html extends Base
     /**
      * 文本框
      * @param string $name
-     * @param array|null $attributes
+     * @param mixed $attributes
      * @return string
      */
     public function text($name, $attributes = null)
@@ -58,7 +58,7 @@ class Html extends Base
     /**
      * 密码框
      * @param string $name
-     * @param array|null $attributes
+     * @param mixed $attributes
      * @return string
      */
     public function password($name, $attributes = null)
@@ -68,8 +68,8 @@ class Html extends Base
 
     /**
      * 文本域
-     * @param $name
-     * @param array|null $attributes
+     * @param string $name
+     * @param mixed $attributes
      * @return string
      */
     public function file($name, $attributes = null)
@@ -79,8 +79,8 @@ class Html extends Base
 
     /**
      * 隐藏域
-     * @param $name
-     * @param array|null $attributes
+     * @param string $name
+     * @param mixed $attributes
      * @return string
      */
     public function hidden($name, $attributes = null)
@@ -90,8 +90,8 @@ class Html extends Base
 
     /**
      * 按钮
-     * @param $name
-     * @param array|null $attributes
+     * @param string $name
+     * @param mixed $attributes
      * @return string
      */
     public function button($name, array $attributes = null)
@@ -102,9 +102,9 @@ class Html extends Base
 
     /**
      * 单选框
-     * @param $name
-     * @param $desc
-     * @param null $attributes
+     * @param string $name
+     * @param string $desc
+     * @param mixed $attributes
      * @param bool $checked
      * @return string
      */
@@ -115,8 +115,8 @@ class Html extends Base
 
     /**
      * 批量单选框
-     * @param $name
-     * @param $radios
+     * @param string $name
+     * @param array $radios
      * @param array $checked
      * @param array $attributes
      * @return array
@@ -128,9 +128,9 @@ class Html extends Base
 
     /**
      * 复选框
-     * @param $name
-     * @param $desc
-     * @param array|null $attributes
+     * @param string $name
+     * @param string $desc
+     * @param mixed $attributes
      * @param bool $checked
      * @return string
      */
@@ -141,7 +141,7 @@ class Html extends Base
 
     /**
      * 批量复选选框
-     * @param $name
+     * @param string $name
      * @param array $checkboxes
      * @param array $checked
      * @param array $attributes
@@ -154,11 +154,11 @@ class Html extends Base
 
     /**
      * 批量生成单选或复选框
-     * @param $name
-     * @param $data
-     * @param $checked
-     * @param $attributes
-     * @param $method
+     * @param string $name
+     * @param array $data
+     * @param string|array $checked
+     * @param mixed $attributes
+     * @param string $method
      * @return array
      */
     protected function getRadios($name, $data, $checked, $attributes, $method)
@@ -193,9 +193,9 @@ class Html extends Base
 
     /**
      * 下拉框
-     * @param $name
+     * @param string $name
      * @param array $options
-     * @param null $attributes
+     * @param mixed $attributes
      * @param bool $nullText
      * @param bool $optgroup
      * @return string
@@ -221,9 +221,9 @@ class Html extends Base
 
     /**
      * 分组下拉框
-     * @param $name
-     * @param $options
-     * @param null $attributes
+     * @param string $name
+     * @param array $options
+     * @param mixed $attributes
      * @param bool $nullText
      * @return string
      */
@@ -234,9 +234,9 @@ class Html extends Base
 
     /**
      * 下拉选项
-     * @param $options
-     * @param null $value
-     * @param null $nullText
+     * @param array $options
+     * @param mixed $value
+     * @param string $nullText
      * @param bool $optgroup
      * @return string|null
      */
@@ -268,8 +268,8 @@ class Html extends Base
 
     /**
      * 获取选项框
-     * @param $options
-     * @param $value
+     * @param array $options
+     * @param string $value
      * @return bool|string
      */
     protected function getOptions($options, $value)
@@ -294,8 +294,8 @@ class Html extends Base
 
     /**
      * 文本域textarea
-     * @param $name
-     * @param null $attributes
+     * @param string $name
+     * @param mixed $attributes
      * @return string
      */
     public function textarea($name, $attributes = null)
@@ -315,8 +315,8 @@ class Html extends Base
 
     /**
      * 新增HTML标签
-     * @param $type
-     * @param $name
+     * @param string $type
+     * @param string $name
      * @param array $attributes
      * @param bool $content
      * @return string
@@ -347,7 +347,7 @@ class Html extends Base
 
     /**
      * 新增HTML元素
-     * @param $type
+     * @param string $type
      * @param array $attributes
      * @param bool $content
      * @return string
@@ -359,7 +359,7 @@ class Html extends Base
 
     /**
      * 新增结束HTML标记
-     * @param $name
+     * @param string $name
      * @return string
      */
     public function createEndHtmlTag($name)

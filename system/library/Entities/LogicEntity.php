@@ -11,5 +11,4 @@ use Ocara\Core\BaseEntity;
 
 class LogicEntity extends BaseEntity
 {
-
 }

@@ -7,14 +7,16 @@
 
 namespace Ocara\Service;
 
+use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceBase;
 
 class ErrorOutput extends ServiceBase
 {
     /**
      * 打印错误
-     * @param $error
-     * @return mixed
+     * @param array $error
+     * @return bool
+     * @throws Exception
      */
     public function display($error)
     {
@@ -59,7 +61,7 @@ class ErrorOutput extends ServiceBase
 
     /**
      * 获取简洁的Trace内容
-     * @param $error
+     * @param array $error
      * @return string
      */
     public static function getSimpleTrace($error)
@@ -69,7 +71,7 @@ class ErrorOutput extends ServiceBase
 
     /**
      * 去除当前出错文件路径的根目录
-     * @param $errorFile
+     * @param string $errorFile
      * @return mixed
      */
     protected static function stripRootPath($errorFile)

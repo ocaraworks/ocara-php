@@ -65,7 +65,7 @@ class Session extends ServiceProvider
 
     /**
      * 启动Session
-     * @param $start
+     * @param bool $start
      * @throws Exception
      */
     private function start($start)
@@ -89,8 +89,9 @@ class Session extends ServiceProvider
 
     /**
      * 获取session变量值
-     * @param null $name
-     * @return array|bool|mixed|null
+     * @param string $name
+     * @return array|mixed|object|void|null
+     * @throws Exception
      */
     public function get($name = null)
     {
@@ -103,8 +104,9 @@ class Session extends ServiceProvider
 
     /**
      * 设置session变量
-     * @param $name
-     * @param $value
+     * @param string $name
+     * @param string $value
+     * @throws Exception
      */
     public function set($name, $value)
     {
@@ -113,7 +115,8 @@ class Session extends ServiceProvider
 
     /**
      * 删除session变量
-     * @param $name
+     * @param string $name
+     * @return array|null
      */
     public function delete($name)
     {
@@ -138,7 +141,7 @@ class Session extends ServiceProvider
 
     /**
      * 清空session数组
-     * @param null $args
+     * @param mixed $args
      */
     public function clear($args = null)
     {
@@ -155,7 +158,7 @@ class Session extends ServiceProvider
 
     /**
      * 检测session是否设置
-     * @param $name
+     * @param string $name
      * @return array|bool|mixed|null
      */
     public function has($name)
@@ -165,6 +168,7 @@ class Session extends ServiceProvider
 
     /**
      * 释放session，删除session文件
+     * @return bool
      */
     public function destroy()
     {
@@ -175,8 +179,8 @@ class Session extends ServiceProvider
 
     /**
      * cookie保存session设置
-     * @param $saveTime
-     * @param null $path
+     * @param int $saveTime
+     * @param string $path
      * @param bool $domain
      * @param bool $secure
      * @param bool $httponly
@@ -209,6 +213,7 @@ class Session extends ServiceProvider
 
     /**
      * 序列化session数组
+     * @return string
      */
     public function serialize()
     {
@@ -217,7 +222,7 @@ class Session extends ServiceProvider
 
     /**
      * 反序列化session串
-     * @param string $data
+     * @param mixed $data
      * @return bool
      */
     public function unserialize($data)

@@ -59,7 +59,7 @@ class BatchQueryRecords implements Iterator
 
     /**
      * 获取当前项
-     * @return array|mixed
+     * @return array|mixed|EntityRecords
      */
     function current()
     {
@@ -99,7 +99,7 @@ class BatchQueryRecords implements Iterator
 
     /**
      * 检测合法性
-     * @return bool|void
+     * @return bool
      */
     function valid()
     {
@@ -108,7 +108,6 @@ class BatchQueryRecords implements Iterator
 
     /**
      * 获取记录结果
-     * @return mixed
      */
     public function getResult()
     {

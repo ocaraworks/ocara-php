@@ -18,11 +18,11 @@ class Ftp extends ServiceBase
 
     /**
      * FTP连接
-     * @param $ftpServer
-     * @param $username
-     * @param $password
-     * @param null $port
-     * @param null $timeOut
+     * @param string $ftpServer
+     * @param string $username
+     * @param string $password
+     * @param int $port
+     * @param int $timeOut
      * @throws Exception
      */
     public function connect($ftpServer, $username, $password, $port = null, $timeOut = null)
@@ -53,8 +53,8 @@ class Ftp extends ServiceBase
 
     /**
      * 上传文件
-     * @param $localFile
-     * @param $remoteFile
+     * @param string $localFile
+     * @param string $remoteFile
      * @param bool $async
      * @param string $mode
      * @param int $location
@@ -81,8 +81,8 @@ class Ftp extends ServiceBase
 
     /**
      * 下载文件
-     * @param $remoteFile
-     * @param $localFile
+     * @param string $remoteFile
+     * @param string $localFile
      * @param bool $async
      * @param string $mode
      * @param int $location
@@ -116,7 +116,7 @@ class Ftp extends ServiceBase
 
     /**
      * 删除文件
-     * @param $path
+     * @param string $path
      * @return bool
      */
     public function delFile($path)
@@ -126,7 +126,7 @@ class Ftp extends ServiceBase
 
     /**
      * 删除FTP目录，支持递归删除
-     * @param $dirName
+     * @param string $dirName
      * @param bool $recursive
      * @param null $path
      * @return bool
@@ -169,8 +169,8 @@ class Ftp extends ServiceBase
 
     /**
      * 新建FTP目录
-     * @param $dirName
-     * @param null $perm
+     * @param string $dirName
+     * @param int $perm
      * @return string
      * @throws Exception
      */
@@ -199,7 +199,7 @@ class Ftp extends ServiceBase
 
     /**
      * 列出FTP目录内容
-     * @param null $path
+     * @param string $path
      * @return array
      */
     public function listDir($path = null)
@@ -213,8 +213,9 @@ class Ftp extends ServiceBase
 
     /**
      * 改变FTP路径
-     * @param $path
+     * @param string $path
      * @return bool
+     * @throws Exception
      */
     public function chDir($path)
     {
@@ -227,8 +228,9 @@ class Ftp extends ServiceBase
 
     /**
      * 检查并新建不存在FTP目录
-     * @param $path
+     * @param string $path
      * @return bool
+     * @throws Exception
      */
     public function checkDir($path)
     {
@@ -254,7 +256,7 @@ class Ftp extends ServiceBase
 
     /**
      * 获取FTP文件大小
-     * @param $remoteFile
+     * @param string $remoteFile
      * @return int
      */
     public function getSize($remoteFile)
@@ -264,8 +266,8 @@ class Ftp extends ServiceBase
 
     /**
      * 重命名FTP文件
-     * @param $oldName
-     * @param $newName
+     * @param string $oldName
+     * @param string $newName
      * @return bool
      */
     public function rename($oldName, $newName)
@@ -275,7 +277,7 @@ class Ftp extends ServiceBase
 
     /**
      * 执行命令
-     * @param $command
+     * @param string $command
      * @return bool
      */
     public function execute($command)
@@ -285,6 +287,7 @@ class Ftp extends ServiceBase
 
     /**
      * 关闭FTP连接
+     * @return bool
      */
     public function close()
     {

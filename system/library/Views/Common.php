@@ -53,7 +53,7 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 获取路由
-     * @param null $name
+     * @param string $name
      * @return array|mixed|null
      */
     public function getRoute($name = null)
@@ -84,7 +84,8 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 获取模板插件
-     * @return null
+     * @return object|null
+     * @throws Exception
      */
     public function engine()
     {
@@ -112,6 +113,7 @@ class Common extends ViewBase implements ViewInterfaces
      * 注册变量
      * @param string $name
      * @param mixed $value
+     * @throws Exception
      */
     public function assign($name, $value = null)
     {
@@ -140,6 +142,7 @@ class Common extends ViewBase implements ViewInterfaces
      * @param string $name
      * @param string $default
      * @return array|mixed|null
+     * @throws Exception
      */
     public function get($name = null, $default = null)
     {
@@ -172,7 +175,7 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 设置layout
-     * @param null $layout
+     * @param string $layout
      * @return $this
      * @throws Exception
      */
@@ -189,7 +192,7 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 继承Layout
-     * @param $layout
+     * @param string $layout
      */
     public function inheritLayout($layout)
     {
@@ -200,7 +203,8 @@ class Common extends ViewBase implements ViewInterfaces
      * 获取当前模块的视图路径
      * @param string $subPath
      * @param string $template
-     * @return bool|mixed|string
+     * @return array|mixed|object|string|void|null
+     * @throws Exception
      */
     public function getViewPath($subPath = null, $template = null)
     {
@@ -222,11 +226,12 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 获取其他模块视图路径
-     * @param $module
-     * @param null $subPath
-     * @param null $template
-     * @param null $rootPath
+     * @param string $module
+     * @param string $subPath
+     * @param string $template
+     * @param string $rootPath
      * @return string
+     * @throws Exception
      */
     public function getModuleViewPath($module, $subPath = null, $template = null, $rootPath = null)
     {
@@ -259,7 +264,8 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 设置模板风格
-     * @param $dir
+     * @param string $dir
+     * @throws Exception
      */
     public function setStyle($dir)
     {
@@ -271,7 +277,7 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 开启/关闭/检测是否使用layout
-     * @param null|bool $use
+     * @param bool $use
      * @return bool
      */
     public function useLayout($use = null)
@@ -284,6 +290,7 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 获取layout
+     * @return mixed
      */
     public function getLayout()
     {
@@ -296,6 +303,7 @@ class Common extends ViewBase implements ViewInterfaces
      * @param string $template
      * @param bool $show
      * @return string
+     * @throws Exception
      */
     public function readPart($part, $template = null, $show = true)
     {
@@ -326,6 +334,7 @@ class Common extends ViewBase implements ViewInterfaces
      * 显示part内容
      * @param string $part
      * @param string $template
+     * @throws Exception
      */
     public function showPart($part, $template = null)
     {
@@ -337,6 +346,7 @@ class Common extends ViewBase implements ViewInterfaces
      * @param string $part
      * @param string $template
      * @return string
+     * @throws Exception
      */
     public function getPart($part, $template = null)
     {
@@ -372,8 +382,8 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 获取包装的HTML
-     * @param $path
-     * @param null $template
+     * @param string $path
+     * @param string $template
      * @param bool $cache
      * @return bool|string
      */
@@ -437,6 +447,7 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 获取当前模板
+     * @return mixed
      */
     public function getTpl()
     {
@@ -445,7 +456,7 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 渲染模板
-     * @param null $file
+     * @param string $file
      * @param array $vars
      * @param bool $required
      * @return mixed|null
@@ -481,7 +492,7 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 渲染Layout
-     * @param $layout
+     * @param string $layout
      * @throws Exception
      */
     public function renderLayout($layout)
@@ -504,7 +515,7 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 输出内容
-     * @param $content
+     * @param string $content
      * @throws Exception
      */
     public function outputFile($content)
@@ -526,6 +537,7 @@ class Common extends ViewBase implements ViewInterfaces
      * @param string $file
      * @param bool $required
      * @return mixed|null
+     * @throws Exception
      */
     public function readTpl($file, $required = true)
     {
@@ -565,7 +577,8 @@ class Common extends ViewBase implements ViewInterfaces
      * 缓存HTML
      * @param string $path
      * @param bool $ban
-     * @return mixed
+     * @return array|string
+     * @throws Exception
      */
     public function readFile($path, $ban = true)
     {
@@ -586,10 +599,11 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 包装为HTML内容
-     * @param array|string $type
+     * @param string $type
      * @param string $value
      * @param bool $cache
      * @return string
+     * @throws Exception
      */
     private function wrapHtml($type, $value, $cache = true)
     {
@@ -622,7 +636,7 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 输出内容
-     * @param $content
+     * @param string $content
      * @throws Exception
      */
     public function outputApi($content)
@@ -639,7 +653,7 @@ class Common extends ViewBase implements ViewInterfaces
 
     /**
      * 渲染API结果
-     * @param $result
+     * @param mixed $result
      * @return mixed
      * @throws Exception
      */

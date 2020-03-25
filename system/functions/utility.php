@@ -13,7 +13,7 @@ use Ocara\Exceptions\ErrorException;
 /**
  * 统一路径，将反斜杠换成正斜杠
  * @param $path
- * @return mixed
+ * @return string|string[]
  */
 function ocCommPath($path)
 {
@@ -42,9 +42,9 @@ function ocSimple($data)
 
 /**
  * 检测键名是否存在
- * @param mixed $key
+ * @param string|array $key
  * @param array $data
- * @return array|bool|mixed|null
+ * @return bool
  */
 function ocKeyExists($key, array $data)
 {
@@ -53,9 +53,9 @@ function ocKeyExists($key, array $data)
 
 /**
  * 检测键名
- * @param mixed $key
+ * @param string|array $key
  * @param array $data
- * @return array|bool|null
+ * @return array|bool
  */
 function ocCheckKey($key, array $data)
 {
@@ -81,10 +81,11 @@ function ocCheckKey($key, array $data)
 
 /**
  * 获取语言文本
- * @param $name
+ * @param string $name
  * @param array $params
- * @param mixed $default
- * @return null
+ * @param null $default
+ * @return array|mixed|object|void|null
+ * @throws Exception
  */
 function ocLang($name, array $params = array(), $default = null)
 {
@@ -101,9 +102,9 @@ function ocLang($name, array $params = array(), $default = null)
 /**
  * 获取配置
  * @param $key
- * @param null $default
+ * @param mixed $default
  * @param bool $unEmpty
- * @return null
+ * @return mixed|null
  * @throws Exception
  */
 function ocConfig($key, $default = null, $unEmpty = false)
@@ -143,11 +144,12 @@ function ocParseKey($key)
 
 /**
  * 获取数组元素值
- * @param mixed $key
+ * @param string|array $key
  * @param array $data
  * @param null $default
  * @param bool $required
- * @return array|bool|mixed|null
+ * @return mixed|null
+ * @throws Exception
  */
 function ocGet($key, array $data, $default = null, $required = false)
 {
@@ -172,9 +174,10 @@ function ocGet($key, array $data, $default = null, $required = false)
 /**
  * 递归设置数组元素值
  * @param array $data
- * @param $key
- * @param $value
+ * @param string|array $key
+ * @param mixed $value
  * @return mixed
+ * @throws Exception
  */
 function ocSet(array &$data, $key, $value)
 {
@@ -302,7 +305,7 @@ function ocDel(array &$data, $key)
  * @param $keys
  * @return array
  */
-function ocIntersectKey($data, $keys)
+function ocIntersectKey(array $data, $keys)
 {
     $keysData = array_fill_keys($keys, null);
     if ($keysData) {
@@ -313,7 +316,7 @@ function ocIntersectKey($data, $keys)
 
 /**
  * 获取异常错误数据
- * @param $exception
+ * @param \Exception|\Error|\ErrorException $exception
  * @param bool $lastError
  * @return array
  */
@@ -410,7 +413,7 @@ function ocShutdownHandle()
 
 /**
  * 输出错误或返回错误处理类
- * @param null $error
+ * @param string|array $error
  * @param array $params
  * @return mixed|\Ocara\Core\Error|null
  * @throws Exception
@@ -594,7 +597,7 @@ function ocBr2nl($str)
 /**
  * JSON编码
  * @param $content
- * @return mixed|Services_JSON_Error|string
+ * @return false|string|string[]|null
  */
 function ocJsonEncode($content)
 {
@@ -625,12 +628,14 @@ function ocBasename($filePath)
 
 /**
  * 新建URL
- * @param $route
+ * @param string|array $route
  * @param array $params
  * @param bool $relative
- * @param null $urlType
+ * @param int $urlType
  * @param bool $static
- * @return mixed
+ * @return array|bool|mixed|string
+ * @throws Exception
+ * @throws ReflectionException
  */
 function ocUrl($route, $params = array(), $relative = false, $urlType = null, $static = true)
 {
@@ -641,7 +646,7 @@ function ocUrl($route, $params = array(), $relative = false, $urlType = null, $s
  * 文件是否存在(windows中区分大小写)
  * @param string $filePath
  * @param bool $check
- * @return bool|mixed|string
+ * @return bool|mixed|string|string[]
  */
 function ocFileExists($filePath, $check = false)
 {
@@ -676,9 +681,9 @@ function ocHump($name, $sep = OC_EMPTY)
 
 /**
  * 驼峰式转下划线
- * @param $str
+ * @param string $str
  * @param string $sep
- * @return null|string|string[]
+ * @return string|string[]|null
  */
 function ocHumpToLine($str, $sep = '_')
 {
@@ -733,7 +738,7 @@ function ocExecTime()
 
 /**
  * 获取类的全名
- * @param $name
+ * @param string $name
  * @return string
  */
 function ocClassName($name)
@@ -750,7 +755,7 @@ function ocClassName($name)
  */
 /**
  * 获取协议主机
- * @param $host
+ * @param string $host
  * @param bool $requireProtocol
  * @return string
  */
@@ -764,9 +769,10 @@ function ocHost($host, $requireProtocol = true)
 
 /**
  * 获取完整路径
- * @param $dir
- * @param null $path
- * @return mixed
+ * @param string $dir
+ * @param string $path
+ * @return array|mixed|object|void|null
+ * @throws Exception
  */
 function ocPath($dir, $path = null)
 {
@@ -775,9 +781,10 @@ function ocPath($dir, $path = null)
 
 /**
  * 获取完整文件路径，检查文件是否存在
- * @param $dir
- * @param $path
- * @return mixed
+ * @param string $dir
+ * @param string $path
+ * @return string
+ * @throws Exception
  */
 function ocFile($dir, $path)
 {
@@ -786,8 +793,8 @@ function ocFile($dir, $path)
 
 /**
  * 获取绝对URL
- * @param $dir
- * @param null $subPath
+ * @param string $dir
+ * @param string $subPath
  * @param bool $root
  * @return mixed
  */
@@ -810,8 +817,8 @@ function ocSimpleUrl($dir, $subPath)
 
 /**
  * 分隔目录
- * @param $filePath
- * @param $separateDir
+ * @param string $filePath
+ * @param string $separateDir
  * @return mixed
  */
 function ocSeparateDir($filePath, $separateDir)
@@ -824,8 +831,8 @@ function ocSeparateDir($filePath, $separateDir)
 
 /**
  * 去除尾部字符串
- * @param $str
- * @param $tail
+ * @param string $str
+ * @param string $tail
  * @return false|string
  */
 function ocStripTail($str, $tail)
@@ -843,7 +850,7 @@ function ocStripTail($str, $tail)
 
 /**
  * 文件首字母大写
- * @param $path
+ * @param string $path
  * @return string
  */
 function ocUpperFile($path)
@@ -853,7 +860,7 @@ function ocUpperFile($path)
 
 /**
  * 文件首字母小写
- * @param $path
+ * @param string $path
  * @return string
  */
 function ocLowerFile($path)

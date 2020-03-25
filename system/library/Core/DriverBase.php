@@ -7,6 +7,8 @@
 
 namespace Ocara\Core;
 
+use Ocara\Exceptions\Exception;
+
 class DriverBase extends Base
 {
     protected $instance;
@@ -65,10 +67,11 @@ class DriverBase extends Base
 
     /**
      * 获取结果集数据
-     * @param int|string $dataType
+     * @param int $dataType
      * @param bool $queryRow
      * @param array $shardingCurrent
      * @return array
+     * @throws Exception
      */
     public function get_all_result($dataType = DriverBase::DATA_TYPE_ARRAY, $queryRow = false, $shardingCurrent = array())
     {
@@ -102,10 +105,11 @@ class DriverBase extends Base
 
     /**
      * 新建类对象
-     * @param $class
-     * @param $data
+     * @param string $class
+     * @param array $data
      * @param array $shardingCurrent
      * @return mixed
+     * @throws Exception
      */
     public function load_object($class, $data, $shardingCurrent = array())
     {
@@ -127,6 +131,7 @@ class DriverBase extends Base
 
     /**
      * 解析参数类型
+     * @return array
      */
     public function get_param_types()
     {

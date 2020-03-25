@@ -34,8 +34,8 @@ abstract class Base extends Basis
 
     /**
      * 魔术方法-调用未定义的方法时
-     * @param $name
-     * @param $params
+     * @param string $name
+     * @param array $params
      * @return mixed
      * @throws Exception
      */
@@ -60,8 +60,8 @@ abstract class Base extends Basis
 
     /**
      * 魔术方法-调用未定义的静态方法时
-     * @param $name
-     * @param $params
+     * @param string $name
+     * @param array $params
      * @throws Exception
      */
     public static function __callStatic($name, $params)
@@ -78,7 +78,7 @@ abstract class Base extends Basis
 
     /**
      * 魔术方法获取自定义属性
-     * @param $property
+     * @param string $property
      * @return mixed
      * @throws Exception
      */
@@ -103,8 +103,8 @@ abstract class Base extends Basis
 
     /**
      * 设置属性
-     * @param $property
-     * @param null $value
+     * @param string $property
+     * @param mixed $value
      */
     protected function setProperty($property, $value = null)
     {
@@ -119,7 +119,7 @@ abstract class Base extends Basis
 
     /**
      * 获取日志对象
-     * @param $logName
+     * @param string $logName
      * @return array|mixed|object|void|null
      * @throws Exception
      */

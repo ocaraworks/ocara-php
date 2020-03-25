@@ -138,7 +138,7 @@ interface Sql
 
     /**
      * 解析查询条件
-     * @param $condition
+     * @param string|array $condition
      * @param string $link
      * @param string $sign
      * @param string $alias
@@ -166,7 +166,7 @@ interface Sql
      * @param array $fields
      * @param array $aliasFields
      * @param bool $unJoined
-     * @param $currentAlias
+     * @param string $currentAlias
      * @param array $primaries
      * @return mixed
      */
@@ -174,7 +174,7 @@ interface Sql
 
     /**
      * 获取字段名称SQL
-     * @param $field
+     * @param string $field
      * @param string $alias
      * @return string
      */

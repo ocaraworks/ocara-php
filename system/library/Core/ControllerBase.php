@@ -7,6 +7,7 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Exceptions\Exception;
 use Ocara\Models\DatabaseModel;
 
@@ -105,7 +106,7 @@ abstract class ControllerBase extends serviceProvider
 
     /**
      * 获取提供器类
-     * @param $controllerType
+     * @param string $controllerType
      * @return string
      * @throws Exception
      */
@@ -124,7 +125,7 @@ abstract class ControllerBase extends serviceProvider
 
     /**
      * 获取提供器特性类
-     * @param $controllerType
+     * @param string $controllerType
      * @return string
      * @throws Exception
      */
@@ -143,7 +144,7 @@ abstract class ControllerBase extends serviceProvider
 
     /**
      * 设置路由
-     * @param $route
+     * @param array $route
      */
     public function setRoute($route)
     {
@@ -201,8 +202,9 @@ abstract class ControllerBase extends serviceProvider
     /**
      * 获取表单并自动验证
      * @param string $name
-     * @return Form
+     * @return Form|Form[]
      * @throws Exception
+     * @throws ReflectionException
      */
     public function form($name = null)
     {
@@ -239,6 +241,8 @@ abstract class ControllerBase extends serviceProvider
 
     /**
      * 表单检测
+     * @return bool|mixed
+     * @throws Exception
      */
     public function checkForm()
     {

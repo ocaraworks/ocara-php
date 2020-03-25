@@ -17,8 +17,9 @@ class ServiceBase extends Base
 
     /**
      * 加载语言文件
-     * @param $filePath
+     * @param string $filePath
      * @param string $languageClass
+     * @throws Exception
      */
     public static function loadLanguage($filePath, $languageClass = null)
     {
@@ -43,7 +44,7 @@ class ServiceBase extends Base
 
     /**
      * 获取语言配置信息
-     * @param $key
+     * @param string $key
      * @param array $params
      * @param null $languageClass
      * @return array
@@ -76,6 +77,7 @@ class ServiceBase extends Base
      * 类文件是否存在
      * @param string $classFile
      * @return array
+     * @throws Exception
      */
     public static function classFileExists($classFile)
     {
@@ -96,7 +98,7 @@ class ServiceBase extends Base
 
     /**
      * 获取语言内容
-     * @param $key
+     * @param string $key
      * @param array $params
      * @return mixed
      * @throws Exception
@@ -109,9 +111,9 @@ class ServiceBase extends Base
 
     /**
      * 显示错误信息
-     * @param $error
+     * @param string $error
      * @param array $params
-     * @param null $languageClass
+     * @param string $languageClass
      * @throws Exception
      */
     public function showError($error, array $params = array(), $languageClass = null)
@@ -125,6 +127,7 @@ class ServiceBase extends Base
 
     /**
      * 错误是否存在
+     * @return bool
      */
     public function errorExists()
     {
@@ -133,6 +136,7 @@ class ServiceBase extends Base
 
     /**
      * 获取错误信息
+     * @return mixed
      */
     public function getError()
     {
@@ -141,7 +145,7 @@ class ServiceBase extends Base
 
     /**
      * 设置错误信息
-     * @param $message
+     * @param string $message
      * @param array $params
      * @return bool
      * @throws Exception

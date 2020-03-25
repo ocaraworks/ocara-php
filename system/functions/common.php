@@ -20,7 +20,7 @@ function ocReplaceSpace($string, $replace = '')
 
 /**
  * 检查扩展
- * @param $extension
+ * @param string $extension
  * @param bool $required
  * @return bool
  * @throws Exception
@@ -41,7 +41,8 @@ function ocCheckExtension($extension, $required = true)
  * 设置或获取全局变量
  * @param string $name
  * @param mixed $value
- * @return array|null
+ * @return mixed
+ * @throws Exception
  */
 function ocGlobal($name, $value = null)
 {
@@ -126,7 +127,7 @@ function ocCheckPath($path, $perm = null, $required = false)
 
 /**
  * 新建类实例
- * @param $name
+ * @param string $name
  * @param array $params
  * @return object
  * @throws Exception
@@ -149,7 +150,7 @@ function ocClass($name, array $params = array())
 
 /**
  * 检测类是否存在
- * @param $class
+ * @param string $class
  * @return bool
  */
 function ocClassExists($class)
@@ -165,7 +166,7 @@ function ocClassExists($class)
 
 /**
  * 加载函数库文件
- * @param $filePath
+ * @param string $filePath
  * @throws Exception
  */
 function ocFunc($filePath)
@@ -187,6 +188,7 @@ function ocFunc($filePath)
  * 使用原生的SQL语句，防止框架进行SQL安全过滤和转义
  * @param string $sql
  * @return mixed|string
+ * @throws Exception
  */
 function ocSql($sql)
 {
@@ -200,8 +202,8 @@ function ocSql($sql)
 
 /**
  * 是否是标准名称
- * @param string $name
- * @return int
+ * @param $name
+ * @return false|int
  */
 function ocIsStandardName($name)
 {
@@ -309,7 +311,7 @@ function ocRead($filePath, $checkPath = true)
 
 /**
  * 读取内容
- * @param $target
+ * @param string $target
  * @return false|int|string
  */
 function ocGetContents($target)
@@ -323,10 +325,11 @@ function ocGetContents($target)
 
 /**
  * 获取远程内容
- * @param $url
- * @param null $data
+ * @param string $url
+ * @param true|string|array $data
  * @param array $headers
  * @return bool|false|string|null
+ * @throws Exception
  */
 function ocRemote($url, $data = null, array $headers = array())
 {
@@ -443,7 +446,13 @@ function ocColumn(array $array, $field)
  * 兼容函数
  */
 if (!function_exists('array_column')) {
-    function array_column($array, $field)
+    /**
+     * array_column
+     * @param $array
+     * @param $field
+     * @return array
+     */
+    function array_column(array $array, $field)
     {
         $data = array();
         foreach ($array as $key => $value) {

@@ -28,10 +28,11 @@ class Common extends BootstrapBase implements BootstrapInterface
 
     /**
      * 运行访问控制器
-     * @param array|string $route
+     * @param array $route
      * @param array $params
-     * @param null $moduleNamespace
-     * @return mixed
+     * @param string $moduleNamespace
+     * @return bool|mixed
+     * @throws Exception
      */
     public function start($route = array(), $params = array(), $moduleNamespace = null)
     {

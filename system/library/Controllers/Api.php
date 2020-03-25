@@ -7,6 +7,7 @@
 
 namespace Ocara\Controllers;
 
+use \ReflectionException;
 use Ocara\Core\ControllerBase;
 use Ocara\Core\Response;
 use Ocara\Exceptions\Exception;
@@ -27,6 +28,7 @@ class Api extends ControllerBase implements ControllerInterface
 
     /**
      * 注册事件
+     * @throws Exception
      */
     public function registerEvents()
     {
@@ -42,6 +44,8 @@ class Api extends ControllerBase implements ControllerInterface
     /**
      * 执行动作
      * @param string $actionMethod
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function doAction($actionMethod)
     {
@@ -65,6 +69,7 @@ class Api extends ControllerBase implements ControllerInterface
 
     /**
      * 执行动作类实例
+     * @throws Exception
      */
     protected function doClassAction()
     {
@@ -93,7 +98,9 @@ class Api extends ControllerBase implements ControllerInterface
 
     /**
      * 渲染API
-     * @param mixed $result
+     * @param null $result
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function render($result = null)
     {
@@ -106,6 +113,8 @@ class Api extends ControllerBase implements ControllerInterface
      * @param mixed $data
      * @param string $message
      * @param string $status
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function renderApi($data = null, $message = null, $status = 'success')
     {

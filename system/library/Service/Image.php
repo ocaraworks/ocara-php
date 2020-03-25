@@ -145,7 +145,7 @@ class Image extends ServiceBase
 
     /**
      * 新建缩略图
-     * @param $proportion
+     * @param array $proportion
      * @param string $dstDir
      * @return bool|int|void|null
      * @throws Exception
@@ -192,7 +192,7 @@ class Image extends ServiceBase
 
     /**
      * 设置源图片
-     * @param $srcPath
+     * @param string $srcPath
      * @return mixed
      * @throws Exception
      */
@@ -216,7 +216,7 @@ class Image extends ServiceBase
 
     /**
      * 设置目标图片
-     * @param $dstPath
+     * @param string $dstPath
      * @param null $perm
      * @throws Exception
      */
@@ -229,8 +229,8 @@ class Image extends ServiceBase
 
     /**
      * 添加水印
-     * @param $markInfo
-     * @param null $suffix
+     * @param array $markInfo
+     * @param string $suffix
      * @return array|bool|false
      * @throws Exception
      */
@@ -284,7 +284,7 @@ class Image extends ServiceBase
 
     /**
      * 删除图片
-     * @param $path
+     * @param string $path
      * @return bool
      */
     public function delImage($path)
@@ -294,8 +294,8 @@ class Image extends ServiceBase
 
     /**
      * 获取图片信息
-     * @param $image
-     * @param $infoName
+     * @param string $image
+     * @param string $infoName
      * @return false|int
      * @throws Exception
      */
@@ -314,9 +314,10 @@ class Image extends ServiceBase
 
     /**
      * 检查路径
-     * @param $path
-     * @param $perm
+     * @param string $path
+     * @param int $perm
      * @return bool
+     * @throws Exception
      */
     protected function checkPath($path, $perm)
     {
@@ -325,8 +326,8 @@ class Image extends ServiceBase
 
     /**
      * 检查图片格式
-     * @param $path
-     * @param $type
+     * @param string $path
+     * @param string $type
      * @throws Exception
      */
     protected function checkImage($path, $type)
@@ -426,10 +427,10 @@ class Image extends ServiceBase
 
     /**
      * 添加图片水印
-     * @param $thumb
-     * @param $markInfo
-     * @param $imgW
-     * @param $imgH
+     * @param object $thumb
+     * @param array $markInfo
+     * @param float $imgW
+     * @param float $imgH
      * @return bool
      * @throws Exception
      */
@@ -471,11 +472,11 @@ class Image extends ServiceBase
 
     /**
      * 分析水印位置
-     * @param $location
-     * @param $imgW
-     * @param $imgH
-     * @param $contentW
-     * @param $contentH
+     * @param string $location
+     * @param float $imgW
+     * @param float $imgH
+     * @param float $contentW
+     * @param float $contentH
      * @return array
      * @throws Exception
      */
@@ -548,8 +549,8 @@ class Image extends ServiceBase
 
     /**
      * 新建真彩色图片
-     * @param $width
-     * @param $height
+     * @param float $width
+     * @param float $height
      * @return false|resource
      * @throws Exception
      */
@@ -588,7 +589,7 @@ class Image extends ServiceBase
 
     /**
      * 获取颜色值，十六进制转成十进制
-     * @param $color
+     * @param string $color
      * @return array
      * @throws Exception
      */
@@ -662,7 +663,7 @@ class Image extends ServiceBase
 
     /**
      * 保存图片文件
-     * @return bool|int
+     * @return bool|false|int
      * @throws Exception
      */
     protected function baseSave()
@@ -682,9 +683,9 @@ class Image extends ServiceBase
 
     /**
      * 图片翻转
-     * @param $type
-     * @param null $suffix
-     * @return bool|int|mixed
+     * @param string $type
+     * @param string $suffix
+     * @return bool|false|int|mixed|null
      * @throws Exception
      */
     protected function flip($type, $suffix = null)

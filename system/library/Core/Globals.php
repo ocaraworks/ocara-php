@@ -23,8 +23,8 @@ class Globals extends Base
 
     /**
      * 获取属性
-     * @param null $name
-     * @return null
+     * @param string $name
+     * @return mixed|null
      */
     public function get($name = null)
     {
@@ -43,8 +43,7 @@ class Globals extends Base
 
     /**
      * 删除属性
-     * @param $name
-     * @return mixed
+     * @param string $name
      */
     public function delete($name)
     {

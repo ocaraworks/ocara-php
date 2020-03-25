@@ -7,6 +7,8 @@
 
 namespace Ocara\Controllers;
 
+use Ocara\Core\Form;
+use \ReflectionException;
 use Ocara\Core\ControllerBase;
 use Ocara\Core\Event;
 use Ocara\Core\Response;
@@ -27,6 +29,7 @@ class Common extends ControllerBase implements ControllerInterface
 
     /**
      * 获取控制器类型
+     * @return string
      */
     public static function controllerType()
     {
@@ -35,6 +38,7 @@ class Common extends ControllerBase implements ControllerInterface
 
     /**
      * 注册事件
+     * @throws Exception
      */
     public function registerEvents()
     {
@@ -56,6 +60,8 @@ class Common extends ControllerBase implements ControllerInterface
     /**
      * 执行动作
      * @param string $actionMethod
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function doAction($actionMethod)
     {
@@ -79,6 +85,7 @@ class Common extends ControllerBase implements ControllerInterface
     /**
      * 执行动作函数方法实体
      * @param $actionMethod
+     * @throws Exception
      */
     protected function doFunctionAction($actionMethod)
     {
@@ -98,6 +105,7 @@ class Common extends ControllerBase implements ControllerInterface
 
     /**
      * 执行动作类实例
+     * @throws Exception
      */
     protected function doClassAction()
     {
@@ -144,8 +152,10 @@ class Common extends ControllerBase implements ControllerInterface
 
     /**
      * 渲染API
-     * @param mixed $result
+     * @param null $result
      * @param bool $useDefault
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function render($result = null, $useDefault = true)
     {
@@ -167,6 +177,8 @@ class Common extends ControllerBase implements ControllerInterface
      * @param null $file
      * @param array $vars
      * @param bool $required
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function renderFile($file = null, array $vars = array(), $required = true)
     {
@@ -193,6 +205,8 @@ class Common extends ControllerBase implements ControllerInterface
      * @param mixed $data
      * @param string $message
      * @param string $status
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function renderApi($data = null, $message = OC_EMPTY, $status = 'success')
     {
@@ -237,9 +251,9 @@ class Common extends ControllerBase implements ControllerInterface
 
     /**
      * 新建表单后处理
-     * @param $name
-     * @param $form
-     * @param Event $event
+     * @param string $name
+     * @param Form $form
+     * @param Event|null $event
      */
     public function afterCreateForm($name, $form, Event $event = null)
     {

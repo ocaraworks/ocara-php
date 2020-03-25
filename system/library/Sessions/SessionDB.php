@@ -49,7 +49,7 @@ class SessionDB extends ServiceProvider
 
     /**
      * 读取session信息
-     * @param $id
+     * @param string $id
      * @return string
      */
     public function read($id)
@@ -65,8 +65,8 @@ class SessionDB extends ServiceProvider
 
     /**
      * 保存session
-     * @param $id
-     * @param $data
+     * @param string $id
+     * @param string $data
      * @return bool
      * @throws Exception
      */
@@ -88,7 +88,7 @@ class SessionDB extends ServiceProvider
 
     /**
      * 销毁session
-     * @param $id
+     * @param string $id
      * @return bool
      */
     public function destroy($id)
@@ -98,7 +98,7 @@ class SessionDB extends ServiceProvider
 
     /**
      * Session垃圾回收
-     * @param null $saveTime
+     * @param int $saveTime
      * @return bool
      */
     public function gc($saveTime = null)

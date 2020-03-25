@@ -7,6 +7,7 @@
 
 namespace Ocara\Dispatchers;
 
+use \ReflectionException;
 use Ocara\Core\Base;
 use Ocara\Exceptions\Exception;
 
@@ -30,9 +31,11 @@ class Common extends Base
 
     /**
      * 分发路由控制器
-     * @param $route
-     * @param null $moduleNamespace
+     * @param array $route
+     * @param string $moduleNamespace
      * @param array $params
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function dispatch($route, $moduleNamespace = null, $params = array())
     {

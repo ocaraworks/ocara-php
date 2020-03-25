@@ -68,7 +68,7 @@ class SocketClient extends SocketBase
 
     /**
      * 发送数据
-     * @param $content
+     * @param string $content
      * @param int $length
      * @return int
      * @throws Exception

@@ -70,7 +70,7 @@ class Date extends ServiceBase
 
     /**
      * 获取时间参数
-     * @param string|numric|array $time
+     * @param string|number|array $time
      * @param string $type
      * @return array|bool|int|mixed|null
      * @throws Exception
@@ -87,7 +87,7 @@ class Date extends ServiceBase
     }
 
     /**增加时间
-     * @param string|numric|array $time
+     * @param string|number|array $time
      * @param integer $number
      * @param string $type
      * @param string $format
@@ -110,7 +110,7 @@ class Date extends ServiceBase
 
     /**
      * 获取时间字符串
-     * @param string|numeric|array $time
+     * @param string|number|array $time
      * @param string $format
      * @return false|string
      */
@@ -124,8 +124,8 @@ class Date extends ServiceBase
 
     /**
      * 获取时间间隔
-     * @param string|numric $startTime
-     * @param string|numric $endTime
+     * @param string|number $startTime
+     * @param string|number $endTime
      * @param string $type
      * @return array
      */
@@ -156,7 +156,7 @@ class Date extends ServiceBase
 
     /**
      * 生成时间戳
-     * @param string|numric|array $time
+     * @param string|number|array $time
      * @return false|int
      */
     public function getTimestamp($time)

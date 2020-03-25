@@ -11,8 +11,8 @@ interface Feature
 {
     /**
      * 获取路由
-     * @param $module
-     * @param $controller
+     * @param string $module
+     * @param string $controller
      * @param array $get
      * @return mixed
      */

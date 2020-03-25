@@ -7,6 +7,7 @@
 
 namespace Ocara\Service;
 
+use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceBase;
 
 final class Auth extends ServiceBase
@@ -33,7 +34,8 @@ final class Auth extends ServiceBase
 
     /**
      * 新建角色
-     * @param string $roleList
+     * @param string|array $roleList
+     * @throws Exception
      */
     public function setRole($roleList)
     {
@@ -42,8 +44,9 @@ final class Auth extends ServiceBase
 
     /**
      * 获取角色信息
-     * @param $roleList
-     * @return array|bool|mixed|null
+     * @param string|array $roleList
+     * @return mixed|null
+     * @throws Exception
      */
     public function getRole($roleList)
     {
@@ -68,6 +71,7 @@ final class Auth extends ServiceBase
      * @param string|array $roleList
      * @param string|array $routeList
      * @param bool $allowed
+     * @throws Exception
      */
     public function setAuth($roleList, $routeList, $allowed = true)
     {
@@ -105,7 +109,8 @@ final class Auth extends ServiceBase
      * 获取权限
      * @param string|array $roleList
      * @param string|array $routeList
-     * @return array|bool|mixed|null
+     * @return array|mixed|null
+     * @throws Exception
      */
     public function getAuth($roleList = null, $routeList = null)
     {
@@ -128,9 +133,10 @@ final class Auth extends ServiceBase
 
     /**
      * 检测权限
-     * @param string $roleList
-     * @param string $routeList
+     * @param string|array $roleList
+     * @param string|array $routeList
      * @return bool
+     * @throws Exception
      */
     public function check($roleList, $routeList)
     {

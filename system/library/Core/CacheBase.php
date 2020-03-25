@@ -12,8 +12,6 @@ use Ocara\Exceptions\Exception;
 class CacheBase extends Base
 {
     protected $connectName;
-
-    protected $slaves = array();
     protected $config = array();
 
     private static $connects = array();
@@ -40,7 +38,7 @@ class CacheBase extends Base
 
     /**
      * 设置连接名称
-     * @param $connectName
+     * @param string $connectName
      */
     public function setConnectName($connectName)
     {
@@ -49,7 +47,7 @@ class CacheBase extends Base
 
     /**
      * 获取连接名称
-     * @return mixed
+     * @return string|null
      */
     public function getConnectName()
     {

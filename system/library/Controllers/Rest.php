@@ -14,6 +14,7 @@ class Rest extends Api
 {
     /**
      * 获取控制器类型
+     * @return string
      */
     public static function controllerType()
     {

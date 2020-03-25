@@ -17,7 +17,7 @@ class Smarty extends ServiceBase implements TemplateInterface
      * 析构函数
      * Smarty constructor.
      * @param $templateDir
-     * @param null $perm
+     * @param int $perm
      * @throws Exception
      */
     public function __construct($templateDir, $perm = null)
@@ -54,6 +54,7 @@ class Smarty extends ServiceBase implements TemplateInterface
      * 设置变量
      * @param string $name
      * @param mixed $value
+     * @throws Exception
      */
     public function set($name, $value)
     {
@@ -62,8 +63,9 @@ class Smarty extends ServiceBase implements TemplateInterface
 
     /**
      * 获取变量
-     * @param null $name
-     * @return string
+     * @param string $name
+     * @return mixed
+     * @throws Exception
      */
     public function get($name = null)
     {
@@ -73,6 +75,7 @@ class Smarty extends ServiceBase implements TemplateInterface
     /**
      * 注册对象
      * @param array $params
+     * @throws Exception
      */
     public function registerObject($params)
     {
@@ -83,6 +86,7 @@ class Smarty extends ServiceBase implements TemplateInterface
     /**
      * 注册插件
      * @param string $params
+     * @throws Exception
      */
     public function registerPlugin($params)
     {
@@ -92,7 +96,8 @@ class Smarty extends ServiceBase implements TemplateInterface
 
     /**
      * 显示文件
-     * @param $file
+     * @param string $file
+     * @throws Exception
      */
     public function display($file)
     {

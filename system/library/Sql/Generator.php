@@ -9,6 +9,7 @@ namespace Ocara\Sql;
 
 use Ocara\Core\Base;
 use Ocara\Core\DatabaseBase;
+use Ocara\Exceptions\Exception;
 
 class Generator extends Base
 {
@@ -38,6 +39,7 @@ class Generator extends Base
     }
 
     /**
+     * 设置SQL
      * @param $sql
      */
     public function setSql($sql)
@@ -46,6 +48,7 @@ class Generator extends Base
     }
 
     /**
+     * 设置字段映映射
      * @param $maps
      */
     public function setMaps($maps)
@@ -54,6 +57,7 @@ class Generator extends Base
     }
 
     /**
+     * 设置关联
      * @param $joins
      */
     public function setJoins($joins)
@@ -62,6 +66,7 @@ class Generator extends Base
     }
 
     /**
+     * 设置字段
      * @param $fields
      */
     public function setFields($fields)
@@ -70,6 +75,7 @@ class Generator extends Base
     }
 
     /**
+     * 设置别名
      * @param $alias
      */
     public function setAlias($alias)
@@ -117,8 +123,9 @@ class Generator extends Base
      * 获取SELECT查询语句
      * @param bool $count
      * @param array $unions
-     * @param null $isFilterCondition
+     * @param bool $isFilterCondition
      * @return array
+     * @throws Exception
      */
     public function genSelectSql($count = false, array $unions = array(), $isFilterCondition = null)
     {
@@ -167,8 +174,9 @@ class Generator extends Base
     /**
      * 获取条件SQL语句
      * @param array $data
-     * @param $isFilterCondition
+     * @param bool $isFilterCondition
      * @return array
+     * @throws Exception
      */
     public function getConditionSql(array $data, $isFilterCondition = null)
     {
@@ -213,8 +221,9 @@ class Generator extends Base
     /**
      * 复杂条件
      * @param array $data
-     * @param $alias
-     * @return array|bool|mixed|string|null
+     * @param string $alias
+     * @return string|array|null
+     * @throws Exception
      */
     public function getComplexWhere(array $data, $alias)
     {
@@ -262,7 +271,7 @@ class Generator extends Base
 
     /**
      * 格式化数据
-     * @param $data
+     * @param array $data
      * @param $isCondition
      * @return mixed
      */
@@ -275,9 +284,10 @@ class Generator extends Base
     }
 
     /**
-     * 字段别名映射过滤
-     * @param $field
-     * @return null
+     *
+     * @param string $field
+     * @return mixed|null
+     * @throws Exception
      */
     public function filterField($field)
     {
@@ -294,8 +304,9 @@ class Generator extends Base
 
     /**
      * 生成条件数据
-     * @param $isFilterCondition
+     * @param bool $isFilterCondition
      * @return string
+     * @throws Exception
      */
     public function genWhereSql($isFilterCondition = null)
     {
@@ -320,9 +331,10 @@ class Generator extends Base
     /**
      * 获取字段列表
      * @param array $fieldsData
-     * @param array $aliasFields
+     * @param string $aliasFields
      * @param bool $unJoined
      * @return mixed
+     * @throws Exception
      */
     public function getFieldsSql($fieldsData, $aliasFields, $unJoined)
     {
@@ -346,8 +358,8 @@ class Generator extends Base
 
     /**
      * 设置字段别名转换映射
-     * @param $tables
-     * @param $currentAlias
+     * @param array $tables
+     * @param string $currentAlias
      * @return array
      */
     public function getAliasFields($tables, $currentAlias)
@@ -379,7 +391,7 @@ class Generator extends Base
 
     /**
      * 是否默认字段
-     * @param $fields
+     * @param array $fields
      * @return bool
      */
     public function isDefaultFields($fields)
@@ -406,9 +418,10 @@ class Generator extends Base
 
     /**
      * 生成数据表SQL
-     * @param $tables
+     * @param array $tables
      * @param $unJoined
      * @return string
+     * @throws Exception
      */
     public function getFromSql($tables, $unJoined)
     {
@@ -458,6 +471,7 @@ class Generator extends Base
      * @param string $alias
      * @param string $on
      * @return mixed
+     * @throws Exception
      */
     public function parseJoinOnSql($alias, $on)
     {
@@ -469,12 +483,13 @@ class Generator extends Base
 
     /**
      * 获取Union语句
-     * @param $sqlData
-     * @param $unions
-     * @param $count
+     * @param array $sqlData
+     * @param array $unions
+     * @param bool $isCount
      * @return array
+     * @throws Exception
      */
-    public function getUnionSql($sqlData, $unions, $count)
+    public function getUnionSql($sqlData, $unions, $isCount)
     {
         list($sql, $params) = $sqlData;
         $plugin = $this->plugin();
@@ -489,7 +504,7 @@ class Generator extends Base
                 $sql .= $plugin->getUnionSql($unionSql, $union['unionAll']);
                 $params = array_merge($params, $unionParams);
             }
-            if ($count) {
+            if ($isCount) {
                 $sql = $plugin->getSubQuerySql($sql, $plugin->getCountSql());
             } elseif (!empty($unions['option'])) {
                 $option = array(
@@ -505,9 +520,10 @@ class Generator extends Base
 
     /**
      * 获取关联链接条件
-     * @param $alias
-     * @param $config
-     * @return null
+     * @param string $alias
+     * @param array $config
+     * @return string|null
+     * @throws Exception
      */
     public function getJoinOnSql($alias, $config)
     {
@@ -537,10 +553,11 @@ class Generator extends Base
 
     /**
      * 获取Insert语句
-     * @param $table
-     * @param $data
-     * @param $isFilterData
+     * @param string $table
+     * @param array $data
+     * @param bool $isFilterData
      * @return mixed
+     * @throws Exception
      */
     public function getInsertSql($table, $data, $isFilterData)
     {
@@ -554,11 +571,12 @@ class Generator extends Base
 
     /**
      * 获取Update语句
-     * @param $table
-     * @param $data
-     * @param $where
-     * @param $isFilterData
+     * @param string $table
+     * @param array $data
+     * @param string|array $where
+     * @param bool $isFilterData
      * @return mixed
+     * @throws Exception
      */
     public function getUpdateSql($table, $data, $where, $isFilterData)
     {
@@ -584,10 +602,11 @@ class Generator extends Base
 
     /**
      * 获取Replace语句
-     * @param $table
-     * @param $data
-     * @param $isFilterData
+     * @param string $table
+     * @param array $data
+     * @param bool $isFilterData
      * @return mixed
+     * @throws Exception
      */
     public function getReplaceSql($table, $data, $isFilterData)
     {

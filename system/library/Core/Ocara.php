@@ -7,6 +7,7 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Exceptions\Exception;
 
 final class Ocara
@@ -22,13 +23,17 @@ final class Ocara
     {
     }
 
+    /**
+     * Ocara constructor.
+     */
     private function __construct()
     {
     }
 
     /**
      * 单例模式引用
-     * @return $this
+     * @return Ocara
+     * @throws Exception
      */
     public static function getInstance()
     {
@@ -41,6 +46,7 @@ final class Ocara
 
     /**
      * 服务注册
+     * @throws Exception
      */
     public static function initialize()
     {
@@ -74,6 +80,7 @@ final class Ocara
     /**
      * 新建应用
      * @param string $moduleType
+     * @throws Exception
      */
     public static function create($moduleType = 'common')
     {
@@ -87,6 +94,7 @@ final class Ocara
      * @param string $bootstrap
      * @return mixed
      * @throws Exception
+     * @throws \ReflectionException
      */
     public static function run($bootstrap = null)
     {
@@ -107,7 +115,8 @@ final class Ocara
 
     /**
      * 开始应用
-     * @param null $bootstrap
+     * @param string $bootstrap
+     * @throws Exception
      */
     public static function start($bootstrap = null)
     {
@@ -137,8 +146,9 @@ final class Ocara
 
     /**
      * 获取框架信息
-     * @param null $key
-     * @return array|bool|mixed|null
+     * @param string $key
+     * @return array|mixed|null
+     * @throws Exception
      */
     public static function getInfo($key = null)
     {

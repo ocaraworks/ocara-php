@@ -13,14 +13,14 @@ interface SessionDatabase
 {
     /**
      * 获取Session内容
-     * @param $sessionId
+     * @param string $sessionId
      * @return string
      */
     public function read($sessionId);
 
     /**
      * 写入Session
-     * @param $data
+     * @param string $data
      * @return bool
      * @throws Exception
      */
@@ -28,7 +28,7 @@ interface SessionDatabase
 
     /**
      * 销毁Session
-     * @param $sessionId
+     * @param string $sessionId
      * @return bool
      */
     public function destory($sessionId);

@@ -7,9 +7,11 @@
 
 namespace Ocara\Models;
 
+use Ocara\Core\Event;
+use \ReflectionException;
+use \ReflectionObject;
 use Ocara\Core\DriverBase;
 use Ocara\Sql\Generator;
-use \ReflectionObject;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\DatabaseBase;
 use Ocara\Core\ModelBase;
@@ -109,6 +111,7 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 获取表名
      * @return mixed
+     * @throws Exception
      */
     public static function getDefaultTableName()
     {
@@ -120,7 +123,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取表名
-     * @return mixed
+     * @return string
      */
     public function getTableName()
     {
@@ -129,7 +132,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取表的全名（包括前缀）
-     * @return mixed
+     * @return string
      * @throws Exception
      */
     public function getTableFullname()
@@ -139,7 +142,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取当前服务器
-     * @return mixed
+     * @return string
      */
     public function getConnectName()
     {
@@ -148,7 +151,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取当前数据库
-     * @return mixed
+     * @return string
      */
     public static function getDatabase()
     {
@@ -157,7 +160,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取当前数据库名称
-     * @return mixed
+     * @return string
      */
     public function getDatabaseName()
     {
@@ -176,7 +179,7 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 执行分库分表
      * @param array $data
-     * @param null $relationModel
+     * @param string $relationModel
      * @return $this
      */
     public function sharding(array $data = array(), $relationModel = null)
@@ -375,7 +378,7 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 字段别名映射
      * @param $field
-     * @return mixed
+     * @return string
      */
     public static function mapField($field)
     {
@@ -387,7 +390,7 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 获取当前数据库对象
      * @param bool $master
-     * @return mixed|null
+     * @return DatabaseBase
      * @throws Exception
      */
     public function db($master = true)
@@ -412,14 +415,18 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 切换数据表
-     * @param $name
-     * @param null $primary
+     * @param string $name
+     * @param string|array $primary
      */
     public function setTable($name, $primary = null)
     {
         $this->tableName = $name;
         if ($primary) {
-            $this->primaries = explode(',', $primary);
+            if (is_array($primary)) {
+                $this->primaries = $primary;
+            } else {
+                $this->primaries = explode(',', $primary);
+            }
         }
     }
 
@@ -428,6 +435,7 @@ abstract class DatabaseModel extends ModelBase
      * @param bool $cache
      * @return $this
      * @throws Exception
+     * @throws ReflectionException
      */
     public function loadFields($cache = true)
     {
@@ -457,8 +465,8 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取字段缓存事件处理
-     * @param $event
-     * @param $eventTarget
+     * @param Event $event
+     * @param object $eventTarget
      * @return array|mixed
      * @throws Exception
      */
@@ -469,9 +477,10 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 保存字段缓存事件处理
-     * @param $fieldsConfig
-     * @param $event
-     * @param $eventTarget
+     * @param array $fieldsConfig
+     * @param Event $event
+     * @param object $eventTarget
+     * @return bool
      * @throws Exception
      */
     public function onSaveCacheFields($fieldsConfig, $event, $eventTarget)
@@ -516,6 +525,9 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取字段
+     * @return array
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function getFieldsInfo()
     {
@@ -528,6 +540,9 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取字段
+     * @return array
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function getFields()
     {
@@ -538,6 +553,8 @@ abstract class DatabaseModel extends ModelBase
      * 是否有字段
      * @param $field
      * @return bool
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function hasField($field)
     {
@@ -546,6 +563,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取自增字段名
+     * @return mixed
      */
     public function getAutoIncrementField()
     {
@@ -574,6 +592,7 @@ abstract class DatabaseModel extends ModelBase
      * @param string $server
      * @param bool $required
      * @return $this
+     * @throws Exception
      */
     public function cache($server = null, $required = false)
     {
@@ -584,6 +603,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 规定使用主库查询
+     * @return $this
      */
     public function master()
     {
@@ -593,6 +613,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 规定使用从库查询
+     * @return $this
      */
     public function slave()
     {
@@ -602,8 +623,8 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 是否过滤数据
-     * @param null $isFilterData
-     * @return $this|null
+     * @param bool $isFilterData
+     * @return $this|mixed|null
      * @throws Exception
      */
     public function filterData($isFilterData = null)
@@ -624,8 +645,8 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 是否过滤数据
-     * @param null $isFilterCondition
-     * @return $this|null
+     * @param bool $isFilterCondition
+     * @return $this|mixed|null
      * @throws Exception
      */
     public function filterCondition($isFilterCondition = null)
@@ -646,12 +667,13 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 保存记录
-     * @param $data
+     * @param array $data
      * @param bool $isUpdate
-     * @param null $conditionSql
+     * @param string $conditionSql
      * @param bool $requireCondition
-     * @return bool|mixed
+     * @return array|bool|int|mixed
      * @throws Exception
+     * @throws ReflectionException
      */
     public function baseSave($data, $isUpdate = false, $conditionSql = null, $requireCondition = true)
     {
@@ -762,6 +784,7 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 预处理
      * @param bool $prepare
+     * @throws Exception
      */
     public function prepare($prepare = true)
     {
@@ -798,8 +821,9 @@ abstract class DatabaseModel extends ModelBase
      * 批量更新记录
      * @param array $data
      * @param int $batchLimit
-     * @return bool|mixed
+     * @return array|bool|int|mixed
      * @throws Exception
+     * @throws ReflectionException
      */
     public function update(array $data, $batchLimit = 1000)
     {
@@ -850,12 +874,12 @@ abstract class DatabaseModel extends ModelBase
         }
     }
 
-    /**
-     * 删除记录
-     * @param null $conditionSql
+    /**删除记录
+     * @param string $conditionSql
      * @param bool $requireCondition
-     * @return mixed
+     * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function baseDelete($conditionSql = null, $requireCondition = true)
     {
@@ -888,9 +912,10 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 直接执行查询语句
-     * @param $sql
+     * @param string $sql
      * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function query($sql)
     {
@@ -915,7 +940,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 直接执行查询语句查询一行
-     * @param $sql
+     * @param string $sql
      * @return bool
      * @throws Exception
      */
@@ -939,7 +964,7 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 获取SQL生成数据
      * @param DatabaseBase $database
-     * @param $sql
+     * @param string $sql
      * @return array
      */
     protected function getSqlData(DatabaseBase $database, $sql)
@@ -1004,13 +1029,13 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
-     * 按条件选择首行
-     * @param mixed $condition
-     * @param null $options
-     * @return $this|array|null
+     *
+     * @param string|array $condition
+     * @param string|array $options
+     * @return array|mixed
      * @throws Exception
      */
-    public function selectOne($condition = false, $options = null)
+    public function selectOne($condition = null, $options = null)
     {
         $result = $this
             ->asEntity()
@@ -1020,8 +1045,8 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 选择多条记录
-     * @param null $condition
-     * @param null $options
+     * @param string|array $condition
+     * @param string|array $options
      * @return array
      * @throws Exception
      */
@@ -1053,7 +1078,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 返回实体对象
-     * @param null $entityClass
+     * @param string $entityClass
      * @return $this
      */
     public function asEntity($entityClass = null)
@@ -1066,7 +1091,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 设置返回数据类型
-     * @param $dataType
+     * @param string $dataType
      * @return $this
      */
     public function setDataType($dataType)
@@ -1086,7 +1111,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 选择多条记录
-     * @param $batchLimit
+     * @param int $batchLimit
      * @param int $totalLimit
      * @return BatchQueryRecords
      */
@@ -1130,7 +1155,8 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取默认实体类
-     * @return string
+     * @return mixed
+     * @throws Exception
      */
     public static function getDefaultEntityClass()
     {
@@ -1142,7 +1168,8 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取实体类
-     * @return bool
+     * @return array|bool|mixed|string|null
+     * @throws Exception
      */
     public function getEntityClass()
     {
@@ -1164,7 +1191,7 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
-     * 设置是否$debug
+     * 设置是否debug
      * @param bool $debug
      * @return $this
      */
@@ -1185,8 +1212,8 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 查询多条记录
-     * @param null $condition
-     * @param null $option
+     * @param string|array $condition
+     * @param string|array $option
      * @param array $executeOptions
      * @return array
      * @throws Exception
@@ -1198,8 +1225,8 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 查询一条记录
-     * @param null $condition
-     * @param null $option
+     * @param string|array $condition
+     * @param string|array $option
      * @param array $executeOptions
      * @return array
      * @throws Exception
@@ -1260,9 +1287,9 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 推入SQL选项
-     * @param $condition
-     * @param $option
-     * @param $queryRow
+     * @param string|array $condition
+     * @param string|array $option
+     * @param bool $queryRow
      */
     public function pushSql($condition, $option, $queryRow)
     {
@@ -1301,14 +1328,15 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 查询数据
-     * @param mixed $condition
-     * @param mixed $options
+     * @param string|array $condition
+     * @param string|array $options
      * @param bool $isQueryRow
      * @param bool $isCount
      * @param null $dataType
      * @param array $executeOptions
-     * @return array|mixed
+     * @return array|bool
      * @throws Exception
+     * @throws ReflectionException
      */
     protected function baseFind($condition, $options, $isQueryRow, $isCount = false, $dataType = null, $executeOptions = array())
     {
@@ -1365,8 +1393,10 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取SQL生成器
-     * @param $plugin
+     * @param DatabaseBase $plugin
      * @return Generator
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function getSqlGenerator($plugin)
     {
@@ -1398,6 +1428,7 @@ abstract class DatabaseModel extends ModelBase
      * @param bool $isMaster
      * @return mixed|null
      * @throws Exception
+     * @throws ReflectionException
      */
     public function connect($isMaster = true)
     {
@@ -1460,7 +1491,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 设置别名
-     * @param $alias
+     * @param string $alias
      * @return $this
      */
     public function alias($alias)
@@ -1531,7 +1562,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 提取条件摘录
-     * @param $data
+     * @param array $data
      * @param string $type
      * @return $this
      */
@@ -1563,7 +1594,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 添加条件
-     * @param $whereOrField
+     * @param string|array $whereOrField
      * @param string $signOrAlias
      * @param mixed $value
      * @param string $alias
@@ -1589,10 +1620,10 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 添加OR条件
-     * @param $whereOrField
-     * @param null $signOrAlias
-     * @param null $value
-     * @param null $alias
+     * @param string|array $whereOrField
+     * @param string $signOrAlias
+     * @param string $value
+     * @param string $alias
      * @return $this
      */
     public function orWhere($whereOrField, $signOrAlias = null, $value = null, $alias = null)
@@ -1613,10 +1644,10 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 生成复杂条件
-     * @param $type
+     * @param string $type
      * @param array $signInfo
-     * @param $field
-     * @param $value
+     * @param string $field
+     * @param mixed $value
      * @param null $alias
      * @return $this
      */
@@ -1680,8 +1711,8 @@ abstract class DatabaseModel extends ModelBase
     /**
      * AND分组条件
      * @param $whereOrField
-     * @param null $sign
-     * @param null $value
+     * @param string $sign
+     * @param mixed $value
      * @return $this
      */
     public function having($whereOrField, $sign = null, $value = null)
@@ -1702,8 +1733,8 @@ abstract class DatabaseModel extends ModelBase
     /**
      * OR分组条件
      * @param $whereOrField
-     * @param null $sign
-     * @param null $value
+     * @param string $sign
+     * @param mixed $value
      * @return $this
      */
     public function orHaving($whereOrField, $sign = null, $value = null)
@@ -1808,9 +1839,10 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 清除查询选项
-     * @param array $optionName
+     * @param $optionName
      * @param bool $delete
      * @return $this
+     * @throws Exception
      */
     public function stripOptions($optionName, $delete = false)
     {
@@ -1849,6 +1881,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取最后执行的SQL
+     * @return array
      */
     public function getLastSql()
     {
@@ -1857,7 +1890,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取表名
-     * @return mixed
+     * @return string
      */
     public static function getTable()
     {
@@ -1888,7 +1921,7 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 合并查询
-     * @param $model
+     * @param string|object $model
      * @param bool $unionAll
      */
     public function baseUnion($model, $unionAll = false)
@@ -1907,11 +1940,12 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 联接查询
-     * @param $class
-     * @param $type
-     * @param $alias
+     * @param string $class
+     * @param string $type
+     * @param string $alias
      * @param bool $on
      * @return $this
+     * @throws Exception
      */
     protected function setJoin($class, $type, $alias, $on = false)
     {
@@ -1951,8 +1985,9 @@ abstract class DatabaseModel extends ModelBase
 
     /**
      * 获取关联配置
-     * @param $key
-     * @return array
+     * @param string $key
+     * @return array|mixed
+     * @throws Exception
      */
     public function getRelateConfig($key)
     {
@@ -1990,7 +2025,9 @@ abstract class DatabaseModel extends ModelBase
      * 魔术方法-调用未定义的静态方法时
      * @param string $name
      * @param array $params
-     * @return mixed
+     * @return mixed|void
+     * @throws Exception
+     * @throws ReflectionException
      */
     public static function __callStatic($name, $params)
     {
@@ -2009,8 +2046,10 @@ abstract class DatabaseModel extends ModelBase
      * 动态查询
      * @param $method
      * @param $fieldName
-     * @param $params
+     * @param array $params
      * @return mixed
+     * @throws Exception
+     * @throws ReflectionException
      */
     protected static function queryDynamic($method, $fieldName, array $params = array())
     {

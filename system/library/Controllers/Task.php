@@ -14,6 +14,7 @@ class Task extends ControllerBase implements ControllerInterface
 {
     /**
      * 获取控制器类型
+     * @return string
      */
     public static function controllerType()
     {

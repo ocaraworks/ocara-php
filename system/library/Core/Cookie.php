@@ -14,7 +14,8 @@ class Cookie extends Base
     /**
      * 获取cookie变量值
      * @param string|array $key
-     * @return array|bool|mixed|null
+     * @return mixed|null
+     * @throws Exception
      */
     public function get($key = null)
     {
@@ -27,7 +28,7 @@ class Cookie extends Base
 
     /**
      * 删除cookie变量
-     * @param $key
+     * @param string|array $key
      * @param string $path
      * @param string $domain
      * @param bool $secure

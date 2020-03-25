@@ -44,7 +44,7 @@ class ExceptionHandler extends Base
 
     /**
      * 错误处理
-     * @param $exception
+     * @param \Exception|\ErrorException|\Error $exception
      * @param bool $lastError
      * @throws Exception
      */
@@ -55,10 +55,10 @@ class ExceptionHandler extends Base
 
     /**
      * 程序错误
-     * @param $level
-     * @param $message
-     * @param $file
-     * @param $line
+     * @param string $level
+     * @param string $message
+     * @param string $file
+     * @param string $line
      * @param string $context
      * @param bool $lastError
      * @return bool
@@ -78,7 +78,7 @@ class ExceptionHandler extends Base
     }
 
     /**
-     * @param $exception
+     * @param \Exception|\ErrorException|\Error $exception
      * @param bool $lastError
      * @throws Exception
      */
@@ -106,7 +106,7 @@ class ExceptionHandler extends Base
 
     /**
      * 设置内容响应返回格式
-     * @param $responseFormat
+     * @param string $responseFormat
      */
     public function setResponseFormat($responseFormat)
     {
@@ -115,9 +115,9 @@ class ExceptionHandler extends Base
 
     /**
      * 输出错误
-     * @param $exception
-     * @param $event
-     * @param $object
+     * @param array $error
+     * @param object $event
+     * @param object $object
      * @throws Exception
      */
     public function output($error, $event = null, $object = null)
@@ -146,9 +146,9 @@ class ExceptionHandler extends Base
 
     /**
      * 错误报告
-     * @param $exception
-     * @param $event
-     * @param $object
+     * @param array $error
+     * @param object $event
+     * @param object $object
      * @throws Exception
      */
     public function report($error, $event, $object)
@@ -159,7 +159,7 @@ class ExceptionHandler extends Base
 
     /**
      * Api处理
-     * @param $error
+     * @param array $error
      * @throws Exception
      */
     protected function apiError($error)

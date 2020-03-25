@@ -9,53 +9,75 @@ namespace Ocara\Core;
 
 use Ocara\Interfaces\ServiceProvider as ServiceProviderInterface;
 use Ocara\Exceptions\Exception;
+use Ocara\Service\Validate as ValidateService;
+use \Ocara\Service\Auth as AuthService;
+use \Ocara\Service\Xml as XmlService;
+use \Ocara\Service\FileCache as FileCacheService;
+use \Ocara\Service\VerifyCode as VerifyCodeService;
+use \Ocara\Service\Mail as MailService;
+use \Ocara\Service\Ftp as FtpService;
+use \Ocara\Service\Image as ImageService;
+use \Ocara\Service\FileLog as FileLogService;
+use \Ocara\Service\Upload as UploadService;
+use \Ocara\Service\File as FileService;
+use \Ocara\Service\Code as CodeService;
+use \Ocara\Service\Excel as ExcelService;
+use \Ocara\Service\Date as DateService;
+use \Ocara\Service\Download as DownloadService;
+use \Ocara\Service\StaticBuilder as StaticBuilderService;
+use \Ocara\Service\Pager as PagerService;
+use \Ocara\Service\ErrorOutput as ErrorOutputService;
+use \Ocara\Dispatchers\Common as CommonDispatcher;
+use \Ocara\Views\Common as CommonView;
+use \Ocara\Views\Api as ApiView;
 
 /**
  * Class ServiceProvider
- * @property \Ocara\Core\Container $container
- * @property \Ocara\Core\CacheFactory $caches;
- * @property \Ocara\Core\DatabaseFactory $databases;
- * @property \Ocara\Core\Request $request
- * @property \Ocara\Core\Response $response
- * @property \Ocara\Core\Api $api
- * @property \Ocara\Core\Error $error
- * @property \Ocara\Dispatchers\Common $dispatcher
- * @property \Ocara\Core\Filter $filter
- * @property \Ocara\Core\Url $url
- * @property \Ocara\Core\Lang $lang
- * @property \Ocara\Core\Cookie $cookie
- * @property \Ocara\Core\Session $session
- * @property \Ocara\Core\Route $route
- * @property \Ocara\Core\Transaction $transaction
- * @property \Ocara\Service\File $file
- * @property \Ocara\Core\Font $font
- * @property \Ocara\Core\StaticPath $staticPath
- * @property \Ocara\Core\Globals $globals
- * @property \Ocara\Service\ErrorOutput $errorOutput
- * @property \Ocara\Core\FormToken $formToken
- * @property \Ocara\Core\Validator $validator
- * @property \Ocara\Service\Code $code
- * @property \Ocara\Service\Excel $excel
- * @property \Ocara\Service\Date $date
- * @property \Ocara\Service\Download $download
- * @property \Ocara\Service\StaticBuilder $staticBuilder
- * @property \Ocara\Service\Pager $pager
- * @property \Ocara\Core\Event $event
- * @property \Ocara\Core\Log $log
- * @property \Ocara\Core\Form $form
- * @property \Ocara\Core\Html $html
- * @property \Ocara\Core\FormManager $formManager
- * @property \Ocara\Service\Validate $validate
- * @property \Ocara\Service\Auth $auth
- * @property \Ocara\Service\Xml $xml
- * @property \Ocara\Service\FileCache $fileCache
- * @property \Ocara\Service\VerifyCode $verifyCode
- * @property \Ocara\Service\Mail $mail
- * @property \Ocara\Service\Ftp $ftp
- * @property \Ocara\Service\Image $image
- * @property \Ocara\Service\FileLog $fileLog
- * @property \Ocara\Service\Upload $upload
- * @property \Ocara\Views\Common|\Ocara\Views\Api $view
+ * @property Container $container
+ * @property CacheFactory $caches;
+ * @property DatabaseFactory $databases;
+ * @property ExceptionHandler $exceptionHandler
+ * @property Request $request
+ * @property Response $response
+ * @property Api $api
+ * @property Error $error
+ * @property Filter $filter
+ * @property Url $url
+ * @property Lang $lang
+ * @property Cookie $cookie
+ * @property Session $session
+ * @property Route $route
+ * @property Transaction $transaction
+ * @property Font $font
+ * @property StaticPath $staticPath
+ * @property Globals $globals
+ * @property FormToken $formToken
+ * @property Validator $validator
+ * @property Event $event
+ * @property Log $log
+ * @property Form $form
+ * @property Html $html
+ * @property FormManager $formManager
+ * @property ValidateService $validate
+ * @property AuthService $auth
+ * @property XmlService $xml
+ * @property FileCacheService $fileCache
+ * @property VerifyCodeService $verifyCode
+ * @property MailService $mail
+ * @property FtpService $ftp
+ * @property ImageService $image
+ * @property FileLogService $fileLog
+ * @property UploadService $upload
+ * @property FileService $file
+ * @property CodeService $code
+ * @property ExcelService $excel
+ * @property DateService $date
+ * @property DownloadService $download
+ * @property StaticBuilderService $staticBuilder
+ * @property PagerService $pager
+ * @property ErrorOutputService $errorOutput
+ * @property CommonDispatcher $dispatcher
+ * @property CommonView|ApiView $view
  */
 class ServiceProvider extends Base implements ServiceProviderInterface
 {
@@ -134,7 +156,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 检测是否可提供服务组件
-     * @param $name
+     * @param string $name
      * @return bool
      */
     public function canService($name)
@@ -146,7 +168,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 检测包含可提供服务组件
-     * @param $name
+     * @param string $name
      * @return bool
      */
     public function contain($name)
@@ -182,7 +204,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 新建动态服务组件
-     * @param $name
+     * @param string $name
      * @param array $params
      * @param array $deps
      * @return array|mixed|object|void|null
@@ -201,8 +223,8 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 动态设置实例
-     * @param $name
-     * @param $service
+     * @param string $name
+     * @param object|string $service
      */
     public function setService($name, $service)
     {
@@ -211,7 +233,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 检测服务组件是否存在
-     * @param $name
+     * @param string $name
      * @return bool
      */
     public function hasService($name)
@@ -221,7 +243,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 获取已注册服务组件
-     * @param $name
+     * @param string $name
      * @return mixed|null
      */
     public function getService($name)
@@ -231,7 +253,7 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 获取资源服务
-     * @param $name
+     * @param string $name
      * @return array|mixed|object|void|null
      * @throws Exception
      */
@@ -242,8 +264,8 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 
     /**
      * 属性不存在时的处理
-     * @param $key
-     * @param $reason
+     * @param string $key
+     * @param string $reason
      * @return array|mixed|object|void|null
      * @throws Exception
      */

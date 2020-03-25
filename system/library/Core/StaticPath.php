@@ -18,7 +18,8 @@ class StaticPath extends Base
     public $delimiter;
 
     /**
-     * 初始化函数
+     * StaticPath constructor.
+     * @throws Exception
      */
     public function __construct()
     {
@@ -31,7 +32,7 @@ class StaticPath extends Base
 
     /**
      * 是否开启
-     * @return null
+     * @return bool|null
      */
     public function isOpen()
     {
@@ -43,8 +44,9 @@ class StaticPath extends Base
      * @param string $module
      * @param string $controller
      * @param string $action
-     * @param string $data
+     * @param array $data
      * @return array|bool
+     * @throws Exception
      */
     public function getStaticFile($module, $controller, $action, $data = null)
     {
@@ -78,10 +80,10 @@ class StaticPath extends Base
 
     /**
      * 获取参数
-     * @param $offset
-     * @param $params
-     * @param $data
-     * @param $paramsStr
+     * @param int $offset
+     * @param array $params
+     * @param array $data
+     * @param string $paramsStr
      * @return array
      * @throws Exception
      */
@@ -119,11 +121,11 @@ class StaticPath extends Base
 
     /**
      * 获取参数数据路径
-     * @param $params
-     * @param $module
-     * @param $controller
-     * @param $action
-     * @param $data
+     * @param array $params
+     * @param string $module
+     * @param string $controller
+     * @param string $action
+     * @param array $data
      * @return array
      * @throws Exception
      */
@@ -156,9 +158,9 @@ class StaticPath extends Base
 
     /**
      * 获取MVC路径
-     * @param $module
-     * @param $controller
-     * @param $action
+     * @param string $module
+     * @param string $controller
+     * @param string $action
      * @return string
      * @throws Exception
      */

@@ -26,13 +26,13 @@ class FormToken extends Base
 
     /**
      * 生成表单令牌
-     * @param $formName
-     * @param $route
+     * @param string $formName
+     * @param array $route
      * @return array|mixed|string
      * @throws Exception
      * @throws ReflectionException
      */
-    public function generate($formName, $route)
+    public function generate($formName, array $route)
     {
         $routeStr = implode(OC_EMPTY, $route);
         $token = $this->fire(self::EVENT_GENERATE_TOKEN, array($formName, $route));

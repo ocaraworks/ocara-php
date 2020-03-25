@@ -15,6 +15,10 @@ class Loader extends Basis
     private $defaultPath;
     private $namespaceMap;
 
+    /**
+     * Loader constructor.
+     * @throws Exception
+     */
     public function __construct()
     {
         $this->defaultPath = ocCommPath(OC_APP_ROOT . 'support');
@@ -33,8 +37,8 @@ class Loader extends Basis
 
     /**
      * 注册命名空间
-     * @param $namespace
-     * @param $path
+     * @param string $namespace
+     * @param string $path
      */
     public function registerNamespace($namespace, $path)
     {
@@ -45,7 +49,7 @@ class Loader extends Basis
 
     /**
      * 格式化命名空间键名
-     * @param $namespace
+     * @param string $namespace
      * @return array
      */
     public function formatNamespaceKey($namespace)
@@ -65,7 +69,7 @@ class Loader extends Basis
 
     /**
      * 自动加载类
-     * @param $class
+     * @param string $class
      * @return bool
      * @throws Exception
      */

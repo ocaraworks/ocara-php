@@ -40,23 +40,23 @@ interface Database
 
     /**
      * 加密字符串
-     * @param $content
+     * @param string $content
      * @return mixed
      */
     public function escapeString($content);
 
     /**
      * 单个字段值格式化为适合类型
-     * @param $fieldsData
-     * @param $field
-     * @param $value
+     * @param array $fieldsData
+     * @param string $field
+     * @param string|number $value
      * @return mixed
      */
     public function formatOneFieldValue($fieldsData, $field, $value);
 
     /**
      * 获取字段定义描述
-     * @param $fieldInfo
+     * @param array $fieldInfo
      * @param array $exceptKeys
      * @return array
      */

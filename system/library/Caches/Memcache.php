@@ -17,7 +17,8 @@ class Memcache extends CacheBase implements CacheInterface
      * 初始化代码
      * @param array $config
      * @param bool $required
-     * @return mixed
+     * @return null
+     * @throws Exception
      */
     public function connect($config, $required = true)
     {
@@ -44,10 +45,11 @@ class Memcache extends CacheBase implements CacheInterface
 
     /**
      * 添加服务器
-     * @param $config
-     * @param $class
+     * @param array $config
+     * @param string $class
+     * @throws Exception
      */
-    private function addServers($config, $class)
+    private function addServers(array $config, $class)
     {
         $plugin = $this->plugin();
         $servers = !empty($config['servers']) ? $config['servers'] : array();
@@ -70,9 +72,10 @@ class Memcache extends CacheBase implements CacheInterface
     /**
      * 设置变量值
      * @param string $name
-     * @param bool $value
+     * @param string $value
      * @param int $expireTime
-     * @return bool
+     * @return bool|mixed
+     * @throws Exception
      */
     public function set($name, $value, $expireTime = 0)
     {
@@ -90,8 +93,9 @@ class Memcache extends CacheBase implements CacheInterface
     /**
      * 获取变量值
      * @param string $name
-     * @param mixed $args
-     * @return null
+     * @param null $args
+     * @return string|null
+     * @throws Exception
      */
     public function get($name, $args = null)
     {
@@ -107,6 +111,7 @@ class Memcache extends CacheBase implements CacheInterface
      * 删除KEY
      * @param string $name
      * @return mixed
+     * @throws Exception
      */
     public function delete($name)
     {

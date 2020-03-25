@@ -29,7 +29,9 @@ class Form extends Base
 
     /**
      * 初始化
+     * Form constructor.
      * @param string $name
+     * @throws Exception
      */
     public function __construct($name)
     {
@@ -73,6 +75,7 @@ class Form extends Base
 
     /**
      * 设置上传表单
+     * @return $this
      */
     public function upload()
     {
@@ -119,7 +122,7 @@ class Form extends Base
 
     /**
      * 删除表单令牌
-     * @return mixed
+     * @return null
      */
     public function deleteToken()
     {
@@ -162,8 +165,8 @@ class Form extends Base
 
     /**
      * 添加关联Model
-     * @param $class
-     * @param null $alias
+     * @param string $class
+     * @param string $alias
      * @return $this
      * @throws Exception
      */
@@ -190,8 +193,8 @@ class Form extends Base
 
     /**
      * 获取或修改字段语言
-     * @param $field
-     * @param null $value
+     * @param string $field
+     * @param string $value
      * @return array|bool|mixed|null
      */
     public function lang($field, $value = null)
@@ -202,8 +205,8 @@ class Form extends Base
 
     /**
      * 获取或修改字段映射
-     * @param $field
-     * @param null $value
+     * @param string $field
+     * @param string $value
      * @return array|bool|mixed|null
      */
     public function map($field, $value = null)
@@ -213,8 +216,8 @@ class Form extends Base
 
     /**
      * 获取或修改设置
-     * @param $type
-     * @param $field
+     * @param string $type
+     * @param string $field
      * @param null $value
      * @return array|bool|mixed|null
      */
@@ -254,7 +257,7 @@ class Form extends Base
 
     /**
      * 获取表单元素
-     * @param null $name
+     * @param string $name
      * @return array|mixed|null
      */
     public function element($name = null)

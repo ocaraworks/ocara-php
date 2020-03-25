@@ -430,6 +430,7 @@ class PdoDriver extends DriverBase implements DriverInterface
      * @param bool $queryRow
      * @param array $shardingCurrent
      * @return array
+     * @throws Exception
      */
     public function get_all_result($dataType = DriverBase::DATA_TYPE_ARRAY, $queryRow = false, $shardingCurrent = array())
     {
@@ -478,8 +479,9 @@ class PdoDriver extends DriverBase implements DriverInterface
     /**
      * 找不到方法时
      * @param string $name
-     * @param $params
+     * @param array $params
      * @return mixed
+     * @throws Exception
      */
     public function __call($name, $params)
     {

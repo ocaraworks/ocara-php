@@ -7,6 +7,7 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Exceptions\Exception;
 use Ocara\Interfaces\Bootstrap;
 
@@ -57,6 +58,7 @@ class Application extends Base
      * 获取语言
      * @param bool $getUpdated
      * @return mixed
+     * @throws Exception
      */
     public function getLanguage($getUpdated = false)
     {
@@ -69,7 +71,7 @@ class Application extends Base
 
     /**
      * 设置默认语言
-     * @param $language
+     * @param string $language
      */
     public function setLanguage($language)
     {
@@ -115,7 +117,7 @@ class Application extends Base
      * 执行控制器路由
      * @param $route
      * @param array $params
-     * @param null $moduleNamespace
+     * @param string $moduleNamespace
      * @return mixed
      * @throws Exception
      */
@@ -128,7 +130,7 @@ class Application extends Base
 
     /**
      * 执行测试
-     * @param $route
+     * @param array|string $route
      * @return mixed
      */
     public function runTest($route = array())
@@ -142,6 +144,7 @@ class Application extends Base
      * 解析路由
      * @return array
      * @throws Exception
+     * @throws ReflectionException
      */
     public function parseRoute()
     {
@@ -162,7 +165,7 @@ class Application extends Base
     /**
      * 获取路由信息
      * @param string $name
-     * @return array|null
+     * @return array|string|null
      */
     public function getRoute($name = null)
     {

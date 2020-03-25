@@ -13,9 +13,9 @@ use Ocara\Exceptions\Exception;
 
 /**
  * Class ServiceProvider
- * @property \Ocara\Core\Application $app
- * @property \Ocara\Core\Config $config
- * @property \Ocara\Core\Lang $lang
+ * @property Application $app
+ * @property Config $config
+ * @property Lang $lang
  */
 class Container extends Basis
 {
@@ -46,7 +46,7 @@ class Container extends Basis
     /**
      * 单例模式绑定实例
      * @param $name
-     * @param null $source
+     * @param mixed $source
      * @param array $params
      * @param array $deps
      * @return $this
@@ -80,7 +80,7 @@ class Container extends Basis
     /**
      * 绑定实例
      * @param $name
-     * @param null $source
+     * @param mixed $source
      * @param array $params
      * @param array $deps
      * @return $this
@@ -113,8 +113,8 @@ class Container extends Basis
 
     /**
      * 获取静态绑定
-     * @param string $name
-     * @return null
+     * @param null $name
+     * @return array|mixed
      */
     public function getBindSingleton($name = null)
     {
@@ -131,7 +131,7 @@ class Container extends Basis
     /**
      * 获取动态绑定
      * @param string $name
-     * @return null
+     * @return array|mixed
      */
     public function getBind($name = null)
     {
@@ -147,9 +147,9 @@ class Container extends Basis
 
     /**
      * 获取绑定数组
-     * @param $source
-     * @param $params
-     * @param $deps
+     * @param mixed $source
+     * @param array $params
+     * @param array $deps
      * @return array
      */
     protected function getMatterArray($source, $params, $deps)
@@ -165,7 +165,7 @@ class Container extends Basis
 
     /**
      * 获取实例
-     * @param null $name
+     * @param string $name
      * @param array $params
      * @param array $deps
      * @return array|mixed|object|void|null
@@ -232,7 +232,7 @@ class Container extends Basis
 
     /**
      * 是否存在实例
-     * @param $name
+     * @param string $name
      * @return bool
      */
     public function hasInstance($name)
@@ -242,7 +242,7 @@ class Container extends Basis
 
     /**
      * 获取类实例
-     * @param null $name
+     * @param string $name
      * @return array|mixed|null
      */
     public function getInstance($name = null)
@@ -258,7 +258,7 @@ class Container extends Basis
 
     /**
      * 设置实例
-     * @param $name
+     * @param string $name
      * @param $instance
      */
     public function setInstance($name, $instance)
@@ -268,7 +268,7 @@ class Container extends Basis
 
     /**
      * 新建实例
-     * @param $name
+     * @param string $name
      * @param array $params
      * @param array $deps
      * @return array|mixed|object|void|null
@@ -288,7 +288,7 @@ class Container extends Basis
 
     /**
      * 生产实例
-     * @param $name
+     * @param string $name
      * @param array $params
      * @param array $deps
      * @return array|mixed|object|void|null
@@ -333,13 +333,13 @@ class Container extends Basis
 
     /**
      * 获取对象实例
-     * @param $matter
-     * @param $params
-     * @param $deps
+     * @param array $matter
+     * @param array $params
+     * @param array $deps
      * @return array|mixed|object|null
      * @throws Exception
      */
-    protected function getMatterInstance($matter, $params, $deps)
+    protected function getMatterInstance(array $matter, array $params, array $deps)
     {
         list($source, $inputParams, $inputDeps) = $matter;
         $params = array_merge($inputParams, $params);
@@ -397,12 +397,12 @@ class Container extends Basis
 
     /**
      * 获取依赖
-     * @param $args
-     * @param $params
+     * @param array $args
+     * @param array $params
      * @return array
      * @throws Exception
      */
-    public function getDependencies($args, $params)
+    public function getDependencies(array $args, array $params)
     {
         $dependencies = array();
 
@@ -441,7 +441,7 @@ class Container extends Basis
 
     /**
      * 获取无法访问的属性
-     * @param $property
+     * @param string $property
      * @return array|mixed|object|void|null
      * @throws Exception
      */

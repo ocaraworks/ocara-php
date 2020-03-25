@@ -19,7 +19,8 @@ class SocketBase extends ServiceBase
     public $error;
 
     /**
-     * 析构函数
+     * SocketBase constructor.
+     * @throws Exception
      */
     public function __construct()
     {
@@ -28,7 +29,7 @@ class SocketBase extends ServiceBase
 
     /**
      * 显示错误
-     * @param string $errorType
+     * @param $errorType
      * @param string $connId
      * @throws Exception
      */

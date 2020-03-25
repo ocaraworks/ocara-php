@@ -7,6 +7,8 @@
 
 namespace Ocara\Core;
 
+use Ocara\Exceptions\Exception;
+
 class Path extends Basis
 {
     protected $maps = array();
@@ -14,6 +16,8 @@ class Path extends Basis
 
     /**
      * 初始化
+     * Path constructor.
+     * @throws \Ocara\Exceptions\Exception
      */
     public function __construct()
     {
@@ -38,7 +42,8 @@ class Path extends Basis
      * @param string $root
      * @param bool $local
      * @param bool $isFile
-     * @return bool|mixed|string
+     * @return bool|mixed|string|string[]
+     * @throws Exception
      */
     public function get($dir, $path, $root = null, $local = true, $isFile = true)
     {
@@ -72,9 +77,10 @@ class Path extends Basis
 
     /**
      * 获取配置映射路径
-     * @param $dir
-     * @param $local
-     * @return string
+     * @param string $dir
+     * @param string $local
+     * @return mixed|string
+     * @throws Exception
      */
     public function getConfigMapDir($dir, $local)
     {

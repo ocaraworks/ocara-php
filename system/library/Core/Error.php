@@ -64,7 +64,8 @@ class Error extends ServiceProvider
      * 抛出程序错误
      * @param string $error
      * @param array $params
-     * @param integer $errorType
+     * @param int $errorType
+     * @throws Exception
      */
     public function trigger($error, array $params = array(), $errorType = E_USER_ERROR)
     {

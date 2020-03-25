@@ -13,8 +13,8 @@ class Font extends Base
 {
     /**
      * 获取字体
-     * @param null $name
-     * @param null $args
+     * @param string $name
+     * @param mixed $args
      * @return bool|mixed|string
      * @throws Exception
      */

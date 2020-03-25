@@ -18,6 +18,7 @@ class Tests extends BootstrapBase implements BootstrapInterface
      * 开始执行
      * @param array $route
      * @return mixed|void
+     * @throws Exception
      */
     public function start($route = array())
     {

@@ -26,7 +26,7 @@ class Log extends Base
     /**
      * 初始化
      * Log constructor.
-     * @param null $logName
+     * @param string $logName
      * @throws Exception
      */
     public function __construct($logName = null)
@@ -38,7 +38,7 @@ class Log extends Base
 
     /**
      * 写日志
-     * @param $message
+     * @param string $message
      * @param array $context
      * @param string $type
      * @throws Exception
@@ -68,7 +68,7 @@ class Log extends Base
 
     /**
      * 信息日志
-     * @param $content
+     * @param string $content
      * @param array $context
      * @throws Exception
      */
@@ -79,7 +79,7 @@ class Log extends Base
 
     /**
      * 调试日志
-     * @param $content
+     * @param string $content
      * @param array $context
      * @throws Exception
      */
@@ -91,7 +91,7 @@ class Log extends Base
     /**
      * 运行时错误不需要马上处理，
      * 但通常应该被记录和监控。
-     * @param $content
+     * @param string $content
      * @param array $context
      * @throws Exception
      */
@@ -102,7 +102,7 @@ class Log extends Base
 
     /**
      * 警告日志
-     * @param $content
+     * @param string $content
      * @param array $context
      * @throws Exception
      */
@@ -113,7 +113,7 @@ class Log extends Base
 
     /**
      * 系统无法使用。
-     * @param $content
+     * @param string $content
      * @param array $context
      * @throws Exception
      */
@@ -124,7 +124,7 @@ class Log extends Base
 
     /**
      * 警告日志
-     * @param $content
+     * @param string $content
      * @param array $context
      * @throws Exception
      */
@@ -135,7 +135,7 @@ class Log extends Base
 
     /**
      * 正常但重要的事件.
-     * @param $content
+     * @param string $content
      * @param array $context
      * @throws Exception
      */
@@ -147,7 +147,7 @@ class Log extends Base
     /**
      * 临界条件
      * 例如: 应用组件不可用，意外的异常。
-     * @param $content
+     * @param string $content
      * @param array $context
      * @throws Exception
      */
@@ -182,9 +182,9 @@ class Log extends Base
 
     /**
      * 获取一行Trace数据
-     * @param $index
-     * @param $format
-     * @param $row
+     * @param int $index
+     * @param string $format
+     * @param array $row
      * @return string
      * @throws Exception
      */

@@ -7,6 +7,7 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Exceptions\Exception;
 
 class Sql extends Base
@@ -17,7 +18,7 @@ class Sql extends Base
 
     /**
      * Sql constructor.
-     * @param $database
+     * @param string $database
      */
     public function __construct($database)
     {
@@ -26,7 +27,7 @@ class Sql extends Base
 
     /**
      * 设置数据库配置
-     * @param $config
+     * @param array $config
      */
     public function setConfig($config)
     {
@@ -35,7 +36,7 @@ class Sql extends Base
 
     /**
      * 获取设置编码SQL
-     * @param $charset
+     * @param string $charset
      * @return string
      */
     public function getSetCharsetSql($charset)
@@ -55,7 +56,7 @@ class Sql extends Base
 
     /**
      * 给逗号分隔的列表加引号
-     * @param $list
+     * @param array|string $list
      * @param string $quote
      * @return array|bool|mixed|string
      * @throws Exception
@@ -82,9 +83,10 @@ class Sql extends Base
     }
 
     /**
-     * 字段名或表名等过滤，仅转义字符
+     * 字段名或表名等过滤
      * @param string $name
-     * @return array|bool|mixed|string
+     * @return array|string
+     * @throws Exception
      */
     public function filterName($name)
     {
@@ -93,9 +95,10 @@ class Sql extends Base
 
     /**
      * 获取表全名
-     * @param $table
-     * @param null $database
-     * @return mixed|string
+     * @param string $table
+     * @param string $database
+     * @return array|mixed|string
+     * @throws Exception
      */
     public function getTableFullname($table, $database = null)
     {
@@ -122,6 +125,7 @@ class Sql extends Base
      * @param string $content
      * @param bool $addSlashes
      * @return array|bool|mixed|string
+     * @throws Exception
      */
     public function filterValue($content, $addSlashes = true)
     {
@@ -140,12 +144,12 @@ class Sql extends Base
 
     /**
      * 值格式解析
-     * @param $value
+     * @param mixed $value
      * @param string $paramType
      * @param bool $ifQuote
      * @param bool $prepare
      * @return array|bool|mixed|string
-     * @throws \Ocara\Exceptions\Exception
+     * @throws Exception
      */
     public function parseValue($value, $paramType = 'where', $ifQuote = true, $prepare = true)
     {
@@ -191,11 +195,12 @@ class Sql extends Base
 
     /**
      * SQL过滤
-     * @param $content
+     * @param string|array $content
      * @param bool $addSlashes
      * @param bool $equal
      * @return array|bool|mixed|string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function filterSql($content, $addSlashes = true, $equal = false)
     {
@@ -208,7 +213,7 @@ class Sql extends Base
      * @param array $mapData
      * @param string $currentAlias
      * @param bool $field2Alias
-     * @return bool|string
+     * @return string
      */
     public function transformFields($sql, $mapData, $currentAlias, $field2Alias = false)
     {
@@ -275,10 +280,11 @@ class Sql extends Base
 
     /**
      * SELECT语句
-     * @param $fields
-     * @param $tables
-     * @param $options
+     * @param string $fields
+     * @param string $tables
+     * @param array $options
      * @return array
+     * @throws Exception
      */
     public function getSelectSql($fields, $tables, $options)
     {
@@ -295,8 +301,8 @@ class Sql extends Base
 
     /**
      * INSERT语句
-     * @param $table
-     * @param $data
+     * @param string $table
+     * @param array $data
      * @return array
      * @throws Exception
      */
@@ -330,7 +336,7 @@ class Sql extends Base
     }
 
     /**
-     * @param $table
+     * @param string $table
      * @param string|array $data
      * @param string|array $where
      * @return array
@@ -358,7 +364,7 @@ class Sql extends Base
 
     /**
      * REPLACE语句
-     * @param $table
+     * @param string $table
      * @param string|array $data
      * @return array
      * @throws Exception
@@ -371,8 +377,8 @@ class Sql extends Base
 
     /**
      * DELETE语句
-     * @param $table
-     * @param $where
+     * @param string $table
+     * @param string|array $where
      * @param string $option
      * @return array
      * @throws Exception
@@ -392,6 +398,7 @@ class Sql extends Base
      * @param string $table
      * @param string $database
      * @return string
+     * @throws Exception
      */
     public function getShowFieldsSql($table, $database = null)
     {
@@ -401,11 +408,12 @@ class Sql extends Base
 
     /**
      * 获取联接语句
-     * @param $type
-     * @param $table
-     * @param $alias
-     * @param $on
+     * @param string $type
+     * @param string $table
+     * @param string $alias
+     * @param string $on
      * @return string
+     * @throws Exception
      */
     public function getJoinSql($type, $table, $alias, $on)
     {
@@ -437,9 +445,10 @@ class Sql extends Base
 
     /**
      * 获取limit字符串
-     * @param $limit
+     * @param int|array $limit
      * @return array|bool|mixed|string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getLimitSql($limit)
     {
@@ -504,6 +513,7 @@ class Sql extends Base
      * @param string $fieldName
      * @param bool $isGroup
      * @return array|string
+     * @throws Exception
      */
     public function getCountSql($countFiled = null, $fieldName = 'total', $isGroup = false)
     {
@@ -521,8 +531,8 @@ class Sql extends Base
 
     /**
      * 获取选项语句
-     * @param $type
-     * @param $options
+     * @param string $type
+     * @param string|array $options
      * @return array|bool|mixed|string
      * @throws Exception
      */
@@ -561,11 +571,12 @@ class Sql extends Base
 
     /**
      * 解析查询条件
-     * @param $condition
+     * @param string $condition
      * @param string $link
      * @param string $sign
      * @param string $alias
-     * @return array|bool|mixed|string
+     * @return bool|string
+     * @throws Exception
      */
     public function parseCondition($condition, $link = 'AND', $sign = '=', $alias = null)
     {
@@ -584,8 +595,9 @@ class Sql extends Base
 
     /**
      * 获取别名SQL
-     * @param $alias
+     * @param string $alias
      * @return bool|string
+     * @throws Exception
      */
     public function getAliasSql($alias)
     {
@@ -635,7 +647,7 @@ class Sql extends Base
      * @param array $fields
      * @param array $aliasFields
      * @param bool $unJoined
-     * @param $currentAlias
+     * @param string $currentAlias
      * @param array $primaries
      * @return mixed
      */
@@ -667,8 +679,8 @@ class Sql extends Base
 
     /**
      * 是否字段选项
-     * @param $value
-     * @return null
+     * @param string $value
+     * @return string|null
      */
     public static function isOptionFieldSql($value)
     {
@@ -701,7 +713,7 @@ class Sql extends Base
 
     /**
      * 检测是否含有别名
-     * @param $field
+     * @param string $field
      * @return bool
      */
     public function hasAlias($field)
@@ -715,10 +727,11 @@ class Sql extends Base
 
     /**
      * 获取字段值SQL
-     * @param $val
+     * @param string $val
      * @param bool $ifQuote
      * @return array|bool|mixed|string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getValueSql($val, $ifQuote = true)
     {
@@ -740,8 +753,8 @@ class Sql extends Base
 
     /**
      * 给符号加空格
-     * @param $sign
-     * @return array|null|string
+     * @param string $sign
+     * @return array|string|null
      */
     public function wrapSign($sign)
     {
@@ -761,8 +774,8 @@ class Sql extends Base
 
     /**
      * 获取表名
-     * @param $databaseName
-     * @param $tableName
+     * @param string $databaseName
+     * @param string $tableName
      * @return string
      */
     public function getTableNameSql($databaseName, $tableName)
@@ -772,7 +785,7 @@ class Sql extends Base
 
     /**
      * 格式化键值数组
-     * @param $data
+     * @param string|array $data
      * @param string $link
      * @param string $sign
      * @param string $alias
@@ -823,7 +836,7 @@ class Sql extends Base
 
     /**
      * 生成条件字符串
-     * @param $data
+     * @param string|array $data
      * @return bool|string
      */
     public function getConditionSql($data)
@@ -865,7 +878,7 @@ class Sql extends Base
 
     /**
      * 获取子查询SQL
-     * @param $sql
+     * @param string $sql
      * @param array|string $options
      * @return string
      */
@@ -906,7 +919,7 @@ class Sql extends Base
 
     /**
      * 将SQL用括号括起来
-     * @param $sql
+     * @param string $sql
      * @return string
      */
     public function wrapSql($sql)
@@ -937,8 +950,8 @@ class Sql extends Base
 
     /**
      * 绑定占位符参数
-     * @param $name
-     * @param $value
+     * @param string $name
+     * @param string|number $value
      */
     public function bind($name, $value)
     {

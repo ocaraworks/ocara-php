@@ -7,6 +7,7 @@
 
 namespace Ocara\Service;
 
+use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceBase;
 
 class FileCache extends ServiceBase
@@ -47,9 +48,10 @@ class FileCache extends ServiceBase
 
     /**
      * 保存数据
-     * @param $filePath
+     * @param string $filePath
      * @param bool $append
-     * @param integer $perm
+     * @param int $perm
+     * @throws Exception
      */
     public function save($filePath, $append = false, $perm = null)
     {
@@ -75,8 +77,8 @@ class FileCache extends ServiceBase
 
     /**
      * 读取缓存内容
-     * @param $filePath
-     * @param null $name
+     * @param string $filePath
+     * @param string $name
      * @return bool|mixed
      */
     public function read($filePath, $name = null)
@@ -97,7 +99,7 @@ class FileCache extends ServiceBase
 
     /**
      * 内部函数-写入数组
-     * @param $data
+     * @param array $data
      * @param int $tabNum
      * @return string
      */
