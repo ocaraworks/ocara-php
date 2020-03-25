@@ -98,7 +98,6 @@ return array(
         'api' => 'Ocara\Core\Api',
         'error' => 'Ocara\Core\Error',
         'dispatcher' => 'Ocara\Dispatchers\Common',
-        'resources' => 'Ocara\Service\ResourceManager',
         'filter' => 'Ocara\Core\Filter',
         'url' => 'Ocara\Core\Url',
         'lang' => 'Ocara\Core\Lang',

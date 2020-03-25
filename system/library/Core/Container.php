@@ -16,7 +16,6 @@ use Ocara\Exceptions\Exception;
  * @property \Ocara\Core\Application $app
  * @property \Ocara\Core\Config $config
  * @property \Ocara\Core\Lang $lang
- * @property \Ocara\Core\ResourceManager $resources
  */
 class Container extends Basis
 {

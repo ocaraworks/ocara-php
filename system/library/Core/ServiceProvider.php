@@ -56,7 +56,6 @@ use Ocara\Exceptions\Exception;
  * @property \Ocara\Service\FileLog $fileLog
  * @property \Ocara\Service\Upload $upload
  * @property \Ocara\Views\Common|\Ocara\Views\Api $view
- * @property \Ocara\Core\ResourceManager $resources
  */
 class ServiceProvider extends Base implements ServiceProviderInterface
 {

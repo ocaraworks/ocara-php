@@ -43,8 +43,8 @@ $dirs = array(
         'temp'
     ),
     'support' => array(
+        'Handlers',
         'Middleware',
-        'Resource',
         'Providers'
     ),
     'tools' => array(
@@ -84,7 +84,6 @@ $files = array(
         'Base/Model/DatabaseEntity',
         'Base/Model/LogicEntity',
         'Base/Middleware',
-        'Base/Resource',
     ),
     'public' => array(
         'pass/tools/index'
