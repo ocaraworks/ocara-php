@@ -45,7 +45,8 @@ $dirs = array(
     'support' => array(
         'Handlers',
         'Middleware',
-        'Providers'
+        'Providers',
+        'validates'
     ),
     'tools' => array(
         'dev/controller/generate',

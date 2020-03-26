@@ -64,13 +64,16 @@ class ServiceBase extends Base
             self::loadLanguage($fileName, $languageClass);
         }
 
-        if ($class && array_key_exists($class, self::$lang)) {
-            $languages = self::$lang[$class];
+        if (self::$lang) {
+            if ($class && array_key_exists($class, self::$lang)) {
+                $languages = self::$lang[$class];
+            } else {
+                $languages = array();
+            }
+            return ocGetLanguage($languages, $key, $params);
         } else {
-            $languages = array();
+            return ocService('lang', true)->get($key, $params);
         }
-
-        return ocGetLanguage($languages, $key, $params);
     }
 
     /**

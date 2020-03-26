@@ -28,7 +28,7 @@ class Validator extends Base
      */
     public function __construct()
     {
-        $this->validate = ocService()->createService('validate');
+        $this->validate = ocService()->get('validate');
     }
 
     /**
@@ -185,10 +185,11 @@ class Validator extends Base
 
     /**
      * 普通验证
-     * @param string $field
-     * @param string $value
-     * @param mixed $validates
+     * @param $field
+     * @param $value
+     * @param $validates
      * @return bool
+     * @throws Exception
      */
     public function common($field, $value, $validates)
     {
@@ -214,7 +215,18 @@ class Validator extends Base
             for ($i = 0; $i < $count; $i++) {
                 $val = $value[$i];
                 $args = array_merge(array($val), $params);
-                $error = call_user_func_array(array(&$this->validate, $method), $args);
+                if (method_exists($this->validate, $method)) {
+                    $error = call_user_func_array(array($this->validate, $method), $args);
+                } else {
+                    $class = 'Validates' . OC_NS_SEP . ucfirst($method);
+                    $method = 'handle';
+                    if (class_exists($class) && method_exists($class, $method)) {
+                        $object = new $class();
+                        $error = call_user_func_array(array($object, $method), $args);
+                    } else {
+                        ocService()->error->show('not_exists_validate_rule', array($method));
+                    }
+                }
                 if ($error) {
                     $this->prepareError($error, $field, $val, $i, $params);
                     return false;

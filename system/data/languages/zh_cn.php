@@ -137,7 +137,8 @@ return array(
     'not_writeable_htaccess' => array(2426, 'htaccess无法写入！'),
     'not_exists_model_join' => array(2417, '%s关联模型类或配置不存在！'),
     'not_exists_database_config' => array(2536, '%s数据库配置不存在！'),
-    'not_exists_cache_config' => array(2536, '%s缓存配置不存在！'),
+    'not_exists_cache_config' => array(2537, '%s缓存配置不存在！'),
+    'not_exists_validate_rule' => array(2538, '验证规则%s不存在！'),
 
     //没有
     'no_config' => array(2501, '找不到该配置：%s。'),

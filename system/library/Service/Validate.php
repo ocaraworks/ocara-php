@@ -8,9 +8,8 @@
 namespace Ocara\Service;
 
 use Ocara\Exceptions\Exception;
-use Ocara\Core\ServiceBase;
 
-class Validate extends ServiceBase
+class Validate extends BaseValidate
 {
     /**
      * 不能为非0的空值
@@ -18,10 +17,10 @@ class Validate extends ServiceBase
      * @return array|bool
      * @throws Exception
      */
-    public static function notEmpty($value)
+    public function notEmpty($value)
     {
         $result = !ocEmpty($value);
-        $result = self::validate($result, 'not_empty');
+        $result = $this->validate($result, 'not_empty');
         return $result;
     }
 
@@ -31,10 +30,10 @@ class Validate extends ServiceBase
      * @return array|false|int
      * @throws Exception
      */
-    public static function standardName($value)
+    public function standardName($value)
     {
         $result = preg_match('/^[a-zA-Z_]+[a-zA-Z0-9_]*$/', $value);
-        $result = self::validate($result, 'is_not_standard_name');
+        $result = $this->validate($result, 'is_not_standard_name');
         return $result;
     }
 
@@ -45,10 +44,10 @@ class Validate extends ServiceBase
      * @return array|bool
      * @throws Exception
      */
-    public static function maxLength($value, $length = 0)
+    public function maxLength($value, $length = 0)
     {
         $result = strlen($value) <= $length;
-        $result = self::validate($result, 'over_max_string_length', array($length));
+        $result = $this->validate($result, 'over_max_string_length', array($length));
         return $result;
     }
 
@@ -59,10 +58,10 @@ class Validate extends ServiceBase
      * @return array|bool
      * @throws Exception
      */
-    public static function minLength($value, $length = 0)
+    public function minLength($value, $length = 0)
     {
         $result = strlen($value) >= $length;
-        $result = self::validate($result, 'less_than_min_string_length', array($length));
+        $result = $this->validate($result, 'less_than_min_string_length', array($length));
         return $result;
     }
 
@@ -74,11 +73,11 @@ class Validate extends ServiceBase
      * @return array|bool
      * @throws Exception
      */
-    public static function betweenLength($value, $min = 0, $max = 1)
+    public function betweenLength($value, $min = 0, $max = 1)
     {
         $len = strlen($value);
         $result = $len >= $min && $len <= $max;
-        $result = self::validate($result, 'not_in_pointed_length', array($min, $max));
+        $result = $this->validate($result, 'not_in_pointed_length', array($min, $max));
         return $result;
     }
 
@@ -88,10 +87,10 @@ class Validate extends ServiceBase
      * @return array|mixed
      * @throws Exception
      */
-    public static function email($value)
+    public function email($value)
     {
         $result = filter_var($value, FILTER_VALIDATE_EMAIL);
-        $result = self::validate($result, 'unvalid_email');
+        $result = $this->validate($result, 'unvalid_email');
         return $result;
     }
 
@@ -101,10 +100,10 @@ class Validate extends ServiceBase
      * @return array|mixed
      * @throws Exception
      */
-    public static function ip($value)
+    public function ip($value)
     {
         $result = filter_var($value, FILTER_VALIDATE_IP);
-        $result = self::validate($result, 'unvalid_ip');
+        $result = $this->validate($result, 'unvalid_ip');
         return $result;
     }
 
@@ -114,10 +113,10 @@ class Validate extends ServiceBase
      * @return array|mixed
      * @throws Exception
      */
-    public static function url($value)
+    public function url($value)
     {
         $result = filter_var($value, FILTER_VALIDATE_URL);
-        $result = self::validate($result, 'unvalid_url');
+        $result = $this->validate($result, 'unvalid_url');
         return $result;
     }
 
@@ -128,10 +127,10 @@ class Validate extends ServiceBase
      * @return array|false|int
      * @throws Exception
      */
-    public static function regExp($value, $expression = '')
+    public function regExp($value, $expression = '')
     {
         $result = preg_match($expression, $value);
-        $result = self::validate($result, 'unvalid_express_format', array($expression));
+        $result = $this->validate($result, 'unvalid_express_format', array($expression));
         return $result;
     }
 
@@ -141,10 +140,10 @@ class Validate extends ServiceBase
      * @return array|false|int
      * @throws Exception
      */
-    public static function idCard($value)
+    public function idCard($value)
     {
         $result = preg_match('/^\d{15}|\d{18}$/', $value);
-        $result = self::validate($result, 'unvalid_id_cards');
+        $result = $this->validate($result, 'unvalid_id_cards');
         return $result;
     }
 
@@ -154,10 +153,10 @@ class Validate extends ServiceBase
      * @return array|false|int
      * @throws Exception
      */
-    public static function mobile($value)
+    public function mobile($value)
     {
         $result = preg_match('/^[1]\d{10}$/', $value);
-        $result = self::validate($result, 'unvalid_mobile');
+        $result = $this->validate($result, 'unvalid_mobile');
         return $result;
     }
 
@@ -167,10 +166,10 @@ class Validate extends ServiceBase
      * @return array|false|int
      * @throws Exception
      */
-    public static function chinese($value)
+    public function chinese($value)
     {
         $result = preg_match('/^[\x{4e00}-\x{9fa5}]+$/u', $value);
-        $result = self::validate($result, 'must_be_chinese_all');
+        $result = $this->validate($result, 'must_be_chinese_all');
         return $result;
     }
 
@@ -180,10 +179,10 @@ class Validate extends ServiceBase
      * @return array|bool
      * @throws Exception
      */
-    public static function noneChinese($value)
+    public function noneChinese($value)
     {
         $result = !preg_match('/[\x{4e00}-\x{9fa5}]+/u', $value);
-        $result = self::validate($result, 'cannot_have_chinese');
+        $result = $this->validate($result, 'cannot_have_chinese');
         return $result;
     }
 
@@ -193,26 +192,10 @@ class Validate extends ServiceBase
      * @return array|bool
      * @throws Exception
      */
-    public static function postNum($value)
+    public function postNum($value)
     {
         $result = !preg_match('/^[1-9]\d{5}(?!\d)$/', $value);
-        $result = self::validate($result, 'unvalid_post_num');
+        $result = $this->validate($result, 'unvalid_post_num');
         return $result;
-    }
-
-    /**
-     * 验证
-     * @param string $expression
-     * @param string $error
-     * @param array $params
-     * @return array
-     * @throws Exception
-     */
-    public static function validate($expression, $error, array $params = array())
-    {
-        if (!$expression) {
-            return array($error, self::getMessage($error, $params));
-        }
-        return array();
     }
 }
