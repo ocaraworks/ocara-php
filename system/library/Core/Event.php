@@ -253,13 +253,17 @@ class Event extends Basis implements EventInterface
         $results = array();
 
         if ($this->handlers) {
-            $handlers = $this->handlers;
-            $handlerLength = count($handlers);
-            array_multisort(array_column(
-                $handlers, 'priority'), SORT_DESC,
-                array_column($handlers, 'index'), SORT_ASC,
-                $handlers
-            );
+            if ($this->isResource) {
+                $handlers = $this->handlers;
+                $handlerLength = count($handlers);
+                array_multisort(array_column(
+                    $handlers, 'priority'), SORT_DESC,
+                    array_column($handlers, 'index'), SORT_ASC,
+                    $handlers
+                );
+            } else {
+                $handlers = array(reset($this->handlers));
+            }
 
             $this->running = true;
             foreach ($handlers as $key => $row) {

@@ -7,14 +7,32 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Exceptions\Exception;
 
 class Route extends Base
 {
     /**
+     * 事件常量
+     */
+    const EVENT_AFTER_GET_ROUTE = 'AFTER_GET_ROUTE';
+
+    /**
+     * 事件注册
+     * @throws Exception
+     */
+    public function registerEvents()
+    {
+        $this->event(self::EVENT_AFTER_GET_ROUTE)
+            ->resource()
+            ->append(ocConfig('RESOURCE.url.after_get_route', 'Ocara\Handlers\RouteHandler'));
+    }
+
+    /**
      * 解析路由
      * @return mixed
      * @throws Exception
+     * @throws ReflectionException
      */
     public function parseRouteInfo()
     {
@@ -62,6 +80,10 @@ class Route extends Base
             $route = $feature->getRoute($module, $controller, $get, $last);
         } else {
             $route = $feature->getRoute($module, $controller, $get);
+        }
+
+        if ($this->event(self::EVENT_AFTER_GET_ROUTE)->has()) {
+            $_GET = $this->fire(self::EVENT_AFTER_GET_ROUTE, array($route, $_GET));
         }
 
         if (PHP_SAPI == 'cli') {

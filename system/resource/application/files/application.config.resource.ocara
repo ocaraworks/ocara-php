@@ -8,11 +8,27 @@ return array(
      * 资源获取事件
      */
     'RESOURCE' => array(
-        /**
+        /*
          * 运行环境配置
          */
         'env' => array(
             'get_env' => '', //获取环境类型回调
+        ),
+
+        /*
+         * URL处理
+         */
+        'url' => array(
+            'parse_query_params' => '', //解析URL参数时回调。为空时默认为Ocara\Handlers\UrlHandler的parseQueryParams()
+            'create_url' => '', //新建URL时回调。为空时默认为Ocara\Handlers\UrlHandler的createUrl()
+            'append_query_params' => '', //追加URL参数时回调。为空时默认为Ocara\Handlers\UrlHandler的appendQueryParams()
+        ),
+
+        /*
+         * ROUTE处理
+         */
+        'route' => array(
+            'after_get_route' => '', //获取控制器路由后回调，为空时默认为Ocara\Handlers\RouteHandler的afterGetRoute()
         ),
 
         /*
