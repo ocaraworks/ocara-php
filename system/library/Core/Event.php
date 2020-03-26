@@ -254,6 +254,9 @@ class Event extends Basis implements EventInterface
 
         if ($this->handlers) {
             if ($this->isResource) {
+                $handlers = array(reset($this->handlers));
+                $handlerLength = 1;
+            } else {
                 $handlers = $this->handlers;
                 $handlerLength = count($handlers);
                 array_multisort(array_column(
@@ -261,10 +264,7 @@ class Event extends Basis implements EventInterface
                     array_column($handlers, 'index'), SORT_ASC,
                     $handlers
                 );
-            } else {
-                $handlers = array(reset($this->handlers));
             }
-
             $this->running = true;
             foreach ($handlers as $key => $row) {
                 $callback = $row['callback'];
