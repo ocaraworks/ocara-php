@@ -360,9 +360,10 @@ abstract class DatabaseEntity extends BaseEntity
     public function create(array $data = array())
     {
         $model = $this->getModel();
+        $transaction = ocService()->transaction;
 
         if ($this->isUseTransaction()) {
-            ocService()->transaction->begin();
+            $transaction->begin();
         }
 
         $this->fire(self::EVENT_BEFORE_CREATE);
@@ -386,7 +387,7 @@ abstract class DatabaseEntity extends BaseEntity
             $this->fire(self::EVENT_AFTER_CREATE);
 
             if ($this->isUseTransaction()) {
-                ocService()->transaction->commit();
+                $transaction->commit();
             }
         }
 

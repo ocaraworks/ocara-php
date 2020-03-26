@@ -11,6 +11,7 @@ class Transaction extends Base
 {
     private $count = 0;
     private $list = array();
+    private $rollbackCount = 0;
 
     /**
      * 推入数据库
@@ -61,14 +62,13 @@ class Transaction extends Base
      */
     public function commit()
     {
-        if ($this->count == 1) {
+        if ($this->count > 1) {
+            $this->count--;
+        } elseif ($this->count == 1) {
             $this->commitAll();
             $this->count = 0;
             $this->list = array();
-        } elseif ($this->count > 1) {
-            $this->count--;
         } else {
-            $this->rollback();
             ocService()->error->show('no_transaction_for_commit');
         }
     }
@@ -78,11 +78,19 @@ class Transaction extends Base
      */
     public function rollback()
     {
-        if ($this->count > 0) {
-            $this->count = 0;
+        if ($this->count > 0 && $this->isRollback() === false) {
             $this->rollbackAll();
-            $this->list = array();
+            $this->rollbackCount++;
         }
+    }
+
+    /**
+     * 是否已标记回滚
+     * @return bool
+     */
+    public function isRollback()
+    {
+        return $this->rollbackCount > 0;
     }
 
     /**
@@ -90,8 +98,10 @@ class Transaction extends Base
      */
     public function commitAll()
     {
-        foreach ($this->list as $database) {
-            $database->commit();
+        if ($this->isRollback() === false) {
+            foreach ($this->list as $database) {
+                $database->commit();
+            }
         }
     }
 
