@@ -280,9 +280,10 @@ abstract class DatabaseEntity extends BaseEntity
 
         if ($data) {
             $this->data($data, true);
+            return $this;
+        } else {
+            return null;
         }
-
-        return $this;
     }
 
     /**
@@ -343,9 +344,10 @@ abstract class DatabaseEntity extends BaseEntity
                 $condition[$field] = $this->$field;
             }
             $this->getPrimaryCondition($condition);
+            return $this;
+        } else {
+            return null;
         }
-
-        return $this;
     }
 
     /**
