@@ -194,7 +194,7 @@ class PdoDriver extends DriverBase implements DriverInterface
      * 回退事务
      * @return mixed
      */
-    public function rollBack()
+    public function rollback()
     {
         return $this->instance->rollBack();
     }

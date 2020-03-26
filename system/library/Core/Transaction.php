@@ -68,6 +68,7 @@ class Transaction extends Base
         } elseif ($this->count > 1) {
             $this->count--;
         } else {
+            $this->rollback();
             ocService()->error->show('no_transaction_for_commit');
         }
     }

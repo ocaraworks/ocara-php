@@ -16,6 +16,7 @@ use Ocara\Exceptions\Exception;
  * @property Application $app
  * @property Config $config
  * @property Lang $lang
+ * @property ExceptionHandler $exceptionHandler
  */
 class Container extends Basis
 {
