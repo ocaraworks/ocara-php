@@ -60,8 +60,9 @@ abstract class Base extends Basis
 
     /**
      * 魔术方法-调用未定义的静态方法时
-     * @param string $name
-     * @param array $params
+     * @param $name
+     * @param $params
+     * @return array|mixed|object|void|null
      * @throws Exception
      */
     public static function __callStatic($name, $params)
@@ -70,8 +71,7 @@ abstract class Base extends Basis
             $eventName = lcfirst(substr($name, 5));
             $event = ocContainer()->create('event');
             $event->setName($eventName);
-            self::$classEvents[self::getClass()][$eventName] = $event;
-            return self::$classEvents[self::getClass()][$eventName];
+            return self::$classEvents[static::getClass()][$eventName] = $event;
         }
         return ocService()->error->show('no_method', array($name));
     }
@@ -229,9 +229,10 @@ abstract class Base extends Basis
     {
         if (empty($this->isRegisteredEvent)) {
             $this->isRegisteredEvent = true;
-            if (array_key_exists(self::getClass(), self::$classEvents)) {
-                foreach (self::$classEvents[self::getClass()] as $eventName => $handlers) {
-                    $this->events[$eventName] = self::$classEvents[self::getClass()][$eventName];
+            $class = static::getClass();
+            if (array_key_exists($class, self::$classEvents)) {
+                foreach (self::$classEvents[$class] as $eventName => $handlers) {
+                    $this->events[$eventName] = self::$classEvents[$class][$eventName];
                 }
             }
             $this->registerEvents();

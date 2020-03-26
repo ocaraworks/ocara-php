@@ -266,13 +266,14 @@ class Event extends Basis implements EventInterface
                 );
             }
             $this->running = true;
+
             foreach ($handlers as $key => $row) {
                 $callback = $row['callback'];
                 if ($row['is_group'] && is_array($callback)) {
                     array_walk($callback, array($this, 'formatCallback'));
                     $callbackResult = array();
                     foreach ($callback as $oneKey => $one) {
-                        if ($this->canCallback($one)) {
+                        if ($one && $this->canCallback($one)) {
                             $callbackResult[$oneKey] = $this->runCallback($one, $params);
                         }
                     }
@@ -281,7 +282,7 @@ class Event extends Basis implements EventInterface
                     }
                 } else {
                     $callback = $this->formatCallback($callback);
-                    if ($this->canCallback($callback)) {
+                    if ($callback && $this->canCallback($callback)) {
                         $results[$key] = $this->runCallback($callback, $params);
                     }
                 }
@@ -290,7 +291,7 @@ class Event extends Basis implements EventInterface
             $handlerLength = 2;
             $this->running = true;
             $callback = $this->formatCallback($this->defaultHandler);
-            if ($this->canCallback($callback)) {
+            if ($callback && $this->canCallback($callback)) {
                 $results[] = $this->runCallback($callback, $params);
             }
         }
@@ -352,7 +353,8 @@ class Event extends Basis implements EventInterface
             }
             $reflection = new ReflectionClass($callback);
             if (!$reflection->hasMethod($method)) {
-                ocService()->error->show('invalid_event_class_handler');
+                ocService()->error->writeLog('invalid_event_class_handler');
+                return null;
             }
             $callback = array($callback, $method);
         }

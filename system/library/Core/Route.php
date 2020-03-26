@@ -15,7 +15,7 @@ class Route extends Base
     /**
      * 事件常量
      */
-    const EVENT_AFTER_GET_ROUTE = 'AFTER_GET_ROUTE';
+    const EVENT_AFTER_GET_ROUTE = 'afterGetRoute';
 
     /**
      * 事件注册
