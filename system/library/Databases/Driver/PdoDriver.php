@@ -200,6 +200,15 @@ class PdoDriver extends DriverBase implements DriverInterface
     }
 
     /**
+     * 检查是否在一个事务内
+     * @return mixed
+     */
+    public function inTransaction()
+    {
+        return $this->instance->inTransaction();
+    }
+
+    /**
      * 设置是否自动提交事务
      * @param bool $autocommit
      * @return mixed

@@ -460,6 +460,7 @@ class DatabaseBase extends Base
      * 选择数据库
      * @param string $name
      * @throws Exception
+     * @throws ReflectionException
      */
     public function selectDatabase($name = null)
     {
@@ -547,7 +548,6 @@ class DatabaseBase extends Base
     public function rollback()
     {
         $result = $this->plugin()->rollback();
-        $this->autocommit(true);
         return $result;
     }
 
@@ -556,6 +556,7 @@ class DatabaseBase extends Base
      * @param string $option
      * @param string $type
      * @param array $params
+     * @throws Exception
      */
     public function bindParam($option, $type, &$params)
     {
