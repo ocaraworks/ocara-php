@@ -83,7 +83,10 @@ class Route extends Base
         }
 
         if ($this->event(self::EVENT_AFTER_GET_ROUTE)->has()) {
-            $_GET = $this->fire(self::EVENT_AFTER_GET_ROUTE, array($route, $_GET));
+            $get = $this->fire(self::EVENT_AFTER_GET_ROUTE, array($route, $_GET));
+            if ($get && is_array($get)) {
+                $_GET = $get;
+            }
         }
 
         if (PHP_SAPI == 'cli') {
