@@ -727,8 +727,9 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 获取最后一次插入记录的自增ID
      * @param string $sql
-     * @return array|int|mixed
+     * @return bool|int|mixed
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getInsertId($sql = null)
     {
@@ -756,8 +757,9 @@ abstract class DatabaseModel extends ModelBase
      * 检测表是否存在
      * @param string $table
      * @param bool $required
-     * @return bool|mixed|void
+     * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function tableExists($table, $required = false)
     {
@@ -795,6 +797,7 @@ abstract class DatabaseModel extends ModelBase
      * 推入事务池中
      * @param DatabaseBase|null $plugin
      * @throws Exception
+     * @throws ReflectionException
      */
     public function pushTransaction(DatabaseBase $plugin = null)
     {
@@ -808,6 +811,7 @@ abstract class DatabaseModel extends ModelBase
      * 新建记录
      * @param array $data
      * @return mixed
+     * @throws Exception
      */
     public function create(array $data)
     {
@@ -850,8 +854,9 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 批量删除记录
      * @param int $batchLimit
-     * @return mixed
+     * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function delete($batchLimit = 1000)
     {
@@ -943,6 +948,7 @@ abstract class DatabaseModel extends ModelBase
      * @param string $sql
      * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function queryRow($sql)
     {
@@ -1029,11 +1035,12 @@ abstract class DatabaseModel extends ModelBase
     }
 
     /**
-     *
+     * 选择一行
      * @param string|array $condition
      * @param string|array $options
-     * @return array|mixed
+     * @return array|bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function selectOne($condition = null, $options = null)
     {
@@ -1047,8 +1054,9 @@ abstract class DatabaseModel extends ModelBase
      * 选择多条记录
      * @param string|array $condition
      * @param string|array $options
-     * @return array
+     * @return array|bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function selectAll($condition = null, $options = null)
     {
@@ -1080,6 +1088,7 @@ abstract class DatabaseModel extends ModelBase
      * 返回实体对象
      * @param string $entityClass
      * @return $this
+     * @throws Exception
      */
     public function asEntity($entityClass = null)
     {
