@@ -72,6 +72,12 @@ class Container extends Basis
             $matter = $this->getMatterArray($source, $params, $deps);
             if ($matter) {
                 $this->bindSingletons[$name] = $matter;
+                if (is_string($source)) {
+                    $source = ocClassName($source);
+                    if ($source != $name) {
+                        $this->bindSingleton($source, $source, $params, $deps);
+                    }
+                }
             }
         }
 
@@ -106,6 +112,12 @@ class Container extends Basis
             $matter = $this->getMatterArray($source, $params, $deps);
             if ($matter) {
                 $this->binds[$name] = $matter;
+                if (is_string($source)) {
+                    $source = ocClassName($source);
+                    if ($source != $name) {
+                        $this->bind($source, $source, $params, $deps);
+                    }
+                }
             }
         }
 

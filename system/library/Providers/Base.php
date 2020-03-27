@@ -16,29 +16,7 @@ class Base extends ServiceProvider
      */
     public function register()
     {
-        $this->initService(ocConfig('SYSTEM_SINGLETON_SERVICE_CLASS'), 'bindSingleton');
-        $this->initService(ocConfig('SYSTEM_SERVICE_CLASS'), 'bind');
-    }
-
-    /**
-     * 初始化服务组件
-     * @param array $services
-     * @param string $method
-     */
-    protected function initService($services, $method)
-    {
-        foreach ($services as $name => $namespace) {
-            $this->container->$method($name, function () use ($namespace) {
-                $args = func_get_args();
-                if (class_exists($namespace)) {
-                    if (method_exists($namespace, 'getInstance')) {
-                        return call_user_func_array(array($namespace, 'getInstance'), $args);
-                    } else {
-                        return ocClass($namespace, $args);
-                    }
-                }
-                return null;
-            });
-        }
+        $this->container->bindSingleton(ocConfig('SYSTEM_SINGLETON_SERVICE_BINDS'));
+        $this->container->bind(ocConfig('SYSTEM_SERVICE_BINDS'));
     }
 }

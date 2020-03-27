@@ -139,7 +139,7 @@ class ExceptionHandler extends Base
             if (!$contentType) {
                 $response->setContentType(ocConfig('DEFAULT_PAGE_CONTENT_TYPE', 'html'));
             }
-            $defaultOutput = ocConfig(array('SYSTEM_SINGLETON_SERVICE_CLASS', 'errorOutput'));
+            $defaultOutput = ocConfig(array('SYSTEM_SINGLETON_SERVICE_BINDS', 'errorOutput'));
             ocService('errorOutput', $defaultOutput)->display($error);
         }
     }
