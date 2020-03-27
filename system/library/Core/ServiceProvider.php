@@ -87,7 +87,6 @@ class ServiceProvider extends Base implements ServiceProviderInterface
 {
     protected $container;
     protected $services = array();
-    private static $default;
 
     /**
      * 初始化
@@ -101,29 +100,6 @@ class ServiceProvider extends Base implements ServiceProviderInterface
         $this->setContainer($container ?: new Container());
         $this->register();
         $this->init();
-    }
-
-    /**
-     * 设置默认服务提供器
-     * @param ServiceProvider $provider
-     */
-    public static function setDefault(ServiceProvider $provider)
-    {
-        if (self::$default === null) {
-            self::$default = $provider;
-        }
-    }
-
-    /**
-     * 获取默认服务提供器
-     * @return ServiceProvider
-     */
-    public static function getDefault()
-    {
-        if (self::$default === null) {
-            self::$default = new static();
-        }
-        return self::$default;
     }
 
     /**

@@ -24,25 +24,10 @@ class Container extends Basis
      * @var array $binds 动态绑定类
      * @var array $bindSingletons 单例绑定类
      * @var array $instances 类实例
-     * @var object $default 默认容器
      */
     public $binds = array();
     public $bindSingletons = array();
     public $instances = array();
-
-    private static $default;
-
-    /**
-     * 获取默认容器
-     * @return Container
-     */
-    public static function getDefault()
-    {
-        if (self::$default === null) {
-            self::$default = new static();
-        }
-        return self::$default;
-    }
 
     /**
      * 单例模式绑定实例
@@ -440,8 +425,6 @@ class Container extends Basis
                     $class = $this->create($name);
                 } elseif ($this->hasBindSingleton($name)) {
                     $class = $this->get($name);
-                } elseif ($this !== self::$default && self::$default && self::$default->has($name)) {
-                    $class = self::$default->create($name);
                 }
             }
             if ($class) {
