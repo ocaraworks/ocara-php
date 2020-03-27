@@ -1665,7 +1665,7 @@ abstract class DatabaseModel extends ModelBase
      * @param array $signInfo
      * @param string $field
      * @param mixed $value
-     * @param null $alias
+     * @param string $alias
      * @return $this
      */
     public function complexWhere($type, array $signInfo, $field, $value, $alias = null)
