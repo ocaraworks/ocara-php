@@ -96,7 +96,7 @@ class ExceptionHandler extends Base
             $this->fire(self::EVENT_OUTPUT, array($error));
             $this->fire(self::EVENT_AFTER_OUTPUT, array($error));
         } catch (\Exception $exception) {
-            $this->output($exception);
+            $this->output($error);
         } catch (\Error $error) {
             $this->output($error);
         }

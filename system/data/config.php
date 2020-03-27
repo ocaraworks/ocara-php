@@ -95,6 +95,7 @@ return array(
         'databases' => 'Ocara\Core\DatabaseFactory',
         'request' => 'Ocara\Core\Request',
         'response' => 'Ocara\Core\Response',
+        'eventRegistry' => 'Ocara\Core\EventRegistry',
         'api' => 'Ocara\Core\Api',
         'error' => 'Ocara\Core\Error',
         'dispatcher' => 'Ocara\Dispatchers\Common',

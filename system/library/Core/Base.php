@@ -19,8 +19,6 @@ abstract class Base extends Basis
     private $events = array();
     private $traits = array();
 
-    private static $classEvents = array();
-
     /**
      * 实例化
      * @param mixed $params
@@ -69,9 +67,7 @@ abstract class Base extends Basis
     {
         if (substr($name, 0, 5) == 'event') {
             $eventName = lcfirst(substr($name, 5));
-            $event = ocContainer()->create('event');
-            $event->setName($eventName);
-            return self::$classEvents[static::getClass()][$eventName] = $event;
+            return ocService()->eventRegistry->newEvent(static::getClass(), $eventName);
         }
         return ocService()->error->show('no_method', array($name));
     }
@@ -229,11 +225,9 @@ abstract class Base extends Basis
     {
         if (empty($this->isRegisteredEvent)) {
             $this->isRegisteredEvent = true;
-            $class = static::getClass();
-            if (array_key_exists($class, self::$classEvents)) {
-                foreach (self::$classEvents[$class] as $eventName => $handlers) {
-                    $this->events[$eventName] = self::$classEvents[$class][$eventName];
-                }
+            $events = ocService()->eventRegistry->getClassEvents(static::getClass());
+            foreach ($events as $eventName => $handlers) {
+                $this->events[$eventName] = $events[$eventName];
             }
             $this->registerEvents();
         }

@@ -37,6 +37,7 @@ use \Ocara\Views\Api as ApiView;
  * @property Path $path
  * @property Loader $loader
  * @property Container $container
+ * @property EventRegistry $eventRegistry
  * @property CacheFactory $caches
  * @property DatabaseFactory $databases
  * @property ExceptionHandler $exceptionHandler
