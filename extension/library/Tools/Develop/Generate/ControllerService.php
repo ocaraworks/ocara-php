@@ -155,10 +155,10 @@ class ControllerService extends BaseService
 
         $content .= "class {$className} extends {$moduleClassName}\r\n";
         $content .= "{\r\n";
-        $content .= "\t/**\r\n";
-        $content .= "\t * 初始化控制器\r\n";
-        $content .= "\t */\r\n";
-        $content .= "\tpublic function __control()\r\n\t{}\r\n";
+        $content .= "    /**\r\n";
+        $content .= "     * 初始化控制器\r\n";
+        $content .= "     */\r\n";
+        $content .= "    public function __control()\r\n    {}\r\n";
         $content .= "}";
 
         ocCheckPath($controlPath . $this->cname);

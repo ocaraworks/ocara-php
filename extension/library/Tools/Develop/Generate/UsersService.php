@@ -42,7 +42,7 @@ class UsersService extends BaseService
         foreach ($devUsers as $key => $value) {
             $content .= "\r\n";
             $content .= "\$devUsers['{$key}'] = array(\r\n";
-            $content .= "\t'password' => '{$value['password']}'\r\n";
+            $content .= "    'password' => '{$value['password']}'\r\n";
             $content .= ");";
         }
 

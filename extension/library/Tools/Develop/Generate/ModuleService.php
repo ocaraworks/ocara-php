@@ -63,10 +63,10 @@ class ModuleService extends BaseService
         $content .= "\r\n";
         $content .= "class {$mdlname}Module extends {$baseController}\r\n";
         $content .= "{\r\n";
-        $content .= "\t/**\r\n";
-        $content .= "\t * 初始化模块\r\n";
-        $content .= "\t */\r\n";
-        $content .= "\tpublic function __module()\r\n\t{}\r\n";
+        $content .= "    /**\r\n";
+        $content .= "     * 初始化模块\r\n";
+        $content .= "     */\r\n";
+        $content .= "    public function __module()\r\n    {}\r\n";
         $content .= "}";
 
         $language = ocService()->app->getLanguage();

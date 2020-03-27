@@ -91,18 +91,18 @@ class CacheModelService extends BaseService
         $content .= "\r\n";
         $content .= "class {$modelName} extends {$modelBase}\r\n";
         $content .= "{\r\n";
-        $content .= "\tprotected \$serverName = '{$this->_serverName}';\r\n";
-        $content .= "\tprotected \$prefix = '{$this->_prefix}';\r\n";
+        $content .= "    protected \$serverName = '{$this->_serverName}';\r\n";
+        $content .= "    protected \$prefix = '{$this->_prefix}';\r\n";
 
         if ($cacheType == 'Redis') {
-            $content .= "\tprotected \$database = '{$this->_database}';\r\n";
+            $content .= "    protected \$database = '{$this->_database}';\r\n";
         }
 
         $content .= "\r\n";
-        $content .= "\t/**\r\n";
-        $content .= "\t * 初始化模型\r\n";
-        $content .= "\t */\r\n";
-        $content .= "\tpublic function __model()\r\n\t{}\r\n";
+        $content .= "    /**\r\n";
+        $content .= "     * 初始化模型\r\n";
+        $content .= "     */\r\n";
+        $content .= "    public function __model()\r\n    {}\r\n";
         $content .= "}";
 
         $fileService = ocService()->file;

@@ -142,48 +142,48 @@ class ModelService extends BaseService
         $content .= "{\r\n";
 
         if ($this->_serverName != 'defaults') {
-            $content .= "\tprotected \$serverName = '{$this->_serverName}';\r\n";
+            $content .= "    protected \$serverName = '{$this->_serverName}';\r\n";
         }
 
         if ($this->_mdltype && $this->_mdlname) {
-            $content .= "\tprotected \$module = '{$this->_mdlname}';\r\n";
+            $content .= "    protected \$module = '{$this->_mdlname}';\r\n";
         }
 
         if ($this->_database) {
-            $content .= "\tprotected static \$database = '{$this->_database}';\r\n";
+            $content .= "    protected static \$database = '{$this->_database}';\r\n";
         }
 
-        $content .= "\tprotected static \$table = '{$this->_table}';\r\n";
-        $content .= "\tprotected static \$primary = '{$this->_primaries}';\r\n";
-        $content .= "\tprotected static \$entity = '{$entityClass}';\r\n";
+        $content .= "    protected static \$table = '{$this->_table}';\r\n";
+        $content .= "    protected static \$primary = '{$this->_primaries}';\r\n";
+        $content .= "    protected static \$entity = '{$entityClass}';\r\n";
         $content .= "\r\n";
-        $content .= "\t/**\r\n";
-        $content .= "\t * 初始化模型\r\n";
-        $content .= "\t */\r\n";
-        $content .= "\tpublic function __model()\r\n\t{}\r\n";
+        $content .= "    /**\r\n";
+        $content .= "     * 初始化模型\r\n";
+        $content .= "     */\r\n";
+        $content .= "    public function __model()\r\n    {}\r\n";
         $content .= "\r\n";
-        $content .= "\t/**\r\n";
-        $content .= "\t * 字段别名映射配置\r\n";
-        $content .= "\t * return array\r\n";
-        $content .= "\t */\r\n";
-        $content .= "\tpublic function fieldsMap()\r\n\t{}\r\n";
+        $content .= "    /**\r\n";
+        $content .= "     * 字段别名映射配置\r\n";
+        $content .= "     * return array\r\n";
+        $content .= "     */\r\n";
+        $content .= "    public function fieldsMap()\r\n    {}\r\n";
         $content .= "\r\n";
-        $content .= "\t/**\r\n";
-        $content .= "\t * 表间关联配置\r\n";
-        $content .= "\t * return array\r\n";
-        $content .= "\t */\r\n";
-        $content .= "\tpublic function relations()\r\n\t{}\r\n";
+        $content .= "    /**\r\n";
+        $content .= "     * 表间关联配置\r\n";
+        $content .= "     * return array\r\n";
+        $content .= "     */\r\n";
+        $content .= "    public function relations()\r\n    {}\r\n";
         $content .= "\r\n";
-        $content .= "\t/**\r\n";
-        $content .= "\t * 字段验证配置\r\n";
-        $content .= "\t * return array\r\n";
-        $content .= "\t */\r\n";
-        $content .= "\tpublic function rules()\r\n\t{}\r\n";
+        $content .= "    /**\r\n";
+        $content .= "     * 字段验证配置\r\n";
+        $content .= "     * return array\r\n";
+        $content .= "     */\r\n";
+        $content .= "    public function rules()\r\n    {}\r\n";
 //        $content .= "\r\n";
-//        $content .= "\t/**\r\n";
-//        $content .= "\t * 查询结果行过滤\r\n";
-//        $content .= "\t */\r\n";
-//        $content .= "\tpublic function rowFilters()\r\n\t{}\r\n";
+//        $content .= "    /**\r\n";
+//        $content .= "     * 查询结果行过滤\r\n";
+//        $content .= "     */\r\n";
+//        $content .= "    public function rowFilters()\r\n    {}\r\n";
         $content .= "}";
 
         $fileService = ocService()->file;
@@ -218,14 +218,14 @@ class ModelService extends BaseService
 
         $content .= "class {$entityName} extends {$modelBase}\r\n";
         $content .= "{\r\n";
-        $content .= "\tpublic function __entity()\r\n";
-        $content .= "\t{\r\n";
-        $content .= "\t}\r\n";
+        $content .= "    public function __entity()\r\n";
+        $content .= "    {\r\n";
+        $content .= "    }\r\n";
         $content .= "\r\n";
-        $content .= "\tpublic static function source()\r\n";
-        $content .= "\t{\r\n";
-        $content .= "\t\treturn '{$modelClass}';\r\n";
-        $content .= "\t}\r\n";
+        $content .= "    public static function source()\r\n";
+        $content .= "    {\r\n";
+        $content .= "        return '{$modelClass}';\r\n";
+        $content .= "    }\r\n";
         $content .= "}";
 
         $fileService->createFile($entityPath, 'wb');
