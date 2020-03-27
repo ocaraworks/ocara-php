@@ -17,6 +17,7 @@ class CacheFactory extends Base
      * @var string
      */
     protected $defaultServer = 'defaults';
+    protected $connections = array();
 
     const EVENT_GET_CONFIG = 'getConfig';
 
@@ -44,7 +45,7 @@ class CacheFactory extends Base
             $serverName = $this->defaultServer;
         }
 
-        $object = $this->baseConnect($serverName, $required);
+        $object = $this->getCache($serverName, $required);
         if (is_object($object) && $object instanceof CacheBase) {
             return $object;
         }
@@ -88,6 +89,28 @@ class CacheFactory extends Base
     }
 
     /**
+     * 获取缓存实例
+     * @param $serverName
+     * @param bool $required
+     * @return mixed|object|null
+     * @throws Exception
+     * @throws ReflectionException
+     */
+    protected function getCache($serverName, $required = true)
+    {
+        if (isset($this->connections[$serverName]) && is_object($this->connections[$serverName])) {
+            $object = $this->connections[$serverName];
+        } else {
+            $object = $this->baseConnect($serverName, $required);
+            if ($object) {
+                $this->connections[$serverName] = $object;
+            }
+        }
+
+        return $object;
+    }
+
+    /**
      * 连接缓存
      * @param string $serverName
      * @param bool $required
@@ -99,8 +122,8 @@ class CacheFactory extends Base
     {
         $config = $this->getConfig($serverName);
         $type = ucfirst(ocConfig(array('CACHE', $serverName, 'type')));
-
         $classInfo = ServiceBase::classFileExists("Caches/{$type}.php");
+
         if ($classInfo) {
             list($path, $namespace) = $classInfo;
             include_once($path);
@@ -111,5 +134,7 @@ class CacheFactory extends Base
                 return $object;
             }
         }
+
+        return null;
     }
 }
