@@ -252,6 +252,7 @@ class Generator extends Base
      * 别名字段数据映射过滤
      * @param array $data
      * @return array
+     * @throws Exception
      */
     public function filterData(array $data)
     {

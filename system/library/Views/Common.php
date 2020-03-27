@@ -386,6 +386,7 @@ class Common extends ViewBase implements ViewInterfaces
      * @param string $template
      * @param bool $cache
      * @return bool|string
+     * @throws Exception
      */
     public function wrap($path, $template = null, $cache = true)
     {
@@ -422,6 +423,7 @@ class Common extends ViewBase implements ViewInterfaces
     /**
      * 显示其他模板文件
      * @param string $file
+     * @throws Exception
      */
     public function showTpl($file = null)
     {

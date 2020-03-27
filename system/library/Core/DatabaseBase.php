@@ -39,10 +39,10 @@ class DatabaseBase extends Base
     const EVENT_BEFORE_SHOW_ERROR = 'beforeShowError';
 
     /**
-     * 初始化方法
      * DatabaseBase constructor.
      * @param array $config
      * @throws Exception
+     * @throws ReflectionException
      */
     public function __construct(array $config)
     {
@@ -142,6 +142,7 @@ class DatabaseBase extends Base
      * 初始化设置
      * @param array $config
      * @throws Exception
+     * @throws ReflectionException
      */
     public function init(array $config)
     {
@@ -163,9 +164,10 @@ class DatabaseBase extends Base
 
     /**
      * 获取设置字符集数据
-     * @param $charset
+     * @param string $charset
      * @return mixed|void|null
      * @throws Exception
+     * @throws ReflectionException
      */
     public function setCharset($charset)
     {
@@ -191,6 +193,7 @@ class DatabaseBase extends Base
      * @param array $data
      * @return mixed
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getDriver(array $data)
     {
@@ -210,6 +213,7 @@ class DatabaseBase extends Base
      * @param string $class
      * @return mixed
      * @throws Exception
+     * @throws ReflectionException
      */
     public function loadDatabase($class)
     {
@@ -354,7 +358,7 @@ class DatabaseBase extends Base
      * @param string|array $sqlData
      * @param bool $count
      * @param bool $isUnion
-     * @param null $dataType
+     * @param string $dataType
      * @param array $shardingCurrent
      * @return array|mixed|void|null
      * @throws Exception

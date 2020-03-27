@@ -56,6 +56,7 @@ class SocketEmail extends ServiceBase
      * @param string $header
      * @param string $content
      * @return bool
+     * @throws Exception
      */
     public function send($receiver, $header, $content)
     {

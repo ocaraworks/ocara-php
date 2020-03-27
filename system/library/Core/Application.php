@@ -99,8 +99,9 @@ class Application extends Base
 
     /**
      * 规定在哪个错误报告级别会显示用户定义的错误
-     * @param integer $error
-     * @return bool|int
+     * @param int $error
+     * @return int|null
+     * @throws Exception
      */
     public function errorReporting($error = null)
     {
@@ -119,7 +120,8 @@ class Application extends Base
     /**
      * 获取或设置启动器
      * @param string $bootstrap
-     * @return Bootstrap
+     * @return mixed
+     * @throws Exception
      */
     public function bootstrap($bootstrap = null)
     {

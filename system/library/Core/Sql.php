@@ -126,6 +126,7 @@ class Sql extends Base
      * @param bool $addSlashes
      * @return array|bool|mixed|string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function filterValue($content, $addSlashes = true)
     {
@@ -150,6 +151,7 @@ class Sql extends Base
      * @param bool $prepare
      * @return array|bool|mixed|string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function parseValue($value, $paramType = 'where', $ifQuote = true, $prepare = true)
     {
@@ -305,6 +307,7 @@ class Sql extends Base
      * @param array $data
      * @return array
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getInsertSql($table, $data)
     {
@@ -319,6 +322,7 @@ class Sql extends Base
      * @param string|array $data
      * @return string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getInsertSqlBase($type, $table, $data)
     {
@@ -336,11 +340,13 @@ class Sql extends Base
     }
 
     /**
+     * 获取更新语句SQL
      * @param string $table
      * @param string|array $data
      * @param string|array $where
      * @return array
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getUpdateSql($table, $data, $where)
     {
@@ -368,6 +374,7 @@ class Sql extends Base
      * @param string|array $data
      * @return array
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getReplaceSql($table, $data)
     {
@@ -498,6 +505,7 @@ class Sql extends Base
      * @param string $alias
      * @return string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getBetweenSql($field, $value1, $value2, $alias = null)
     {
@@ -577,6 +585,7 @@ class Sql extends Base
      * @param string $alias
      * @return bool|string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function parseCondition($condition, $link = 'AND', $sign = '=', $alias = null)
     {
@@ -791,6 +800,7 @@ class Sql extends Base
      * @param string $alias
      * @return string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getFieldCondition($data, $link = ',', $sign = '=', $alias = null)
     {

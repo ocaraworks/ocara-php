@@ -94,7 +94,7 @@ final class Ocara
      * @param string $bootstrap
      * @return mixed
      * @throws Exception
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public static function run($bootstrap = null)
     {

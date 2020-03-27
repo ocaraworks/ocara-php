@@ -91,9 +91,10 @@ class Filter extends Base
 
     /**
      * 过滤内容
-     * @param string $content
+     * @param $content
      * @return array|mixed|string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function content($content)
     {
@@ -177,9 +178,10 @@ class Filter extends Base
 
     /**
      * 过滤Request来的数据
-     * @param $content
+     * @param string|array $content
      * @return array|string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function request($content)
     {

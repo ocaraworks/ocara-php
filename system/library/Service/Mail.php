@@ -134,6 +134,7 @@ class Mail extends ServiceBase
     /**
      * Socket发送邮件
      * @return bool
+     * @throws Exception
      */
     public function socketSend()
     {

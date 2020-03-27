@@ -390,8 +390,9 @@ abstract class DatabaseModel extends ModelBase
     /**
      * 获取当前数据库对象
      * @param bool $master
-     * @return DatabaseBase
+     * @return mixed|null
      * @throws Exception
+     * @throws ReflectionException
      */
     public function db($master = true)
     {
@@ -1224,8 +1225,9 @@ abstract class DatabaseModel extends ModelBase
      * @param string|array $condition
      * @param string|array $option
      * @param array $executeOptions
-     * @return array
+     * @return array|bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getAll($condition = null, $option = null, $executeOptions = array())
     {
@@ -1237,8 +1239,9 @@ abstract class DatabaseModel extends ModelBase
      * @param string|array $condition
      * @param string|array $option
      * @param array $executeOptions
-     * @return array
+     * @return array|bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getRow($condition = null, $option = null, $executeOptions = array())
     {
@@ -1249,8 +1252,9 @@ abstract class DatabaseModel extends ModelBase
      * 获取某个字段值
      * @param string $field
      * @param bool $condition
-     * @return array|mixed|string|null
+     * @return bool|mixed
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getValue($field, $condition = false)
     {
@@ -1273,6 +1277,7 @@ abstract class DatabaseModel extends ModelBase
      * @param array $executeOptions
      * @return int
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getTotal($executeOptions = array())
     {
@@ -1467,7 +1472,8 @@ abstract class DatabaseModel extends ModelBase
      * @param string $class
      * @param string $alias
      * @param string $on
-     * @return DatabaseModel
+     * @return $this
+     * @throws Exception
      */
     public function leftJoin($class, $alias = null, $on = null)
     {
@@ -1479,7 +1485,8 @@ abstract class DatabaseModel extends ModelBase
      * @param string $class
      * @param string $alias
      * @param string $on
-     * @return DatabaseModel
+     * @return $this
+     * @throws Exception
      */
     public function rightJoin($class, $alias = null, $on = null)
     {
@@ -1491,7 +1498,8 @@ abstract class DatabaseModel extends ModelBase
      * @param string $class
      * @param string $alias
      * @param string $on
-     * @return DatabaseModel
+     * @return $this
+     * @throws Exception
      */
     public function innerJoin($class, $alias = null, $on = null)
     {

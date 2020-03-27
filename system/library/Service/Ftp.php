@@ -128,8 +128,9 @@ class Ftp extends ServiceBase
      * 删除FTP目录，支持递归删除
      * @param string $dirName
      * @param bool $recursive
-     * @param null $path
+     * @param string $path
      * @return bool
+     * @throws Exception
      */
     public function delDir($dirName, $recursive = false, $path = null)
     {

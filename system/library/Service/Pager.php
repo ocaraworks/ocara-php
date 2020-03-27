@@ -319,6 +319,7 @@ class Pager extends ServiceBase
      * 获取当前页
      * @return int
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getPage()
     {
