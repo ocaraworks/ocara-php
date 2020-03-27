@@ -60,6 +60,7 @@ class Sql extends Base
      * @param string $quote
      * @return array|bool|mixed|string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function quoteList($list, $quote = OC_QUOTE)
     {
@@ -389,6 +390,7 @@ class Sql extends Base
      * @param string $option
      * @return array
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getDeleteSql($table, $where, $option = null)
     {
@@ -421,6 +423,7 @@ class Sql extends Base
      * @param string $on
      * @return string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getJoinSql($type, $table, $alias, $on)
     {
@@ -479,6 +482,7 @@ class Sql extends Base
      * @param string $sign
      * @return string
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getInSql($field, $list, $alias = null, $sign = 'IN')
     {
