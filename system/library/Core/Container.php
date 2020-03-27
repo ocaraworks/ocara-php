@@ -402,10 +402,11 @@ class Container extends Basis
      */
     public function getDependencies(array $args, array $params)
     {
+        $class = null;
+        $container = function_exists('ocContainer') ? ocContainer() : null;
         $dependencies = array();
 
         foreach ($args as $key => $object) {
-            $class = null;
             $dependency = $object->getClass();
             if ($dependency === null) {
                 if (isset($params[$key])) {
@@ -418,13 +419,19 @@ class Container extends Basis
                     }
                 }
             } else {
-                $name = OC_NS_SEP . $dependency->name;
+                $name = ocClassName($dependency->name);
                 if (isset($params[$key]) && is_object($params[$key])) {
                     $class = $params[$key];
                 } elseif ($this->hasBind($name)) {
                     $class = $this->create($name);
                 } elseif ($this->hasBindSingleton($name)) {
                     $class = $this->get($name);
+                } elseif (is_object($container)
+                    && $container instanceof Container
+                    && $this !== $container
+                    && $container->has($name)
+                ) {
+                    $class = $container->create($name);
                 }
             }
             if ($class) {

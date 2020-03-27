@@ -70,6 +70,7 @@ class Api extends ControllerBase implements ControllerInterface
     /**
      * 执行动作类实例
      * @throws Exception
+     * @throws ReflectionException
      */
     protected function doClassAction()
     {

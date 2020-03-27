@@ -86,6 +86,7 @@ class Common extends ControllerBase implements ControllerInterface
      * 执行动作函数方法实体
      * @param $actionMethod
      * @throws Exception
+     * @throws ReflectionException
      */
     protected function doFunctionAction($actionMethod)
     {
@@ -106,6 +107,7 @@ class Common extends ControllerBase implements ControllerInterface
     /**
      * 执行动作类实例
      * @throws Exception
+     * @throws ReflectionException
      */
     protected function doClassAction()
     {
@@ -254,6 +256,7 @@ class Common extends ControllerBase implements ControllerInterface
      * @param string $name
      * @param Form $form
      * @param Event|null $event
+     * @throws Exception
      */
     public function afterCreateForm($name, $form, Event $event = null)
     {
