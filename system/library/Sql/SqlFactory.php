@@ -17,7 +17,7 @@ class SqlFactory
      * @param DatabaseBase $database
      * @return mixed
      */
-    public static function create($databaseType, DatabaseBase $database)
+    public function create($databaseType, DatabaseBase $database)
     {
         $class = 'Ocara\Sql\Databases\\' . ucfirst($databaseType . 'Sql');
         $object = new $class($database);

@@ -114,17 +114,6 @@ abstract class Base extends Basis
     }
 
     /**
-     * 获取日志对象
-     * @param string $logName
-     * @return array|mixed|object|void|null
-     * @throws Exception
-     */
-    public static function log($logName)
-    {
-        return ocContainer()->create('log', array($logName));
-    }
-
-    /**
      * 获取插件
      * @param bool $required
      * @return object|null
