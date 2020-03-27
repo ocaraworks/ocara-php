@@ -5,6 +5,7 @@
  * @author Lin YiHu <linyhtianwa@163.com>
  */
 
+use Ocara\Core\Ocara;
 use Ocara\Core\Container;
 use Ocara\Core\ServiceProvider;
 use Ocara\Exceptions\Exception;
@@ -363,7 +364,7 @@ function ocGetExceptionData($exception, $lastError = false)
  */
 function ocService($name = null, $getDefault = false)
 {
-    $services = ServiceProvider::getDefault();
+    $services = ocContainer()->app->services();
 
     if (func_num_args()) {
         $object = null;
@@ -393,7 +394,7 @@ function ocService($name = null, $getDefault = false)
  */
 function ocContainer()
 {
-    return Container::getDefault();
+    return Ocara::container();
 }
 
 /**

@@ -18,6 +18,7 @@ final class Ocara
      */
     private static $instance;
     private static $info;
+    private static $container;
 
     private function __clone()
     {
@@ -61,20 +62,19 @@ final class Ocara
         require_once(OC_CORE . 'Basis.php');
         require_once(OC_CORE . 'Base.php');
         require_once(OC_CORE . 'Container.php');
-        require_once(OC_CORE . 'Config.php');
-        require_once(OC_CORE . 'Loader.php');
+        require_once(OC_CORE . 'Application.php');
 
-        $container = Container::getDefault()
-            ->bindSingleton('config', '\Ocara\Core\Config')
-            ->bindSingleton('loader', '\Ocara\Core\Loader')
-            ->bindSingleton('path', '\Ocara\Core\Path')
-            ->bindSingleton('app', '\Ocara\Core\Application')
-            ->bindSingleton('exceptionHandler', '\Ocara\Core\ExceptionHandler');
+        self::$container = new Container();
+        self::$container->bindSingleton('app', 'Ocara\Core\Application');
+    }
 
-        $container->config;
-        $loader = $container->loader;
-
-        spl_autoload_register(array($loader, 'autoload'));
+    /**
+     * 获取默认容器
+     * @return Container
+     */
+    public static function container()
+    {
+        return self::$container;
     }
 
     /**

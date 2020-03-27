@@ -10,20 +10,33 @@ namespace Ocara\Core;
 use \ReflectionException;
 use Ocara\Exceptions\Exception;
 use Ocara\Interfaces\Bootstrap;
+use Ocara\Providers\Main;
 
 class Application extends Base
 {
     private $language;
     private $bootstrap;
     private $route = array();
+    private $provider;
 
     /**
-     * 启动前
+     * 初始化
      * @throws Exception
      */
-    public function __construct()
+    public function initialize()
     {
+        //load base services
         $container = ocContainer();
+        require_once(OC_CORE . 'Config.php');
+        require_once(OC_CORE . 'Loader.php');
+
+        $container
+            ->bindSingleton('config', 'Ocara\Core\Config')
+            ->bindSingleton('loader', 'Ocara\Core\Loader')
+            ->bindSingleton('path', 'Ocara\Core\Path')
+            ->bindSingleton('exceptionHandler', 'Ocara\Core\ExceptionHandler');
+
+        spl_autoload_register(array($container->loader, 'autoload'));
 
         //initialize global config
         $container->config->loadGlobalConfig();
@@ -43,14 +56,21 @@ class Application extends Base
 
         //initialize default service provider
         $providerClass = ocConfig('DEFAULT_PROVIDER', 'Ocara\Providers\Main');
-        $provider = new $providerClass(array(), $container);
-
-        ServiceProvider::setDefault($provider);
+        $this->provider = new $providerClass(array(), $container);
 
         //exception handler
         register_shutdown_function("ocShutdownHandle");
         set_exception_handler(array($container->exceptionHandler, 'exceptionHandle'));
         ocImport(array(OC_SYS . 'const/config.php'));
+    }
+
+    /**
+     * 获取服务提供器
+     * @return Main
+     */
+    public function services()
+    {
+        return $this->provider;
     }
 
     /**
@@ -103,6 +123,8 @@ class Application extends Base
      */
     public function bootstrap($bootstrap = null)
     {
+        $this->initialize();
+
         if (func_num_args()) {
             $bootstrap = $bootstrap ?: 'Ocara\Bootstraps\Common';
             $this->bootstrap = new $bootstrap();
