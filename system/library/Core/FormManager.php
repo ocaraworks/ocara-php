@@ -170,7 +170,7 @@ class FormManager extends ServiceProvider
      * @return string
      * @throws Exception
      */
-    public static function getTokenName()
+    public function getTokenName()
     {
         return '_oc_' . ocConfig(array('FORM', 'token_tag'), 'form_token_name');
     }

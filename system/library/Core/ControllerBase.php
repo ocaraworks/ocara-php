@@ -250,7 +250,7 @@ abstract class ControllerBase extends serviceProvider
         if (!($this->isPostSubmit() && $this->checkForm && $this->formManager->getForm()))
             return true;
 
-        $token = $this->request->getCommonRequest(FormManager::getTokenName());
+        $token = $this->request->getCommonRequest($this->formManager->getTokenName());
         return $this->formManager->checkForm($token);
     }
 
