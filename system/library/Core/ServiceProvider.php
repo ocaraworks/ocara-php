@@ -33,9 +33,12 @@ use \Ocara\Views\Api as ApiView;
 
 /**
  * Class ServiceProvider
+ * @property Config $config
+ * @property Path $path
+ * @property Loader $loader
  * @property Container $container
- * @property CacheFactory $caches;
- * @property DatabaseFactory $databases;
+ * @property CacheFactory $caches
+ * @property DatabaseFactory $databases
  * @property ExceptionHandler $exceptionHandler
  * @property Request $request
  * @property Response $response
