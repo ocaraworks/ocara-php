@@ -118,6 +118,7 @@ return array(
         'date' => array('date', 'Ocara\Service\Date'),
         'download' => array('download', 'Ocara\Service\Download'),
         'staticBuilder' => array('staticBuilder', 'Ocara\Service\StaticBuilder'),
+        'sqlFactory' => array('sqlFactory', 'Ocara\Sql\SqlFactory'),
     ),
 
     /*

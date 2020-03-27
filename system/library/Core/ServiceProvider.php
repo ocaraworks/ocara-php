@@ -28,6 +28,7 @@ use \Ocara\Service\StaticBuilder as StaticBuilderService;
 use \Ocara\Service\Pager as PagerService;
 use \Ocara\Service\ErrorOutput as ErrorOutputService;
 use \Ocara\Dispatchers\Common as CommonDispatcher;
+use Ocara\Sql\SqlFactory;
 use \Ocara\Views\Common as CommonView;
 use \Ocara\Views\Api as ApiView;
 
@@ -82,6 +83,7 @@ use \Ocara\Views\Api as ApiView;
  * @property ErrorOutputService $errorOutput
  * @property CommonDispatcher $dispatcher
  * @property CommonView|ApiView $view
+ * @property SqlFactory $sqlFactory
  */
 class ServiceProvider extends Base implements ServiceProviderInterface
 {

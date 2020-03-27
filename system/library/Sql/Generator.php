@@ -33,7 +33,7 @@ class Generator extends Base
         $databaseType = $database->getType();
         $databaseConfig = $database->getConfig();
 
-        $plugin = SqlFactory::create($databaseType, $database);
+        $plugin = ocService()->sqlFactory->create($databaseType, $database);
         $plugin->setConfig($databaseConfig);
         $this->setPlugin($plugin);
     }
