@@ -42,10 +42,11 @@ class Path extends Basis
      * @param string $root
      * @param bool $local
      * @param bool $isFile
+     * @param bool $required
      * @return bool|mixed|string|string[]
      * @throws Exception
      */
-    public function get($dir, $path, $root = null, $local = true, $isFile = true)
+    public function get($dir, $path, $root = null, $local = true, $isFile = true, $required = false)
     {
         if (array_key_exists($dir, $this->maps)) {
             $rootPath = $this->maps[$dir];
@@ -56,8 +57,10 @@ class Path extends Basis
 
         $result = ocCommPath($rootPath . $path);
         if (isset($result)) {
-            if ($local && $isFile && ($result = ocFileExists($result)) == false) {
-                ocService()->error->show('not_exists_file', array($path));
+            if ($required) {
+                if ($local && $isFile && ($result = ocFileExists($result)) == false) {
+                    ocService()->error->show('not_exists_file', array($path));
+                }
             }
             $path = $result;
         }

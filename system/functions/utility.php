@@ -784,12 +784,13 @@ function ocPath($dir, $path = null)
  * 获取完整文件路径，检查文件是否存在
  * @param string $dir
  * @param string $path
+ * @param bool $required
  * @return string
  * @throws Exception
  */
-function ocFile($dir, $path)
+function ocFile($dir, $path, $required = false)
 {
-    return ocService('path', true)->get($dir, $path, OC_APP_ROOT, true, true);
+    return ocService('path', true)->get($dir, $path, OC_APP_ROOT, true, true, $required);
 }
 
 /**

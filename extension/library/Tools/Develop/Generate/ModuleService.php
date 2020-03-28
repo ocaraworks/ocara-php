@@ -7,6 +7,7 @@
 
 namespace Ocara\Extension\Tools\Develop\Generate;
 
+use Ocara\Core\ControllerBase;
 use Ocara\Core\Develop;
 
 class ModuleService extends BaseService
@@ -99,6 +100,22 @@ class ModuleService extends BaseService
         $fileService = ocService()->file;
         $fileService->createFile($path, 'wb');
         $fileService->writeFile($path, $content);
+
+        $this->createViewFile();
+    }
+
+    public function createViewFile()
+    {
+        if ($this->mdltype != 'console'
+            && in_array($this->controllerType, array(ControllerBase::CONTROLLER_TYPE_COMMON))
+        ) {
+            $file = ocService()->file;
+            $srcFile = OC_SYS . 'resource/application/files/application.view.defaults.layout.layout.ocara';
+            $dstFile = ocFile($this->mdltype, ocDir($this->mdlname) . 'view/defaults/layout/layout.php');
+            $headFile = ocFile($this->mdltype, ocDir($this->mdlname) . 'view/defaults/part/head.php');
+            $file->copyFile($srcFile, $dstFile);
+            $file->createFile($headFile);
+        }
     }
 }
 
