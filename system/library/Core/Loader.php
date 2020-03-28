@@ -71,7 +71,7 @@ class Loader extends Basis
                 $key = OC_NS_SEP . $key;
             }
             $key = sprintf('/%s/', str_replace(OC_NS_SEP, $replace, $key));
-            $result[$key] = $value;
+            $result[$key] = ocDir($value);
         }
 
         return $result;

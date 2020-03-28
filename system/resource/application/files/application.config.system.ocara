@@ -17,6 +17,11 @@ return array(
     'SYSTEM_RUN_MODE' => 'develop',
 
     /*
+     * 添加新的命名空间
+     */
+    'NEW_NAMESPACE_MAPS' => array(),
+
+    /*
      * session配置
      */
     'SESSION' => array(
