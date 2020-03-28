@@ -14,26 +14,25 @@ class CacheBase extends Base
     protected $connectName;
     protected $config = array();
 
-    private static $connects = array();
-
     /**
      * 初始化方法
      * CacheBase constructor.
      * @param array $config
      * @param bool $required
-     * @throws Exception
      */
     public function __construct(array $config, $required = true)
     {
-        $connectName = $config['connect_name'];
-        $this->setConnectName($connectName);
+        $this->setConnectName($config['connect_name']);
+        $this->connect($config, $required);
+    }
 
-        if (!(isset(self::$connects[$connectName]) && self::$connects[$connectName] instanceof CacheBase)) {
-            $this->connect($config, $required);
-            self::$connects[$connectName] = $this->plugin();
-        }
-
-        $this->setPlugin(self::$connects[$connectName]);
+    /**
+     * 连接数据库实例
+     * @param $config
+     * @param bool $required
+     */
+    public function connect($config, $required = true)
+    {
     }
 
     /**

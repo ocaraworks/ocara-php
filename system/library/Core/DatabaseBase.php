@@ -13,10 +13,6 @@ use Ocara\Sql\Generator;
 
 class DatabaseBase extends Base
 {
-    private $error = array();
-
-    private static $connects = array();
-
     protected $config;
     protected $pdoName;
     protected $connectName;
@@ -27,6 +23,7 @@ class DatabaseBase extends Base
     protected $params;
     protected $selectedDatabase;
     protected $keywords = array();
+    protected $error = array();
 
     protected static $paramOptions = array(
         'set', 'where', 'groupBy',
@@ -149,17 +146,12 @@ class DatabaseBase extends Base
         $config['password'] = isset($config['password']) ? $config['password'] : null;
         $connectName = $config['connect_name'];
         $this->setConnectName($connectName);
+        $plugin = $this->setPlugin($this->getDriver($config));
 
-        if (isset(self::$connects[$connectName]) && self::$connects[$connectName] instanceof DriverBase) {
-            $this->setPlugin(self::$connects[$connectName]);
-        } else {
-            $plugin = $this->setPlugin($this->getDriver($config));
-            self::$connects[$connectName] = $plugin;
-            $this->isPconnect($config['pconnect']);
-            $plugin->connect();
-            $this->isPrepare($config['prepare']);
-            $this->setCharset($config['charset']);
-        }
+        $this->isPconnect($config['pconnect']);
+        $plugin->connect();
+        $this->isPrepare($config['prepare']);
+        $this->setCharset($config['charset']);
     }
 
     /**
