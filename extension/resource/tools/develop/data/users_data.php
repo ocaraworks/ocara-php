@@ -1,8 +1,6 @@
 <?php
 /**
- * 开发者中心用户数据
- * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
- * @author Lin YiHu <linyhtianwa@163.com>
+ * 开发者中心账号数据
  */
 return array(
     'root' => array(

@@ -4,6 +4,7 @@
  * @Copyright (c) http://www.ocara.cn and http://www.ocaraframework.com All rights reserved.
  * @author Lin YiHu <linyhtianwa@163.com>
  */
+
 namespace Ocara\Extension\Tools\Develop\Generate;
 
 use Ocara\Exceptions\Exception;
@@ -48,6 +49,7 @@ class BaseService
      * 获取模块根目录
      * @param $mdltype
      * @return array
+     * @throws Exception
      */
     public function getModuleRootPath($mdltype)
     {

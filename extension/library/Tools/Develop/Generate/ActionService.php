@@ -188,6 +188,7 @@ class ActionService extends BaseService
         }
 
         $content = "<?php\r\n";
+        $content .= "\r\n";
         $content .= "namespace {$actionNamespace};\r\n";
         $content .= "\r\n";
         //$content .= "use $controlNamespace\\{$controlClassName};\r\n";
@@ -198,7 +199,8 @@ class ActionService extends BaseService
         $content .= "     * 初始化\r\n";
         $content .= "     */\r\n";
         $content .= "    protected function __action()\r\n";
-        $content .= "    {}\r\n";
+        $content .= "    {\r\n";
+        $content .= "    }\r\n";
 
         $actions = self::$config['controller_actions'][$this->controllerType];
 
@@ -214,7 +216,8 @@ class ActionService extends BaseService
                 $content .= "     * {$actionDesc}\r\n";
                 $content .= "     */\r\n";
                 $content .= "    public function {$actionName}()\r\n";
-                $content .= "    {}\r\n";
+                $content .= "    {\r\n";
+                $content .= "    }\r\n";
             }
         }
 

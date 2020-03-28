@@ -148,6 +148,7 @@ class ControllerService extends BaseService
         }
 
         $content = "<?php\r\n";
+        $content .= "\r\n";
         $content .= "namespace {$moduleNamespace}\\{$this->cname};\r\n";
         $content .= "\r\n";
         $content .= "use {$moduleNamespace}\\{$moduleClassName};\r\n";
@@ -158,7 +159,9 @@ class ControllerService extends BaseService
         $content .= "    /**\r\n";
         $content .= "     * 初始化控制器\r\n";
         $content .= "     */\r\n";
-        $content .= "    public function __control()\r\n    {}\r\n";
+        $content .= "    public function __control()\r\n";
+        $content .= "    {\r\n";
+        $content .= "    }\r\n";
         $content .= "}";
 
         ocCheckPath($controlPath . $this->cname);

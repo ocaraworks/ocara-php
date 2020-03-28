@@ -135,7 +135,9 @@ class ModelService extends BaseService
 
         //新建模型
         $content = "<?php\r\n";
+        $content .= "\r\n";
         $content .= "namespace {$namespace};\r\n";
+        $content .= "\r\n";
         $content .= "use Base\\Model\\{$modelBase};\r\n";
         $content .= "\r\n";
         $content .= "class {$modelName} extends {$modelBase}\r\n";
@@ -160,25 +162,33 @@ class ModelService extends BaseService
         $content .= "    /**\r\n";
         $content .= "     * 初始化模型\r\n";
         $content .= "     */\r\n";
-        $content .= "    public function __model()\r\n    {}\r\n";
+        $content .= "    public function __model()\r\n";
+        $content .= "    {\r\n";
+        $content .= "    }\r\n";
         $content .= "\r\n";
         $content .= "    /**\r\n";
         $content .= "     * 字段别名映射配置\r\n";
         $content .= "     * return array\r\n";
         $content .= "     */\r\n";
-        $content .= "    public function fieldsMap()\r\n    {}\r\n";
+        $content .= "    public function fieldsMap()\r\n";
+        $content .= "    {\r\n";
+        $content .= "    }\r\n";
         $content .= "\r\n";
         $content .= "    /**\r\n";
         $content .= "     * 表间关联配置\r\n";
         $content .= "     * return array\r\n";
         $content .= "     */\r\n";
-        $content .= "    public function relations()\r\n    {}\r\n";
+        $content .= "    public function relations()\r\n";
+        $content .= "    {\r\n";
+        $content .= "    }\r\n";
         $content .= "\r\n";
         $content .= "    /**\r\n";
         $content .= "     * 字段验证配置\r\n";
         $content .= "     * return array\r\n";
         $content .= "     */\r\n";
-        $content .= "    public function rules()\r\n    {}\r\n";
+        $content .= "    public function rules()\r\n";
+        $content .= "    {\r\n";
+        $content .= "    }\r\n";
 //        $content .= "\r\n";
 //        $content .= "    /**\r\n";
 //        $content .= "     * 查询结果行过滤\r\n";

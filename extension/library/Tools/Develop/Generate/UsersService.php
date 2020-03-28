@@ -27,28 +27,22 @@ class UsersService extends BaseService
             $this->showError('请填满信息！');
         }
 
-        $path = OC_EXT . 'resource/tools/develop/data/users_data.php';
+        $path = ocPath('data', 'develop/users_data.php');
 
         if (ocFileExists($path)) {
-            include_once($path);
+            $devUsers = include_once($path);
+        } else {
+            $devUsers = array();
         }
 
         $devUsers[$this->_username] = array(
             'password' => md5($this->_password)
         );
 
-        $content = "<?php\r\n";
-
-        foreach ($devUsers as $key => $value) {
-            $content .= "\r\n";
-            $content .= "\$devUsers['{$key}'] = array(\r\n";
-            $content .= "    'password' => '{$value['password']}'\r\n";
-            $content .= ");";
-        }
-
-        $fileService = ocService()->file;
-        $fileService->createFile($path, 'wb');
-        $fileService->writeFile($path, $content);
+        $fileCache = ocService()->fileCache;
+        $fileCache->setData($devUsers, false, '开发者中心账号数据');
+        $fileCache->format();
+        $fileCache->save($path);
     }
 }
 

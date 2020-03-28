@@ -26,6 +26,7 @@ class ModuleService extends BaseService
 
     public function createModule()
     {
+        $namespace = OC_EMPTY;
         $mdlname = ucfirst($this->mdlname);
         $className = $mdlname . 'Module';
 
@@ -57,7 +58,9 @@ class ModuleService extends BaseService
         }
 
         $content = "<?php\r\n";
+        $content .= "\r\n";
         $content .= "namespace {$namespace}\\{$this->mdlname}\\controller;\r\n";
+        $content .= "\r\n";
         $content .= "use Base\\Controller\\{$baseController};\r\n";
 
         $content .= "\r\n";
@@ -66,7 +69,9 @@ class ModuleService extends BaseService
         $content .= "    /**\r\n";
         $content .= "     * 初始化模块\r\n";
         $content .= "     */\r\n";
-        $content .= "    public function __module()\r\n    {}\r\n";
+        $content .= "    public function __module()\r\n";
+        $content .= "    {\r\n";
+        $content .= "    }\r\n";
         $content .= "}";
 
         $language = ocService()->app->getLanguage();

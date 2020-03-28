@@ -481,21 +481,13 @@ abstract class DatabaseModel extends ModelBase
      * @param array $fieldsConfig
      * @param Event $event
      * @param object $eventTarget
-     * @return bool
      * @throws Exception
      */
     public function onSaveCacheFields($fieldsConfig, $event, $eventTarget)
     {
         $paths = $this->getConfigPath();
-
-        if (ocFileExists($paths['fields'])) {
-            $content = ocRead($paths['fields']);
-            if ($content) {
-                return true;
-            }
-        }
-
         $fileCache = ocService()->fileCache;
+
         $fileCache->format();
         $fileCache->setData($fieldsConfig, null, ltrim(self::getClass(), OC_NS_SEP) . ' Fields');
         $fileCache->save($paths['fields']);

@@ -40,6 +40,13 @@ class CacheModelService extends BaseService
 
     public function createCacheModel()
     {
+        $serverName = null;
+        if ($this->_serverName && $this->_serverName != ocService()->caches->getDefaultServer()) {
+            $serverName = $this->_serverName;
+        }
+
+        $serverNameDir = ($serverName ? $serverName . '/' : null);
+        $serverNamespace = $serverName ? OC_NS_SEP . $serverName : null;
         $connect = ucfirst($this->_serverName);
         $modelBase = 'CacheModel';
         $connectPath = $this->_serverName . OC_DIR_SEP;
@@ -72,9 +79,11 @@ class CacheModelService extends BaseService
                 $modelPath = ocPath('model', 'cache/');
         }
 
-        $namespace = $rootNamespace;
+        $modelPath = $modelPath . $serverNameDir;
+        $namespace = $rootNamespace . $serverNamespace;
         $modelName = ucfirst($this->_model) . ocConfig('MODEL_SUFFIX');
         $modelClass = $namespace . OC_NS_SEP . $modelName;
+
 
         if (empty($this->_prefix)) {
             $this->showError('请填写前缀名！');
@@ -86,7 +95,9 @@ class CacheModelService extends BaseService
         }
 
         $content = "<?php\r\n";
+        $content .= "\r\n";
         $content .= "namespace {$namespace};\r\n";
+        $content .= "\r\n";
         $content .= "use Base\\Model\\{$modelBase};\r\n";
         $content .= "\r\n";
         $content .= "class {$modelName} extends {$modelBase}\r\n";
@@ -102,7 +113,9 @@ class CacheModelService extends BaseService
         $content .= "    /**\r\n";
         $content .= "     * 初始化模型\r\n";
         $content .= "     */\r\n";
-        $content .= "    public function __model()\r\n    {}\r\n";
+        $content .= "    public function __model()\r\n";
+        $content .= "    {\r\n";
+        $content .= "    }\r\n";
         $content .= "}";
 
         $fileService = ocService()->file;

@@ -17,7 +17,11 @@ class LoginService extends BaseService
      */
     public function login()
     {
-        $path = OC_EXT . 'resource/tools/develop/data/users_data.php';
+        $path = ocPath('data', 'develop/users_data.php');
+
+        if (!ocFileExists($path)) {
+            $path = OC_EXT . 'resource/tools/develop/data/users_data.php';
+        }
 
         if (!ocFileExists($path)) {
             ocService()->error->show('not_exists_file', array('users_data.php'));
@@ -36,7 +40,7 @@ class LoginService extends BaseService
         if (!array_key_exists($username, $users)) {
             $this->showError('用户名不存在。');
         } elseif (!array_key_exists('password', $users[$username]) || $users[$username]['password'] != md5($password)) {
-            $this->showError('密码错误。');
+            $this->showError('密码错误。提醒：如果忘记root密码，请删除data/develop/user_data.php文件，再用root账号和默认密码登录。');
         } else {
             $_SESSION['OC_DEV_LOGIN'] = true;
             $_SESSION['OC_DEV_USERNAME'] = $username;
