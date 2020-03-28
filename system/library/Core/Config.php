@@ -7,6 +7,7 @@
 
 namespace Ocara\Core;
 
+use \ReflectionException;
 use Ocara\Exceptions\Exception;
 
 class Config extends Base
@@ -59,7 +60,9 @@ class Config extends Base
 
     /**
      * 获取系统环境
-     * @return mixed
+     * @return array|mixed
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function getEnvironment()
     {
