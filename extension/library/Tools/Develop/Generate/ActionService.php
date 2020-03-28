@@ -103,7 +103,11 @@ class ActionService extends BaseService
         $template = $this->ttype;
 
         if ($this->mdlname) {
-            $modulePath = ocPath('modules', $this->mdlname . '/view/');;
+            if ($this->mdltype) {
+                $modulePath = ocPath($this->mdltype, $this->mdlname . '/view/');
+            } else {
+                $modulePath = ocPath('modules', $this->mdlname . '/view/');
+            }
         } else {
             $modulePath = ocPath('view');
         }
