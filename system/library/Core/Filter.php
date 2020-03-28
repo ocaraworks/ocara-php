@@ -12,8 +12,8 @@ use Ocara\Exceptions\Exception;
 
 class Filter extends Base
 {
-    const EVENT_SQL_KEYWORDS_FILTER = 'sql_keywords_filter';
-    const EVENT_SCRIPT_KEYWORDS_FILTER = 'script_keywords_filter';
+    const EVENT_SQL_KEYWORDS_FILTER = 'sqlKeywordsFilter';
+    const EVENT_SCRIPT_KEYWORDS_FILTER = 'scriptKeywordsFilter';
 
     protected $jsEvents = array();
 
