@@ -267,7 +267,7 @@ class DatabaseBase extends Base
 
         $this->fire(
             self::EVENT_BEFORE_EXECUTE_SQL,
-            array($sql, date(ocConfig(array('DATE_FORMAT', 'datetime'))))
+            array($sqlData, date(ocConfig(array('DATE_FORMAT', 'datetime'))))
         );
 
         try {
