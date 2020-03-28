@@ -14,6 +14,7 @@ use Ocara\Exceptions\Exception;
 /**
  * Class ServiceProvider
  * @property Application $app
+ * @property Loader $loader
  * @property Config $config
  * @property Lang $lang
  * @property ExceptionHandler $exceptionHandler

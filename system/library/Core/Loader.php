@@ -13,7 +13,7 @@ use Ocara\Exceptions\Exception;
 class Loader extends Basis
 {
     private $defaultPath;
-    private $namespaceMap;
+    private $namespaceMaps = array();
 
     /**
      * Loader constructor.
@@ -22,15 +22,8 @@ class Loader extends Basis
     public function __construct()
     {
         $this->defaultPath = ocCommPath(OC_APP_ROOT . 'support');
-        $defaultAutoMap = ocContainer()->config->getDefault('NAMESPACE_MAP', array());
-        $autoMap = ocContainer()->config->get('NEW_NAMESPACE_MAPS', array());
-        $result = array_merge($defaultAutoMap, $autoMap);
-
-        $keys = $this->formatNamespaceKey(array_keys($result));
-        $values = array_values($result);
-        $this->namespaceMap = array_combine($keys, $values);
-
-        krsort($this->namespaceMap);
+        $namespaceMps = ocContainer()->config->getDefault('NAMESPACE_MAP', array());
+        $this->registerNamespace($namespaceMps);
     }
 
     /**
@@ -38,11 +31,25 @@ class Loader extends Basis
      * @param string $namespace
      * @param string $path
      */
-    public function registerNamespace($namespace, $path)
+    public function registerNamespace($namespace, $path = null)
     {
+        if (!is_array($namespace)) {
+            $namespace = array($namespace => $path);
+        }
+
         $namespace = $this->formatNamespaceKey($namespace);
-        $this->namespaceMap[reset($namespace)] = $path;
-        krsort($this->namespaceMap);
+        $this->namespaceMaps = array_merge($this->namespaceMaps, $namespace);
+
+        krsort($this->namespaceMaps);
+    }
+
+    /**
+     * 获取命名空间
+     * @return array
+     */
+    public function getNamespaceMaps()
+    {
+        return $this->namespaceMaps;
     }
 
     /**
@@ -52,17 +59,22 @@ class Loader extends Basis
      */
     public function formatNamespaceKey($namespace)
     {
+        $result = array();
         $namespace = (array)$namespace;
         $replace = str_repeat(OC_NS_SEP, 2);
 
         foreach ($namespace as $key => $value) {
-            if ($value{0} != OC_NS_SEP) {
-                $value = OC_NS_SEP . $value;
+            if (substr($key, -1) != OC_NS_SEP) {
+                $key .= OC_NS_SEP;
             }
-            $namespace[$key] = sprintf('/%s/', str_replace(OC_NS_SEP, $replace, $value));
+            if ($key{0} != OC_NS_SEP) {
+                $key = OC_NS_SEP . $key;
+            }
+            $key = sprintf('/%s/', str_replace(OC_NS_SEP, $replace, $key));
+            $result[$key] = $value;
         }
 
-        return $namespace;
+        return $result;
     }
 
     /**
@@ -77,8 +89,8 @@ class Loader extends Basis
 
         if (strstr($newClass, OC_NS_SEP)) {
             $newClass = OC_NS_SEP . preg_replace('/[\\\\]+/', '\\', $newClass);
-            $keys = array_keys($this->namespaceMap);
-            $values = array_values($this->namespaceMap);
+            $keys = array_keys($this->namespaceMaps);
+            $values = array_values($this->namespaceMaps);
             $filePath = preg_replace($keys, $values, $newClass, 1);
             if ($filePath == $newClass) {
                 $filePath = $this->defaultPath . $newClass;

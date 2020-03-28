@@ -42,6 +42,9 @@ class Application extends Base
         $container->config->loadGlobalConfig();
         $this->setLanguage($container->config->get('LANGUAGE', 'zh_cn'));
 
+        //register new namespaces
+        $container->loader->registerNamespace(ocConfig('NEW_NAMESPACE_MAPS', array()));
+
         //get environment
         $container->config->getEnvironment();
         $container->config->loadEnvironmentConfig();
