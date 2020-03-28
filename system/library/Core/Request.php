@@ -265,7 +265,7 @@ class Request extends Base
             }
         }
 
-        return $method;
+        return $method ?: 'GET';
     }
 
     /**

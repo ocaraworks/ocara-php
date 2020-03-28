@@ -21,7 +21,7 @@ return array(
         'request' => array(
             'after_get_method' => '', //获取请求方法后回调
         ),
-        
+
         /*
          * URL处理
          */
