@@ -16,6 +16,13 @@ return array(
         ),
 
         /*
+         * 请求处理
+         */
+        'request' => array(
+            'after_get_method' => '', //获取请求方法后回调
+        ),
+        
+        /*
          * URL处理
          */
         'url' => array(

@@ -13,12 +13,28 @@ use Ocara\Exceptions\Exception;
 class Request extends Base
 {
     /**
+     * 事件
+     */
+    const EVENT_AFTER_GET_METHOD = 'afterGetMethod';
+
+    /**
      * Request constructor.
      */
     public function __construct()
     {
         $this->setInputStreams();
         $this->stripslashes();
+    }
+
+    /**
+     * 注册事件
+     * @throws Exception
+     */
+    public function registerEvents()
+    {
+        $this->event(self::EVENT_AFTER_GET_METHOD)
+            ->resource()
+            ->append(ocConfig('RESOURCE.request.after_get_method', null));
     }
 
     /**
@@ -88,6 +104,7 @@ class Request extends Base
      * 判断是否是GET请求
      * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function isGet()
     {
@@ -98,6 +115,7 @@ class Request extends Base
      * 判断是否是POST请求
      * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function isPost()
     {
@@ -108,6 +126,7 @@ class Request extends Base
      * 判断是否是PUT请求
      * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function isPut()
     {
@@ -118,6 +137,7 @@ class Request extends Base
      * 判断是否是PUT请求
      * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function isPatch()
     {
@@ -128,6 +148,7 @@ class Request extends Base
      * 判断是否是DELETE请求
      * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function isDelete()
     {
@@ -138,6 +159,7 @@ class Request extends Base
      * 判断是否是PUT请求
      * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function isHead()
     {
@@ -148,6 +170,7 @@ class Request extends Base
      * 判断是否是OPTIONS请求
      * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function isOptions()
     {
@@ -158,6 +181,7 @@ class Request extends Base
      * 判断是否是TRACE请求
      * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function isTrace()
     {
@@ -168,6 +192,7 @@ class Request extends Base
      * 判断是否是CONNECT请求
      * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function isConnect()
     {
@@ -178,6 +203,7 @@ class Request extends Base
      * 是否POST提交
      * @return bool
      * @throws Exception
+     * @throws ReflectionException
      */
     public function isPostSubmit()
     {
@@ -208,27 +234,38 @@ class Request extends Base
 
     /**
      * 获取请求方式
-     * @return string
+     * @return array|mixed|string|null
      * @throws Exception
+     * @throws ReflectionException
      */
     public function getMethod()
     {
-        if (PHP_SAPI == 'cli') {
-            $method = isset($_SERVER['argv']['3']) ? $_SERVER['argv']['3'] : OC_EMPTY;
+        $method = null;
 
-            if ($method) {
-                $method = strtoupper($method);
-                if (in_array($method, ocConfig('ALLOWED_HTTP_METHODS'))) {
-                    return $method;
+        if (PHP_SAPI == 'cli') {
+            $arg = isset($_SERVER['argv']['3']) ? $_SERVER['argv']['3'] : OC_EMPTY;
+            if ($arg) {
+                $arg = strtoupper($arg);
+                if (in_array($arg, ocConfig('ALLOWED_HTTP_METHODS'))) {
+                    $method = $arg;
                 }
             }
         }
 
-        if (isset($_SERVER['REQUEST_METHOD'])) {
-            return $_SERVER['REQUEST_METHOD'];
+        if (!$method) {
+            if (isset($_SERVER['REQUEST_METHOD'])) {
+                $method = $_SERVER['REQUEST_METHOD'];
+            }
         }
 
-        return 'GET';
+        if ($this->event(self::EVENT_AFTER_GET_METHOD)->has()) {
+            $result = $this->fire(self::EVENT_AFTER_GET_METHOD, array($method));
+            if ($result) {
+                $method = $result;
+            }
+        }
+
+        return $method;
     }
 
     /**
