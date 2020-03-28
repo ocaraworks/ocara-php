@@ -52,7 +52,7 @@ return array(
             'after_execute_sql' => array(),
         ),
 
-        /**
+        /*
          * 安全过滤事件
          */
         'filters' => array(
