@@ -84,12 +84,12 @@ class DevModule extends Common
      * @throws Exception
      * @throws ReflectionException
      */
-    public function exceptionHandler($exception, $event, $eventTarget)
+    public function exceptionHandler($error, $event, $eventTarget)
     {
         if ($this->getRoute('action') != 'error') {
             $this->response->jump(
                 'generate/error',
-                array('content' => htmlspecialchars($exception->getMessage()))
+                array('content' => htmlspecialchars($error['message']))
             );
         }
     }
