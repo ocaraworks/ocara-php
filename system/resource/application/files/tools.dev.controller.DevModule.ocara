@@ -5,13 +5,18 @@
 
 namespace app\tools\dev\controller;
 
+use \ReflectionException;
 use Ocara\Controllers\Common;
 use Ocara\Core\ExceptionHandler;
+use Ocara\Exceptions\Exception;
+use Ocara\Core\Event;
 
 class DevModule extends Common
 {
     /**
      * 初始化模块
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function __module()
     {
@@ -35,6 +40,7 @@ class DevModule extends Common
 
     /**
      * 注册事件
+     * @throws Exception
      */
     public function registerEvents()
     {
@@ -47,6 +53,8 @@ class DevModule extends Common
 
     /**
      * 检测登录
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function checkLogin()
     {
@@ -70,9 +78,11 @@ class DevModule extends Common
 
     /**
      * 异常处理
-     * @param $exception
-     * @param $event
-     * @param $eventTarget
+     * @param array $error
+     * @param Event $event
+     * @param object $eventTarget
+     * @throws Exception
+     * @throws ReflectionException
      */
     public function exceptionHandler($exception, $event, $eventTarget)
     {
