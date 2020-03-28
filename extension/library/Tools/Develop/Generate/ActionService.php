@@ -88,7 +88,8 @@ class ActionService extends BaseService
     public function addTpl($path, $file)
     {
         $path = ocDir($path) . $file . '.' . $this->tplType;
-        $content = "Hello, I'm %s.{$this->tplType}.";
+        $content = "Hello, I'm %s.{$this->tplType}.<br/>";
+        $content .= "You can create more actions by clicking <a href=\"/pass/tools/index.php\">delelop center</a>.";
         ocService()->file->writeFile($path, sprintf($content, $file));
     }
 

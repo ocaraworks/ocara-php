@@ -7,7 +7,9 @@
 
 namespace Ocara\Core;
 
+use ReflectionException;
 use Ocara\Exceptions\Exception;
+use Ocara\Extension\Tools\Develop\Generate\ControllerService;
 
 final class ApplicationGenerator
 {
@@ -19,6 +21,7 @@ final class ApplicationGenerator
      * 应用生成
      * @param string $moduleType
      * @throws Exception
+     * @throws ReflectionException
      */
     public static function create($moduleType = 'common')
     {
@@ -32,8 +35,36 @@ final class ApplicationGenerator
         self::createDir();
         self::createFile($moduleType);
         self::modifyIndex();
+        self::createHomeController($moduleType);
+        $url = '/';
 
-        exit('Application create Success!');
+        header('Content-type:text/html;charset=utf-8');
+        exit('Application create Success!<br/>'
+            . 'Now, Please click to <a href="'
+            . $url
+            . '">Home Page</a>.'
+        );
+    }
+
+    public static function createHomeController($moduleType)
+    {
+        $application = ocContainer()->app;
+        $application->initialize();
+
+        require_once(OC_EXT . 'library/Tools/Develop/Generate/BaseService.php');
+        require_once(OC_EXT . 'library/Tools/Develop/Generate/ControllerService.php');
+
+        $data = array(
+            'mdltype' => $moduleType,
+            'mdlname' => null,
+            'cname' => 'home',
+            'vtype' => 1,
+            'ttype' => 'defaults',
+            'createview' => 1
+        );
+
+        $service = new ControllerService();
+        $service->add($data);
     }
 
     /**

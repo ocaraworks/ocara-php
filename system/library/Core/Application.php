@@ -22,6 +22,7 @@ class Application extends Base
     /**
      * 初始化
      * @throws Exception
+     * @throws ReflectionException
      */
     public function initialize()
     {
