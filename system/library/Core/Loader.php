@@ -17,14 +17,13 @@ class Loader extends Basis
 
     /**
      * Loader constructor.
-     * @param Config $config
      * @throws Exception
      */
-    public function __construct(Config $config)
+    public function __construct()
     {
         $this->defaultPath = ocCommPath(OC_APP_ROOT . 'support');
-        $defaultAutoMap = $config->getDefault('NAMESPACE_MAP', array());
-        $autoMap = $config->get('NAMESPACE_MAP', array());
+        $defaultAutoMap = ocContainer()->config->getDefault('NAMESPACE_MAP', array());
+        $autoMap = ocContainer()->config->get('NEW_NAMESPACE_MAPS', array());
         $result = array_merge($defaultAutoMap, $autoMap);
 
         $keys = $this->formatNamespaceKey(array_keys($result));
