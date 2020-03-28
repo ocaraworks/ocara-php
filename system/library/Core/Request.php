@@ -247,7 +247,7 @@ class Request extends Base
             if ($arg) {
                 $arg = strtoupper($arg);
                 if (in_array($arg, ocConfig('ALLOWED_HTTP_METHODS'))) {
-                    $method = $arg;
+                    return $method = $arg;
                 }
             }
         }

@@ -9,7 +9,7 @@ namespace Ocara\Core;
 
 use Ocara\Exceptions\Exception;
 
-class Config extends Basis
+class Config extends Base
 {
     /**
      * 开关配置
@@ -23,6 +23,8 @@ class Config extends Basis
     protected $environment;
     protected $frameworkConfig = array();
     protected $data = array();
+
+    const EVENT_GET_ENVIRONMENT = 'getEnvironment';
 
     /**
      * 初始化
@@ -46,15 +48,27 @@ class Config extends Basis
     }
 
     /**
+     * @throws Exception
+     */
+    public function registerEvents()
+    {
+        $this->event(self::EVENT_GET_ENVIRONMENT)
+            ->resource()
+            ->append(ocConfig('RESOURCE.env.getEnv', null));
+    }
+
+    /**
      * 获取系统环境
      * @return mixed
-     * @throws Exception
      */
     public function getEnvironment()
     {
         if (!isset($this->environment)) {
-            if ($callback = ocConfig('RESOURCE.env.getEnv', null)) {
-                $this->environment = call_user_func_array($callback, array());
+            if ($this->event(self::EVENT_GET_ENVIRONMENT)->has()) {
+                $environment = $this->fire(self::EVENT_GET_ENVIRONMENT);
+                if ($environment) {
+                    $this->environment = $environment;
+                }
             }
         }
         return $this->environment;

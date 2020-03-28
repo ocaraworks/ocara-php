@@ -45,13 +45,6 @@ class Application extends Base
         //register new namespaces
         $container->loader->registerNamespace(ocConfig('NEW_NAMESPACE_MAPS', array()));
 
-        //get environment
-        $container->config->getEnvironment();
-        $container->config->loadEnvironmentConfig();
-
-        //error report
-        error_reporting($this->errorReporting());
-
         //append module namespace
         if (OC_MODULE_NAMESPACE && OC_MODULE_PATH) {
             $container->loader->registerNamespace(OC_MODULE_NAMESPACE, OC_MODULE_PATH);
@@ -60,6 +53,13 @@ class Application extends Base
         //initialize default service provider
         $providerClass = ocConfig('DEFAULT_PROVIDER', 'Ocara\Providers\Main');
         $this->provider = new $providerClass(array(), $container);
+
+        //get environment
+        $container->config->getEnvironment();
+        $container->config->loadEnvironmentConfig();
+
+        //error report
+        error_reporting($this->errorReporting());
 
         //exception handler
         register_shutdown_function("ocShutdownHandle");
