@@ -31,7 +31,7 @@ class DatabaseFactory extends Base
     {
         $this->event(self::EVENT_GET_CONFIG)
             ->resource()
-            ->append(ocConfig('RESOURCE.database.get_config', null));
+            ->append(ocConfig('RESOURCE.database.getConfig', null));
     }
 
     /**

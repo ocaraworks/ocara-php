@@ -28,7 +28,7 @@ class CacheFactory extends Base
     {
         $this->event(self::EVENT_GET_CONFIG)
             ->resource()
-            ->append(ocConfig('RESOURCE.cache.get_config', null));
+            ->append(ocConfig('RESOURCE.cache.getConfig', null));
     }
 
     /**

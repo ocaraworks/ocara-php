@@ -108,10 +108,10 @@ class DatabaseBase extends Base
     public function registerEvents()
     {
         $this->event(self::EVENT_BEFORE_EXECUTE_SQL)
-            ->appendAll(ocConfig(array('EVENTS', 'database', 'before_execute_sql'), array()));
+            ->appendAll(ocConfig(array('EVENTS', 'database', 'beforeExecuteSql'), array()));
 
         $this->event(self::EVENT_AFTER_EXECUTE_SQL)
-            ->appendAll(ocConfig(array('EVENTS', 'database', 'after_execute_sql'), array()));
+            ->appendAll(ocConfig(array('EVENTS', 'database', 'afterExecuteSql'), array()));
 
         $this->event(self::EVENT_BEFORE_SHOW_ERROR)
             ->setDefault(array($this, 'beforeShowError'));

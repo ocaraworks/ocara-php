@@ -21,7 +21,7 @@ class FormToken extends Base
     {
         $this->event(self::EVENT_GENERATE_TOKEN)
             ->resource()
-            ->append(ocConfig('RESOURCE.form.generate_token', null));
+            ->append(ocConfig('RESOURCE.form.generateToken', null));
     }
 
     /**

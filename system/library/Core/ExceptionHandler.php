@@ -33,13 +33,13 @@ class ExceptionHandler extends Base
             ->appendAll(ocConfig(array('EVENTS', 'error', 'report'), array(array($this, 'report'))));
 
         $this->event(self::EVENT_BEFORE_OUTPUT)
-            ->appendAll(ocConfig(array('EVENTS', 'error', 'before_output'), array()));
+            ->appendAll(ocConfig(array('EVENTS', 'error', 'beforeOutput'), array()));
 
         $this->event(self::EVENT_OUTPUT)
             ->appendAll(ocConfig(array('EVENTS', 'error', 'output'), array(array($this, 'output'))));
 
         $this->event(self::EVENT_AFTER_OUTPUT)
-            ->appendAll(ocConfig(array('EVENTS', 'error', 'after_output'), array()));
+            ->appendAll(ocConfig(array('EVENTS', 'error', 'afterOutput'), array()));
     }
 
     /**

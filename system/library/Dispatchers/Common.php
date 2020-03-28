@@ -23,10 +23,10 @@ class Common extends Base
     public function registerEvents()
     {
         $this->event(self::EVENT_BEFORE_DISPATCH)
-            ->appendAll(ocConfig(array('EVENTS', 'dispatch', 'before_dispatch'), array()));
+            ->appendAll(ocConfig(array('EVENTS', 'dispatch', 'beforeDispatch'), array()));
 
         $this->event(self::EVENT_AFTER_DISPATCH)
-            ->appendAll(ocConfig(array('EVENTS', 'dispatch', 'after_dispatch'), array()));
+            ->appendAll(ocConfig(array('EVENTS', 'dispatch', 'afterDispatch'), array()));
     }
 
     /**

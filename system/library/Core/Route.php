@@ -25,7 +25,7 @@ class Route extends Base
     {
         $this->event(self::EVENT_AFTER_GET_ROUTE)
             ->resource()
-            ->append(ocConfig('RESOURCE.url.after_get_route', 'Ocara\Handlers\RouteHandler'));
+            ->append(ocConfig('RESOURCE.url.afterGetRoute', 'Ocara\Handlers\RouteHandler'));
     }
 
     /**

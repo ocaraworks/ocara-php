@@ -28,15 +28,15 @@ class Url extends Base
     {
         $this->event(self::EVENT_PARSE_URL_PARAMS)
             ->resource()
-            ->append(ocConfig('RESOURCE.url.parse_query_params', 'Ocara\Handlers\UrlHandler'));
+            ->append(ocConfig('RESOURCE.url.parseUrlParams', 'Ocara\Handlers\UrlHandler'));
 
         $this->event(self::EVENT_CREATE_URL)
             ->resource()
-            ->append(ocConfig('RESOURCE.url.create_url', 'Ocara\Handlers\UrlHandler'));
+            ->append(ocConfig('RESOURCE.url.createUrl', 'Ocara\Handlers\UrlHandler'));
 
         $this->event(self::EVENT_APPEND_QUERY_PARAMS)
             ->resource()
-            ->append(ocConfig('RESOURCE.url.append_query_params', 'Ocara\Handlers\UrlHandler'));
+            ->append(ocConfig('RESOURCE.url.appendQueryParams', 'Ocara\Handlers\UrlHandler'));
     }
 
     /**

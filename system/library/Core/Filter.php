@@ -35,10 +35,10 @@ class Filter extends Base
         parent::registerEvents();
 
         $this->event(self::EVENT_SQL_KEYWORDS_FILTER)
-            ->append(ocConfig('EVENTS.filters.sql_keywords_filter', array($this, 'eventSqlKeywordsFilter')));
+            ->append(ocConfig('EVENTS.filters.sqlKeywordsFilter', array($this, 'eventSqlKeywordsFilter')));
 
         $this->event(self::EVENT_SCRIPT_KEYWORDS_FILTER)
-            ->append(ocConfig('EVENTS.filters.script_keywords_filter', array($this, 'eventScriptKeywordsFilter')));
+            ->append(ocConfig('EVENTS.filters.scriptKeywordsFilter', array($this, 'eventScriptKeywordsFilter')));
     }
 
     /**
@@ -60,9 +60,7 @@ class Filter extends Base
                 if ($equal) {
                     if (in_array(strtolower($content), $keywords)) return false;
                 } else {
-                    if (ocConfig('EVENTS.filters.sql_keywords_filter', null)) {
-                        $content = $this->fire(self::EVENT_SQL_KEYWORDS_FILTER, array($content, $keywords));
-                    } else {
+                    if ($this->event(self::EVENT_SQL_KEYWORDS_FILTER)->has()) {
                         $content = $this->fire(self::EVENT_SQL_KEYWORDS_FILTER, array($content, $keywords));
                     }
                 }

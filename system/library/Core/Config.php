@@ -53,7 +53,7 @@ class Config extends Basis
     public function getEnvironment()
     {
         if (!isset($this->environment)) {
-            if ($callback = ocConfig('RESOURCE.env.get_env', null)) {
+            if ($callback = ocConfig('RESOURCE.env.getEnv', null)) {
                 $this->environment = call_user_func_array($callback, array());
             }
         }

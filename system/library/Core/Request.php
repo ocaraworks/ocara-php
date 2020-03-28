@@ -34,7 +34,7 @@ class Request extends Base
     {
         $this->event(self::EVENT_AFTER_GET_METHOD)
             ->resource()
-            ->append(ocConfig('RESOURCE.request.after_get_method', null));
+            ->append(ocConfig('RESOURCE.request.afterGetMethod', null));
     }
 
     /**
