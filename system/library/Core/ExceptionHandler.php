@@ -94,10 +94,14 @@ class ExceptionHandler extends Base
             $this->fire(self::EVENT_REPORT, array($error));
             $this->fire(self::EVENT_BEFORE_OUTPUT, array($error));
             $result = $this->fire(self::EVENT_OUTPUT, array($error));
-            $this->fire(self::EVENT_AFTER_OUTPUT, array($error));
-            if (is_scalar($result)) {
-                $response->setBody($result);
+            if (ocEmpty($response->getBody())) {
+                if (ocEmpty($result)) {
+                    $this->output($error);
+                } else {
+                    $response->setBody($result);
+                }
             }
+            $this->fire(self::EVENT_AFTER_OUTPUT, array($error));
         } catch (\Exception $exception) {
             $this->output($error);
         } catch (\Error $error) {
