@@ -4,7 +4,7 @@ It's Ocara 2.0 version.
 
 Just join in GitHub.com, So you can click to www.ocara.cn to learn more.
 
-##1、安装框架
+## 1、安装框架
 
    （1）composer安装
      
@@ -22,13 +22,13 @@ Just join in GitHub.com, So you can click to www.ocara.cn to learn more.
            请下载框架并解压，在index.php指定好路径即可。
 
     
-###2、新建项目目录
+## 2、新建项目目录
 
-   （1）复制文件
+###   （1）复制文件
        
         请复制demo/myapp下面的目录和文件放到项目根目录，并将public目录设置为网站根目录。
 
-   （2）修改框架文件路径和控制器模式
+###   （2）修改框架文件路径和控制器模式
 
          修改框架路径
           
@@ -46,17 +46,17 @@ Just join in GitHub.com, So you can click to www.ocara.cn to learn more.
                   Ocara::create('api');
 
 
-   （3）项目生成
+###（3）项目生成
       
          在浏览器打开网站，访问public/index.php，比如：http://localhost。会自动新建项目目录，提示：Application generate Success!
 
-###3、使用说明
+## 3、使用说明
 
-   （1）添加控制器动作
+###   （1）添加控制器动作
    
        框架自动新建了home/index控制器路由，还可以进入开发者中心添加更多，访问http://localhost/pass/tools进入。
 
-   （2）伪静态生成
+###   （2）伪静态生成
 
        Apache服务器，框架会自动在public添加一个.htaccess文件写好了伪静态。
 
