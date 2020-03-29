@@ -35,7 +35,6 @@ class Common extends Base
      * @param string $moduleNamespace
      * @param array $params
      * @throws Exception
-     * @throws ReflectionException
      */
     public function dispatch($route, $moduleNamespace = null, $params = array())
     {

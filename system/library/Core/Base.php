@@ -175,11 +175,10 @@ abstract class Base extends Basis
 
     /**
      * 触发事件
-     * @param $eventName
+     * @param string $eventName
      * @param array $params
-     * @return array|mixed
+     * @return array|mixed|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function fire($eventName, array $params = array())
     {

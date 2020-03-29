@@ -433,7 +433,7 @@ function ocError($error = null, array $params = array())
 
 /**
  * 是否可回调
- * @param $callback
+ * @param mixed $callback
  * @param bool $requirePublic
  * @param bool $requireStatic
  * @return bool

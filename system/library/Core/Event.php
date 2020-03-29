@@ -243,7 +243,6 @@ class Event extends Basis implements EventInterface
      * @param array $params
      * @return array|mixed|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function trigger($eventSource, array $params = array())
     {
@@ -368,9 +367,9 @@ class Event extends Basis implements EventInterface
 
     /**
      * 是否可回调
-     * @param mixed $callback
+     * @param $callback
      * @return bool
-     * @throws ReflectionException
+     * @throws Exception
      */
     public function canCallback($callback)
     {

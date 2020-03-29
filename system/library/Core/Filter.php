@@ -142,7 +142,6 @@ class Filter extends Base
      * @param string|array $content
      * @return array|mixed|string|string[]|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function script($content)
     {

@@ -500,7 +500,6 @@ abstract class DatabaseEntity extends BaseEntity
      * 删除
      * @return mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function delete()
     {

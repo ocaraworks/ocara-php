@@ -104,7 +104,6 @@ class Request extends Base
      * 判断是否是GET请求
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function isGet()
     {
@@ -115,7 +114,6 @@ class Request extends Base
      * 判断是否是POST请求
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function isPost()
     {
@@ -126,7 +124,6 @@ class Request extends Base
      * 判断是否是PUT请求
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function isPut()
     {
@@ -137,7 +134,6 @@ class Request extends Base
      * 判断是否是PUT请求
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function isPatch()
     {
@@ -148,7 +144,6 @@ class Request extends Base
      * 判断是否是DELETE请求
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function isDelete()
     {
@@ -159,7 +154,6 @@ class Request extends Base
      * 判断是否是PUT请求
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function isHead()
     {
@@ -170,7 +164,6 @@ class Request extends Base
      * 判断是否是OPTIONS请求
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function isOptions()
     {
@@ -181,7 +174,6 @@ class Request extends Base
      * 判断是否是TRACE请求
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function isTrace()
     {
@@ -192,7 +184,6 @@ class Request extends Base
      * 判断是否是CONNECT请求
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function isConnect()
     {
@@ -203,7 +194,6 @@ class Request extends Base
      * 是否POST提交
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function isPostSubmit()
     {
@@ -234,9 +224,8 @@ class Request extends Base
 
     /**
      * 获取请求方式
-     * @return array|mixed|string|null
+     * @return string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getMethod()
     {

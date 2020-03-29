@@ -32,7 +32,6 @@ class Route extends Base
      * 解析路由
      * @return mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function parseRouteInfo()
     {

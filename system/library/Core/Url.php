@@ -124,7 +124,6 @@ class Url extends Base
      * @param int $urlType
      * @return array|mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function parseUrlParams($url, $urlType)
     {
@@ -191,7 +190,6 @@ class Url extends Base
      * @param bool $static
      * @return array|bool|mixed|string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function create($route, $params = array(), $relative = false, $urlType = null, $static = true)
     {
@@ -281,7 +279,6 @@ class Url extends Base
      * @param int $urlType
      * @return array|mixed|string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function appendQuery(array $params, $url = null, $urlType = null)
     {
