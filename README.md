@@ -16,7 +16,16 @@ Ocara是最新一代开源PHP框架，结合领域驱动设计和依赖注入模
 ## 1、安装框架
 
    （1）composer安装
-     
+   
+       （a）安装composer
+            
+            请到https://www.phpcomposer.com/下载安装
+
+       （b）安装框架
+            
+            如果没有初始化composer目录，请在目录执行：
+                  composer init
+           
             如果安装最新版：
     
                   composer require ocaraworks/ocara-php dev-master
@@ -24,7 +33,11 @@ Ocara是最新一代开源PHP框架，结合领域驱动设计和依赖注入模
             如果安装2.0版：
  
                   composer require ocaraworks/ocara-php 2.0
-
+            
+            然后安装：
+                  composer install
+            或更新：
+                  composer update
 
    （2）手动安装
    
