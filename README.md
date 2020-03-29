@@ -13,7 +13,7 @@ Just join in GitHub.com, So you can click to www.ocara.cn to learn more.
 
    如果安装2.0版：
    
-     composer require ocaraworks/ocara-php ^2.0
+     composer require ocaraworks/ocara-php 2.0
 
 
 （2）手动下载框架并解压，在index.php指定好路径即可。
