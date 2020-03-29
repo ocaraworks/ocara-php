@@ -126,8 +126,12 @@ abstract class DatabaseEntity extends BaseEntity
                 $this->source = $model;
                 return $this->setPlugin(new $model());
             } elseif (is_object($model)) {
-                $reflection = new ReflectionObject($model);
-                $this->source = $reflection->getName();
+                try {
+                    $reflection = new ReflectionObject($model);
+                    $this->source = $reflection->getName();
+                } catch (\Exception $exception) {
+                    throw new Exception($exception->getMessage(), $exception->getCode());
+                }
                 return $this->setPlugin($model);
             }
         }

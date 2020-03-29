@@ -450,9 +450,13 @@ function ocIsCallable($callback, $requirePublic = true, $requireStatic = true)
             $method = isset($callback[1]) ? $callback[1] : null;
             if ($class && $method) {
                 if (method_exists($class, $method)) {
-                    $methodReflection = new ReflectionMethod($class, $method);
-                    if ($requireStatic && !$methodReflection->isStatic()) return false;
-                    return $requirePublic ? $methodReflection->isPublic() : true;
+                    try {
+                        $methodReflection = new ReflectionMethod($class, $method);
+                        if ($requireStatic && !$methodReflection->isStatic()) return false;
+                        return $requirePublic ? $methodReflection->isPublic() : true;
+                    } catch (\Exception $exception) {
+                        throw new Exception($exception->getMessage(), $exception->getCode());
+                    }
                 }
             }
         } else {
@@ -463,8 +467,12 @@ function ocIsCallable($callback, $requirePublic = true, $requireStatic = true)
         $method = isset($callback[1]) ? $callback[1] : null;
         if ($object && $method) {
             if (method_exists($object, $method)) {
-                $methodReflection = new ReflectionMethod($object, $method);
-                return $requirePublic ? $methodReflection->isPublic() : true;
+                try {
+                    $methodReflection = new ReflectionMethod($object, $method);
+                    return $requirePublic ? $methodReflection->isPublic() : true;
+                } catch (\Exception $exception) {
+                    throw new Exception($exception->getMessage(), $exception->getCode());
+                }
             }
         }
     }

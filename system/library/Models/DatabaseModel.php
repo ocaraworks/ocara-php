@@ -330,8 +330,13 @@ abstract class DatabaseModel extends ModelBase
         $moduleLang = OC_EMPTY;
         $language = ocService()->app->getLanguage();
 
-        $ref = new ReflectionObject($this);
-        $filePath = ocCommPath($ref->getFileName());
+        try {
+            $ref = new ReflectionObject($this);
+            $filePath = ocCommPath($ref->getFileName());
+        } catch (\Exception $exception) {
+            throw new Exception($exception->getMessage(), $exception->getCode());
+        }
+
         $file = lcfirst(substr(basename($filePath), 0, -(strlen($modelSuffix) + 4))) . '.php';
         $dir = dirname($filePath) . OC_DIR_SEP;
 

@@ -351,8 +351,13 @@ class Event extends Basis implements EventInterface
             } else {
                 $method = $this->name;
             }
-            $reflection = new ReflectionClass($callback);
-            if (!$reflection->hasMethod($method)) {
+            try {
+                $reflection = new ReflectionClass($callback);
+                $hasMethod = $reflection->hasMethod($method);
+            } catch (\Exception $exception) {
+                throw new Exception($exception->getMessage(), $exception->getCode());
+            }
+            if (!$hasMethod) {
                 ocService()->error->writeLog('invalid_event_class_handler');
                 return null;
             }
