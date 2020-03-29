@@ -437,7 +437,7 @@ function ocError($error = null, array $params = array())
  * @param bool $requirePublic
  * @param bool $requireStatic
  * @return bool
- * @throws ReflectionException
+ * @throws Exception
  */
 function ocIsCallable($callback, $requirePublic = true, $requireStatic = true)
 {

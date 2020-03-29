@@ -46,7 +46,7 @@ class ServiceBase extends Base
      * 获取语言配置信息
      * @param string $key
      * @param array $params
-     * @param null $languageClass
+     * @param string $languageClass
      * @return array
      * @throws Exception
      */

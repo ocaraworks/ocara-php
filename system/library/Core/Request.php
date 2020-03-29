@@ -359,7 +359,7 @@ class Request extends Base
      * @param string $default
      * @return array|string|null
      * @throws Exception
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getRequestValue(array $data, $key = null, $default = null)
     {

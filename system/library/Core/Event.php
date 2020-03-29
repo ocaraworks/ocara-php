@@ -325,7 +325,6 @@ class Event extends Basis implements EventInterface
      * @param int $key
      * @return array
      * @throws Exception
-     * @throws ReflectionException
      */
     public function formatCallback(&$callback, $key = 0)
     {
