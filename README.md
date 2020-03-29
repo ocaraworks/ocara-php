@@ -1,7 +1,5 @@
 # Ocara
-Ocara is one innovative PHP framework.
 
-It's Ocara 2.0 version. You can click to www.ocara.cn to learn more.
 
 ### 复杂概念设计简单化，分散知识积累抽象化！皆源自效率设计。
 
@@ -9,7 +7,11 @@ Ocara是最新一代开源PHP框架，结合领域驱动设计和依赖注入模
 
 除了最基本功能外，提供事务嵌套、多环境配置、分库分表、默认条件、字段别名、常量对象、实体模型、缓存模型化等创新设计，Action动作独立成类。
 
+官网地址：http://www.ocara.cn
+
 最新实例下载：https://github.com/ocaraworks/ocara-php-demos
+
+最新手册下载：http://ocara.cn//attachments/download/manual/2.0/20200303/Ocara2.0_manual.zip
 
 ## 1、安装框架
 
