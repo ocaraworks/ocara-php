@@ -7,7 +7,6 @@
 
 namespace Ocara\Models;
 
-use ReflectionException;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\ModelBase;
 
@@ -79,7 +78,6 @@ abstract class CacheModel extends ModelBase
      * 连接缓存
      * @return object|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function connect()
     {

@@ -7,7 +7,6 @@
 
 namespace Ocara\Service;
 
-use \ReflectionException;
 use Ocara\Exceptions\Exception;
 use Ocara\Core\ServiceBase;
 

@@ -7,7 +7,6 @@
 
 namespace Ocara\Controllers;
 
-use \ReflectionException;
 use Ocara\Core\ControllerBase;
 use Ocara\Core\Response;
 use Ocara\Exceptions\Exception;

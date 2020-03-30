@@ -7,7 +7,6 @@
 
 namespace Ocara\Databases;
 
-use \ReflectionException;
 use Ocara\Core\DatabaseBase;
 use Ocara\Core\Sql;
 use Ocara\Interfaces\Database as DatabaseInterface;

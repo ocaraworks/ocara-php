@@ -9,7 +9,6 @@ namespace Ocara\Core;
 
 use \Closure;
 use \ReflectionClass;
-use \ReflectionException;
 use Ocara\Exceptions\Exception;
 use Ocara\Interfaces\Event as EventInterface;
 use Ocara\Interfaces\Middleware as MiddlewareInterface;

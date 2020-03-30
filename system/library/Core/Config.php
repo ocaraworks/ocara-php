@@ -7,7 +7,6 @@
 
 namespace Ocara\Core;
 
-use \ReflectionException;
 use Ocara\Exceptions\Exception;
 
 class Config extends Base
