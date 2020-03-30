@@ -8,7 +8,6 @@
 namespace Ocara\Models;
 
 use Ocara\Core\Event;
-use \ReflectionException;
 use \ReflectionObject;
 use Ocara\Core\DriverBase;
 use Ocara\Sql\Generator;
@@ -1024,7 +1023,6 @@ abstract class DatabaseModel extends ModelBase
      * @param string|array $options
      * @return array|bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function selectOne($condition = null, $options = null)
     {
@@ -1040,7 +1038,6 @@ abstract class DatabaseModel extends ModelBase
      * @param string|array $options
      * @return array|bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function selectAll($condition = null, $options = null)
     {
@@ -1210,7 +1207,6 @@ abstract class DatabaseModel extends ModelBase
      * @param array $executeOptions
      * @return array|bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getAll($condition = null, $option = null, $executeOptions = array())
     {
@@ -1224,7 +1220,6 @@ abstract class DatabaseModel extends ModelBase
      * @param array $executeOptions
      * @return array|bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getRow($condition = null, $option = null, $executeOptions = array())
     {
@@ -1237,7 +1232,6 @@ abstract class DatabaseModel extends ModelBase
      * @param bool $condition
      * @return bool|mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getValue($field, $condition = false)
     {
@@ -1260,7 +1254,6 @@ abstract class DatabaseModel extends ModelBase
      * @param array $executeOptions
      * @return int
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getTotal($executeOptions = array())
     {
@@ -1333,7 +1326,6 @@ abstract class DatabaseModel extends ModelBase
      * @param array $executeOptions
      * @return array|bool
      * @throws Exception
-     * @throws ReflectionException
      */
     protected function baseFind($condition, $options, $isQueryRow, $isCount = false, $dataType = null, $executeOptions = array())
     {

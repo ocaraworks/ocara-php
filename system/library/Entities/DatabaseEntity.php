@@ -7,9 +7,7 @@
 
 namespace Ocara\Entities;
 
-use \ReflectionException;
 use \ReflectionObject;
-use Ocara\Iterators\Database\EachQueryRecords;
 use Ocara\Core\BaseEntity;
 use Ocara\Exceptions\Exception;
 
@@ -359,7 +357,6 @@ abstract class DatabaseEntity extends BaseEntity
      * @param array $data
      * @return mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function create(array $data = array())
     {
@@ -430,7 +427,6 @@ abstract class DatabaseEntity extends BaseEntity
      * @param array $data
      * @return mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function update(array $data = array())
     {
@@ -469,7 +465,6 @@ abstract class DatabaseEntity extends BaseEntity
      * @param array $data
      * @return mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function save(array $data = array())
     {
@@ -627,7 +622,6 @@ abstract class DatabaseEntity extends BaseEntity
      * 关联保存
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     protected function relateSave()
     {
