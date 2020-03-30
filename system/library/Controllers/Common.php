@@ -61,7 +61,6 @@ class Common extends ControllerBase implements ControllerInterface
      * 执行动作
      * @param string $actionMethod
      * @throws Exception
-     * @throws ReflectionException
      */
     public function doAction($actionMethod)
     {
@@ -86,7 +85,6 @@ class Common extends ControllerBase implements ControllerInterface
      * 执行动作函数方法实体
      * @param $actionMethod
      * @throws Exception
-     * @throws ReflectionException
      */
     protected function doFunctionAction($actionMethod)
     {
@@ -107,7 +105,6 @@ class Common extends ControllerBase implements ControllerInterface
     /**
      * 执行动作类实例
      * @throws Exception
-     * @throws ReflectionException
      */
     protected function doClassAction()
     {
@@ -157,7 +154,6 @@ class Common extends ControllerBase implements ControllerInterface
      * @param null $result
      * @param bool $useDefault
      * @throws Exception
-     * @throws ReflectionException
      */
     public function render($result = null, $useDefault = true)
     {
@@ -180,7 +176,6 @@ class Common extends ControllerBase implements ControllerInterface
      * @param array $vars
      * @param bool $required
      * @throws Exception
-     * @throws ReflectionException
      */
     public function renderFile($file = null, array $vars = array(), $required = true)
     {
@@ -208,7 +203,6 @@ class Common extends ControllerBase implements ControllerInterface
      * @param string $message
      * @param string $status
      * @throws Exception
-     * @throws ReflectionException
      */
     public function renderApi($data = null, $message = OC_EMPTY, $status = 'success')
     {

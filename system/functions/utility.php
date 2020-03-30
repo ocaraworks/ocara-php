@@ -644,7 +644,6 @@ function ocBasename($filePath)
  * @param bool $static
  * @return array|bool|mixed|string
  * @throws Exception
- * @throws ReflectionException
  */
 function ocUrl($route, $params = array(), $relative = false, $urlType = null, $static = true)
 {

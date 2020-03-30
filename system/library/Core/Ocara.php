@@ -81,7 +81,6 @@ final class Ocara
      * 新建应用
      * @param string $moduleType
      * @throws Exception
-     * @throws ReflectionException
      */
     public static function create($moduleType = 'common')
     {

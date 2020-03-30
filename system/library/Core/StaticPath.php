@@ -87,7 +87,6 @@ class StaticPath extends Base
      * @param string $paramsStr
      * @return array
      * @throws Exception
-     * @throws ReflectionException
      */
     private function getParams($offset, $params, $data, $paramsStr)
     {
@@ -130,7 +129,6 @@ class StaticPath extends Base
      * @param array $data
      * @return array
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getParamsPathMap($params, $module, $controller, $action, $data)
     {

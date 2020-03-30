@@ -263,7 +263,6 @@ class Request extends Base
      * @param string $default
      * @return array|string|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getGet($key = null, $default = null)
     {
@@ -276,7 +275,6 @@ class Request extends Base
      * @param string $default
      * @return array|string|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getPost($key = null, $default = null)
     {
@@ -298,7 +296,6 @@ class Request extends Base
      * @param string|array $default
      * @return array|string|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getCookie($key = null, $default = null)
     {
@@ -311,7 +308,6 @@ class Request extends Base
      * @param string|array $default
      * @return array|string|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getRequest($key = null, $default = null)
     {
@@ -324,7 +320,6 @@ class Request extends Base
      * @param mixed $default
      * @return array|string|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getCommonRequest($key = null, $default = null)
     {
@@ -348,7 +343,6 @@ class Request extends Base
      * @param string $default
      * @return array|string|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getRequestValue(array $data, $key = null, $default = null)
     {

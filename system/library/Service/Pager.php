@@ -146,7 +146,6 @@ class Pager extends ServiceBase
      * @param array $attr
      * @return $this|bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function setHtml($total, $url, array $attr = array())
     {
@@ -220,7 +219,6 @@ class Pager extends ServiceBase
      * 生成HTML
      * @return string
      * @throws Exception
-     * @throws ReflectionException
      */
     protected function setPageHtml()
     {
@@ -252,7 +250,6 @@ class Pager extends ServiceBase
      * 生成数字页码HTML
      * @return string|null
      * @throws Exception
-     * @throws ReflectionException
      */
     protected function getPages()
     {
@@ -272,7 +269,6 @@ class Pager extends ServiceBase
      * @param string $class
      * @return string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getLink($page, $text, $class = null)
     {
@@ -298,7 +294,6 @@ class Pager extends ServiceBase
      * @param int $pageNumber
      * @return array|bool|mixed|string|null
      * @throws Exception
-     * @throws ReflectionException
      */
     protected function getUrl($pageNumber)
     {
@@ -319,7 +314,6 @@ class Pager extends ServiceBase
      * 获取当前页
      * @return int
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getPage()
     {

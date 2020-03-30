@@ -231,7 +231,6 @@ class Response extends Base
      * @param string|array $route
      * @param array $params
      * @throws Exception
-     * @throws ReflectionException
      */
     public function jump($route, array $params = array())
     {

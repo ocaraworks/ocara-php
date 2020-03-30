@@ -30,7 +30,6 @@ class FormToken extends Base
      * @param array $route
      * @return array|mixed|string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function generate($formName, array $route)
     {

@@ -115,7 +115,6 @@ class Api extends ControllerBase implements ControllerInterface
      * @param string $message
      * @param string $status
      * @throws Exception
-     * @throws ReflectionException
      */
     public function renderApi($data = null, $message = null, $status = 'success')
     {

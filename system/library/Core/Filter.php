@@ -49,7 +49,6 @@ class Filter extends Base
      * @param bool $equal
      * @return array|bool|mixed|string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function sql($content, $addSlashes = true, array $keywords = array(), $equal = false)
     {
@@ -92,7 +91,6 @@ class Filter extends Base
      * @param $content
      * @return array|mixed|string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function content($content)
     {
@@ -178,7 +176,6 @@ class Filter extends Base
      * @param string|array $content
      * @return array|string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function request($content)
     {

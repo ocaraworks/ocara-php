@@ -69,7 +69,6 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
      * @param string $sqlData
      * @return array
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getFieldsInfo($sqlData)
     {
@@ -126,7 +125,6 @@ class MysqliDatabase extends DatabaseBase implements DatabaseInterface
      * @param string $name
      * @return bool|mixed|void
      * @throws Exception
-     * @throws ReflectionException
      */
     public function baseSelectDatabase($name = null)
     {

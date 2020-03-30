@@ -139,7 +139,6 @@ class DatabaseBase extends Base
      * 初始化设置
      * @param array $config
      * @throws Exception
-     * @throws ReflectionException
      */
     public function init(array $config)
     {
@@ -159,7 +158,6 @@ class DatabaseBase extends Base
      * @param string $charset
      * @return mixed|void|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function setCharset($charset)
     {
@@ -185,7 +183,6 @@ class DatabaseBase extends Base
      * @param array $data
      * @return mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getDriver(array $data)
     {
@@ -205,7 +202,6 @@ class DatabaseBase extends Base
      * @param string $class
      * @return mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function loadDatabase($class)
     {
@@ -258,7 +254,6 @@ class DatabaseBase extends Base
      * @param bool $required
      * @return mixed|void|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function execute(array $sqlData, $required = true)
     {
@@ -354,7 +349,6 @@ class DatabaseBase extends Base
      * @param array $shardingCurrent
      * @return array|mixed|void|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function query($sqlData, $count = false, $isUnion = false, $dataType = null, $shardingCurrent = array())
     {
@@ -377,7 +371,6 @@ class DatabaseBase extends Base
      * @param array $shardingCurrent
      * @return array|mixed|void|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function queryRow($sqlData, $count = false, $isUnion = false, $dataType = null, $shardingCurrent = array())
     {
@@ -456,7 +449,6 @@ class DatabaseBase extends Base
      * 选择数据库
      * @param string $name
      * @throws Exception
-     * @throws ReflectionException
      */
     public function selectDatabase($name = null)
     {
@@ -738,7 +730,6 @@ class DatabaseBase extends Base
      * @param string $error
      * @param array $params
      * @throws Exception
-     * @throws ReflectionException
      */
     public function showError($error = null, $params = array())
     {
@@ -764,7 +755,6 @@ class DatabaseBase extends Base
      * @param array $sqlData
      * @param bool $required
      * @throws Exception
-     * @throws ReflectionException
      */
     public function checkError($result, $sqlData, $required = true)
     {

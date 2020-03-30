@@ -75,7 +75,6 @@ class FormManager extends ServiceProvider
     /**
      * 保存表单令牌
      * @throws Exception
-     * @throws ReflectionException
      */
     public function bindToken()
     {

@@ -62,7 +62,6 @@ class Config extends Base
      * 获取系统环境
      * @return array|mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getEnvironment()
     {

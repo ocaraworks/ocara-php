@@ -60,7 +60,6 @@ class Sql extends Base
      * @param string $quote
      * @return array|bool|mixed|string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function quoteList($list, $quote = OC_QUOTE)
     {
@@ -127,7 +126,6 @@ class Sql extends Base
      * @param bool $addSlashes
      * @return array|bool|mixed|string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function filterValue($content, $addSlashes = true)
     {
@@ -152,7 +150,6 @@ class Sql extends Base
      * @param bool $prepare
      * @return array|bool|mixed|string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function parseValue($value, $paramType = 'where', $ifQuote = true, $prepare = true)
     {
@@ -203,7 +200,6 @@ class Sql extends Base
      * @param bool $equal
      * @return array|bool|mixed|string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function filterSql($content, $addSlashes = true, $equal = false)
     {
@@ -308,7 +304,6 @@ class Sql extends Base
      * @param array $data
      * @return array
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getInsertSql($table, $data)
     {
@@ -323,7 +318,6 @@ class Sql extends Base
      * @param string|array $data
      * @return string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getInsertSqlBase($type, $table, $data)
     {
@@ -347,7 +341,6 @@ class Sql extends Base
      * @param string|array $where
      * @return array
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getUpdateSql($table, $data, $where)
     {
@@ -375,7 +368,6 @@ class Sql extends Base
      * @param string|array $data
      * @return array
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getReplaceSql($table, $data)
     {
@@ -390,7 +382,6 @@ class Sql extends Base
      * @param string $option
      * @return array
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getDeleteSql($table, $where, $option = null)
     {
@@ -423,7 +414,6 @@ class Sql extends Base
      * @param string $on
      * @return string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getJoinSql($type, $table, $alias, $on)
     {
@@ -458,7 +448,6 @@ class Sql extends Base
      * @param int|array $limit
      * @return array|bool|mixed|string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getLimitSql($limit)
     {
@@ -482,7 +471,6 @@ class Sql extends Base
      * @param string $sign
      * @return string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getInSql($field, $list, $alias = null, $sign = 'IN')
     {
@@ -509,7 +497,6 @@ class Sql extends Base
      * @param string $alias
      * @return string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getBetweenSql($field, $value1, $value2, $alias = null)
     {
@@ -589,7 +576,6 @@ class Sql extends Base
      * @param string $alias
      * @return bool|string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function parseCondition($condition, $link = 'AND', $sign = '=', $alias = null)
     {
@@ -744,7 +730,6 @@ class Sql extends Base
      * @param bool $ifQuote
      * @return array|bool|mixed|string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getValueSql($val, $ifQuote = true)
     {
@@ -804,7 +789,6 @@ class Sql extends Base
      * @param string $alias
      * @return string
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getFieldCondition($data, $link = ',', $sign = '=', $alias = null)
     {

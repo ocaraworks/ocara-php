@@ -21,7 +21,6 @@ final class ApplicationGenerator
      * 应用生成
      * @param string $moduleType
      * @throws Exception
-     * @throws ReflectionException
      */
     public static function create($moduleType = 'common')
     {

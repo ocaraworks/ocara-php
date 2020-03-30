@@ -397,7 +397,6 @@ abstract class DatabaseModel extends ModelBase
      * @param bool $master
      * @return mixed|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function db($master = true)
     {
@@ -441,7 +440,6 @@ abstract class DatabaseModel extends ModelBase
      * @param bool $cache
      * @return $this
      * @throws Exception
-     * @throws ReflectionException
      */
     public function loadFields($cache = true)
     {
@@ -525,7 +523,6 @@ abstract class DatabaseModel extends ModelBase
      * 获取字段
      * @return array
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getFieldsInfo()
     {
@@ -540,7 +537,6 @@ abstract class DatabaseModel extends ModelBase
      * 获取字段
      * @return array
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getFields()
     {
@@ -552,7 +548,6 @@ abstract class DatabaseModel extends ModelBase
      * @param $field
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function hasField($field)
     {
@@ -671,7 +666,6 @@ abstract class DatabaseModel extends ModelBase
      * @param bool $requireCondition
      * @return array|bool|int|mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function baseSave($data, $isUpdate = false, $conditionSql = null, $requireCondition = true)
     {
@@ -727,7 +721,6 @@ abstract class DatabaseModel extends ModelBase
      * @param string $sql
      * @return bool|int|mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getInsertId($sql = null)
     {
@@ -757,7 +750,6 @@ abstract class DatabaseModel extends ModelBase
      * @param bool $required
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function tableExists($table, $required = false)
     {
@@ -795,7 +787,6 @@ abstract class DatabaseModel extends ModelBase
      * 推入事务池中
      * @param DatabaseBase|null $plugin
      * @throws Exception
-     * @throws ReflectionException
      */
     public function pushTransaction(DatabaseBase $plugin = null)
     {
@@ -825,7 +816,6 @@ abstract class DatabaseModel extends ModelBase
      * @param int $batchLimit
      * @return array|bool|int|mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function update(array $data, $batchLimit = 1000)
     {
@@ -854,7 +844,6 @@ abstract class DatabaseModel extends ModelBase
      * @param int $batchLimit
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function delete($batchLimit = 1000)
     {
@@ -882,7 +871,6 @@ abstract class DatabaseModel extends ModelBase
      * @param bool $requireCondition
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function baseDelete($conditionSql = null, $requireCondition = true)
     {
@@ -918,7 +906,6 @@ abstract class DatabaseModel extends ModelBase
      * @param string $sql
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function query($sql)
     {
@@ -946,7 +933,6 @@ abstract class DatabaseModel extends ModelBase
      * @param string $sql
      * @return bool
      * @throws Exception
-     * @throws ReflectionException
      */
     public function queryRow($sql)
     {
@@ -1407,7 +1393,6 @@ abstract class DatabaseModel extends ModelBase
      * @param DatabaseBase $plugin
      * @return Generator
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getSqlGenerator($plugin)
     {
@@ -1439,7 +1424,6 @@ abstract class DatabaseModel extends ModelBase
      * @param bool $isMaster
      * @return mixed|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function connect($isMaster = true)
     {
@@ -2041,7 +2025,6 @@ abstract class DatabaseModel extends ModelBase
      * @param array $params
      * @return mixed|void
      * @throws Exception
-     * @throws ReflectionException
      */
     public static function __callStatic($name, $params)
     {
@@ -2063,7 +2046,6 @@ abstract class DatabaseModel extends ModelBase
      * @param array $params
      * @return mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     protected static function queryDynamic($method, $fieldName, array $params = array())
     {

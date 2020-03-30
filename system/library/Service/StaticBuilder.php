@@ -58,7 +58,6 @@ class StaticBuilder extends ServiceBase
      * @param string|array $route
      * @param array $data
      * @throws Exception
-     * @throws ReflectionException
      */
     public function genAction($route, $data)
     {
@@ -79,7 +78,6 @@ class StaticBuilder extends ServiceBase
      * @param string $action
      * @param mixed $callback
      * @throws Exception
-     * @throws ReflectionException
      */
     private function genHtml($params, $module, $controller, $action, $callback)
     {
@@ -101,7 +99,6 @@ class StaticBuilder extends ServiceBase
      * @param string $action
      * @param array $data
      * @throws Exception
-     * @throws ReflectionException
      */
     private function genRow($mvcPathMap, $params, $module, $controller, $action, $data)
     {

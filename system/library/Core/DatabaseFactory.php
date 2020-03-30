@@ -41,7 +41,6 @@ class DatabaseFactory extends Base
      * @param bool $required
      * @return mixed|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function make($serverName = null, $master = true, $required = true)
     {
@@ -77,7 +76,6 @@ class DatabaseFactory extends Base
      * @param bool $master
      * @return mixed|null
      * @throws Exception
-     * @throws ReflectionException
      */
     protected function getDatabase($serverName, $master = true)
     {
@@ -119,7 +117,6 @@ class DatabaseFactory extends Base
      * @param string $serverName
      * @return array|mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getConfig($serverName = null)
     {

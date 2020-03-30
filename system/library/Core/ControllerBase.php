@@ -204,7 +204,6 @@ abstract class ControllerBase extends serviceProvider
      * @param string $name
      * @return Form|Form[]
      * @throws Exception
-     * @throws ReflectionException
      */
     public function form($name = null)
     {
@@ -243,7 +242,6 @@ abstract class ControllerBase extends serviceProvider
      * 表单检测
      * @return bool|mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function checkForm()
     {

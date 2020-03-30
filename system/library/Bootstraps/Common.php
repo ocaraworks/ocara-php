@@ -34,7 +34,6 @@ class Common extends BootstrapBase implements BootstrapInterface
      * @param string $moduleNamespace
      * @return bool|mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function start($route = array(), $params = array(), $moduleNamespace = null)
     {

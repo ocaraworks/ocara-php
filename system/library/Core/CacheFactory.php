@@ -67,7 +67,6 @@ class CacheFactory extends Base
      * @param string $serverName
      * @return array
      * @throws Exception
-     * @throws ReflectionException
      */
     public function getConfig($serverName = null)
     {
@@ -116,7 +115,6 @@ class CacheFactory extends Base
      * @param bool $required
      * @return object|null
      * @throws Exception
-     * @throws ReflectionException
      */
     private function baseConnect($serverName, $required = true)
     {

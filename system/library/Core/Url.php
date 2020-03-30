@@ -62,7 +62,6 @@ class Url extends Base
      * @param string $url
      * @return array|mixed
      * @throws Exception
-     * @throws ReflectionException
      */
     public function parseGet($url = null)
     {
