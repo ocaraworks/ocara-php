@@ -45,7 +45,6 @@ class Api extends ControllerBase implements ControllerInterface
      * 执行动作
      * @param string $actionMethod
      * @throws Exception
-     * @throws ReflectionException
      */
     public function doAction($actionMethod)
     {
@@ -70,7 +69,6 @@ class Api extends ControllerBase implements ControllerInterface
     /**
      * 执行动作类实例
      * @throws Exception
-     * @throws ReflectionException
      */
     protected function doClassAction()
     {
@@ -101,7 +99,6 @@ class Api extends ControllerBase implements ControllerInterface
      * 渲染API
      * @param null $result
      * @throws Exception
-     * @throws ReflectionException
      */
     public function render($result = null)
     {

@@ -22,7 +22,6 @@ class Application extends Base
     /**
      * 初始化
      * @throws Exception
-     * @throws ReflectionException
      */
     public function initialize()
     {
@@ -171,7 +170,6 @@ class Application extends Base
      * 解析路由
      * @return array
      * @throws Exception
-     * @throws ReflectionException
      */
     public function parseRoute()
     {

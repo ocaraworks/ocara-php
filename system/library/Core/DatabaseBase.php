@@ -39,7 +39,6 @@ class DatabaseBase extends Base
      * DatabaseBase constructor.
      * @param array $config
      * @throws Exception
-     * @throws ReflectionException
      */
     public function __construct(array $config)
     {

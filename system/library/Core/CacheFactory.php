@@ -37,7 +37,6 @@ class CacheFactory extends Base
      * @param bool $required
      * @return object|null
      * @throws Exception
-     * @throws ReflectionException
      */
     public function make($serverName = null, $required = true)
     {
@@ -93,7 +92,6 @@ class CacheFactory extends Base
      * @param bool $required
      * @return mixed|object|null
      * @throws Exception
-     * @throws ReflectionException
      */
     protected function getCache($serverName, $required = true)
     {
